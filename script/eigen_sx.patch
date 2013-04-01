@@ -1,0 +1,108 @@
+diff -crN eigen_sx.orig/Makefile eigen_sx/Makefile
+*** eigen_sx.orig/Makefile	2011-06-30 06:30:09.000000000 +0900
+--- eigen_sx/Makefile	2013-02-16 09:17:10.000000000 +0900
+***************
+*** 34,40 ****
+  	$(FF) -o a.out $(LDFLAG) $(OBJSM)
+  
+  main.o : main.f
+! 	$(FF) -c -Cpp main.f $(CCFLAG) $(INCFLAG)
+  eigen_prd.o : eigen_prd.f
+  	$(FF) -c eigen_prd.f $(CCFLAG) $(INCFLAG)
+  eigen_prd_2update.o : eigen_prd_2update.f
+--- 34,40 ----
+  	$(FF) -o a.out $(LDFLAG) $(OBJSM)
+  
+  main.o : main.f
+! 	$(FF) -c main.f $(CCFLAG) $(INCFLAG)
+  eigen_prd.o : eigen_prd.f
+  	$(FF) -c eigen_prd.f $(CCFLAG) $(INCFLAG)
+  eigen_prd_2update.o : eigen_prd_2update.f
+***************
+*** 92,98 ****
+  eigen_pdlaedz.o : eigen_pdlaedz.f
+  	$(FF) -c eigen_pdlaedz.f $(CCFLAG) $(INCFLAG)
+  eigen_pdlaed0.o : eigen_pdlaed0.f
+! 	$(FF) -c eigen_pdlaed0.f -Cpp -D_CPP_CALL_ $(CCFLAG) $(INCFLAG)
+  eigen_pdsxedc.o : eigen_pdsxedc.f
+  	$(FF) -c eigen_pdsxedc.f $(CCFLAG) $(INCFLAG)
+  eigen_pdlaed1.o : eigen_pdlaed1.f
+--- 92,98 ----
+  eigen_pdlaedz.o : eigen_pdlaedz.f
+  	$(FF) -c eigen_pdlaedz.f $(CCFLAG) $(INCFLAG)
+  eigen_pdlaed0.o : eigen_pdlaed0.f
+! 	$(FF) -c eigen_pdlaed0.f -D_CPP_CALL_ $(CCFLAG) $(INCFLAG)
+  eigen_pdsxedc.o : eigen_pdsxedc.f
+  	$(FF) -c eigen_pdsxedc.f $(CCFLAG) $(INCFLAG)
+  eigen_pdlaed1.o : eigen_pdlaed1.f
+diff -crN eigen_sx.orig/eigen_dcx.f eigen_sx/eigen_dcx.f
+*** eigen_sx.orig/eigen_dcx.f	2011-06-30 06:30:09.000000000 +0900
+--- eigen_sx/eigen_dcx.f	2013-02-16 09:18:00.000000000 +0900
+***************
+*** 77,83 ****
+        lddw = ((lddw-1)/nb+1)*nb     ! second dimension size of array "z"
+        call descinit( descz, n, n, nb, nb, 0, 0, ictxt, lddz, info )
+        if(info/=0) then
+!          print*,"Error in \"descinit\" routine."
+           print*,"  error code =",info
+           stop 
+        endif
+--- 77,83 ----
+        lddw = ((lddw-1)/nb+1)*nb     ! second dimension size of array "z"
+        call descinit( descz, n, n, nb, nb, 0, 0, ictxt, lddz, info )
+        if(info/=0) then
+!          print*,"Error in 'descinit' routine."
+           print*,"  error code =",info
+           stop 
+        endif
+***************
+*** 100,106 ****
+        d3 = mpi_wtime()
+        if(my_rank==0) then
+           print*," "
+!          print*,"detail of exectime in \"eigen_dcx\""
+           print*,"   before pdstedc =",d3-d1,"(sec)"
+        endif
+  #endif
+--- 100,106 ----
+        d3 = mpi_wtime()
+        if(my_rank==0) then
+           print*," "
+!          print*,"detail of exectime in 'eigen_dcx'"
+           print*,"   before pdstedc =",d3-d1,"(sec)"
+        endif
+  #endif
+***************
+*** 110,116 ****
+       &               work(1), lwork, iwork(1), liwork, info)
+        d5 = mpi_wtime()
+        if(info/=0) then
+!          print*,"Error in \"eigen_pdsxedc\" routine."
+           print*,"  error code =",info
+           stop 
+        endif
+--- 110,116 ----
+       &               work(1), lwork, iwork(1), liwork, info)
+        d5 = mpi_wtime()
+        if(info/=0) then
+!          print*,"Error in 'eigen_pdsxedc' routine."
+           print*,"  error code =",info
+           stop 
+        endif
+***************
+*** 138,144 ****
+  
+  #ifdef TIMER
+        if(my_rank==0) then
+!          print*,"Exectime of \"eigen_dcx\" routine  =",d6-d1,"(sec)"
+        endif
+  #endif
+  
+--- 138,144 ----
+  
+  #ifdef TIMER
+        if(my_rank==0) then
+!          print*,"Exectime of 'eigen_dcx' routine  =",d6-d1,"(sec)"
+        endif
+  #endif
+  

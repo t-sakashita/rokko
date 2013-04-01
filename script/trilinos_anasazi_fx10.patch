@@ -1,0 +1,13 @@
+ diff -u -r trilinos-11.0.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake trilinos-11.0.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake
+--- trilinos-11.0.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake	2012-10-26 00:56:14.000000000 +0900
++++ trilinos-11.0.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake	2013-02-13 17:37:07.000000000 +0900
+@@ -63,7 +63,7 @@
+   # Verify the selected combination of Fortran and C++ compilers.
+   IF("${CMAKE_VERSION}" VERSION_GREATER 2.7.20090824 AND NOT ${PROJECT_NAME}_SKIP_FORTRANCINTERFACE_VERIFY_TEST)
+     INCLUDE(FortranCInterface)
+-    FortranCInterface_VERIFY(CXX)
++##    FortranCInterface_VERIFY(CXX)
+   ENDIF()
+ ENDIF()
+ 
+
