@@ -1,13 +1,17 @@
 #!/bin/bash -x
 
 PREFIX="$1"
-test -z "$PREFIX" && PREFIX=/opt/rokko
+test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
 echo "PREFIX = $PREFIX"
 
 mkdir -p $HOME/build
 cd $HOME/build
 rm -rf scalapack_installer_1.0.2
-wget -O - http://www.netlib.org/scalapack/scalapack_installer.tgz | tar zxf -
+if test -f $HOME/source/scalapack_installer_1.0.2.tgz; then
+  tar zxf $HOME/source/scalapack_installer_1.0.2.tgz
+else
+  wget -O - http://www.netlib.org/scalapack/scalapack_installer.tgz | tar zxf -
+fi
 
 cd scalapack_installer_1.0.2
 patch -p1 << EOF
@@ -34,7 +38,7 @@ patch -p1 << EOF
     ldflags_c   = ""                # loader flags when main program is in C
 EOF
 
-./setup.py --mpicc=openmpicc --mpif90=openmpif90 --mpiincdir=/opt/local/include/openmpi --lapacklib="-L/opt/local/lib -llapack -lcblas -lf77blas -latlas" --ldflags_c="-lgfortran" --mpirun=openmpiexec
+./setup.py --mpicc=openmpicc --mpif90=openmpif90 --mpiincdir=/opt/local/include/openmpi --lapacklib="-L/opt/local/lib -llapack -lptcblas -lptf77blas -latlas" --ldflags_c="-lgfortran" --mpirun=openmpiexec
 
 mkdir -p $PREFIX/lib
 cp -p build/scalapack-2.0.2/libscalapack.a $PREFIX/lib
