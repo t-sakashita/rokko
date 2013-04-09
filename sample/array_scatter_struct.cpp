@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
 
     /* Prepare for calling MPI_Type_create_darray */
     //MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+    array_of_psizes[0] = 0;   array_of_psizes[1] = 0;
     MPI_Comm_size(MPI_COMM_WORLD, &pool_size);
 
     MPI_Dims_create(pool_size, NDIMS, array_of_psizes);
