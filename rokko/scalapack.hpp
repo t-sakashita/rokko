@@ -1,9 +1,12 @@
+#ifndef ROKKO_SCALAPACK_H
+#define ROKKO_SCALAPACK_H
+
 #include <mpi.h>
 
 extern "C" {
   /* BLACS */
-  void blacs_pinfo_( int& mypnum, int& nprocs); 
-  void blacs_get_( const int& context, const int& request, int& value ); 
+  void blacs_pinfo_( int& mypnum, int& nprocs);
+  void blacs_get_( const int& context, const int& request, int& value );
   void blacs_gridinfo_(const int& ictxt, int& nprow, int& npcol, int& myrow, int& mycol);
   void blacs_gridinit_(const int& ictxt, char* order, int& nprow, int& npcol );
   void blacs_gridexit_(int* ictxt);
@@ -44,18 +47,28 @@ template <class MATRIX, class VECTOR>
 int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
 {
   int dim = mat.m_global;
+  int ictxt = mat.g.ictxt;
+  const int ZERO=0, ONE=1;
+  int desc[9];
+  int info;
+
+  int lld = mat.m_local;
+  if (lld == 0) lld = 1;
+  descinit_(desc, mat.m_global, mat.n_global, mat.mb, mat.nb, ZERO, ZERO, ictxt, lld, info);
+
+  if (info) {
+    cerr << "error " << info << endl;
+    //<< " at descinit function of descA " << "mA=" << m_local << "  nA=" << n_local << "  lld=" << lld << "." << endl;
+    exit(1);
+  }
 
   double* work = new double[1];
   long lwork = -1;
-  int info = 0;
-
-  const int ZERO=0, ONE=1;
-  int desc[9];
 
   // work配列のサイズの問い合わせ
   pdsyev_( "V",  "U",  dim,  mat.array, ONE,  ONE,  desc, eigvals.data(), eigvecs.array, ONE, ONE,
  	   desc, work, lwork, info );
-  
+
   lwork = work[0];
   delete[] work;
   work = new double [lwork];
@@ -64,11 +77,11 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
     return info;
   }
   info = 0;
-  
+
   // 固有値分解
   pdsyev_( "V",  "U",  dim,  mat.array,  ONE,  ONE,  desc, eigvals.data(), eigvecs.array, ONE, ONE,
 	   desc, work, lwork, info );
-  
+
   if (info) {
     cerr << "error at pdsyev function. info=" << info  << endl;
     exit(1);
@@ -80,3 +93,5 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
 
 } // namespace scalapack
 } // namespace rokko
+
+#endif // ROKKO_SCALAPACK_H

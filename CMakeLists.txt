@@ -11,16 +11,13 @@ find_package(MPI)
 # find Eigen3 Library
 find_package(Eigen3)
 
+set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
+include_directories(${PROJECT_SOURCE_DIR})
 include_directories(BEFORE ${EIGEN3_INCLUDE_DIR})
 
-set(TESTS  diagonalize)
-#frank_matrix_scalapack_pdsyev_wrapping_gather5)
+# directories
+add_subdirectory(sample_scalapack)
 
-foreach(name ${TESTS})
-  add_executable(${name}  ${name}.cpp)
-  target_link_libraries(${name} "-lmkl_scalapack_lp64" "-lmkl_blacs_intelmpi_lp64" "-mkl=sequential")
-  #add_alps_test(${name})
-endforeach(name)
 
 
 
