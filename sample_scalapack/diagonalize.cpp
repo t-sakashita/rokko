@@ -40,9 +40,7 @@ int main(int argc, char* argv[])
   rokko::distributed_matrix eigvecs(dim, dim, g);
   rokko::scalapack::diagonalize(frank_mat, eigvals, eigvecs);
 
-  //Eigen::MatrixXd eigvecs_global(dim, dim); // とりあえず、サイズを入れてテスト
   Eigen::MatrixXd eigvecs_global;
-
   rokko::gather(eigvecs, eigvecs_global, root);
   //eigvecs.print_matrix();
   rokko::print_matrix(eigvecs);
