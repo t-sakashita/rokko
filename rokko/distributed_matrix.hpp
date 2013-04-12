@@ -89,6 +89,17 @@ public:
     return (local_offset_block % g.npcol) == g.mycol;
   }
 
+  void set_local(int local_i, int local_j, double value)
+  {
+    array[local_j * m_local + local_i] = value;
+  }
+
+  void set_global(int global_i, int global_j, double value)
+  {
+    if ((is_gindex_myrow(global_i)) && (is_gindex_mycol(global_j)))
+      set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
+  }
+
   void print_matrix() const
   {
     /* each proc prints it's local_array out, in order */
