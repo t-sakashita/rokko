@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
   frank_mat.print_matrix();
   //rokko::print_matrix(mat_frank);
   if (myrank == root)
-    cout << "global_mat:" << frank_mat_global << endl;
+    cout << "global_mat:" << endl << frank_mat_global << endl;
 
   Eigen::VectorXd eigvals(dim);
   rokko::distributed_matrix eigvecs(dim, dim, g);
@@ -79,7 +79,9 @@ int main(int argc, char* argv[])
 
     cout << "Eigenvector:" << endl << eigvec_sorted << endl << endl;
     cout << "Check the orthogonality of Eigenvectors:" << endl
-    	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
+      //<< eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
+         << eigvecs_global.transpose() * eigvecs_global << endl;   // Is it equal to indentity matrix?
+
     //cout << "residual := A x - lambda x = " << endl
     //	 << A_global_matrix * eigvec_sorted.col(0)  -  eigval_sorted(0) * eigvec_sorted.col(0) << endl;
     //cout << "Are all the following values equal to some eigenvalue = " << endl

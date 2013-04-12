@@ -15,8 +15,8 @@ using namespace Eigen;
 
 extern "C" {
   /* BLACS */
-  void blacs_pinfo_( int& mypnum, int& nprocs); 
-  void blacs_get_( const int& context, const int& request, int& value ); 
+  void blacs_pinfo_( int& mypnum, int& nprocs);
+  void blacs_get_( const int& context, const int& request, int& value );
   void blacs_gridinfo_(const int& ictxt, int& nprow, int& npcol, int& myrow, int& mycol);
   void blacs_gridinit_(const int& ictxt, char* order, int& nprow, int& npcol );
   void blacs_gridexit_(int* ictxt);
@@ -81,18 +81,18 @@ public:
     long MINUS_ONE = -1;
     blacs_pinfo_( myrank, nprocs );
     blacs_get_( MINUS_ONE, ZERO, ictxt );
-    
+
     nprow = int(sqrt(nprocs+0.5));
     while (1) {
       if ( nprow == 1 ) break;
       if ( (nprocs % nprow) == 0 ) break;
       nprow = nprow - 1;
-    }                                                                                                                                                                           
+    }
     npcol = nprocs / nprow;
     blacs_gridinit_( ictxt, "C", nprow, npcol ); // ColがMPI_Comm_createと互換
     //blacs_gridinit_( ictxt, "Row", nprow, npcol );
     blacs_gridinfo_( ictxt, nprow, npcol, myrow, mycol );
-    
+
     if (myrank == 0) {
       cout << "gridinfo nprow=" << nprow << "  npcol=" << npcol << "  ictxt=" << ictxt << endl;
     }
@@ -125,7 +125,7 @@ public:
     // ローカル行列の形状を指定
     mb = m_global / g.nprow;
     if (mb == 0) mb = 1;
-    //mb = 10;        
+    //mb = 10;
     nb = n_global / g.npcol;
     if (nb == 0) nb = 1;
     //nb = 10;
@@ -246,9 +246,9 @@ public:
   block_cyclic_adaptor(const Distributed_Matrix& mat)
     : m_global(mat.m_global), n_global(mat.n_global), blockrows(mat.mb), blockcols(mat.nb), m_local(mat.m_local), n_local(mat.n_local), myrow(mat.myrow), mycol(mat.mycol), nprow(mat.nprow), npcol(mat.npcol), local_array(mat.array)
   {
-    int array_of_psizes[2] = {0, 0};  // initial values should be 0                                                                                                                                   
+    int array_of_psizes[2] = {0, 0};  // initial values should be 0
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-    MPI_Dims_create(numprocs, 2, array_of_psizes);  // 2次元グリッド                                                                                                                          
+    MPI_Dims_create(numprocs, 2, array_of_psizes);  // 2次元グリッド
     int periodic[2] = {0, 0};
 
     array_of_psizes[0] = nprow;
@@ -264,7 +264,7 @@ public:
     cout << "local_num_block_rows=" << local_num_block_rows << "  local_num_block_cols=" << local_num_block_cols << endl;
     create_struct();
     create_global_matrix();
-  } 
+  }
 
   /*
   ~block_cyclic_adaptor()
@@ -294,7 +294,7 @@ public:
   int m_global, n_global;
   int mb, nb;
   int m_local, n_local;
-  // variables of class Grid                                                                                                                                                                
+  // variables of class Grid
   //int myrank, nprocs;
   int ictxt;
   //int nprow, npcol;
@@ -335,7 +335,7 @@ void block_cyclic_adaptor::create_struct()
   const int type_block_rows = ( (m_global + nprow * blockrows - 1) / (nprow * blockrows) ) * blockrows;   // 切り上げ
   const int type_block_cols = (n_global + blockcols - 1) / blockcols;   // 切り上げ
   int count_max = type_block_rows * type_block_cols;
-  
+
   cout << "count_max=" << count_max << endl;
   /*
   int          array_of_blocklengths[count_max];
@@ -369,7 +369,7 @@ void block_cyclic_adaptor::create_struct()
 	if (proc_rest_block_cols != 0) {
 	  array_of_blocklengths[count] = proc_rest_block_cols;
 	  array_of_displacements[count] = ( ((i*nprow + proc_row)*blockrows+k) * n_global + (proc_num_block_cols * npcol + proc_col) * blockcols ) * sizeof(double);
-          if (myrank_cart == 0)                                                                                                                                        
+          if (myrank_cart == 0)
 	    cout << "amari: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << array_of_displacements[count] << endl;
 	  array_of_types[count] = MPI_DOUBLE;
 	  count++;
@@ -413,7 +413,7 @@ void block_cyclic_adaptor::create_struct()
 
     MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type[proc]);
     MPI_Type_commit(&global_array_type[proc]);
- 
+
     // 受信データの構造体
     count = 0;
     for (int i=0; i<proc_num_block_rows; ++i) {
@@ -448,16 +448,16 @@ void block_cyclic_adaptor::create_struct()
       }
     }
     //cout << "count=" << count << endl;
-    
+
     MPI_Barrier(MPI_COMM_WORLD);
-  
+
     // 作成した受信データTypeの表示
     if (myrank_cart == 0) {
       for (int i=0; i<count; ++i) {
 	printf("recv Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]);
       }
     }
-    
+
     MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type[proc]);
     MPI_Type_commit(&local_array_type[proc]);
   } // end of "for (int proc = 0; proc < numprocs_cart; ++proc)"
@@ -479,14 +479,14 @@ int block_cyclic_adaptor::scatter()
 
   for (int proc = 0; proc < numprocs_cart; ++proc) {
     //cout << endl << endl << "##myrank_cart=" << myrank_cart << "  proc_row=" << proc_row << "  proc_col=" << proc_col << endl;
-    
+
     int rank_recv = proc;
-    
+
     int dest, source;
     if (myrank_cart == rank_recv) {
       source = rank_send;
       recvcount = 1;
-    } 
+    }
     else {  // 自プロセスが受信者ではない場合(送信者である場合を含む)
       source = MPI_PROC_NULL;
       recvcount = 0;
@@ -499,7 +499,7 @@ int block_cyclic_adaptor::scatter()
       dest = MPI_PROC_NULL;
       sendcount = 0;
     }
-    
+
     ierr = MPI_Sendrecv(global_array, sendcount, global_array_type[proc], dest, 0, local_array, recvcount, local_array_type[proc], source, 0, cart_comm, &status);
 
     if (ierr != 0) {
@@ -519,20 +519,20 @@ int block_cyclic_adaptor::gather()
   int rank_recv = 0;  // プロセスrank_recvに集約
   int sendcount, recvcount;
 
-  for (int proc = 0; proc < numprocs_cart; ++proc) {    
+  for (int proc = 0; proc < numprocs_cart; ++proc) {
     int rank_send = proc; // 全プロセス（ルートプロセスも含む）から集約
 
     int dest, source;
     if (myrank_cart == rank_recv) {
       source = rank_send;
       recvcount = 1;
-    } 
+    }
     else {  // 自プロセスが受信者ではない場合(送信者である場合を含む)
       source = MPI_PROC_NULL;
       recvcount = 0;
     }
     if (myrank_cart == rank_send) {
-      dest = rank_recv; 
+      dest = rank_recv;
       sendcount = 1;
     }
     else {  // 自プロセスが送信者ではない場合(受信者である場合を含む)
@@ -548,8 +548,8 @@ int block_cyclic_adaptor::gather()
       exit(78);
     }
   } // for (int proc = 0; proc < numprocs_cart; ++proc)
-  
-  MPI_Barrier(MPI_COMM_WORLD);  
+
+  MPI_Barrier(MPI_COMM_WORLD);
   return ierr;
 }
 
@@ -564,11 +564,11 @@ void block_cyclic_adaptor::create_global_matrix()
     }
 
     cout << "global_array_size" <<  " m_global=" << m_global << " n_global="<< n_global << endl;
-    
+
     for (int ii=0; ii<m_global*n_global; ++ii) {
       global_array[ii] = ii;
     }
-    
+
   }
 }
 
@@ -577,7 +577,7 @@ void block_cyclic_adaptor::calculate_local_matrix_size(const int& proc_row, cons
 {
   int tmp = m_global / blockrows;
   local_num_block_rows = (tmp + nprow-1 - proc_row) / nprow;
-  
+
   tmp = n_global / blockcols;
   local_num_block_cols = (tmp + npcol-1 - proc_col) / npcol;
   int rest_block_row = ((m_global / blockrows) % nprow + 2) % nprow; // 最後のブロックを持つプロセスの次のプロセス
@@ -665,11 +665,11 @@ int Symmetric_EigenSolver::compute()
   int info = 0;
 
   const int ZERO=0, ONE=1;
-  
+
   // work配列のサイズの問い合わせ
   pdsyev_( "V",  "U",  A_.m_global,  A_.array, ONE,  ONE,  A_.desc, w, Z.array, ONE, ONE,
  	   Z.desc, work, lwork, info );
-  
+
   lwork = work[0];
   work = new double [lwork];
   if (work == NULL) {
@@ -677,11 +677,11 @@ int Symmetric_EigenSolver::compute()
     return info;
   }
   info = 0;
-  
+
   // 固有値分解
   pdsyev_( "V",  "U",  A_.m_global,  A_.array,  ONE,  ONE,  A_.desc, w, Z.array, ONE, ONE,
 	   Z.desc, work, lwork, info );
-  
+
   if (info) {
     cerr << "error at pdsyev function. info=" << info  << endl;
     exit(1);
@@ -716,12 +716,12 @@ int main(int argc, char *argv[])
   Initialize(argc, argv);
   MPI_Comm comm = (MPI_Comm) MPI_COMM_WORLD;
   Grid g(comm);
-  
+
   int dim = 10;
 
   Distributed_Matrix A(dim, dim, g);
-  //generate_Frank_matrix_local(A);
-  //A.print_matrix();
+  generate_Frank_matrix_local(A);
+  A.print_matrix();
 
   /*
   // デバッグ用グローバル行列
@@ -748,9 +748,9 @@ int main(int argc, char *argv[])
 
   Symmetric_EigenSolver Solver(A);
   block_cyclic_adaptor Z_adaptor(Solver.Z);
-  
-  Z_adaptor.scatter();
-  //Z_adaptor.gather();
+
+  //Z_adaptor.scatter();
+  Z_adaptor.gather();
   Z_adaptor.print_matrix();
 
   Map<RowVectorXd> eigval(Solver.w, dim);
@@ -759,7 +759,7 @@ int main(int argc, char *argv[])
     global_array = new double[m_global * n_global];
     if (global_array == NULL) {
       cerr << "failed to allocate global_array." << endl;
-      //return 1;                                                                                                                                                                          
+      //return 1;
       exit(1);
     }
   */
@@ -804,11 +804,11 @@ int main(int argc, char *argv[])
   int qq;
 
   VectorXi q(dim);
-  
+
   VectorXd eigval_sorted(dim);
   cout << "aadim=" << dim << endl;
   MatrixXd eigvec_sorted(dim,dim);
-  
+
   if(Z_adaptor.myrank_cart == 0) {
     // 固有値・固有ベクトルを絶対値の降順にソート
     for (int i=0; i<eigval.size(); ++i) q[i] = i;
@@ -823,12 +823,12 @@ int main(int argc, char *argv[])
 	}
       }
       eigval_sorted(m) = eigval(q[m]);
-      eigvec_sorted.col(m) = eigvec.col(q[m]);    
+      eigvec_sorted.col(m) = eigvec.col(q[m]);
     }
 
 
     cout << "Computed eigenvalues= " << eigval_sorted.transpose() << endl;
-    
+
     cout << "Eigenvector:" << endl << eigvec_sorted << endl << endl;
     cout << "Check the orthogonality of eigenvectors:" << endl
 	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
@@ -836,7 +836,7 @@ int main(int argc, char *argv[])
     //	 << A_global_matrix * eigvec_sorted.col(0)  -  eigval_sorted(0) * eigvec_sorted.col(0) << endl;
     //cout << "Are all the following values equal to some eigenvalue = " << endl
     //	 << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
-    //cout << "A_global_matrix=" << endl << A_global_matrix << endl; 
+    //cout << "A_global_matrix=" << endl << A_global_matrix << endl;
 
   }
 

@@ -47,12 +47,15 @@ template <class MATRIX, class VECTOR>
 int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
 {
   int dim = mat.m_global;
+  cout << "pdsyev_dim=" << dim << endl;
+
   int ictxt = mat.g.ictxt;
   const int ZERO=0, ONE=1;
   int desc[9];
   int info;
 
   int lld = mat.m_local;
+  cout << "lld=" << lld << endl;
   if (lld == 0) lld = 1;
   descinit_(desc, mat.m_global, mat.n_global, mat.mb, mat.nb, ZERO, ZERO, ictxt, lld, info);
 
@@ -66,8 +69,12 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
   long lwork = -1;
 
   // work配列のサイズの問い合わせ
-  pdsyev_( "V",  "U",  dim,  mat.array, ONE,  ONE,  desc, eigvals.data(), eigvecs.array, ONE, ONE,
+  pdsyev_( "V",  "U",  dim,  mat.array, ONE,  ONE,  desc, &eigvals[0], eigvecs.array, ONE, ONE,
  	   desc, work, lwork, info );
+
+  for (int i=0; i<mat.mb*mat.nb; ++i)
+    cout << (mat.array)[i] << " ";
+  cout << endl;
 
   lwork = work[0];
   delete[] work;
@@ -76,11 +83,15 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
     cerr << "failed to allocate work. info=" << info << endl;
     return info;
   }
-  info = 0;
+  //info = 0;
 
   // 固有値分解
+  pdsyev_( "V",  "U",  dim,  mat.array,  ONE,  ONE,  desc, &eigvals[0], eigvecs.array, ONE, ONE,
+	   desc, work, lwork, info );
+  /*
   pdsyev_( "V",  "U",  dim,  mat.array,  ONE,  ONE,  desc, eigvals.data(), eigvecs.array, ONE, ONE,
 	   desc, work, lwork, info );
+  */
 
   if (info) {
     cerr << "error at pdsyev function. info=" << info  << endl;

@@ -37,19 +37,19 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
 }
 
 // struct of global matrix
-void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& global_array_type, MPI_Comm& cart_comm)
+  void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& global_array_type, MPI_Comm& cart_comm, int myrank_cart)
 {
   int numprocs_cart;
   int coords[2];
 
-  int myrank_cart;
+  //int myrank_cart;
 
   int m_global = mat.m_global;  int n_global = mat.n_global;  int blockrows = mat.mb;  int blockcols = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
 
-  MPI_Comm_rank(cart_comm, &myrank_cart);
-  MPI_Comm_size(cart_comm, &numprocs_cart);
+  //MPI_Comm_rank(cart_comm, &myrank_cart);
+  //MPI_Comm_size(cart_comm, &numprocs_cart);
   MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
   myrow = coords[0];  mycol = coords[1];
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
@@ -108,10 +108,10 @@ void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& gl
     }
   }
 
-  MPI_Barrier(MPI_COMM_WORLD);
+
   //if (myrank_cart == 0)
   //cout << "myrank" << myrank_cart << "  imano_count=" << count << "   num_block_cols_r=" << num_block_cols_r << "  num_block_rows=" << num_block_rows << "  num_block_cols=" << num_block_cols << endl;
-  MPI_Barrier(MPI_COMM_WORLD);
+
 
   //cout << "blockcols=" << blockcols << endl;
   // print out struct of global matrix
@@ -273,11 +273,10 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
 
   MPI_Datatype global_array_type, local_array_type;
 
-  create_struct_global(mat, global_array_type, cart_comm);
   create_struct_local(mat, local_array_type, cart_comm);
 
   int rank_recv = root;  // プロセスrank_recvに集約
-  int sendcount, recvcount;
+  int sendcount = 1, recvcount = 1;
 
   for (int proc = 0; proc < numprocs_cart; ++proc) {
     /*
@@ -303,38 +302,44 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
     //cout << "myrank_cart=" << myrank_cart << "  dest=" << dest << "  source=" << source << endl;
     */
 
-    if (myrank_cart == root) {
-      ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, proc, cart_comm, &status);
+    // Todo: copy routine in root.
+
+    if ((myrank_cart == proc) && (myrank_cart != root)) {
+      //if (myrank_cart == proc) {
+      ierr = MPI_Send(local_array, sendcount, local_array_type, root, 0, cart_comm);
       if (ierr != 0) {
 	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
 	MPI_Abort(MPI_COMM_WORLD,78);
 	exit(78);
       }
     }
-    if (myrank_cart == proc) {
-      ierr = MPI_Send(local_array, sendcount, local_array_type, root, proc, cart_comm);
+    if ((proc != root) &&  (myrank_cart == root)) {
+      //if (myrank_cart == root) {
+      create_struct_global(mat, global_array_type, cart_comm, proc);
+      ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
       if (ierr != 0) {
 	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
 	MPI_Abort(MPI_COMM_WORLD,78);
 	exit(78);
       }
+      MPI_Type_free(&global_array_type);
     }
 
-    //ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, dest, proc, global_array, recvcount, global_array_type, source, proc, cart_comm, &status);
+    if ((proc == root) && (myrank_cart == root)) {
+      create_struct_global(mat, global_array_type, cart_comm, root);
+      ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
+      MPI_Type_free(&global_array_type);
 
-    //ierr = 0;
-    /*
-    if (ierr != 0) {
-      printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
-      MPI_Abort(MPI_COMM_WORLD,78);
-      exit(78);
+      if (ierr != 0) {
+	printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
+	MPI_Abort(MPI_COMM_WORLD,78);
+	exit(78);
+      }
     }
-    */
+
   } // for (int proc = 0; proc < numprocs_cart; ++proc)
 
   MPI_Type_free(&local_array_type);
-  MPI_Type_free(&global_array_type);
-
   MPI_Comm_free(&cart_comm);
   MPI_Barrier(MPI_COMM_WORLD);
   return ierr;
