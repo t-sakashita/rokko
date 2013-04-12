@@ -13,7 +13,7 @@ find_package(Eigen3)
 
 include_directories(BEFORE ${EIGEN3_INCLUDE_DIR})
 
-set(TESTS  diagonalize frank_old)
+set(TESTS  diagonalize frank_old product diagonalize2)
 
 foreach(name ${TESTS})
   add_executable(${name}  ${name}.cpp)

@@ -46,14 +46,12 @@ public:
     }
   }
 
-  /*
   ~distributed_matrix()
   {
-    cout << "Destructor ~Distributed_Matrix()" << endl;
+    //cout << "Destructor ~Distributed_Matrix()" << endl;
     delete[] array;
     array = NULL;
   }
-  */
 
   int translate_l2g_row(const int& local_i) const
   {
@@ -100,7 +98,7 @@ public:
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
   }
 
-  void print_matrix() const
+  void print() const
   {
     /* each proc prints it's local_array out, in order */
     for (int proc=0; proc<nprocs; ++proc) {
@@ -127,7 +125,7 @@ public:
   int myrank, nprocs;
   int myrow, mycol;
   int ictxt, nprow, npcol;
-  grid g;
+  const grid& g;
 
 private:
   int info;

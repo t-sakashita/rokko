@@ -47,7 +47,7 @@ template <class MATRIX, class VECTOR>
 int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
 {
   int dim = mat.m_global;
-  cout << "pdsyev_dim=" << dim << endl;
+  //cout << "pdsyev_dim=" << dim << endl;
 
   int ictxt = mat.g.ictxt;
   const int ZERO=0, ONE=1;
@@ -58,12 +58,6 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
   cout << "lld=" << lld << endl;
   if (lld == 0) lld = 1;
   descinit_(desc, mat.m_global, mat.n_global, mat.mb, mat.nb, ZERO, ZERO, ictxt, lld, info);
-
-  if (info) {
-    cerr << "error " << info << endl;
-    //<< " at descinit function of descA " << "mA=" << m_local << "  nA=" << n_local << "  lld=" << lld << "." << endl;
-    exit(1);
-  }
 
   double* work = new double[1];
   long lwork = -1;

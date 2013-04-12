@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <mpi.h>
+#include <boost/noncopyable.hpp>
 
 extern "C" {
   /* BLACS */
@@ -44,7 +45,7 @@ extern "C" {
 
 namespace rokko {
 
-class grid
+class grid : private boost::noncopyable
 {
 public:
   grid(MPI_Comm& comm)
@@ -73,12 +74,10 @@ public:
     }
   }
 
-  /*
   ~grid()
   {
-    //blacs_gridexit_(&ictxt);
+    blacs_gridexit_(&ictxt);
   }
-  */
 
   int myrank, nprocs;
   int myrow, mycol;

@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
   rokko::distributed_matrix frank_mat(dim, dim, g);
   //rokko::generate_frank_matrix_local(frank_mat);
   rokko::generate_frank_matrix_global(frank_mat);
+
   Eigen::MatrixXd frank_mat_global;
   rokko::gather(frank_mat, frank_mat_global, root);
   frank_mat.print();
@@ -48,7 +49,21 @@ int main(int argc, char* argv[])
   //eigvecs.print();
   rokko::print_matrix(eigvecs);
   if (myrank == root) {
+    cout << "eigvecs_global" << endl;
     std::cout << eigvecs_global << std::endl;
+  }
+
+  // 分散行列のまま，固有ベクトルの直交性を確認
+  double alpha = 1., beta = 0.;
+  rokko::distributed_matrix C(dim, dim, g);
+  rokko::pblas::product(eigvecs, false, eigvecs, true, alpha, beta, C);
+  cout << "orthogonality in local matrices" << endl;
+  C.print();
+  Eigen::MatrixXd C_global;
+  rokko::gather(C, C_global, root);
+  if (myrank == root) {
+    cout << "orthogonality_global" <<endl;
+    std::cout << C_global << std::endl;
   }
 
   // 固有値の絶対値の降順に固有値(と対応する固有ベクトル)をソート

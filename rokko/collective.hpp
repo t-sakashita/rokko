@@ -42,14 +42,10 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
   int numprocs_cart;
   int coords[2];
 
-  //int myrank_cart;
-
   int m_global = mat.m_global;  int n_global = mat.n_global;  int blockrows = mat.mb;  int blockcols = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
 
-  //MPI_Comm_rank(cart_comm, &myrank_cart);
-  //MPI_Comm_size(cart_comm, &numprocs_cart);
   MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
   myrow = coords[0];  mycol = coords[1];
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
@@ -279,33 +275,10 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
   int sendcount = 1, recvcount = 1;
 
   for (int proc = 0; proc < numprocs_cart; ++proc) {
-    /*
-    int rank_send = proc; // 全プロセス（ルートプロセスも含む）から集約
-
-    int dest, source;
-    if (myrank_cart == rank_recv) {
-      source = rank_send;
-      recvcount = 1;
-    }
-    else {  // 自プロセスが受信者ではない場合(送信者である場合を含む)
-      source = MPI_PROC_NULL;
-      recvcount = 0;
-    }
-    if (myrank_cart == rank_send) {
-      dest = rank_recv;
-      sendcount = 1;
-    }
-    else {  // 自プロセスが送信者ではない場合(受信者である場合を含む)
-      dest = MPI_PROC_NULL;
-      sendcount = 0;
-    }
-    //cout << "myrank_cart=" << myrank_cart << "  dest=" << dest << "  source=" << source << endl;
-    */
 
     // Todo: copy routine in root.
 
     if ((myrank_cart == proc) && (myrank_cart != root)) {
-      //if (myrank_cart == proc) {
       ierr = MPI_Send(local_array, sendcount, local_array_type, root, 0, cart_comm);
       if (ierr != 0) {
 	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
@@ -314,7 +287,6 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
       }
     }
     if ((proc != root) &&  (myrank_cart == root)) {
-      //if (myrank_cart == root) {
       create_struct_global(mat, global_array_type, cart_comm, proc);
       ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
       if (ierr != 0) {

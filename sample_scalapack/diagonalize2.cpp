@@ -15,6 +15,15 @@ using namespace std;
 #include <rokko/collective.hpp>
 #include <rokko/frank_matrix.hpp>
 
+void generate_frank_global_matrix(Eigen::MatrixXd& mat)
+{
+  int dim = mat.rows();
+  for(int i=0; i<mat.rows(); ++i) {
+    for(int j=0; j<mat.cols(); ++j) {
+      mat(i, j) = dim - max(i, j);
+    }
+  }
+}
 
 int main(int argc, char* argv[])
 {
@@ -78,6 +87,9 @@ int main(int argc, char* argv[])
       eigvec_sorted.col(m) = eigvecs_global.col(q[m]);
     }
 
+    Eigen::MatrixXd frank_mat_eigen3(dim,dim);
+    generate_frank_global_matrix(frank_mat_eigen3);
+
     cout << "Computed Eigenvalues= " << eigval_sorted.transpose() << endl;
 
     cout << "Eigenvector:" << endl << eigvec_sorted << endl << endl;
@@ -85,11 +97,11 @@ int main(int argc, char* argv[])
       //<< eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
          << eigvecs_global.transpose() * eigvecs_global << endl;   // Is it equal to indentity matrix?
 
-    //cout << "residual := A x - lambda x = " << endl
-    //	 << A_global_matrix * eigvec_sorted.col(0)  -  eigval_sorted(0) * eigvec_sorted.col(0) << endl;
-    //cout << "Are all the following values equal to some eigenvalue = " << endl
-    //	 << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
-    //cout << "A_global_matrix=" << endl << A_global_matrix << endl;
+    cout << "residual := A x - lambda x = " << endl
+    	 << frank_mat_eigen3 * eigvec_sorted.col(0)  -  eigval_sorted(0) * eigvec_sorted.col(0) << endl;
+    cout << "Are all the following values equal to some eigenvalue = " << endl
+    	 << (frank_mat_eigen3 * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
+    cout << "A_frank_matrix_eigen3=" << endl << frank_mat_eigen3 << endl;
 
   }
 
