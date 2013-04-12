@@ -36,21 +36,24 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
   local_matrix_cols = local_num_block_cols * blockcols + local_rest_block_cols;
 }
 
-// 送信・受信のデータ型の構造体の作成
-  void create_struct(const rokko::distributed_matrix& mat, MPI_Datatype* global_array_type, MPI_Datatype* local_array_type, MPI_Comm& cart_comm)
+// struct of global matrix
+void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& global_array_type, MPI_Comm& cart_comm)
 {
   int numprocs_cart;
   int coords[2];
 
   int myrank_cart;
 
-  MPI_Comm_rank(cart_comm, &myrank_cart);
-  MPI_Comm_size(cart_comm, &numprocs_cart);
-  //MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
-
   int m_global = mat.m_global;  int n_global = mat.n_global;  int blockrows = mat.mb;  int blockcols = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
+
+  MPI_Comm_rank(cart_comm, &myrank_cart);
+  MPI_Comm_size(cart_comm, &numprocs_cart);
+  MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
+  myrow = coords[0];  mycol = coords[1];
+  int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
+  calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
   const int type_block_rows = ( (m_global + nprow * blockrows - 1) / (nprow * blockrows) ) * blockrows;   // 切り上げ
   const int type_block_cols = (n_global + blockcols - 1) / blockcols;   // 切り上げ
@@ -62,120 +65,149 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
   MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
   MPI_Datatype* array_of_types = new MPI_Datatype[count_max];
 
-  for (int proc = 0; proc < numprocs_cart; ++proc) {
-    MPI_Cart_coords(cart_comm, proc, 2, coords);
-    int proc_row = coords[0], proc_col = coords[1];
-    int proc_num_block_rows, proc_num_block_cols, proc_local_matrix_rows, proc_local_matrix_cols, proc_rest_block_rows, proc_rest_block_cols;
-    calculate_local_matrix_size(mat, proc_row, proc_col, proc_num_block_rows, proc_num_block_cols, proc_local_matrix_rows, proc_local_matrix_cols, proc_rest_block_rows, proc_rest_block_cols);
+  int count = 0;
 
-    // 送信データの構造体
-    int count = 0;
-
-    for (int i=0; i<proc_num_block_rows; ++i) {
-      for (int k=0; k<blockrows; ++k) {
-	for (int j=0; j<proc_num_block_cols; ++j) {
-	  array_of_blocklengths[count] = blockcols;
-	  array_of_displacements[count] = ( ((i*nprow + proc_row)*blockrows+k) * n_global + (j * npcol + proc_col) * blockcols ) * sizeof(double);
+  for (int i=0; i<num_block_rows; ++i) {
+    for (int k=0; k<blockrows; ++k) {
+      for (int j=0; j<num_block_cols; ++j) {
+	array_of_blocklengths[count] = blockcols;
+	  array_of_displacements[count] = ( ((i*nprow + myrow)*blockrows+k) * n_global + (j * npcol + mycol) * blockcols ) * sizeof(double);
 	  array_of_types[count] = MPI_DOUBLE;
 	  if (myrank_cart == 0)
 	    cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << endl;
 	  count++;
-	}
-	if (proc_rest_block_cols != 0) {
-	  array_of_blocklengths[count] = proc_rest_block_cols;
-	  array_of_displacements[count] = ( ((i*nprow + proc_row)*blockrows+k) * n_global + (proc_num_block_cols * npcol + proc_col) * blockcols ) * sizeof(double);
-          if (myrank_cart == 0)
-	    cout << "amari: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << array_of_displacements[count] << endl;
-	  array_of_types[count] = MPI_DOUBLE;
-	  count++;
-	}
       }
-    }
-    //cout << "before amari: count=" << count << endl;
-    // 行のあまり
-    for (int k=0; k<proc_rest_block_rows; ++k) {
-      cout << "ddddddddddddddddddddddddddddddd" << endl;
-      for (int j=0; j<proc_num_block_cols; ++j) {
-	array_of_blocklengths[count] = blockcols;
-	array_of_displacements[count] = ( ((proc_num_block_rows * nprow + proc_row)*blockrows+k) * n_global + (j * npcol + proc_col) * blockcols ) * sizeof(double);
-	array_of_types[count] = MPI_DOUBLE;
-	count++;
-      }
-      if (proc_rest_block_cols != 0) {
-	cout << "rest: count=" << count << "  disp="  << array_of_displacements[count] << endl;
-	array_of_blocklengths[count] = proc_rest_block_cols;
-	array_of_displacements[count] = ( ((proc_num_block_rows * nprow + proc_row)*blockrows+k) * n_global + (proc_num_block_cols * npcol + proc_col) * blockcols ) * sizeof(double);
+      if (rest_num_block_cols != 0) {
+	array_of_blocklengths[count] = rest_num_block_cols;
+	array_of_displacements[count] = ( ((i*nprow + myrow)*blockrows+k) * n_global + (num_block_cols * npcol + mycol) * blockcols ) * sizeof(double);
 	if (myrank_cart == 0)
-	  cout << "rest_amari: count=" << count << "  disp="  << array_of_displacements[count] << endl;
+	    cout << "amari: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << array_of_displacements[count] << endl;
 	array_of_types[count] = MPI_DOUBLE;
 	count++;
       }
     }
+  }
+  //cout << "before amari: count=" << count << endl;
+  // 行のあまり
+  for (int k=0; k<rest_num_block_rows; ++k) {
+    cout << "ddddddddddddddddddddddddddddddd" << endl;
+    for (int j=0; j<num_block_cols; ++j) {
+      array_of_blocklengths[count] = blockcols;
+      array_of_displacements[count] = ( ((num_block_rows * nprow + myrow)*blockrows+k) * n_global + (j * npcol + mycol) * blockcols ) * sizeof(double);
+      array_of_types[count] = MPI_DOUBLE;
+      count++;
+    }
+    if (rest_num_block_cols != 0) {
+      cout << "rest: count=" << count << "  disp="  << array_of_displacements[count] << endl;
+      array_of_blocklengths[count] = rest_num_block_cols;
+      array_of_displacements[count] = ( ((num_block_rows * nprow + myrow)*blockrows+k) * n_global + (num_block_cols * npcol + mycol) * blockcols ) * sizeof(double);
+      if (myrank_cart == 0)
+	cout << "rest_amari: count=" << count << "  disp="  << array_of_displacements[count] << endl;
+      array_of_types[count] = MPI_DOUBLE;
+      count++;
+    }
+  }
 
-    MPI_Barrier(MPI_COMM_WORLD);
-    //if (myrank_cart == 0)
-      //cout << "myrank" << myrank_cart << "  imano_count=" << count << "   num_block_cols_r=" << num_block_cols_r << "  num_block_rows=" << num_block_rows << "  num_block_cols=" << num_block_cols << endl;
-    MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Barrier(MPI_COMM_WORLD);
+  //if (myrank_cart == 0)
+  //cout << "myrank" << myrank_cart << "  imano_count=" << count << "   num_block_cols_r=" << num_block_cols_r << "  num_block_rows=" << num_block_rows << "  num_block_cols=" << num_block_cols << endl;
+  MPI_Barrier(MPI_COMM_WORLD);
 
-    //cout << "blockcols=" << blockcols << endl;
-    // 作成した送信データTypeの表示
-    if (myrank_cart == 0) {
-      for (int i=0; i<count; ++i) {
+  //cout << "blockcols=" << blockcols << endl;
+  // print out struct of global matrix
+  if (myrank_cart == 2) {
+    for (int i=0; i<count; ++i) {
 	//cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << endl;
-	printf("send Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]);
-      }
+      printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank_cart, i, array_of_blocklengths[i], (int)array_of_displacements[i]);
     }
+  }
 
-    MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type[proc]);
-    MPI_Type_commit(&global_array_type[proc]);
+  MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
+  MPI_Type_commit(&global_array_type);
 
-    // 受信データの構造体
-    count = 0;
-    for (int i=0; i<proc_num_block_rows; ++i) {
-      for (int k=0; k<blockrows; ++k) {
-	for (int j=0; j<proc_num_block_cols; ++j) {
-	  array_of_blocklengths[count] = blockcols;
-	  array_of_displacements[count] = ( (i*blockrows+k) * proc_local_matrix_cols + j * blockcols ) * sizeof(double);
-	  array_of_types[count] = MPI_DOUBLE;
-	  count++;
-	}
-	if (proc_rest_block_cols != 0) {
-	  array_of_blocklengths[count] = proc_rest_block_cols;
-	  array_of_displacements[count] = ( (i*blockrows+k) * proc_local_matrix_cols + proc_num_block_cols * blockcols ) * sizeof(double);
-	  array_of_types[count] = MPI_DOUBLE;
-	  count++;
-	}
-      }
-    }
-    // 行のあまり
-    for (int k=0; k<proc_rest_block_rows; ++k) {
-      for (int j=0; j<proc_num_block_cols; ++j) {
+
+  delete[] array_of_blocklengths;
+  array_of_blocklengths = NULL;
+  delete[] array_of_displacements;
+  array_of_displacements = NULL;
+  delete[] array_of_types;
+  array_of_types = NULL;
+}
+
+// struct of localally distributed matrices
+void create_struct_local(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type, MPI_Comm& cart_comm)
+{
+  int numprocs_cart;
+  int coords[2];
+
+  int myrank_cart;
+
+  int m_global = mat.m_global;  int n_global = mat.n_global;  int blockrows = mat.mb;  int blockcols = mat.nb;
+  int m_local = mat.m_local;  int n_local = mat.n_local;
+  int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
+
+  MPI_Comm_rank(cart_comm, &myrank_cart);
+  MPI_Comm_size(cart_comm, &numprocs_cart);
+  MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
+  myrow = coords[0];  mycol = coords[1];
+  int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
+  calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
+
+  const int type_block_rows = ( (m_global + nprow * blockrows - 1) / (nprow * blockrows) ) * blockrows;   // 切り上げ
+  const int type_block_cols = (n_global + blockcols - 1) / blockcols;   // 切り上げ
+  int count_max = type_block_rows * type_block_cols;
+
+  cout << "count_max=" << count_max << endl;
+
+  int*          array_of_blocklengths = new int[count_max];
+  MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
+  MPI_Datatype* array_of_types = new MPI_Datatype[count_max];
+
+  int count = 0;
+  for (int i=0; i<num_block_rows; ++i) {
+    for (int k=0; k<blockrows; ++k) {
+      for (int j=0; j<num_block_cols; ++j) {
 	array_of_blocklengths[count] = blockcols;
-	array_of_displacements[count] = ( (proc_num_block_rows * blockrows+k) * proc_local_matrix_cols + j * blockcols ) * sizeof(double);
+ 	array_of_displacements[count] = ( (i*blockrows+k) * local_matrix_cols + j * blockcols ) * sizeof(double);
 	array_of_types[count] = MPI_DOUBLE;
 	++count;
       }
-      if (proc_rest_block_cols != 0) {
-	array_of_blocklengths[count] = proc_rest_block_cols;
-	array_of_displacements[count] = ( (proc_num_block_rows * blockrows+k) * proc_local_matrix_cols + proc_num_block_cols * blockcols ) * sizeof(double);
+      if (rest_num_block_cols != 0) {
+	array_of_blocklengths[count] = rest_num_block_cols;
+	array_of_displacements[count] = ( (i*blockrows+k) * local_matrix_cols + num_block_cols * blockcols ) * sizeof(double);
 	array_of_types[count] = MPI_DOUBLE;
 	++count;
       }
     }
-    //cout << "count=" << count << endl;
-
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    // 作成した受信データTypeの表示
-    if (myrank_cart == 0) {
-      for (int i=0; i<count; ++i) {
-	printf("recv Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]);
-      }
+  }
+  // 行のあまり
+  for (int k=0; k<rest_num_block_rows; ++k) {
+    for (int j=0; j<num_block_cols; ++j) {
+      array_of_blocklengths[count] = blockcols;
+      array_of_displacements[count] = ( (num_block_rows * blockrows+k) * local_matrix_cols + j * blockcols ) * sizeof(double);
+      array_of_types[count] = MPI_DOUBLE;
+      ++count;
     }
+    if (rest_num_block_cols != 0) {
+      array_of_blocklengths[count] = rest_num_block_cols;
+      array_of_displacements[count] = ( (num_block_rows * blockrows+k) * local_matrix_cols + num_block_cols * blockcols ) * sizeof(double);
+      array_of_types[count] = MPI_DOUBLE;
+      ++count;
+    }
+  }
+  //cout << "count=" << count << endl;
 
-    MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type[proc]);
-    MPI_Type_commit(&local_array_type[proc]);
-  } // end of "for (int proc = 0; proc < numprocs_cart; ++proc)"
+  MPI_Barrier(MPI_COMM_WORLD);
+
+  // print out struct of localally distributed matrices
+  if (myrank_cart == 0) {
+    for (int i=0; i<count; ++i) {
+      printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank_cart, i, array_of_blocklengths[i], (int)array_of_displacements[i]);
+    }
+  }
+
+  MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
+  MPI_Type_commit(&local_array_type);
 
   delete[] array_of_blocklengths;
   array_of_blocklengths = NULL;
@@ -239,18 +271,16 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
   MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
   myrow = coords[0];  mycol = coords[1];
 
-  calculate_local_matrix_size(mat, myrow, mycol, local_num_block_rows, local_num_block_cols, local_matrix_rows, local_matrix_cols, local_rest_block_rows, local_rest_block_cols);
-  cout << "local_num_block_rows=" << local_num_block_rows << "  local_num_block_cols=" << local_num_block_cols << endl;
+  MPI_Datatype global_array_type, local_array_type;
 
-  MPI_Datatype* global_array_type = new MPI_Datatype[numprocs_cart];
-  MPI_Datatype* local_array_type = new MPI_Datatype[numprocs_cart];
+  create_struct_global(mat, global_array_type, cart_comm);
+  create_struct_local(mat, local_array_type, cart_comm);
 
-  create_struct(mat, global_array_type, local_array_type, cart_comm);
-
-  int rank_recv = 0;  // プロセスrank_recvに集約
+  int rank_recv = root;  // プロセスrank_recvに集約
   int sendcount, recvcount;
 
   for (int proc = 0; proc < numprocs_cart; ++proc) {
+    /*
     int rank_send = proc; // 全プロセス（ルートプロセスも含む）から集約
 
     int dest, source;
@@ -270,35 +300,48 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
       dest = MPI_PROC_NULL;
       sendcount = 0;
     }
-    ierr = MPI_Sendrecv(local_array, sendcount, local_array_type[proc], dest, 0, global_array, recvcount, global_array_type[proc], source, 0, cart_comm, &status);
-    //ierr = 0;
+    //cout << "myrank_cart=" << myrank_cart << "  dest=" << dest << "  source=" << source << endl;
+    */
 
+    if (myrank_cart == root) {
+      ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, proc, cart_comm, &status);
+      if (ierr != 0) {
+	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
+	MPI_Abort(MPI_COMM_WORLD,78);
+	exit(78);
+      }
+    }
+    if (myrank_cart == proc) {
+      ierr = MPI_Send(local_array, sendcount, local_array_type, root, proc, cart_comm);
+      if (ierr != 0) {
+	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
+	MPI_Abort(MPI_COMM_WORLD,78);
+	exit(78);
+      }
+    }
+
+    //ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, dest, proc, global_array, recvcount, global_array_type, source, proc, cart_comm, &status);
+
+    //ierr = 0;
+    /*
     if (ierr != 0) {
-      printf("Problem with Sendrecv (Scatter).\nExiting\n");
+      printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
       MPI_Abort(MPI_COMM_WORLD,78);
       exit(78);
     }
+    */
   } // for (int proc = 0; proc < numprocs_cart; ++proc)
 
+  MPI_Type_free(&local_array_type);
+  MPI_Type_free(&global_array_type);
+
+  MPI_Comm_free(&cart_comm);
   MPI_Barrier(MPI_COMM_WORLD);
   return ierr;
 
 }
 
 } // namespace rokko
-
-/*
-  ~block_cyclic_adaptor()
-  {
-  cout << "Destructor ~block_cyclic_adaptor()" << endl;
-    delete[] global_array_type;
-    global_array_type = NULL;
-    delete[] local_array_type;
-    local_array_type = NULL;
-
-  }
-
-  */
 
 #endif // ROKKO_COLLECTIVE_H
 

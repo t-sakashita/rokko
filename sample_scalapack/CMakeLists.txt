@@ -13,8 +13,7 @@ find_package(Eigen3)
 
 include_directories(BEFORE ${EIGEN3_INCLUDE_DIR})
 
-set(TESTS  diagonalize)
-#frank_matrix_scalapack_pdsyev_wrapping_gather5)
+set(TESTS  diagonalize frank_old)
 
 foreach(name ${TESTS})
   add_executable(${name}  ${name}.cpp)

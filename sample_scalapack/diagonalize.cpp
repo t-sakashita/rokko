@@ -25,23 +25,27 @@ int main(int argc, char* argv[])
   MPI_Comm_size(comm, &nprocs);
 
   int dim = 10;
+  int root = 0;
 
-  rokko::distributed_matrix mat(dim, dim, g);
-  rokko::generate_frank_matrix_local(mat);
-  //mat.print_matrix();
-  //rokko::print_matrix(mat);
+  rokko::distributed_matrix frank_mat(dim, dim, g);
+  rokko::generate_frank_matrix_local(frank_mat);
+  Eigen::MatrixXd frank_mat_global;
+  rokko::gather(frank_mat, frank_mat_global, root);
+  frank_mat.print_matrix();
+  //rokko::print_matrix(mat_frank);
+  if (myrank == root)
+    cout << "global_mat:" << frank_mat_global << endl;
 
   Eigen::VectorXd eigvals(dim);
   rokko::distributed_matrix eigvecs(dim, dim, g);
-  rokko::scalapack::diagonalize(mat, eigvals, eigvecs);
+  rokko::scalapack::diagonalize(frank_mat, eigvals, eigvecs);
 
   //Eigen::MatrixXd eigvecs_global(dim, dim); // とりあえず、サイズを入れてテスト
   Eigen::MatrixXd eigvecs_global;
 
-  const int root = 0;
   rokko::gather(eigvecs, eigvecs_global, root);
-  eigvecs.print_matrix();
-  //rokko::print_matrix(eigvecs);
+  //eigvecs.print_matrix();
+  rokko::print_matrix(eigvecs);
   if (myrank == root) {
     std::cout << eigvecs_global << std::endl;
   }
@@ -54,7 +58,6 @@ int main(int argc, char* argv[])
   Eigen::VectorXi q(dim);
 
   Eigen::VectorXd eigval_sorted(dim);
-  cout << "aadim=" << dim << endl;
   Eigen::MatrixXd eigvec_sorted(dim,dim);
 
   if(myrank == root) {
