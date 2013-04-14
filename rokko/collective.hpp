@@ -83,7 +83,7 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
     for (int k=0; k<nb; ++k) {
       for (int j=0; j<num_block_rows; ++j) {
 	array_of_blocklengths[count] = mb;
-	  array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * n_global + (j * nprow + myrow) * mb ) * sizeof(double);
+	  array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * m_global + (j * nprow + myrow) * mb ) * sizeof(double);
 	  array_of_types[count] = MPI_DOUBLE;
 	  if (myrank_cart == 0)
 	    cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << endl;
@@ -91,7 +91,7 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
       }
       if (rest_num_block_rows != 0) {
 	array_of_blocklengths[count] = rest_num_block_rows;
-	array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * n_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
+	array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * m_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
 	if (myrank_cart == 0)
 	    cout << "amari: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << array_of_displacements[count] << endl;
 	array_of_types[count] = MPI_DOUBLE;
@@ -105,14 +105,14 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
     cout << "ddddddddddddddddddddddddddddddd" << endl;
     for (int j=0; j<num_block_rows; ++j) {
       array_of_blocklengths[count] = mb;
-      array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * n_global + (j * nprow + myrow) * mb ) * sizeof(double);
+      array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * m_global + (j * nprow + myrow) * mb ) * sizeof(double);
       array_of_types[count] = MPI_DOUBLE;
       ++count;
     }
     if (rest_num_block_rows != 0) {
       cout << "rest: count=" << count << "  disp="  << array_of_displacements[count-1] << endl;
       array_of_blocklengths[count] = rest_num_block_rows;
-      array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * n_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
+      array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * m_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
       if (myrank_cart == 0)
 	cout << "rest_amari: count=" << count << "  disp="  << array_of_displacements[count] << endl;
       array_of_types[count] = MPI_DOUBLE;
@@ -144,8 +144,7 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
   array_of_types = NULL;
 }
 
-// struct of localally distributed matrices
-void create_struct_local(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type, MPI_Comm& cart_comm)
+void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix& mat, MPI_Comm& cart_comm)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -162,81 +161,114 @@ void create_struct_local(const rokko::distributed_matrix& mat, MPI_Datatype& loc
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
-  const int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
-  int count_max = type_block_rows * n_local;
-
-  /*
-  if (myrank_cart == 0) {
-    cout << "count_max=" << count_max << endl;
-    cout << "type_block_rows=" << type_block_rows << endl;
-    cout << "num_block_rows=" << num_block_rows << endl;
-    cout << "local_matrix_rows=" << local_matrix_rows << endl;
-    cout << "rest_num_block_rows=" << rest_num_block_rows << endl;
-    cout << "type_block_cols=" << type_block_cols << endl;
-    cout << "num_block_cols=" << num_block_cols << endl;
-    cout << "local_matrix_cols=" << local_matrix_cols << endl;
-    cout << "rest_num_block_cols=" << rest_num_block_cols << endl;
+  int count = 0;
+  for (int i=0; i<num_block_cols; ++i) {
+    for (int k=0; k<nb; ++k) {
+      for (int j=0; j<num_block_rows; ++j) {
+	//array_of_blocklengths[count] = mb;
+ 	//array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + j * mb ) * sizeof(double);
+	//array_of_types[count] = MPI_DOUBLE;
+	for (int c=0; c<mb; ++c) {
+	  mat.array[(i*nb+k) * local_matrix_rows + j * mb + c] = mat_global( (j*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k );
+	}
+	++count;
+      }
+      if (rest_num_block_rows != 0) {
+	//array_of_blocklengths[count] = rest_num_block_rows;
+	//array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
+	//array_of_types[count] = MPI_DOUBLE;
+	for (int c=0; c<mb; ++c) {
+	  mat.array[(i*nb+k) * local_matrix_rows + num_block_rows * mb + c] = mat_global( (num_block_rows*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k );
+	}
+	++count;
+      }
+    }
   }
-  */
+  // 列のあまり
+  for (int k=0; k<rest_num_block_cols; ++k) {
+    for (int j=0; j<num_block_rows; ++j) {
+      //array_of_blocklengths[count] = mb;
+      //array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + j * mb ) * sizeof(double);
+      //array_of_types[count] = MPI_DOUBLE;
+      for (int c=0; c<mb; ++c) {
+	mat.array[(num_block_cols*nb+k) * local_matrix_rows + j*mb+c] = mat_global( (j*nprow+myrow)*mb+c, (num_block_cols*npcol+mycol)*nb+k );
+      }
+      ++count;
+    }
+    if (rest_num_block_rows != 0) {
+      //array_of_blocklengths[count] = rest_num_block_rows;
+      //array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
+      //array_of_types[count] = MPI_DOUBLE;
+      for (int c=0; c<mb; ++c) {
+	mat.array[(num_block_cols*nb+k)*local_matrix_rows + num_block_rows*mb+c] = mat_global( (num_block_rows*nprow+myrow)*mb+c, (num_block_cols*npcol+mycol)*nb+k );
+      }
+      ++count;
+    }
+  }
+}
 
-  int*          array_of_blocklengths = new int[count_max];
-  MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
-  MPI_Datatype* array_of_types = new MPI_Datatype[count_max];
+void copy_l2g_root(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, MPI_Comm& cart_comm)
+{
+  int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
+  int m_local = mat.m_local;  int n_local = mat.n_local;
+  int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
+
+  int numprocs_cart;
+  int myrank_cart;
+  int coords[2];
+  MPI_Comm_rank(cart_comm, &myrank_cart);
+  MPI_Comm_size(cart_comm, &numprocs_cart);
+  MPI_Cart_coords(cart_comm, myrank_cart, 2, coords);
+  myrow = coords[0];  mycol = coords[1];
+
+  int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
+  calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
   int count = 0;
   for (int i=0; i<num_block_cols; ++i) {
     for (int k=0; k<nb; ++k) {
       for (int j=0; j<num_block_rows; ++j) {
-	array_of_blocklengths[count] = mb;
- 	array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + j * mb ) * sizeof(double);
-	array_of_types[count] = MPI_DOUBLE;
+	//array_of_blocklengths[count] = mb;
+ 	//array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + j * mb ) * sizeof(double);
+	//array_of_types[count] = MPI_DOUBLE;
+	for (int c=0; c<mb; ++c) {
+	  mat_global( (j*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k ) = mat.array[(i*nb+k) * local_matrix_rows + j * mb + c];
+	}
 	++count;
       }
       if (rest_num_block_rows != 0) {
-	array_of_blocklengths[count] = rest_num_block_rows;
-	array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
-	array_of_types[count] = MPI_DOUBLE;
+	//array_of_blocklengths[count] = rest_num_block_rows;
+	//array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
+	//array_of_types[count] = MPI_DOUBLE;
+	for (int c=0; c<mb; ++c) {
+	  mat_global( (num_block_rows*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k ) = mat.array[(i*nb+k) * local_matrix_rows + num_block_rows * mb + c];
+	}
 	++count;
       }
     }
   }
-  // 行のあまり
+  // 列のあまり
   for (int k=0; k<rest_num_block_cols; ++k) {
     for (int j=0; j<num_block_rows; ++j) {
-      array_of_blocklengths[count] = mb;
-      array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + j * mb ) * sizeof(double);
-      array_of_types[count] = MPI_DOUBLE;
+      //array_of_blocklengths[count] = mb;
+      //array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + j * mb ) * sizeof(double);
+      //array_of_types[count] = MPI_DOUBLE;
+      for (int c=0; c<mb; ++c) {
+	 mat_global( (j*nprow+myrow)*mb+c, (num_block_cols*npcol+mycol)*nb+k ) = mat.array[(num_block_cols*nb+k) * local_matrix_rows + j*mb+c];
+      }
       ++count;
     }
     if (rest_num_block_rows != 0) {
-      array_of_blocklengths[count] = rest_num_block_rows;
-      array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
-      array_of_types[count] = MPI_DOUBLE;
+      //array_of_blocklengths[count] = rest_num_block_rows;
+      //array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
+      //array_of_types[count] = MPI_DOUBLE;
+      for (int c=0; c<mb; ++c) {
+	 mat_global( (num_block_rows*nprow+myrow)*mb+c, (num_block_cols*npcol+mycol)*nb+k ) = mat.array[(num_block_cols*nb+k)*local_matrix_rows + num_block_rows*mb+c];
+      }
       ++count;
     }
   }
-  //cout << "count=" << count << endl;
-
-  MPI_Barrier(MPI_COMM_WORLD);
-
-  // print out struct of localally distributed matrices
-  if (myrank_cart == 0) {
-    for (int i=0; i<count; ++i) {
-      printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank_cart, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
-    }
-  }
-
-  MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
-  MPI_Type_commit(&local_array_type);
-
-  delete[] array_of_blocklengths;
-  array_of_blocklengths = NULL;
-  delete[] array_of_displacements;
-  array_of_displacements = NULL;
-  delete[] array_of_types;
-  array_of_types = NULL;
 }
-
 
 
 int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, int root)
@@ -315,15 +347,16 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
     }
 
     if ((proc == root) && (myrank_cart == root)) {
-      create_struct_global(mat, global_array_type, cart_comm, root);
-      ierr = MPI_Sendrecv(local_array, sendcount, MPI_DOUBLE, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
-      if (ierr != 0) {
-	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
-	MPI_Abort(MPI_COMM_WORLD,78);
-	exit(78);
-      }
-      MPI_Type_free(&global_array_type);
-      global_array_type = NULL;
+      //create_struct_global(mat, global_array_type, cart_comm, root);
+      //ierr = MPI_Sendrecv(local_array, sendcount, MPI_DOUBLE, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
+      //if (ierr != 0) {
+      //	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
+      //	MPI_Abort(MPI_COMM_WORLD,78);
+      //	exit(78);
+      //      }
+      //      MPI_Type_free(&global_array_type);
+      //global_array_type = NULL;
+      copy_l2g_root(mat, mat_global, cart_comm);
     }
 
   } // for (int proc = 0; proc < numprocs_cart; ++proc)
@@ -410,15 +443,16 @@ int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, i
     }
 
     if ((proc == root) && (myrank_cart == root)) {
-      create_struct_global(mat, global_array_type, cart_comm, root);
-      ierr = MPI_Sendrecv(global_array, sendcount, global_array_type, root, 0, local_array, recvcount, MPI_DOUBLE, root, 0, cart_comm, &status);
-      if (ierr != 0) {
-	printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
-	MPI_Abort(MPI_COMM_WORLD,70);
-	exit(78);
-      }
-      MPI_Type_free(&global_array_type);
-      global_array_type = NULL;
+      //create_struct_global(mat, global_array_type, cart_comm, root);
+      //ierr = MPI_Sendrecv(global_array, sendcount, global_array_type, root, 0, local_array, recvcount, MPI_DOUBLE, root, 0, cart_comm, &status);
+      //if (ierr != 0) {
+      //printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
+      //	MPI_Abort(MPI_COMM_WORLD,70);
+      //	exit(78);
+      //}
+      //MPI_Type_free(&global_array_type);
+      //global_array_type = NULL;
+      copy_g2l_root(mat_global, mat, cart_comm);
     }
 
   } // for (int proc = 0; proc < numprocs_cart; ++proc)
