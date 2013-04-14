@@ -105,8 +105,8 @@ public:
       if (proc == myrank) {
 	printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
 	printf("Local Matrix:\n");
-	for (int jj=0; jj<n_local; ++jj) {
-	  for (int ii=0; ii<m_local; ++ii) {
+	for (int ii=0; ii<m_local; ++ii) {
+	  for (int jj=0; jj<n_local; ++jj) {
 	    printf("%3.2f ",array[jj * m_local + ii]);
 	  }
 	  printf("\n");
@@ -139,8 +139,8 @@ void print_matrix(const rokko::distributed_matrix& mat)
     if (proc == mat.myrank) {
       printf("Rank = %d  myrow=%d mycol=%d\n", mat.myrank, mat.myrow, mat.mycol);
       printf("Local Matrix:\n");
-      for (int jj=0; jj<mat.n_local; ++jj) {
-	for (int ii=0; ii<mat.m_local; ++ii) {
+      for (int ii=0; ii<mat.m_local; ++ii) {
+	for (int jj=0; jj<mat.n_local; ++jj) {
 	  printf("%3.2f ", mat.array[jj * mat.m_local + ii]);
 	}
 	printf("\n");

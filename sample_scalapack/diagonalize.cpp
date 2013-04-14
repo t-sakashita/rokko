@@ -33,11 +33,13 @@ int main(int argc, char* argv[])
   //rokko::generate_frank_matrix_local(frank_mat);
   rokko::generate_frank_matrix_global(frank_mat);
   Eigen::MatrixXd frank_mat_global;
-  rokko::gather(frank_mat, frank_mat_global, root);
+  //rokko::gather(frank_mat, frank_mat_global, root);
+  rokko::scatter(frank_mat, frank_mat_global, root);
+
   frank_mat.print();
   //rokko::print_matrix(mat_frank);
   if (myrank == root)
-    cout << "global_mat:" << endl << frank_mat_global << endl;
+    cout << "global_mat_123:" << endl << frank_mat_global << endl;
 
   Eigen::VectorXd eigvals(dim);
   rokko::distributed_matrix eigvecs(dim, dim, g);
