@@ -58,21 +58,20 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
 
   //const int type_block_rows = ( (m_global + nprow * mb - 1) / (nprow * mb) ) * mb;   // 切り上げ
   const int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
-  const int type_block_cols = (n_local + nb - 1) / nb;   // 切り上げ
-  int count_max = 4 * type_block_rows * type_block_cols;
+  //const int type_block_cols = (n_local + nb - 1) / nb;   // 切り上げ
+  int count_max = type_block_rows * n_local;
 
   //cout << "proc=" << myrank_cart << "count_max=" << count_max << endl;
-
-  cout << "proc=" << myrank_cart << endl;
-  cout << "count_max=" << count_max << endl;
-  cout << "type_block_rows=" << type_block_rows << endl;
-  cout << "num_block_rows=" << num_block_rows << endl;
-  cout << "local_matrix_rows=" << local_matrix_rows << endl;
-  cout << "rest_num_block_rows=" << rest_num_block_rows << endl;
-  cout << "type_block_cols=" << type_block_cols << endl;
-  cout << "num_block_cols=" << num_block_cols << endl;
-  cout << "local_matrix_cols=" << local_matrix_cols << endl;
-  cout << "rest_num_block_cols=" << rest_num_block_cols << endl;
+  //cout << "proc=" << myrank_cart << endl;
+  //cout << "count_max=" << count_max << endl;
+  //cout << "type_block_rows=" << type_block_rows << endl;
+  //cout << "num_block_rows=" << num_block_rows << endl;
+  //cout << "local_matrix_rows=" << local_matrix_rows << endl;
+  //cout << "rest_num_block_rows=" << rest_num_block_rows << endl;
+  //cout << "type_block_cols=" << type_block_cols << endl;
+  //cout << "num_block_cols=" << num_block_cols << endl;
+  //cout << "local_matrix_cols=" << local_matrix_cols << endl;
+  //cout << "rest_num_block_cols=" << rest_num_block_cols << endl;
 
   int*          array_of_blocklengths = new int[count_max];
   MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
@@ -82,7 +81,6 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
 
   for (int i=0; i<num_block_cols; ++i) {
     for (int k=0; k<nb; ++k) {
-      //for (int j=0; j<num_block_rows; ++j) {
       for (int j=0; j<num_block_rows; ++j) {
 	array_of_blocklengths[count] = mb;
 	  array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * n_global + (j * nprow + myrow) * mb ) * sizeof(double);
@@ -164,9 +162,8 @@ void create_struct_local(const rokko::distributed_matrix& mat, MPI_Datatype& loc
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
-  const int type_block_rows = ( (m_global + nprow * mb - 1) / (nprow * mb) ) * mb;   // 切り上げ
-  const int type_block_cols = (n_local + nb - 1) / nb;   // 切り上げ
-  int count_max = 4 * type_block_rows * type_block_cols;
+  const int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
+  int count_max = type_block_rows * n_local;
 
   /*
   if (myrank_cart == 0) {
