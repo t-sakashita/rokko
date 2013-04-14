@@ -65,7 +65,7 @@ public:
       nprow = nprow - 1;
     }
     npcol = nprocs / nprow;
-    blacs_gridinit_( ictxt, "C", nprow, npcol ); // ColがMPI_Comm_createと互換
+    blacs_gridinit_( ictxt, "R", nprow, npcol ); // ColがMPI_Comm_createと互換
     //blacs_gridinit_( ictxt, "Row", nprow, npcol );
     blacs_gridinfo_( ictxt, nprow, npcol, myrow, mycol );
 
@@ -76,7 +76,7 @@ public:
 
   ~grid()
   {
-    blacs_gridexit_(&ictxt);
+    //blacs_gridexit_(&ictxt);
   }
 
   int myrank, nprocs;

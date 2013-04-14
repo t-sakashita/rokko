@@ -58,7 +58,17 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
   cout << "lld=" << lld << endl;
   if (lld == 0) lld = 1;
   descinit_(desc, mat.m_global, mat.n_global, mat.mb, mat.nb, ZERO, ZERO, ictxt, lld, info);
+  if (info) {
+    cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.m_local << "  nA=" << mat.n_local << "  lld=" << lld << "." << endl;
+    MPI_Abort(MPI_COMM_WORLD, 89);
+  }
 
+  for (int proc=0; proc<mat.g.nprocs; ++proc) {
+    if (proc == mat.g.myrank) {
+      cout << "pdsyev:proc=" << proc << " m_global=" << mat.m_global << "  n_global=" << mat.n_global << "  mb=" << mat.mb << "  nb=" << mat.nb << " lld=" << lld << endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+  }
   double* work = new double[1];
   long lwork = -1;
 
@@ -66,9 +76,11 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
   pdsyev_( "V",  "U",  dim,  mat.array, ONE,  ONE,  desc, &eigvals[0], eigvecs.array, ONE, ONE,
  	   desc, work, lwork, info );
 
+  /*
   for (int i=0; i<mat.mb*mat.nb; ++i)
     cout << (mat.array)[i] << " ";
   cout << endl;
+  */
 
   lwork = work[0];
   delete[] work;
@@ -81,7 +93,7 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
 
   // 固有値分解
   pdsyev_( "V",  "U",  dim,  mat.array,  ONE,  ONE,  desc, &eigvals[0], eigvecs.array, ONE, ONE,
-	   desc, work, lwork, info );
+  	   desc, work, lwork, info );
   /*
   pdsyev_( "V",  "U",  dim,  mat.array,  ONE,  ONE,  desc, eigvals.data(), eigvecs.array, ONE, ONE,
 	   desc, work, lwork, info );
