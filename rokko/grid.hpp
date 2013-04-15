@@ -58,13 +58,13 @@ public:
     blacs_pinfo_( myrank, nprocs );
     blacs_get_( MINUS_ONE, ZERO, ictxt );
 
-    nprow = int(sqrt(nprocs+0.5));
+    npcol = int(sqrt(nprocs+0.5));
     while (1) {
-      if ( nprow == 1 ) break;
-      if ( (nprocs % nprow) == 0 ) break;
-      nprow = nprow - 1;
+      if ( npcol == 1 ) break;
+      if ( (nprocs % npcol) == 0 ) break;
+      npcol = npcol - 1;
     }
-    npcol = nprocs / nprow;
+    nprow = nprocs / npcol;
     blacs_gridinit_( ictxt, "R", nprow, npcol ); // ColがMPI_Comm_createと互換
     //blacs_gridinit_( ictxt, "Row", nprow, npcol );
     blacs_gridinfo_( ictxt, nprow, npcol, myrow, mycol );

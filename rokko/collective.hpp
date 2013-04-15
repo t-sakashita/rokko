@@ -100,7 +100,7 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
     }
   }
   //cout << "before amari: count=" << count << endl;
-  // 行のあまり
+  // 列のあまり
   for (int k=0; k<rest_num_block_cols; ++k) {
     cout << "ddddddddddddddddddddddddddddddd" << endl;
     for (int j=0; j<num_block_rows; ++j) {
@@ -177,7 +177,7 @@ void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix&
 	//array_of_blocklengths[count] = rest_num_block_rows;
 	//array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
 	//array_of_types[count] = MPI_DOUBLE;
-	for (int c=0; c<mb; ++c) {
+	for (int c=0; c<rest_num_block_rows; ++c) {
 	  mat.array[(i*nb+k) * local_matrix_rows + num_block_rows * mb + c] = mat_global( (num_block_rows*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k );
 	}
 	++count;
@@ -199,7 +199,7 @@ void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix&
       //array_of_blocklengths[count] = rest_num_block_rows;
       //array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
       //array_of_types[count] = MPI_DOUBLE;
-      for (int c=0; c<mb; ++c) {
+      for (int c=0; c<rest_num_block_rows; ++c) {
 	mat.array[(num_block_cols*nb+k)*local_matrix_rows + num_block_rows*mb+c] = mat_global( (num_block_rows*nprow+myrow)*mb+c, (num_block_cols*npcol+mycol)*nb+k );
       }
       ++count;
@@ -240,7 +240,8 @@ void copy_l2g_root(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_gl
 	//array_of_blocklengths[count] = rest_num_block_rows;
 	//array_of_displacements[count] = ( (i*nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
 	//array_of_types[count] = MPI_DOUBLE;
-	for (int c=0; c<mb; ++c) {
+	for (int c=0; c<rest_num_block_rows; ++c) {
+	  cout << "ROW=" << (num_block_rows*nprow+myrow)*mb+c << "  COL=" << (i*npcol+mycol)*nb+k << "rest_num_block_rows=" << rest_num_block_rows << endl;
 	  mat_global( (num_block_rows*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k ) = mat.array[(i*nb+k) * local_matrix_rows + num_block_rows * mb + c];
 	}
 	++count;
@@ -262,7 +263,7 @@ void copy_l2g_root(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_gl
       //array_of_blocklengths[count] = rest_num_block_rows;
       //array_of_displacements[count] = ( (num_block_cols * nb+k) * local_matrix_rows + num_block_rows * mb ) * sizeof(double);
       //array_of_types[count] = MPI_DOUBLE;
-      for (int c=0; c<mb; ++c) {
+      for (int c=0; c<rest_num_block_rows; ++c) {
 	 mat_global( (num_block_rows*nprow+myrow)*mb+c, (num_block_cols*npcol+mycol)*nb+k ) = mat.array[(num_block_cols*nb+k)*local_matrix_rows + num_block_rows*mb+c];
       }
       ++count;
@@ -325,7 +326,6 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
   int recvcount = 1;
 
   for (int proc = 0; proc < numprocs_cart; ++proc) {
-    // Todo: copy routine in root.
     if ((myrank_cart == proc) && (myrank_cart != root)) {
       ierr = MPI_Send(local_array, sendcount, MPI_DOUBLE, root, 0, cart_comm);
       if (ierr != 0) {
@@ -377,9 +377,9 @@ int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, i
     //mat_global.resize(mat.m_global, mat.n_global);
     global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？
     //global_array = mat_global.data();  // 本当に、内部では連続な配列になっているか
-    //  for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
-    //    global_array[ii] = ii;
-    //  }
+    for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
+      global_array[ii] = ii;
+    }
   }
 
   int numprocs;
@@ -420,7 +420,6 @@ int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, i
   int sendcount = 1, recvcount = m_local * n_local;
 
   for (int proc = 0; proc < numprocs_cart; ++proc) {
-    // Todo: copy routine in root.
     if ((proc != root) &&  (myrank_cart == root)) {
       create_struct_global(mat, global_array_type, cart_comm, proc);
       ierr = MPI_Send(global_array, sendcount, global_array_type, proc, 0, cart_comm);
