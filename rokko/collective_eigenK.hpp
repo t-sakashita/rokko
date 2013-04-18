@@ -78,12 +78,14 @@ void create_struct_local_eigenK(const rokko::distributed_matrix& mat, MPI_Dataty
   */
 
   // print out struct of local matrix
+  /*
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << endl;
       printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
   }
+  */
 
   MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);
@@ -141,12 +143,14 @@ void create_struct_local_eigenK(const rokko::distributed_matrix& mat, MPI_Dataty
   */
 
   // print out struct of local matrix
+  /*
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << endl;
       printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
   }
+  */
 
   MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);
@@ -386,9 +390,9 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
     mat_global.resize(mat.m_global, mat.n_global);
     global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？
     //global_array = mat_global.data();  // 本当に、内部では連続な配列になっているか
-    for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
-      global_array[ii] = 100*mat.g.myrank + ii;
-    }
+    //for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
+    //  global_array[ii] = 100*mat.g.myrank + ii;
+    //}
   }
 
   MPI_Status  status;
@@ -438,15 +442,15 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
     }
 
     if ((proc == root) && (myrank == root)) {
-      //create_struct_global(mat, global_array_type, cart_comm, root);
-      //ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
-      //if (ierr != 0) {
-      //	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
-      //	MPI_Abort(MPI_COMM_WORLD,78);
-      //	exit(78);
-      //}
-      //MPI_Type_free(&global_array_type);
-      //global_array_type = NULL;
+      create_struct_global_eigenK(mat, global_array_type, root);
+      ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
+      if (ierr != 0) {
+      	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
+      	MPI_Abort(MPI_COMM_WORLD,78);
+      	exit(78);
+      }
+      MPI_Type_free(&global_array_type);
+      global_array_type = NULL;
       //copy_l2g_root(mat, mat_global);
     }
 
@@ -454,7 +458,6 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
 
   MPI_Type_free(&local_array_type);
   local_array_type = NULL;
-  //MPI_Comm_free(&cart_comm);
 
   return ierr;
 }
@@ -521,15 +524,15 @@ int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, i
     }
 
     if ((proc == root) && (myrank == root)) {
-      //create_struct_global(mat, global_array_type, cart_comm, root);
-      //ierr = MPI_Sendrecv(global_array, sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
-      //if (ierr != 0) {
-      //printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
-      //	MPI_Abort(MPI_COMM_WORLD,70);
-      // 	exit(78);
-      //}
-      //MPI_Type_free(&global_array_type);
-      //global_array_type = NULL;
+      create_struct_global_eigenK(mat, global_array_type, root);
+      ierr = MPI_Sendrecv(global_array, sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
+      if (ierr != 0) {
+      printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
+      	MPI_Abort(MPI_COMM_WORLD,70);
+	exit(78);
+      }
+      MPI_Type_free(&global_array_type);
+      global_array_type = NULL;
       //copy_g2l_root(mat_global, mat);
     }
 
@@ -537,7 +540,6 @@ int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, i
 
   MPI_Type_free(&local_array_type);
   local_array_type = NULL;
-  //MPI_Comm_free(&cart_comm);
 
   return ierr;
 }

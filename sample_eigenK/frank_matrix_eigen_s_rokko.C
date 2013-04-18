@@ -55,12 +55,9 @@ typedef Eigen::MatrixXd matrix_type;
 #define __FUNCT__ "main"
 int main (int argc, char *argv[])
 {
-  int rank, size;
   int para_int;
 
-  MPI_Init(&argc, &argv);/* starts MPI */
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);/* get current process id */
-  MPI_Comm_size(MPI_COMM_WORLD, &size);/* get number of processes */
+  MPI_Init(&argc, &argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
@@ -71,7 +68,6 @@ int main (int argc, char *argv[])
   n = dim = 10;
   int root = 0;
 
-  //int m = 3;
   int m = 32;
 
   int size_of_col_local, size_of_row_local;
@@ -107,13 +103,15 @@ int main (int argc, char *argv[])
 
 
   rokko::distributed_matrix frank_mat(dim, dim, g, nm, larray);
+  rokko::distributed_matrix Z(dim, dim, g, nm, larray);
+
   //rokko::generate_frank_matrix_local(frank_mat);
   rokko::generate_frank_matrix_global(frank_mat);
-  //Eigen::MatrixXd frank_mat_global;
-  Eigen::MatrixXd frank_mat_global(dim, dim);
+  Eigen::MatrixXd frank_mat_global;
+  //Eigen::MatrixXd frank_mat_global(dim, dim);
 
   //rokko::scatter(frank_mat, frank_mat_global, root);
-  //rokko::gather(frank_mat, frank_mat_global, root);
+  rokko::gather(frank_mat, frank_mat_global, root);
 
 
   frank_mat.print();
@@ -121,66 +119,14 @@ int main (int argc, char *argv[])
   if (myrank == root)
     cout << "global_mat_123:" << endl << frank_mat_global << endl;
 
-  double* a = new double[n * n];
-  if (a==NULL) {
-    cerr << "error: a" << endl;
-    return 1;
-  }
-
-  double* b = new double[larray];
-  if (b==NULL) {
-    cerr << "error: b" << endl;
-    return 1;
-  }
-
-  double* z = new double[larray];
-  if (z==NULL) {
-    cerr << "error: z" << endl;
-    return 1;
-  }
   double* w = new double[n];
   if (w==NULL) {
     cerr << "error: w" << endl;
     return 1;
   }
 
-
-  //matrix_set(n, a);
-
-  for(int ii=0; ii<n*n; ++ii)
-    a[ii] = ii;
-
-  //for(int i=0; i<n; ++i)
-  //  for(int j=0; j<n; ++j)
-  //a[j * n + i] = n - max(i,j);  // j * n + i;
-  //matrix_adjust_s(n, &frank_mat_global(0,0), b, nm);
-  matrix_adjust_s(n, a, b, nm);
-
-
-  for (int proc=0; proc<nprocs; ++proc) {
-    if (proc == rank) {
-      printf("Rank = %d  myrow=%d mycol=%d\n", rank, MYROW, MYCOL);
-      printf("Local Matrix:\n");
-      for (int ii=0; ii<frank_mat.m_local; ++ii) {
-	for (int jj=0; jj<frank_mat.n_local; ++jj) {
-	  //	  printf("%3.2f ", b[jj * nm + ii]);
-	  printf("%3.2f ", b[ii * nm + jj]);  // 数学の行列（行が縦，列が横）のように表示
-	}
-	printf("\n");
-      }
-	//printf("\n");
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
-
-
-  if (rank == 0) {
+  if (myrank == 0) {
     cout << "n=" << n << endl;
-    //    for (int i=0; i<n; ++i) {
-    //      for (int j=0; j<n; ++j)
-    //	std::cout << a[i*n+j] << " ";
-    //      cout << endl;
-    //}
     cout << "nm=" << nm << endl;
   }
 
@@ -190,14 +136,25 @@ int main (int argc, char *argv[])
   MPI_Barrier(MPI_COMM_WORLD);
   start = MPI_Wtime();
 
-  //eigen_s(n, b, nm, w, z, nm, m, ONE);
-  eigen_s(n, frank_mat.array, nm, w, z, nm, m, ONE);
+  eigen_s(n, frank_mat.array, nm, w, Z.array, nm, m, ZERO);
+
   MPI_Barrier(MPI_COMM_WORLD);
   end = MPI_Wtime();
 
-  /*
+  Z.print();
+  // gather of eigenvectors
+  Eigen::MatrixXd eigvec_global;  //(dim, dim);
+  Eigen::MatrixXd eigvec_sorted(dim, dim);
+  Eigen::VectorXd eigval_sorted(dim);
+
+  rokko::gather(Z, eigvec_global, root);
+  //rokko::print_matrix(mat_frank);
+  if (myrank == root) {
+    cout << "eigvec:" << endl << eigvec_global << endl;
+  }
+
   int* q = new int[n];
-  if (rank == 0) {
+  if (myrank == root) {
     // 固有値を（絶対値のではなく）昇順に並べる
     if (q==NULL) {
       cerr << "error: q" << endl;
@@ -209,24 +166,38 @@ int main (int argc, char *argv[])
     for (int k=0; k<n; ++k) {
       emax = w[q[k]];
       for (int i=k+1; i<n; ++i) {
-	if (emax > w[q[i]]) {       // 昇順になっていないとき、交換
+	if (emax < w[q[i]]) {       // 昇順になっていないとき、交換
 	  emax = w[q[i]];
 	  int qq = q[k];
 	  q[k] = q[i];
 	  q[i] = qq;
 	}
       }
+      eigval_sorted(k) = w[q[k]];
+      eigvec_sorted.col(k) = eigvec_global.col(q[k]);
+      //eigvec_sorted.row(k) = eigvec_global.col(q[k]);
     }
-  }
-*/
 
-  cout.precision(20);
-  if (rank == 0) {
+    cout.precision(20);
     cout << "w=" << endl;
     for (int i=0; i<n; ++i) {
       cout << w[i] << " ";
     }
     cout << endl;
+
+    cout << "Computed Eigenvalues= " << eigval_sorted.transpose() << endl;
+
+    cout.precision(3);
+    cout << "Check the orthogonality of Eigenvectors:" << endl
+	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
+      //<< eigvec_global.transpose() * eigvec_global << endl;   // Is it equal to indentity matrix?
+
+    Eigen::MatrixXd A_global_matrix = frank_mat_global;
+    cout << "residual := A x - lambda x = " << endl
+         << A_global_matrix * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
+    cout << "Are all the following values equal to some eigenvalue = " << endl
+      << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
+    cout << "A_global_matrix=" << endl << A_global_matrix << endl;
   }
 
   /*
@@ -239,9 +210,6 @@ int main (int argc, char *argv[])
     //ofs << "iter=" << iter << endl;
   }
 
-  delete [] a;
-  delete [] b;
-  delete [] z;
   delete [] w;
   delete [] q;
   */
