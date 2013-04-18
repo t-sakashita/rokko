@@ -4,7 +4,8 @@ project(frank NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 
 # enable C and C++ compilers
-enable_language(CXX)
+#enable_language(CXX)
+enable_language(C CXX Fortran)
 
 find_package(MPI)
 
@@ -20,6 +21,8 @@ set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
 # directories
 add_subdirectory(sample_scalapack)
+add_subdirectory(test)
+add_subdirectory(sample_eigenK)
 
 
 

@@ -1,0 +1,1 @@
+/home/issp/usr/bin/mpicxx   -g   -Wl,-rpath  -Wl,/home/issp/usr/lib CMakeFiles/frank_matrix_eigen_s_rokko.dir/eigen_wrap.f.o CMakeFiles/frank_matrix_eigen_s_rokko.dir/frank_matrix_eigen_s_rokko.C.o  -o frank_matrix_eigen_s_rokko -rdynamic /home/sakashita/eigen_s/libEigen_s.a -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=sequential -lgfortranbegin -lgfortran 
