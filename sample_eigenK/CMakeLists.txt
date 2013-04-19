@@ -1,26 +1,30 @@
 # program using	eigen_s
 if( DEFINED EIGEN_S_LIB AND EIGEN_S_INC )
-  # find Eigen_s                                                                                                                                                                 message(STATUS "Display: EIGEN_S_LIB= ${EIGEN_S_LIB}")
-  message(STATUS "Display: EIGEN_SX_LIB= ${EIGEN_SX_LIB}")
-  message(STATUS "Display: ALPS_LIB=${ALPS_LIBRARIES}")
-
-  string(REPLACE " " ";" EIGEN_S_LIB ${EIGEN_S_LIB})
-  set(TESTS2 frank_matrix_eigen_s_rokko)
-  #set(TESTS2 "")
+  # find Eigen_s
+  message(STATUS "Display: EIGEN_S_LIB= ${EIGEN_S_LIB}")
+  separate_arguments(EIGEN_S_LIB)
+  set(TESTS2 diagonalize_eigen_s)
+#frank_matrix_eigen_s_rokko)
 
   foreach(name ${TESTS2})
     include_directories(${name} ${EIGEN_S_INC})
-    add_executable(${name} eigen_wrap.f  matrix_set.f ${name}.C)
-    #add_executable(${name} ${name}.C eigen_wrap.f)
-    #       target_link_libraries(${name}  ${ALPS_LIBRARIES})
-    #       foreach(libname ${EIGEN_S_LIB})
-    #          MESSAGE(STATUS "libname=${libname}")
-    #          target_link_libraries(${name} ${libname})
-    #       endforeach(libname)
+    add_executable(${name} eigen_wrap.f  ${name}.cpp)
     target_link_libraries(${name} ${EIGEN_S_LIB})
-    ##コンパイラオプション
-    #  set_target_properties(${name} PROPERTIES COMPILE_FLAGS "${EIGEN_S_COMPILE_FLAGS}")
-    #add_alps_test(${name})
   endforeach(name)
 endif()
 
+
+if( DEFINED EIGEN_SX_LIB AND EIGEN_SX_INC )
+  # find Eigen_sx
+  message(STATUS "Display: EIGEN_SX_LIB= ${EIGEN_SX_LIB}")
+
+  #string(REPLACE " " ";" EIGEN_SX_LIB ${EIGEN_SX_LIB})
+  separate_arguments(EIGEN_SX_LIB)
+  set(TESTS2 diagonalize_eigen_sx)
+
+  foreach(name ${TESTS2})
+    include_directories(${name} ${EIGEN_SX_INC})
+    add_executable(${name} eigen_wrap_sx.f  ${name}.cpp)
+    target_link_libraries(${name} ${EIGEN_SX_LIB})
+  endforeach(name)
+endif()
