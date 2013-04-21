@@ -2,8 +2,8 @@
    Copyright (c) 2009-2012, Jack Poulson
    All rights reserved.
 
-   This file is part of Elemental and is under the BSD 2-Clause License, 
-   which can be found in the LICENSE file in the root directory, or at 
+   This file is part of Elemental and is under the BSD 2-Clause License,
+   which can be found in the LICENSE file in the root directory, or at
    http://opensource.org/licenses/BSD-2-Clause
 */
 #include "elemental.hpp"
@@ -17,7 +17,7 @@ typedef Complex<R> C;
 int
 main( int argc, char* argv[] )
 {
-    // This detects whether or not you have already initialized MPI and 
+    // This detects whether or not you have already initialized MPI and
     // does so if necessary. The full routine is elem::Initialize.
     Initialize( argc, argv );
 
@@ -25,21 +25,21 @@ main( int argc, char* argv[] )
     mpi::Comm comm = mpi::COMM_WORLD;
     const int commRank = mpi::CommRank( comm );
 
-    // Surround the Elemental calls with try/catch statements in order to 
+    // Surround the Elemental calls with try/catch statements in order to
     // safely handle any exceptions that were thrown during execution.
-    try 
+    try
     {
-        const int n = Input("--size","size of matrix",100);
-        const bool print = Input("--print","print matrices?",false);
+        const int n = Input("--size","size of matrix",10);
+        const bool print = Input("--print","print matrices?",true);
         ProcessInput();
         PrintInputReport();
 
         // Create a 2d process grid from a communicator. In our case, it is
-        // MPI_COMM_WORLD. There is another constructor that allows you to 
-        // specify the grid dimensions, Grid g( comm, r, c ), which creates an 
+        // MPI_COMM_WORLD. There is another constructor that allows you to
+        // specify the grid dimensions, Grid g( comm, r, c ), which creates an
         // r x c grid.
         Grid grid( comm );
-    
+
         // Create an n x n complex matrix residing on a single process.
         Matrix<C> HRoot;
         if( commRank == 0 )
@@ -56,7 +56,7 @@ main( int argc, char* argv[] )
         // Broadcast the local matrix to all processes so that they all have
         // a copy of H, say H[* ,* ]
         DistMatrix<C,STAR,STAR> H_STAR_STAR( n, n, n, grid );
-        if( commRank == 0 ) 
+        if( commRank == 0 )
         {
             mpi::Broadcast( HRoot.Buffer(), n*n, 0, comm );
             MemCopy( H_STAR_STAR.LocalBuffer(), HRoot.Buffer(), n*n );
@@ -66,17 +66,17 @@ main( int argc, char* argv[] )
         if( print )
             H_STAR_STAR.Print("H[* ,* ]");
 
-        // Now that we have a valid DistMatrix (in a [* ,* ] distribution), 
+        // Now that we have a valid DistMatrix (in a [* ,* ] distribution),
         // we can trivially redistribute into the usual matrix distribution
         DistMatrix<C> H( H_STAR_STAR );
         if( print )
             H.Print("H");
 
-        // Call the eigensolver. We first create an empty complex eigenvector 
+        // Call the eigensolver. We first create an empty complex eigenvector
         // matrix, X, and an eigenvalue column vector, w[VR,* ]
         DistMatrix<R,VR,STAR> w_VR_STAR( grid );
         DistMatrix<C> X( grid );
-        // Optional: set blocksizes and algorithmic choices here. See the 
+        // Optional: set blocksizes and algorithmic choices here. See the
         //           'Tuning' section of the README for details.
         HermitianEig( LOWER, H, w_VR_STAR, X );
 

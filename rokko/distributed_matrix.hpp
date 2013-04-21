@@ -42,7 +42,46 @@ public:
     array = new double[m_local * n_local];
     if (array == NULL) {
       cerr << "failed to allocate array." << endl;
-      exit(1);
+      MPI_Abort(MPI_COMM_WORLD, 3);
+    }
+  }
+
+  distributed_matrix(int m_global, int n_global, const grid& g, bool mb)
+    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  {
+    // ローカル行列の形状を指定
+    /*
+    mb = m_global / g.nprow;
+    if (mb == 0) mb = 1;
+    //mb = 10;
+    nb = n_global / g.npcol;
+    if (nb == 0) nb = 1;
+    //nb = 10;
+    // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
+    mb = min(mb, nb);
+    */
+    mb = 1;
+    nb = mb;
+
+    const int ZERO=0, ONE=1;
+    m_local = numroc_( m_global, mb, myrow, ZERO, nprow );
+    n_local = numroc_( n_global, nb, mycol, ZERO, npcol );
+
+    for (int proc=0; proc<nprocs; ++proc) {
+      if (proc == g.myrank) {
+	cout << "proc=" << proc << endl;
+	cout << "  mb=" << mb << "  nb=" << nb << endl;
+	cout << "  mA=" << m_local << "  nprow=" << g.nprow << endl;
+	cout << "  nA=" << n_local << "  npcol=" << g.npcol << endl;
+	cout << " m_local=" << m_local << " n_local=" << n_local << endl;
+      }
+      MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    array = new double[m_local * n_local];
+    if (array == NULL) {
+      cerr << "failed to allocate array." << endl;
+      MPI_Abort(MPI_COMM_WORLD, 3);
     }
   }
 
@@ -66,7 +105,7 @@ public:
   int translate_g2l_row(const int& global_i) const
   {
     const int local_offset_block = global_i / mb;
-    return (local_offset_block - g.myrow) / g.nprow * mb + global_i % nb;
+    return (local_offset_block - g.myrow) / g.nprow * mb + global_i % mb;
   }
 
   int translate_g2l_col(const int& global_j) const
