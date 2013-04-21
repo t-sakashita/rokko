@@ -15,6 +15,7 @@ using namespace std;
 #include <rokko/collective_eigenK.hpp>
 #include <rokko/frank_matrix.hpp>
 #include <rokko/elemental_rokko.hpp>
+#include <rokko/sort_eigenpairs.hpp>
 
 //typedef Eigen::MatrixXd matrix_type;
 
@@ -42,7 +43,6 @@ int main(int argc, char *argv[])
 
   rokko::distributed_matrix frank_mat(dim, dim, g);
 
-
   rokko::generate_frank_matrix_local(frank_mat);
   //rokko::generate_frank_matrix_global(frank_mat);
   //generate_matrix_123(frank_mat);
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
   rokko::elemental::diagonalize(frank_mat, w, Z);
 
-  Z.array = Z.mat.Buffer();
+  Z.array = Z.mat.Buffer(); ///Todo
 
   // gather of eigenvectors
   Eigen::MatrixXd eigvec_global;  //(dim, dim);
@@ -75,50 +75,28 @@ int main(int argc, char *argv[])
     cout << "eigvec:" << endl << eigvec_global << endl;
   }
 
-  int* q = new int[dim];
+  cout.precision(20);
+  cout << "w=" << endl;
+  for (int i=0; i<dim; ++i) {
+    cout << w[i] << " ";
+  }
+  cout << endl;
+
+
   if (myrank == root) {
-    // 固有値を（絶対値のではなく）昇順に並べる
-    if (q==NULL) {
-      cerr << "error: q" << endl;
-      return 1;
-    }
-
-    double emax;
-    for (int i=0; i<dim; ++i) q[i] = i;
-    for (int k=0; k<dim; ++k) {
-      emax = w[q[k]];
-      for (int i=k+1; i<dim; ++i) {
-	if (emax < w[q[i]]) {       // 昇順になっていないとき、交換
-	  emax = w[q[i]];
-	  int qq = q[k];
-	  q[k] = q[i];
-	  q[i] = qq;
-	}
-      }
-      eigval_sorted(k) = w[q[k]];
-      eigvec_sorted.col(k) = eigvec_global.col(q[k]);
-      //eigvec_sorted.row(k) = eigvec_global.col(q[k]);
-    }
-
-    cout.precision(20);
-    cout << "w=" << endl;
-    for (int i=0; i<dim; ++i) {
-      cout << w[i] << " ";
-    }
-    cout << endl;
-
+    rokko::sort_eigenpairs(w, eigvec_global, eigval_sorted, eigvec_sorted);
     cout << "Computed Eigenvalues= " << eigval_sorted.transpose() << endl;
 
     cout.precision(3);
     cout << "Check the orthogonality of Eigenvectors:" << endl
 	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
-      //<< eigvec_global.transpose() * eigvec_global << endl;   // Is it equal to indentity matrix?
+    //<< eigvec_global.transpose() * eigvec_global << endl;   // Is it equal to indentity matrix?
 
     Eigen::MatrixXd A_global_matrix = frank_mat_global;
     cout << "residual := A x - lambda x = " << endl
          << A_global_matrix * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
     cout << "Are all the following values equal to some eigenvalue = " << endl
-      << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
+	 << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
     cout << "A_global_matrix=" << endl << A_global_matrix << endl;
   }
 
