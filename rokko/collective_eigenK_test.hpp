@@ -9,7 +9,8 @@
 namespace rokko {
 
 // ローカル行列のサイズ，ブロック数の計算
-void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
+  template<typename T>
+  void calculate_local_matrix_size(const rokko::distributed_matrix<T>& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -41,8 +42,8 @@ void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_
   local_matrix_cols = local_num_block_cols * nb + local_rest_block_cols;
 }
 
-
-void create_struct_local_eigenK(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type)
+  template<typename T>
+  void create_struct_local_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.n_local;  int n_local = mat.m_local;
@@ -99,7 +100,8 @@ void create_struct_local_eigenK(const rokko::distributed_matrix& mat, MPI_Dataty
   array_of_types = NULL;
 }
 
-  void create_struct_global_eigenK(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type, int proc)
+  template<typename T>
+  void create_struct_global_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type, int proc)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.n_local;  int n_local = mat.m_local;
@@ -167,7 +169,8 @@ void create_struct_local_eigenK(const rokko::distributed_matrix& mat, MPI_Dataty
 
 
 // struct of global matrix
-void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& global_array_type, int proc)
+  template<typename T>
+  void create_struct_global(const rokko::distributed_matrix<T>& mat, MPI_Datatype& global_array_type, int proc)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -269,7 +272,8 @@ void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& gl
   array_of_types = NULL;
 }
 
-void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix& mat)
+  template<typename T>
+  void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix<T>& mat)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -325,7 +329,8 @@ void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix&
   }
 }
 
-void copy_l2g_root(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global)
+  template<typename T>
+  void copy_l2g_root(const rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -382,8 +387,8 @@ void copy_l2g_root(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_gl
   }
 }
 
-
-int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, int root)
+  template<typename T>
+  int gather(const rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int root)
 {
   double* global_array;
 
@@ -463,8 +468,8 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
   return ierr;
 }
 
-
-int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, int root)
+  template<typename T>
+  int scatter(const rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int root)
 {
   double* global_array;
 

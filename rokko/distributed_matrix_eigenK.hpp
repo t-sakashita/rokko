@@ -1,41 +1,101 @@
 #ifndef ROKKO_DISTRIBUTED_H
 #define ROKKO_DISTRIBUTED_H
 
+#define eigen_init_wrapper eigen_init_wrapper_
+#define eigen_free_wrapper eigen_free_wrapper_
+#define CSTAB_get_optdim cstab_get_optdim_  // オブジェクトファイルでは小文字に変換される
+
+extern "C" {
+  void eigen_init_wrapper(int&, int&, int&);
+  void eigen_free_wrapper(int&);
+  void CSTAB_get_optdim(int&, int&, int&, int&, int&);
+}
+
+extern "C" struct
+{
+  int   my_col, size_of_col, mpi_comm_col,
+    my_row, size_of_row, mpi_comm_row,
+    p0_      ,q0_      , n_common,
+    diag_0, diag_1;
+} cycl2d_;
 
 #include <cstdlib>
-//#include <mpi.h>
+#include <mpi.h>
 #include <rokko/grid.hpp>
-
-#include "elemental.hpp"
-
-typedef struct
-{
-} elemental33;
 
 namespace rokko {
 
-  template<>
-class distributed_matrix<elemental33>
+class distributed_matrix
 {
 public:
   // torus-wrap distribution used in EigenK and Elemental
   distributed_matrix(int m_global, int n_global, const grid& g)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), mat(m_global, n_global, *(g.elem_grid))
+    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
   {
-    //m_local = LocalLength(m_global, myrow, nprow);
-    //n_local = LocalLength(n_global, mycol, npcol);
-    array = mat.Buffer();
-    m_local = mat.LocalHeight();
-    n_local = mat.LocalWidth();
-    lld = mat.LDim();
+    // initialization of eigen_s
+    int size_of_col_local, size_of_row_local;
+    int ndims = 2;
+    eigen_init_wrapper(ndims, size_of_col_local, size_of_row_local);
+
+    int nprow = cycl2d_.size_of_row;
+    int npcol = cycl2d_.size_of_col;
+    int myrow = cycl2d_.my_row;
+    int mycol = cycl2d_.my_col;
+    //cout << "NPROW=" << cycl2d_.size_of_row << "  NPCOL=" << cycl2d_.size_of_col  << endl;
+
+    int n = m_global;
+    int nx = ((n-1)/nprow+1);
+    int i1 = 6, i2 = 16*4, i3 = 16*4*2, nm;
+    CSTAB_get_optdim(nx, i1, i2, i3, nm);  // return an optimized (possiblly) leading dimension of local block-cyclic matrix to nm.
+    int para_int = 0;   eigen_free_wrapper(para_int);
+
+    int NB  = 64+32;
+    int nmz = ((n-1)/nprow+1);
+    nmz = ((nmz-1)/NB+1)*NB+1;
+    int nmw = ((n-1)/npcol+1);
+    nmw = ((nmw-1)/NB+1)*NB+1;
+    cout << "nm=" << nm << endl;
+    cout << "nmz=" << nmz << endl;
+    cout << "nmw=" << nmw << endl;
+    int larray = std::max(nmz,nm) * nmw;
+
+    // ローカル行列の形状を指定
     mb = 1;
     nb = 1;
+    const int ZERO=0, ONE=1;
+    lld = nm;
+    m_local = numroc_( m_global, mb, myrow, ZERO, nprow );  //(m_global + nprow - myrow) / nprow;
+    n_local = numroc_( n_global, nb, mycol, ZERO, npcol );  //(n_global + npcol - mycol) / npcol;
+    //m_local = nm;
+    //n_local = (larray + (nm-1)) / nm;
+
+    for (int proc=0; proc<nprocs; ++proc) {
+      if (proc == g.myrank) {
+	cout << "proc=" << proc << endl;
+	//cout << "  mb=" << mb << "  nb=" << nb << endl;
+	//cout << "  mA=" << m_local << "  nprow=" << g.nprow << endl;
+	//cout << "  nA=" << n_local << "  npcol=" << g.npcol << endl;
+	cout << "nm(lld)=" << lld << endl;
+	cout << " m_local=" << m_local << " n_local=" << n_local << endl;
+     }
+      MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    array = new double[larray];  //m_local * n_local];
+    if (array == NULL) {
+      cerr << "failed to allocate array." << endl;
+      MPI_Abort(MPI_COMM_WORLD, 3);
+    }
+    for (int ii=0; ii<larray; ++ii)
+      array[ii] = -3;
+
   }
 
   ~distributed_matrix()
   {
-    //mat.~DistMatrix();
-    //cout << "Destructor ~DistMatrix" << endl;
+    //cout << "Destructor ~Distributed_Matrix_EigenK()" << endl;
+    delete[] array;
+    array = NULL;
   }
 
   int translate_l2g_row(const int& local_i) const
@@ -81,15 +141,13 @@ public:
   void set_local(int local_i, int local_j, double value)
   {
     //array[local_j * lld + local_i] = value;
-    //array[local_j + local_i * lld] = value;
-    mat.SetLocal(local_i, local_j, value);
+    array[local_j + local_i * lld] = value;
   }
 
   void set_global(int global_i, int global_j, double value)
   {
-    //if ((is_gindex_myrow(global_i)) && (is_gindex_mycol(global_j)))
-    //  set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
-    mat.Set(global_i, global_j, value); /// Todo::fix
+    if ((is_gindex_myrow(global_i)) && (is_gindex_mycol(global_j)))
+      set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
   }
 
 
@@ -109,32 +167,27 @@ public:
     return proc_rank % npcol;
   }
 
-  void print()
+  void print() const
   {
     /* each proc prints it's local_array out, in order */
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
 	printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
 	printf("Local Matrix:\n");
-	//elem::Matrix<double> Y = mat.LocalMatrix();
-	mat.Matrix().Print("");
-	/*
 	for (int ii=0; ii<m_local; ++ii) {
 	  for (int jj=0; jj<n_local; ++jj) {
 	    //printf("%3.2f ", array[jj * lld + ii]);
             //printf("%3.2f ", array[jj + ii * lld]);
-            printf("%e ", array[jj * lld + ii]);
+            printf("%e ", array[jj + ii * lld]);
 	  }
 	  printf("\n");
 	}
-	*/
 	printf("\n");
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
-  }
+}
 
-  elem::DistMatrix<double> mat;
   int m_global, n_global;
   int lld;
   double* array;
@@ -151,8 +204,7 @@ private:
 };
 
 
-template<typename T>
-void print_matrix(const rokko::distributed_matrix<elemental33>& mat)
+void print_matrix(const rokko::distributed_matrix& mat)
 {
   // each proc prints it's local_array out, in order
   for (int proc=0; proc<mat.nprocs; ++proc) {

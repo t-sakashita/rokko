@@ -45,7 +45,8 @@ extern "C" {
 
 namespace rokko {
 
-class grid : private boost::noncopyable
+  template<typename T>
+  class grid : private boost::noncopyable
 {
 public:
   grid(MPI_Comm& comm)

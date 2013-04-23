@@ -9,17 +9,22 @@
 
 using namespace std;
 
-#include <rokko/grid_elemental.hpp>
-#include <rokko/distributed_matrix_elemental.hpp>
+#include <rokko/grid_elemental_test.hpp>
+//#include <rokko/distributed_matrix.hpp>
+//#include <rokko/distributed_matrix_elemental.hpp>
+#include <rokko/distributed_matrix_elemental_test.hpp>
+
 //#include <rokko/pblas.hpp>
-#include <rokko/collective_eigenK.hpp>
+#include <rokko/collective_eigenK_test.hpp>
+//#include <rokko/collective_eigenK.hpp>
 #include <rokko/frank_matrix.hpp>
 #include <rokko/elemental_rokko.hpp>
 #include <rokko/sort_eigenpairs.hpp>
 
 //typedef Eigen::MatrixXd matrix_type;
 
-void generate_matrix_123(rokko::distributed_matrix& mat)
+template<typename T>
+void generate_matrix_123(rokko::distributed_matrix<T>& mat)
 {
   for(int local_i=0; local_i<mat.m_local; ++local_i) {
     for(int local_j=0; local_j<mat.n_local; ++local_j) {
@@ -35,13 +40,13 @@ int main(int argc, char *argv[])
   elem::Initialize(argc, argv);
   //MPI_Init(&argc, &argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
+  rokko::grid<elemental> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
   const int dim = 10;
 
-  rokko::distributed_matrix frank_mat(dim, dim, g);
+  rokko::distributed_matrix<elemental> frank_mat(dim, dim, g);
 
   rokko::generate_frank_matrix_local(frank_mat);
   //rokko::generate_frank_matrix_global(frank_mat);
@@ -59,7 +64,7 @@ int main(int argc, char *argv[])
 
 
   Eigen::VectorXd w(dim);
-  rokko::distributed_matrix Z(dim, dim, g);
+  rokko::distributed_matrix<elemental> Z(dim, dim, g);
 
   rokko::elemental::diagonalize(frank_mat, w, Z);
 
@@ -70,7 +75,7 @@ int main(int argc, char *argv[])
   Eigen::MatrixXd eigvec_sorted(dim, dim);
   Eigen::VectorXd eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
-  Z.print();
+  //Z.print();
   if (myrank == root) {
     cout << "eigvec:" << endl << eigvec_global << endl;
   }
