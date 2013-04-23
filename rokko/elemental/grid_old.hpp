@@ -2,24 +2,24 @@
 #define ROKKO_GRID_ELEMENTAL_H
 
 #include <cmath>
-//#include <mpi.h>
-#include <new>
+#include <mpi.h>
 
-#include "elemental.hpp"
+#include <rokko/elemental/elemental.hpp>
 
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 
+#include "../grid.hpp"
 
-#include "grid.hpp"
-
-typedef struct
-{
-} elemental;
 
 namespace rokko {
 
-  template<>
-  class grid<elemental> : private boost::noncopyable
+namespace elemental {
+
+  rokko::Initialize
+
+template<>
+class grid<elemental> : private boost::noncopyable
 {
 public:
   grid(MPI_Comm& comm) //: elem_grid(comm)
@@ -36,9 +36,14 @@ public:
     }
     nprow = nprocs / npcol;
 
-    elem_grid = new elem::Grid(comm, nprow, npcol);
+    elem_grid.reset(new elem::Grid(comm, nprow, npcol));
     myrow = elem_grid->Row();
     mycol = elem_grid->Col();
+  }
+
+  boost::shared_ptr<const elem::Grid> get_elem_grid() const
+  {
+    return elem_grid;
   }
 
   ~grid()
@@ -48,8 +53,8 @@ public:
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
-  elem::Grid* elem_grid;
 private:
+  boost::shared_ptr<elem::Grid> elem_grid;
 
   int info;
 

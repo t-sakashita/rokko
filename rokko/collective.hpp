@@ -303,7 +303,7 @@ int gather(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, in
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
-  double* local_array = mat.array;
+  double* local_array = mat.get_array();
 
   int array_of_psizes[2] = {0, 0};  // initial values should be 0
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
@@ -400,7 +400,7 @@ int scatter(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, i
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
-  double* local_array = mat.array;
+  double* local_array = mat.get_array();
 
   int array_of_psizes[2] = {0, 0};  // initial values should be 0
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);

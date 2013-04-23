@@ -1,28 +1,22 @@
 #ifndef ROKKO_DISTRIBUTED_ELEMENTAL_H
 #define ROKKO_DISTRIBUTED_ELEMENTAL_H
 
-
 #include <cstdlib>
-//#include <mpi.h>
-#include <rokko/grid.hpp>
+#include <rokko/elemental/grid.hpp>
 
 #include "elemental.hpp"
 
 #include "distributed_matrix_test.hpp"
 
-//typedef struct
-//{
-//} elemental;
-
 namespace rokko {
 
 template<>
-class distributed_matrix<elemental>
+class distributed_matrix<rokko::elemental>
 {
 public:
-  // torus-wrap distribution used in EigenK and Elemental
-  distributed_matrix(int m_global, int n_global, const grid<elemental>& g)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), mat(m_global, n_global, *(g.elem_grid))
+  // torus-wrap distribution used in Elemental
+  distributed_matrix(int m_global, int n_global, const grid<rokko::elemental>& g)
+    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), mat(m_global, n_global, *(g.get_elem_grid()))
   {
     //m_local = LocalLength(m_global, myrow, nprow);
     //n_local = LocalLength(n_global, mycol, npcol);
@@ -38,6 +32,11 @@ public:
   {
     //mat.~DistMatrix();
     //std::cout << "Destructor ~DistMatrix" << endl;
+  }
+
+  double* get_array()
+  {
+    return mat.Buffer();
   }
 
   int translate_l2g_row(const int& local_i) const
@@ -154,7 +153,7 @@ private:
 
 
 template<>
-void print_matrix(const rokko::distributed_matrix<elemental>& mat)
+void print_matrix(const rokko::distributed_matrix<rokko::elemental>& mat)
 {
   // each proc prints it's local_array out, in order
   for (int proc=0; proc<mat.nprocs; ++proc) {

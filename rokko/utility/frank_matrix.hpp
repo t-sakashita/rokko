@@ -6,7 +6,7 @@
 namespace rokko {
 
   template<typename T>
-  void generate_frank_matrix_local(rokko::distributed_matrix<T>& mat)
+  void generate_frank_matrix(rokko::distributed_matrix<T>& mat)
 {
   for(int local_i=0; local_i<mat.m_local; ++local_i) {
     for(int local_j=0; local_j<mat.n_local; ++local_j) {
