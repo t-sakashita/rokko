@@ -16,7 +16,7 @@ class distributed_matrix<rokko::elemental>
 public:
   // torus-wrap distribution used in Elemental
   distributed_matrix(int m_global, int n_global, grid<rokko::elemental>& g_in)
-    : m_global(m_global), n_global(n_global), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), g(g_in),mat(m_global, n_global, *(g_in.get_elem_grid()))
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in),mat(m_global, n_global, *(g_in.get_elem_grid()))
   {
     //m_local = LocalLength(m_global, myrow, nprow);
     //n_local = LocalLength(n_global, mycol, npcol);
