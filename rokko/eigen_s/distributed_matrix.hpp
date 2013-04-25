@@ -1,53 +1,28 @@
-#ifndef ROKKO_DISTRIBUTED_H
-#define ROKKO_DISTRIBUTED_H
+#ifndef ROKKO_EIGEN_S_DISTRIBUTED_MATRIX_HPP
+#define ROKKO_EIGEN_S_DISTRIBUTED_MATRIX_HPP
 
-#define eigen_init_wrapper eigen_init_wrapper_
-#define eigen_free_wrapper eigen_free_wrapper_
-#define CSTAB_get_optdim cstab_get_optdim_  // オブジェクトファイルでは小文字に変換される
-
-extern "C" {
-  void eigen_init_wrapper(int&, int&, int&);
-  void eigen_free_wrapper(int&);
-  void CSTAB_get_optdim(int&, int&, int&, int&, int&);
-}
-
-extern "C" struct
-{
-  int   my_col, size_of_col, mpi_comm_col,
-    my_row, size_of_row, mpi_comm_row,
-    p0_      ,q0_      , n_common,
-    diag_0, diag_1;
-} cycl2d_;
-
-#include <cstdlib>
 #include <mpi.h>
-#include <rokko/grid.hpp>
+#include <cstdlib>
+
+#include <rokko/eigen_s/eigen_s.hpp>
+#include <rokko/eigen_s/grid.hpp>
+#include "../distributed_matrix.hpp"
 
 namespace rokko {
 
-class distributed_matrix
+template<>
+class distributed_matrix<rokko::eigen_s>
 {
 public:
   // torus-wrap distribution used in EigenK and Elemental
-  distributed_matrix(int m_global, int n_global, const grid& g)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  distributed_matrix(int m_global, int n_global, const grid<rokko::eigen_s>& g_in)
+    : m_global(m_global), n_global(n_global), g(g_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt)
   {
-    // initialization of eigen_s
-    int size_of_col_local, size_of_row_local;
-    int ndims = 2;
-    eigen_init_wrapper(ndims, size_of_col_local, size_of_row_local);
-
-    int nprow = cycl2d_.size_of_row;
-    int npcol = cycl2d_.size_of_col;
-    int myrow = cycl2d_.my_row;
-    int mycol = cycl2d_.my_col;
-    //cout << "NPROW=" << cycl2d_.size_of_row << "  NPCOL=" << cycl2d_.size_of_col  << endl;
-
     int n = m_global;
     int nx = ((n-1)/nprow+1);
     int i1 = 6, i2 = 16*4, i3 = 16*4*2, nm;
     CSTAB_get_optdim(nx, i1, i2, i3, nm);  // return an optimized (possiblly) leading dimension of local block-cyclic matrix to nm.
-    int para_int = 0;   eigen_free_wrapper(para_int);
+    //int para_int = 0;   eigen_free_wrapper(para_int);
 
     int NB  = 64+32;
     int nmz = ((n-1)/nprow+1);
@@ -96,6 +71,11 @@ public:
     //cout << "Destructor ~Distributed_Matrix_EigenK()" << endl;
     delete[] array;
     array = NULL;
+  }
+
+  double* get_array()
+  {
+    return array;
   }
 
   int translate_l2g_row(const int& local_i) const
@@ -197,14 +177,15 @@ public:
   int myrank, nprocs;
   int myrow, mycol;
   int ictxt, nprow, npcol;
-  const grid& g;
+  const grid<rokko::eigen_s>& g;
 
 private:
   int info;
 };
 
 
-void print_matrix(const rokko::distributed_matrix& mat)
+template<>
+void print_matrix(const rokko::distributed_matrix<rokko::eigen_s>& mat)
 {
   // each proc prints it's local_array out, in order
   for (int proc=0; proc<mat.nprocs; ++proc) {
@@ -226,5 +207,6 @@ void print_matrix(const rokko::distributed_matrix& mat)
 
 } // namespace rokko
 
-#endif // ROKKO_DISTRIBUTED_H
+#endif // ROKKO_EIGEN_S_DISTRIBUTED_MATRIX_HPP
+
 

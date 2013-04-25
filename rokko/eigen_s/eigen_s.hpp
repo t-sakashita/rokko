@@ -1,7 +1,6 @@
 #ifndef ROKKO_EIGEN_S_H
 #define ROKKO_EIGEN_S_H
 
-#include <mpi.h>
 
 #define eigen_init_wrapper eigen_init_wrapper_
 #define eigen_free_wrapper eigen_free_wrapper_
@@ -22,31 +21,20 @@ extern "C" {
 }
 
 
-namespace rokko {
-namespace eigen_s {
-
-template <class MATRIX, class VECTOR>
-void diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs, bool flag_eigvecs)
+extern "C" struct
 {
-  int m = 32;  // block_size
+  int   my_col, size_of_col, mpi_comm_col,
+    my_row, size_of_row, mpi_comm_row,
+    p0_      ,q0_      , n_common,
+    diag_0, diag_1;
+} cycl2d_;
 
-  int iflag;
-  if (flag_eigvecs)
-    iflag = 0;
-  else
-    iflag = 1;
+namespace rokko {
 
-  double start, end;
-  MPI_Barrier(MPI_COMM_WORLD);
-  start = MPI_Wtime();
+struct eigen_s
+{
+};
 
-  eigen_s_(mat.m_global, mat.array, mat.lld, &eigvals[0], eigvecs.array, mat.lld, m, iflag);
-
-  MPI_Barrier(MPI_COMM_WORLD);
-  end = MPI_Wtime();
 }
-
-} // namespace eigen_s
-} // namespace rokko
 
 #endif // ROKKO_EIGEN_S_H

@@ -67,14 +67,12 @@ void create_struct_local_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Dat
   }
 
   // print out struct of local matrix
-  /*
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << endl;
-      printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
+      printf("eigen_K local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
   }
-  */
 
   MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);
@@ -133,14 +131,12 @@ void create_struct_global_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Da
   */
 
   // print out struct of local matrix
-  /*
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << endl;
-      printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
+      printf("eigen_K global Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
   }
-  */
 
   MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);

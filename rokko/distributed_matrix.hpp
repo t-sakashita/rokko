@@ -1,8 +1,9 @@
 #ifndef ROKKO_DISTRIBUTED_H
 #define ROKKO_DISTRIBUTED_H
 
+
 #include <cstdlib>
-#include <mpi.h>
+//#include <mpi.h>
 #include <rokko/grid.hpp>
 
 namespace rokko {
@@ -11,7 +12,7 @@ template<typename T>
 class distributed_matrix
 {
 public:
-  distributed_matrix(int m_global, int n_global, const grid& g)
+  distributed_matrix(int m_global, int n_global, const grid<T>& g)
     : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
   {
     // ローカル行列の形状を指定
@@ -47,7 +48,7 @@ public:
     }
   }
 
-  distributed_matrix(int m_global, int n_global, const grid& g, bool mb)
+  distributed_matrix(int m_global, int n_global, const grid<T>& g, bool mb)
     : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
   {
     // ローカル行列の形状を指定
@@ -165,7 +166,7 @@ public:
   int myrank, nprocs;
   int myrow, mycol;
   int ictxt, nprow, npcol;
-  const grid& g;
+  const grid<T>& g;
 
 private:
   int info;

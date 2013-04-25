@@ -7,31 +7,34 @@
 
 using namespace std;
 
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix_eigenK.hpp>
-#include <rokko/eigen_s.hpp>
-#include <rokko/pblas.hpp>
+#include <rokko/eigen_s/eigen_s.hpp>
+#include <rokko/eigen_s/core.hpp>
+#include <rokko/eigen_s/grid.hpp>
+#include <rokko/eigen_s/distributed_matrix.hpp>
+#include <rokko/eigen_s/diagonalize.hpp>
 
-#include <rokko/collective_eigenK.hpp>
-#include <rokko/frank_matrix.hpp>
+#include <rokko/pblas/pblas.hpp>
 
-//typedef Eigen::MatrixXd matrix_type;
+#include <rokko/collective.hpp>
+#include <rokko/utility/frank_matrix.hpp>
 
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
 int main (int argc, char *argv[])
 {
+  typedef rokko::eigen_s solver;
   MPI_Init(&argc, &argv);
+  rokko::Initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
+  rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
   const int dim = 10;
 
-  rokko::distributed_matrix mat(dim, dim, g);
-  rokko::distributed_matrix Z(dim, dim, g);
+  rokko::distributed_matrix<solver> mat(dim, dim, g);
+  rokko::distributed_matrix<solver> Z(dim, dim, g);
 
   //rokko::generate_frank_matrix_local(mat);
   rokko::generate_frank_matrix_global(mat);
@@ -40,22 +43,13 @@ int main (int argc, char *argv[])
 
   //rokko::scatter(frank_mat, mat_global, root);
   rokko::gather(mat, mat_global, root);
-  frank_mat.print();
+  mat.print();
   //rokko::print_matrix(mat_frank);
   if (myrank == root)
-    cout << "global_mat_123:" << endl << frank_mat_global << endl;
-
-  /*
-  double* w = new double[n];
-  if (w==NULL) {
-    cerr << "error: w" << endl;
-    return 1;
-  }
-  */
+    cout << "global_mat:" << endl << mat_global << endl;
 
   Eigen::VectorXd w(dim);
-
-  rokko::eigen_s::diagonalize(frank_mat, w, Z, true);
+  rokko::diagonalize<solver>(mat, w, Z, true);
 
   Z.print();
   // gather of eigenvectors
@@ -63,7 +57,7 @@ int main (int argc, char *argv[])
   Eigen::MatrixXd eigvec_sorted(dim, dim);
   Eigen::VectorXd eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
-  //rokko::print_matrix(mat_frank);
+  //rokko::print_matrix(mat);
   if (myrank == root) {
     cout << "eigvec:" << endl << eigvec_global << endl;
   }
@@ -107,7 +101,7 @@ int main (int argc, char *argv[])
 	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
       //<< eigvec_global.transpose() * eigvec_global << endl;   // Is it equal to indentity matrix?
 
-    Eigen::MatrixXd A_global_matrix = frank_mat_global;
+    Eigen::MatrixXd A_global_matrix = mat_global;
     cout << "residual := A x - lambda x = " << endl
          << A_global_matrix * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
     cout << "Are all the following values equal to some eigenvalue = " << endl
@@ -124,9 +118,6 @@ int main (int argc, char *argv[])
     //cout << "iter=" << iter << endl;
     //ofs << "iter=" << iter << endl;
   }
-
-  delete [] w;
-  delete [] q;
   */
 
   MPI_Finalize();

@@ -6,7 +6,7 @@
 
 #include "elemental.hpp"
 
-#include "distributed_matrix_test.hpp"
+#include "../distributed_matrix.hpp"
 
 namespace rokko {
 
