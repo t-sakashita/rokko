@@ -10,8 +10,8 @@ using namespace std;
 #include <rokko/elemental/grid.hpp>
 #include <rokko/elemental/distributed_matrix.hpp>
 #include <rokko/elemental/diagonalize.hpp>
-//#include <rokko/collective.hpp>
-#include <rokko/collective_eigenK.hpp>
+#include <rokko/collective.hpp>
+//#include <rokko/collective_eigenK.hpp>
 
 
 #include <rokko/utility/frank_matrix.hpp>
@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
   rokko::Initialize<solver>(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-
   rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
 

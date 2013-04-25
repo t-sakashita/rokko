@@ -30,16 +30,16 @@ int main (int argc, char *argv[])
   const int root = 0;
   const int dim = 10;
 
-  rokko::distributed_matrix frank_mat(dim, dim, g);
+  rokko::distributed_matrix mat(dim, dim, g);
   rokko::distributed_matrix Z(dim, dim, g);
 
-  //rokko::generate_frank_matrix_local(frank_mat);
-  rokko::generate_frank_matrix_global(frank_mat);
-  Eigen::MatrixXd frank_mat_global;
-  //Eigen::MatrixXd frank_mat_global(dim, dim);
+  //rokko::generate_frank_matrix_local(mat);
+  rokko::generate_frank_matrix_global(mat);
+  Eigen::MatrixXd mat_global;
+  //Eigen::MatrixXd mat_global(dim, dim);
 
-  //rokko::scatter(frank_mat, frank_mat_global, root);
-  rokko::gather(frank_mat, frank_mat_global, root);
+  //rokko::scatter(frank_mat, mat_global, root);
+  rokko::gather(mat, mat_global, root);
   frank_mat.print();
   //rokko::print_matrix(mat_frank);
   if (myrank == root)

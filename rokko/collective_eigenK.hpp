@@ -169,7 +169,7 @@ void create_struct_global_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Da
 
 // struct of global matrix
 template<typename T>
-void create_struct_global(const rokko::distributed_matrix<T>& mat, MPI_Datatype& global_array_type, int proc)
+void create_struct_global_general(const rokko::distributed_matrix<T>& mat, MPI_Datatype& global_array_type, int proc)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -387,6 +387,29 @@ void copy_l2g_root(const rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat
 }
 
 template<typename T>
+void create_struct_local(rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type)
+{
+  if ((mat.mb == 1) && (mat.nb == 1)) {
+    create_struct_local_eigenK(mat, local_array_type);
+  }
+  else {
+    create_struct_local_general(mat, local_array_type);
+  }
+}
+
+template<typename T>
+void create_struct_global(const rokko::distributed_matrix<T>& mat, MPI_Datatype& global_array_type, int proc)
+{
+  if ((mat.mb == 1) && (mat.nb == 1)) {
+    create_struct_global_eigenK(mat, global_array_type, proc);
+  }
+  else {
+    create_struct_global_general(mat, global_array_type, proc);
+  }
+}
+
+
+template<typename T>
 int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int root)
 {
   double* global_array;
@@ -419,7 +442,7 @@ int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int r
   double* local_array = mat.get_array();
 
   MPI_Datatype local_array_type, global_array_type;
-  create_struct_local_eigenK(mat, local_array_type);
+  create_struct_local(mat, local_array_type);
 
   int rank_recv = root;  // プロセスrank_recvに集約
   int sendcount = 1;
@@ -435,7 +458,7 @@ int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int r
       }
     }
     if ((proc != root) &&  (myrank == root)) {
-      create_struct_global_eigenK(mat, global_array_type, proc);
+      create_struct_global(mat, global_array_type, proc);
       ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
       if (ierr != 0) {
 	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
@@ -447,7 +470,7 @@ int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int r
     }
 
     if ((proc == root) && (myrank == root)) {
-      create_struct_global_eigenK(mat, global_array_type, root);
+      create_struct_global(mat, global_array_type, root);
       ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
       	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
@@ -503,13 +526,13 @@ int scatter(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int 
   double* local_array = mat.get_array();
 
   MPI_Datatype local_array_type, global_array_type;
-  create_struct_local_eigenK(mat, local_array_type);
+  create_struct_local(mat, local_array_type);
 
   int sendcount = 1, recvcount = 1;
 
   for (int proc = 0; proc < nprocs; ++proc) {
     if ((proc != root) &&  (myrank == root)) {
-      create_struct_global_eigenK(mat, global_array_type, proc);
+      create_struct_global(mat, global_array_type, proc);
       ierr = MPI_Send(global_array, sendcount, global_array_type, proc, 0, cart_comm);
       if (ierr != 0) {
 	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
@@ -530,7 +553,7 @@ int scatter(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int 
     }
 
     if ((proc == root) && (myrank == root)) {
-      create_struct_global_eigenK(mat, global_array_type, root);
+      create_struct_global(mat, global_array_type, root);
       ierr = MPI_Sendrecv(global_array, sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
       printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
