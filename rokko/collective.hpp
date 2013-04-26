@@ -160,7 +160,7 @@ void create_struct_local_general(const rokko::distributed_matrix<T>& mat, MPI_Da
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
   int lld = mat.lld;
 
-  int count_max = m_local;
+  int count_max = n_local;
   int*          array_of_blocklengths = new int[count_max];
   MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
   MPI_Datatype* array_of_types = new MPI_Datatype[count_max];
@@ -176,14 +176,12 @@ void create_struct_local_general(const rokko::distributed_matrix<T>& mat, MPI_Da
   }
 
   // print out struct of local matrix
-  /*
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << endl;
       printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
   }
-  */
 
   MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);

@@ -30,4 +30,14 @@ extern "C" {
   void pdlaprnt_(const int& m, const int& n, const double* A, const int& ia, const int& ja, const int* descA, const int& irprnt, const int& icprnt, char* cmatnm, const int& nout, double* work);
 }
 
+
+namespace rokko {
+
+struct scalapack
+{
+};
+
+}
+
 #endif // ROKKO_SCALAPACK_HPP
+

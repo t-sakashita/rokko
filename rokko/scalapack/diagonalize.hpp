@@ -1,5 +1,5 @@
-#ifndef ROKKO_SCALAPACK_H
-#define ROKKO_SCALAPACK_H
+#ifndef ROKKO_SCALAPACK_DIAGONALIZE_H
+#define ROKKO_SCALAPACK_DIAGONALIZE_H
 
 #include <mpi.h>
 
@@ -41,10 +41,14 @@ extern "C" {
 }
 
 namespace rokko {
-namespace scalapack {
 
-template <class MATRIX, class VECTOR>
-int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
+template<typename T>
+int diagonalize(rokko::distributed_matrix<T>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<T>& eigvecs)
+{
+}
+
+template<>
+int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::scalapack>& eigvecs)
 {
   int dim = mat.m_global;
   //cout << "pdsyev_dim=" << dim << endl;
@@ -108,7 +112,6 @@ int diagonalize(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
   return info;
 }
 
-} // namespace scalapack
 } // namespace rokko
 
-#endif // ROKKO_SCALAPACK_H
+#endif // ROKKO_SCALAPACK_DIAGONALIZE_H

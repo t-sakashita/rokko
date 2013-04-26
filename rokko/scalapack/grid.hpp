@@ -12,7 +12,7 @@
 namespace rokko {
 
 template<>
-class grid<rokko::blacs> : private boost::noncopyable
+class grid<rokko::scalapack> : private boost::noncopyable
 {
 public:
   grid(MPI_Comm& comm)
