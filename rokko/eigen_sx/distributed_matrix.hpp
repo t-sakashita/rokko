@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <cstdlib>
 
+#include <rokko/scalapack/blacs.hpp>
 #include <rokko/eigen_sx/eigen_sx.hpp>
 #include <rokko/eigen_sx/grid.hpp>
 #include "../distributed_matrix.hpp"
@@ -15,25 +16,14 @@ class distributed_matrix<rokko::eigen_sx>
 {
 public:
   // torus-wrap distribution used in EigenK and Elemental
-  distributed_matrix(int m_global, int n_global, const grid<rokko::eigen_sx>& g)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  distributed_matrix(int m_global, int n_global, const grid<rokko::eigen_sx>& g_in)
+    : m_global(m_global), n_global(n_global), g(g_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol)
   {
-    // initialization of eigen_s
-    int size_of_col_local, size_of_row_local;
-    int ndims = 2;
-    eigen_init_wrapper(ndims, size_of_col_local, size_of_row_local);
-
-    int nprow = cycl2d_.size_of_row;
-    int npcol = cycl2d_.size_of_col;
-    int myrow = cycl2d_.my_row;
-    int mycol = cycl2d_.my_col;
-    //cout << "NPROW=" << cycl2d_.size_of_row << "  NPCOL=" << cycl2d_.size_of_col  << endl;
-
     int n = m_global;
     int nx = (n-1)/nprow+1;
     int i1 = 6, i2 = 16 * 2, i3 = 16 * 4, nm;
     CSTAB_get_optdim(nx, i1, i2, i3, nm);  // return an optimized (possiblly) leading dimension of local block-cyclic matrix to nm.
-    int para_int = 0;   eigen_free_wrapper(para_int);
+    //int para_int = 0;   eigen_free_wrapper(para_int);
 
     int NB  = 64 + 32;
     int nmz = ((n-1)/nprow+1);
@@ -89,7 +79,6 @@ public:
     }
     for (int ii=0; ii<larray; ++ii)
       array[ii] = -3;
-
   }
 
   ~distributed_matrix()
@@ -202,10 +191,11 @@ public:
   // variables of class Grid
   int myrank, nprocs;
   int myrow, mycol;
-  int ictxt, nprow, npcol;
+  int nprow, npcol;
   const grid<rokko::eigen_sx>& g;
 
   int nme;  // only for eigen_sx
+
 private:
   int info;
 };

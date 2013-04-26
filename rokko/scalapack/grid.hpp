@@ -43,7 +43,7 @@ public:
 
   ~grid()
   {
-    //blacs_gridexit_(&ictxt);
+    blacs_gridexit_(&ictxt);
   }
 
   int myrank, nprocs;

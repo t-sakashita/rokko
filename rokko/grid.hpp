@@ -21,7 +21,6 @@ public:
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
-  int ictxt;
 private:
 
   int info;

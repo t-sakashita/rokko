@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <cstdlib>
 
+#include <rokko/scalapack/blacs.hpp>
 #include <rokko/eigen_s/eigen_s.hpp>
 #include <rokko/eigen_s/grid.hpp>
 #include "../distributed_matrix.hpp"
@@ -16,7 +17,7 @@ class distributed_matrix<rokko::eigen_s>
 public:
   // torus-wrap distribution used in EigenK and Elemental
   distributed_matrix(int m_global, int n_global, const grid<rokko::eigen_s>& g_in)
-    : m_global(m_global), n_global(n_global), g(g_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt)
+    : m_global(m_global), n_global(n_global), g(g_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol)
   {
     int n = m_global;
     int nx = ((n-1)/nprow+1);
@@ -34,7 +35,7 @@ public:
     cout << "nmw=" << nmw << endl;
     int larray = std::max(nmz,nm) * nmw;
 
-    // ローカル行列の形状を指定
+    // calculate sizes of my proc's local part of distributed matrix
     mb = 1;
     nb = 1;
     const int ZERO=0, ONE=1;
@@ -63,7 +64,6 @@ public:
     }
     for (int ii=0; ii<larray; ++ii)
       array[ii] = -3;
-
   }
 
   ~distributed_matrix()
@@ -176,7 +176,7 @@ public:
   // variables of class Grid
   int myrank, nprocs;
   int myrow, mycol;
-  int ictxt, nprow, npcol;
+  int nprow, npcol;
   const grid<rokko::eigen_s>& g;
 
 private:

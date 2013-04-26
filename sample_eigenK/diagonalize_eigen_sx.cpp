@@ -13,7 +13,7 @@ using namespace std;
 #include <rokko/eigen_sx/distributed_matrix.hpp>
 #include <rokko/eigen_sx/diagonalize.hpp>
 
-#include <rokko/pblas/pblas.hpp>
+//#include <rokko/pblas/pblas.hpp>
 
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
@@ -32,7 +32,7 @@ int main (int argc, char *argv[])
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
-  const int dim = 100;
+  const int dim = 10;
 
   rokko::distributed_matrix<solver> mat(dim, dim, g);
   rokko::distributed_matrix<solver> Z(dim, dim, g);

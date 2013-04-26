@@ -13,7 +13,7 @@ using namespace std;
 #include <rokko/eigen_s/distributed_matrix.hpp>
 #include <rokko/eigen_s/diagonalize.hpp>
 
-#include <rokko/pblas/pblas.hpp>
+//#include <rokko/pblas/pblas.hpp>
 
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>

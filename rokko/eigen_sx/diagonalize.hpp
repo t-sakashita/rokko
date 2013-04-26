@@ -43,7 +43,7 @@ void diagonalize(rokko::distributed_matrix<rokko::eigen_sx>& mat, double* eigval
   MPI_Barrier(MPI_COMM_WORLD);
   start = MPI_Wtime();
 
-  eigen_sx_(mat.m_global, mat.array, mat.lld, &eigvals[0], eigvecs.array, d, e, mat.nme, m, iflag);
+  eigen_sx_(mat.m_global, mat.array, mat.lld, eigvals, eigvecs.array, d, e, mat.nme, m, iflag);
 
   MPI_Barrier(MPI_COMM_WORLD);
   end = MPI_Wtime();

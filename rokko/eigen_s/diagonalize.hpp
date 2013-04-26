@@ -34,7 +34,7 @@ void diagonalize(rokko::distributed_matrix<rokko::eigen_s>& mat, double* eigvals
   start = MPI_Wtime();
 
   //eigen_s_(mat.m_global, mat.array, mat.lld, &eigvals[0], double_null_ptr, mat.lld, m, iflag);
-  eigen_s_(mat.m_global, mat.array, mat.lld, &eigvals[0], eigvecs.array, mat.lld, m, iflag);
+  eigen_s_(mat.m_global, mat.array, mat.lld, eigvals, eigvecs.array, mat.lld, m, iflag);
 
   MPI_Barrier(MPI_COMM_WORLD);
   end = MPI_Wtime();
