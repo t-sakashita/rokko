@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(TESTS  diagonalize_scalapack)
+set(TESTS  diagonalize_scalapack diagonalize_scalapack_noeigvecs)
 # frank_old diagonalize2)
 
 foreach(name ${TESTS})
