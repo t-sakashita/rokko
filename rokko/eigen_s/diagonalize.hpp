@@ -13,8 +13,13 @@ void diagonalize(rokko::distributed_matrix<T>& mat, Eigen::VectorXd& eigvals, ro
 {
 }
 
+template<typename T>
+void diagonalize(rokko::distributed_matrix<T>& mat, double* eigvals, rokko::distributed_matrix<T>& eigvecs, bool flag_eigvecs)
+{
+}
+
 template<>
-void diagonalize(rokko::distributed_matrix<rokko::eigen_s>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::eigen_s>& eigvecs, bool flag_eigvecs)
+void diagonalize(rokko::distributed_matrix<rokko::eigen_s>& mat, double* eigvals, rokko::distributed_matrix<rokko::eigen_s>& eigvecs, bool flag_eigvecs)
 {
   int m = 32;  // block_size
 
@@ -33,6 +38,13 @@ void diagonalize(rokko::distributed_matrix<rokko::eigen_s>& mat, Eigen::VectorXd
   MPI_Barrier(MPI_COMM_WORLD);
   end = MPI_Wtime();
 }
+
+template<>
+void diagonalize(rokko::distributed_matrix<rokko::eigen_s>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::eigen_s>& eigvecs, bool flag_eigvecs)
+{
+  return diagonalize(mat, &eigvals[0], eigvecs, flag_eigvecs);
+}
+
 
 } // namespace rokko
 

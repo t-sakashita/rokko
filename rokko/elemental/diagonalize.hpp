@@ -6,22 +6,15 @@
 #include "elemental.hpp"
 
 namespace rokko {
-  //namespace elemental {
 
 template<typename T>
 void diagonalize(rokko::distributed_matrix<T>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::elemental>& eigvecs)
-//void diagonalize<T>(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
 {
 }
 
-  template<>
-  //template <class MATRIX, class VECTOR>
-  void diagonalize<rokko::elemental>(rokko::distributed_matrix<rokko::elemental>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::elemental>& eigvecs)
-
- //template <class MATRIX, class VECTOR>
- //void diagonalize<rokko::elemental>(MATRIX& mat, VECTOR& eigvals, MATRIX& eigvecs)
+template<>
+void diagonalize<rokko::elemental>(rokko::distributed_matrix<rokko::elemental>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::elemental>& eigvecs)
 {
-
   //int m = 32;  // block_size
 
   elem::DistMatrix<double,elem::VR,elem::STAR> w(*(mat.g.get_elem_grid()) );
@@ -39,7 +32,7 @@ void diagonalize(rokko::distributed_matrix<T>& mat, Eigen::VectorXd& eigvals, ro
     eigvals(i) = w.Get(i, 0);
 }
 
-  //} // namespace elemental
+
 } // namespace rokko
 
 #endif // ROKKO_ELEMENTAL_DIAGONALIZE_HPP
