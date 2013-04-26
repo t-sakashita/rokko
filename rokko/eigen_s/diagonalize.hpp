@@ -1,5 +1,5 @@
-#ifndef ROKKO_EIGEN_S_DIAGONALIZE_H
-#define ROKKO_EIGEN_S_DIAGONALIZE_H
+#ifndef ROKKO_EIGEN_S_DIAGONALIZE_HPP
+#define ROKKO_EIGEN_S_DIAGONALIZE_HPP
 
 #include <mpi.h>
 
@@ -36,5 +36,5 @@ void diagonalize(rokko::distributed_matrix<rokko::eigen_s>& mat, Eigen::VectorXd
 
 } // namespace rokko
 
-#endif // ROKKO_EIGEN_S_DIAGONALIZE_H
+#endif // ROKKO_EIGEN_S_DIAGONALIZE_HPP
 

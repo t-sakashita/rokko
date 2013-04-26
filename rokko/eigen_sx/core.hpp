@@ -1,7 +1,7 @@
-#ifndef ROKKO_EIGEN_S_CORE_HPP
-#define ROKKO_EIGEN_S_CORE_HPP
+#ifndef ROKKO_EIGEN_SX_CORE_HPP
+#define ROKKO_EIGEN_SX_CORE_HPP
 
-#include <rokko/eigen_s/eigen_s.hpp>
+#include <rokko/eigen_sx/eigen_sx.hpp>
 
 #include <boost/noncopyable.hpp>
 
@@ -10,7 +10,7 @@
 namespace rokko {
 
 template<>
-void Initialize<rokko::eigen_s>(int& argc, char**& argv)
+void Initialize<rokko::eigen_sx>(int& argc, char**& argv)
 {
   int size_of_col_local, size_of_row_local;
   int ndims = 2;
@@ -24,11 +24,11 @@ void Initialize<rokko::eigen_s>(int& argc, char**& argv)
 }
 
 template<>
-void Finalize<rokko::eigen_s>()
+void Finalize<rokko::eigen_sx>()
 {
 }
 
 } // namespace rokko
 
-#endif // ROKKO_EIGEN_S_CORE_HPP
+#endif // ROKKO_EIGEN_SX_CORE_HPP
 

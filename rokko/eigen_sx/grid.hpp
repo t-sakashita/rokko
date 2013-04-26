@@ -1,11 +1,11 @@
-#ifndef ROKKO_EIGEN_S_GRID_H
-#define ROKKO_EIGEN_S_GRID_H
+#ifndef ROKKO_EIGEN_SX_GRID_H
+#define ROKKO_EIGEN_SX_GRID_H
 
 #include <cmath>
 #include <mpi.h>
 #include <boost/noncopyable.hpp>
 
-#include <rokko/eigen_s/eigen_s.hpp>
+#include <rokko/eigen_sx/eigen_sx.hpp>
 #include <rokko/scalapack/blacs.hpp>
 
 #include <rokko/grid.hpp>
@@ -13,7 +13,7 @@
 namespace rokko {
 
 template<>
-class grid<rokko::eigen_s> : private boost::noncopyable
+class grid<rokko::eigen_sx> : private boost::noncopyable
 {
 public:
   grid(MPI_Comm& comm)
@@ -69,4 +69,4 @@ private:
 
 } // namespace rokko
 
-#endif // ROKKO_EIGEN_S_GRID_H
+#endif // ROKKO_EIGEN_SX_GRID_H

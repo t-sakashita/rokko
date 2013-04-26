@@ -17,6 +17,7 @@ using namespace std;
 
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/sort_eigenpairs.hpp>
 
 
 #undef __FUNCT__
@@ -58,35 +59,10 @@ int main (int argc, char *argv[])
   Eigen::VectorXd eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
   //rokko::print_matrix(mat);
+
   if (myrank == root) {
     cout << "eigvec:" << endl << eigvec_global << endl;
-  }
-
-  int* q = new int[dim];
-  if (myrank == root) {
-    // 固有値を（絶対値のではなく）昇順に並べる
-    if (q==NULL) {
-      cerr << "error: q" << endl;
-      return 1;
-    }
-
-    double emax;
-    for (int i=0; i<dim; ++i) q[i] = i;
-    for (int k=0; k<dim; ++k) {
-      emax = w[q[k]];
-      for (int i=k+1; i<dim; ++i) {
-	if (emax < w[q[i]]) {       // 昇順になっていないとき、交換
-	  emax = w[q[i]];
-	  int qq = q[k];
-	  q[k] = q[i];
-	  q[i] = qq;
-	}
-      }
-      eigval_sorted(k) = w[q[k]];
-      eigvec_sorted.col(k) = eigvec_global.col(q[k]);
-      //eigvec_sorted.row(k) = eigvec_global.col(q[k]);
-    }
-
+    rokko::sort_eigenpairs(w, eigvec_global, eigval_sorted, eigvec_sorted);
     cout.precision(20);
     cout << "w=" << endl;
     for (int i=0; i<dim; ++i) {
