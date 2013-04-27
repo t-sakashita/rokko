@@ -29,8 +29,14 @@ int main(int argc, char* argv[])
 
   rokko::distributed_matrix<solver> mat(dim, dim, g);
   rokko::generate_frank_matrix(mat);
-  Eigen::MatrixXd mat_global;
-  rokko::gather(mat, mat_global, root);
+  //rokko::generate_frank_matrix_global(mat);
+  Eigen::MatrixXd mat_global(dim, dim);
+  for(int i=0; i<dim; ++i) {
+    for(int j=0; j<dim; ++j) {
+      mat_global(i, j) = dim * j + i;
+    }
+  }
+  rokko::scatter(mat, mat_global, root);
 
   mat.print();
   if (myrank == root)

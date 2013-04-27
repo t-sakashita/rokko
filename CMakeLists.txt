@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(rokko NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
+include(add_alps_test)
 
 # enable C and C++ compilers
 #enable_language(CXX)
