@@ -24,16 +24,18 @@ using namespace std;
 #define __FUNCT__ "main"
 int main (int argc, char *argv[])
 {
-  typedef rokko::scalapack solver;
+  typedef rokko::scalapack  solver;
   MPI_Init(&argc, &argv);
   rokko::Initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<solver> g(comm);
+  rokko::grid<solver, rokko::grid_col_major<solver> > g(comm);
+  //rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
   const int dim = 10;
 
+  //rokko::distributed_matrix<solver> mat(dim, dim, g);
   rokko::distributed_matrix<solver> mat(dim, dim, g);
   rokko::distributed_matrix<solver> Z(dim, dim, g);
 
@@ -50,7 +52,10 @@ int main (int argc, char *argv[])
     cout << "global_mat:" << endl << mat_global << endl;
 
   Eigen::VectorXd w(dim);
-  rokko::diagonalize<solver>(mat, w, Z);
+  //rokko::diagonalize<solver, rokko::R>(mat, w, Z);
+  //rokko::diagonalize<rokko::R>(mat, w, Z);
+
+  rokko::diagonalize(mat, w, Z);
 
   Z.print();
   // gather of eigenvectors

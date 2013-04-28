@@ -26,7 +26,7 @@
       size_of_row_local = size_of_row
 
       return
-      end subroutine            ! eigen_init_wrapper    
+      end subroutine            ! eigen_init_wrapper
 
 
       subroutine eigen_free_wrapper(flag)
@@ -43,3 +43,4 @@
 
       return
       end subroutine            ! eigen_free_wrapper
+

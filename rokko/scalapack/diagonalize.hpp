@@ -6,33 +6,46 @@
 
 namespace rokko {
 
-template<typename T>
-int diagonalize(rokko::distributed_matrix<T>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<T>& eigvecs)
+/*
+template<typename T, typename GRID_MAJOR>
+int diagonalize(rokko::distributed_matrix<T, GRID_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<T, GRID_MAJOR>& eigvecs)
+//int diagonalize(rokko::distributed_matrix& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix& eigvecs)
 {
+  cout << "pp100" << endl;
+}
+*/
+ /*
+template<typename GRID_MAJOR>
+int diagonalize(rokko::distributed_matrix<rokko::scalapack, GRID_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<rokko:scalapack, GRID_MAJOR>& eigvecs)
+{
+  cout << "pp2"<< endl;
 }
 
-template<typename T>
-int diagonalize(rokko::distributed_matrix<T>& mat, double* eigvals, rokko::distributed_matrix<T>& eigvecs)
+template<typename GRID_MAJOR = rokko::R>
+int diagonalize(rokko::distributed_matrix<GRID_MAJOR>& mat, Eigen::VectorXd& eigvals)
 {
+  cout << "pp3"<< endl;
 }
-
-template<typename T>
-int diagonalize(rokko::distributed_matrix<T>& mat, Eigen::VectorXd& eigvals)
+ */
+/*
+template<typename GRID_MAJOR = rokko::R>
+int diagonalize(rokko::distributed_matrix<rokko:scalapack, GRID_MAJOR>& mat, double* eigvals)
 {
+  cout << "pp4"<< endl;
 }
+*/
 
-template<typename T>
-int diagonalize(rokko::distributed_matrix<T>& mat, double* eigvals)
-{
-}
-
-template<>
+ //template<typename GRID_MAJOR = rokko::R>
 int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigvals)
 {
+  cout << "pp4"<< endl;
+
   int dim = mat.m_global;
   //cout << "pdsyev_dim=" << dim << endl;
 
-  int ictxt = mat.g.ictxt;
+  //int ictxt = mat.ictxt;
+  int ictxt = grid<rokko::scalapack, mat.grid_major_type>(mat.g).ictxt;
+
   const int ZERO=0, ONE=1;
   int desc[9];
   int info;
@@ -48,8 +61,8 @@ int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigval
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
 
-  for (int proc=0; proc<mat.g.nprocs; ++proc) {
-    if (proc == mat.g.myrank) {
+  for (int proc=0; proc<mat.nprocs; ++proc) {
+    if (proc == mat.myrank) {
       cout << "pdsyev:proc=" << proc << " m_global=" << mat.m_global << "  n_global=" << mat.n_global << "  mb=" << mat.mb << "  nb=" << mat.nb << " lld=" << lld << endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
@@ -82,13 +95,15 @@ int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigval
   return info;
 }
 
-template<>
+//template<typename GRID_MAJOR = rokko::R>
 int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigvals, rokko::distributed_matrix<rokko::scalapack>& eigvecs)
 {
+  cout << "pp6"<< endl;
+
   int dim = mat.m_global;
   //cout << "pdsyev_dim=" << dim << endl;
 
-  int ictxt = mat.g.ictxt;
+  int ictxt = mat.ictxt;
   const int ZERO=0, ONE=1;
   int desc[9];
   int info;
@@ -102,8 +117,8 @@ int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigval
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
 
-  for (int proc=0; proc<mat.g.nprocs; ++proc) {
-    if (proc == mat.g.myrank) {
+  for (int proc=0; proc<mat.nprocs; ++proc) {
+    if (proc == mat.myrank) {
       cout << "pdsyev:proc=" << proc << " m_global=" << mat.m_global << "  n_global=" << mat.n_global << "  mb=" << mat.mb << "  nb=" << mat.nb << " lld=" << lld << endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
@@ -136,16 +151,29 @@ int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigval
   return info;
 }
 
-
-template<>
+//template<class GRID_MAJOR = rokko::R>
 int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::scalapack>& eigvecs)
 {
+  cout << "pp7"<< endl;
+
   return diagonalize(mat, &eigvals[0], eigvecs);
 }
 
-template<>
+/*
+template<typename GRID_MAJOR>  // = rokko::R>
+int diagonalize(rokko::distributed_matrix<rokko::scalapack, GRID_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::scalapack, GRID_MAJOR>& eigvecs)
+{
+  cout << "pp7"<< endl;
+
+  return diagonalize(mat, &eigvals[0], eigvecs);
+}
+*/
+
+ //template<typename GRID_MAJOR = rokko::R>
 int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, Eigen::VectorXd& eigvals)
 {
+  cout << "pp8"<< endl;
+
   return diagonalize(mat, &eigvals[0]);
 }
 
