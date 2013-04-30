@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(frank NONE)
+project(rokko NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 
 # enable C and C++ compilers
-#enable_language(CXX)
 enable_language(C CXX Fortran)
 
 find_package(MPI)
