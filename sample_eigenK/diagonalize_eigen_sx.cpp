@@ -26,7 +26,7 @@ int main (int argc, char *argv[])
 {
   typedef rokko::eigen_sx solver;
   MPI_Init(&argc, &argv);
-  rokko::Initialize<solver>(argc, argv);
+  rokko::initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
@@ -96,7 +96,7 @@ int main (int argc, char *argv[])
   }
   */
 
-  MPI_Finalize();
+  MPI_finalize();
   return 0;
 }
 

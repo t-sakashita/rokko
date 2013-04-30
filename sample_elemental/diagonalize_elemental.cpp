@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
   typedef rokko::elemental solver;
 
-  MPI_Init(&argc, &argv);
+  MPI_init(&argc, &argv);
   rokko::Initialize<solver>(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
   }
   */
 
-  rokko::Finalize<solver>();
+  rokko::finalize<solver>();
   MPI_Finalize();
   return 0;
 }

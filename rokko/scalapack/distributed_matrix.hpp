@@ -21,11 +21,11 @@ template<> //, typename GRID_MAJOR>
 class distributed_matrix<rokko::scalapack> //, GRID_MAJOR>
 {
 public:
-  template <typename GRID_MAJOR = rokko::grid_row_major<rokko::scalapack> >
+  template <typename GRID_MAJOR = rokko::grid_row_major>
   distributed_matrix(int m_global, int n_global, const grid<rokko::scalapack, GRID_MAJOR>& g_in)
-    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt), g(g_in)
   {
-    g = (grid<rokko::scalapack, GRID_MAJOR>*)(&g_in);
+    //g = (grid<rokko::scalapack, GRID_MAJOR>*)(&g_in);
 
     // ローカル行列の形状を指定
     mb = m_global / nprow;
@@ -62,7 +62,7 @@ public:
     }
   }
 
-  template <typename GRID_MAJOR = rokko::grid_row_major<rokko::scalapack> >
+  template <typename GRID_MAJOR = rokko::grid_row_major>
   distributed_matrix(int m_global, int n_global, const grid<rokko::scalapack, GRID_MAJOR>& g, bool mb_trans)
     : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol)
   {
@@ -194,9 +194,9 @@ public:
 
   //template<typename GRID_MAJOR>
   //const
-  //grid<rokko::scalapack, GRID_MAJOR>& g;
+  const rokko::grid_base& g;
   //grid<rokko::scalapack>& g;
-  void* g;
+  //void* g;
 
   int lld;
   int ictxt;

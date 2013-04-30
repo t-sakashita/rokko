@@ -8,23 +8,23 @@
 namespace rokko {
 
 template<typename T>
-void Initialize(int& argc, char**& argv)
+void initialize(int& argc, char**& argv)
 {
 }
 
 template<typename T>
-void Finalize()
+void finalize()
 {
 }
 
 template<>
-void Initialize<elemental>(int& argc, char**& argv)
+void initialize<elemental>(int& argc, char**& argv)
 {
   elem::Initialize(argc, argv);
 }
 
 template<>
-void Finalize<elemental>()
+void finalize<elemental>()
 {
   elem::Finalize();
 }

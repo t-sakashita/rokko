@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
 {
   typedef rokko::eigen_s solver;
   MPI_Init(&argc, &argv);
-  rokko::Initialize<solver>(argc, argv);
+  rokko::initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
@@ -80,6 +80,7 @@ int main (int argc, char *argv[])
       << (global_mat * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
   }
 
+  rokko::finalize<solver>();
   MPI_Finalize();
   return 0;
 }

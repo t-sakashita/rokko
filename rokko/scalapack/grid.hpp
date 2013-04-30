@@ -12,35 +12,23 @@
 
 namespace rokko {
 
-template<typename T>
+
+struct grid_base
+{
+};
+
+
 struct grid_row_major
 {
 };
 
 
-template<typename T>
 struct grid_col_major
 {
 };
 
 
-template<>
-struct grid_row_major<rokko::scalapack>
-{
-public:
-  grid_row_major<rokko::scalapack>() : major_char('R') {}
-  char major_char;
-};
-
-template<>
-struct grid_col_major<rokko::scalapack>
-{
-public:
-  grid_col_major<rokko::scalapack>() : major_char('C') {}
-  char major_char;
-};
-
-template<typename T, typename GRID_MAJOR = rokko::grid_row_major<T> >
+template<typename T, typename GRID_MAJOR = rokko::grid_row_major>
 class grid : private boost::noncopyable
 {
 public:
@@ -61,41 +49,14 @@ private:
 
 };
 
-template<typename GRID_MAJOR> // = rokko::R>
-class grid<rokko::scalapack, GRID_MAJOR> : private boost::noncopyable
+template<typename GRID_MAJOR>
+class grid<rokko::scalapack, GRID_MAJOR> : public grid_base //: private boost::noncopyable
 {
 public:
-  //template<typename GRID_MAJOR>
-  //grid<rokko::scalapack, GRID_MAJOR>(MPI_Comm& comm)
-  //{
-  //}
-
-  //template<typename MAJOR>
-  //struct char_major
-  //{
-  //  char major;
-  //}
-
-  /*
-  template<typename MAJOR>
-  struct return_char_major<rokko::R>
-  {
-  public:
-    return_char_major(void) : char_major('R') {}
-    char char_major;
-  };
-  */
-
-
-  //template<>
-  //grid<rokko::scalapack, rokko::R>(MPI_Comm& comm)
   grid<rokko::scalapack, GRID_MAJOR>(MPI_Comm& comm)
   {
-    GRID_MAJOR my_grid_major;
-    cout << "GRID_MAJOR_char=" << my_grid_major.major_char << endl;
-
-    //return_char_major<GRID_MAJOR> my_return_char_major;
-    //char major2 = my_return_char_major.char_major;
+    //GRID_MAJOR my_grid_major;
+    //cout << "GRID_MAJOR_char=" << my_grid_major.major_char << endl;
 
     MPI_Comm_rank(comm, &myrank);
     MPI_Comm_size(comm, &nprocs);
@@ -112,7 +73,7 @@ public:
       npcol = npcol - 1;
     }
     nprow = nprocs / npcol;
-    blacs_gridinit_( ictxt, &my_grid_major.major_char, nprow, npcol ); // ColがMPI_Comm_createと互換
+    blacs_gridinit_( ictxt, "R", nprow, npcol ); // ColがMPI_Comm_createと互換
     //blacs_gridinit_( ictxt, "Row", nprow, npcol );
     blacs_gridinfo_( ictxt, nprow, npcol, myrow, mycol );
 
