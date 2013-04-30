@@ -17,6 +17,9 @@ set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(BEFORE ${EIGEN3_INCLUDE_DIR})
+if (BOOST_INCLUDE_DIR)
+  include_directories(BEFORE ${BOOST_INCLUDE_DIR})
+endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
