@@ -33,6 +33,7 @@ add_subdirectory(sample_scalapack)
 add_subdirectory(test)
 add_subdirectory(sample_eigenK)
 add_subdirectory(sample_elemental)
+add_subdirectory(benchmark)
 
 
 

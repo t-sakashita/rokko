@@ -43,8 +43,8 @@ int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigval
   int dim = mat.m_global;
   //cout << "pdsyev_dim=" << dim << endl;
 
-  //int ictxt = mat.ictxt;
-  int ictxt = grid<rokko::scalapack, mat.grid_major_type>(mat.g).ictxt;
+  int ictxt = mat.ictxt;
+  //int ictxt = grid<rokko::scalapack, rokko::grid_major_type<rokko::scalapack> >(mat.g).ictxt;
 
   const int ZERO=0, ONE=1;
   int desc[9];

@@ -32,6 +32,17 @@ int main (int argc, char *argv[])
   //rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
 
+  std::ofstream ofs;
+  if (myrank == 0) {
+   ofs.open("scalapack_time.txt");
+   if (!ofs) {
+     //#ifdef HAVE_MPI
+     MPI_Abort(MPI_COMM_WORLD, 22) ;
+     //#endif
+   }
+  }
+
+
   const int root = 0;
   const int dim = 10;
 
@@ -55,7 +66,14 @@ int main (int argc, char *argv[])
   //rokko::diagonalize<solver, rokko::grid_row_major>(mat, w, Z);
   //rokko::diagonalize<rokko::grid_row_major>(mat, w, Z);
 
+  // Solve the problem
+  double start, end;
+
+  MPI_Barrier(MPI_COMM_WORLD);
+  start = MPI_Wtime();
   rokko::diagonalize(mat, w, Z);
+  MPI_Barrier(MPI_COMM_WORLD);
+  end = MPI_Wtime();
 
   Z.print();
   // gather of eigenvectors
@@ -84,8 +102,7 @@ int main (int argc, char *argv[])
     cout << "Are all the following values equal to some eigenvalue = " << endl
       << (global_mat * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
   }
-
-  /*
+*
   double time;
   if (rank == 0) {
     time = end - start;
@@ -94,7 +111,6 @@ int main (int argc, char *argv[])
     //cout << "iter=" << iter << endl;
     //ofs << "iter=" << iter << endl;
   }
-  */
 
   MPI_Finalize();
   return 0;

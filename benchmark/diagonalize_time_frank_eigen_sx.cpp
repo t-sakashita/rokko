@@ -4,14 +4,15 @@
 #include <Eigen/Dense>
 
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
-#include <rokko/scalapack/scalapack.hpp>
-#include <rokko/scalapack/core.hpp>
-#include <rokko/scalapack/grid.hpp>
-#include <rokko/scalapack/distributed_matrix.hpp>
-#include <rokko/scalapack/diagonalize.hpp>
+#include <rokko/eigen_sx/eigen_sx.hpp>
+#include <rokko/eigen_sx/core.hpp>
+#include <rokko/eigen_sx/grid.hpp>
+#include <rokko/eigen_sx/distributed_matrix.hpp>
+#include <rokko/eigen_sx/diagonalize.hpp>
 
 #include <rokko/pblas/pblas.hpp>
 
@@ -20,45 +21,70 @@ using namespace std;
 #include <rokko/utility/sort_eigenpairs.hpp>
 
 
-#undef __FUNCT__
-#define __FUNCT__ "main"
 int main (int argc, char *argv[])
 {
-  typedef rokko::scalapack  solver;
+  typedef rokko::eigen_sx  solver;
   MPI_Init(&argc, &argv);
   rokko::Initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<solver, rokko::grid_row_major<solver> > g(comm);
-  //rokko::grid<solver> g(comm);
+  //rokko::grid<solver, rokko::grid_row_major<solver> > g(comm);
+  rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
-
   const int root = 0;
-  const int dim = 10;
 
-  //rokko::distributed_matrix<solver> mat(dim, dim, g);
+  int dim;
+  if (argc > 1) {
+    dim = atoi(argv[1]);
+    cout << "dim=" << dim << endl;
+    if (dim <= 0) {
+      cerr << "error: the specified matrix size is invalid." << endl;
+      MPI_Abort(MPI_COMM_WORLD, 33);
+    }
+  }
+  else {
+    cerr << "error: matrix size is not specified." << endl;
+    MPI_Abort(MPI_COMM_WORLD, 34);
+  }
+
+  ofstream ofs;
+  if (myrank == 0) {
+   ofs.open("eigen_sx_time.txt");
+   if (!ofs) {
+     MPI_Abort(MPI_COMM_WORLD, 22) ;
+   }
+  }
+
+
   rokko::distributed_matrix<solver> mat(dim, dim, g);
   rokko::distributed_matrix<solver> Z(dim, dim, g);
 
   rokko::generate_frank_matrix(mat);
-  Eigen::MatrixXd global_mat;
+  //Eigen::MatrixXd global_mat;
   //Eigen::MatrixXd global_mat(dim, dim);
 
   //rokko::scatter(frank_mat, mat_global, root);
-  rokko::gather(mat, global_mat, root);
-  mat.print();
-
-  if (myrank == root)
-    cout << "global_mat:" << endl << global_mat << endl;
+  //rokko::gather(mat, global_mat, root);
+  //mat.print();
+  //if (myrank == root)
+  //cout << "global_mat:" << endl << global_mat << endl;
 
   Eigen::VectorXd w(dim);
 
   //rokko::diagonalize<solver, rokko::grid_row_major>(mat, w, Z);
   //rokko::diagonalize<rokko::grid_row_major>(mat, w, Z);
 
-  rokko::diagonalize(mat, w, Z);
+  // Solve the problem
+  double start, end;
 
+  MPI_Barrier(MPI_COMM_WORLD);
+  start = MPI_Wtime();
+  rokko::diagonalize<solver>(mat, w, Z, true);
+  MPI_Barrier(MPI_COMM_WORLD);
+  end = MPI_Wtime();
+
+  /*
   Z.print();
-  // gather of eigenvectors
+  // gather eigenvectors
   Eigen::MatrixXd global_eigvec;
   Eigen::MatrixXd eigvec_sorted(dim, dim);
   Eigen::VectorXd eigval_sorted(dim);
@@ -84,17 +110,16 @@ int main (int argc, char *argv[])
     cout << "Are all the following values equal to some eigenvalue = " << endl
       << (global_mat * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
   }
+  */
 
-  /*
   double time;
-  if (rank == 0) {
+  if (myrank == 0) {
     time = end - start;
     cout << "time=" << time << endl;
     ofs << "time=" << time << endl;
     //cout << "iter=" << iter << endl;
     //ofs << "iter=" << iter << endl;
   }
-  */
 
   MPI_Finalize();
   return 0;

@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
     cout << "global_mat:" << endl << mat_global << endl;
 
   Eigen::VectorXd w(dim);
-  rokko::diagonalize<solver>(mat, w);
+  rokko::diagonalize(mat, w);
 
   Z.print();
   // gather of eigenvectors

@@ -523,7 +523,7 @@ int scatter(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int 
 {
   double* global_array;
 
-  if (mat.g.myrank == root) {
+  if (mat.myrank == root) {
     // mat_globalは初期化，値の代入後に呼び出されているから，resizeはしない
     //mat_global.resize(mat.m_global, mat.n_global);
     global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？

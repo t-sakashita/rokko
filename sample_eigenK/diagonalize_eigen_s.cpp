@@ -20,8 +20,6 @@ using namespace std;
 #include <rokko/utility/sort_eigenpairs.hpp>
 
 
-#undef __FUNCT__
-#define __FUNCT__ "main"
 int main (int argc, char *argv[])
 {
   typedef rokko::eigen_s solver;
@@ -37,37 +35,37 @@ int main (int argc, char *argv[])
   rokko::distributed_matrix<solver> mat(dim, dim, g);
   rokko::distributed_matrix<solver> Z(dim, dim, g);
 
-  //rokko::generate_frank_matrix_local(mat);
-  rokko::generate_frank_matrix_global(mat);
-  Eigen::MatrixXd mat_global;
-  //Eigen::MatrixXd mat_global(dim, dim);
+  rokko::generate_frank_matrix(mat);
+  //rokko::generate_frank_matrix_global(mat);
+  Eigen::MatrixXd global_mat;
+  //Eigen::MatrixXd global_mat(dim, dim);
 
   //rokko::scatter(frank_mat, mat_global, root);
-  rokko::gather(mat, mat_global, root);
+  rokko::gather(mat, global_mat, root);
   mat.print();
   //rokko::print_matrix(mat_frank);
   if (myrank == root)
-    cout << "global_mat:" << endl << mat_global << endl;
+    cout << "global_mat:" << endl << global_mat << endl;
 
   Eigen::VectorXd w(dim);
   rokko::diagonalize<solver>(mat, w, Z, true);
 
   Z.print();
   // gather of eigenvectors
-  Eigen::MatrixXd eigvec_global;  //(dim, dim);
+  Eigen::MatrixXd global_eigvec;
   Eigen::MatrixXd eigvec_sorted(dim, dim);
   Eigen::VectorXd eigval_sorted(dim);
-  rokko::gather(Z, eigvec_global, root);
-  //rokko::print_matrix(mat);
+  rokko::gather(Z, global_eigvec, root);
+  rokko::print_matrix(mat);
 
   if (myrank == root) {
-    cout << "eigvec:" << endl << eigvec_global << endl;
-    rokko::sort_eigenpairs(w, eigvec_global, eigval_sorted, eigvec_sorted);
-    cout.precision(20);
-    cout << "w=" << endl;
-    for (int i=0; i<dim; ++i) {
-      cout << w[i] << " ";
-    }
+    cout << "eigvec:" << endl << global_eigvec << endl;
+    rokko::sort_eigenpairs(w, global_eigvec, eigval_sorted, eigvec_sorted);
+    //cout.precision(20);
+    //cout << "w=" << endl;
+    //for (int i=0; i<dim; ++i) {
+    //  cout << w[i] << " ";
+    //}
     cout << endl;
 
     cout << "Computed Eigenvalues= " << eigval_sorted.transpose() << endl;
@@ -75,26 +73,12 @@ int main (int argc, char *argv[])
     cout.precision(3);
     cout << "Check the orthogonality of Eigenvectors:" << endl
 	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
-      //<< eigvec_global.transpose() * eigvec_global << endl;   // Is it equal to indentity matrix?
 
-    Eigen::MatrixXd A_global_matrix = mat_global;
     cout << "residual := A x - lambda x = " << endl
-         << A_global_matrix * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
+         << global_mat * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
     cout << "Are all the following values equal to some eigenvalue = " << endl
-      << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
-    cout << "A_global_matrix=" << endl << A_global_matrix << endl;
+      << (global_mat * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
   }
-
-  /*
-  double time;
-  if (rank == 0) {
-    time = end - start;
-    cout << "time=" << time << endl;
-    ofs << "time=" << time << endl;
-    //cout << "iter=" << iter << endl;
-    //ofs << "iter=" << iter << endl;
-  }
-  */
 
   MPI_Finalize();
   return 0;
