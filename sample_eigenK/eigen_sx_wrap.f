@@ -1,7 +1,7 @@
       subroutine eigen_init_wrapper(ndim, size_of_col_local,
      &size_of_row_local )
 
-      use communication_s, only : eigen_init
+      use communication_sx, only : eigen_init
 
       implicit none
 
@@ -30,7 +30,7 @@
 
 
       subroutine eigen_free_wrapper(flag)
-      use communication_s, only : eigen_free
+      use communication_sx, only : eigen_free
 
       implicit none
 
@@ -43,4 +43,3 @@
 
       return
       end subroutine            ! eigen_free_wrapper
-

@@ -7,13 +7,13 @@
 
 using namespace std;
 
-#include <rokko/eigen_sx/eigen_sx.hpp>
-#include <rokko/eigen_sx/core.hpp>
-#include <rokko/eigen_sx/grid.hpp>
-#include <rokko/eigen_sx/distributed_matrix.hpp>
-#include <rokko/eigen_sx/diagonalize.hpp>
+#include <rokko/scalapack/scalapack.hpp>
+#include <rokko/scalapack/core.hpp>
+#include <rokko/scalapack/grid.hpp>
+#include <rokko/scalapack/distributed_matrix.hpp>
+#include <rokko/scalapack/diagonalize.hpp>
 
-//#include <rokko/pblas/pblas.hpp>
+#include <rokko/pblas/pblas.hpp>
 
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
@@ -24,7 +24,7 @@ using namespace std;
 #define __FUNCT__ "main"
 int main (int argc, char *argv[])
 {
-  typedef rokko::eigen_sx solver;
+  typedef rokko::scalapack solver;
   MPI_Init(&argc, &argv);
   rokko::Initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
     cout << "global_mat:" << endl << mat_global << endl;
 
   Eigen::VectorXd w(dim);
-  rokko::diagonalize<solver>(mat, w, Z, true);
+  rokko::diagonalize(mat, w);
 
   Z.print();
   // gather of eigenvectors

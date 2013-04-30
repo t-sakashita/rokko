@@ -1,25 +1,37 @@
-#ifndef ROKKO_DISTRIBUTED_H
-#define ROKKO_DISTRIBUTED_H
-
+#ifndef ROKKO_SCALAPACK_DISTRIBUTED_MATRIX_HPP
+#define ROKKO_SCALAPACK_DISTRIBUTED_MATRIX_HPP
 
 #include <cstdlib>
 //#include <mpi.h>
-#include <rokko/grid.hpp>
+
+#include <rokko/scalapack/grid.hpp>
+#include <rokko/scalapack/scalapack.hpp>
+
+//#include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
 
-template<typename T>
+template<typename T> //, typename GRID_MAJOR = rokko::R>
 class distributed_matrix
 {
+};
+
+
+template<> //, typename GRID_MAJOR>
+class distributed_matrix<rokko::scalapack> //, GRID_MAJOR>
+{
 public:
-  distributed_matrix(int m_global, int n_global, const grid<T>& g)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  template <typename GRID_MAJOR = rokko::grid_row_major<rokko::scalapack> >
+  distributed_matrix(int m_global, int n_global, const grid<rokko::scalapack, GRID_MAJOR>& g_in)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt)
   {
+    g = (grid<rokko::scalapack, GRID_MAJOR>*)(&g_in);
+
     // ローカル行列の形状を指定
-    mb = m_global / g.nprow;
+    mb = m_global / nprow;
     if (mb == 0) mb = 1;
     //mb = 10;
-    nb = n_global / g.npcol;
+    nb = n_global / npcol;
     if (nb == 0) nb = 1;
     //nb = 10;
     // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
@@ -30,12 +42,14 @@ public:
     m_local = numroc_( m_global, mb, myrow, ZERO, nprow );
     n_local = numroc_( n_global, nb, mycol, ZERO, npcol );
 
+    lld = m_local;
+
     for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == g.myrank) {
+      if (proc == myrank) {
 	std::cout << "proc=" << proc << std::endl;
 	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << g.nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << g.npcol << std::endl;
+	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
+	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
 	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
@@ -48,20 +62,10 @@ public:
     }
   }
 
-  distributed_matrix(int m_global, int n_global, const grid<T>& g, bool mb)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  template <typename GRID_MAJOR = rokko::grid_row_major<rokko::scalapack> >
+  distributed_matrix(int m_global, int n_global, const grid<rokko::scalapack, GRID_MAJOR>& g, bool mb_trans)
+    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol)
   {
-    // ローカル行列の形状を指定
-    /*
-    mb = m_global / g.nprow;
-    if (mb == 0) mb = 1;
-    //mb = 10;
-    nb = n_global / g.npcol;
-    if (nb == 0) nb = 1;
-    //nb = 10;
-    // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    mb = min(mb, nb);
-    */
     mb = 1;
     nb = mb;
 
@@ -94,38 +98,43 @@ public:
     array = NULL;
   }
 
+  double* get_array()
+  {
+    return array;
+  }
+
   int translate_l2g_row(const int& local_i) const
   {
-    return (g.myrow * mb) + local_i + (local_i / mb) * mb * (g.nprow - 1);
+    return (myrow * mb) + local_i + (local_i / mb) * mb * (nprow - 1);
   }
 
   int translate_l2g_col(const int& local_j) const
   {
-    return (g.mycol * nb) + local_j + (local_j / nb) * nb * (g.npcol - 1);
+    return (mycol * nb) + local_j + (local_j / nb) * nb * (npcol - 1);
   }
 
   int translate_g2l_row(const int& global_i) const
   {
     const int local_offset_block = global_i / mb;
-    return (local_offset_block - g.myrow) / g.nprow * mb + global_i % mb;
+    return (local_offset_block - myrow) / nprow * mb + global_i % mb;
   }
 
   int translate_g2l_col(const int& global_j) const
   {
     const int local_offset_block = global_j / nb;
-    return (local_offset_block - g.mycol) / g.npcol * nb + global_j % nb;
+    return (local_offset_block - mycol) / npcol * nb + global_j % nb;
   }
 
   bool is_gindex_myrow(const int& global_i) const
   {
     int local_offset_block = global_i / mb;
-    return (local_offset_block % g.nprow) == g.myrow;
+    return (local_offset_block % nprow) == myrow;
   }
 
   bool is_gindex_mycol(const int& global_j) const
   {
     int local_offset_block = global_j / nb;
-    return (local_offset_block % g.npcol) == g.mycol;
+    return (local_offset_block % npcol) == mycol;
   }
 
   void set_local(int local_i, int local_j, double value)
@@ -137,6 +146,22 @@ public:
   {
     if ((is_gindex_myrow(global_i)) && (is_gindex_mycol(global_j)))
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
+  }
+
+  void calculate_grid(int proc_rank, int& proc_row, int& proc_col) const
+  {
+    proc_row = proc_rank / npcol;
+    proc_col = proc_rank % npcol;
+  }
+
+  int calculate_grid_row(int proc_rank) const
+  {
+    return proc_rank / npcol;
+  }
+
+  int calculate_grid_col(int proc_rank) const
+  {
+    return proc_rank % npcol;
   }
 
   void print() const
@@ -165,15 +190,24 @@ public:
   // variables of class Grid
   int myrank, nprocs;
   int myrow, mycol;
-  int ictxt, nprow, npcol;
-  const grid<T>& g;
+  int nprow, npcol;
+
+  //template<typename GRID_MAJOR>
+  //const
+  //grid<rokko::scalapack, GRID_MAJOR>& g;
+  //grid<rokko::scalapack>& g;
+  void* g;
+
+  int lld;
+  int ictxt;
+  //typedef GRID_MAJOR grid_major_type;
 
 private:
   int info;
 };
 
-template<typename T>
-void print_matrix(const rokko::distributed_matrix<T>& mat)
+
+void print_matrix(const rokko::distributed_matrix<rokko::scalapack>& mat)
 {
   // each proc prints it's local_array out, in order
   for (int proc=0; proc<mat.nprocs; ++proc) {
@@ -194,5 +228,5 @@ void print_matrix(const rokko::distributed_matrix<T>& mat)
 
 } // namespace rokko
 
-#endif // ROKKO_DISTRIBUTED_H
+#endif // ROKKO_SCALAPACK_DISTRIBUTED_MATRIX_HPP
 

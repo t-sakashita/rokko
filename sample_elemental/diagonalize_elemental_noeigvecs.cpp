@@ -36,19 +36,19 @@ int main(int argc, char *argv[])
   rokko::generate_frank_matrix(mat);
 
   //mat.mat.Print("elemental_matrix");
-  Eigen::MatrixXd global_mat;
+  Eigen::MatrixXd mat_global;
 
-  rokko::gather(mat, global_mat, root);
+  rokko::gather(mat, mat_global, root);
   mat.print();
   //rokko::print_matrix(mat);
   if (myrank == root)
-    cout << "global_mat:" << endl << global_mat << endl;
+    cout << "global_mat:" << endl << mat_global << endl;
 
 
   Eigen::VectorXd w(dim);
   rokko::distributed_matrix<solver> Z(dim, dim, g);
 
-  rokko::diagonalize<solver>(mat, w, Z);
+  rokko::diagonalize<solver>(mat, w);
 
   // gather of eigenvectors
   Eigen::MatrixXd eigvec_global;  //(dim, dim);
@@ -77,11 +77,12 @@ int main(int argc, char *argv[])
 	 << eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
     //<< eigvec_global.transpose() * eigvec_global << endl;   // Is it equal to indentity matrix?
 
+    Eigen::MatrixXd A_global_matrix = mat_global;
     cout << "residual := A x - lambda x = " << endl
-         << global_mat * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
+         << A_global_matrix * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << endl;
     cout << "Are all the following values equal to some eigenvalue = " << endl
-	 << (global_mat * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
-    //cout << "global_matrix=" << endl << global_matrix << endl;
+	 << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
+    cout << "A_global_matrix=" << endl << A_global_matrix << endl;
   }
 
 

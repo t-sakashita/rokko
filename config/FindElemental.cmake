@@ -37,7 +37,8 @@ find_path(VERIFIED_ELEMENTAL_DIR include/elemental.hpp
 if (VERIFIED_ELEMENTAL_DIR)
   message(STATUS "VERIFIED_ELEMENTAL_DIR is ${VERIFIED_ELEMENTAL_DIR}")
 else(VERIFIED_ELEMENTAL_DIR)
-  message(SEND_ERROR "${VERIFIED_ELEMENTAL_DIR} does not have include/elemental.hpp.  It's not probably Elementral directory.")
+  message(STATUS "${VERIFIED_ELEMENTAL_DIR} does not have include/elemental.hpp.  It's not probably Elementral directory.")
+  return()
 endif(VERIFIED_ELEMENTAL_DIR)
 
 
