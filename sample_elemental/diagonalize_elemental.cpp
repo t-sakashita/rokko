@@ -6,32 +6,34 @@
 
 using namespace std;
 
+#include <mpi.h>
 #include <rokko/elemental/core.hpp>
-#include <rokko/elemental/grid.hpp>
-#include <rokko/elemental/distributed_matrix.hpp>
+#include <rokko/grid.hpp>
+#include <rokko/distributed_matrix.hpp>
 #include <rokko/elemental/diagonalize.hpp>
 #include <rokko/collective.hpp>
-//#include <rokko/collective_eigenK.hpp>
-
 
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/utility/sort_eigenpairs.hpp>
 
+
+
 int main(int argc, char *argv[])
 {
-  typedef rokko::elemental solver;
+  MPI_Init(&argc, &argv);
+  //rokko::solver solver("elemental");
+  rokko::solver_elemental solver;
+  solver.initialize(argc, argv);
 
-  MPI_init(&argc, &argv);
-  rokko::Initialize<solver>(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<solver> g(comm);
+  rokko::grid<rokko::grid_row_major>  g(comm); //, solver);
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
   const int dim = 10;
 
-  rokko::distributed_matrix<solver> mat(dim, dim, g);
+  rokko::distributed_matrix mat(dim, dim, g); //, solver);
 
   rokko::generate_frank_matrix(mat);
 
@@ -46,16 +48,16 @@ int main(int argc, char *argv[])
 
 
   Eigen::VectorXd w(dim);
-  rokko::distributed_matrix<solver> Z(dim, dim, g);
+  rokko::distributed_matrix Z(dim, dim, g); //, true);
 
-  rokko::diagonalize<solver>(mat, w, Z);
+  solver.diagonalize(mat, w, Z);
 
   // gather of eigenvectors
   Eigen::MatrixXd eigvec_global;  //(dim, dim);
   Eigen::MatrixXd eigvec_sorted(dim, dim);
   Eigen::VectorXd eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
-  //Z.print();
+  Z.print();
   if (myrank == root) {
     cout << "eigvec:" << endl << eigvec_global << endl;
   }
@@ -96,7 +98,7 @@ int main(int argc, char *argv[])
   }
   */
 
-  rokko::finalize<solver>();
+  solver.finalize();
   MPI_Finalize();
   return 0;
 }

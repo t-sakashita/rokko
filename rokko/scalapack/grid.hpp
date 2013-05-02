@@ -15,6 +15,7 @@ namespace rokko {
 
 struct grid_base
 {
+  virtual ~grid_base() {}
 };
 
 

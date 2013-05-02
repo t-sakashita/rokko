@@ -8,35 +8,38 @@
 
 namespace rokko {
 
-template<typename T>
 class distributed_matrix
 {
 public:
-  distributed_matrix(int m_global, int n_global, const grid<T>& g)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  template<typename GRID_MAJOR>
+  distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol)
   {
+    g = new grid<GRID_MAJOR>(g_in);
+
     // ローカル行列の形状を指定
-    mb = m_global / g.nprow;
+    mb = m_global / nprow;
     if (mb == 0) mb = 1;
     //mb = 10;
-    nb = n_global / g.npcol;
+    nb = n_global / npcol;
     if (nb == 0) nb = 1;
     //nb = 10;
     // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    mb = min(mb, nb);
-    nb = mb;
+    //mb = min(mb, nb);
+    //nb = mb;  // = 1;
 
-    const int ZERO=0, ONE=1;
-    m_local = numroc_( m_global, mb, myrow, ZERO, nprow );
-    n_local = numroc_( n_global, nb, mycol, ZERO, npcol );
+    m_local = get_row_size();
+    n_local = get_col_size();
+    lld = m_local;
 
     for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == g.myrank) {
+      if (proc == myrank) {
 	std::cout << "proc=" << proc << std::endl;
 	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << g.nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << g.npcol << std::endl;
+	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
+	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
 	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
+        std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
@@ -48,89 +51,130 @@ public:
     }
   }
 
-  distributed_matrix(int m_global, int n_global, const grid<T>& g, bool mb)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol), ictxt(g.ictxt)
+  template<typename GRID_MAJOR>
+  distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in, bool non_create)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(&g_in)
   {
     // ローカル行列の形状を指定
-    /*
-    mb = m_global / g.nprow;
+    mb = m_global / nprow;
     if (mb == 0) mb = 1;
     //mb = 10;
-    nb = n_global / g.npcol;
+    nb = n_global / npcol;
     if (nb == 0) nb = 1;
     //nb = 10;
     // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    mb = min(mb, nb);
-    */
-    mb = 1;
-    nb = mb;
+    //mb = min(mb, nb);
+    //nb = mb;  // = 1;
 
-    const int ZERO=0, ONE=1;
-    m_local = numroc_( m_global, mb, myrow, ZERO, nprow );
-    n_local = numroc_( n_global, nb, mycol, ZERO, npcol );
+    m_local = get_row_size();
+    n_local = get_col_size();
+    lld = m_local;
 
     for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == g.myrank) {
+      if (proc == myrank) {
 	std::cout << "proc=" << proc << std::endl;
 	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << g.nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << g.npcol << std::endl;
+	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
+	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
 	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
+        std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    array = new double[m_local * n_local];
-    if (array == NULL) {
-      cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, 3);
-    }
+    //array = new double[m_local * n_local];
+    //if (array == NULL) {
+    //  cerr << "failed to allocate array." << std::endl;
+    //  MPI_Abort(MPI_COMM_WORLD, 3);
+    //}
   }
 
   ~distributed_matrix()
   {
     //std::cout << "Destructor ~Distributed_Matrix()" << std::endl;
-    delete[] array;
-    array = NULL;
+    //delete[] array;
+    //array = NULL;
+  }
+
+  double* get_array()
+  {
+    return array;
+  }
+
+  int get_row_size() const
+  {
+    int tmp = m_global / mb;
+    int local_num_block_rows = (tmp + nprow-1 - myrow) / nprow;
+    int rest_block_row = ((m_global / mb) % nprow) % nprow; // 最後のブロックを持つプロセスの次のプロセス
+    int local_rest_block_rows;
+    cout << "local_num_block_rows=" << local_num_block_rows << endl;
+    if (myrow == rest_block_row)
+      local_rest_block_rows = m_global % mb;
+    else
+      local_rest_block_rows = 0;
+
+    return  local_num_block_rows * mb + local_rest_block_rows;
+
+    //const int local_offset_block = m_global / mb;
+    //cout << "local_offset_block=" << local_offset_block;
+    //return (local_offset_block - myrow) / nprow * mb + m_global % mb;
+  }
+
+  int get_col_size() const
+  {
+    int tmp = n_global / nb;
+    int local_num_block_cols = (tmp + npcol-1 - mycol) / npcol;
+    int rest_block_col = ((n_global / nb) % npcol) % npcol; // 最後のブロックを持つプロセスの次のプロセス
+    int local_rest_block_cols;
+    cout << "local_num_block_cols=" << local_num_block_cols << endl;
+    if (myrow == rest_block_col)
+      local_rest_block_cols = n_global % nb;
+    else
+      local_rest_block_cols = 0;
+
+    return  local_num_block_cols * nb + local_rest_block_cols;
+
+    //const int local_offset_block = n_global / nb;
+    //return (local_offset_block - mycol) / npcol * nb + n_global % nb;
   }
 
   int translate_l2g_row(const int& local_i) const
   {
-    return (g.myrow * mb) + local_i + (local_i / mb) * mb * (g.nprow - 1);
+    return (myrow * mb) + local_i + (local_i / mb) * mb * (nprow - 1);
   }
 
   int translate_l2g_col(const int& local_j) const
   {
-    return (g.mycol * nb) + local_j + (local_j / nb) * nb * (g.npcol - 1);
+    return (mycol * nb) + local_j + (local_j / nb) * nb * (npcol - 1);
   }
 
   int translate_g2l_row(const int& global_i) const
   {
     const int local_offset_block = global_i / mb;
-    return (local_offset_block - g.myrow) / g.nprow * mb + global_i % mb;
+    return (local_offset_block - myrow) / nprow * mb + global_i % mb;
   }
 
   int translate_g2l_col(const int& global_j) const
   {
     const int local_offset_block = global_j / nb;
-    return (local_offset_block - g.mycol) / g.npcol * nb + global_j % nb;
+    return (local_offset_block - mycol) / npcol * nb + global_j % nb;
   }
 
   bool is_gindex_myrow(const int& global_i) const
   {
     int local_offset_block = global_i / mb;
-    return (local_offset_block % g.nprow) == g.myrow;
+    return (local_offset_block % nprow) == myrow;
   }
 
   bool is_gindex_mycol(const int& global_j) const
   {
     int local_offset_block = global_j / nb;
-    return (local_offset_block % g.npcol) == g.mycol;
+    return (local_offset_block % npcol) == mycol;
   }
 
   void set_local(int local_i, int local_j, double value)
   {
-    array[local_j * m_local + local_i] = value;
+    array[local_j * lld + local_i] = value;
   }
 
   void set_global(int global_i, int global_j, double value)
@@ -148,7 +192,7 @@ public:
 	printf("Local Matrix:\n");
 	for (int ii=0; ii<m_local; ++ii) {
 	  for (int jj=0; jj<n_local; ++jj) {
-	    printf("%3.2f ",array[jj * m_local + ii]);
+	    printf("%3.2f ",array[jj * lld + ii]);
 	  }
 	  printf("\n");
 	}
@@ -165,15 +209,17 @@ public:
   // variables of class Grid
   int myrank, nprocs;
   int myrow, mycol;
-  int ictxt, nprow, npcol;
-  const grid<T>& g;
+  int nprow, npcol;
+  int lld;
+
+  const grid_base*  g;
 
 private:
   int info;
 };
 
-template<typename T>
-void print_matrix(const rokko::distributed_matrix<T>& mat)
+
+void print_matrix(const rokko::distributed_matrix& mat)
 {
   // each proc prints it's local_array out, in order
   for (int proc=0; proc<mat.nprocs; ++proc) {
@@ -182,7 +228,7 @@ void print_matrix(const rokko::distributed_matrix<T>& mat)
       printf("Local Matrix:\n");
       for (int ii=0; ii<mat.m_local; ++ii) {
 	for (int jj=0; jj<mat.n_local; ++jj) {
-	  printf("%3.2f ", mat.array[jj * mat.m_local + ii]);
+	  printf("%3.2f ", mat.array[jj * mat.lld + ii]);
 	}
 	printf("\n");
       }

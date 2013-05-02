@@ -35,6 +35,7 @@ int diagonalize(rokko::distributed_matrix<rokko:scalapack, GRID_MAJOR>& mat, dou
 }
 */
 
+
  //template<typename GRID_MAJOR = rokko::R>
 int diagonalize(rokko::distributed_matrix<rokko::scalapack>& mat, double* eigvals)
 {
