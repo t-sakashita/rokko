@@ -5,7 +5,7 @@
 
 namespace rokko {
 
-template<typename MATRIX_MAJOR = rokko::matrix_row_major>
+template<typename MATRIX_MAJOR>
 void generate_frank_matrix(rokko::distributed_matrix<MATRIX_MAJOR>& mat)
 {
   for(int local_i=0; local_i<mat.m_local; ++local_i) {
@@ -17,7 +17,7 @@ void generate_frank_matrix(rokko::distributed_matrix<MATRIX_MAJOR>& mat)
   }
 }
 
-template<typename MATRIX_MAJOR = rokko::matrix_row_major>
+template<typename MATRIX_MAJOR>
 void generate_frank_matrix_global(rokko::distributed_matrix<MATRIX_MAJOR>& mat)
 {
   for(int global_i=0; global_i<mat.m_global; ++global_i) {
