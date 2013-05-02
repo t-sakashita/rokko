@@ -7,9 +7,13 @@ include(add_rokko_test)
 # enable C and C++ compilers
 enable_language(C CXX Fortran)
 
+# options
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
+# MPI library
 find_package(MPI)
 
-# find Eigen3 Library
+# Eigen3 Library
 find_package(Eigen3)
 
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)

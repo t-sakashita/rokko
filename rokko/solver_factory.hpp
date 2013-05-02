@@ -1,3 +1,15 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef ROKKO_SOLVER_FACTORY_H
 #define ROKKO_SOLVER_FACTORY_H
 
@@ -86,9 +98,6 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_SOLVER(solver, name) \
-namespace {                               \
-  const bool BOOST_JOIN(solver_, __LINE__) = \
-    rokko::solver_factory::instance()->register_creator<solver>(name); \
-}
+namespace { struct register_caller { register_caller() { rokko::solver_factory::instance()->register_creator<solver>(name); } } caller; }
 
 #endif // ROKKO_SOLVER_FACTORY_H

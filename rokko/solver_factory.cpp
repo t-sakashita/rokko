@@ -29,6 +29,3 @@ solver_factory* solver_factory::instance() {
 solver_factory* solver_factory::instance_ = 0;
 
 } // end namespace rokko
-
-#include <rokko/elemental/core.hpp>
-ROKKO_REGISTER_SOLVER(rokko::elemental::solver, "elemental")
