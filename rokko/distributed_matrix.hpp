@@ -268,7 +268,7 @@ void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat)
       printf("Local Matrix:\n");
       for (int local_i=0; local_i<mat.m_local; ++local_i) {
 	for (int local_j=0; local_j<mat.n_local; ++local_j) {
-	  printf("%3.2f ", mat.array[mat.get_array_index(local_i, local_j)];
+	  printf("%3.2f ", mat.array[mat.get_array_index(local_i, local_j)]);
 	}
 	printf("\n");
       }
