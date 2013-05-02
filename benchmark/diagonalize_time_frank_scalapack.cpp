@@ -27,9 +27,9 @@ int main (int argc, char *argv[])
 {
   typedef rokko::scalapack  solver;
   MPI_Init(&argc, &argv);
-  rokko::Initialize<solver>(argc, argv);
+  rokko::initialize<solver>(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<solver, rokko::grid_row_major<solver> > g(comm);
+  rokko::grid<solver, rokko::grid_row_major> g(comm);
   //rokko::grid<solver> g(comm);
   int myrank = g.myrank, nprocs = g.nprocs;
   const int root = 0;
@@ -123,6 +123,7 @@ int main (int argc, char *argv[])
     //ofs << "iter=" << iter << endl;
   }
 
+  rokko::finalize<solver>();
   MPI_Finalize();
   return 0;
 }

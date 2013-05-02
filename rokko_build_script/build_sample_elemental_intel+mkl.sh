@@ -6,4 +6,4 @@ cmake ~/development/rokko/  -DCMAKE_CXX_COMPILER="mpicxx" -DCMAKE_Fortran_COMPIL
 
 make diagonalize_elemental VERBOSE=1
 
-make diagonalize_time_frank_elemental VERBOSE=1
+#make diagonalize_time_frank_elemental VERBOSE=1

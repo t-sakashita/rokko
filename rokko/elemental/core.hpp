@@ -3,31 +3,39 @@
 
 #include <rokko/elemental/elemental.hpp>
 
-#include <boost/noncopyable.hpp>
+//#include <boost/noncopyable.hpp>
+
+#include <rokko/grid.hpp>
+#include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
 
-template<typename T>
-void Initialize(int& argc, char**& argv)
-{
-}
 
-template<typename T>
-void Finalize()
+class solver_elemental
 {
-}
+public:
+  void initialize(int& argc, char**& argv)
+  {
+    elem::Initialize(argc, argv);
+  }
 
-template<>
-void Initialize<elemental>(int& argc, char**& argv)
-{
-  elem::Initialize(argc, argv);
-}
+  void finalize()
+  {
+    elem::Finalize();
+  }
 
-template<>
-void Finalize<elemental>()
-{
-  elem::Finalize();
-}
+  void optimized_grid_size()
+  {
+  }
+
+  void optimized_matrix_size()
+  {
+  }
+
+  void diagonalize(rokko::distributed_matrix& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix& eigvecs);
+
+};
+
 
 } // namespace rokko
 

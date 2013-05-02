@@ -18,77 +18,13 @@ class distributed_matrix
 
 
 template<> //, typename GRID_MAJOR>
-class distributed_matrix<rokko::scalapack> //, GRID_MAJOR>
+class actual_distributed_matrix<rokko::scalapack> //, GRID_MAJOR>
 {
 public:
-  template <typename GRID_MAJOR = rokko::grid_row_major<rokko::scalapack> >
-  distributed_matrix(int m_global, int n_global, const grid<rokko::scalapack, GRID_MAJOR>& g_in)
-    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt)
+  template <typename GRID_MAJOR = rokko::grid_row_major>
+  actual_distributed_matrix(const distributed_matrix& mat, const actual_grid& g_in)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), ictxt(g_in.ictxt), g(g_in)
   {
-    g = (grid<rokko::scalapack, GRID_MAJOR>*)(&g_in);
-
-    // ローカル行列の形状を指定
-    mb = m_global / nprow;
-    if (mb == 0) mb = 1;
-    //mb = 10;
-    nb = n_global / npcol;
-    if (nb == 0) nb = 1;
-    //nb = 10;
-    // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    mb = min(mb, nb);
-    nb = mb;
-
-    const int ZERO=0, ONE=1;
-    m_local = numroc_( m_global, mb, myrow, ZERO, nprow );
-    n_local = numroc_( n_global, nb, mycol, ZERO, npcol );
-
-    lld = m_local;
-
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-	std::cout << "proc=" << proc << std::endl;
-	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
-	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
-      }
-      MPI_Barrier(MPI_COMM_WORLD);
-    }
-
-    array = new double[m_local * n_local];
-    if (array == NULL) {
-      cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, 3);
-    }
-  }
-
-  template <typename GRID_MAJOR = rokko::grid_row_major<rokko::scalapack> >
-  distributed_matrix(int m_global, int n_global, const grid<rokko::scalapack, GRID_MAJOR>& g, bool mb_trans)
-    : m_global(m_global), n_global(n_global), g(g), myrank(g.myrank), nprocs(g.nprocs), myrow(g.myrow), mycol(g.mycol), nprow(g.nprow), npcol(g.npcol)
-  {
-    mb = 1;
-    nb = mb;
-
-    const int ZERO=0, ONE=1;
-    m_local = numroc_( m_global, mb, myrow, ZERO, nprow );
-    n_local = numroc_( n_global, nb, mycol, ZERO, npcol );
-
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == g.myrank) {
-	std::cout << "proc=" << proc << std::endl;
-	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << g.nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << g.npcol << std::endl;
-	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
-      }
-      MPI_Barrier(MPI_COMM_WORLD);
-    }
-
-    array = new double[m_local * n_local];
-    if (array == NULL) {
-      cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, 3);
-    }
   }
 
   ~distributed_matrix()
@@ -101,6 +37,18 @@ public:
   double* get_array()
   {
     return array;
+  }
+
+  int get_row_size() const
+  {
+    const int local_offset_block = global_i / mb;
+    return (local_offset_block - myrow) / nprow * mb + global_i % mb;
+  }
+
+  int get_col_size() const
+  {
+    const int local_offset_block = global_j / nb;
+    return (local_offset_block - mycol) / npcol * nb + global_j % nb;
   }
 
   int translate_l2g_row(const int& local_i) const
@@ -194,9 +142,9 @@ public:
 
   //template<typename GRID_MAJOR>
   //const
-  //grid<rokko::scalapack, GRID_MAJOR>& g;
+  const rokko::grid_base& g;
   //grid<rokko::scalapack>& g;
-  void* g;
+  //void* g;
 
   int lld;
   int ictxt;

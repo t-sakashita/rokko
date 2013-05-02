@@ -10,12 +10,12 @@
 namespace rokko {
 
 template<>
-void Initialize<rokko::eigen_s>(int& argc, char**& argv)
+void initialize<rokko::eigen_s>(int& argc, char**& argv)
 {
 }
 
 template<>
-void Finalize<rokko::eigen_s>()
+void finalize<rokko::eigen_s>()
 {
 }
 

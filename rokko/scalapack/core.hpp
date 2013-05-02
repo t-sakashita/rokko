@@ -10,12 +10,12 @@
 namespace rokko {
 
 template<>
-void Initialize<rokko::scalapack>(int& argc, char**& argv)
+void initialize<rokko::scalapack>(int& argc, char**& argv)
 {
 }
 
 template<>
-void Finalize<rokko::scalapack>()
+void finalize<rokko::scalapack>()
 {
 }
 

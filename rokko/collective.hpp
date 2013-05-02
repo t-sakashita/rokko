@@ -8,8 +8,7 @@
 namespace rokko {
 
 // ローカル行列のサイズ，ブロック数の計算
-template<typename T>
-void calculate_local_matrix_size(const rokko::distributed_matrix<T>& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
+void calculate_local_matrix_size(const rokko::distributed_matrix& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -41,8 +40,8 @@ void calculate_local_matrix_size(const rokko::distributed_matrix<T>& mat, int pr
   local_matrix_cols = local_num_block_cols * nb + local_rest_block_cols;
 }
 
-template<typename T>
-void create_struct_local_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type)
+
+void create_struct_local_eigenK(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.n_local;  int n_local = mat.m_local;
@@ -85,8 +84,8 @@ void create_struct_local_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Dat
   array_of_types = NULL;
 }
 
-template<typename T>
-void create_struct_global_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type, int proc)
+
+void create_struct_global_eigenK(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type, int proc)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.n_local;  int n_local = mat.m_local;
@@ -96,8 +95,8 @@ void create_struct_global_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Da
   //int lld = mat.lld;
 
   int myrank = mat.myrank;
-  int myrow = mat.calculate_grid_row(proc);
-  int mycol = mat.calculate_grid_col(proc);
+  int myrow = mat.g->calculate_grid_row(proc);
+  int mycol = mat.g->calculate_grid_col(proc);
 
   int count_max = m_local * n_local;
   int*          array_of_blocklengths = new int[count_max];
@@ -150,8 +149,7 @@ void create_struct_global_eigenK(const rokko::distributed_matrix<T>& mat, MPI_Da
 }
 
 
-template<typename T>
-void create_struct_local_general(const rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type)
+void create_struct_local_general(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   //int m_local = mat.n_local;  int n_local = mat.m_local;
@@ -195,8 +193,7 @@ void create_struct_local_general(const rokko::distributed_matrix<T>& mat, MPI_Da
 }
 
 // struct of global matrix
-template<typename T>
-void create_struct_global_general(const rokko::distributed_matrix<T>& mat, MPI_Datatype& global_array_type, int proc)
+void create_struct_global_general(const rokko::distributed_matrix& mat, MPI_Datatype& global_array_type, int proc)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -204,10 +201,8 @@ void create_struct_global_general(const rokko::distributed_matrix<T>& mat, MPI_D
 
   int myrank = mat.myrank;
   int myrow, mycol;
-  myrow = mat.calculate_grid_row(proc);
-  mycol = mat.calculate_grid_col(proc);
-  //mycol = mat.calculate_grid_row(proc);
-  //myrow = mat.calculate_grid_col(proc);
+  myrow = mat.g->calculate_grid_row(proc);
+  mycol = mat.g->calculate_grid_col(proc);
 
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
@@ -298,8 +293,7 @@ void create_struct_global_general(const rokko::distributed_matrix<T>& mat, MPI_D
   array_of_types = NULL;
 }
 
-template<typename T>
-void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix<T>& mat)
+void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix& mat)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -355,8 +349,8 @@ void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix<
   }
 }
 
-template<typename T>
-void copy_l2g_root(const rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global)
+
+void copy_l2g_root(const rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -413,8 +407,8 @@ void copy_l2g_root(const rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat
   }
 }
 
-template<typename T>
-void create_struct_local(const rokko::distributed_matrix<T>& mat, MPI_Datatype& local_array_type)
+
+void create_struct_local(const rokko::distributed_matrix& mat, MPI_Datatype& local_array_type)
 {
   if ((mat.mb == 1) && (mat.nb == 1)) {
     create_struct_local_eigenK(mat, local_array_type);
@@ -424,8 +418,7 @@ void create_struct_local(const rokko::distributed_matrix<T>& mat, MPI_Datatype& 
   }
 }
 
-template<typename T>
-void create_struct_global(const rokko::distributed_matrix<T>& mat, MPI_Datatype& global_array_type, int proc)
+void create_struct_global(const rokko::distributed_matrix& mat, MPI_Datatype& global_array_type, int proc)
 {
   if ((mat.mb == 1) && (mat.nb == 1)) {
     create_struct_global_eigenK(mat, global_array_type, proc);
@@ -436,8 +429,8 @@ void create_struct_global(const rokko::distributed_matrix<T>& mat, MPI_Datatype&
 }
 
 
-template<typename T>
-int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int root)
+
+int gather(rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, int root)
 {
   double* global_array;
 
@@ -446,7 +439,7 @@ int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int r
     global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？
     //global_array = mat_global.data();  // 本当に、内部では連続な配列になっているか
     //for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
-    //  global_array[ii] = 100*mat.g.myrank + ii;
+    //  global_array[ii] = 100*mat.myrank + ii;
     //}
   }
 
@@ -518,8 +511,8 @@ int gather(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int r
 }
 
 
-template<typename T>
-int scatter(rokko::distributed_matrix<T>& mat, Eigen::MatrixXd& mat_global, int root)
+
+int scatter(rokko::distributed_matrix& mat, Eigen::MatrixXd& mat_global, int root)
 {
   double* global_array;
 
