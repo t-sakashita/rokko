@@ -1,6 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-
-set(TESTS_ELEMENTAL  diagonalize_elemental)
+set(TESTS_ELEMENTAL diagonalize_elemental)
 # diagonalize_elemental_noeigvecs)
 #SymmetricEig)
 # HermitianEigFromSequential Constructors)

@@ -5,7 +5,6 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 include(add_alps_test)
 
 # enable C and C++ compilers
-#enable_language(CXX)
 enable_language(C CXX Fortran)
 
 find_package(MPI)
