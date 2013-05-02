@@ -1,43 +1,30 @@
-#ifndef ROKKO_CORE_ELEMENTAL_H
-#define ROKKO_CORE_ELEMENTAL_H
+#ifndef ROKKO_ELEMENTAL_CORE_H
+#define ROKKO_ELEMENTAL_CORE_H
 
-#include <rokko/elemental/elemental.hpp>
-
-//#include <boost/noncopyable.hpp>
-
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
+#include <elemental.hpp>
+#include <rokko/elemental/diagonalize.hpp>
 
 namespace rokko {
+namespace elemental {
 
-
-class solver_elemental
-{
+class solver {
 public:
-  void initialize(int& argc, char**& argv)
-  {
-    elem::Initialize(argc, argv);
-  }
+  void initialize(int& argc, char**& argv) { elem::Initialize(argc, argv); }
 
-  void finalize()
-  {
-    elem::Finalize();
-  }
+  void finalize() { elem::Finalize(); }
 
-  void optimized_grid_size()
-  {
-  }
+  void optimized_grid_size() {}
 
-  void optimized_matrix_size()
-  {
-  }
+  void optimized_matrix_size() {}
 
   template<typename MATRIX_MAJOR>
-  void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs);
-
+  void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals,
+    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+    rokko::elemental::diagonalize(mat, eigvals, eigvecs);
+  }
 };
 
-
+} // namespace elemental
 } // namespace rokko
 
-#endif // ROKKO_CORE_ELEMENTAL_H
+#endif // ROKKO_ELEMENTAL_CORE_H

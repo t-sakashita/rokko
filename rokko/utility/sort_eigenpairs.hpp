@@ -10,7 +10,7 @@ int sort_eigenpairs(const Eigen::VectorXd& eigval, const Eigen::MatrixXd& eigvec
 
   // 固有値を（絶対値のではなく）昇順に並べる
   if (q==NULL) {
-    cerr << "error: q" << endl;
+    std::cerr << "error: q" << std::endl;
     return 1;
   }
 

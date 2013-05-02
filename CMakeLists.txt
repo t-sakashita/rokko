@@ -31,12 +31,9 @@ message(STATUS  "Display ELEM_LIB:  ${ELEM_LIB}")
 message(STATUS  "Display ELEM_LIBS:  ${ELEM_LIBS}")
 
 # directories
+add_subdirectory(rokko)
 add_subdirectory(sample_scalapack)
 add_subdirectory(test)
 add_subdirectory(sample_eigenK)
 add_subdirectory(sample_elemental)
 add_subdirectory(benchmark)
-
-
-
-

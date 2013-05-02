@@ -1,42 +1,31 @@
 #ifndef ROKKO_GRID_H
 #define ROKKO_GRID_H
 
+#include <mpi.h>
 #include <cmath>
 #include <boost/noncopyable.hpp>
-#include <mpi.h>
 
 namespace rokko {
 
-struct grid_row_major
-{
-};
+struct grid_row_major {};
 
+struct grid_col_major {};
 
-struct grid_col_major
-{
-};
-
-
-class grid_base
-{
+class grid_base {
 public:
   virtual int calculate_grid_row(int proc_rank) const = 0;
   virtual int calculate_grid_col(int proc_rank) const = 0;
-
   virtual ~grid_base() {}
 };
 
-
 template<typename GRID_MAJOR = rokko::grid_row_major>
-class grid : public grid_base, private boost::noncopyable
-{
+class grid : public grid_base, private boost::noncopyable {
 public:
-  grid(MPI_Comm& comm)
-  {
+  grid(MPI_Comm& comm) {
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
 
-    npcol = int(sqrt(nprocs + 0.5));
+    npcol = int(std::sqrt(nprocs + 0.5));
     while (1) {
       if ( npcol == 1 ) break;
       if ( (nprocs % npcol) == 0 ) break;
@@ -57,38 +46,25 @@ public:
   int nprow, npcol;
 };
 
-/*
 template<>
-class grid<rokko::grid_row_major> : public grid_base; //, private boost::noncopyable
-
-template<>
-class grid<grid_col_major> : public grid_base; //, private boost::noncopyable
-*/
-
-template<>
-int grid<rokko::grid_row_major>::calculate_grid_row(int proc_rank) const
-{
+inline int grid<rokko::grid_row_major>::calculate_grid_row(int proc_rank) const {
   return proc_rank / nprow;
 }
 
 template<>
-int grid<rokko::grid_row_major>::calculate_grid_col(int proc_rank) const
-{
+inline int grid<rokko::grid_row_major>::calculate_grid_col(int proc_rank) const {
   return proc_rank % nprow;
 }
 
 template<>
-int grid<rokko::grid_col_major>::calculate_grid_row(int proc_rank) const
-{
+inline int grid<rokko::grid_col_major>::calculate_grid_row(int proc_rank) const {
   return proc_rank % npcol;
 }
 
 template<>
-int grid<rokko::grid_col_major>::calculate_grid_col(int proc_rank) const
-{
+inline int grid<rokko::grid_col_major>::calculate_grid_col(int proc_rank) const {
   return proc_rank / npcol;
 }
-
 
 } // namespace rokko
 
