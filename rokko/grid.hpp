@@ -28,7 +28,7 @@ public:
 
 
 template<typename GRID_MAJOR = rokko::grid_row_major>
-class grid : public grid_base  //, private boost::noncopyable
+class grid : public grid_base, private boost::noncopyable
 {
 public:
   grid(MPI_Comm& comm)

@@ -41,7 +41,7 @@ public:
 
     m_local = get_row_size();
     n_local = get_col_size();
-    lld = get_lld();  //m_local;
+    lld = get_lld();
 
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
@@ -79,7 +79,7 @@ public:
 
     m_local = get_row_size();
     n_local = get_col_size();
-    lld = m_local;
+    lld = get_lld();
 
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
@@ -234,26 +234,26 @@ private:
 
 
 template<>
-int distributed_matrix<rokko::matrix_row_major>::get_lld() const
+inline int distributed_matrix<rokko::matrix_row_major>::get_lld() const
 {
   return m_local;
 }
 
 template<>
-int distributed_matrix<rokko::matrix_col_major>::get_lld() const
+inline int distributed_matrix<rokko::matrix_col_major>::get_lld() const
 {
   return n_local;
 }
 
 template<>
-int distributed_matrix<rokko::matrix_row_major>::get_array_index(int local_i, int local_j) const
+inline int distributed_matrix<rokko::matrix_row_major>::get_array_index(int local_i, int local_j) const
 {
   return local_i * lld + local_j;
 }
 
 
 template<>
-int distributed_matrix<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const
+inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const
 {
   return  local_i + local_j * lld;
 }

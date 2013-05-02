@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
 
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  //rokko::grid  g(comm); //, solver);
-  rokko::grid<grid_major>  g(comm); //, solver);
+  rokko::grid<>  g(comm); //, solver);
+  //rokko::grid<grid_major>  g(comm); //, solver);
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
