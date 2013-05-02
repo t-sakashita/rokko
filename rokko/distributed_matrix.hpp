@@ -57,7 +57,7 @@ public:
 
     array = new double[m_local * n_local];
     if (array == NULL) {
-      cerr << "failed to allocate array." << std::endl;
+      std::cerr << "failed to allocate array." << std::endl;
       MPI_Abort(MPI_COMM_WORLD, 3);
     }
   }
@@ -118,7 +118,7 @@ public:
     int local_num_block_rows = (tmp + nprow-1 - myrow) / nprow;
     int rest_block_row = ((m_global / mb) % nprow) % nprow; // 最後のブロックを持つプロセスの次のプロセス
     int local_rest_block_rows;
-    cout << "local_num_block_rows=" << local_num_block_rows << endl;
+    std::cout << "local_num_block_rows=" << local_num_block_rows << std::endl;
     if (myrow == rest_block_row)
       local_rest_block_rows = m_global % mb;
     else
@@ -137,7 +137,7 @@ public:
     int local_num_block_cols = (tmp + npcol-1 - mycol) / npcol;
     int rest_block_col = ((n_global / nb) % npcol) % npcol; // 最後のブロックを持つプロセスの次のプロセス
     int local_rest_block_cols;
-    cout << "local_num_block_cols=" << local_num_block_cols << endl;
+    std::cout << "local_num_block_cols=" << local_num_block_cols << std::endl;
     if (myrow == rest_block_col)
       local_rest_block_cols = n_global % nb;
     else
