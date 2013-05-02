@@ -20,6 +20,9 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+  typedef rokko::grid_col_major grid_major;
+  typedef rokko::matrix_col_major matrix_major;
+
   MPI_Init(&argc, &argv);
   //rokko::solver solver("elemental");
   rokko::solver_elemental solver;
@@ -27,13 +30,14 @@ int main(int argc, char *argv[])
 
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<rokko::grid_row_major>  g(comm); //, solver);
+  //rokko::grid  g(comm); //, solver);
+  rokko::grid<grid_major>  g(comm); //, solver);
   int myrank = g.myrank, nprocs = g.nprocs;
 
   const int root = 0;
   const int dim = 10;
 
-  rokko::distributed_matrix mat(dim, dim, g); //, solver);
+  rokko::distributed_matrix<matrix_major> mat(dim, dim, g); //, solver);
 
   rokko::generate_frank_matrix(mat);
 
@@ -48,7 +52,7 @@ int main(int argc, char *argv[])
 
 
   Eigen::VectorXd w(dim);
-  rokko::distributed_matrix Z(dim, dim, g); //, true);
+  rokko::distributed_matrix<matrix_major> Z(dim, dim, g); //, true);
 
   solver.diagonalize(mat, w, Z);
 

@@ -68,25 +68,25 @@ class grid<grid_col_major> : public grid_base; //, private boost::noncopyable
 template<>
 int grid<rokko::grid_row_major>::calculate_grid_row(int proc_rank) const
 {
-  return proc_rank % nprow;
+  return proc_rank / nprow;
 }
 
 template<>
 int grid<rokko::grid_row_major>::calculate_grid_col(int proc_rank) const
 {
-  return proc_rank / nprow;
+  return proc_rank % nprow;
 }
 
 template<>
 int grid<rokko::grid_col_major>::calculate_grid_row(int proc_rank) const
 {
-  return proc_rank / npcol;
+  return proc_rank % npcol;
 }
 
 template<>
 int grid<rokko::grid_col_major>::calculate_grid_col(int proc_rank) const
 {
-  return proc_rank % npcol;
+  return proc_rank / npcol;
 }
 
 

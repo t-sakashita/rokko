@@ -8,14 +8,25 @@
 
 namespace rokko {
 
+struct matrix_row_major
+{
+};
+
+
+struct matrix_col_major
+{
+};
+
+
+template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix
 {
 public:
   template<typename GRID_MAJOR>
   distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in)
-    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in)
   {
-    g = new grid<GRID_MAJOR>(g_in);
+    //g = new grid<GRID_MAJOR>(g_in);
 
     // ローカル行列の形状を指定
     mb = m_global / nprow;
@@ -30,7 +41,7 @@ public:
 
     m_local = get_row_size();
     n_local = get_col_size();
-    lld = m_local;
+    lld = get_lld();  //m_local;
 
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
@@ -138,6 +149,9 @@ public:
     //return (local_offset_block - mycol) / npcol * nb + n_global % nb;
   }
 
+  int get_lld() const;
+  int get_array_index(int local_i, int local_j) const;
+
   int translate_l2g_row(const int& local_i) const
   {
     return (myrow * mb) + local_i + (local_i / mb) * mb * (nprow - 1);
@@ -174,7 +188,7 @@ public:
 
   void set_local(int local_i, int local_j, double value)
   {
-    array[local_j * lld + local_i] = value;
+    array[get_array_index(local_i, local_j)] = value;
   }
 
   void set_global(int global_i, int global_j, double value)
@@ -190,9 +204,9 @@ public:
       if (proc == myrank) {
 	printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
 	printf("Local Matrix:\n");
-	for (int ii=0; ii<m_local; ++ii) {
-	  for (int jj=0; jj<n_local; ++jj) {
-	    printf("%3.2f ",array[jj * lld + ii]);
+	for (int local_i=0; local_i<m_local; ++local_i) {
+	  for (int local_j=0; local_j<n_local; ++local_j) {
+	    printf("%3.2f ",array[get_array_index(local_i, local_j)]);
 	  }
 	  printf("\n");
 	}
@@ -212,23 +226,49 @@ public:
   int nprow, npcol;
   int lld;
 
-  const grid_base*  g;
+  const grid_base&  g;
 
 private:
   int info;
 };
 
 
-void print_matrix(const rokko::distributed_matrix& mat)
+template<>
+int distributed_matrix<rokko::matrix_row_major>::get_lld() const
+{
+  return m_local;
+}
+
+template<>
+int distributed_matrix<rokko::matrix_col_major>::get_lld() const
+{
+  return n_local;
+}
+
+template<>
+int distributed_matrix<rokko::matrix_row_major>::get_array_index(int local_i, int local_j) const
+{
+  return local_i * lld + local_j;
+}
+
+
+template<>
+int distributed_matrix<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const
+{
+  return  local_i + local_j * lld;
+}
+
+template<typename MATRIX_MAJOR>
+void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat)
 {
   // each proc prints it's local_array out, in order
   for (int proc=0; proc<mat.nprocs; ++proc) {
     if (proc == mat.myrank) {
       printf("Rank = %d  myrow=%d mycol=%d\n", mat.myrank, mat.myrow, mat.mycol);
       printf("Local Matrix:\n");
-      for (int ii=0; ii<mat.m_local; ++ii) {
-	for (int jj=0; jj<mat.n_local; ++jj) {
-	  printf("%3.2f ", mat.array[jj * mat.lld + ii]);
+      for (int local_i=0; local_i<mat.m_local; ++local_i) {
+	for (int local_j=0; local_j<mat.n_local; ++local_j) {
+	  printf("%3.2f ", mat.array[mat.get_array_index(local_i, local_j)];
 	}
 	printf("\n");
       }

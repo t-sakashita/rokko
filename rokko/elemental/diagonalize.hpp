@@ -11,7 +11,8 @@
 
 namespace rokko {
 
-void solver_elemental::diagonalize(rokko::distributed_matrix& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix& eigvecs)
+template<typename MATRIX_MAJOR>
+void solver_elemental::diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs)
 {
   //int m = 32;  // block_size
 
