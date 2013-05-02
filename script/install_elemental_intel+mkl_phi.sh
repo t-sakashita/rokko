@@ -1,15 +1,14 @@
 #!/bin/bash -x
 
-wget -O http://elemental.googlecode.com/files/elemental-0.78-p1.tgz
-tar xvf elemental-0.78-p1.tgz
-mkdir -p $HOME/build
-cd $HOME/build
-cmake -D CMAKE_CXX_COMPILER=mpicxx -D CMAKE_C_COMPILER=mpicc -D CMAKE_Fortran_COMPILER=mpif90 \
--D MATH_LIBS="-mkl=parallel -lifcore" \
--D CMAKE_INSTALL_PREFIX=/opt/nano/rokko \
--D ELEM_EXAMPLES=ON -D ELEM_TESTS=ON \
-..
+PREFIX="$1"
+test -z "$PREFIX" && PREFIX="/opt/nano/rokko"
+echo "PREFIX = $PREFIX"
 
-make all
+mkdir -p $HOME/build && cd $HOME/build
+rm -rf elemental-0.78-p1 elemental-0.78-p1-build
+wget -O - http://elemental.googlecode.com/files/elemental-0.78-p1.tgz | tar zxf -
+mkdir -p elemental-0.78-p1-build && cd elemental-0.78-p1-build
+cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 -DMATH_LIBS="-mkl=parallel -lifcore" -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.78-p1
+
+make -j4 all
 make install
-
