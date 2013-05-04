@@ -412,8 +412,30 @@ void copy_l2g_root(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::Ma
   }
 }
 
-template<typename MATRIX_MAJOR>
-void create_struct_local(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI_Datatype& local_array_type)
+void create_struct_local(const rokko::distributed_matrix<rokko::matrix_col_major>& mat, MPI_Datatype& local_array_type)
+{
+  create_struct_local_general(mat, local_array_type);
+  //if ((mat.mb == 1) && (mat.nb == 1)) {
+  //  create_struct_local_eigenK(mat, local_array_type);
+  //}
+  //else {
+  //  create_struct_local_general(mat, local_array_type);
+  //}
+}
+
+
+void create_struct_global(const rokko::distributed_matrix<rokko::matrix_col_major>& mat, MPI_Datatype& global_array_type, int proc)
+{
+  create_struct_global_general(mat, global_array_type, proc);
+  //if ((mat.mb == 1) && (mat.nb == 1)) {
+  //  create_struct_global_eigenK(mat, global_array_type, proc);
+  //}
+  //else {
+  //  create_struct_global_general(mat, global_array_type, proc);
+  //}
+}
+
+void create_struct_local(const rokko::distributed_matrix<rokko::matrix_row_major>& mat, MPI_Datatype& local_array_type)
 {
   if ((mat.mb == 1) && (mat.nb == 1)) {
     create_struct_local_eigenK(mat, local_array_type);
@@ -423,8 +445,7 @@ void create_struct_local(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI
   }
 }
 
-template<typename MATRIX_MAJOR>
-void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI_Datatype& global_array_type, int proc)
+void create_struct_global(const rokko::distributed_matrix<rokko::matrix_row_major>& mat, MPI_Datatype& global_array_type, int proc)
 {
   if ((mat.mb == 1) && (mat.nb == 1)) {
     create_struct_global_eigenK(mat, global_array_type, proc);
@@ -433,6 +454,7 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
     create_struct_global_general(mat, global_array_type, proc);
   }
 }
+
 
 
 template<typename MATRIX_MAJOR>

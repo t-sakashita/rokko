@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   solver.initialize(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<> g(comm);
+  rokko::grid<rokko::grid_col_major> g(comm);
   int myrank = g.myrank;
 
   const int root = 0;
@@ -48,12 +48,13 @@ int main(int argc, char *argv[]) {
   }
 
   std::cout.precision(20);
+  /*
   std::cout << "w=" << std::endl;
   for (int i=0; i<dim; ++i) {
     std::cout << w[i] << " ";
   }
   std::cout << std::endl;
-
+  */
 
   if (myrank == root) {
     rokko::sort_eigenpairs(w, eigvec_global, eigval_sorted, eigvec_sorted);

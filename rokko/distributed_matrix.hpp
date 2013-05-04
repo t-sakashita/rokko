@@ -37,7 +37,7 @@ public:
     //nb = 10;
     // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
     //mb = min(mb, nb);
-    //nb = mb;  // = 1;
+    mb = nb = 1;
 
     m_local = get_row_size();
     n_local = get_col_size();
@@ -206,7 +206,7 @@ public:
 	printf("Local Matrix:\n");
 	for (int local_i=0; local_i<m_local; ++local_i) {
 	  for (int local_j=0; local_j<n_local; ++local_j) {
-	    printf("%3.2f ",array[get_array_index(local_i, local_j)]);
+	    printf("%e ",array[get_array_index(local_i, local_j)]);
 	  }
 	  printf("\n");
 	}
@@ -268,7 +268,7 @@ void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat)
       printf("Local Matrix:\n");
       for (int local_i=0; local_i<mat.m_local; ++local_i) {
 	for (int local_j=0; local_j<mat.n_local; ++local_j) {
-	  printf("%3.2f ", mat.array[mat.get_array_index(local_i, local_j)]);
+	  printf("%e ", mat.array[mat.get_array_index(local_i, local_j)]);
 	}
 	printf("\n");
       }
