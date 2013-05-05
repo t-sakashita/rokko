@@ -31,13 +31,5 @@ extern "C" {
 }
 
 
-namespace rokko {
-
-struct scalapack
-{
-};
-
-}
-
 #endif // ROKKO_SCALAPACK_HPP
 
