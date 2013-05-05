@@ -8,6 +8,8 @@
 
 namespace rokko {
 
+class solver;
+
 struct matrix_row_major
 {
 };
@@ -63,23 +65,16 @@ public:
   }
 
   template<typename GRID_MAJOR>
-  distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in, bool non_create)
-    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(&g_in)
+  distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in, rokko::solver& solver_in)
+    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in)
   {
-    // ローカル行列の形状を指定
-    mb = m_global / nprow;
-    if (mb == 0) mb = 1;
-    //mb = 10;
-    nb = n_global / npcol;
-    if (nb == 0) nb = 1;
-    //nb = 10;
-    // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    //mb = min(mb, nb);
-    //nb = mb;  // = 1;
+    // determine mb, nb, lld, larray
+    int larray;
+    solver_in.optimized_matrix_size(m_global, nprow, npcol, mb, nb, lld, larray);
 
+    // determine m_local, n_local from m_global, n_global, mb, nb
     m_local = get_row_size();
     n_local = get_col_size();
-    lld = get_lld();
 
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
@@ -89,22 +84,24 @@ public:
 	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
 	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
         std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
+        std::cout << " lld=" << lld << std::endl;
+        std::cout << " larray=" << larray << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    //array = new double[m_local * n_local];
-    //if (array == NULL) {
-    //  cerr << "failed to allocate array." << std::endl;
-    //  MPI_Abort(MPI_COMM_WORLD, 3);
-    //}
+    array = new double[larray];
+    if (array == NULL) {
+      std::cerr << "failed to allocate array." << std::endl;
+      MPI_Abort(MPI_COMM_WORLD, 3);
+    }
   }
 
   ~distributed_matrix()
   {
     //std::cout << "Destructor ~Distributed_Matrix()" << std::endl;
-    //delete[] array;
-    //array = NULL;
+    delete[] array;
+    array = NULL;
   }
 
   double* get_array()

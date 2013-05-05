@@ -31,6 +31,9 @@ public:
     rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
     solver_impl_->diagonalize(mat, eigvals, eigvecs);
   }
+  void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) {
+    solver_impl_->optimized_matrix_size(dim, nprow, npcol, mb, nb, lld, len_array);
+  }
 private:
   solver_factory::solver_pointer_type solver_impl_;
 };

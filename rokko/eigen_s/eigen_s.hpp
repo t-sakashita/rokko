@@ -29,12 +29,5 @@ extern "C" struct
     diag_0, diag_1;
 } cycl2d_;
 
-namespace rokko {
-
-struct eigen_s
-{
-};
-
-}
 
 #endif // ROKKO_EIGEN_S_H

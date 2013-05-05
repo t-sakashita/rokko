@@ -33,6 +33,7 @@ private:
       Eigen::VectorXd& eigvals, rokko::distributed_matrix<matrix_row_major>& eigvecs) = 0;
     virtual void diagonalize(rokko::distributed_matrix<matrix_col_major>& mat,
       Eigen::VectorXd& eigvals, rokko::distributed_matrix<matrix_col_major>& eigvecs) = 0;
+    virtual void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) = 0;
   };
 
   template<typename SOLVER>
@@ -51,6 +52,10 @@ private:
       Eigen::VectorXd& eigvals, rokko::distributed_matrix<matrix_col_major>& eigvecs) {
       solver_impl_.diagonalize(mat, eigvals, eigvecs);
     }
+    void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) {
+      solver_impl_.optimized_matrix_size(dim, nprow, npcol, mb, nb, lld, len_array);
+    }
+
   private:
     solver_type solver_impl_;
   };
@@ -71,7 +76,7 @@ private:
     }
   };
 
-public:  
+public:
   typedef boost::shared_ptr<solver_base> solver_pointer_type;
 
 private:

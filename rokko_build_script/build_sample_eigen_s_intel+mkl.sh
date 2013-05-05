@@ -6,4 +6,4 @@ cmake ~/development/rokko/ -DEIGEN_S_LIB="/home/sakashita/eigen_s/libEigen_s.a -
 
 make diagonalize_eigen_s VERBOSE=1
 
-make diagonalize_time_frank_eigen_s VERBOSE=1
+#make diagonalize_time_frank_eigen_s VERBOSE=1
