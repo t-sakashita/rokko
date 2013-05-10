@@ -1,0 +1,106 @@
+FF = mpifrt
+FC = mpifrt
+CC = mpifcc
+
+# Optimization flags for Fujitsu compiler
+CCFLAG = -Kfast,OMP,parallel -X9 -Am -Cpp
+
+SCALAPACK = -SSL2BLAMP -lscalapack
+BLAS =
+
+INCPATH = -I/usr/local/include
+
+INCFLAG = $(INCPATH)
+
+LIB    = Eigen_sx
+AR     = ar
+RANLIB = ranlib
+RM     = rm -f
+
+# FOR PAPI AVAILABLE
+LDFLAG  = $(CCFLAG) $(SCALAPACK) $(BLAS)
+OBJS = communication_sx.o pdlaed2x.o pdlaed3x.o lapack_eigen.o eigen_pdlaedz.o eigen_pdlaed0.o eigen_pdsxedc.o eigen_pdlaed1.o eigen_pbk.o eigen_pbk_main1.o eigen_pbk_main2.o eigen_pbk_step.o machine_epsilon.o matrix_adjust_sx.o eigen_prd.o eigen_prd_2update.o eigen_prd_Au.o eigen_prd_v.o eigen_prd_u.o eigen_prd_2update_local.o eigen_prd_2update_v.o eigen_prd_d.o eigen_prd_init_final.o cstab.o get_delta.o eigen_dcx.o eigen_sx.o
+
+OBJSM = communication_sx.o pdlaed2x.o pdlaed3x.o lapack_eigen.o eigen_pdlaedz.o eigen_pdlaed0.o eigen_pdsxedc.o eigen_pdlaed1.o main.o eigen_pbk.o eigen_pbk_main1.o eigen_pbk_main2.o eigen_pbk_step.o machine_epsilon.o matrix_set.o matrix_adjust_sx.o ev_test_2D.o eigen_prd.o eigen_prd_2update.o eigen_prd_Au.o eigen_prd_v.o eigen_prd_u.o eigen_prd_2update_local.o eigen_prd_2update_v.o eigen_prd_d.o eigen_prd_init_final.o cstab.o get_delta.o eigen_dcx.o eigen_sx.o
+
+all : lib$(LIB).a
+
+lib$(LIB).a: $(OBJS)
+	$(RM) $@
+	$(AR) r $@ $(OBJS)
+	$(RANLIB) $@
+
+a.out : $(OBJSM)
+	$(FF) -o a.out $(LDFLAG) $(OBJSM)
+
+main.o : main.f
+	$(FF) -c -Cpp main.f $(CCFLAG) $(INCFLAG)
+eigen_prd.o : eigen_prd.f
+	$(FF) -c eigen_prd.f $(CCFLAG) $(INCFLAG)
+eigen_prd_2update.o : eigen_prd_2update.f
+	$(FF) -c eigen_prd_2update.f $(CCFLAG) $(INCFLAG)
+eigen_prd_Au.o : eigen_prd_Au.f
+	$(FC) -c eigen_prd_Au.f $(CCFLAG) $(T2CCFLAG) $(INCFLAG)
+eigen_prd_v.o : eigen_prd_v.f
+	$(FC) -c eigen_prd_v.f $(CCFLAG) $(INCFLAG)
+eigen_prd_u.o : eigen_prd_u.f
+	$(FC) -c eigen_prd_u.f $(CCFLAG) $(T2CCFLAG) $(INCFLAG)
+eigen_prd_2update_local.o : eigen_prd_2update_local.f
+	$(FC) -c eigen_prd_2update_local.f $(CCFLAG) $(INCFLAG)
+eigen_prd_2update_v.o : eigen_prd_2update_v.f
+	$(FC) -c eigen_prd_2update_v.f $(CCFLAG) $(INCFLAG)
+eigen_prd_d.o : eigen_prd_d.f
+	$(FC) -c eigen_prd_d.f $(CCFLAG) $(INCFLAG)
+eigen_prd_init_final.o : eigen_prd_init_final.f
+	$(FC) -c eigen_prd_init_final.f $(CCFLAG) $(INCFLAG)
+eigen_pbk.o : eigen_pbk.f
+	$(FF) -c eigen_pbk.f $(CCFLAG)  $(INCFLAG)
+eigen_pbk_main1.o : eigen_pbk_main1.f
+	$(FF) -c eigen_pbk_main1.f $(CCFLAG)  $(INCFLAG)
+eigen_pbk_main2.o : eigen_pbk_main2.f
+	$(FF) -c eigen_pbk_main2.f $(CCFLAG)  $(INCFLAG)
+eigen_pbk_step.o : eigen_pbk_step.f
+	$(FF) -c eigen_pbk_step.f $(CCFLAG)  $(INCFLAG)
+machine_epsilon.o : machine_epsilon.f
+	$(FF) -c machine_epsilon.f -O0 $(CCFLAG) -O0 $(INCFLAG)
+matrix_set.o: matrix_set.f
+	$(FF) -c matrix_set.f $(CCFLAG) $(INCFLAG)
+matrix_adjust_sx.o: matrix_adjust_sx.f
+	$(FF) -c matrix_adjust_sx.f $(CCFLAG) $(INCFLAG)
+ev_test_2D.o: ev_test_2D.f
+	$(FF) -c ev_test_2D.f $(CCFLAG) $(INCFLAG)
+dlaed4.o: dlaed4.f
+	$(FF) -c dlaed4.f $(CCFLAG) $(INCFLAG)
+dlaed6.o: dlaed6.f
+	$(FF) -c dlaed6.f $(CCFLAG) $(INCFLAG)
+communication_sx.o : communication_sx.f
+	$(FF) -c communication_sx.f $(CCFLAG) $(INCFLAG)
+eigen_dcx.o : eigen_dcx.f
+	$(FF) -c eigen_dcx.f $(CCFLAG) $(INCFLAG)
+eigen_sx.o : eigen_sx.f
+	$(FF) -c eigen_sx.f $(CCFLAG) $(INCFLAG)
+
+clean :
+	-\rm -f *.o *.mod a.out lib$(LIB).a
+
+eigen_pbk.o: cstab.h
+eigen_pbk_main1.o: cstab.h
+eigen_prd.o: cstab.h
+
+lapack_eigen.o : lapack_eigen.f
+	$(FF) -c lapack_eigen.f $(CCFLAG) $(INCFLAG)
+eigen_pdlaedz.o : eigen_pdlaedz.f
+	$(FF) -c eigen_pdlaedz.f $(CCFLAG) $(INCFLAG)
+eigen_pdlaed0.o : eigen_pdlaed0.f
+	$(FF) -c eigen_pdlaed0.f -Cpp -D_CPP_CALL_ $(CCFLAG) $(INCFLAG)
+eigen_pdsxedc.o : eigen_pdsxedc.f
+	$(FF) -c eigen_pdsxedc.f $(CCFLAG) $(INCFLAG)
+eigen_pdlaed1.o : eigen_pdlaed1.f
+	$(FF) -c eigen_pdlaed1.f $(CCFLAG) $(INCFLAG)
+pdlaed2x.o : pdlaed2x.f
+	$(FF) -c pdlaed2x.f $(CCFLAG) $(INCFLAG)
+pdlaed3x.o : pdlaed3x.f
+	$(FF) -c pdlaed3x.f $(CCFLAG) $(INCFLAG)
+
+
+
