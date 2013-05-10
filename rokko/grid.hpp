@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <cmath>
 #include <boost/noncopyable.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 
@@ -16,6 +17,8 @@ public:
   virtual int calculate_grid_row(int proc_rank) const = 0;
   virtual int calculate_grid_col(int proc_rank) const = 0;
   virtual ~grid_base() {}
+  virtual bool is_row_major() const = 0;
+  virtual bool is_col_major() const = 0;
 };
 
 template<typename GRID_MAJOR = rokko::grid_row_major>
@@ -41,6 +44,13 @@ public:
   int calculate_grid_row(int proc_rank) const;
   int calculate_grid_col(int proc_rank) const;
 
+  bool is_row_major() const {
+    return boost::is_same<GRID_MAJOR, grid_row_major>::value;
+  }
+  bool is_col_major() const {
+    return boost::is_same<GRID_MAJOR, grid_col_major>::value;
+  }
+  
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
