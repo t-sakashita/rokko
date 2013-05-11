@@ -1,7 +1,7 @@
 if( DEFINED EIGEN_S_LIB AND EIGEN_S_INC )
   message(STATUS "Display: EIGEN_S_LIB= ${EIGEN_S_LIB}")
   separate_arguments(EIGEN_S_LIB)
-  set(TESTS2 diagonalize_eigen_s)
+  set(TESTS2 diagonalize_general diagonalize_eigen_s)
 
   foreach(name ${TESTS2})
     include_directories(${name} ${EIGEN_S_INC})

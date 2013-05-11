@@ -82,7 +82,11 @@ int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, r
   blacs_pinfo_(mat.myrank, mat.nprocs);
   blacs_get_(MINUS_ONE, ZERO, ictxt);
 
-  blacs_gridinit_(ictxt, "R", mat.nprow, mat.npcol); // ColがMPI_Comm_createと互換
+  char char_grid_major;
+  if(mat.g.is_row_major())  char_grid_major = 'R';
+  else  char_grid_major = 'C';
+
+  blacs_gridinit_(ictxt, &char_grid_major, mat.nprow, mat.npcol); // ColがMPI_Comm_createと互換
   blacs_gridinfo_(ictxt, mat.nprow, mat.npcol, mat.myrow, mat.mycol);
 
   int dim = mat.m_global;

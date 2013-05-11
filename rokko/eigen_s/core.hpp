@@ -17,9 +17,8 @@ public:
 
   void optimized_grid_size() {}
 
-  void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array)
-  {
-    int n = dim;
+  void optimized_matrix_size(distributed_matrix& mat) {
+    int n = mat.m_global;
     int nx = ((n-1)/nprow+1);
     int i1 = 6, i2 = 16*4, i3 = 16*4*2, nm;
     CSTAB_get_optdim(nx, i1, i2, i3, nm);  // return an optimized (possiblly) leading dimension of local block-cyclic matrix to nm.
@@ -33,7 +32,7 @@ public:
     std::cout << "nm=" << nm << std::endl;
     std::cout << "nmz=" << nmz << std::endl;
     std::cout << "nmw=" << nmw << std::endl;
-    int larray = std::max(nmz,nm) * nmw;
+    int length_array = std::max(nmz,nm) * nmw;
     lld = nm;
     len_array =  larray;
     mb = nb = 1;

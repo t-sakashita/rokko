@@ -1,7 +1,7 @@
 #ifndef ROKKO_DISTRIBUTED_H
 #define ROKKO_DISTRIBUTED_H
 
-
+#include <iostream>
 #include <cstdlib>
 //#include <mpi.h>
 #include <rokko/grid.hpp>
@@ -18,9 +18,8 @@ template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix {
 public:
   template<typename GRID_MAJOR>
-  distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in)
-    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
-    //g = new grid<GRID_MAJOR>(g_in);
+  distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in)
+    : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
 
     // ローカル行列の形状を指定
     mb = m_global / nprow;
@@ -59,15 +58,11 @@ public:
   }
 
   template<typename GRID_MAJOR>
-  distributed_matrix(int m_global, int n_global, const grid<GRID_MAJOR>& g_in, rokko::solver& solver_in)
-    : m_global(m_global), n_global(n_global), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
+  distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in, rokko::solver& solver_in)
+    : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
     // determine mb, nb, lld, larray
-    int larray;
-    solver_in.optimized_matrix_size(m_global, nprow, npcol, mb, nb, lld, larray);
-
-    // determine m_local, n_local from m_global, n_global, mb, nb
-    m_local = get_row_size();
-    n_local = get_col_size();
+    //solver_in.optimized_matrix_size(m_global, nprow, npcol, mb, nb, lld, larray);
+    solver_in.optimized_matrix_size(*this);
 
 #ifndef NDEBUG
     for (int proc=0; proc<nprocs; ++proc) {
@@ -79,14 +74,14 @@ public:
 	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
         std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
         std::cout << " lld=" << lld << std::endl;
-        std::cout << " larray=" << larray << std::endl;
+        std::cout << " length_array=" << length_array << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
 #endif
 
-    array = new double[larray];
-    if (array == 0 {
+    array = new double[length_array];
+    if (array == 0) {
       std::cerr << "failed to allocate array." << std::endl;
       MPI_Abort(MPI_COMM_WORLD, 3);
     }
@@ -98,6 +93,20 @@ public:
   }
 
   double* get_array() { return array; }
+
+  void set_length_array(int value) { lld = value; }
+  void set_block_size(int mb_in, int nb_in) {
+    mb = mb_in;
+    nb = nb_in;
+  }
+
+  int get_mb() { return mb; }
+  int get_nb() { return nb; }
+
+  int set_m_local(int m_local_in, int n_local_in) {
+    m_local = m_local_in;
+    n_local = n_local_in;
+  }
 
   int get_row_size() const {
     int tmp = m_global / mb;
@@ -201,6 +210,7 @@ public:
   int myrow, mycol;
   int nprow, npcol;
   int lld;
+  int length_array;
 
   const grid_base& g;
 
