@@ -14,17 +14,22 @@ struct grid_col_major {};
 
 class grid_base {
 public:
+  //grid_base(MPI_Comm& comm_in)  {} //: comm(comm_in) {}
   virtual int calculate_grid_row(int proc_rank) const = 0;
   virtual int calculate_grid_col(int proc_rank) const = 0;
   virtual ~grid_base() {}
   virtual bool is_row_major() const = 0;
   virtual bool is_col_major() const = 0;
+  virtual MPI_Comm get_comm() const = 0;
+
+  MPI_Comm comm;
 };
 
 template<typename GRID_MAJOR = rokko::grid_row_major>
 class grid : public grid_base, private boost::noncopyable {
 public:
-  grid(MPI_Comm& comm) {
+  grid(MPI_Comm comm_in = MPI_COMM_WORLD) { //: comm(comm_in) {
+    comm = comm_in;
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
 
@@ -44,13 +49,20 @@ public:
   int calculate_grid_row(int proc_rank) const;
   int calculate_grid_col(int proc_rank) const;
 
+  int get_nprow() const { return nprow; }
+  int get_npcol() const { return npcol; }
+
   bool is_row_major() const {
     return boost::is_same<GRID_MAJOR, grid_row_major>::value;
   }
   bool is_col_major() const {
     return boost::is_same<GRID_MAJOR, grid_col_major>::value;
   }
-  
+
+  MPI_Comm get_comm() const { return comm; }
+
+  //MPI_Comm comm;
+
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;

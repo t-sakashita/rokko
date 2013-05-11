@@ -487,7 +487,7 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
   int myrank = mat.myrank; int nprocs = mat.nprocs;
 
-  double* local_array = mat.get_array();
+  double* local_array = mat.get_array_pointer();
 
   MPI_Datatype local_array_type, global_array_type;
   create_struct_local(mat, local_array_type);
@@ -571,7 +571,7 @@ int scatter(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_g
   int myrank = mat.myrank;
   int nprocs = mat.nprocs;
 
-  double* local_array = mat.get_array();
+  double* local_array = mat.get_array_pointer();
 
   MPI_Datatype local_array_type, global_array_type;
   create_struct_local(mat, local_array_type);

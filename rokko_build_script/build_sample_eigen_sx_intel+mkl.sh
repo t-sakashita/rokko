@@ -6,4 +6,4 @@ cmake ~/development/rokko/ -DEIGEN_SX_LIB="/home/sakashita/eigen_sx/libEigen_sx.
 
 make diagonalize_eigen_sx VERBOSE=1
 
-make diagonalize_time_frank_eigen_sx VERBOSE=1
+##make diagonalize_time_frank_eigen_sx VERBOSE=1

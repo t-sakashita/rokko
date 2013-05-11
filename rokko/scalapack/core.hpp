@@ -10,46 +10,27 @@ namespace scalapack {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) { }
+  void initialize(int& argc, char**& argv) {}
 
-  void finalize() { }
+  void finalize() {}
 
   void optimized_grid_size() {}
 
-  //void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) {
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
-    // ローカル行列の形状を指定
-    //m_global = n_global = dim;
-    mat.mb = mat.m_global / mat.nprow;
-    if (mat.mb == 0) mat.mb = 1;
-    mat.nb = mat.n_global / mat.npcol;
-    if (mat.nb == 0) mat.nb = 1;
-    // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    mat.mb = std::min(mat.mb, mat.nb);
-    mat.nb = mat.mb;
+    // Determine mb, nb, lld, larray
+    int mb = mat.get_m_global() / mat.get_nprow();
+    if (mb == 0)  mb = 1;
+    int nb = mat.get_n_global() / mat.get_npcol();
+    if (nb == 0)  nb = 1;
+    // Note: it should be that mb = nb in pdsyev.
+    int tmp = std::min(mb, nb);
+    mat.set_block_size(tmp, tmp);
 
-    // determine m_local, n_local from m_global, n_global, mb, nb
-    mat.m_local = mat.get_row_size();
-    mat.n_local = mat.get_col_size();
-    mat.lld = mat.get_lld();
-    mat.length_array = mat.m_local * mat.n_local;
-
-    /*
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-	std::cout << "proc=" << proc << std::endl;
-	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
-	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
-        std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
-      }
-      MPI_Barrier(MPI_COMM_WORLD);
-    }
-    */
-
-
+    // Determine m_local, n_local from m_global, n_global, mb, nb
+    mat.set_default_local_size();
+    mat.set_default_lld();
+    mat.set_default_length_array();
   }
 
   template<typename MATRIX_MAJOR>

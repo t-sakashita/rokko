@@ -11,11 +11,14 @@ namespace elemental {
 
 template<typename MATRIX_MAJOR>
 void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals,
-  rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+                 rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
 
-  MPI_Comm comm = MPI_COMM_WORLD;
-  elem::Grid elem_grid(comm, mat.nprow, mat.npcol);
-  elem::DistMatrix<double> elem_mat(mat.m_global, mat.n_global, 0, 0, mat.get_array(),
+  MPI_Comm comm = mat.g.get_comm();
+  if(mat.g.is_row_major()) throw "Elemental doesn't support grid_row_major.  Use Elemental with grid_col_major.";
+  if(mat.is_row_major()) throw "Elemental doesn't support matrix_row_major.  Use Elemental with matrix_col_major.";
+
+  elem::Grid elem_grid(comm, mat.get_nprow(), mat.get_npcol());
+  elem::DistMatrix<double> elem_mat(mat.get_m_global(), mat.get_n_global(), 0, 0, mat.get_array_pointer(),
     mat.lld, elem_grid);
   //elem::DistMatrix<double> elem_eigvecs(mat.m_global, mat.n_global, elem_grid);
   elem::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);

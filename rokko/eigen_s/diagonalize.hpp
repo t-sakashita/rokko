@@ -10,19 +10,12 @@ namespace rokko {
 
 namespace eigen_s {
 
-template<typename MATRIX_MAJOR>
-void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs)
-{
-}
 
 template<typename MATRIX_MAJOR>
-void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs)
-{
-}
+void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+  if(mat.g.is_col_major()) throw "eigen_s doesn't support grid_col_major.  Use eigen_s with grid_row_major.";
+  if(mat.is_col_major()) throw "eigen_s doesn't support matrix_col_major.  Use eigen_s with matrix_row_major.";
 
-template<>
-void diagonalize(rokko::distributed_matrix<rokko::matrix_row_major>& mat, double* eigvals, rokko::distributed_matrix<rokko::matrix_row_major>& eigvecs)
-{
   int m = 32;  // block_size
 
   int iflag;
@@ -35,16 +28,22 @@ void diagonalize(rokko::distributed_matrix<rokko::matrix_row_major>& mat, double
   MPI_Barrier(MPI_COMM_WORLD);
   start = MPI_Wtime();
 
-  //eigen_s_(mat.m_global, mat.array, mat.lld, &eigvals[0], double_null_ptr, mat.lld, m, iflag);
-  eigen_s_(mat.m_global, mat.array, mat.lld, eigvals, eigvecs.array, mat.lld, m, iflag);
+  int dim = mat.get_m_global();
+  int mat_lld = mat.get_lld();
+  int eigvecs_lld = mat.get_lld();
+  double* mat_array = mat.get_array_pointer();
+  double* eigvecs_array= eigvecs.get_array_pointer();
+  eigen_s_(dim, mat_array, mat_lld, eigvals, eigvecs_array, eigvecs_lld, m, iflag);
 
   MPI_Barrier(MPI_COMM_WORLD);
   end = MPI_Wtime();
 }
 
-template<>
-void diagonalize(rokko::distributed_matrix<rokko::matrix_row_major>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<rokko::matrix_row_major>& eigvecs)
-{
+template<typename MATRIX_MAJOR>
+void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+  if(mat.g.is_col_major()) throw "eigen_s doesn't support grid_col_major. Use eigen_s with grid_row_major.";
+  if(mat.is_col_major()) throw "eigen_s doesn't support matrix_col_major. Use eigen_s with matrix_row_major.";
+
   return diagonalize(mat, &eigvals[0], eigvecs);
 }
 

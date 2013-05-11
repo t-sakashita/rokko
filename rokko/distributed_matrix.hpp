@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <cstdlib>
-//#include <mpi.h>
 #include <rokko/grid.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 
@@ -17,6 +17,7 @@ struct matrix_col_major {};
 template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix {
 public:
+  /*
   template<typename GRID_MAJOR>
   distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in)
     : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
@@ -32,9 +33,9 @@ public:
     //mb = min(mb, nb);
     mb = nb = 1;
 
-    m_local = get_row_size();
-    n_local = get_col_size();
-    lld = get_lld();
+    m_local = calculate_row_size();
+    n_local = calculate_col_size();
+    lld = get_default_lld();
 
 #ifndef NDEBUG
     for (int proc=0; proc<nprocs; ++proc) {
@@ -46,7 +47,7 @@ public:
 	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
         std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
       }
-      MPI_Barrier(MPI_COMM_WORLD);
+      MPI_Barrier(g.get_comm());
     }
 #endif
 
@@ -56,12 +57,12 @@ public:
       MPI_Abort(MPI_COMM_WORLD, 3);
     }
   }
+  */
 
   template<typename GRID_MAJOR>
   distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in, rokko::solver& solver_in)
     : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
-    // determine mb, nb, lld, larray
-    //solver_in.optimized_matrix_size(m_global, nprow, npcol, mb, nb, lld, larray);
+    // Determine mb, nb, lld, larray
     solver_in.optimized_matrix_size(*this);
 
 #ifndef NDEBUG
@@ -69,21 +70,20 @@ public:
       if (proc == myrank) {
 	std::cout << "proc=" << proc << std::endl;
 	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
-	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
-        std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
-        std::cout << " lld=" << lld << std::endl;
-        std::cout << " length_array=" << length_array << std::endl;
+	std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
+	std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
+        std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
+        std::cout << "  lld=" << lld << std::endl;
+        std::cout << "  length_array=" << length_array << std::endl;
       }
-      MPI_Barrier(MPI_COMM_WORLD);
+      MPI_Barrier(g.get_comm());
     }
 #endif
 
     array = new double[length_array];
     if (array == 0) {
       std::cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, 3);
+      MPI_Abort(g.get_comm(), 3);
     }
   }
 
@@ -92,23 +92,37 @@ public:
     array = 0;
   }
 
-  double* get_array() { return array; }
+  double* get_array_pointer() { return array; }
 
-  void set_length_array(int value) { lld = value; }
+  int get_length_array() const { return length_array; }
+
+  void set_length_array(int value) { length_array = value; }
   void set_block_size(int mb_in, int nb_in) {
     mb = mb_in;
     nb = nb_in;
   }
 
-  int get_mb() { return mb; }
-  int get_nb() { return nb; }
+  int get_mb() const { return mb; }
+  int get_nb() const { return nb; }
 
-  int set_m_local(int m_local_in, int n_local_in) {
+  int get_nprow() const { return nprow; }
+  int get_npcol() const { return npcol; }
+  int get_nprocs() const { return nprocs; }
+
+  int get_m_global() const { return m_global; }
+  int get_n_global() const { return n_global; }
+
+  void set_local_size(int m_local_in, int n_local_in) {
     m_local = m_local_in;
     n_local = n_local_in;
   }
 
-  int get_row_size() const {
+  void set_default_local_size() {
+    m_local = calculate_row_size();
+    n_local = calculate_col_size();
+  }
+
+  int calculate_row_size() const {
     int tmp = m_global / mb;
     int local_num_block_rows = (tmp + nprow-1 - myrow) / nprow;
     int rest_block_row = ((m_global / mb) % nprow) % nprow; // 最後のブロックを持つプロセスの次のプロセス
@@ -120,13 +134,9 @@ public:
       local_rest_block_rows = 0;
 
     return  local_num_block_rows * mb + local_rest_block_rows;
-
-    //const int local_offset_block = m_global / mb;
-    //cout << "local_offset_block=" << local_offset_block;
-    //return (local_offset_block - myrow) / nprow * mb + m_global % mb;
   }
 
-  int get_col_size() const {
+  int calculate_col_size() const {
     int tmp = n_global / nb;
     int local_num_block_cols = (tmp + npcol-1 - mycol) / npcol;
     int rest_block_col = ((n_global / nb) % npcol) % npcol; // 最後のブロックを持つプロセスの次のプロセス
@@ -138,12 +148,19 @@ public:
       local_rest_block_cols = 0;
 
     return  local_num_block_cols * nb + local_rest_block_cols;
-
-    //const int local_offset_block = n_global / nb;
-    //return (local_offset_block - mycol) / npcol * nb + n_global % nb;
   }
 
-  int get_lld() const;
+  int get_lld() const { return lld; };
+
+  void set_lld(int value) { lld = value; };
+  void set_default_lld() { set_lld(get_default_lld()); }
+
+  int get_default_lld() const;
+
+  int get_default_length_array() const;
+  void set_default_length_array() { set_length_array(get_default_length_array()); }
+
+
   int get_array_index(int local_i, int local_j) const;
 
   int translate_l2g_row(const int& local_i) const {
@@ -183,6 +200,13 @@ public:
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
   }
 
+  bool is_row_major() const {
+    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+  }
+  bool is_col_major() const {
+    return boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+  }
+
   void print() const {
     /* each proc prints it's local_array out, in order */
     for (int proc=0; proc<nprocs; ++proc) {
@@ -197,7 +221,7 @@ public:
 	}
 	printf("\n");
       }
-      MPI_Barrier(MPI_COMM_WORLD);
+      MPI_Barrier(g.get_comm());
     }
   }
 
@@ -215,18 +239,28 @@ public:
   const grid_base& g;
 
 private:
-  int info;
+  ///int info;
 };
 
 
 template<>
-inline int distributed_matrix<rokko::matrix_row_major>::get_lld() const {
+inline int distributed_matrix<rokko::matrix_row_major>::get_default_lld() const {
   return m_local;
 }
 
 template<>
-inline int distributed_matrix<rokko::matrix_col_major>::get_lld() const {
+inline int distributed_matrix<rokko::matrix_col_major>::get_default_lld() const {
   return n_local;
+}
+
+template<>
+inline int distributed_matrix<rokko::matrix_row_major>::get_default_length_array() const {
+  return lld * n_local;
+}
+
+template<>
+inline int distributed_matrix<rokko::matrix_col_major>::get_default_length_array() const {
+  return m_local * lld;
 }
 
 template<>
@@ -234,11 +268,11 @@ inline int distributed_matrix<rokko::matrix_row_major>::get_array_index(int loca
   return local_i * lld + local_j;
 }
 
-
 template<>
 inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const {
   return  local_i + local_j * lld;
 }
+
 
 template<typename MATRIX_MAJOR>
 void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
@@ -255,7 +289,7 @@ void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
       }
       printf("\n");
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(g.get_comm());
   }
 }
 

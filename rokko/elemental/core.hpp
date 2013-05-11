@@ -15,11 +15,21 @@ public:
 
   void optimized_grid_size() {}
 
-  void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) {}
+  template <typename MATRIX_MAJOR>
+  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
+    mat.set_block_size(1, 1); // set mb = nb = 1
+
+    // Determine m_local, n_local from m_global, n_global, mb, nb
+    int m_local = mat.calculate_row_size();
+    int n_local = mat.calculate_col_size();
+    mat.set_local_size(m_local, n_local);
+    mat.set_default_lld();
+    mat.set_default_length_array();
+  }
 
   template<typename MATRIX_MAJOR>
   void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals,
-    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+                   rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
     rokko::elemental::diagonalize(mat, eigvals, eigvecs);
   }
 };

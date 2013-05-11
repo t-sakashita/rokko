@@ -1,6 +1,5 @@
-#ifndef ROKKO_EIGEN_S_H
-#define ROKKO_EIGEN_S_H
-
+#ifndef ROKKO_EIGEN_S_HPP
+#define ROKKO_EIGEN_S_HPP
 
 #define eigen_init_wrapper eigen_init_wrapper_
 #define eigen_free_wrapper eigen_free_wrapper_
@@ -30,4 +29,4 @@ extern "C" struct
 } cycl2d_;
 
 
-#endif // ROKKO_EIGEN_S_H
+#endif // ROKKO_EIGEN_S_HPP

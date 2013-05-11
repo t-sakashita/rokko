@@ -1,8 +1,6 @@
 #ifndef ROKKO_EIGEN_SX_HPP
 #define ROKKO_EIGEN_SX_HPP
 
-#include <mpi.h>
-
 #define eigen_init_wrapper eigen_init_wrapper_
 #define eigen_free_wrapper eigen_free_wrapper_
 #define CSTAB_get_optdim cstab_get_optdim_  // オブジェクトファイルでは小文字に変換される
@@ -26,14 +24,6 @@ extern "C" struct
     p0_      ,q0_      , n_common,
     diag_0, diag_1;
 } cycl2d_;
-
-namespace rokko {
-
-struct eigen_sx
-{
-};
-
-} // namespace rokko
 
 #endif // ROKKO_EIGEN_SX_HPP
 
