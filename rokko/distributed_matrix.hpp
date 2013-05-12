@@ -124,12 +124,8 @@ public:
 
   int calculate_row_size() const {
     int tmp = m_global / mb;
-    int local_num_block_rows = tmp / nprow;
-    int rest_block_row = tmp % nprow; // 最後のブロックを持つプロセスの次のプロセス，余りのあるブロックを持つプロセス
-    if (myrow < rest_block_row)  ++local_num_block_rows;
-    //local_num_block_rows = (tmp - myrow -1) / nprow + 1;
-
-    //std::cout << "local_num_block_rows=" << local_num_block_rows << std::endl;
+    int local_num_block_rows = (tmp - myrow -1) / nprow + 1;
+    int rest_block_row = tmp % nprow; // mbに満たないサイズのブロックを持つプロセス
     int local_rest_block_rows;
     if (myrow == rest_block_row)
       local_rest_block_rows = m_global % mb;
@@ -152,9 +148,8 @@ public:
 
   int calculate_col_size() const {
     int tmp = n_global / nb;
-    int local_num_block_cols = tmp / npcol;
-    int rest_block_col = tmp % npcol; // 最後のブロックを持つプロセスの次のプロセス
-    if (mycol < rest_block_col)  ++local_num_block_cols;
+    int local_num_block_cols = (tmp - mycol -1) / npcol + 1;
+    int rest_block_col = tmp % npcol; // nbに満たないサイズのブロックを持つプロセス
     int local_rest_block_cols;
     if (mycol == rest_block_col) {
       local_rest_block_cols = n_global % nb;
