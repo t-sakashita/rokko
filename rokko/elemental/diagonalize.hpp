@@ -40,7 +40,7 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& 
   double* result_mat = elem_eigvecs.Buffer();
   for(int local_i=0; local_i<mat.m_local; ++local_i) {
     for(int local_j=0; local_j<mat.n_local; ++local_j) {
-      eigvecs.set_local(local_i, local_j, result_mat[local_j * mat.lld + local_i]);
+      eigvecs.set_local(local_i, local_j, result_mat[local_j * mat.get_lld() + local_i]);
     }
   }
 
