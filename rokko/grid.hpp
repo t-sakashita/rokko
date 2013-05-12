@@ -70,22 +70,22 @@ public:
 
 template<>
 inline int grid<rokko::grid_row_major>::calculate_grid_row(int proc_rank) const {
-  return proc_rank / nprow;
+  return proc_rank / npcol;
 }
 
 template<>
 inline int grid<rokko::grid_row_major>::calculate_grid_col(int proc_rank) const {
-  return proc_rank % nprow;
-}
-
-template<>
-inline int grid<rokko::grid_col_major>::calculate_grid_row(int proc_rank) const {
   return proc_rank % npcol;
 }
 
 template<>
+inline int grid<rokko::grid_col_major>::calculate_grid_row(int proc_rank) const {
+  return proc_rank % nprow;
+}
+
+template<>
 inline int grid<rokko::grid_col_major>::calculate_grid_col(int proc_rank) const {
-  return proc_rank / npcol;
+  return proc_rank / nprow;
 }
 
 } // namespace rokko

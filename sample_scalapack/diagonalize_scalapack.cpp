@@ -11,8 +11,8 @@
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
-  typedef rokko::grid_row_major grid_major;
-  //typedef rokko::grid_col_major grid_major;
+  //typedef rokko::grid_row_major grid_major;
+  typedef rokko::grid_col_major grid_major;
   typedef rokko::matrix_col_major matrix_major;
   //typedef rokko::matrix_row_major matrix_major;
 
@@ -35,9 +35,8 @@ int main(int argc, char *argv[]) {
   if (myrank == root)
     std::cout << "global_mat:" << std::endl << global_mat << std::endl;
 
-
   Eigen::VectorXd w(dim);
-  rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver); //, true);
+  rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
   solver.diagonalize(mat, w, Z);
 

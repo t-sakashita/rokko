@@ -118,35 +118,60 @@ public:
   }
 
   void set_default_local_size() {
-    m_local = calculate_row_size();
-    n_local = calculate_col_size();
+    MPI_Barrier(g.get_comm());
+    set_local_size(calculate_row_size(), calculate_col_size());
   }
 
   int calculate_row_size() const {
     int tmp = m_global / mb;
-    int local_num_block_rows = (tmp + nprow-1 - myrow) / nprow;
-    int rest_block_row = ((m_global / mb) % nprow) % nprow; // 最後のブロックを持つプロセスの次のプロセス
+    int local_num_block_rows = tmp / nprow;
+    int rest_block_row = tmp % nprow; // 最後のブロックを持つプロセスの次のプロセス，余りのあるブロックを持つプロセス
+    if (myrow < rest_block_row)  ++local_num_block_rows;
+    //local_num_block_rows = (tmp - myrow -1) / nprow + 1;
+
+    //std::cout << "local_num_block_rows=" << local_num_block_rows << std::endl;
     int local_rest_block_rows;
-    std::cout << "local_num_block_rows=" << local_num_block_rows << std::endl;
     if (myrow == rest_block_row)
       local_rest_block_rows = m_global % mb;
     else
       local_rest_block_rows = 0;
+
+    MPI_Barrier(g.get_comm());
+    for (int proc=0; proc<nprocs; ++proc) {
+      if (proc == myrank) {
+        printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
+        std::cout << "local_num_block_rows=" << local_num_block_rows
+                  << "  local_rest_block_rows=" << local_rest_block_rows
+                  << "  rest_block_row=" << rest_block_row << std::endl;
+      }
+      MPI_Barrier(g.get_comm());
+    }
 
     return  local_num_block_rows * mb + local_rest_block_rows;
   }
 
   int calculate_col_size() const {
     int tmp = n_global / nb;
-    int local_num_block_cols = (tmp + npcol-1 - mycol) / npcol;
-    int rest_block_col = ((n_global / nb) % npcol) % npcol; // 最後のブロックを持つプロセスの次のプロセス
+    int local_num_block_cols = tmp / npcol;
+    int rest_block_col = tmp % npcol; // 最後のブロックを持つプロセスの次のプロセス
+    if (mycol < rest_block_col)  ++local_num_block_cols;
     int local_rest_block_cols;
-    std::cout << "local_num_block_cols=" << local_num_block_cols << std::endl;
-    if (myrow == rest_block_col)
+    if (mycol == rest_block_col) {
       local_rest_block_cols = n_global % nb;
+    }
     else
       local_rest_block_cols = 0;
 
+    MPI_Barrier(g.get_comm());
+    for (int proc=0; proc<nprocs; ++proc) {
+      if (proc == myrank) {
+        printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
+        std::cout << "local_num_block_cols=" << local_num_block_cols
+                  << "  local_rest_block_cols=" << local_rest_block_cols
+                  << "  rest_block_col=" << rest_block_col << std::endl;
+      }
+      MPI_Barrier(g.get_comm());
+    }
     return  local_num_block_cols * nb + local_rest_block_cols;
   }
 
@@ -245,22 +270,22 @@ private:
 
 template<>
 inline int distributed_matrix<rokko::matrix_row_major>::get_default_lld() const {
-  return m_local;
-}
-
-template<>
-inline int distributed_matrix<rokko::matrix_col_major>::get_default_lld() const {
   return n_local;
 }
 
 template<>
+inline int distributed_matrix<rokko::matrix_col_major>::get_default_lld() const {
+  return m_local;
+}
+
+template<>
 inline int distributed_matrix<rokko::matrix_row_major>::get_default_length_array() const {
-  return lld * n_local;
+  return m_local * lld;
 }
 
 template<>
 inline int distributed_matrix<rokko::matrix_col_major>::get_default_length_array() const {
-  return m_local * lld;
+  return lld * n_local;
 }
 
 template<>

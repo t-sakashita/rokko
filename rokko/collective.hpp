@@ -12,8 +12,8 @@ template<typename MATRIX_MAJOR>
 void calculate_local_matrix_size(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
-  //int m_local = mat.m_local;  int n_local = mat.n_local;
-  int n_local = mat.m_local;  int m_local = mat.n_local;
+  int m_local = mat.m_local;  int n_local = mat.n_local;
+  //int n_local = mat.m_local;  int m_local = mat.n_local;
 
   int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
 

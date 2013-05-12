@@ -33,13 +33,9 @@ template<typename T, typename GRID_MAJOR = rokko::grid_row_major>
 class grid : private boost::noncopyable
 {
 public:
-  grid(MPI_Comm& comm)
-  {
-  }
+  grid(MPI_Comm& comm);
 
-  ~grid()
-  {
-  }
+  ~grid() {}
 
   int myrank, nprocs;
   int myrow, mycol;
