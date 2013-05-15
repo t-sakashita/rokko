@@ -37,6 +37,7 @@ struct eigen3_matrix_major<rokko::matrix_col_major>
 template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 struct localized_matrix : public Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, eigen3_matrix_major<MATRIX_MAJOR>::value > {
 public:
+  localized_matrix() : Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, eigen3_matrix_major<MATRIX_MAJOR>::value >() {};
   localized_matrix(int rows, int cols) : Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, eigen3_matrix_major<MATRIX_MAJOR>::value >(rows, cols) {};
 };
 

@@ -32,11 +32,6 @@ int main(int argc, char *argv[]) {
   rokko::generate_frank_matrix(mat);
   mat.print();
 
-  //rokko::major<matrix_major>::distributed_matrix_type global_mat;
-  //rokko::local_matrix<matrix_major> global_mat;
-  //Eigen3::Matrix
-  //typedef Eigen3::MatrixXd<Eigen3::Rowmajor> type;
-
   rokko::localized_matrix<matrix_major> lmat(dim, dim);
   rokko::gather(mat, lmat, root);
   if (myrank == root)
@@ -55,8 +50,8 @@ int main(int argc, char *argv[]) {
   }
 
   // gather of eigenvectors
-  Eigen::MatrixXd eigvec_global;
-  Eigen::MatrixXd eigvec_sorted(dim, dim);
+  rokko::localized_matrix<matrix_major> eigvec_global;
+  rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
   Eigen::VectorXd eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
   Z.print();
