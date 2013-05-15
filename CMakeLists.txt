@@ -7,8 +7,20 @@ include(add_rokko_test)
 # enable C and C++ compilers
 enable_language(C CXX Fortran)
 
+
 # options
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_EIGEN_S "Build eigen_s library" ON)
+option(BUILD_EIGEN_SX "Build eigen_sx library" ON)
+
+# OpenMP
+find_package(OpenMP)
+if(OPENMP_FOUND)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  # Almost always OpenMP flags are same both for C and for Fortran.
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_C_FLAGS}")
+endif(OPENMP_FOUND)
 
 # MPI library
 find_package(MPI)
@@ -35,9 +47,10 @@ message(STATUS  "Display ELEM_LIB:  ${ELEM_LIB}")
 message(STATUS  "Display ELEM_LIBS:  ${ELEM_LIBS}")
 
 # directories
+add_subdirectory(3rd-party)
 add_subdirectory(rokko)
 add_subdirectory(sample_scalapack)
-add_subdirectory(test)
+# add_subdirectory(test)
 add_subdirectory(sample_eigenK)
 add_subdirectory(sample_elemental)
-add_subdirectory(benchmark)
+# add_subdirectory(benchmark)
