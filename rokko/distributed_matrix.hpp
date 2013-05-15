@@ -64,8 +64,8 @@ public:
   }
   */
 
-  template<typename GRID_MAJOR>
-  distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in, rokko::solver& solver_in)
+  template<typename GRID_MAJOR, typename SOLVER>
+  distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in, SOLVER const& solver_in)
     : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
     // Determine mb, nb, lld, larray
     solver_in.optimized_matrix_size(*this);
@@ -308,23 +308,7 @@ inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int loca
 
 
 template<typename MATRIX_MAJOR>
-void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
-  // each proc prints it's local_array out, in order
-  for (int proc=0; proc<mat.nprocs; ++proc) {
-    if (proc == mat.myrank) {
-      printf("Rank = %d  myrow=%d mycol=%d\n", mat.myrank, mat.myrow, mat.mycol);
-      printf("Local Matrix:\n");
-      for (int local_i=0; local_i<mat.m_local; ++local_i) {
-	for (int local_j=0; local_j<mat.n_local; ++local_j) {
-	  printf("%e ", mat.array[mat.get_array_index(local_i, local_j)]);
-	}
-	printf("\n");
-      }
-      printf("\n");
-    }
-    MPI_Barrier(g.get_comm());
-  }
-}
+void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) { mat.print(); }
 
 } // namespace rokko
 
