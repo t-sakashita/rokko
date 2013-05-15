@@ -37,6 +37,11 @@ public:
     n_local = calculate_col_size();
     lld = get_default_lld();
 
+    stride_myrow = myrow * mb;
+    stride_nprow = mb * (nprow - 1);
+    stride_mycol = mycol * nb;
+    stride_npcol = nb * (npcol - 1);
+
 #ifndef NDEBUG
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
@@ -64,6 +69,11 @@ public:
     : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
     // Determine mb, nb, lld, larray
     solver_in.optimized_matrix_size(*this);
+
+    stride_myrow = myrow * mb;
+    stride_nprow = mb * (nprow - 1);
+    stride_mycol = mycol * nb;
+    stride_npcol = nb * (npcol - 1);
 
 #ifndef NDEBUG
     for (int proc=0; proc<nprocs; ++proc) {
@@ -184,11 +194,13 @@ public:
   int get_array_index(int local_i, int local_j) const;
 
   int translate_l2g_row(const int& local_i) const {
-    return (myrow * mb) + local_i + (local_i / mb) * mb * (nprow - 1);
+    return stride_myrow + local_i + (local_i / mb) * stride_nprow;
+    //return (myrow * mb) + local_i + (local_i / mb) * mb * (nprow - 1);
   }
 
   int translate_l2g_col(const int& local_j) const {
-    return (mycol * nb) + local_j + (local_j / nb) * nb * (npcol - 1);
+    return stride_mycol + local_j + (local_j / nb) * stride_npcol;
+    //return (mycol * nb) + local_j + (local_j / nb) * nb * (npcol - 1);
   }
 
   int translate_g2l_row(const int& global_i) const {
@@ -255,6 +267,7 @@ public:
   int nprow, npcol;
   int lld;
   int length_array;
+  int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
 
   const grid_base& g;
 
