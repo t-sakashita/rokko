@@ -41,13 +41,13 @@
       endif
 !----
       hs1 = mpi_wtime()
-#ifdef TIMER
-      if(my_rank==0)then
-         print*," "
-         print*,"Total Execution Time of eigen_s = ",hs1-hs0,"(sec)"
-      endif
-      call flush(6)
-#endif
+c #ifdef TIMER
+c       if(my_rank==0)then
+c          print*," "
+c          print*,"Total Execution Time of eigen_s = ",hs1-hs0,"(sec)"
+c       endif
+c       call flush(6)
+c #endif
 !----
       deallocate(d, e, work)
 !----

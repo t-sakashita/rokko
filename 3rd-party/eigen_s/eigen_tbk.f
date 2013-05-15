@@ -72,11 +72,11 @@
 *
       call eigen_free(3)
 *
-#ifdef TIMER
-      if ( myrank == 1 ) then
-         print *,"Exectime of \"eigen_tbk\" routine =",hs1-hs0,"(sec)"
-      endif
-#endif
+c #ifdef TIMER
+c       if ( myrank == 1 ) then
+c          print *,"Exectime of 'eigen_tbk' routine =",hs1-hs0,"(sec)"
+c       endif
+c #endif
 *
       return
       end subroutine
@@ -115,11 +115,11 @@
 
 *
 !$omp master
-#ifdef TIMER
-      call mpi_barrier(mpi_comm_world,ierr)
-      d1=mpi_wtime()
-      dcom=0.0d0+00
-#endif
+c #ifdef TIMER
+c       call mpi_barrier(mpi_comm_world,ierr)
+c       d1=mpi_wtime()
+c       dcom=0.0d0+00
+c #endif
       dx = 0.0; dy = 0.0
 
       lwk=((m-1)/size_of_row+1)*((n-1)/size_of_col+1)
@@ -170,10 +170,10 @@
          i_4=mod(i_3-i_2+1,4)+i_2
 *
 !$omp master
-#ifdef TIMER
-         call mpi_barrier(mpi_comm_row,ierr)
-         ds=mpi_wtime()
-#endif
+c #ifdef TIMER
+c          call mpi_barrier(mpi_comm_row,ierr)
+c          ds=mpi_wtime()
+c #endif
          nodes(0) = get_owner_node(i, size_of_row, my_row)
          if ( nodes(0) == my_row ) then
             i_1 = translate_g2l(i, size_of_row, my_row)
@@ -245,10 +245,10 @@
 !$omp barrier
 
 !$omp master
-#ifdef TIMER
-         call mpi_barrier(mpi_comm_col,ierr)
-         ds=mpi_wtime()
-#endif
+c #ifdef TIMER
+c          call mpi_barrier(mpi_comm_col,ierr)
+c          ds=mpi_wtime()
+c #endif
          call reduce_dbl(ss(i_2),tt, i_3-i_2+1, 1, mpi_comm_col)
 
          de=mpi_wtime()
@@ -320,10 +320,10 @@
 !$omp barrier
 *
 !$omp master
-#ifdef TIMER
-         call mpi_barrier(mpi_comm_row,ierr)
-         ds=mpi_wtime()
-#endif
+c #ifdef TIMER
+c          call mpi_barrier(mpi_comm_row,ierr)
+c          ds=mpi_wtime()
+c #endif
          if ( m > size_of_row ) then
 
             do j=0,m-1
@@ -413,18 +413,18 @@
 !$omp master
       deallocate(wk)
       call mpi_barrier(mpi_comm_world,ierr)
-#ifdef DETAIL
-      d2=mpi_wtime()
-      if ( 1 == myrank ) then
-         print*," "
-         print*,"detail of exectime in eigen_tbk "
-         print*,"   time of eigen_tbk_main1=",(d2-d1),"(sec)"
-         print*,"   communication in eigen_tbk_main1 =",dcom,"(sec)"
-!----    print*,"   ",(2d0*n*n*n)/(d2-d1)*1d-9,"gflops"
-!----    print*,"   ",(1d0*n*n*n)/(dx)*1d-9,"gflops"
-!----    print*,"   ",(1d0*n*n*n)/(dy)*1d-9,"gflops"
-      end if
-#endif
+c #ifdef DETAIL
+c       d2=mpi_wtime()
+c       if ( 1 == myrank ) then
+c          print*," "
+c          print*,"detail of exectime in eigen_tbk "
+c          print*,"   time of eigen_tbk_main1=",(d2-d1),"(sec)"
+c          print*,"   communication in eigen_tbk_main1 =",dcom,"(sec)"
+c !----    print*,"   ",(2d0*n*n*n)/(d2-d1)*1d-9,"gflops"
+c !----    print*,"   ",(1d0*n*n*n)/(dx)*1d-9,"gflops"
+c !----    print*,"   ",(1d0*n*n*n)/(dy)*1d-9,"gflops"
+c       end if
+c #endif
 !$omp end master
 *
 *

@@ -50,14 +50,14 @@
          call eigen_pbk(n, a(1), nma, z(1), nma, e(1+nme), m_backward)
       endif
 
-#ifdef TIMER
-      hs1=MPI_Wtime()
-      if(myrank==1) then
-         print*," "
-         print*,"Total Execution Time of eigen_sx =",hs1-hs0,"(sec)"
-      endif
-      call flush(6)
-#endif
+c #ifdef TIMER
+c       hs1=MPI_Wtime()
+c       if(myrank==1) then
+c          print*," "
+c          print*,"Total Execution Time of eigen_sx =",hs1-hs0,"(sec)"
+c       endif
+c       call flush(6)
+c #endif
 *
       return
       end

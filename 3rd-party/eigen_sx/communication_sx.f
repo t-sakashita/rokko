@@ -316,25 +316,25 @@
       call mpi_comm_free(mpi_comm_col,ierr)
       call mpi_comm_free(mpi_comm_row,ierr)
 
-#ifdef DETAIL
-      if ( flag == 1 .and. myrank == 1 ) then
-         print*, "  communication time in \"eigen_prd\""
-      endif
-      if ( flag == 2 .and. myrank == 1 ) then
-         print*, "  communication time in \"eigen_dcx\""
-      endif
-      if ( flag == 3 .and. myrank == 1 ) then
-         print*, " "
-         print*, "detail of exectime in \"eigen_pbk\""
-         print*, "  communication time in \"eigen_pbk\""
-      endif
-      if ( flag >= 1 .and. flag <=3 .and. myrank == 1 ) then
-         print*, "   bcast  :: ", time_bcast,"(sec)"
-         print*, "   reduce :: ", time_reduce,"(sec)"
-         print*, "   redist :: ", time_redist,"(sec)"
-         print*, "   gather :: ", time_gather,"(sec)"
-      endif
-#endif
+c #ifdef DETAIL
+c       if ( flag == 1 .and. myrank == 1 ) then
+c          print*, "  communication time in \"eigen_prd\""
+c       endif
+c       if ( flag == 2 .and. myrank == 1 ) then
+c          print*, "  communication time in \"eigen_dcx\""
+c       endif
+c       if ( flag == 3 .and. myrank == 1 ) then
+c          print*, " "
+c          print*, "detail of exectime in \"eigen_pbk\""
+c          print*, "  communication time in \"eigen_pbk\""
+c       endif
+c       if ( flag >= 1 .and. flag <=3 .and. myrank == 1 ) then
+c          print*, "   bcast  :: ", time_bcast,"(sec)"
+c          print*, "   reduce :: ", time_reduce,"(sec)"
+c          print*, "   redist :: ", time_redist,"(sec)"
+c          print*, "   gather :: ", time_gather,"(sec)"
+c       endif
+c #endif
 
       return
       end subroutine ! eigen_free
