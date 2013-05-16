@@ -5,6 +5,7 @@
 #include <rokko/grid.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
+#include <rokko/localized_vector.hpp>
 
 #include <rokko/collective.hpp>
 
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]) {
     std::cout << "lmat:" << std::endl << lmat << std::endl;
 
 
-  Eigen::VectorXd w(dim);
+  rokko::localized_vector w(dim);
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
   try {
@@ -52,7 +53,7 @@ int main(int argc, char *argv[]) {
   // gather of eigenvectors
   rokko::localized_matrix<matrix_major> eigvec_global;
   rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
-  Eigen::VectorXd eigval_sorted(dim);
+  rokko::localized_vector eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
   Z.print();
   if (myrank == root) {
