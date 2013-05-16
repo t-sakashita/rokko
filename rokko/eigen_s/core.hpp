@@ -28,9 +28,9 @@ public:
     nmz = ((nmz-1) / NB + 1) * NB + 1;
     int nmw = ((n-1) / mat.get_npcol() + 1);
     nmw = ((nmw-1) / NB + 1) * NB + 1;
-    std::cout << "nm=" << nm << std::endl;
-    std::cout << "nmz=" << nmz << std::endl;
-    std::cout << "nmw=" << nmw << std::endl;
+    //std::cout << "nm=" << nm << std::endl;
+    //std::cout << "nmz=" << nmz << std::endl;
+    //std::cout << "nmw=" << nmw << std::endl;
     mat.set_lld(nm);
     mat.set_length_array(std::max(nmz,nm) * nmw);
     mat.set_block_size(1, 1);
