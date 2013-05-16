@@ -4,47 +4,20 @@ PREFIX="$1"
 test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
 echo "PREFIX = $PREFIX"
 
+TMP_DIR=`dirname $0`
+SCRIPT_DIR=`cd $TMP_DIR && pwd`
+
 mkdir -p $WORK/build
 cd $WORK/build
 rm -rf trilinos-11.2.3-Source
 tar jxf $WORK/source/trilinos-11.2.3-Source.tar.bz2
 
 cd $WORK/build/trilinos-11.2.3-Source
-patch -p1 << EOF
---- trilinos-11.2.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake
-+++ trilinos-11.2.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake
-@@ -63,7 +63,7 @@
-   # Verify the selected combination of Fortran and C++ compilers.
-   IF("${CMAKE_VERSION}" VERSION_GREATER 2.7.20090824 AND NOT ${PROJECT_NAME}_SKIP_FORTRANCINTERFACE_VERIFY_TEST)
-     INCLUDE(FortranCInterface)
--    FortranCInterface_VERIFY(CXX)
-+#    FortranCInterface_VERIFY(CXX)
-   ENDIF()
- ENDIF()
-
-EOF
-
-
-patch -p1 << EOF
---- trilinos-11.2.3-Source/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp
-+++ trilinos-11.2.3-Source/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp
-@@ -64,6 +64,8 @@
- #include "Trilinos_Util_CommandLineParser.h"
- #include "Trilinos_Util_CrsMatrixGallery.h"
-
-+inline long long abs(long long i) { return llabs(i); }
-+
- const double UNDEF = -99999.87;
- const bool Scaling = false;
-
-EOF
-
-patch -p1 < ~/development/rokko/script/TPI.patch.c_option
-
+patch -p1 < $SCRIPT_DIR/trilinos-11.2.3-Source.patch
 
 cd $WORK/build
-mkdir trilinos-11.2.3-build
-rm -rf trilinos-11.2.3-build/*
+rm -rf trilinos-11.2.3-build
+mkdir -p trilinos-11.2.3-build
 cd trilinos-11.2.3-build
 
 cmake \
@@ -59,8 +32,8 @@ cmake \
 -D Trilinos_EXTRA_LINK_FLAGS:STRING="--linkfortran" \
 -D Trilinos_ENABLE_Anasazi:BOOL=ON \
 -D Trilinos_ENABLE_EXAMPLES:BOOL=ON -D Trilinos_ENABLE_TESTS:BOOL=ON \
--D ${PROJECT_NAME}_SKIP_FORTRANCINTERFACE_VERIFY_TEST)
+-D Trilinos_SKIP_FORTRANCINTERFACE_VERIFY_TEST=ON \
 $WORK/build/trilinos-11.2.3-Source
 
-make -j2 2>&1 | tee make.log
+make -j8 2>&1 | tee make.log
 make install
