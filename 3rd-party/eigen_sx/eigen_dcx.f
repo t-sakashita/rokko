@@ -68,7 +68,7 @@
       d2 = mpi_wtime()
 
 ! blacs array registration
-      nb = 64+32                    ! size of block width
+      nb = min( 64+32, n )                    ! size of block width
       np = numroc( n, nb, myrow, 0, nprow )
       nq = numroc( n, nb, mycol, 0, npcol )
       lddz = (n-1)/nprow+1
