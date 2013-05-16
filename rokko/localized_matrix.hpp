@@ -1,5 +1,5 @@
-#ifndef ROKKO_LOCALIZED_H
-#define ROKKO_LOCALIZED_H
+#ifndef ROKKO_LOCALIZED_MATRIX_HPP
+#define ROKKO_LOCALIZED_MATRIX_HPP
 
 #include <iostream>
 #include <cstdlib>
@@ -41,7 +41,6 @@ public:
   localized_matrix(int rows, int cols) : Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, eigen3_matrix_major<MATRIX_MAJOR>::value >(rows, cols) {};
 };
 
-
 } // namespace rokko
 
-#endif // ROKKO_LOCALIZED_H
+#endif // ROKKO_LOCALIZED_MATRIX_HPP

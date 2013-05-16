@@ -59,6 +59,7 @@ cmake \
 -D Trilinos_EXTRA_LINK_FLAGS:STRING="--linkfortran" \
 -D Trilinos_ENABLE_Anasazi:BOOL=ON \
 -D Trilinos_ENABLE_EXAMPLES:BOOL=ON -D Trilinos_ENABLE_TESTS:BOOL=ON \
+-D ${PROJECT_NAME}_SKIP_FORTRANCINTERFACE_VERIFY_TEST)
 $WORK/build/trilinos-11.2.3-Source
 
 make -j2 2>&1 | tee make.log
