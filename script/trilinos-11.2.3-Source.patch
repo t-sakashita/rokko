@@ -1,0 +1,26 @@
+diff -urN trilinos-11.2.3-Source.orig/packages/ThreadPool/src/TPI.c trilinos-11.2.3-Source/packages/ThreadPool/src/TPI.c
+--- trilinos-11.2.3-Source.orig/packages/ThreadPool/src/TPI.c	2013-04-26 02:20:06.000000000 +0900
++++ trilinos-11.2.3-Source/packages/ThreadPool/src/TPI.c	2013-05-16 18:01:59.000000000 +0900
+@@ -68,7 +68,7 @@
+ #define THREADPOOL_CONFIG "PTHREAD SCHED_YIELD"
+
+ #elif	defined( __linux__ ) && \
+-	defined( __GNUC__ ) && ( 4 <= __GNUC__ )
++	defined( __GNUC__ ) && ( 4 <= __GNUC__ ) && !defined(__fcc_version)
+
+ #define THREADPOOL_CONFIG "PTHREAD SCHED_YIELD ATOMIC_SYNC"
+
+diff -urN trilinos-11.2.3-Source.orig/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp trilinos-11.2.3-Source/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp
+--- trilinos-11.2.3-Source.orig/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp	2013-04-26 02:20:26.000000000 +0900
++++ trilinos-11.2.3-Source/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp	2013-05-16 18:00:17.000000000 +0900
+@@ -64,6 +64,10 @@
+ #include "Trilinos_Util_CommandLineParser.h"
+ #include "Trilinos_Util_CrsMatrixGallery.h"
+
++#if defined(__FCC_VERSION)
++inline long long abs(long long i) { return llabs(i); }
++#endif
++
+ const double UNDEF = -99999.87;
+ const bool Scaling = false;
+
