@@ -15,7 +15,7 @@ time, the run may be silent, as a lot of the information is cached in
 
 import sys
 from os.path import expandvars
-from subprocess import check_call
+from subprocess import check_output
 import matplotlib
 matplotlib.use('pdf')
 
@@ -39,53 +39,41 @@ if (argc != 3):
     print 'Usage: # python %s library_name matrix_name' % argvs[0]
     quit()
 library_type = argvs[1]  #"scalapack"
-matrix_type = argvs[2]  #"frank"
+max_num_dim = int(argvs[2])
+matrix_type = "frank"
 
 print 'library_type=', library_type
 print 'matrix_type=', matrix_type
 
 num_str = "dim"
 num_procs = 4;
-max_num_dim = 10
+#max_num_dim = 10
 
 run_directory = "${HOME}/build/rokko/benchmark"
-run_program = "diagonalize_time_" + matrix_type + "_" + library_type
+run_program = "frank_matrix"
 run_filename = expandvars(run_directory) + "/" + run_program
-#ip_file = ""
+
 
 filename_output = library_type + '_' + matrix_type + "_time" + "_" + num_str
 filename_output_txt = filename_output + ".txt"
 filename_output_fig = filename_output + ".pdf"
 
-fp_output = open(filename_output_txt, 'w')
+fp_output = open(filename_output_txt, "w")
 
 nums = range(1, max_num_dim+1)
 
 times = [];
 iters = [];
 
-filename_input = library_type + '_time.txt'
-#print 'filename=', filename_input
 for num in nums:
-    print "num_procs=", num
-    check_call(["mpirun", "-np", str(num_procs), run_filename, str(num) ])
-    fp_input = open(filename_input, 'r')
-    for line in fp_input:
-        items = line[:-1].split('=')
-
+    print "dim=", num
+    output = check_output(["mpirun", "-np", str(num_procs), run_filename, library_type, str(num) ])
+    for line in output.split('\n'):
+        items = line.split(' ')
         if items[0] == "time":
-            print items[0]
-            print "times.append: ",items[1]
-            times.append(float(items[1]))
-            fp_output.write(str(num) + "  " + items[1] + '\n')
-            #break
-
-#    if items[0] != "time":
-#        print "item[0]=", items[0]
-#        print "error!"
-#        exit(1)
-
-    fp_input.close()
+            print "times.append: ",items[2]
+            times.append(float(items[2]))
+            fp_output.write(str(num) + "  " + items[2] + '\n')
 
 fp_output.close()
 

@@ -1,1 +1,0 @@
-/home/issp/usr/bin/mpicxx   -g   -Wl,-rpath  -Wl,/home/issp/usr/lib CMakeFiles/gather.dir/gather.cpp.o  -o gather -rdynamic -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=sequential -lmpichcxx -lmpich -lopa -lmpl -lrt -lpthread 
