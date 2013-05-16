@@ -77,7 +77,7 @@
       lddw = ((lddw-1)/nb+1)*nb     ! second dimension size of array "z"
       call descinit( descz, n, n, nb, nb, 0, 0, ictxt, lddz, info )
       if(info/=0) then
-         print*,"Error in \"descinit\" routine."
+         print*,"Error in 'descinit' routine."
          print*,"  error code =",info
          stop 
       endif
@@ -96,27 +96,27 @@
 ! somehow, z must be nullified (originally next loop is not required.)
       z(1:lddz*lddw,1) = 0.0d+00
 
-#ifdef DETAIL
-      d3 = mpi_wtime()
-      if(my_rank==0) then
-         print*," "
-         print*,"detail of exectime in \"eigen_dcx\""
-         print*,"   before pdstedc =",d3-d1,"(sec)"
-      endif
-#endif
+c #ifdef DETAIL
+c       d3 = mpi_wtime()
+c       if(my_rank==0) then
+c          print*," "
+c          print*,"detail of exectime in \"eigen_dcx\""
+c          print*,"   before pdstedc =",d3-d1,"(sec)"
+c       endif
+c #endif
 
       d4 = mpi_wtime ()
       call eigen_pdsxedc('i',2, n, d(1), e(1), nme, z(1,1), 1, 1, descz,
      &               work(1), lwork, iwork(1), liwork, info)
       d5 = mpi_wtime()
       if(info/=0) then
-         print*,"Error in \"eigen_pdsxedc\" routine."
+         print*,"Error in 'eigen_pdsxedc' routine."
          print*,"  error code =",info
          stop 
       endif
-#ifdef DETAIL
-      if(my_rank==0) print*,"   pdstedc =",d5-d4,"(sec)"
-#endif
+c #ifdef DETAIL
+c       if(my_rank==0) print*,"   pdstedc =",d5-d4,"(sec)"
+c #endif
 
       if(nb==1)then
          do i0=nx,1,-1
@@ -136,11 +136,11 @@
       d6 = mpi_wtime()
       call eigen_free(2)
 
-#ifdef TIMER
-      if(my_rank==0) then
-         print*,"Exectime of \"eigen_dcx\" routine  =",d6-d1,"(sec)"
-      endif
-#endif
+c #ifdef TIMER
+c       if(my_rank==0) then
+c          print*,"Exectime of \"eigen_dcx\" routine  =",d6-d1,"(sec)"
+c       endif
+c #endif
 
 ! freeing working arrays
       deallocate(work)

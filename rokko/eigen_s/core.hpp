@@ -1,8 +1,6 @@
 #ifndef ROKKO_EIGEN_S_CORE_HPP
 #define ROKKO_EIGEN_S_CORE_HPP
 
-#include <boost/noncopyable.hpp>
-
 #include <rokko/eigen_s/eigen_s.hpp>
 #include <rokko/eigen_s/diagonalize.hpp>
 
@@ -49,7 +47,6 @@ public:
 };
 
 } // namespace eigen_s
-
 } // namespace rokko
 
 #endif // ROKKO_EIGEN_S_CORE_HPP

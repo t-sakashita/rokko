@@ -52,14 +52,14 @@
       d2=mpi_wtime()
 
       call eigen_free(1)
-#ifdef TIMER
-!$omp master
-      if(myrank==1)then
-         print*,"Exectime of \"eigen_prd\" routine  =",(d2-d1),"(sec)"
-      endif
-      call flush(6)
-!$omp end master
-#endif
+c #ifdef TIMER
+c !$omp master
+c       if(myrank==1)then
+c          print*,"Exectime of \"eigen_prd\" routine  =",(d2-d1),"(sec)"
+c       endif
+c       call flush(6)
+c !$omp end master
+c #endif
 
       return
       end subroutine ! eigen_prd
@@ -212,13 +212,13 @@
 
 !$omp master
 
-#ifdef DETAIL
-      if ( myrank == 1 ) then
-         print*,"num.of.process=",nprocs,"(",size_of_col,size_of_row,")"
-!$       print*,"num.of.threads=",omp_get_num_threads()
-      endif
-      call flush(6)
-#endif
+c #ifdef DETAIL
+c       if ( myrank == 1 ) then
+c          print*,"num.of.process=",nprocs,"(",size_of_col,size_of_row,")"
+c !$       print*,"num.of.threads=",omp_get_num_threads()
+c       endif
+c       call flush(6)
+c #endif
 
       call eigen_prd_init(a(1,1), nm, n,
      &        d_out(1), e_out(1,1), ne,
@@ -373,19 +373,19 @@
       call eigen_prd_final(a(1,1), nm, n,
      &        d_out(1), e_out(1,1), ne, u_t(1))
 
-#ifdef DETAIL
-      if(myrank==1)then
-         print*," "
-         print*,"detail of exectime in \"eigen_prd\""
-         print*,"   calc (u,beta)    ",dd(1),"(sec)"
-         print*,"   mat-vec (au)     ",dd(2),"(sec)"
-         print*,"   2update (a-uv-vu)",dd(3),"(sec)"
-         print*,"   calc v           ",dd(4),"(sec)"
-         print*,"   v=v-(uv+vu)u     ",dd(5),"(sec)"
-         print*,"   uv post reduction",dd(6),"(sec)"
-      endif
-      call flush(6)
-#endif
+c #ifdef DETAIL
+c       if(myrank==1)then
+c          print*," "
+c          print*,"detail of exectime in \"eigen_prd\""
+c          print*,"   calc (u,beta)    ",dd(1),"(sec)"
+c          print*,"   mat-vec (au)     ",dd(2),"(sec)"
+c          print*,"   2update (a-uv-vu)",dd(3),"(sec)"
+c          print*,"   calc v           ",dd(4),"(sec)"
+c          print*,"   v=v-(uv+vu)u     ",dd(5),"(sec)"
+c          print*,"   uv post reduction",dd(6),"(sec)"
+c       endif
+c       call flush(6)
+c #endif
 
 !$omp end master
 

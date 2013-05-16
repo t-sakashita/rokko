@@ -41,16 +41,16 @@
 !$omp master
       dx = dx + (de-ds)
 *-
-#ifdef TIMER
-      call mpi_barrier(mpi_comm_col,ierr)
-      ds=mpi_wtime()
-#endif
+c #ifdef TIMER
+c       call mpi_barrier(mpi_comm_col,ierr)
+c       ds=mpi_wtime()
+c #endif
       call reduce_dbl(ss, tt, (i_3-i_2+1)*m+nsm*nsm,
      $                1, mpi_comm_col)
-#ifdef TIMER
-      de=mpi_wtime()
-      dcom=dcom+(de-ds)
-#endif
+c #ifdef TIMER
+c       de=mpi_wtime()
+c       dcom=dcom+(de-ds)
+c #endif
 *-
 ! sm:= d*sm
       do m_0=1,m-1

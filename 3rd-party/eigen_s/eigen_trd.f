@@ -39,11 +39,11 @@
        hs1=mpi_wtime()
 
       call eigen_free(1)
-#ifdef TIMER
-      if ( myrank == 1 ) then
-         print *,"Exectime of \"eigen_trd\" routine =",hs1-hs0,"(sec)"
-      endif
-#endif
+c #ifdef TIMER
+c       if ( myrank == 1 ) then
+c          print *,"Exectime of \"eigen_trd\" routine =",hs1-hs0,"(sec)"
+c       endif
+c #endif
       call mpi_barrier(mpi_comm_world,ierr)
 
       return
@@ -197,16 +197,16 @@
 !----
 !$omp master
 
-#ifdef DETAIL
-      if ( myrank == 1 ) then
-!$       if ( omp_get_thread_num() == 0 ) then
-            print*,"num.of.process=",nprocs,
-     &          "(",size_of_col,size_of_row,")"
-!$          print*,"num.of.threads=",omp_get_num_threads()
-!$       endif
-      endif
-      call flush(6)
-#endif
+c #ifdef DETAIL
+c       if ( myrank == 1 ) then
+c !$       if ( omp_get_thread_num() == 0 ) then
+c             print*,"num.of.process=",nprocs,
+c      &          "(",size_of_col,size_of_row,")"
+c !$          print*,"num.of.threads=",omp_get_num_threads()
+c !$       endif
+c       endif
+c       call flush(6)
+c #endif
 
       call eigen_trd_init(a(1,1), nm, n,
      &                d_out(1), e_out(1),
@@ -413,20 +413,20 @@
 
       call eigen_trd_finalize(a(1,1), nm, n, d_out(1), e_out(1), u_t(1))
 
-#ifdef DETAIL
-      if(myrank==1)then
-         print*," "
-         print*,"detail of exectime in \"eigen_trd\""
-         print*,"  calc (u,beta)    ",dd(1),"(sec)"
-         print*,"  mat-vec (au)     ",dd(2),"(sec)"
-         print*,"  comm1/2          ",t2_reduce1+t2_reduce2,"(sec)"
-         print*,"  2update (a-uv-vu)",dd(3),"(sec)"
-         print*,"  calc v           ",dd(4),"(sec)"
-         print*,"  v=v-(uv+vu)u     ",dd(5),"(sec)"
-         print*,"  uv post reduction",dd(6),"(sec)"
-      endif
-      call flush(6)
-#endif
+c #ifdef DETAIL
+c       if(myrank==1)then
+c          print*," "
+c          print*,"detail of exectime in \"eigen_trd\""
+c          print*,"  calc (u,beta)    ",dd(1),"(sec)"
+c          print*,"  mat-vec (au)     ",dd(2),"(sec)"
+c          print*,"  comm1/2          ",t2_reduce1+t2_reduce2,"(sec)"
+c          print*,"  2update (a-uv-vu)",dd(3),"(sec)"
+c          print*,"  calc v           ",dd(4),"(sec)"
+c          print*,"  v=v-(uv+vu)u     ",dd(5),"(sec)"
+c          print*,"  uv post reduction",dd(6),"(sec)"
+c       endif
+c       call flush(6)
+c #endif
 
 !$omp end master
 
