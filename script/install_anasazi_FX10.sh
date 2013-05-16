@@ -4,34 +4,20 @@ PREFIX="$1"
 test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
 echo "PREFIX = $PREFIX"
 
+TMP_DIR=`dirname $0`
+SCRIPT_DIR=`cd $TMP_DIR && pwd`
+
 mkdir -p $WORK/build
 cd $WORK/build
 rm -rf trilinos-11.2.3-Source
 tar jxf $WORK/source/trilinos-11.2.3-Source.tar.bz2
 
 cd $WORK/build/trilinos-11.2.3-Source
-
-
-patch -p1 << EOF
---- trilinos-11.2.3-Source/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp
-+++ trilinos-11.2.3-Source/packages/triutils/src/Trilinos_Util_CrsMatrixGallery.cpp
-@@ -64,6 +64,8 @@
- #include "Trilinos_Util_CommandLineParser.h"
- #include "Trilinos_Util_CrsMatrixGallery.h"
-
-+inline long long abs(long long i) { return llabs(i); }
-+
- const double UNDEF = -99999.87;
- const bool Scaling = false;
-
-EOF
-
-patch -p1 < ~/development/rokko/script/TPI.c.patch_FCC
-
+patch -p1 < $SCRIPT_DIR/trilinos-11.2.3-Source.patch
 
 cd $WORK/build
-mkdir trilinos-11.2.3-build
-rm -rf trilinos-11.2.3-build/*
+rm -rf trilinos-11.2.3-build
+mkdir -p trilinos-11.2.3-build
 cd trilinos-11.2.3-build
 
 cmake \
@@ -49,5 +35,5 @@ cmake \
 -D Trilinos_SKIP_FORTRANCINTERFACE_VERIFY_TEST=ON \
 $WORK/build/trilinos-11.2.3-Source
 
-make -j2 2>&1 | tee make.log
+make -j8 2>&1 | tee make.log
 make install
