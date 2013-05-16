@@ -39,14 +39,15 @@ if (argc != 3):
     print 'Usage: # python %s library_name matrix_name' % argvs[0]
     quit()
 library_type = argvs[1]  #"scalapack"
-matrix_type = argvs[2]  #"frank"
+max_num_dim = int(argvs[2])
+matrix_type = "frank"
 
 print 'library_type=', library_type
 print 'matrix_type=', matrix_type
 
 num_str = "dim"
 num_procs = 4;
-max_num_dim = 10
+#max_num_dim = 10
 
 run_directory = "${HOME}/build/rokko/benchmark"
 run_program = "frank_matrix"
@@ -65,7 +66,7 @@ times = [];
 iters = [];
 
 for num in nums:
-    print "num_procs=", num
+    print "dim=", num
     output = check_output(["mpirun", "-np", str(num_procs), run_filename, library_type, str(num) ])
     for line in output.split('\n'):
         items = line.split(' ')
