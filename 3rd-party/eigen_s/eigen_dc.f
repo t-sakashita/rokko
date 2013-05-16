@@ -100,11 +100,11 @@
 
       call bcast_dbl( d(1), n, 1, mpi_comm_world )
       call eigen_free(2)
-#ifdef TIMER
-      if ( myrank == 1 ) then
-         print *,"Exectime of \"eigen_dc\"  routine =",hs1-hs0,"(sec)"
-      endif
-#endif
+c #ifdef TIMER
+c       if ( myrank == 1 ) then
+c          print *,"Exectime of 'eigen_dc'  routine =",hs1-hs0,"(sec)"
+c       endif
+c #endif
 
 !---- freeing working arrays
       deallocate(work)

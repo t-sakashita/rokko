@@ -1,36 +1,20 @@
 #ifndef ROKKO_LOCALIZED_MATRIX_HPP
 #define ROKKO_LOCALIZED_MATRIX_HPP
 
-#include <iostream>
-#include <cstdlib>
-#include <boost/type_traits/is_same.hpp>
-
-#include <Eigen/Core>
 #include <Eigen/Dense>
 
-
 namespace rokko {
-
-class solver;
-
-/*
-struct matrix_row_major {};
-
-struct matrix_col_major {};
-*/
 
 template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 struct eigen3_matrix_major;
 
-
-struct eigen3_matrix_major<rokko::matrix_row_major>
-{
+template<>
+struct eigen3_matrix_major<rokko::matrix_row_major> {
   static const int value= Eigen::RowMajor;
 };
 
 template<>
-struct eigen3_matrix_major<rokko::matrix_col_major>
-{
+struct eigen3_matrix_major<rokko::matrix_col_major> {
   static const int value = Eigen::ColMajor;
 };
 

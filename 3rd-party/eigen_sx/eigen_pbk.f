@@ -86,11 +86,11 @@
 !----
       call eigen_free(3)
 
-#ifdef TIMER
-      if(myrank==1) then
-         print*,"Exectime of \"eigen_pbk\" routine  =",d2-d1,"(sec)"
-      endif
-#endif
+c #ifdef TIMER
+c       if(myrank==1) then
+c          print*,"Exectime of \"eigen_pbk\" routine  =",d2-d1,"(sec)"
+c       endif
+c #endif
 !----
       return
       end subroutine

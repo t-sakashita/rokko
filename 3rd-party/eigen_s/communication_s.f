@@ -123,20 +123,20 @@
       real(8) ::    time_bcast, time_reduce, time_redist, time_gather
       common /stat/ time_bcast, time_reduce, time_redist, time_gather
 
-#ifdef TIMER
-      call mpi_barrier(icom,ierr)
-      d1=mpi_wtime()
-#endif
+c #ifdef TIMER
+c       call mpi_barrier(icom,ierr)
+c       d1=mpi_wtime()
+c #endif
 
       call mpi_bcast(buf, n, mpi_double_precision,
      &               iroot-1, icom, ierr)
 
 !---- call d_bbcast(buf, n, iroot-1, icom, ierr)
 
-#ifdef TIMER
-      d2=mpi_wtime()
-      time_bcast=time_bcast+(d2-d1)
-#endif
+c #ifdef TIMER
+c       d2=mpi_wtime()
+c       time_bcast=time_bcast+(d2-d1)
+c #endif
 
       return
       end subroutine ! bcast_dbl
@@ -151,19 +151,19 @@
       real(8) ::    time_bcast, time_reduce, time_redist, time_gather
       common /stat/ time_bcast, time_reduce, time_redist, time_gather
 
-#ifdef TIMER
-      call mpi_barrier(icom,ierr)
-      d1=mpi_wtime()
-#endif
+c #ifdef TIMER
+c       call mpi_barrier(icom,ierr)
+c       d1=mpi_wtime()
+c #endif
 
       call mpi_allreduce(buf, wrk, n, mpi_double_precision,
      &                   mpi_sum, icom, ierr)
       buf(1:n) = wrk(1:n)
 
-#ifdef TIMER
-      d2=mpi_wtime()
-      time_reduce=time_reduce+(d2-d1)
-#endif
+c #ifdef TIMER
+c       d2=mpi_wtime()
+c       time_reduce=time_reduce+(d2-d1)
+c #endif
 
       return
       end subroutine ! reduce_dbl
@@ -178,19 +178,19 @@
       real(8) ::    time_bcast, time_reduce, time_redist, time_gather
       common /stat/ time_bcast, time_reduce, time_redist, time_gather
 
-#ifdef TIMER
-      call mpi_barrier(icom,ierr)
-      d1=mpi_wtime()
-#endif
+c #ifdef TIMER
+c       call mpi_barrier(icom,ierr)
+c       d1=mpi_wtime()
+c #endif
 
       call mpi_allgather(buf, n, mpi_double_precision,
      &                   wrk, n, mpi_double_precision,
      &                   icom, ierr)
 
-#ifdef TIMER
-      d2=mpi_wtime()
-      time_gather=time_gather+(d2-d1)
-#endif
+c #ifdef TIMER
+c       d2=mpi_wtime()
+c       time_gather=time_gather+(d2-d1)
+c #endif
 
       return
       end subroutine ! allgather_dbl
@@ -380,25 +380,25 @@
       call mpi_comm_free(mpi_comm_col,ierr)
       call mpi_comm_free(mpi_comm_row,ierr)
 
-#ifdef DETAIL
-      if ( flag == 1 .and. myrank == 1 ) then
-         print*, "  communication time in \"eigen_trd\""
-      endif
-      if ( flag == 2 .and. myrank == 1 ) then
-         print*, " "
-         print*, "detail of exectime in \"eigen_dc\""
-         print*, "  communication time in \"eigen_dc\""
-      endif
-      if ( flag == 3 .and. myrank == 1 ) then
-         print*, "  communication time in \"eigen_tbk\""
-      endif
-      if ( flag >= 1 .and. flag <=3 .and. myrank == 1 ) then
-         print*, "   bcast  :: ", time_bcast,"(sec)"
-         print*, "   reduce :: ", time_reduce,"(sec)"
-         print*, "   redist :: ", time_redist,"(sec)"
-         print*, "   gather :: ", time_gather,"(sec)"
-      endif
-#endif
+c #ifdef DETAIL
+c       if ( flag == 1 .and. myrank == 1 ) then
+c          print*, "  communication time in \"eigen_trd\""
+c       endif
+c       if ( flag == 2 .and. myrank == 1 ) then
+c          print*, " "
+c          print*, "detail of exectime in \"eigen_dc\""
+c          print*, "  communication time in \"eigen_dc\""
+c       endif
+c       if ( flag == 3 .and. myrank == 1 ) then
+c          print*, "  communication time in \"eigen_tbk\""
+c       endif
+c       if ( flag >= 1 .and. flag <=3 .and. myrank == 1 ) then
+c          print*, "   bcast  :: ", time_bcast,"(sec)"
+c          print*, "   reduce :: ", time_reduce,"(sec)"
+c          print*, "   redist :: ", time_redist,"(sec)"
+c          print*, "   gather :: ", time_gather,"(sec)"
+c       endif
+c #endif
 
       return
       end subroutine ! eigen_free
@@ -419,10 +419,10 @@
       real(8) ::    time_bcast, time_reduce, time_redist, time_gather
       common /stat/ time_bcast, time_reduce, time_redist, time_gather
 
-#ifdef TIMER
-      call mpi_barrier(mpi_comm_col,ierr)
-      d1=mpi_wtime()
-#endif
+c #ifdef TIMER
+c       call mpi_barrier(mpi_comm_col,ierr)
+c       d1=mpi_wtime()
+c #endif
 
       if ( size_of_col == 1 ) then
          if ( size_of_row == 1 ) then
@@ -509,10 +509,10 @@
 
       end if
 
-#ifdef TIMER
-      d2=mpi_wtime()
-      time_redist=time_redist+(d2-d1)
-#endif
+c #ifdef TIMER
+c       d2=mpi_wtime()
+c       time_redist=time_redist+(d2-d1)
+c #endif
 
       return
       end subroutine ! datacast_dbl

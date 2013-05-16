@@ -4,10 +4,6 @@
 #include <rokko/eigen_sx/eigen_sx.hpp>
 #include <rokko/eigen_sx/diagonalize.hpp>
 
-#include <boost/noncopyable.hpp>
-
-#include <rokko/core.hpp>
-
 namespace rokko {
 namespace eigen_sx {
 
@@ -65,7 +61,6 @@ public:
 };
 
 } // namespace eigen_sx
-
 } // namespace rokko
 
 #endif // ROKKO_EIGEN_SX_CORE_HPP

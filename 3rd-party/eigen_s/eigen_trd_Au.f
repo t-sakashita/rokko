@@ -112,17 +112,17 @@
 !$omp master
 
       if ( nprocs > 1 ) then
-#ifdef TIMER
-         call mpi_barrier(mpi_comm_col,ierr)
-         d1=mpi_wtime()
-#endif
+c #ifdef TIMER
+c          call mpi_barrier(mpi_comm_col,ierr)
+c          d1=mpi_wtime()
+c #endif
 
          call reduce_dbl(v_t, u_t, row_local, 1, mpi_comm_col)
 
-#ifdef TIMER
-         d2=mpi_wtime()
-         t2_reduce1=t2_reduce1+(d2-d1)
-#endif
+c #ifdef TIMER
+c          d2=mpi_wtime()
+c          t2_reduce1=t2_reduce1+(d2-d1)
+c #endif
       end if
 
       call  eigen_trd_Au_step3(
@@ -132,16 +132,16 @@
      &      )
 
       if ( nprocs > 1 ) then
-#ifdef TIMER
-         call mpi_barrier(mpi_comm_col,ierr)
-         d1=mpi_wtime()
-#endif
+c #ifdef TIMER
+c          call mpi_barrier(mpi_comm_col,ierr)
+c          d1=mpi_wtime()
+c #endif
          call reduce_dbl(v_x, v_t, col_local, size_of_col, mpi_comm_row)
 
-#ifdef TIMER
-         d2=mpi_wtime()
-         t2_reduce2=t2_reduce2+(d2-d1)
-#endif
+c #ifdef TIMER
+c          d2=mpi_wtime()
+c          t2_reduce2=t2_reduce2+(d2-d1)
+c #endif
       end if
 
 !$omp end master
