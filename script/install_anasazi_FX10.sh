@@ -10,19 +10,6 @@ rm -rf trilinos-11.2.3-Source
 tar jxf $WORK/source/trilinos-11.2.3-Source.tar.bz2
 
 cd $WORK/build/trilinos-11.2.3-Source
-patch -p1 << EOF
---- trilinos-11.2.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake
-+++ trilinos-11.2.3-Source/cmake/tribits/package_arch/TribitsFortranMangling.cmake
-@@ -63,7 +63,7 @@
-   # Verify the selected combination of Fortran and C++ compilers.
-   IF("${CMAKE_VERSION}" VERSION_GREATER 2.7.20090824 AND NOT ${PROJECT_NAME}_SKIP_FORTRANCINTERFACE_VERIFY_TEST)
-     INCLUDE(FortranCInterface)
--    FortranCInterface_VERIFY(CXX)
-+#    FortranCInterface_VERIFY(CXX)
-   ENDIF()
- ENDIF()
-
-EOF
 
 
 patch -p1 << EOF
@@ -39,7 +26,7 @@ patch -p1 << EOF
 
 EOF
 
-patch -p1 < ~/development/rokko/script/TPI.patch.c_option
+patch -p1 < ~/development/rokko/script/TPI.c.patch_FCC
 
 
 cd $WORK/build
@@ -59,6 +46,7 @@ cmake \
 -D Trilinos_EXTRA_LINK_FLAGS:STRING="--linkfortran" \
 -D Trilinos_ENABLE_Anasazi:BOOL=ON \
 -D Trilinos_ENABLE_EXAMPLES:BOOL=ON -D Trilinos_ENABLE_TESTS:BOOL=ON \
+-D Trilinos_SKIP_FORTRANCINTERFACE_VERIFY_TEST=ON \
 $WORK/build/trilinos-11.2.3-Source
 
 make -j2 2>&1 | tee make.log
