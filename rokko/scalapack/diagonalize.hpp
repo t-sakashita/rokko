@@ -73,7 +73,6 @@ int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals)
 template<typename MATRIX_MAJOR>
 int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs)
 {
-  std::cout << "pp6"<< std::endl;
   int ictxt;
   int info;
 
@@ -94,7 +93,6 @@ int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, r
   int desc[9];
 
   int lld = mat.m_local;
-  std::cout << "lld=" << lld << std::endl;
   if (lld == 0) lld = 1;
   descinit_(desc, mat.m_global, mat.n_global, mat.mb, mat.nb, ZERO, ZERO, ictxt, lld, info);
   if (info) {
@@ -102,12 +100,15 @@ int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, r
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
 
+#ifdef DEBUG
   for (int proc=0; proc<mat.nprocs; ++proc) {
     if (proc == mat.myrank) {
       std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.m_global << "  n_global=" << mat.n_global << "  mb=" << mat.mb << "  nb=" << mat.nb << " lld=" << lld << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
+#endif
+
   double* work = new double[1];
   long lwork = -1;
 
@@ -139,8 +140,6 @@ int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, r
 template<class MATRIX_MAJOR>
 int diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs)
 {
-  std::cout << "pp7"<< std::endl;
-
   return diagonalize(mat, &eigvals[0], eigvecs);
 }
 

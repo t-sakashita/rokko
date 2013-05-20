@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <iostream>
+#include <ctime>
 
 #include <rokko/solver.hpp>
 #include <rokko/grid.hpp>
@@ -7,7 +8,12 @@
 #include <rokko/localized_vector.hpp>
 
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/config.hpp>
+
 #include <boost/lexical_cast.hpp>
+#include <boost/asio.hpp>
+
+#include "mkl.h"
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
@@ -21,6 +27,8 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 34);
   }
 
+  //mkl_set_num_threads(4);
+
   std::string solver_name(argv[1]);
   unsigned int dim = boost::lexical_cast<unsigned int>(argv[2]);
 
@@ -29,7 +37,8 @@ int main(int argc, char *argv[]) {
 
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid<grid_major> g(comm);
-  int myrank = g.myrank;
+  int myrank = g.get_myrank();
+  int nprocs = g.get_nprocs();
 
   const int root = 0;
 
@@ -54,13 +63,27 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(20);
 
+#ifndef NDEBUG
   if (myrank == root) {
     std::cout << "Computed Eigenvalues= " << w.transpose() << std::endl;
   }
+#endif
 
   if (myrank == 0) {
     double time = end - start;
+    //#ifdef _OPENMP_
+    std::cout << "num_procs = " << nprocs << std::endl;
+    std::cout << "num_threads = " << omp_get_num_threads() << std::endl;
+    //std::cout << "num_threads = " << mkl_get_num_threads() << std::endl;
+    //#endif
+    std::cout << "solver_name = " << solver_name << std::endl;
+    std::cout << "matrix = frank" << std::endl;
+    std::cout << "dim = " << dim << std::endl;
     std::cout << "time = " << time << std::endl;
+    std::cout << "rokko_version = " << ROKKO_VERSION << std::endl;
+    std::cout << "hostname = " << boost::asio::ip::host_name() << std::endl;
+    std::time_t now = std::time(0);
+    std::cout << "date = " << ctime(&now); // << std::endl;
   }
 
   solver.finalize();

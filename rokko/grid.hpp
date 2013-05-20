@@ -49,8 +49,13 @@ public:
   int calculate_grid_row(int proc_rank) const;
   int calculate_grid_col(int proc_rank) const;
 
+  int get_nprocs() const { return nprocs; }
   int get_nprow() const { return nprow; }
   int get_npcol() const { return npcol; }
+
+  int get_myrank() const { return myrank; }
+  int get_myrow() const { return myrow; }
+  int get_mycol() const { return mycol; }
 
   bool is_row_major() const {
     return boost::is_same<GRID_MAJOR, grid_row_major>::value;

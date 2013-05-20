@@ -142,6 +142,7 @@ public:
     else
       local_rest_block_rows = 0;
 
+#ifndef NDEBUG
     MPI_Barrier(g.get_comm());
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
@@ -152,6 +153,7 @@ public:
       }
       MPI_Barrier(g.get_comm());
     }
+#endif
 
     return  local_num_block_rows * mb + local_rest_block_rows;
   }

@@ -60,7 +60,8 @@ filename_output_fig = filename_output + ".pdf"
 
 fp_output = open(filename_output_txt, "w")
 
-nums = range(1, max_num_dim+1)
+num_step = 10
+nums = range(num_step, max_num_dim+1, num_step)
 
 times = [];
 iters = [];
