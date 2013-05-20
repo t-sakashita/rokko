@@ -20,7 +20,7 @@ figure(1, figsize=(6,4))
 argvs = sys.argv
 argc = len(argvs) # number of command line arguments
 print argvs
-print argc
+print "num of parameters=", argc
 print
 if (argc < 3):
     print 'errror: two command line arguments are needed.'
@@ -49,14 +49,11 @@ filename_output_fig = filename_output + ".pdf"
 fp_output = open(filename_output_txt, "w")
 
 nums = [];
-#range(num_step, max_num_dim+1, num_step)
 times = [];
 iters = [];
 
 count = 0;
-for filename_input in argvs[3:-1]:
-#for num in nums:
-#print "dim=", num
+for filename_input in argvs[3:]:
     print "filename_input=", filename_input
     fp_input = open(expandvars(filename_input), "r")
     for line in fp_input.read().split('\n'):
@@ -68,12 +65,11 @@ for filename_input in argvs[3:-1]:
         if items[0] == "num_procs":
             print "num_procs.append: ",items[2]
             nums.append(int(items[2]))
-            
+
         if items[0] == "time":
             print "times.append: ",items[2]
             times.append(float(items[2]))
             fp_output.write(str(nums[-1]) + "  " + str(times[-1]) + '\n')
-    count = count + 1
     fp_input.close()
 
 fp_output.close()
