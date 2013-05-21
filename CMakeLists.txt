@@ -25,13 +25,10 @@ endif(OPENMP_FOUND)
 # MPI library
 find_package(MPI)
 
-# Eigen3 Library
-find_package(Eigen3)
-
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(BEFORE ${EIGEN3_INCLUDE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/3rd-party/eigen3)
 if (BOOST_INCLUDE_DIR)
   include_directories(BEFORE ${BOOST_INCLUDE_DIR})
 endif()
@@ -39,12 +36,7 @@ endif()
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
 # find Elemental
-#set(ELEMENTAL_DIR "/home/sakashita/elemental-0.78_installed")
-#set(ELEMENTAL_DIR "/opt/nano/rokko")
 find_package(Elemental)
-message(STATUS  "Display ELEM_INC:  ${ELEM_INC}")
-message(STATUS  "Display ELEM_LIB:  ${ELEM_LIB}")
-message(STATUS  "Display ELEM_LIBS:  ${ELEM_LIBS}")
 
 # directories
 add_subdirectory(3rd-party)
