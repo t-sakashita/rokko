@@ -24,12 +24,12 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
 
   int nme = ((mat.get_m_global() - 1) / 2 + 1) * 2;
   double* d = new double[nme];
-  if (d == NULL) {
+  if (d == 0) {
     std::cerr << "failed to allocate d." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 3);
   }
   double* e = new double[2 * nme];
-  if (e == NULL) {
+  if (e == 0) {
     std::cerr << "failed to allocate e." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 3);
   }
