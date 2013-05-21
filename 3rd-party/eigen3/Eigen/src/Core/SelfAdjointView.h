@@ -132,7 +132,35 @@ template<typename MatrixType, unsigned int UpLo> class SelfAdjointView
       * \sa rankUpdate(const MatrixBase<DerivedU>&, Scalar)
       */
     template<typename DerivedU, typename DerivedV>
-    SelfAdjointView& rankUpdate(const MatrixBase<DerivedU>& u, const MatrixBase<DerivedV>& v, Scalar alpha = Scalar(1));
+    SelfAdjointView& rankUpdate(const MatrixBase<DerivedU>& u, const MatrixBase<DerivedV>& v, Scalar alpha = Scalar(1))
+{
+  typedef internal::blas_traits<DerivedU> UBlasTraits;
+  typedef typename UBlasTraits::DirectLinearAccessType ActualUType;
+  typedef typename internal::remove_all<ActualUType>::type _ActualUType;
+  typename internal::add_const_on_value_type<ActualUType>::type actualU = UBlasTraits::extract(u.derived());
+
+  typedef internal::blas_traits<DerivedV> VBlasTraits;
+  typedef typename VBlasTraits::DirectLinearAccessType ActualVType;
+  typedef typename internal::remove_all<ActualVType>::type _ActualVType;
+  typename internal::add_const_on_value_type<ActualVType>::type actualV = VBlasTraits::extract(v.derived());
+
+  // If MatrixType is row major, then we use the routine for lower triangular in the upper triangular case and
+  // vice versa, and take the complex conjugate of all coefficients and vector entries.
+
+  enum { IsRowMajor = (internal::traits<MatrixType>::Flags&RowMajorBit) ? 1 : 0 };
+  Scalar actualAlpha = alpha * UBlasTraits::extractScalarFactor(u.derived())
+                             * internal::conj(VBlasTraits::extractScalarFactor(v.derived()));
+  if (IsRowMajor)
+    actualAlpha = internal::conj(actualAlpha);
+
+  internal::selfadjoint_rank2_update_selector<Scalar, Index,
+    typename internal::remove_all<typename internal::conj_expr_if<IsRowMajor ^ UBlasTraits::NeedToConjugate,_ActualUType>::type>::type,
+    typename internal::remove_all<typename internal::conj_expr_if<IsRowMajor ^ VBlasTraits::NeedToConjugate,_ActualVType>::type>::type,
+    (IsRowMajor ? int(UpLo==Upper ? Lower : Upper) : UpLo)>
+    ::run(_expression().const_cast_derived().data(),_expression().outerStride(),actualU,actualV,actualAlpha);
+
+  return *this;
+}
 
     /** Perform a symmetric rank K update of the selfadjoint matrix \c *this:
       * \f$ this = this + \alpha ( u u^* ) \f$ where \a u is a vector or matrix.
@@ -145,7 +173,12 @@ template<typename MatrixType, unsigned int UpLo> class SelfAdjointView
       * \sa rankUpdate(const MatrixBase<DerivedU>&, const MatrixBase<DerivedV>&, Scalar)
       */
     template<typename DerivedU>
-    SelfAdjointView& rankUpdate(const MatrixBase<DerivedU>& u, Scalar alpha = Scalar(1));
+    SelfAdjointView& rankUpdate(const MatrixBase<DerivedU>& u, Scalar alpha = Scalar(1))
+{
+  selfadjoint_product_selector<MatrixType,DerivedU,UpLo>::run(_expression().const_cast_derived(), u.derived(), alpha);
+
+  return *this;
+}
 
 /////////// Cholesky module ///////////
 

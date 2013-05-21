@@ -215,8 +215,8 @@ MatrixBase<Derived>::diagonal(Index index) const
   *
   * \sa MatrixBase::diagonal(), class Diagonal */
 template<typename Derived>
-template<int Index>
-inline typename MatrixBase<Derived>::template DiagonalIndexReturnType<Index>::Type
+template<int ID>
+inline typename MatrixBase<Derived>::template DiagonalIndexReturnType<ID>::Type
 MatrixBase<Derived>::diagonal()
 {
   return derived();
@@ -224,8 +224,8 @@ MatrixBase<Derived>::diagonal()
 
 /** This is the const version of diagonal<int>(). */
 template<typename Derived>
-template<int Index>
-inline typename MatrixBase<Derived>::template ConstDiagonalIndexReturnType<Index>::Type
+template<int ID>
+inline typename MatrixBase<Derived>::template ConstDiagonalIndexReturnType<ID>::Type
 MatrixBase<Derived>::diagonal() const
 {
   return derived();
