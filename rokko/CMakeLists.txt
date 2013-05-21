@@ -1,6 +1,6 @@
 include_directories(${ELEMENTAL_INCLUDE_DIRS})
 
-set(ROKKO_SOURCES solver_factory.cpp ${BOOST_INCLUDE_DIR}/libs/system/src/)
+set(ROKKO_SOURCES solver_factory.cpp)
 
 set(DIRECTORY "${BOOST_INCLUDE_DIR}/libs/system")
 set(SOURCES error_code.cpp)
