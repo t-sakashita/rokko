@@ -8,7 +8,7 @@ if (DEFINED SCALAPACK_LIB)
 
   foreach(name ${TESTS})
     add_executable(${name}  ${name}.cpp)
-    target_link_libraries(${name} rokko ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(${name} rokko eigen_s eigen_sx ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
     add_rokko_test(${name})
   endforeach(name)
 endif (DEFINED SCALAPACK_LIB)

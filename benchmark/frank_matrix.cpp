@@ -13,8 +13,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/asio.hpp>
 
-#include "mkl.h"
-
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
   typedef rokko::grid_row_major grid_major;
