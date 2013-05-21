@@ -3,7 +3,8 @@ if(BUILD_EIGEN_S)
   set(TESTS2 diagonalize_general diagonalize_eigen_s)
   foreach(name ${TESTS2})
     add_executable(${name} ${name}.cpp)
-    target_link_libraries(${name} rokko ${MPI_CXX_LIBRARIES})
+    target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES}
+${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
   endforeach(name)
 endif(BUILD_EIGEN_S)
 
@@ -12,6 +13,7 @@ if(BUILD_EIGEN_SX)
   set(TESTS2 diagonalize_eigen_sx)
   foreach(name ${TESTS2})
     add_executable(${name} ${name}.cpp)
-    target_link_libraries(${name} rokko ${MPI_CXX_LIBRARIES})
+    target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES}
+${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
   endforeach(name)
 endif(BUILD_EIGEN_SX)
