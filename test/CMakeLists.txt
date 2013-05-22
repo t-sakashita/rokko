@@ -8,7 +8,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS frank)
+set(TESTS frank timer)
 # set(TESTS frank scatter gather)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
