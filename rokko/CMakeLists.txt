@@ -35,3 +35,11 @@ endif(BUILD_EIGEN_S)
 if(BUILD_EIGEN_SX)
   target_link_libraries(rokko eigen_sx)
 endif(BUILD_EIGEN_SX)
+
+install(TARGETS rokko COMPONENT libraries
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+install(DIRECTORY . COMPONENT headers DESTINATION include/rokko
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.ipp"
+        PATTERN ".svn" EXCLUDE PATTERN "CVS" EXCLUDE)
