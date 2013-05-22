@@ -10,20 +10,14 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LOCALIZED_VECTOR_HPP
-#define ROKKO_LOCALIZED_VECTOR_HPP
-
-#include <Eigen/Dense>
+#ifndef ROKKO_MATRIX_MAJOR_H
+#define ROKKO_MATRIX_MAJOR_H
 
 namespace rokko {
 
-struct localized_vector : public Eigen::VectorXd {
-public:
-  localized_vector() : Eigen::VectorXd() {};
-  localized_vector(int size) : Eigen::VectorXd(size) {};
-};
-
+struct matrix_row_major {};
+struct matrix_col_major {};
 
 } // namespace rokko
 
-#endif // ROKKO_LOCALIZED_VECTOR_HPP
+#endif // ROKKO_MATRIX_MAJOR_H

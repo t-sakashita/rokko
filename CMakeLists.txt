@@ -1,3 +1,13 @@
+#
+# Rokko: Integrated Interface for libraries of eigenvalue decomposition
+#
+# Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+#                            Synge Todo <wistaria@comp-phys.org>
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+#
+
 cmake_minimum_required(VERSION 2.8)
 
 project(rokko NONE)
@@ -37,6 +47,10 @@ set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
 # find Elemental
 find_package(Elemental)
+
+# test environment
+enable_testing()
+include(CTest)
 
 # directories
 add_subdirectory(3rd-party)

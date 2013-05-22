@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
   const int dim = 10;
 
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
-  rokko::generate_frank_matrix(mat);
+  rokko::frank_matrix::generate(mat);
   mat.print();
 
   Eigen::MatrixXd global_mat;

@@ -1,16 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+#
+# Rokko: Integrated Interface for libraries of eigenvalue decomposition
+#
+# Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+#                            Synge Todo <wistaria@comp-phys.org>
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+#
 
-#add_executable(test_eigen_s ${PROJECT_SOURCE_DIR}/3rd-party/eigen_s/main.f)
-#target_link_libraries(test_eigen_s eigen_s)
-# set(TESTS  scatter gather)
-# product)
-
-# foreach(name ${TESTS})
-#   add_executable(${name}  ${name}.cpp)
-#   target_link_libraries(${name}  "-lmkl_scalapack_lp64" "-lmkl_blacs_intelmpi_lp64" "-mkl=sequential")
-#   target_link_libraries(${name} ${MPI_CXX_LIBRARIES})
-#   add_rokko_test(${name})
-# endforeach(name)
-
-
-
+set(TESTS frank)
+# set(TESTS frank scatter gather)
+foreach(name ${TESTS})
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
+  add_rokko_test(${name})
+endforeach(name)

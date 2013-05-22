@@ -1,69 +1,31 @@
-#ifndef ROKKO_DISTRIBUTED_H
-#define ROKKO_DISTRIBUTED_H
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
+#ifndef ROKKO_DISTRIBUTED_MATRIX_H
+#define ROKKO_DISTRIBUTED_MATRIX_H
 
 #include <iostream>
 #include <cstdlib>
 #include <rokko/grid.hpp>
+#include <rokko/matrix_major.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 
 class solver;
 
-struct matrix_row_major {};
-
-struct matrix_col_major {};
-
 template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix {
 public:
-  /*
-  template<typename GRID_MAJOR>
-  distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in)
-    : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
-
-    // ローカル行列の形状を指定
-    mb = m_global / nprow;
-    if (mb == 0) mb = 1;
-    //mb = 10;
-    nb = n_global / npcol;
-    if (nb == 0) nb = 1;
-    //nb = 10;
-    // mbとnbを最小値にそろえる．（注意：pdsyevではmb=nbでなければならない．）
-    //mb = min(mb, nb);
-    mb = nb = 1;
-
-    m_local = calculate_row_size();
-    n_local = calculate_col_size();
-    lld = get_default_lld();
-
-    stride_myrow = myrow * mb;
-    stride_nprow = mb * (nprow - 1);
-    stride_mycol = mycol * nb;
-    stride_npcol = nb * (npcol - 1);
-
-#ifndef NDEBUG
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-	std::cout << "proc=" << proc << std::endl;
-	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  mA=" << m_local << "  nprow=" << nprow << std::endl;
-	std::cout << "  nA=" << n_local << "  npcol=" << npcol << std::endl;
-	std::cout << " m_local=" << m_local << " n_local=" << n_local << std::endl;
-        std::cout << " myrow=" << myrow << " mycol=" << mycol << std::endl;
-      }
-      MPI_Barrier(g.get_comm());
-    }
-#endif
-
-    array = new double[m_local * n_local];
-    if (array == 0) {
-      std::cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, 3);
-    }
-  }
-  */
-
   template<typename GRID_MAJOR, typename SOLVER>
   distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in, SOLVER const& solver_in)
     : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
@@ -317,4 +279,4 @@ void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) { mat.prin
 
 } // namespace rokko
 
-#endif // ROKKO_DISTRIBUTED_H
+#endif // ROKKO_DISTRIBUTED_MATRIX_H

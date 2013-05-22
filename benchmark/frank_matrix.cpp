@@ -1,3 +1,15 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #include <mpi.h>
 #include <iostream>
 #include <ctime>
@@ -41,7 +53,7 @@ int main(int argc, char *argv[]) {
   const int root = 0;
 
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
-  rokko::generate_frank_matrix(mat);
+  rokko::frank_matrix::generate(mat);
 
   rokko::localized_vector w(dim);
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
