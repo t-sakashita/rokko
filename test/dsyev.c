@@ -20,4 +20,5 @@ int main() {
     printf(" %6.2f", w[i]);
   }
   printf("\n");
+  return 0;
 }
