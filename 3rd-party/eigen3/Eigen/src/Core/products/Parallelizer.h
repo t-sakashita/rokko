@@ -114,7 +114,7 @@ void parallelize_gemm(const Functor& func, Index rows, Index cols, bool transpos
   Index max_threads = std::max<Index>(1,size / 32);
 
   // 3 - compute the number of threads we are going to use
-  Index threads = std::min<Index>(nbThreads(), max_threads);
+  int threads = std::min<Index>(nbThreads(), max_threads);
 
   if(threads==1)
     return func(0,rows, 0,cols);
