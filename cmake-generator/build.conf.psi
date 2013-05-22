@@ -1,0 +1,10 @@
+[option]
+CMAKE_CXX_COMPILER: mpicxx
+CMAKE_C_COMPILER: mpicc
+CMAKE_Fortran_COMPILER: mpif90
+CMAKE_CXX_FLAGS: 
+CMAKE_C_FLAGS: 
+CMAKE_Fortran_FLAGS:
+BOOST_INCLUDE_DIR: /opt/nano/alps/boost_1_52_0
+OpenMP_CXX_FLAGS: -openmp
+OpenMP_C_FLAGS:  -opnemp

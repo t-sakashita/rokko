@@ -1,0 +1,4 @@
+[option]
+SCALAPACK_LIB: "-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel"
+ELEMENTAL_DIR: ~/rokko_lib
+
