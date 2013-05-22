@@ -1,5 +1,5 @@
 
-rm -rf $WORK/build/rokko
+rm $WORK/build/rokko/*
 
 #cmake ~/development/rokko/ \
 #-DCMAKE_CXX_COMPILER=mpiFCCpx \
