@@ -55,6 +55,39 @@ template<bool Cond, typename T> struct conj_expr_if
 
 } // end namespace internal
 
+template<typename MatrixType, unsigned int UpLo>
+template<typename DerivedU, typename DerivedV>
+SelfAdjointView<MatrixType,UpLo>& SelfAdjointView<MatrixType,UpLo>
+::rankUpdate(const MatrixBase<DerivedU>& u, const MatrixBase<DerivedV>& v, Scalar alpha)
+{
+  typedef internal::blas_traits<DerivedU> UBlasTraits;
+  typedef typename UBlasTraits::DirectLinearAccessType ActualUType;
+  typedef typename internal::remove_all<ActualUType>::type _ActualUType;
+  typename internal::add_const_on_value_type<ActualUType>::type actualU = UBlasTraits::extract(u.derived());
+
+  typedef internal::blas_traits<DerivedV> VBlasTraits;
+  typedef typename VBlasTraits::DirectLinearAccessType ActualVType;
+  typedef typename internal::remove_all<ActualVType>::type _ActualVType;
+  typename internal::add_const_on_value_type<ActualVType>::type actualV = VBlasTraits::extract(v.derived());
+
+  // If MatrixType is row major, then we use the routine for lower triangular in the upper triangular case and
+  // vice versa, and take the complex conjugate of all coefficients and vector entries.
+
+  enum { IsRowMajor = (internal::traits<MatrixType>::Flags&RowMajorBit) ? 1 : 0 };
+  Scalar actualAlpha = alpha * UBlasTraits::extractScalarFactor(u.derived())
+                             * internal::conj(VBlasTraits::extractScalarFactor(v.derived()));
+  if (IsRowMajor)
+    actualAlpha = internal::conj(actualAlpha);
+
+  internal::selfadjoint_rank2_update_selector<Scalar, Index,
+    typename internal::remove_all<typename internal::conj_expr_if<IsRowMajor ^ UBlasTraits::NeedToConjugate,_ActualUType>::type>::type,
+    typename internal::remove_all<typename internal::conj_expr_if<IsRowMajor ^ VBlasTraits::NeedToConjugate,_ActualVType>::type>::type,
+    (IsRowMajor ? int(UpLo==Upper ? Lower : Upper) : UpLo)>
+    ::run(_expression().const_cast_derived().data(),_expression().outerStride(),actualU,actualV,actualAlpha);
+
+  return *this;
+}
+
 } // end namespace Eigen
 
 #endif // EIGEN_SELFADJOINTRANK2UPTADE_H
