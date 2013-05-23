@@ -25,6 +25,10 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/asio.hpp>
 
+#define ROKKO_ENABLE_TIMER
+//#define ROKKO_ENABLE_TIMER_TRACE
+#include <rokko/utility/timer.hpp>
+
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
   typedef rokko::grid_row_major grid_major;
@@ -37,6 +41,8 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 34);
   }
 
+  rokko::timer timer;
+  timer.registrate( 1, "diagonalize");
   //mkl_set_num_threads(4);
 
   std::string solver_name(argv[1]);
@@ -53,34 +59,36 @@ int main(int argc, char *argv[]) {
   const int root = 0;
 
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
-  rokko::frank_matrix::generate(mat);
 
   rokko::localized_vector w(dim);
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
-  double start, end;
-  try {
-    MPI_Barrier(MPI_COMM_WORLD);
-    start = MPI_Wtime();
-    solver.diagonalize(mat, w, Z);
-    MPI_Barrier(MPI_COMM_WORLD);
-    end = MPI_Wtime();
-  }
-  catch (const char *e) {
-    std::cout << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
+  for (int count=0; count<10; ++count) {
+    std::cout << "get_count:" << timer.get_count(1) << std::endl;
+    rokko::frank_matrix::generate(mat);
 
-  std::cout.precision(20);
+    try {
+      MPI_Barrier(MPI_COMM_WORLD);
+      timer.start(1);
+      solver.diagonalize(mat, w, Z);
+      MPI_Barrier(MPI_COMM_WORLD);
+      timer.stop(1);
+    }
+
+    catch (const char *e) {
+      std::cout << "Exception : " << e << std::endl;
+      MPI_Abort(MPI_COMM_WORLD, 22);
+    }
+  }
 
 #ifndef NDEBUG
   if (myrank == root) {
+    std::cout.precision(20);
     std::cout << "Computed Eigenvalues= " << w.transpose() << std::endl;
   }
 #endif
 
   if (myrank == 0) {
-    double time = end - start;
     //#ifdef _OPENMP_
     std::cout << "num_procs = " << nprocs << std::endl;
     std::cout << "num_threads = " << omp_get_num_threads() << std::endl;
@@ -89,12 +97,14 @@ int main(int argc, char *argv[]) {
     std::cout << "solver_name = " << solver_name << std::endl;
     std::cout << "matrix = frank" << std::endl;
     std::cout << "dim = " << dim << std::endl;
-    std::cout << "time = " << time << std::endl;
+    std::cout << "time = " << timer.get_average(1) << std::endl;
     std::cout << "rokko_version = " << ROKKO_VERSION << std::endl;
     std::cout << "hostname = " << boost::asio::ip::host_name() << std::endl;
     std::time_t now = std::time(0);
-    std::cout << "date = " << ctime(&now); // << std::endl;
+    std::cout << "date = " << ctime(&now)<< std::endl;
   }
+
+  //timer.summarize();
 
   solver.finalize();
   MPI_Finalize();
