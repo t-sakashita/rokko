@@ -15,6 +15,7 @@
 
 #include <rokko/solver_factory.hpp>
 #include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_vector.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace rokko {
@@ -27,7 +28,7 @@ public:
   void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
   void finalize() { solver_impl_->finalize(); }
   template<typename MATRIX_MAJOR>
-  void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals,
+  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
     rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
     solver_impl_->diagonalize(mat, eigvals, eigvecs);
   }

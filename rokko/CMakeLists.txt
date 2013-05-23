@@ -29,6 +29,7 @@ if ( DEFINED SCALAPACK_LIB )
 endif ( DEFINED SCALAPACK_LIB )
 
 add_library(rokko ${ROKKO_SOURCES})
+target_link_libraries(rokko ${ELEMENTAL_LIBRARIES})
 if(BUILD_LAPACKE)
   target_link_libraries(rokko lapacke)
 endif(BUILD_LAPACKE)

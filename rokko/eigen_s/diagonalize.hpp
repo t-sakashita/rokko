@@ -2,17 +2,15 @@
 #define ROKKO_EIGEN_S_DIAGONALIZE_HPP
 
 #include <mpi.h>
-
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_vector.hpp>
 #include <rokko/eigen_s/eigen_s.hpp>
 
-
 namespace rokko {
-
 namespace eigen_s {
 
-
 template<typename MATRIX_MAJOR>
-void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs) {
   if(mat.g.is_col_major()) throw "eigen_s doesn't support grid_col_major.  Use eigen_s with grid_row_major.";
   if(mat.is_col_major()) throw "eigen_s doesn't support matrix_col_major.  Use eigen_s with matrix_row_major.";
 
@@ -40,7 +38,7 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
 }
 
 template<typename MATRIX_MAJOR>
-void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs) {
   if(mat.g.is_col_major()) throw "eigen_s doesn't support grid_col_major. Use eigen_s with grid_row_major.";
   if(mat.is_col_major()) throw "eigen_s doesn't support matrix_col_major. Use eigen_s with matrix_row_major.";
 
@@ -48,7 +46,6 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& 
 }
 
 } // namespace eigen_s
-
 } // namespace rokko
 
 #endif // ROKKO_EIGEN_S_DIAGONALIZE_HPP
