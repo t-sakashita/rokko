@@ -28,8 +28,8 @@ public:
   }
 
   template<typename MATRIX_MAJOR>
-  void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::VectorXd& eigvals,
-                   rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs) {
     rokko::elemental::diagonalize(mat, eigvals, eigvecs);
   }
 };

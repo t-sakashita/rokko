@@ -24,6 +24,16 @@ option(BUILD_LAPACKE "Build lapacke library" ON)
 option(BUILD_EIGEN_S "Build eigen_s library" ON)
 option(BUILD_EIGEN_SX "Build eigen_sx library" ON)
 
+# RPATH setting
+if(APPLE)
+  set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+else(APPLE)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  set(CMAKE_SKIP_BUILD_RPATH FALSE)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif(APPLE)
+
 # OpenMP
 find_package(OpenMP)
 if(OPENMP_FOUND)

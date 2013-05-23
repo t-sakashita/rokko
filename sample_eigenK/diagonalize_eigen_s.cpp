@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     std::cout << "global_mat:" << std::endl << global_mat << std::endl;
 
 
-  Eigen::VectorXd w(dim);
+  rokko::localized_vector w(dim);
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
   try {
