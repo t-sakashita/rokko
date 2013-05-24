@@ -35,8 +35,8 @@ public:
 
   template<typename MATRIX_MAJOR>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs) {
-    rokko::scalapack::diagonalize(mat, eigvals, eigvecs);
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+    rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer_in);
   }
 };
 

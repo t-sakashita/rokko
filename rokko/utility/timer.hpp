@@ -262,6 +262,10 @@ public:
   void registrate(std::size_t, std::string const&, int = 0) {}
   void start(std::size_t) {}
   void stop(std::size_t) {}
+  std::string get_label(std::size_t) const { return std::string(); }
+  double get_count(std::size_t) const { return 0; }
+  double get_measurement(std::size_t) const { return 0; }
+  double get_average(std::size_t) const { return 0; }
   void summarize(std::ostream& = std::clog) const {}
   void detailed_report(std::size_t = 1, std::ostream& = std::clog) const {}
 };

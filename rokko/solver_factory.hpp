@@ -23,8 +23,6 @@
 
 namespace rokko {
 
-class timer;
-
 class solver_factory : private boost::noncopyable {
 private:
   class solver_base {

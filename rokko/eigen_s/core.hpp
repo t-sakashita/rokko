@@ -8,8 +8,6 @@
 namespace rokko {
 namespace eigen_s {
 
-class timer;
-
 class solver {
 public:
   void initialize(int& argc, char**& argv) { }

@@ -21,8 +21,6 @@
 
 namespace rokko {
 
-class timer;
-
 class solver {
 public:
   solver(std::string const& solver_name) {

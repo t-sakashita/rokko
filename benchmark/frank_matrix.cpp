@@ -10,6 +10,9 @@
 *
 *****************************************************************************/
 
+#define ROKKO_ENABLE_TIMER
+//#define ROKKO_ENABLE_TIMER_TRACE
+
 #include <mpi.h>
 #include <iostream>
 #include <ctime>
@@ -21,13 +24,10 @@
 
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/config.hpp>
+#include <rokko/utility/timer.hpp>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/asio.hpp>
-
-#define ROKKO_ENABLE_TIMER
-//#define ROKKO_ENABLE_TIMER_TRACE
-#include <rokko/utility/timer.hpp>
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);

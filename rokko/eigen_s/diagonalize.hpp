@@ -10,8 +10,6 @@
 namespace rokko {
 namespace eigen_s {
 
-class timer;
-
 template<typename MATRIX_MAJOR>
 void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
   if(mat.g.is_col_major()) throw "eigen_s doesn't support grid_col_major.  Use eigen_s with grid_row_major.";

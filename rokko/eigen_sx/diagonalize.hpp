@@ -10,7 +10,7 @@ namespace rokko {
 namespace eigen_sx {
 
 template <typename MATRIX_MAJOR>
-void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
   if(mat.g.is_col_major()) throw "eigen_sx doesn't support grid_col_major.  Use eigen_sx with grid_row_major.";
   if(mat.is_col_major()) throw "eigen_sx doesn't support matrix_col_major.  Use eigen_sx with matrix_row_major.";
 
@@ -52,11 +52,11 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
 }
 
 template<typename MATRIX_MAJOR>
-void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
   if(mat.g.is_col_major()) throw "eigen_sx doesn't support grid_col_major.  Use eigen_sx with grid_row_major.";
   if(mat.is_col_major()) throw "eigen_sx doesn't support matrix_col_major.  Use eigen_sx with matrix_row_major.";
 
-  diagonalize(mat, &eigvals[0], eigvecs);
+  diagonalize(mat, &eigvals[0], eigvecs, timer_in);
 }
 
 } // namespace eigen_sx
