@@ -11,7 +11,6 @@
 *****************************************************************************/
 
 #define ROKKO_ENABLE_TIMER
-//#define ROKKO_ENABLE_TIMER_TRACE
 
 #include <mpi.h>
 #include <iostream>
@@ -64,7 +63,9 @@ int main(int argc, char *argv[]) {
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
   for (int count=0; count<10; ++count) {
-    std::cout << "get_count:" << timer.get_count(1) << std::endl;
+    if (myrank == root) {
+      std::cout << "get_count:" << timer.get_count(1) << std::endl;
+    }
     rokko::frank_matrix::generate(mat);
 
     try {

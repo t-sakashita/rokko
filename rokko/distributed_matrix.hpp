@@ -37,7 +37,7 @@ public:
     stride_mycol = mycol * nb;
     stride_npcol = nb * (npcol - 1);
 
-#ifndef DEBUG
+#ifndef NDEBUG
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
 	std::cout << "proc=" << proc << std::endl;
