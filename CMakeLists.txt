@@ -60,7 +60,7 @@ endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
-# LAPACK fallback
+# LAPACK/ScaLAPACK fallback
 if ( NOT DEFINED SCALAPACK_LIB )
   # Find LAPACK libraries
   find_package(BLAS)
@@ -68,6 +68,7 @@ if ( NOT DEFINED SCALAPACK_LIB )
     find_package(LAPACK)
     if ( LAPACK_FOUND )
       set(SCALAPACK_LIB ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
+      set(SCALAPACK_LIB ${SCALAPACK_LIB} -lscalapack-openmpi -lblacs-openmpi -lblacsCinit-openmpi)
     endif ( LAPACK_FOUND )
   endif ( BLAS_FOUND )
 endif ( NOT DEFINED SCALAPACK_LIB )
