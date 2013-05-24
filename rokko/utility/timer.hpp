@@ -21,6 +21,27 @@
 #include <iostream>
 #include <string>
 
+namespace rokko {
+
+class timer_dumb {
+public:
+  BOOST_STATIC_CONSTANT(int, detailed = (1 << 0));
+  timer_dumb() {}
+  void clear() {}
+  void registrate(std::size_t, std::string const&, int = 0) {}
+  void start(std::size_t) {}
+  void stop(std::size_t) {}
+  bool has(std::size_t) { return false; }
+  std::string get_label(std::size_t) const { return std::string(); }
+  double get_count(std::size_t) const { return 0; }
+  double get_measurement(std::size_t) const { return 0; }
+  double get_average(std::size_t) const { return 0; }
+  void summarize(std::ostream& = std::clog) const {}
+  void detailed_report(std::size_t = 1, std::ostream& = std::clog) const {}
+};
+
+} // end namespace rokko
+
 #ifdef ROKKO_ENABLE_TIMER
 
 #include <boost/format.hpp>
@@ -134,6 +155,7 @@ public:
   std::valarray<double> const& get_counts() const { return counts_; }
   std::valarray<double> const& get_measurements() const { return sums_; }
 
+  bool has(std::size_t id) { return (id < labels_.size() && !labels_[id].empty()); }
   std::string const& get_label(std::size_t id) const { return labels_[id]; }
   double get_count(std::size_t id) const { return counts_[id]; }
   double get_measurement(std::size_t id) const { return sums_[id]; }
@@ -254,21 +276,7 @@ typedef detail::timer_base<detail::clock> timer;
 
 namespace rokko {
 
-class timer {
-public:
-  BOOST_STATIC_CONSTANT(int, detailed = (1 << 0));
-  timer() {}
-  void clear() {}
-  void registrate(std::size_t, std::string const&, int = 0) {}
-  void start(std::size_t) {}
-  void stop(std::size_t) {}
-  std::string get_label(std::size_t) const { return std::string(); }
-  double get_count(std::size_t) const { return 0; }
-  double get_measurement(std::size_t) const { return 0; }
-  double get_average(std::size_t) const { return 0; }
-  void summarize(std::ostream& = std::clog) const {}
-  void detailed_report(std::size_t = 1, std::ostream& = std::clog) const {}
-};
+typedef timer_dumb timer;
 
 } // namespace rokko
 

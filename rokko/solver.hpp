@@ -33,6 +33,12 @@ public:
                    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
   }
+  template<typename MATRIX_MAJOR>
+  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+                   rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
+    timer_dumb timer_in;
+    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {
     solver_impl_->optimized_matrix_size(mat);
