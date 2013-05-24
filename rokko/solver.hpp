@@ -16,9 +16,12 @@
 #include <rokko/solver_factory.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
+#include <rokko/utility/timer.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace rokko {
+
+class timer;
 
 class solver {
 public:
@@ -29,12 +32,9 @@ public:
   void finalize() { solver_impl_->finalize(); }
   template<typename MATRIX_MAJOR>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
-    solver_impl_->diagonalize(mat, eigvals, eigvecs);
+                   rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
   }
-  //void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) {
-  //  solver_impl_->optimized_matrix_size(dim, nprow, npcol, mb, nb, lld, len_array);
-  //}
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {
     solver_impl_->optimized_matrix_size(mat);

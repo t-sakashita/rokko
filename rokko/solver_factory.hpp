@@ -15,12 +15,15 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
+#include <rokko/utility/timer.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <map>
 #include <string>
 
 namespace rokko {
+
+class timer;
 
 class solver_factory : private boost::noncopyable {
 private:
@@ -30,9 +33,9 @@ private:
     virtual void initialize(int& argc, char**& argv) = 0;
     virtual void finalize() = 0;
     virtual void diagonalize(distributed_matrix<matrix_row_major>& mat,
-      localized_vector& eigvals, distributed_matrix<matrix_row_major>& eigvecs) = 0;
+                             localized_vector& eigvals, distributed_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
     virtual void diagonalize(distributed_matrix<matrix_col_major>& mat,
-      localized_vector& eigvals, distributed_matrix<matrix_col_major>& eigvecs) = 0;
+                             localized_vector& eigvals, distributed_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
     //virtual void optimized_matrix_size(int dim, int nprow, int npcol, int& mb, int& nb, int& lld, int& len_array) = 0;
     virtual void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) = 0;
     virtual void optimized_matrix_size(distributed_matrix<matrix_col_major>& mat) = 0;
@@ -47,12 +50,12 @@ private:
     void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
     void finalize() { solver_impl_.finalize(); }
     void diagonalize(distributed_matrix<matrix_row_major>& mat,
-      localized_vector& eigvals, distributed_matrix<matrix_row_major>& eigvecs) {
-      solver_impl_.diagonalize(mat, eigvals, eigvecs);
+                     localized_vector& eigvals, distributed_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
+      solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
     }
     void diagonalize(distributed_matrix<matrix_col_major>& mat,
-      localized_vector& eigvals, distributed_matrix<matrix_col_major>& eigvecs) {
-      solver_impl_.diagonalize(mat, eigvals, eigvecs);
+                     localized_vector& eigvals, distributed_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
+      solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
     }
     void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) {
       solver_impl_.optimized_matrix_size(mat);
