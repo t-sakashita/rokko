@@ -52,7 +52,9 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   long lwork = -1;
 
   // work配列のサイズの問い合わせ
-  pdsyev_( "V",  "U",  dim,  mat.array, ONE,  ONE,  desc, eigvals, eigvecs.array, ONE, ONE,
+  char* V = const_cast<char*>("V");
+  char* U = const_cast<char*>("U");
+  pdsyev_( V,  U,  dim,  mat.array, ONE,  ONE,  desc, eigvals, eigvecs.array, ONE, ONE,
  	   desc, work, lwork, info );
 
   lwork = work[0];
@@ -64,7 +66,9 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   }
 
   // 固有値分解
-  pdsyev_( "V",  "U",  dim,  mat.array,  ONE,  ONE,  desc, eigvals, eigvecs.array, ONE, ONE,
+  char* V = const_cast<char*>("V");
+  char* U = const_cast<char*>("U");
+  pdsyev_( V,  U,  dim,  mat.array,  ONE,  ONE,  desc, eigvals, eigvecs.array, ONE, ONE,
   	   desc, work, lwork, info );
 
   if (info) {
