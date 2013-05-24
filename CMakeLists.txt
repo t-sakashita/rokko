@@ -60,6 +60,18 @@ endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
+# LAPACK fallback
+if ( NOT DEFINED SCALAPACK_LIB )
+  # Find LAPACK libraries
+  find_package(BLAS)
+  if ( BLAS_FOUND )
+    find_package(LAPACK)
+    if ( LAPACK_FOUND )
+      set(SCALAPACK_LIB ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
+    endif ( LAPACK_FOUND )
+  endif ( BLAS_FOUND )
+endif ( NOT DEFINED SCALAPACK_LIB )
+
 # find Elemental
 find_package(Elemental)
 
