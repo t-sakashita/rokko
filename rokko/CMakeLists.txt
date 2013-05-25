@@ -19,7 +19,7 @@ endif (EXISTS ${DIRECTORY})
 if(BUILD_EIGEN_S)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_s/eigen_s.cpp)
 endif(BUILD_EIGEN_S)
-  
+
 if(BUILD_EIGEN_SX)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_sx/eigen_sx.cpp)
 endif(BUILD_EIGEN_SX)
@@ -30,6 +30,8 @@ endif( DEFINED ELEMENTAL_LIBRARIES AND ELEMENTAL_INCLUDE_DIRS )
 
 if ( DEFINED SCALAPACK_LIB )
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevd.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
 endif ( DEFINED SCALAPACK_LIB )
 
 add_library(rokko ${ROKKO_SOURCES})

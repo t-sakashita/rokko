@@ -84,6 +84,9 @@ public:
   int get_m_global() const { return m_global; }
   int get_n_global() const { return n_global; }
 
+  int get_m_local() const { return m_local; }
+  int get_n_local() const { return n_local; }
+
   void set_local_size(int m_local_in, int n_local_in) {
     m_local = m_local_in;
     n_local = n_local_in;

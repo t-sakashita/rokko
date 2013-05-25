@@ -20,6 +20,13 @@ public:
   virtual ~grid_base() {}
   virtual bool is_row_major() const = 0;
   virtual bool is_col_major() const = 0;
+  virtual int get_nprocs() const = 0;
+  virtual int get_nprow() const = 0;
+  virtual int get_npcol() const = 0;
+  virtual int get_myrank() const = 0;
+  virtual int get_myrow() const = 0;
+  virtual int get_mycol() const = 0;
+
   virtual MPI_Comm get_comm() const = 0;
 
   MPI_Comm comm;
