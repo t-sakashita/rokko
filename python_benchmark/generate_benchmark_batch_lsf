@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+
+import os.path, sys, ConfigParser
+import optparse
+from subprocess import Popen, PIPE
+from subprocess import check_call
+
+## main routine
+if __name__ == "__main__":
+    all_solvers = ["eigen_s", "eigen_sx", "scalapack", "elemental"]
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--submit",
+                      action="store_true", dest="submit", default=False,
+                      help="submit batch jobs")
+    parser.add_option('--solver', 
+                      action="store",
+                      type="string",
+                      help="eigenvalue solver type")
+    parser.add_option('--dim',
+                      action="store",
+                      type="int",
+                      help="matrix dimension")
+    parser.add_option('--np',
+                      action="store",
+                      type="int",
+                      help="number of processor")
+    parser.add_option('--max_dim',
+                      action="store",
+                      type="int",
+                      help="max of matrix dimension")
+    parser.add_option('--max_np',
+                      action="store",
+                      type="int",
+                      help="max of number of processor")
+    parser.add_option('--min_np',
+                      action="store",
+                      type="int", default=1,
+                      help="min of number of processor")
+    parser.add_option('--step_dim',
+                      action="store",
+                      type="int", default=1,
+                      help="step of matrix dimension")
+    parser.add_option('--step_np',
+                      action="store",
+                      type="int", default=1,
+                      help="step of number of processor")
+    (options, args) = parser.parse_args()
+    solver = options.solver
+    print "specified solver=", solver
+    if solver not in all_solvers:
+        print "error: solver must be either one of " + str(all_solvers)
+
+    if options.max_dim:
+        dims = range(options.step_dim, options.max_dim+1, options.step_dim)
+    elif options.dim:
+        dims = [options.dim]
+    else:
+        dims = [1000]
+
+    if options.max_np:
+        nps = range(options.min_np, options.max_np+1, options.step_np)
+    elif options.np:
+        nps = [options.np]
+    else:
+        nps = [4]
+
+    machine_name = "kashiwa"
+    solver_type = "eigen_s"
+    run_dir = "$WORK/build/rokko/benchmark"
+    run_filename = "./frank_matrix"
+
+    job_name_prefix = machine_name + "_" + solver
+    mpirun_command = "mpijob"
+
+    script_names = [];
+
+    for np in nps:
+        for dim in dims:
+            job_name = job_name_prefix + "_dim" + str(dim) + "_np" + str(np)
+            script_name = os.path.join(job_name + ".sh")
+            script = open(script_name, 'w')
+            commandline_arg = solver + " " + str(dim)
+            script.write("#!/bin/bash" + "\n\n")
+            script.write("#BSUB -W " + "10" + "\n")
+            script.write("#BSUB -n " + str(np) + "\n")
+            script.write("#BSUB -q " + "F4" + "\n")
+            script.write("#BSUB -J " + job_name + "\n")
+            script.write("#BSUB -o " + job_name + ".o" + "\n")
+            script.write("#BSUB -e " + job_name + ".e" + "\n")
+            script.write("\n")
+            script.write("export OMP_NUM_THREADS=2" + "\n")
+            script.write("\n")
+	    run_dir2 = os.path.expandvars(run_dir)
+            script.write("cd " + run_dir2 + "\n")
+            script.write(mpirun_command + " -np " + str(np) + " " + run_filename + " " + commandline_arg + "\n")
+            script.close()
+            script_names.append(script_name)
+            print "generated job script: ", script_name
+
+    if options.submit:    
+        for script_name in script_names:
+            p = Popen(["cat", script_name], stdout=PIPE)
+            check_call(["bsub"], stdin=p.stdout)
+	    p.wait()
+            print "submited job script: ", script_name
+
