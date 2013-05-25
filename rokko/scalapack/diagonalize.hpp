@@ -17,32 +17,26 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
 
   const int ZERO=0, ONE=1;
   long MINUS_ONE = -1;
-  blacs_pinfo_(mat.myrank, mat.nprocs);
   blacs_get_(MINUS_ONE, ZERO, ictxt);
 
   char char_grid_major;
   if(mat.g.is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  blacs_gridinit_(ictxt, &char_grid_major, mat.nprow, mat.npcol); // ColがMPI_Comm_createと互換
-  blacs_gridinfo_(ictxt, mat.nprow, mat.npcol, mat.myrow, mat.mycol);
+  blacs_gridinit_(ictxt, &char_grid_major, mat.g.get_nprow(), mat.g.get_npcol()); // ColがMPI_Comm_createと互換
 
-  int dim = mat.m_global;
-  //std::cout << "pdsyev_dim=" << dim << std::endl;
+  int dim = mat.get_m_global();
   int desc[9];
-
-  int lld = mat.m_local;
-  if (lld == 0) lld = 1;
-  descinit_(desc, mat.m_global, mat.n_global, mat.mb, mat.nb, ZERO, ZERO, ictxt, lld, info);
+  descinit_(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), ZERO, ZERO, ictxt, mat.get_lld(), info);
   if (info) {
-    std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.m_local << "  nA=" << mat.n_local << "  lld=" << lld << "." << std::endl;
+    std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld() << "." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
 
 #ifdef DEBUG
   for (int proc=0; proc<mat.nprocs; ++proc) {
-    if (proc == mat.myrank) {
-      std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.m_global << "  n_global=" << mat.n_global << "  mb=" << mat.mb << "  nb=" << mat.nb << " lld=" << lld << std::endl;
+    if (proc == mat.g.get_myrank()) {
+      std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
@@ -54,8 +48,8 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   // work配列のサイズの問い合わせ
   char* V = const_cast<char*>("V");
   char* U = const_cast<char*>("U");
-  pdsyev_( V,  U,  dim,  mat.array, ONE,  ONE,  desc, eigvals, eigvecs.array, ONE, ONE,
- 	   desc, work, lwork, info );
+  pdsyev_(V,  U,  dim,  mat.get_array_pointer(), ONE,  ONE,  desc, eigvals, eigvecs.get_array_pointer(), ONE, ONE,
+ 	   desc, work, lwork, info);
 
   lwork = work[0];
   delete[] work;
@@ -66,8 +60,8 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   }
 
   // 固有値分解
-  pdsyev_( V,  U,  dim,  mat.array,  ONE,  ONE,  desc, eigvals, eigvecs.array, ONE, ONE,
-  	   desc, work, lwork, info );
+  pdsyev_(V,  U,  dim,  mat.get_array_pointer(),  ONE,  ONE,  desc, eigvals, eigvecs.get_array_pointer(), ONE, ONE,
+          desc, work, lwork, info);
 
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info  << std::endl;

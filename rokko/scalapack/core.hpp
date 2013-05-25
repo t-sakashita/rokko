@@ -75,7 +75,7 @@ inline void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<rok
 template<>
 inline void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
                                                           distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in) {
-  rokko::scalapack::diagonalize_d(mat, eigvals, eigvecs, timer_in);
+  rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer_in);
 }
 
 template<>
