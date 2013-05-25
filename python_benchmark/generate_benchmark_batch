@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+
+import os.path, sys, ConfigParser
+import optparse
+from subprocess import check_call
+
+## main routine
+if __name__ == "__main__":
+    all_solvers = ["eigen_s", "eigen_sx", "scalapack", "elemental"]
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--submit",
+                      action="store_true", dest="submit", default=False,
+                      help="submit batch jobs")
+    parser.add_option('--solver', 
+                      action="store",
+                      type="string",
+                      help="eigenvalue solver type")
+    parser.add_option('--dim',
+                      action="store",
+                      type="int",
+                      help="matrix dimension")
+    parser.add_option('--np',
+                      action="store",
+                      type="int",
+                      help="number of processor")
+
+    (options, args) = parser.parse_args()
+    solver = options.solver
+    print "solver=", solver
+    if solver not in all_solvers:
+        print "error: solver must be either one of " + str(all_solvers)
+    if options.dim:
+        dim = str(options.dim)
+    else:
+        dim = str(1000)
+    if options.np:
+        max_np = str(options.np)
+    else:
+        max_np = 4
+
+    machine_name = "psi"
+    solver_type = "eigen_s"
+    run_dir = "$HOME/build/rokko/benchmark"
+    run_filename = "./frank_matrix"
+
+    job_name_prefix = machine_name + "_" + solver + str(dim)
+    mpirun_command = "mpiexec"
+
+    np_step = 1
+    nums = range(1, max_np+1, np_step)
+
+    script_names = [];
+
+    for num in nums:
+        job_name = job_name_prefix + "_dim" + dim + "_np" + str(num)
+        script_name = os.path.join(job_name + ".sh")
+        script = open(script_name, 'w')
+        commandline_arg = solver + " " + str(dim)
+        script.write("#!/bin/bash" + "\n\n")
+        script.write("#PBS -l nodes=" + "1" + "\n")
+        script.write("#PBS -q middle" + "\n")
+        script.write("#PBS -N " + job_name + "\n")
+        script.write("#PBS -j oe" + "\n")
+        script.write("\n")
+        script.write("export OMP_NUM_THREADS=2" + "\n")
+        script.write("\n")
+        script.write("cd " + run_dir + "\n")
+        script.write(mpirun_command + " -np " + str(num) + " " + run_filename + " " + commandline_arg + "\n")
+        script.close()
+        script_names.append(script_name)
+        print "script: ", script_name
+
+    if options.submit:    
+        for script_name in script_names:
+            check_call(["qsub", script_name])
+            print "submited job: ", script_name
+
+
+
