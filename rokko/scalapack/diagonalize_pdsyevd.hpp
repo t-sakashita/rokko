@@ -71,10 +71,12 @@ int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   }
 
   // 固有値分解
+  timer_in.start(1);
   pdsyevd_(V, U, dim, mat.get_array_pointer(), ONE, ONE, desc,
            eigvals,
            eigvecs.get_array_pointer(), ONE, ONE, desc,
            work, lwork, iwork, liwork, info);
+  timer_in.stop(1);
 
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info  << std::endl;

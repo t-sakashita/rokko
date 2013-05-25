@@ -19,27 +19,24 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
 
   elem::Grid elem_grid(comm, mat.get_nprow(), mat.get_npcol());
   elem::DistMatrix<double> elem_mat(mat.get_m_global(), mat.get_n_global(), 0, 0, mat.get_array_pointer(),
-    mat.lld, elem_grid);
+                                    mat.get_lld(), elem_grid);
   //elem::DistMatrix<double> elem_eigvecs(mat.m_global, mat.n_global, elem_grid);
   elem::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
 
   elem::DistMatrix<double, elem::VR, elem::STAR> elem_w(elem_grid);
 
-  double start, end;
   MPI_Barrier(MPI_COMM_WORLD);
-  start = MPI_Wtime();
-
+  timer_in.start(1);
   elem::HermitianEig(elem::LOWER, elem_mat, elem_w, elem_eigvecs); // only access lower half of H
-
   MPI_Barrier(MPI_COMM_WORLD);
-  end = MPI_Wtime();
+  timer_in.stop(1);
 
   for (int i = 0; i < eigvals.size(); ++i)
     eigvals(i) = elem_w.Get(i, 0);
 
   double* result_mat = elem_eigvecs.Buffer();
-  for(int local_i=0; local_i<mat.m_local; ++local_i) {
-    for(int local_j=0; local_j<mat.n_local; ++local_j) {
+  for(int local_i=0; local_i<mat.get_m_local(); ++local_i) {
+    for(int local_j=0; local_j<mat.get_n_local(); ++local_j) {
       eigvecs.set_local(local_i, local_j, result_mat[local_j * mat.get_lld() + local_i]);
     }
   }

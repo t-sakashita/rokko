@@ -30,7 +30,7 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
 
   int dim = mat.m_global;
   int desc[9];
-  descinit_(desc, mat.get_m_global(), mat.get_n_global(), mat.mb, mat.nb, ZERO, ZERO, ictxt, mat.get_lld(), info);
+  descinit_(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), ZERO, ZERO, ictxt, mat.get_lld(), info);
   if (info) {
     std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.get_m_local() << "  nA=" << mat.get_n_local() << "." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 89);
@@ -77,12 +77,15 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   char* A = const_cast<char*>("A");
   char* U = const_cast<char*>("U");
 
+  timer_in.start(1);
   pdsyevx_(V, A, U, dim, mat.get_array_pointer(), ONE, ONE, desc,
            vl, vu, il, iu,
            abstol, num_eigval_found, num_eigvec_found, eigvals, orfac,
            eigvecs.get_array_pointer(), ONE, ONE, desc,
            work, lwork, iwork, liwork,
+
            ifail, iclustr, gap, info);
+  timer_in.stop(1);
 
   if (info) {
     std::cerr << "error at pdsyevx function (query for sizes for workarrays." << std::endl;

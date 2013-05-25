@@ -34,18 +34,14 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
     MPI_Abort(MPI_COMM_WORLD, 3);
   }
 
-  double start, end;
-  MPI_Barrier(MPI_COMM_WORLD);
-  start = MPI_Wtime();
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
   double* mat_array = mat.get_array_pointer();
   double* eigvecs_array= eigvecs.get_array_pointer();
 
+  timer_in.start(1);
   eigen_sx_(mat.m_global, mat_array, lld, eigvals, eigvecs_array, d, e, nme, m, iflag);
-
-  MPI_Barrier(MPI_COMM_WORLD);
-  end = MPI_Wtime();
+  timer_in.stop(1);
 
   delete[] d;
   delete[] e;

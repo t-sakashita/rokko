@@ -23,19 +23,15 @@ void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distrib
   //else
   //  iflag = 1;
 
-  double start, end;
-  MPI_Barrier(MPI_COMM_WORLD);
-  start = MPI_Wtime();
-
   int dim = mat.get_m_global();
   int mat_lld = mat.get_lld();
   int eigvecs_lld = mat.get_lld();
   double* mat_array = mat.get_array_pointer();
   double* eigvecs_array= eigvecs.get_array_pointer();
-  eigen_s_(dim, mat_array, mat_lld, eigvals, eigvecs_array, eigvecs_lld, m, iflag);
 
-  MPI_Barrier(MPI_COMM_WORLD);
-  end = MPI_Wtime();
+  timer_in.start(1);
+  eigen_s_(dim, mat_array, mat_lld, eigvals, eigvecs_array, eigvecs_lld, m, iflag);
+  timer_in.stop(1);
 }
 
 template<typename MATRIX_MAJOR>

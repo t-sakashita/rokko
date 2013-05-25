@@ -59,9 +59,12 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
     return info;
   }
 
+
   // 固有値分解
+  timer_in.start(1);
   pdsyev_(V,  U,  dim,  mat.get_array_pointer(),  ONE,  ONE,  desc, eigvals, eigvecs.get_array_pointer(), ONE, ONE,
           desc, work, lwork, info);
+  timer_in.stop(1);
 
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info  << std::endl;
