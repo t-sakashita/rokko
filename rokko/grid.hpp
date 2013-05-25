@@ -35,6 +35,24 @@ public:
 template<typename GRID_MAJOR = rokko::grid_row_major>
 class grid : public grid_base, private boost::noncopyable {
 public:
+  // This constructor produces 2D grid whose row size is longer.  In EigenK's grid creation, the variables nprow, npcol are changed with this constructor's one, and in EigenK's sample main program, some strange substitution is done: "NPROW = size_of_col  NPCOL = size_of_row".  So, this constructor's 2D grid size is consistent with EigenK's 2D grid one.
+  grid(MPI_Comm comm_in = MPI_COMM_WORLD) { //: comm(comm_in) {
+    comm = comm_in;
+    MPI_Comm_size(comm, &nprocs);
+    MPI_Comm_rank(comm, &myrank);
+
+    nprow = int(std::sqrt(nprocs + 0.5));
+    while (1) {
+      if ( nprow == 1 ) break;
+      if ( (nprocs % nprow) == 0 ) break;
+      nprow = nprow - 1;
+    }
+    npcol = nprocs / nprow;
+    myrow = calculate_grid_row(myrank);
+    mycol = calculate_grid_col(myrank);
+  }
+
+  /* The following 2D grid size is consistent with EigenK's 2D grid creator's one, but it is actually changed with actual EigenK's 2D grid row/col size. So we don't use it.
   grid(MPI_Comm comm_in = MPI_COMM_WORLD) { //: comm(comm_in) {
     comm = comm_in;
     MPI_Comm_size(comm, &nprocs);
@@ -50,6 +68,7 @@ public:
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
   }
+*/
 
   ~grid()  {}
 

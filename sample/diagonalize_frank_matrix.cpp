@@ -29,6 +29,7 @@
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
+  //typedef rokko::grid_row_major grid_major;
   typedef rokko::grid_col_major grid_major;
   //typedef rokko::matrix_row_major matrix_major;
   typedef rokko::matrix_col_major matrix_major;
