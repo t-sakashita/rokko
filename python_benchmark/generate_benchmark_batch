@@ -23,57 +23,79 @@ if __name__ == "__main__":
                       action="store",
                       type="int",
                       help="number of processor")
-
+    parser.add_option('--max_dim',
+                      action="store",
+                      type="int",
+                      help="max of matrix dimension")
+    parser.add_option('--max_np',
+                      action="store",
+                      type="int",
+                      help="max of number of processor")
+    parser.add_option('--step_dim',
+                      action="store",
+                      type="int", default=1,
+                      help="step of matrix dimension")
+    parser.add_option('--step_np',
+                      action="store",
+                      type="int", default=1,
+                      help="step of number of processor")
     (options, args) = parser.parse_args()
     solver = options.solver
-    print "solver=", solver
+    print "specified solver=", solver
     if solver not in all_solvers:
         print "error: solver must be either one of " + str(all_solvers)
-    if options.dim:
-        dim = str(options.dim)
+
+    if options.max_dim:
+        dims = range(options.step_dim, options.max_dim+1, options.step_dim)
+    elif options.dim:
+        dims = [options.dim]
     else:
-        dim = str(1000)
-    if options.np:
-        max_np = str(options.np)
+        dims = [1000]
+
+    if options.max_np:
+        nps = range(options.step_np, options.max_np+1, options.step_np)
+    elif options.np:
+        nps = [options.np]
     else:
-        max_np = 4
+        nps = [4]
 
     machine_name = "psi"
     solver_type = "eigen_s"
     run_dir = "$HOME/build/rokko/benchmark"
     run_filename = "./frank_matrix"
 
-    job_name_prefix = machine_name + "_" + solver + str(dim)
+    job_name_prefix = machine_name + "_" + solver
     mpirun_command = "mpiexec"
 
-    np_step = 1
-    nums = range(1, max_np+1, np_step)
+    #np_step = 1
+    #nums = range(1, max_np+1, np_step)
 
     script_names = [];
 
-    for num in nums:
-        job_name = job_name_prefix + "_dim" + dim + "_np" + str(num)
-        script_name = os.path.join(job_name + ".sh")
-        script = open(script_name, 'w')
-        commandline_arg = solver + " " + str(dim)
-        script.write("#!/bin/bash" + "\n\n")
-        script.write("#PBS -l nodes=" + "1" + "\n")
-        script.write("#PBS -q middle" + "\n")
-        script.write("#PBS -N " + job_name + "\n")
-        script.write("#PBS -j oe" + "\n")
-        script.write("\n")
-        script.write("export OMP_NUM_THREADS=2" + "\n")
-        script.write("\n")
-        script.write("cd " + run_dir + "\n")
-        script.write(mpirun_command + " -np " + str(num) + " " + run_filename + " " + commandline_arg + "\n")
-        script.close()
-        script_names.append(script_name)
-        print "script: ", script_name
+    for np in nps:
+        for dim in dims:
+            job_name = job_name_prefix + "_dim" + str(dim) + "_np" + str(np)
+            script_name = os.path.join(job_name + ".sh")
+            script = open(script_name, 'w')
+            commandline_arg = solver + " " + str(dim)
+            script.write("#!/bin/bash" + "\n\n")
+            script.write("#PBS -l nodes=" + "1" + "\n")
+            script.write("#PBS -q middle" + "\n")
+            script.write("#PBS -N " + job_name + "\n")
+            script.write("#PBS -j oe" + "\n")
+            script.write("\n")
+            script.write("export OMP_NUM_THREADS=2" + "\n")
+            script.write("\n")
+            script.write("cd " + run_dir + "\n")
+            script.write(mpirun_command + " -np " + str(np) + " " + run_filename + " " + commandline_arg + "\n")
+            script.close()
+            script_names.append(script_name)
+            print "generated job script: ", script_name
 
     if options.submit:    
         for script_name in script_names:
             check_call(["qsub", script_name])
-            print "submited job: ", script_name
+            print "submited job script: ", script_name
 
 
 
