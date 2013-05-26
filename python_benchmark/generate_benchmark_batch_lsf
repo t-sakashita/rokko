@@ -67,7 +67,6 @@ if __name__ == "__main__":
         nps = [4]
 
     machine_name = "kashiwa"
-    solver_type = "eigen_s"
     run_dir = "$WORK/build/rokko/benchmark"
     run_filename = "./frank_matrix"
 
@@ -97,7 +96,7 @@ if __name__ == "__main__":
             script = open(script_name, 'w')
             commandline_arg = solver + " " + str(dim)
             script.write("#!/bin/bash" + "\n\n")
-            script.write("#BSUB -W " + "10" + "\n")
+            script.write("#BSUB -W " + "2:10" + "\n")
             script.write("#BSUB -n " + str(num_queue) + "\n")
             script.write("#BSUB -q " + "F" + num_queue + "\n")
             script.write("#BSUB -J " + job_name + "\n")
@@ -108,7 +107,7 @@ if __name__ == "__main__":
 #            script.write("rm " + job_name + ".o" + "\n")
 #            script.write("rm " + job_name + ".e" + "\n")
 
-            script.write("export OMP_NUM_THREADS=2" + "\n")
+#            script.write("export OMP_NUM_THREADS=2" + "\n")
             script.write("\n")
 	    run_dir2 = os.path.expandvars(run_dir)
             script.write("cd " + run_dir2 + "\n")
