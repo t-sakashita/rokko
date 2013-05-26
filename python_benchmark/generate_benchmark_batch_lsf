@@ -2,12 +2,13 @@
 
 import os.path, sys, ConfigParser
 import optparse
+import subprocess
 from subprocess import Popen, PIPE
 from subprocess import check_call
 
 ## main routine
 if __name__ == "__main__":
-    all_solvers = ["eigen_s", "eigen_sx", "scalapack", "elemental"]
+    all_solvers = ["eigen_s", "eigen_sx", "scalapack", "scalapack_pdsyevd", "scalapack_pdsyevx", "elemental"]
     parser = optparse.OptionParser()
     parser.add_option("-s", "--submit",
                       action="store_true", dest="submit", default=False,
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     print "specified solver=", solver
     if solver not in all_solvers:
         print "error: solver must be either one of " + str(all_solvers)
+	sys.exit(1);
 
     if options.max_dim:
         dims = range(options.step_dim, options.max_dim+1, options.step_dim)
@@ -83,7 +85,7 @@ if __name__ == "__main__":
             script.write("#!/bin/bash" + "\n\n")
             script.write("#BSUB -W " + "10" + "\n")
             script.write("#BSUB -n " + str(np) + "\n")
-            script.write("#BSUB -q " + "F4" + "\n")
+            script.write("#BSUB -q " + "F8" + "\n")
             script.write("#BSUB -J " + job_name + "\n")
             script.write("#BSUB -o " + job_name + ".o" + "\n")
             script.write("#BSUB -e " + job_name + ".e" + "\n")
@@ -99,8 +101,8 @@ if __name__ == "__main__":
 
     if options.submit:    
         for script_name in script_names:
-            p = Popen(["cat", script_name], stdout=PIPE)
-            check_call(["bsub"], stdin=p.stdout)
+            print "submitting job script: ", script_name
+            p = Popen(["cat " + script_name + " | bsub"], shell=True)
 	    p.wait()
             print "submited job script: ", script_name
 
