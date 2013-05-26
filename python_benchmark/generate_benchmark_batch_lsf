@@ -79,29 +79,48 @@ if __name__ == "__main__":
     for np in nps:
         for dim in dims:
             job_name = job_name_prefix + "_dim" + str(dim) + "_np" + str(np)
+	    num_cpu = (np - 1) / 4 + 1
+	    if num_cpu <= 4:
+	        num_queue = "4"
+	    if 4 < num_cpu <= 8:
+                num_queue = "8"
+            if 8 < num_cpu <= 16:
+                num_queue = "16"
+            if 16 < num_cpu <= 32:
+                num_queue = "32"
+            if 32 < num_cpu <= 64:
+                num_queue = "64"
+            if 64 < num_cpu <= 256:
+                num_queue = "256"
+	    print "np=", np, " num_cpu=", num_cpu, "  num_queue=", num_queue
             script_name = os.path.join(job_name + ".sh")
             script = open(script_name, 'w')
             commandline_arg = solver + " " + str(dim)
             script.write("#!/bin/bash" + "\n\n")
             script.write("#BSUB -W " + "10" + "\n")
-            script.write("#BSUB -n " + str(np) + "\n")
-            script.write("#BSUB -q " + "F8" + "\n")
+            script.write("#BSUB -n " + str(num_queue) + "\n")
+            script.write("#BSUB -q " + "F" + num_queue + "\n")
             script.write("#BSUB -J " + job_name + "\n")
-            script.write("#BSUB -o " + job_name + ".o" + "\n")
-            script.write("#BSUB -e " + job_name + ".e" + "\n")
+            script.write("#BSUB -oo " + job_name + ".o" + "\n")
+            script.write("#BSUB -eo " + job_name + ".e" + "\n")
             script.write("\n")
+
+#            script.write("rm " + job_name + ".o" + "\n")
+#            script.write("rm " + job_name + ".e" + "\n")
+
             script.write("export OMP_NUM_THREADS=2" + "\n")
             script.write("\n")
 	    run_dir2 = os.path.expandvars(run_dir)
             script.write("cd " + run_dir2 + "\n")
-            script.write(mpirun_command + " -np " + str(np) + " " + run_filename + " " + commandline_arg + "\n")
+            script.write(mpirun_command + " -np " + str(np) + " " + '"' +
+            run_filename + " " +  commandline_arg + '"' + "\n")
             script.close()
             script_names.append(script_name)
-            print "generated job script: ", script_name
+            print "generated job script: ", script_name, " F" + num_queue
 
     if options.submit:    
         for script_name in script_names:
-            print "submitting job script: ", script_name
+            #print "submitting job script: ", script_name
             p = Popen(["cat " + script_name + " | bsub"], shell=True)
 	    p.wait()
             print "submited job script: ", script_name
