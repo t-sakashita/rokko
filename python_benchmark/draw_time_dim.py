@@ -22,16 +22,16 @@ argc = len(argvs) # number of command line arguments
 print argvs
 print "num of parameters=", argc
 print
-if (argc < 3):
+if (argc < 1):
     print 'errror: two command line arguments are needed.'
     print 'Usage: # python %s library_name matrix_name' % argvs[0]
     quit()
-library_type = argvs[1]  #"scalapack"
-max_num_dim = int(argvs[2])
+library_type = "scalapack"
+max_num_dim = 10 #int(argvs[2])
 matrix_type = "frank"
 
-print 'library_type=', library_type
-print 'matrix_type=', matrix_type
+#print 'library_type=', library_type
+#print 'matrix_type=', matrix_type
 
 num_str = "dim"
 num_procs = 4;
@@ -53,7 +53,7 @@ times = [];
 iters = [];
 
 count = 0;
-for filename_input in argvs[3:]:
+for filename_input in argvs[1:]:
     print "filename_input=", filename_input
     fp_input = open(expandvars(filename_input), "r")
     for line in fp_input.read().split('\n'):
