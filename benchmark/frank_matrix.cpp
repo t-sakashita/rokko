@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
   rokko::localized_vector w(dim);
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
-  for (int count=0; count<10; ++count) {
+  for (int count=0; count<3; ++count) {
     if (myrank == root) {
       std::cout << "get_count:" << timer.get_count(1) << std::endl;
     }
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
   if (myrank == 0) {
     //#ifdef _OPENMP_
     std::cout << "num_procs = " << nprocs << std::endl;
-    std::cout << "num_threads = " << omp_get_num_threads() << std::endl;
+    std::cout << "num_threads = " << omp_get_max_threads() << std::endl;
     //std::cout << "num_threads = " << mkl_get_num_threads() << std::endl;
     //#endif
     std::cout << "solver_name = " << solver_name << std::endl;
