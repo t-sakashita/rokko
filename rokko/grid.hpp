@@ -32,7 +32,7 @@ public:
   MPI_Comm comm;
 };
 
-template<typename GRID_MAJOR = rokko::grid_row_major>
+template<typename GRID_MAJOR = rokko::grid_col_major>
 class grid : public grid_base, private boost::noncopyable {
 public:
   // This constructor produces 2D grid whose row size is longer.  In EigenK's grid creation, the variables nprow, npcol are changed with this constructor's one, and in EigenK's sample main program, some strange substitution is done: "NPROW = size_of_col  NPCOL = size_of_row".  So, this constructor's 2D grid size is consistent with EigenK's 2D grid one.

@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser.add_option("-s", "--submit",
                       action="store_true", dest="submit", default=False,
                       help="submit batch jobs")
-    parser.add_option('--solver', 
+    parser.add_option('--solver',
                       action="store",
                       type="string",
                       help="eigenvalue solver type")
@@ -84,6 +84,10 @@ if __name__ == "__main__":
     else:
         nps = [4]
 
+    if ((options.min_nt > 16) and (options.max_nt > 16) and (options.nt > 16)):
+        print "number of threads must be <=16."
+        exit(1)
+
     if (options.max_nt):
         nts = range(options.min_nt, options.max_nt+1, options.step_nt)
     elif options.np:
@@ -91,17 +95,17 @@ if __name__ == "__main__":
     else:
         nts = [1]
 
-    machine_name = "kashiwa"
+    machine_name = "maki"
     run_dir = "$WORK/build/rokko/benchmark"
     run_filename = "./frank_matrix"
 
     job_name_prefix = machine_name + "_" + solver
-    mpirun_command = "hybrid"
-    
+    mpirun_command = "mpiexec"
+
     script_names = [];
 
     print "nps=", nps
-    
+
     for np in nps:
         for nt in nts:
             for dim in dims:
@@ -131,27 +135,25 @@ if __name__ == "__main__":
                 script = open(script_name, 'w')
                 commandline_arg = solver + " " + str(dim)
                 script.write("#!/bin/bash" + "\n\n")
-                script.write("#BSUB -W " + "1:10" + "\n")
-                script.write("#BSUB -n " + num_queue + "\n")
-                script.write("#BSUB -q " + queue + "\n")
-                script.write("#BSUB -J " + job_name + "\n")
-                script.write("#BSUB -oo " + job_name + ".o" + "\n")
-                script.write("#BSUB -eo " + job_name + ".e" + "\n")
+                script.write('#PJM -L "rscgrp=' + "F12" + '"' + '\n')
+                script.write('#PJM -L "node=' + str(np) + '"' + "\n")
+                script.write('#PJM -L "elapse=0:10"' + '\n')
+                script.write("#PJM -N " + job_name + "\n")
+                script.write("#PJM -o " + job_name + ".o" + "\n")
+                script.write("#PJM -j" + "\n")
                 script.write("\n")
 		script.write("export OMP_NUM_THREADS=" + str(nt)+ "\n")
                 script.write("\n")
                 run_dir2 = os.path.expandvars(run_dir)
                 script.write("cd " + run_dir2 + "\n")
-                script.write(mpirun_command + " -np " + str(np) +
-                             ' "' + run_filename + " " + commandline_arg + '" ' + "\n")
+                script.write(mpirun_command + " -n " + str(np) +
+                             run_filename + " " + commandline_arg + "\n")
                 script.close()
                 script_names.append(script_name)
-                print "generated job script: ", script_name, " F" + num_queue
+                print "generated job script: ", script_name #, " F" + num_queue
 
-    if options.submit:    
+    if options.submit:
         for script_name in script_names:
-            #print "submitting job script: ", script_name
-            p = Popen(["cat " + script_name + " | bsub"], shell=True)
-	    p.wait()
+            check_call(["pjsub", script_name])
             print "submited job script: ", script_name
 
