@@ -25,6 +25,11 @@ if __name__ == "__main__":
                       action="store",
                       type="int",
                       help="number of processor")
+    parser.add_option('--nt',
+                      action="store",
+                      type="int",
+                      help="number of threads")
+
     parser.add_option('--max_dim',
                       action="store",
                       type="int",
@@ -32,11 +37,19 @@ if __name__ == "__main__":
     parser.add_option('--max_np',
                       action="store",
                       type="int",
-                      help="max of number of processor")
+                      help="max of number of processors")
+    parser.add_option('--max_nt',
+                      action="store",
+                      type="int",
+                      help="max of number of threads")
     parser.add_option('--min_np',
                       action="store",
                       type="int", default=1,
-                      help="min of number of processor")
+                      help="min of number of processors")
+    parser.add_option('--min_nt',
+                      action="store",
+                      type="int", default=1,
+                      help="min of number of threads")
     parser.add_option('--step_dim',
                       action="store",
                       type="int", default=1,
@@ -44,7 +57,12 @@ if __name__ == "__main__":
     parser.add_option('--step_np',
                       action="store",
                       type="int", default=1,
-                      help="step of number of processor")
+                      help="step of number of processors")
+    parser.add_option('--step_nt',
+                      action="store",
+                      type="int", default=1,
+                      help="step of number of threads")
+
     (options, args) = parser.parse_args()
     solver = options.solver
     print "specified solver=", solver
@@ -66,56 +84,69 @@ if __name__ == "__main__":
     else:
         nps = [4]
 
+    if (options.max_nt):
+        nts = range(options.min_nt, options.max_nt+1, options.step_nt)
+    elif options.np:
+        nts = [options.nt]
+    else:
+        nts = [1]
+
     machine_name = "kashiwa"
     run_dir = "$WORK/build/rokko/benchmark"
     run_filename = "./frank_matrix"
 
     job_name_prefix = machine_name + "_" + solver
-    mpirun_command = "mpijob"
-
+    mpirun_command = "hybrid"
+    
     script_names = [];
 
+    print "nps=", nps
+    
     for np in nps:
-        for dim in dims:
-            job_name = job_name_prefix + "_dim" + str(dim) + "_np" + str(np)
-	    num_cpu = (np - 1) / 4 + 1
-	    if num_cpu <= 4:
-	        num_queue = "4"
-	    if 4 < num_cpu <= 8:
-                num_queue = "8"
-            if 8 < num_cpu <= 16:
-                num_queue = "16"
-            if 16 < num_cpu <= 32:
-                num_queue = "32"
-            if 32 < num_cpu <= 64:
-                num_queue = "64"
-            if 64 < num_cpu <= 256:
-                num_queue = "256"
-	    print "np=", np, " num_cpu=", num_cpu, "  num_queue=", num_queue
-            script_name = os.path.join(job_name + ".sh")
-            script = open(script_name, 'w')
-            commandline_arg = solver + " " + str(dim)
-            script.write("#!/bin/bash" + "\n\n")
-            script.write("#BSUB -W " + "2:10" + "\n")
-            script.write("#BSUB -n " + str(num_queue) + "\n")
-            script.write("#BSUB -q " + "F" + num_queue + "\n")
-            script.write("#BSUB -J " + job_name + "\n")
-            script.write("#BSUB -oo " + job_name + ".o" + "\n")
-            script.write("#BSUB -eo " + job_name + ".e" + "\n")
-            script.write("\n")
+        for nt in nts:
+            for dim in dims:
+                job_name = job_name_prefix + "_dim" + str(dim) + "_np" + str(np) + "_nt" + str(nt)
+                num_cpu = (np - 1) / 4 + 1
+                if np == 1:
+                    num_queue = "1"
+                elif 1 <= num_cpu <= 4:
+                    num_queue = "4"
+                if 4 < num_cpu <= 8:
+                    num_queue = "8"
+                if 8 < num_cpu <= 16:
+                    num_queue = "16"
+                if 16 < num_cpu <= 32:
+                    num_queue = "32"
+                if 32 < num_cpu <= 64:
+                    num_queue = "64"
+                if 64 < num_cpu <= 256:
+                    num_queue = "256"
+                if np == 1:
+		    queue = "P" + num_queue
+		else:
+		    queue = "F" + num_queue
 
-#            script.write("rm " + job_name + ".o" + "\n")
-#            script.write("rm " + job_name + ".e" + "\n")
-
-#            script.write("export OMP_NUM_THREADS=2" + "\n")
-            script.write("\n")
-	    run_dir2 = os.path.expandvars(run_dir)
-            script.write("cd " + run_dir2 + "\n")
-            script.write(mpirun_command + " -np " + str(np) + " " + '"' +
-            run_filename + " " +  commandline_arg + '"' + "\n")
-            script.close()
-            script_names.append(script_name)
-            print "generated job script: ", script_name, " F" + num_queue
+                print "np=", np, " num_cpu=", num_cpu, "  num_queue=", num_queue
+                script_name = os.path.join(job_name + ".sh")
+                script = open(script_name, 'w')
+                commandline_arg = solver + " " + str(dim)
+                script.write("#!/bin/bash" + "\n\n")
+                script.write("#BSUB -W " + "1:10" + "\n")
+                script.write("#BSUB -n " + num_queue + "\n")
+                script.write("#BSUB -q " + queue + "\n")
+                script.write("#BSUB -J " + job_name + "\n")
+                script.write("#BSUB -oo " + job_name + ".o" + "\n")
+                script.write("#BSUB -eo " + job_name + ".e" + "\n")
+                script.write("\n")
+		script.write("export OMP_NUM_THREADS=" + str(nt)+ "\n")
+                script.write("\n")
+                run_dir2 = os.path.expandvars(run_dir)
+                script.write("cd " + run_dir2 + "\n")
+                script.write(mpirun_command + " -np " + str(np) +
+                             ' "' + run_filename + " " + commandline_arg + '" ' + "\n")
+                script.close()
+                script_names.append(script_name)
+                print "generated job script: ", script_name, " F" + num_queue
 
     if options.submit:    
         for script_name in script_names:
