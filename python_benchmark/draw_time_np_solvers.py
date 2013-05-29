@@ -9,7 +9,14 @@ matplotlib.use('pdf')
 
 from matplotlib import rc
 from matplotlib.pyplot import figure, axes, plot, xlabel, ylabel, title, \
-     grid, savefig, show
+     grid, savefig, legend, show
+
+import pylab
+
+import matplotlib.font_manager
+prop = matplotlib.font_manager.FontProperties(size=5)
+
+
 
 #rc('text', usetex=true)
 rc('font', family='serif')
@@ -49,8 +56,13 @@ filename_output_fig = filename_output + ".pdf"
 fp_output = open(filename_output_txt, "w")
 
 nums = [];
-times = [];
+times_scalapack = [];
+times_eigens = [];
+times_eigensx = [];
+times_elemental = [];
+
 iters = [];
+solver = "";
 
 count = 0;
 for filename_input in argvs[1:]:
@@ -63,37 +75,69 @@ for filename_input in argvs[1:]:
         print "items[0]=", items[0]
         #items = line.split(' ')
         if items[0] == "num_procs":
-            print "num_procs.append: ",items[2]
-            nums.append(int(items[2]))
+            print "num_procs: ",items[2]
+            num_procs = items[2]
+
+        if items[0] == "solver_name":
+            print "solver: ",items[2]
+            solver = items[2]
+            if solver == "eigen_s":
+                nums.append(int(num_procs))
 
         if items[0] == "time":
             print "times.append: ",items[2]
-            times.append(float(items[2]))
-            fp_output.write(str(nums[-1]) + "  " + str(times[-1]) + '\n')
+            if solver == "scalapack":
+                times_scalapack.append(float(items[2]))
+            if solver == "eigen_s":
+                times_eigens.append(float(items[2]))
+            if solver == "eigen_sx":
+                times_eigensx.append(float(items[2]))
+            if solver == "elemental":
+                times_elemental.append(float(items[2]))
+
+            #fp_output.write(str(nums[-1]) + "  " + str(times[-1]) + '\n')
     fp_input.close()
 
 fp_output.close()
 
-print "length=", len(times)
+#print "length=", len(times)
 print "nums=", nums
-print "times=", times
+print "times_eigens=", times_eigens
+print "times_eigensx=", times_eigensx
+print "times_elemental=", times_elemental
+print "times_scalapack=", times_scalapack
+
 
 # Draw graphs of times and iters
 #rc('text', usetex=true)
 rc('font', family='serif')
 figure(1, figsize=(6,4))
 #ax = axes([0.1, 0.1, 0.8, 0.7])
-plot(nums, times)
+plot(nums, times_eigens, label='eigen_s')
+plot(nums, times_eigensx, label='eigen_sx')
+plot(nums, times_elemental, label='elemental')
+plot(nums, times_scalapack, label='ScaLAPACK(pdsyev)')
+
+legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+plot.legend(loc=2,prop={'size':6})
+
+#prop = matplotlib.font_manager.FontProperties(size=5)
+#legend(prop=prop)
+
+legend()
+
 xlabel(r'num of ' + "processes")
 ylabel(u'elapsed time [s]',fontsize=16)
 title(matrix_type + ' matrix' + '  ' + library_type + ' ',
       fontsize=16, color='r')
+
 grid(True)
 
 savefig(filename_output)
 
 print 'filename_output_txt = ', filename_output_txt
 print 'filename_output_fig = ', filename_output_fig
+
 
 show()
 
