@@ -21,10 +21,13 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
   double* mat_array = mat.get_array_pointer();
   double* eigvecs_array= eigvecs.get_array_pointer();
 
-  int m_forward = 48;
+  std::cout << "dim=" << dim << std::endl;
+  std::cout << "lld=" << lld << std::endl;
+
+  int m_forward = 8;
   int m_backward = 128;
 
-  timer_in.start(1);  
+  timer_in.start(1);
   eigen_sx(dim, dim, mat_array, lld, eigvals, eigvecs_array, lld, m_forward, m_backward);
   timer_in.stop(1);
 

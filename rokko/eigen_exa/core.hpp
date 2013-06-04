@@ -9,9 +9,9 @@ namespace eigen_exa {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) {}
+  void initialize(int& argc, char**& argv) { MPI_Comm comm = MPI_COMM_WORLD;  char order = 'C'; eigen_init(&comm, &order); }
 
-  void finalize() {}
+  void finalize() { eigen_free(); }
 
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
@@ -23,9 +23,10 @@ public:
 
     int n1 = ((n-1)/NPROW+1);
     int nm;
-    int i1 = 6, i2 = 16*4, i3 = 16*4*2; 
+    int i1 = 6, i2 = 16*4, i3 = 16*4*2;
     CSTAB_get_optdim( n1, i1, i2, i3, nm );
-      
+    std::cout << "nm=" << nm << std::endl;
+
     int NB  = 64;
     int nmz = ((n-1)/NPROW+1);
     nmz = ((nmz-1)/NB+1)*NB+1;
@@ -33,6 +34,7 @@ public:
     nmw = ((nmw-1)/NB+1)*NB+1;
 
     int larray = std::max(nmz, nm)*nmw;
+    std::cout << "larray=" << larray << std::endl;
 
     mat.set_lld(nm);
     mat.set_length_array(larray);

@@ -3,12 +3,12 @@
 
 #define eigen_init eigen_init_
 #define eigen_free eigen_free_
-#define CSTAB_get_optdim cstab_get_optdim_  // オブジェクトファイルでは小文字に変換される                                                                                                  
+#define CSTAB_get_optdim cstab_get_optdim_  // オブジェクトファイルでは小文字に変換される
 #define eigen_sx eigen_sx_
 
 extern "C" {
-  void eigen_init();
-  //  void eigen_init(int&, int&, int&);
+  //void eigen_init();
+  void eigen_init(MPI_Comm*, char*);
   void eigen_free();
   void CSTAB_get_optdim(int&, int&, int&, int&, int&);
   void eigen_sx(int&, int&, double*, int&, double*, double*, int&, int&, int&);
