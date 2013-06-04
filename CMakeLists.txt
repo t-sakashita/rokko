@@ -73,6 +73,11 @@ if ( NOT DEFINED SCALAPACK_LIB )
   endif ( BLAS_FOUND )
 endif ( NOT DEFINED SCALAPACK_LIB )
 
+if (EIGEN_EXA_LIB)
+   set(BUILD_EIGEN_SX OFF)
+   set(BUILD_EIGEN_EXA ON)
+endif (EIGEN_EXA_LIB)
+
 # find Elemental
 find_package(Elemental)
 
