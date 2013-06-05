@@ -9,7 +9,7 @@ namespace eigen_exa {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) { MPI_Comm comm = MPI_COMM_WORLD;  char order = 'C'; eigen_init(&comm, &order); }
+  void initialize(int& argc, char**& argv) { MPI_Fint comm = MPI_Comm_c2f(MPI_COMM_WORLD);  char order = 'R'; eigen_init(&comm, &order); }
 
   void finalize() { eigen_free(); }
 
