@@ -75,7 +75,7 @@ void create_struct_local_general(const rokko::distributed_matrix<MATRIX_MAJOR>& 
     }
   }
 
-  MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
+  MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);
 
   delete[] array_of_blocklengths;
@@ -176,7 +176,7 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
     std::cout << "num_block_rows=" << num_block_rows << std::endl;
   }
 
-  MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
+  MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
   MPI_Type_commit(&global_array_type);
 
 
