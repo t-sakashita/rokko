@@ -64,21 +64,13 @@ public:
   bool is_col_major() const { return !is_row_major(); }
 
   int calculate_grid_row(int proc_rank) const { 
-    return is_row ? calculate_grid_row(proc_rank, grid_row_major())
-                  : calculate_grid_row(proc_rank, grid_col_major());
+    return is_row ? proc_rank / npcol
+                  : proc_rank % nprol;
   }
   int calculate_grid_col(int proc_rank) const { 
-    return is_row ? calculate_grid_col(proc_rank, grid_row_major())
-                  : calculate_grid_col(proc_rank, grid_col_major());
+    return is_row ? proc_rank % npcol
+                  : proc_rank / nprol;
   }
-private :
-  // 冗長なタグディスパッチ
-  // 設計が固まったら綺麗にします :p
-  int calculate_grid_row(int proc_rank, grid_row_major) const { return proc_rank / npcol; }
-  int calculate_grid_col(int proc_rank, grid_row_major) const { return proc_rank % npcol; }
-  int calculate_grid_row(int proc_rank, grid_col_major) const { return proc_rank % nprow; }
-  int calculate_grid_col(int proc_rank, grid_col_major) const { return proc_rank / nprow; }
-
 
 private:
   MPI_Comm comm;
