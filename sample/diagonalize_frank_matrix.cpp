@@ -25,12 +25,9 @@
 #include <rokko/utility/sort_eigenpairs.hpp>
 
 #include <boost/lexical_cast.hpp>
-//#include <boost/asio.hpp>
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
-  //typedef rokko::grid_row_major grid_major;
-  typedef rokko::grid_col_major grid_major;
   //typedef rokko::matrix_row_major matrix_major;
   typedef rokko::matrix_col_major matrix_major;
 
@@ -46,8 +43,8 @@ int main(int argc, char *argv[]) {
   solver.initialize(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<grid_major> g(comm);
-  int myrank = g.myrank;
+  rokko::grid g(comm, rokko::grid_col_major);
+  int myrank = g.get_myrank();
 
   const int root = 0;
 
