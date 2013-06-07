@@ -15,30 +15,30 @@ diff -urN elpa_lib-201305.orig/ELPA_2011.12/CMakeLists.txt elpa_lib-201305/ELPA_
 +++ elpa_lib-201305/ELPA_2011.12/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels.f90)
-+add_library(libelpa-2011.12 ${SOURCES})
-+target_link_libraries(libelpa-2011.12 ${SCALAPACK_LIB})
-+install(TARGETS libelpa-2011.12 ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
++add_library(elpa-2011.12 ${SOURCES})
++target_link_libraries(elpa-2011.12 ${SCALAPACK_LIB})
++install(TARGETS elpa-2011.12 ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
 +
 +set(TARGETS read_real read_real_gen test_complex test_complex2 test_complex_gen test_real test_real2 test_real_gen)
 +foreach(t ${TARGETS})
 +  add_executable(${t}-2011.12 test/${t}.f90)
 +  set_target_properties(${t}-2011.12 PROPERTIES OUTPUT_NAME ${t})
-+  target_link_libraries(${t}-2011.12 libelpa-2011.12)
++  target_link_libraries(${t}-2011.12 elpa-2011.12)
 +endforeach(t ${TARGETS})
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
 +++ elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels/elpa2_kernels_complex.f90 src/elpa2_kernels/elpa2_kernels_real.f90)
-+add_library(libelpa-2013.02.beta ${SOURCES})
-+target_link_libraries(libelpa-2013.02.beta ${SCALAPACK_LIB})
-+install(TARGETS libelpa-2013.02.beta ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
++add_library(elpa-2013.02.beta ${SOURCES})
++target_link_libraries(elpa-2013.02.beta ${SCALAPACK_LIB})
++install(TARGETS elpa-2013.02.beta ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
 +
 +set(TARGETS read_real read_real_gen test_complex test_complex2 test_complex_gen test_real test_real2 test_real_gen)
 +foreach(t ${TARGETS})
 +  add_executable(${t}-2013.02.beta test/${t}.f90)
 +  set_target_properties(${t}-2013.02.beta PROPERTIES OUTPUT_NAME ${t})
-+  target_link_libraries(${t}-2013.02.beta libelpa-2013.02.beta)
++  target_link_libraries(${t}-2013.02.beta elpa-2013.02.beta)
 +endforeach(t ${TARGETS})
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90 elpa_lib-201305/ELPA_2013.02.BETA/test/test_complex2.f90
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90	2013-05-21 14:44:19.000000000 +0900
@@ -67,15 +67,15 @@ diff -urN elpa_lib-201305.orig/ELPA_development_version/CMakeLists.txt elpa_lib-
 +++ elpa_lib-201305/ELPA_development_version/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels/elpa2_kernels_complex.f90 src/elpa2_kernels/elpa2_kernels_real.f90 src/elpa_qr/elpa_pdgeqrf.f90 src/elpa_qr/elpa_pdlarfb.f90 src/elpa_qr/elpa_qrkernels.f90 src/elpa_qr/tum_utils.f90)
-+add_library(libelpa-develop ${SOURCES})
-+target_link_libraries(libelpa-develop ${SCALAPACK_LIB})
-+install(TARGETS libelpa-develop ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
++add_library(elpa-develop ${SOURCES})
++target_link_libraries(elpa-develop ${SCALAPACK_LIB})
++install(TARGETS elpa-develop ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
 +
 +set(TARGETS read_real read_real_gen test_complex test_complex2 test_complex_gen test_real test_real2 test_real_gen)
 +foreach(t ${TARGETS})
 +  add_executable(${t}-develop test/${t}.f90 test/read_test_parameters.f90)
 +  set_target_properties(${t}-develop PROPERTIES OUTPUT_NAME ${t})
-+  target_link_libraries(${t}-develop libelpa-develop)
++  target_link_libraries(${t}-develop elpa-develop)
 +endforeach(t ${TARGETS})
 diff -urN elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90 elpa_lib-201305/ELPA_development_version/test/test_complex2.f90
 --- elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90	2013-05-21 14:44:19.000000000 +0900
