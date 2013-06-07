@@ -16,7 +16,7 @@ if (Boost_FOUND)
   add_definitions(-DBOOST_TEST_DYN_LINK)
 endif (Boost_FOUND)
 
-set(TESTS solver_factory)
+set(TESTS solver_factory solver)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
