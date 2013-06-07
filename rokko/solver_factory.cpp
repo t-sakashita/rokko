@@ -1,3 +1,16 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>,
+*               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #include "solver_factory.hpp"
 #include <stdexcept>
 
@@ -19,6 +32,15 @@ solver_factory::creator_pointer_type solver_factory::make_creator(std::string co
     boost::throw_exception(std::runtime_error("solver_factory::make_creator()"));
   }
   return itr->second;
+}
+
+std::vector<std::string> solver_factory::solver_names() const {
+    std::vector<std::string> retvec;
+    for (creator_map_type::const_iterator it = creators_.begin();
+         it != creators_.end(); ++it) {
+        retvec.push_back(it->first);
+    }
+    return retvec;
 }
 
 solver_factory* solver_factory::instance() {
