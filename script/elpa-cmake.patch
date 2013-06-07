@@ -47,7 +47,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90 elpa_lib
  
     implicit none
     include 'mpif.h'
-+   integer, external :: iargc
++   integer :: iargc
  
     !-------------------------------------------------------------------------------
     ! Please set system size parameters below!
@@ -58,7 +58,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_real2.f90 elpa_lib-20
  
     implicit none
     include 'mpif.h'
-+   integer, external :: iargc
++   integer :: iargc
  
     !-------------------------------------------------------------------------------
     ! Please set system size parameters below!
@@ -84,7 +84,7 @@ diff -urN elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90 e
  
     implicit none
     include 'mpif.h'
-+   integer, external :: iargc
++   integer :: iargc
  
     !-------------------------------------------------------------------------------
     ! Please set system size parameters below!
