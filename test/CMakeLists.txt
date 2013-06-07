@@ -16,12 +16,23 @@ if (Boost_FOUND)
   add_definitions(-DBOOST_TEST_DYN_LINK)
 endif (Boost_FOUND)
 
+# single process tests
 set(TESTS solver_factory solver grid)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
   enable_testing()
   add_test(${name} ${name})
+endforeach(name)
+unset(TESTS)
+
+# multi process tests
+set(TESTS grid_mpi)
+foreach(name ${TESTS})
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
+  enable_testing()
+  add_test(${name} mpirun -np 2 ${name})
 endforeach(name)
 unset(TESTS)
 
