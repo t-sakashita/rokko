@@ -26,9 +26,22 @@ class solver;
 template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix {
 public:
-  template<typename GRID_MAJOR, typename SOLVER>
-  distributed_matrix(int m_global_in, int n_global_in, const grid<GRID_MAJOR>& g_in, SOLVER const& solver_in)
-    : m_global(m_global_in), n_global(n_global_in), myrank(g_in.myrank), nprocs(g_in.nprocs), myrow(g_in.myrow), mycol(g_in.mycol), nprow(g_in.nprow), npcol(g_in.npcol), g(g_in) {
+  template<typename SOLVER>
+  distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
+  :g(g_in)
+  {
+    initialize(m_global_in, n_global_in, g_in, solver_in);
+  }
+
+  template<typename SOLVER>
+  void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
+  {
+    m_global = m_global_in; n_global = n_global_in;
+    myrank = g_in.get_myrank(); nprocs = g_in.get_nprocs();
+    myrow = g_in.get_myrow(); mycol = g_in.get_mycol();
+    nprow = g_in.get_nprow(); npcol = g_in.get_npcol();
+    g = g_in;
+
     // Determine mb, nb, lld, larray
     solver_in.optimized_matrix_size(*this);
 
@@ -40,10 +53,10 @@ public:
 #ifndef NDEBUG
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
-	std::cout << "proc=" << proc << std::endl;
-	std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-	std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
-	std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
+        std::cout << "proc=" << proc << std::endl;
+        std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
+        std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
+        std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
         std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
         std::cout << "  lld=" << lld << std::endl;
         std::cout << "  length_array=" << length_array << std::endl;
@@ -74,18 +87,25 @@ public:
     nb = nb_in;
   }
 
+  const grid& get_grid()const {return g;}
+
   int get_mb() const { return mb; }
   int get_nb() const { return nb; }
 
   int get_nprow() const { return nprow; }
   int get_npcol() const { return npcol; }
   int get_nprocs() const { return nprocs; }
+  int get_myrank() const { return myrank; }
 
   int get_m_global() const { return m_global; }
   int get_n_global() const { return n_global; }
 
   int get_m_local() const { return m_local; }
   int get_n_local() const { return n_local; }
+
+  int get_myrow() const { return myrow; }
+  int get_mycol() const { return mycol; }
+
 
   void set_local_size(int m_local_in, int n_local_in) {
     m_local = m_local_in;
@@ -227,6 +247,8 @@ public:
     }
   }
 
+private:
+
   int m_global, n_global;
   double* array;
   int mb, nb;
@@ -239,7 +261,7 @@ public:
   int length_array;
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
 
-  const grid_base& g;
+  grid g;
 
 private:
   ///int info;
