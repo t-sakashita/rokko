@@ -84,6 +84,10 @@ for filename_input in argvs[1:]:
             if solver == "eigen_s":
                 nums.append(int(num_procs))
 
+        if items[0] == "dim":
+            print "solver: ",items[2]
+            dim = items[2]
+
         if items[0] == "time":
             print "times.append: ",items[2]
             if solver == "scalapack":
@@ -119,17 +123,17 @@ plot(nums, times_elemental, label='elemental')
 plot(nums, times_scalapack, label='ScaLAPACK(pdsyev)')
 
 legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-plot.legend(loc=2,prop={'size':6})
+legend(loc=2,prop={'size':10})
 
 #prop = matplotlib.font_manager.FontProperties(size=5)
 #legend(prop=prop)
 
-legend()
+#legend()
 
 xlabel(r'num of ' + "processes")
 ylabel(u'elapsed time [s]',fontsize=16)
-title(matrix_type + ' matrix' + '  ' + library_type + ' ',
-      fontsize=16, color='r')
+title(matrix_type + ' matrix' + '  ' + 'dim=' + dim,
+      fontsize=16, color='black')
 
 grid(True)
 

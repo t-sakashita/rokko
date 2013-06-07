@@ -70,10 +70,10 @@ int main(int argc, char *argv[]) {
 
     try {
       MPI_Barrier(MPI_COMM_WORLD);
-      timer.start(1);
+      //timer.start(1);
       solver.diagonalize(mat, w, Z, timer);
       MPI_Barrier(MPI_COMM_WORLD);
-      timer.stop(1);
+      //timer.stop(1);
     }
 
     catch (const char *e) {
