@@ -38,5 +38,7 @@ BOOST_AUTO_TEST_CASE(test_grid) {
     BOOST_CHECK_EQUAL(g.get_myrank(), 0);
     BOOST_CHECK_EQUAL(g.get_myrow(), 0);
     BOOST_CHECK_EQUAL(g.get_mycol(), 0);
+    BOOST_CHECK_EQUAL(g.calculate_grid_row(g.get_myrank()), 0);
+    BOOST_CHECK_EQUAL(g.calculate_grid_col(g.get_myrank()), 0);
     MPI_Finalize();
 }
