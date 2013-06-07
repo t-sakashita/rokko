@@ -26,14 +26,14 @@ if (argc < 1):
     print 'errror: two command line arguments are needed.'
     print 'Usage: # python %s library_name matrix_name' % argvs[0]
     quit()
-library_type = "scalapack"
+library_type = "solvers"
 max_num_dim = 10 #int(argvs[2])
 matrix_type = "frank"
 
 #print 'library_type=', library_type
 #print 'matrix_type=', matrix_type
 
-num_str = "dim"
+num_str = "np"
 num_procs = 4;
 #max_num_dim = 10
 
@@ -84,7 +84,7 @@ rc('font', family='serif')
 figure(1, figsize=(6,4))
 #ax = axes([0.1, 0.1, 0.8, 0.7])
 plot(nums, times)
-xlabel(r'num of ' + num_str)
+xlabel(r'num of ' + "processes")
 ylabel(u'elapsed time [s]',fontsize=16)
 title(matrix_type + ' matrix' + '  ' + library_type + ' ',
       fontsize=16, color='r')

@@ -30,7 +30,7 @@ if(APPLE)
 else(APPLE)
   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
   set(CMAKE_SKIP_BUILD_RPATH FALSE)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif(APPLE)
 
@@ -73,6 +73,11 @@ if ( NOT DEFINED SCALAPACK_LIB )
   endif ( BLAS_FOUND )
 endif ( NOT DEFINED SCALAPACK_LIB )
 
+if (EIGEN_EXA_LIB)
+   set(BUILD_EIGEN_SX OFF)
+   set(BUILD_EIGEN_EXA ON)
+endif (EIGEN_EXA_LIB)
+
 # find Elemental
 find_package(Elemental)
 
@@ -83,6 +88,7 @@ include(CTest)
 # directories
 add_subdirectory(3rd-party)
 add_subdirectory(rokko)
+add_subdirectory(sample)
 add_subdirectory(sample_scalapack)
 add_subdirectory(test)
 add_subdirectory(sample_eigenK)

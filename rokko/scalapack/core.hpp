@@ -3,11 +3,18 @@
 
 #include <rokko/scalapack/scalapack.hpp>
 #include <rokko/scalapack/diagonalize.hpp>
+#include <rokko/scalapack/diagonalize_pdsyevd.hpp>
+#include <rokko/scalapack/diagonalize_pdsyevx.hpp>
 #include <iostream>
 
 namespace rokko {
 namespace scalapack {
 
+struct pdsyev {};
+struct pdsyevd {};
+struct pdsyevx {};
+
+template<typename ROUTINE>
 class solver {
 public:
   void initialize(int& argc, char**& argv) {}
@@ -33,12 +40,68 @@ public:
     mat.set_default_length_array();
   }
 
+  void diagonalize(distributed_matrix<rokko::matrix_row_major>& mat, localized_vector& eigvals,
+                   distributed_matrix<rokko::matrix_row_major>& eigvecs, timer& timer_in);
+
+  void diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
+                   distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in);
+
+  /*
   template<typename MATRIX_MAJOR>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-    rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer_in);
-  }
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in);
+  */
+
+  //template<typename MATRIX>
+  //void diagonalize(MATRIX& mat, localized_vector& eigvals,
+  //                 MATRIX& eigvecs, timer& timer_in);
+
 };
+
+/*
+template<typename MATRIX_MAJOR>
+inline void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+                                                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer_in);
+}
+*/
+
+template<>
+inline void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<rokko::matrix_row_major>& mat, localized_vector& eigvals,
+                                                          distributed_matrix<rokko::matrix_row_major>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer_in);
+}
+
+template<>
+inline void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
+                                                          distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer_in);
+}
+
+template<>
+inline void solver<rokko::scalapack::pdsyevd>::diagonalize(distributed_matrix<rokko::matrix_row_major>& mat, localized_vector& eigvals,
+                                                           distributed_matrix<rokko::matrix_row_major>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize_d(mat, eigvals, eigvecs, timer_in);
+}
+
+template<>
+inline void solver<rokko::scalapack::pdsyevd>::diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
+                                                           distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize_d(mat, eigvals, eigvecs, timer_in);
+}
+
+template<>
+inline void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<rokko::matrix_row_major>& mat, localized_vector& eigvals,
+                                                           distributed_matrix<rokko::matrix_row_major>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize_x(mat, eigvals, eigvecs, timer_in);
+}
+
+template<>
+inline void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
+                                                           distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in) {
+  rokko::scalapack::diagonalize_x(mat, eigvals, eigvecs, timer_in);
+}
+
 
 } // namespace sclapack
 } // namespace rokko

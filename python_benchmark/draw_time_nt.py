@@ -33,7 +33,7 @@ matrix_type = "frank"
 #print 'library_type=', library_type
 #print 'matrix_type=', matrix_type
 
-num_str = "dim"
+num_str = "threads"
 num_procs = 4;
 #max_num_dim = 10
 
@@ -58,12 +58,14 @@ for filename_input in argvs[1:]:
     fp_input = open(expandvars(filename_input), "r")
     for line in fp_input.read().split('\n'):
         items = line.split(' ')
-        #items = items_before.split(' ')
         print "items=", items
         print "items[0]=", items[0]
-        #items = line.split(' ')
-        if items[0] == "num_procs":
-            print "num_procs.append: ",items[2]
+#        if items[0] == "num_procs":
+#            print "num_procs.append: ",items[2]
+#            nums.append(int(items[2]))
+
+        if items[0] == "num_threads":
+            print "num_threads.append: ",items[2]
             nums.append(int(items[2]))
 
         if items[0] == "time":
