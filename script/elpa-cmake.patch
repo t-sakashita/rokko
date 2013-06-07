@@ -1,6 +1,6 @@
-diff -urN elpa_lib.orig/CMakeLists.txt elpa_lib/CMakeLists.txt
---- elpa_lib.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib/CMakeLists.txt	2013-06-07 08:36:02.000000000 +0900
+diff -urN elpa_lib-201305.orig/CMakeLists.txt elpa_lib-201305/CMakeLists.txt
+--- elpa_lib-201305.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ elpa_lib-201305/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,8 @@
 +cmake_minimum_required(VERSION 2.8)
 +project(ELPA C Fortran)
@@ -10,9 +10,9 @@ diff -urN elpa_lib.orig/CMakeLists.txt elpa_lib/CMakeLists.txt
 +add_subdirectory(ELPA_2011.12)
 +add_subdirectory(ELPA_2013.02.BETA)
 +add_subdirectory(ELPA_development_version)
-diff -urN elpa_lib.orig/ELPA_2011.12/CMakeLists.txt elpa_lib/ELPA_2011.12/CMakeLists.txt
---- elpa_lib.orig/ELPA_2011.12/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib/ELPA_2011.12/CMakeLists.txt	2013-06-07 09:30:09.000000000 +0900
+diff -urN elpa_lib-201305.orig/ELPA_2011.12/CMakeLists.txt elpa_lib-201305/ELPA_2011.12/CMakeLists.txt
+--- elpa_lib-201305.orig/ELPA_2011.12/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ elpa_lib-201305/ELPA_2011.12/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels.f90)
 +add_library(libelpa-2011.12 ${SOURCES})
@@ -25,9 +25,9 @@ diff -urN elpa_lib.orig/ELPA_2011.12/CMakeLists.txt elpa_lib/ELPA_2011.12/CMakeL
 +  set_target_properties(${t}-2011.12 PROPERTIES OUTPUT_NAME ${t})
 +  target_link_libraries(${t}-2011.12 libelpa-2011.12)
 +endforeach(t ${TARGETS})
-diff -urN elpa_lib.orig/ELPA_2013.02.BETA/CMakeLists.txt elpa_lib/ELPA_2013.02.BETA/CMakeLists.txt
---- elpa_lib.orig/ELPA_2013.02.BETA/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib/ELPA_2013.02.BETA/CMakeLists.txt	2013-06-07 09:31:48.000000000 +0900
+diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt
+--- elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels/elpa2_kernels_complex.f90 src/elpa2_kernels/elpa2_kernels_real.f90)
 +add_library(libelpa-2013.02.beta ${SOURCES})
@@ -40,9 +40,31 @@ diff -urN elpa_lib.orig/ELPA_2013.02.BETA/CMakeLists.txt elpa_lib/ELPA_2013.02.B
 +  set_target_properties(${t}-2013.02.beta PROPERTIES OUTPUT_NAME ${t})
 +  target_link_libraries(${t}-2013.02.beta libelpa-2013.02.beta)
 +endforeach(t ${TARGETS})
-diff -urN elpa_lib.orig/ELPA_development_version/CMakeLists.txt elpa_lib/ELPA_development_version/CMakeLists.txt
---- elpa_lib.orig/ELPA_development_version/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib/ELPA_development_version/CMakeLists.txt	2013-06-07 09:31:13.000000000 +0900
+diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90 elpa_lib-201305/ELPA_2013.02.BETA/test/test_complex2.f90
+--- elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90	2013-05-21 14:44:19.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/test/test_complex2.f90	2013-06-07 10:45:49.000000000 +0900
+@@ -58,6 +58,7 @@
+ 
+    implicit none
+    include 'mpif.h'
++   integer, external :: iargc
+ 
+    !-------------------------------------------------------------------------------
+    ! Please set system size parameters below!
+diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_real2.f90 elpa_lib-201305/ELPA_2013.02.BETA/test/test_real2.f90
+--- elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_real2.f90	2013-05-21 14:44:19.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/test/test_real2.f90	2013-06-07 10:46:25.000000000 +0900
+@@ -59,6 +59,7 @@
+ 
+    implicit none
+    include 'mpif.h'
++   integer, external :: iargc
+ 
+    !-------------------------------------------------------------------------------
+    ! Please set system size parameters below!
+diff -urN elpa_lib-201305.orig/ELPA_development_version/CMakeLists.txt elpa_lib-201305/ELPA_development_version/CMakeLists.txt
+--- elpa_lib-201305.orig/ELPA_development_version/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ elpa_lib-201305/ELPA_development_version/CMakeLists.txt	2013-06-07 10:39:55.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels/elpa2_kernels_complex.f90 src/elpa2_kernels/elpa2_kernels_real.f90 src/elpa_qr/elpa_pdgeqrf.f90 src/elpa_qr/elpa_pdlarfb.f90 src/elpa_qr/elpa_qrkernels.f90 src/elpa_qr/tum_utils.f90)
 +add_library(libelpa-develop ${SOURCES})
@@ -55,3 +77,14 @@ diff -urN elpa_lib.orig/ELPA_development_version/CMakeLists.txt elpa_lib/ELPA_de
 +  set_target_properties(${t}-develop PROPERTIES OUTPUT_NAME ${t})
 +  target_link_libraries(${t}-develop libelpa-develop)
 +endforeach(t ${TARGETS})
+diff -urN elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90 elpa_lib-201305/ELPA_development_version/test/test_complex2.f90
+--- elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90	2013-05-21 14:44:19.000000000 +0900
++++ elpa_lib-201305/ELPA_development_version/test/test_complex2.f90	2013-06-07 10:46:55.000000000 +0900
+@@ -58,6 +58,7 @@
+ 
+    implicit none
+    include 'mpif.h'
++   integer, external :: iargc
+ 
+    !-------------------------------------------------------------------------------
+    ! Please set system size parameters below!
