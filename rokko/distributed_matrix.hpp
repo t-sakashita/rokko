@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <stdexcept>
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -213,13 +214,33 @@ public:
     return (local_offset_block % npcol) == mycol;
   }
 
+  bool is_gindex(const int& global_i, const int& global_j) const {
+    return is_gindex_myrow(global_i) && is_gindex_mycol(global_j);
+  }
+
   void set_local(int local_i, int local_j, double value) {
     array[get_array_index(local_i, local_j)] = value;
   }
 
+  double get_local(int local_i, int local_j) const {
+    return array[get_array_index(local_i, local_j)];
+  }
+
   void set_global(int global_i, int global_j, double value) {
-    if ((is_gindex_myrow(global_i)) && (is_gindex_mycol(global_j)))
+    if ((is_gindex(global_i, global_j)))
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
+  }
+
+  double get_global(int global_i, int global_j) const {
+    return get_local(translate_g2l_row(global_i), translate_g2l_col(global_j));
+  }
+
+  double get_global_checked(int global_i, int global_j) const {
+    if ((is_gindex(global_i, global_j))) {
+      return get_local(translate_g2l_row(global_i), translate_g2l_col(global_j));
+    } else {
+      throw std::out_of_range("element not on this process.");
+    }
   }
 
   bool is_row_major() const {
