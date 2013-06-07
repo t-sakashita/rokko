@@ -78,6 +78,10 @@ if (EIGEN_EXA_LIB)
    set(BUILD_EIGEN_EXA ON)
 endif (EIGEN_EXA_LIB)
 
+if (ELPA_LIB)
+   set(BUILD_ELPA ON)
+endif (ELPA_LIB)
+
 # find Elemental
 find_package(Elemental)
 

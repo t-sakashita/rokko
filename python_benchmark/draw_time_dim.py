@@ -33,7 +33,7 @@ matrix_type = "frank"
 #print 'library_type=', library_type
 #print 'matrix_type=', matrix_type
 
-num_str = "dim"
+num_str = "number of process"
 num_procs = 4;
 #max_num_dim = 10
 
@@ -51,6 +51,7 @@ fp_output = open(filename_output_txt, "w")
 nums = [];
 times = [];
 iters = [];
+dims = [];
 
 count = 0;
 for filename_input in argvs[1:]:
@@ -86,7 +87,7 @@ figure(1, figsize=(6,4))
 plot(nums, times)
 xlabel(r'num of ' + num_str)
 ylabel(u'elapsed time [s]',fontsize=16)
-title(matrix_type + ' matrix' + '  ' + library_type + ' ',
+title(matrix_type + ' matrix' + '  ' + library_type + ' ' + 'dim' = dim,
       fontsize=16, color='r')
 grid(True)
 
