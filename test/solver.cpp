@@ -22,9 +22,11 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver) {
-    boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
-    BOOST_FOREACH(std::string name, instance->solver_names()) {
-        rokko::solver solver(name);
-        solver.finalize();
-    }
+  boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
+  BOOST_FOREACH(std::string name, instance->solver_names()) {
+    rokko::solver solver(name);
+    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
+      boost::unit_test::framework::master_test_suite().argv);
+    solver.finalize();
+  }
 }

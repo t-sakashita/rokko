@@ -1,6 +1,6 @@
 include_directories(${ELEMENTAL_INCLUDE_DIRS})
 
-set(ROKKO_SOURCES solver_factory.cpp)
+set(ROKKO_SOURCES solver_factory.cpp grid.cpp)
 
 set(DIRECTORY "${BOOST_INCLUDE_DIR}/libs/system")
 if (EXISTS ${DIRECTORY})

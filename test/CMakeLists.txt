@@ -17,7 +17,7 @@ if (Boost_FOUND)
 endif (Boost_FOUND)
 
 # single process tests
-set(TESTS solver_factory solver grid)
+set(TESTS solver_factory)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -27,12 +27,21 @@ endforeach(name)
 unset(TESTS)
 
 # multi process tests
+set(TESTS grid solver)
+foreach(name ${TESTS})
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
+  enable_testing()
+  add_test(${name} ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 1 ${name})
+endforeach(name)
+unset(TESTS)
+
 set(TESTS grid_mpi distributed_matrix)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
   enable_testing()
-  add_test(${name} mpirun -np 2 ${name})
+  add_test(${name} ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 2 ${name})
 endforeach(name)
 unset(TESTS)
 

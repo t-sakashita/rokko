@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(test_grid_mpi) {
     MPI_Init(&boost::unit_test::framework::master_test_suite().argc,
              &boost::unit_test::framework::master_test_suite().argv);
     MPI_Comm comm = MPI_COMM_WORLD;
-    rokko::grid g(comm, rokko::grid_col_major());
+    rokko::grid g(comm, rokko::grid_col_major);
     // Test public interfaces
     BOOST_CHECK_EQUAL(g.get_comm(), MPI_COMM_WORLD);
     BOOST_CHECK( g.is_col_major());
