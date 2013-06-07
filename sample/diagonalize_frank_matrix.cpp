@@ -46,8 +46,8 @@ int main(int argc, char *argv[]) {
   solver.initialize(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid<grid_major> g(comm);
-  int myrank = g.myrank;
+  rokko::grid g(comm, grid_major());
+  int myrank = g.get_myrank();
 
   const int root = 0;
 

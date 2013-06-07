@@ -37,13 +37,13 @@ public:
 
   template<typename MATRIX_MAJOR>
   static void generate(rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
-    if (mat.m_global != mat.n_global)
+    if (mat.get_m_global() != mat.get_n_global())
       BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
-    for(int local_i = 0; local_i < mat.m_local; ++local_i) {
-      for(int local_j = 0; local_j < mat.n_local; ++local_j) {
+    for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
+      for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
         int global_i = mat.translate_l2g_row(local_i);
         int global_j = mat.translate_l2g_col(local_j);
-        mat.set_local(local_i, local_j, mat.m_global - std::max(global_i, global_j));
+        mat.set_local(local_i, local_j, mat.get_m_global() - std::max(global_i, global_j));
       }
     }
   }

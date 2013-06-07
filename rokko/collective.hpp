@@ -11,11 +11,11 @@ namespace rokko {
 template<typename MATRIX_MAJOR>
 void calculate_local_matrix_size(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
 {
-  int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
-  int m_local = mat.m_local;  int n_local = mat.n_local;
-  //int n_local = mat.m_local;  int m_local = mat.n_local;
+  int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
+  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
+  //int n_local = mat.get_m_local();  int m_local = mat.get_n_local();
 
-  int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
+  int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
 
   int tmp = m_global / mb;
   local_num_block_rows = (tmp + nprow-1 - proc_row) / nprow;
@@ -45,12 +45,12 @@ void calculate_local_matrix_size(const rokko::distributed_matrix<MATRIX_MAJOR>& 
 template<typename MATRIX_MAJOR>
 void create_struct_local_general(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI_Datatype& local_array_type)
 {
-  int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
+  int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
   //int m_local = mat.n_local;  int n_local = mat.m_local;
-  int m_local = mat.m_local;  int n_local = mat.n_local;
-  int myrank = mat.myrank;
-  int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
-  int lld = mat.lld;
+  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
+  int myrank = mat.get_myrank();
+  int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
+  int lld = mat.get_lld();
 
   int count_max = n_local;
   int*          array_of_blocklengths = new int[count_max];
@@ -90,14 +90,14 @@ void create_struct_local_general(const rokko::distributed_matrix<MATRIX_MAJOR>& 
 template<typename MATRIX_MAJOR>
 void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI_Datatype& global_array_type, int proc)
 {
-  int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
-  int m_local = mat.m_local;  int n_local = mat.n_local;
-  int nprow = mat.nprow;  int npcol = mat.npcol;
+  int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
+  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
+  int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
 
-  int myrank = mat.myrank;
+  int myrank = mat.get_myrank();
   int myrow, mycol;
-  myrow = mat.g.calculate_grid_row(proc);
-  mycol = mat.g.calculate_grid_col(proc);
+  myrow = mat.get_grid().calculate_grid_row(proc);
+  mycol = mat.get_grid().calculate_grid_col(proc);
 
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
@@ -331,8 +331,8 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
 {
   double* global_array;
 
-  if (mat.myrank == root) {
-    mat_global.resize(mat.m_global, mat.n_global);
+  if (mat.get_myrank() == root) {
+    mat_global.resize(mat.get_m_global(), mat.get_n_global());
     global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？
     //global_array = mat_global.data();  // 本当に、内部では連続な配列になっているか
     //for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
@@ -351,10 +351,10 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
 
   MPI_Comm cart_comm = MPI_COMM_WORLD;
 
-  int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
-  int m_local = mat.m_local;  int n_local = mat.n_local;
-  int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
-  int myrank = mat.myrank; int nprocs = mat.nprocs;
+  int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
+  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
+  int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
+  int myrank = mat.get_myrank(); int nprocs = mat.get_nprocs();
 
   double* local_array = mat.get_array_pointer();
 
