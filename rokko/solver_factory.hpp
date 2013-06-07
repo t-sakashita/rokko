@@ -20,6 +20,7 @@
 #include <boost/shared_ptr.hpp>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace rokko {
 
@@ -95,6 +96,7 @@ public:
     creators_[name] = creator_pointer_type(new solver_creator<solver_wrapper<SOLVER> >());
     return isnew;
   }
+  std::vector<std::string> solver_names() const;
   bool unregister_creator(std::string const& name);
   static solver_factory* instance();
 protected:
