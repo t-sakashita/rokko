@@ -15,6 +15,7 @@
 #include <rokko/grid.hpp>
 #include <rokko/solver.hpp>
 #include <rokko/distributed_matrix.hpp>
+#include <rokko/utility/frank_matrix.hpp>
 
 #define BOOST_TEST_MODULE test_distributed_matrix
 #ifndef BOOST_TEST_DYN_LINK
@@ -26,7 +27,7 @@
 BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   int argc = boost::unit_test::framework::master_test_suite().argc;
   char** argv = boost::unit_test::framework::master_test_suite().argv;
-  unsigned int dim = 4000;
+  unsigned int dim = 1000;
   MPI_Init(&argc, &argv);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm, rokko::grid_col_major);
@@ -35,6 +36,8 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
     rokko::solver solver(name);
     solver.initialize(argc, argv);
     rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
+    rokko::frank_matrix::generate(mat);
+    BOOST_CHECK_CLOSE(mat.get_global(0, 0), dim, 1e-14);
     solver.finalize();
   }
   MPI_Finalize();
