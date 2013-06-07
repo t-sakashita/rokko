@@ -26,7 +26,17 @@ BOOST_AUTO_TEST_CASE(test_grid) {
              &boost::unit_test::framework::master_test_suite().argv);
     MPI_Comm comm = MPI_COMM_WORLD;
     rokko::grid<rokko::grid_col_major> g(comm);
-    BOOST_CHECK_EQUAL(0, g.get_myrank());
-    BOOST_CHECK_EQUAL(1, g.get_nprocs());
+    // Test public interfaces
+    BOOST_CHECK_EQUAL(g.get_comm(), MPI_COMM_WORLD);
+    BOOST_CHECK( g.is_col_major());
+    BOOST_CHECK(!g.is_row_major());
+
+    // This test runs in single mode.
+    BOOST_CHECK_EQUAL(g.get_nprocs(), 1);
+    BOOST_CHECK_EQUAL(g.get_nprow(), 1);
+    BOOST_CHECK_EQUAL(g.get_npcol(), 1);
+    BOOST_CHECK_EQUAL(g.get_myrank(), 0);
+    BOOST_CHECK_EQUAL(g.get_myrow(), 0);
+    BOOST_CHECK_EQUAL(g.get_mycol(), 0);
     MPI_Finalize();
 }
