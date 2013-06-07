@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   unsigned int dim = 4000;
   MPI_Init(&argc, &argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm, rokko::grid_col_major());
+  rokko::grid g(comm, rokko::grid_col_major);
   boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
   BOOST_FOREACH(std::string name, instance->solver_names()) {
     rokko::solver solver(name);
