@@ -27,7 +27,7 @@ endforeach(name)
 unset(TESTS)
 
 # multi process tests
-set(TESTS grid_mpi)
+set(TESTS grid_mpi distributed_matrix)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
