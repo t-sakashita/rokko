@@ -65,11 +65,11 @@ public:
 
   int calculate_grid_row(int proc_rank) const { 
     return is_row ? proc_rank / npcol
-                  : proc_rank % nprol;
+                  : proc_rank % nprow;
   }
   int calculate_grid_col(int proc_rank) const { 
     return is_row ? proc_rank % npcol
-                  : proc_rank / nprol;
+                  : proc_rank / nprow;
   }
 
 private:
