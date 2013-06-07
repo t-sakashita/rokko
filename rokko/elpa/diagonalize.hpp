@@ -20,10 +20,12 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   blacs_get_(MINUS_ONE, ZERO, ictxt);
 
   char char_grid_major;
-  if(mat.g.is_row_major())  char_grid_major = 'R';
+  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  blacs_gridinit_(ictxt, &char_grid_major, mat.g.get_nprow(), mat.g.get_npcol()); // ColがMPI_Comm_createと互換
+  std::cout << "before: elpa_blacs" << std::endl;
+  blacs_gridinit_(ictxt, &char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol()); // ColがMPI_Comm_createと互換
+  std::cout << "after: elpa_blacs" << std::endl;
 
   int dim = mat.get_m_global();
   int desc[9];
@@ -33,30 +35,26 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
 
-#ifdef DEBUG
-  for (int proc=0; proc<mat.nprocs; ++proc) {
-    if (proc == mat.g.get_myrank()) {
-      std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << std::endl;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
-#endif
-
   MPI_Fint comm_f = (MPI_Fint) MPI_COMM_WORLD;
   MPI_Fint mpi_comm_rows_f, mpi_comm_cols_f;
 
-  int nprow = mat.g.get_nprow();
-  int npcol = mat.g.get_npcol();
- 
-  get_elpa_row_col_comms_wrap_(&comm_f, nprow, npcol,
-			  &mpi_comm_rows_f, &mpi_comm_cols_f);
+  int nprow = mat.get_grid().get_nprow();
+  int npcol = mat.get_grid().get_npcol();
 
+  std::cout << "before: get_elpa_row_col_comms_wrap" << std::endl;
+
+  //get_elpa_row_col_comms_wrap_(&comm_f, nprow, npcol,
+  //			  &mpi_comm_rows_f, &mpi_comm_cols_f);
+ 
   int nblk = mat.get_nb();
+
+  std::cout << "before: solve_evp_real_wrap_" << std::endl;
 
   // 固有値分解
   timer_in.start(1);
-  solve_evp_real_wrap_(dim, dim, mat.get_array_pointer(), dim, eigvals, eigvecs.get_array_pointer(), dim, nblk,
-		 mpi_comm_rows_f, mpi_comm_cols_f);
+  solve_evp_real_wrap2_(nprow, npcol, dim, dim, mat.get_array_pointer(), dim, eigvals, eigvecs.get_array_pointer(), dim, nblk);    
+  //solve_evp_real_wrap_(dim, dim, mat.get_array_pointer(), dim, eigvals, eigvecs.get_array_pointer(), dim, nblk,
+  //		 mpi_comm_rows_f, mpi_comm_cols_f);
   timer_in.stop(1);
 
   if (info) {
