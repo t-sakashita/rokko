@@ -23,8 +23,7 @@
 
 BOOST_AUTO_TEST_CASE(test_solver_factory) {
     boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
-    std::vector<std::string> solver_names(instance->solver_names());
-BOOST_FOREACH(std::string name, solver_names) {
-std::cerr << name << std::endl;
-}
+    BOOST_FOREACH(std::string name, instance->solver_names()) {
+        std::cerr << name << std::endl;
+    }
 }
