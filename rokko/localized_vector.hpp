@@ -19,8 +19,14 @@ namespace rokko {
 
 struct localized_vector : public Eigen::VectorXd {
 public:
-  localized_vector() : Eigen::VectorXd() {};
-  localized_vector(int size) : Eigen::VectorXd(size) {};
+  typedef Eigen::VectorXd super_type;
+
+  localized_vector() : super_type() {}
+  localized_vector(int size) : super_type(size) {}
+  template <typename T>
+  localized_vector(T const & other) : super_type(other) {}
+  template <typename T>
+  localized_vector& operator=(T const& other) { super_type::operator=(other); return *this;}
 };
 
 
