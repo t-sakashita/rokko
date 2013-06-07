@@ -12,7 +12,7 @@ namespace eigen_s {
 
 template<typename MATRIX_MAJOR>
 void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  if(mat.g.is_row_major()) throw "eigen_s doesn't support grid_row_major.  Use eigen_s with grid_col_major.";
+  if(mat.get_grid().is_row_major()) throw "eigen_s doesn't support grid_row_major.  Use eigen_s with grid_col_major.";
   if(mat.is_row_major()) throw "eigen_s doesn't support matrix_row_major.  Use eigen_s with matrix_col_major.";
 
   int m = 32;  // block_size
@@ -36,7 +36,7 @@ void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distrib
 
 template<typename MATRIX_MAJOR>
 void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  if(mat.g.is_row_major()) throw "eigen_s doesn't support grid_row_major. Use eigen_s with grid_col_major.";
+  if(mat.get_grid().is_row_major()) throw "eigen_s doesn't support grid_row_major. Use eigen_s with grid_col_major.";
   if(mat.is_row_major()) throw "eigen_s doesn't support matrix_row_major. Use eigen_s with matrix_col_major.";
 
   return diagonalize(mat, &eigvals[0], eigvecs, timer_in);

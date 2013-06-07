@@ -20,10 +20,10 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   blacs_get_(MINUS_ONE, ZERO, ictxt);
 
   char char_grid_major;
-  if(mat.g.is_row_major())  char_grid_major = 'R';
+  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  blacs_gridinit_(ictxt, &char_grid_major, mat.g.get_nprow(), mat.g.get_npcol()); // ColがMPI_Comm_createと互換
+  blacs_gridinit_(ictxt, &char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol()); // ColがMPI_Comm_createと互換
 
   int dim = mat.get_m_global();
   int desc[9];
@@ -35,7 +35,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
 
 #ifdef DEBUG
   for (int proc=0; proc<mat.nprocs; ++proc) {
-    if (proc == mat.g.get_myrank()) {
+    if (proc == mat.get_grid().get_myrank()) {
       std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);

@@ -21,14 +21,14 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   blacs_get_(MINUS_ONE, ZERO, ictxt);
 
   char char_grid_major;
-  if(mat.g.is_row_major())  char_grid_major = 'R';
+  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
   //int tmp_nprow, tmp_npcol, tmp_myrow, tmp_mycol;  // we don't use these values
-  blacs_gridinit_(ictxt, &char_grid_major, mat.g.get_nprow(), mat.g.get_npcol()); // ColがMPI_Comm_createと互換
+  blacs_gridinit_(ictxt, &char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol()); // ColがMPI_Comm_createと互換
   //blacs_gridinfo_(ictxt, tmp_nprow, tmp_npcol, tmp_myrow, tmp_mycol);
 
-  int dim = mat.m_global;
+  int dim = mat.get_m_global();
   int desc[9];
   descinit_(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), ZERO, ZERO, ictxt, mat.get_lld(), info);
   if (info) {
