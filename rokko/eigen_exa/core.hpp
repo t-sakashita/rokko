@@ -18,8 +18,8 @@ public:
     int n = mat.get_m_global();
 
     // calculate sizes of my proc's local part of distributed matrix
-    int NPROW = mat.g.get_nprow();
-    int NPCOL = mat.g.get_npcol();
+    int NPROW = mat.get_grid().get_nprow();
+    int NPCOL = mat.get_grid().get_npcol();
 
     int n1 = ((n-1)/NPROW+1);
     int nm;
