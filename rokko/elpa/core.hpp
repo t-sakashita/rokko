@@ -25,8 +25,7 @@ public:
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
     int tmp = std::min(mb, nb);
-    //mat.set_block_size(tmp, tmp);
-    mat.set_block_size(1, 1);
+    mat.set_block_size(tmp, tmp);
 
     // Determine m_local, n_local from m_global, n_global, mb, nb
     mat.set_default_local_size();
