@@ -41,23 +41,29 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   int nprow = mat.get_grid().get_nprow();
   int npcol = mat.get_grid().get_npcol();
 
+  std::cout << "elpa nprow=" << nprow << " npcol=" << npcol << std::endl;
+
   std::cout << "before: get_elpa_row_col_comms_wrap" << std::endl;
 
-  get_elpa_row_col_comms_wrap_(&comm_f, nprow, npcol,
-			       &mpi_comm_rows_f, &mpi_comm_cols_f);
+  get_elpa_row_col_comms_wrap_(&comm_f, mat.get_grid().get_myrow(), mat.get_grid().get_mycol(),
+  			       &mpi_comm_rows_f, &mpi_comm_cols_f);
  
-  int nblk = 5; //mat.get_nb();
+  int nblk = mat.get_mb();
+  std::cout << "nblk=" << nblk << std::endl;
 
   double* mat_array = mat.get_array_pointer();
   double* eigvecs_array = eigvecs.get_array_pointer();
 
   std::cout << "before: solve_evp_real_wrap_" << std::endl;
 
+  int m_local = mat.get_m_local();
+  std::cout << "m_local=" << m_local << std::endl;
+
   // 固有値分解
   timer_in.start(1);
-  //solve_evp_real_wrap2_(nprow, npcol, dim, dim, mat.get_array_pointer(), dim, eigvals, eigvecs.get_array_pointer(), dim, nblk);    
+  //solve_evp_real_wrap2_(dim, dim, mat_array, m_local, eigvals, eigvecs_array, m_local, nblk, mat.get_grid().get_myrow(), mat.get_grid().get_mycol());    
   solve_evp_real_wrap_(dim, dim, mat_array, mat.get_m_local(), eigvals, eigvecs_array, eigvecs.get_m_local(), nblk,
-		       &mpi_comm_rows_f, &mpi_comm_cols_f);
+  		       &mpi_comm_rows_f, &mpi_comm_cols_f);
   std::cout << "after: solve_evp_real_wrap_" << std::endl;
   timer_in.stop(1);
 

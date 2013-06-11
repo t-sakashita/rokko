@@ -14,7 +14,7 @@ extern "C" {
 
   void solve_evp_real_wrap_(const int& na, const int& nev, double* a, const int& na_rows, double* ev, double* z, const int& nz_rows, const int& nblk, MPI_Comm* mpi_comm_rows, MPI_Comm* mpi_comm_cols);
 
-  void solve_evp_real_wrap2_(const int& my_prow, const int& my_pcol, const int& na, const int& nev, double* a, const int& na_rows, double* ev, double* z, const int& nz_rows, const int& nblk);
+  void solve_evp_real_wrap2_(const int& na, const int& nev, double* a, const int& na_rows, double* ev, double* z, const int& nz_rows, const int& nblk, const int& my_prow, const int& my_pcol);
 
 }
 
