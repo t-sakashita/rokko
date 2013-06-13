@@ -8,7 +8,7 @@
 
 extern "C" {
   //void eigen_init();
-  void eigen_init(MPI_Comm*, char*);
+  void eigen_init(const MPI_Fint&, char*);
   void eigen_free();
   void CSTAB_get_optdim(int&, int&, int&, int&, int&);
   void eigen_sx(int&, int&, double*, int&, double*, double*, int&, int&, int&);

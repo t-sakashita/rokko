@@ -14,12 +14,12 @@ template<typename MATRIX_MAJOR>
 int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
   int dim = mat.get_m_global();
 
-  MPI_Comm comm_f = MPI_COMM_WORLD;
-  MPI_Comm mpi_comm_rows_f, mpi_comm_cols_f;
+  MPI_Fint comm_f = MPI_COMM_WORLD;
+  MPI_Fint mpi_comm_rows_f, mpi_comm_cols_f;
 
   get_elpa_row_col_comms_wrap_(comm_f, mat.get_grid().get_myrow(), mat.get_grid().get_mycol(),
   			       mpi_comm_rows_f, mpi_comm_cols_f);
- 
+
   // call eigenvalue routine
   timer_in.start(1);
   solve_evp_real_wrap_(dim, dim, mat.get_array_pointer(), mat.get_lld(), eigvals, eigvecs.get_array_pointer(), eigvecs.get_lld(), mat.get_mb(),

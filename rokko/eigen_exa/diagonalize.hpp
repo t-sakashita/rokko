@@ -11,14 +11,14 @@ namespace eigen_exa {
 
 template <typename MATRIX_MAJOR>
 void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  //if(mat.g.is_row_major()) throw "eigen_sx doesn't support grid_row_major.  Use eigen_sx with grid_col_major.";
   if(mat.is_row_major()) throw "eigen_sx doesn't support matrix_row_major.  Use eigen_sx with matrix_col_major.";
 
   MPI_Fint comm = MPI_Comm_c2f(MPI_COMM_WORLD);
-  char order = 'C'; 
-  eigen_init(&comm, &order);
-
-  int m = 32;  // block_size
+  char char_grid_major;
+  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
+  else  char_grid_major = 'C';
+  std::cout << "eigen_exa: char_grid_major=" << char_grid_major << std::endl;
+  eigen_init(comm, &char_grid_major);
 
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
