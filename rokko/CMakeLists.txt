@@ -39,7 +39,7 @@ endif( DEFINED ELEMENTAL_LIBRARIES AND ELEMENTAL_INCLUDE_DIRS )
 if ( DEFINED SCALAPACK_LIB )
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevd.cpp)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
+#  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
 endif ( DEFINED SCALAPACK_LIB )
 
 add_library(rokko ${ROKKO_SOURCES})
