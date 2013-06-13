@@ -10,6 +10,9 @@ namespace eigen_s {
 
 class solver {
 public:
+  template <typename GRID_MAJOR>
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return boost::is_same<GRID_MAJOR, grid_col_major_t>::value; }
+
   void initialize(int& argc, char**& argv) { }
 
   void finalize() { }

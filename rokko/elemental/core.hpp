@@ -1,6 +1,7 @@
 #ifndef ROKKO_ELEMENTAL_CORE_HPP
 #define ROKKO_ELEMENTAL_CORE_HPP
 
+#include <boost/type_traits/is_same.hpp>
 #include <elemental.hpp>
 #include <rokko/elemental/diagonalize.hpp>
 
@@ -9,6 +10,9 @@ namespace elemental {
 
 class solver {
 public:
+  template <typename GRID_MAJOR>
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return boost::is_same<GRID_MAJOR, grid_col_major_t>::value; }
+
   void initialize(int& argc, char**& argv) { elem::Initialize(argc, argv); }
 
   void finalize() { elem::Finalize(); }

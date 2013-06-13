@@ -26,6 +26,8 @@ public:
   solver(std::string const& solver_name) {
     solver_impl_ = solver_factory::instance()->make_solver(solver_name);
   }
+  template <typename GRID_MAJOR>
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return solver_impl_->is_available_grid_major(grid_major);  }
   void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
   void finalize() { solver_impl_->finalize(); }
   template<typename MATRIX_MAJOR>

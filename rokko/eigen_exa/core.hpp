@@ -9,6 +9,9 @@ namespace eigen_exa {
 
 class solver {
 public:
+  template <typename GRID_MAJOR>
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
+
   void initialize(int& argc, char**& argv) {}
 
   void finalize() {}

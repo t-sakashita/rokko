@@ -44,38 +44,50 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   BOOST_FOREACH(std::string name, names) {
     std::cout << "solver=" << name << std::endl;
     rokko::solver solver(name);
-    std::cout << "line=" << __LINE__ << std::endl;
-    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
-                      boost::unit_test::framework::master_test_suite().argv);
-    std::cout << "line=" << __LINE__ <<std::endl;
-    rokko::grid g(comm, rokko::grid_col_major);
-    std::cout << "line=" << __LINE__ <<std::endl;
-    rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
-    std::cout << "line=" << __LINE__ <<std::endl;
-    rokko::frank_matrix::generate(mat);
-    std::cout << "line=" << __LINE__ <<std::endl;
-    rokko::localized_vector w(dim);
-    std::cout << "line=" << __LINE__ <<std::endl;
+    if (solver.is_available_grid_major(rokko::grid_col_major)) {
+      solver.initialize(boost::unit_test::framework::master_test_suite().argc,
+                        boost::unit_test::framework::master_test_suite().argv);
+      rokko::grid g(comm, rokko::grid_col_major);
+      rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
+      rokko::frank_matrix::generate(mat);
+      rokko::localized_vector w(dim);
+      rokko::distributed_matrix<rokko::matrix_col_major> Z(dim, dim, g, solver);
 
-    rokko::distributed_matrix<rokko::matrix_col_major> Z(dim, dim, g, solver);
-    std::cout << "line=" << __LINE__ <<std::endl;
-
-    solver.diagonalize(mat, w, Z);
-
-    std::cout << "line=" << __LINE__ <<std::endl;
-    double sum = 0;
-    std::cout << "line=" << __LINE__ <<std::endl;
-
-    for(int i=0; i<dim; ++i) {
-      sum += w[i];
+      solver.diagonalize(mat, w, Z);
+      
+      double sum = 0;
+      for(int i=0; i<dim; ++i) {
+        sum += w[i];
+      }
+      BOOST_CHECK_CLOSE(sum, dim * (dim+1) * 0.5, 10e-5);
+      
+      solver.finalize();
     }
-    std::cout << "line=" << __LINE__ <<std::endl;
+  }
 
-    BOOST_CHECK_CLOSE(sum, dim * (dim+1) * 0.5, 10e-5);
-    std::cout << "line=" << __LINE__ <<std::endl;
 
-    solver.finalize();
-    std::cout << "line=" << __LINE__ <<std::endl;
+  BOOST_FOREACH(std::string name, names) {
+    std::cout << "solver=" << name << std::endl;
+    rokko::solver solver(name);
+    if (solver.is_available_grid_major(rokko::grid_row_major)) {
+      solver.initialize(boost::unit_test::framework::master_test_suite().argc,
+                        boost::unit_test::framework::master_test_suite().argv);
+      rokko::grid g(comm, rokko::grid_row_major);
+      rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
+      rokko::frank_matrix::generate(mat);
+      rokko::localized_vector w(dim);
+      rokko::distributed_matrix<rokko::matrix_col_major> Z(dim, dim, g, solver);
+      
+      solver.diagonalize(mat, w, Z);
+      
+      double sum = 0;
+      for(int i=0; i<dim; ++i) {
+        sum += w[i];
+      }
+      BOOST_CHECK_CLOSE(sum, dim * (dim+1) * 0.5, 10e-5);
+
+      solver.finalize();
+    }
   }
   MPI_Finalize();
 }
