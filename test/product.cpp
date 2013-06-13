@@ -1,113 +1,68 @@
-#include <mpi.h>
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2013 by Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
 
-// Eigen3に関するヘッダファイル
-#include <Eigen/Dense>
+#include <rokko/solver.hpp>
+#include <rokko/pblas/pblas.hpp>
+#include <rokko/utility/frank_matrix.hpp>
 
-#include <iostream>
-using namespace std;
+#define BOOST_TEST_MODULE test_product
+#ifndef BOOST_TEST_DYN_LINK
+#include <boost/test/included/unit_test.hpp>
+#else
+#include <boost/test/unit_test.hpp>
+#endif
 
-
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/scalapack.hpp>
-#include <rokko/pblas.hpp>
-
-#include <rokko/collective.hpp>
-#include <rokko/frank_matrix.hpp>
-
-
-int main(int argc, char* argv[])
-{
-  MPI_Init(&argc, &argv);
+BOOST_AUTO_TEST_CASE(test_product) {
+  MPI_Init(&boost::unit_test::framework::master_test_suite().argc,
+             &boost::unit_test::framework::master_test_suite().argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
+  int rank;
+  MPI_Comm_rank(comm, &rank);
 
-  int myrank, nprocs;
-  MPI_Comm_rank(comm, &myrank);
-  MPI_Comm_size(comm, &nprocs);
-
-  int dim = 10;
-  int root = 0;
-
-  rokko::distributed_matrix frank_mat(dim, dim, g);
-  //rokko::generate_frank_matrix_local(frank_mat);
-  rokko::generate_frank_matrix_global(frank_mat);
-
-  Eigen::MatrixXd frank_mat_global;
-  rokko::gather(frank_mat, frank_mat_global, root);
-  frank_mat.print();
-  //rokko::print_matrix(mat_frank);
-  if (myrank == root)
-    cout << "global_mat:" << endl << frank_mat_global << endl;
-
-  Eigen::VectorXd eigvals(dim);
-  rokko::distributed_matrix eigvecs(dim, dim, g);
-  rokko::scalapack::diagonalize(frank_mat, eigvals, eigvecs);
-
-  Eigen::MatrixXd eigvecs_global;
-  rokko::gather(eigvecs, eigvecs_global, root);
-  //eigvecs.print();
-  rokko::print_matrix(eigvecs);
-  if (myrank == root) {
-    cout << "eigvecs_global" << endl;
-    std::cout << eigvecs_global << std::endl;
+  int dim = 100;
+  if (boost::unit_test::framework::master_test_suite().argc > 1) {
+    dim = boost::lexical_cast<int>(boost::unit_test::framework::master_test_suite().argv[1]);
   }
 
-  // 分散行列のまま，固有ベクトルの直交性を確認
-  double alpha = 1., beta = 0.;
-  rokko::distributed_matrix C(dim, dim, g);
-  rokko::pblas::product(eigvecs, false, eigvecs, true, alpha, beta, C);
-  cout << "orthogonality in local matrices" << endl;
-  C.print();
-  Eigen::MatrixXd C_global;
-  rokko::gather(C, C_global, root);
-  if (myrank == root) {
-    cout << "orthogonality_global" <<endl;
-    std::cout << C_global << std::endl;
+  if (rank == 0) std::cout << "dimension = " << dim << std::endl;
+  rokko::solver solver(rokko::solver_factory::instance()->solver_names()[0]);
+  rokko::grid g(comm, rokko::grid_col_major);
+  rokko::distributed_matrix<rokko::matrix_col_major> matA(dim, dim, g, solver);
+  rokko::distributed_matrix<rokko::matrix_col_major> matB(dim, dim, g, solver);
+  rokko::distributed_matrix<rokko::matrix_col_major> matC(dim, dim, g, solver);
+  rokko::frank_matrix::generate(matA);
+  rokko::frank_matrix::generate(matB);
+  rokko::pblas::product(matA, false, matB, false, 1, 0, matC);
+  matC.print();
+  // calculate trace
+  double sum_local;
+  for (int i = 0; i < dim; ++i) {
+    if (matC.is_gindex(i, i)) sum_local += matC.get_global(i, i);
   }
+  double sum_global;
+  MPI_Allreduce(&sum_local, &sum_global, 1, MPI_DOUBLE, MPI_SUM, comm);
+  if (rank == 0) std::cout << "trace of distributed matrix = " << sum_global << std::endl;
 
-  // 固有値の絶対値の降順に固有値(と対応する固有ベクトル)をソート
-  // ソート後の固有値の添字をベクトルqに求める．
-  double absmax;
-  int qq;
-
-  Eigen::VectorXi q(dim);
-
-  Eigen::VectorXd eigval_sorted(dim);
-  Eigen::MatrixXd eigvec_sorted(dim,dim);
-
-  if(myrank == root) {
-    // 固有値・固有ベクトルを絶対値の降順にソート
-    for (int i=0; i<eigvals.size(); ++i) q[i] = i;
-    for (int m=0; m<eigvals.size(); ++m) {
-      absmax = abs(eigvals[q[m]]);
-      for (int i=m+1; i<eigvecs_global.rows(); ++i) {
-	if (absmax < abs(eigvals[q[i]])) {
-	  absmax = eigvals[q[i]];
-	  qq = q[m];
-	  q[m] = q[i];
-	  q[i] = qq;
-	}
-      }
-      eigval_sorted(m) = eigvals(q[m]);
-      eigvec_sorted.col(m) = eigvecs_global.col(q[m]);
-    }
-
-    cout << "Computed Eigenvalues= " << eigval_sorted.transpose() << endl;
-
-    cout << "Eigenvector:" << endl << eigvec_sorted << endl << endl;
-    cout << "Check the orthogonality of Eigenvectors:" << endl
-      //<< eigvec_sorted * eigvec_sorted.transpose() << endl;   // Is it equal to indentity matrix?
-         << eigvecs_global.transpose() * eigvecs_global << endl;   // Is it equal to indentity matrix?
-
-    //cout << "residual := A x - lambda x = " << endl
-    //	 << A_global_matrix * eigvec_sorted.col(0)  -  eigval_sorted(0) * eigvec_sorted.col(0) << endl;
-    //cout << "Are all the following values equal to some eigenvalue = " << endl
-    //	 << (A_global_matrix * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << endl;
-    //cout << "A_global_matrix=" << endl << A_global_matrix << endl;
-
+  rokko::localized_matrix<rokko::matrix_col_major> lmatA(dim, dim);
+  rokko::frank_matrix::generate(lmatA);
+  rokko::localized_matrix<rokko::matrix_col_major> lmatC = lmatA * lmatA;
+  if (rank == 0) std::cout << lmatC << std::endl;
+  // calculate trace
+  double sum;
+  for (int i = 0; i < dim; ++i) {
+    sum += lmatC(i, i);
   }
+  if (rank == 0) std::cout << "trace of localized matrix = " << sum << std::endl;
 
-  //rokko::scalapack::Finzalize();
+  if (rank == 0) BOOST_CHECK_CLOSE(sum_global, sum, 10e-12);
+
   MPI_Finalize();
 }

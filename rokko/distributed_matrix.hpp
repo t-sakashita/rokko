@@ -79,6 +79,7 @@ public:
   }
 
   double* get_array_pointer() { return array; }
+  const double* get_array_pointer() const { return array; }
 
   int get_length_array() const { return length_array; }
 
@@ -88,7 +89,7 @@ public:
     nb = nb_in;
   }
 
-  const grid& get_grid()const {return g;}
+  const grid& get_grid() const {return g;}
 
   int get_mb() const { return mb; }
   int get_nb() const { return nb; }

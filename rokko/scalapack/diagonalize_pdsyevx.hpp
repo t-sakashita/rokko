@@ -36,7 +36,7 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
 
-#ifdef NDEBUG
+#ifndef NDEBUG
   for (int proc=0; proc<mat.nprocs; ++proc) {
     if (proc == mat.myrank) {
       std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << "  mb=" << mat.get_mb() << "  nb=" << mat.get_nb() << std::endl;
