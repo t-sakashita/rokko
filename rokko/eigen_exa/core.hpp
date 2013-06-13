@@ -9,9 +9,9 @@ namespace eigen_exa {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) { MPI_Fint comm = MPI_Comm_c2f(MPI_COMM_WORLD);  char order = 'R'; eigen_init(&comm, &order); }
+  void initialize(int& argc, char**& argv) {}
 
-  void finalize() { eigen_free(); }
+  void finalize() {}
 
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
