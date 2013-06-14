@@ -41,6 +41,7 @@ BOOST_AUTO_TEST_CASE(test_product) {
   rokko::frank_matrix::generate(matA);
   rokko::frank_matrix::generate(matB);
   rokko::pblas::product(matA, false, matB, false, 1, 0, matC);
+  matA.print();
   matC.print();
   // calculate trace
   double sum_local;

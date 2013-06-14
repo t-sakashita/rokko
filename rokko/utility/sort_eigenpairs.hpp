@@ -3,7 +3,8 @@
 
 namespace rokko {
 
-int sort_eigenpairs(const Eigen::VectorXd& eigval, const Eigen::MatrixXd& eigvec_global, Eigen::VectorXd& eigval_sorted, Eigen::MatrixXd& eigvec_sorted)
+template<typename MATRIX_MAJOR>  
+int sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATRIX_MAJOR>& eigvec_global, localized_vector& eigval_sorted, localized_matrix<MATRIX_MAJOR>& eigvec_sorted)
 {
   int dim = eigval.size();
   int* q = new int[dim];

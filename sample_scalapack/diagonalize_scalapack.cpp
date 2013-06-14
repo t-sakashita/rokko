@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   rokko::frank_matrix::generate(mat);
   mat.print();
 
-  Eigen::MatrixXd global_mat;
+  rokko::localized_matrix<matrix_major> global_mat;
   rokko::gather(mat, global_mat, root);
   if (myrank == root)
     std::cout << "global_mat:" << std::endl << global_mat << std::endl;
@@ -39,9 +39,9 @@ int main(int argc, char *argv[]) {
   solver.diagonalize(mat, w, Z);
 
   // gather of eigenvectors
-  Eigen::MatrixXd eigvec_global;
-  Eigen::MatrixXd eigvec_sorted(dim, dim);
-  Eigen::VectorXd eigval_sorted(dim);
+  rokko::localized_matrix<matrix_major> eigvec_global;
+  rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
+  rokko::localized_vector eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
   Z.print();
   if (myrank == root) {

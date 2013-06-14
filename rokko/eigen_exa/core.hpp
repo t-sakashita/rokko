@@ -28,7 +28,9 @@ public:
     int nm;
     int i1 = 6, i2 = 16*4, i3 = 16*4*2;
     CSTAB_get_optdim( n1, i1, i2, i3, nm );
+#ifndef NDEBUG
     std::cout << "nm=" << nm << std::endl;
+#endif
 
     int NB  = 64;
     int nmz = ((n-1)/NPROW+1);
@@ -37,8 +39,10 @@ public:
     nmw = ((nmw-1)/NB+1)*NB+1;
 
     int larray = std::max(nmz, nm)*nmw;
+#ifndef NDEBUG
     std::cout << "larray=" << larray << std::endl;
-
+#endif
+    
     mat.set_lld(nm);
     mat.set_length_array(larray);
     mat.set_block_size(1, 1);
