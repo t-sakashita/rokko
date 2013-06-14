@@ -15,19 +15,17 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   int ictxt;
   int info;
 
-  const int ZERO=0, ONE=1;
-  long MINUS_ONE = -1;
-  blacs_get_(MINUS_ONE, ZERO, ictxt);
+  ROKKO_blacs_get(-1, 0, &ictxt);
 
   char char_grid_major;
   if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  blacs_gridinit_(ictxt, &char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol()); // ColがMPI_Comm_createと互換
+  ROKKO_blacs_gridinit(ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
 
   int dim = mat.get_m_global();
   int desc[9];
-  descinit_(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), ZERO, ZERO, ictxt, mat.get_lld(), info);
+  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), 0, 0, ictxt, mat.get_lld(), &info);
   if (info) {
     std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld() << "." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 89);
@@ -46,10 +44,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   long lwork = -1;
 
   // work配列のサイズの問い合わせ
-  char* V = const_cast<char*>("V");
-  char* U = const_cast<char*>("U");
-  pdsyev_(V,  U,  dim,  mat.get_array_pointer(), ONE,  ONE,  desc, eigvals, eigvecs.get_array_pointer(), ONE, ONE,
- 	   desc, work, lwork, info);
+  ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, eigvals, eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, &info);
 
   lwork = work[0];
   delete[] work;
@@ -62,8 +57,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
 
   // 固有値分解
   timer_in.start(1);
-  pdsyev_(V,  U,  dim,  mat.get_array_pointer(),  ONE,  ONE,  desc, eigvals, eigvecs.get_array_pointer(), ONE, ONE,
-          desc, work, lwork, info);
+  ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, eigvals, eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, &info);
   timer_in.stop(1);
 
   if (info) {

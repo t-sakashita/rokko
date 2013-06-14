@@ -40,8 +40,7 @@ BOOST_AUTO_TEST_CASE(test_product) {
   rokko::distributed_matrix<rokko::matrix_col_major> matC(dim, dim, g, solver);
   rokko::frank_matrix::generate(matA);
   rokko::frank_matrix::generate(matB);
-  rokko::pblas::product(matA, false, matB, false, 1, 0, matC);
-  matA.print();
+  rokko::product(1, matA, false, matB, false, 0, matC);
   matC.print();
   // calculate trace
   double sum_local;

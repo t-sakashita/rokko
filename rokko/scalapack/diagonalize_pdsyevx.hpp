@@ -15,22 +15,17 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   int ictxt;
   int info;
 
-  const int ZERO=0, ONE=1;
-  long MINUS_ONE = -1;
-  //blacs_pinfo_(mat.myrank, mat.nprocs);
-  blacs_get_(MINUS_ONE, ZERO, ictxt);
+  ROKKO_blacs_get(-1, 0, &ictxt);
 
   char char_grid_major;
   if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  //int tmp_nprow, tmp_npcol, tmp_myrow, tmp_mycol;  // we don't use these values
-  blacs_gridinit_(ictxt, &char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol()); // ColがMPI_Comm_createと互換
-  //blacs_gridinfo_(ictxt, tmp_nprow, tmp_npcol, tmp_myrow, tmp_mycol);
+  ROKKO_blacs_gridinit(ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
 
   int dim = mat.get_m_global();
   int desc[9];
-  descinit_(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), ZERO, ZERO, ictxt, mat.get_lld(), info);
+  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), 0, 0, ictxt, mat.get_lld(), &info);
   if (info) {
     std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.get_m_local() << "  nA=" << mat.get_n_local() << "." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 89);
@@ -47,7 +42,7 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
 
   int vl = 0, vu = 0;
   int il, iu;
-  double abstol = pdlamch_(ictxt, 'U');  // get optimized absolute tolerance
+  double abstol = ROKKO_pdlamch(ictxt, 'U');  // get optimized absolute tolerance
   //std::cout << "abstol=" << abstol << std::endl;
   int num_eigval_found, num_eigvec_found;
   int orfac = -1;  // default value 10^{-3} is used.
@@ -73,18 +68,12 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   long liwork = -1;
 
   // work配列のサイズの問い合わせ
-  char* V = const_cast<char*>("V");
-  char* A = const_cast<char*>("A");
-  char* U = const_cast<char*>("U");
-
   timer_in.start(1);
-  pdsyevx_(V, A, U, dim, mat.get_array_pointer(), ONE, ONE, desc,
-           vl, vu, il, iu,
-           abstol, num_eigval_found, num_eigvec_found, eigvals, orfac,
-           eigvecs.get_array_pointer(), ONE, ONE, desc,
-           work, lwork, iwork, liwork,
-
-           ifail, iclustr, gap, info);
+  ROKKO_pdsyevx('V', 'A', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
+                vl, vu, il, iu,
+                abstol, &num_eigval_found, &num_eigvec_found, eigvals, orfac,
+                eigvecs.get_array_pointer(), 1, 1, desc,
+                work, lwork, iwork, liwork, ifail, iclustr, gap, &info);
   timer_in.stop(1);
 
   if (info) {
@@ -105,12 +94,10 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   }
 
   // 固有値分解
-  pdsyevx_(V, A, U, dim, mat.get_array_pointer(), ONE, ONE, desc,
-           vl, vu, il, iu,
-           abstol, num_eigval_found, num_eigvec_found, eigvals, orfac,
-           eigvecs.get_array_pointer(), ONE, ONE, desc,
-           work, lwork, iwork, liwork,
-           ifail, iclustr, gap, info);
+  ROKKO_pdsyevx('V', 'A', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
+                vl, vu, il, iu, abstol, &num_eigval_found, &num_eigvec_found, eigvals, orfac,
+                eigvecs.get_array_pointer(), 1, 1, desc,
+                work, lwork, iwork, liwork, ifail, iclustr, gap, &info);
 
   if (info) {
     std::cerr << "error at pdsyevx function. info=" << info << std::endl;
