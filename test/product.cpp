@@ -9,6 +9,8 @@
 *
 *****************************************************************************/
 
+#include <boost/lexical_cast.hpp>
+
 #include <rokko/solver.hpp>
 #include <rokko/pblas/pblas.hpp>
 #include <rokko/utility/frank_matrix.hpp>
@@ -22,7 +24,7 @@
 
 BOOST_AUTO_TEST_CASE(test_product) {
   MPI_Init(&boost::unit_test::framework::master_test_suite().argc,
-             &boost::unit_test::framework::master_test_suite().argv);
+           &boost::unit_test::framework::master_test_suite().argv);
   MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
