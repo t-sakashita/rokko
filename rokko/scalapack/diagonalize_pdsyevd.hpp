@@ -1,11 +1,12 @@
 #ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
 #define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
 
+#include "rokko/distributed_matrix.hpp"
+#include "rokko/localized_vector.hpp"
+#include "rokko/blacs.h"
+#include "rokko/scalapack.h"
+
 #include <mpi.h>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
-#include <rokko/scalapack/blacs.hpp>
-#include <rokko/scalapack/scalapack.hpp>
 
 namespace rokko {
 namespace scalapack {

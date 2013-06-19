@@ -1,7 +1,6 @@
 #ifndef ROKKO_SCALAPACK_CORE_HPP
 #define ROKKO_SCALAPACK_CORE_HPP
 
-#include <rokko/scalapack/scalapack.hpp>
 #include <rokko/scalapack/diagonalize.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevd.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>

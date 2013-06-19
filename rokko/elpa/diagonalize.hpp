@@ -1,11 +1,12 @@
 #ifndef ROKKO_ELPA_DIAGONALIZE_H
 #define ROKKO_ELPA_DIAGONALIZE_H
 
+#include "rokko/distributed_matrix.hpp"
+#include "rokko/localized_vector.hpp"
+#include "rokko/blacs.h"
+#include "elpa.hpp"
+
 #include <mpi.h>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
-#include <rokko/elpa/blacs.hpp>
-#include <rokko/elpa/elpa.hpp>
 
 namespace rokko {
 namespace elpa {

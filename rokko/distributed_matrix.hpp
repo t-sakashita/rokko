@@ -13,12 +13,13 @@
 #ifndef ROKKO_DISTRIBUTED_MATRIX_H
 #define ROKKO_DISTRIBUTED_MATRIX_H
 
+#include "grid.hpp"
+#include "matrix_major.hpp"
+#include "pblas.h"
+
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
-#include <rokko/grid.hpp>
-#include <rokko/matrix_major.hpp>
-#include <rokko/pblas/pblas.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
