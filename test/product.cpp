@@ -12,7 +12,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <rokko/solver.hpp>
-#include <rokko/pblas/pblas.hpp>
+#include <rokko/pblas/pblas.h>
 #include <rokko/utility/frank_matrix.hpp>
 
 #define BOOST_TEST_MODULE test_product

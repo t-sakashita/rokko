@@ -18,7 +18,7 @@
 #include <stdexcept>
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
-#include <rokko/pblas/pblas.hpp>
+#include <rokko/pblas/pblas.h>
 #include <boost/type_traits/is_same.hpp>
 
 namespace rokko {

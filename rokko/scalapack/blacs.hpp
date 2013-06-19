@@ -1,8 +1,10 @@
 #ifndef ROKKO_BLACS_HPP
 #define ROKKO_BLACS_HPP
 
+#ifdef __cplusplus
 extern "C" {
-
+#endif
+  
 void descinit_(int* desc, const int* m, const int* n, const int* mb, const int* nb,
                const int* irsrc, const int* icsrc, const int* ixtxt, const int* lld, int* info);
 
@@ -49,6 +51,8 @@ inline void ROKKO_blacs_barrier(int ictxt, char score) {
   blacs_barrier_(&ictxt, &score);
 }
 
+#ifdef __cplusplus
 } // extern "C"
+#endif
 
 #endif // ROKKO_BLACS_HPP
