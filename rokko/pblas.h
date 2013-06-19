@@ -10,10 +10,10 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PBLAS_PBLAS_H
-#define ROKKO_PBLAS_PBLAS_H
+#ifndef ROKKO_PBLAS_H
+#define ROKKO_PBLAS_H
 
-#include <rokko/scalapack/blacs.hpp>
+#include "blacs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,4 +35,4 @@ void ROKKO_pdgemm(char TRANSA, char TRANSB, int M, int N, int K, double ALPHA,
 }
 #endif
 
-#endif // ROKKO_PBLAS_PBLAS_H
+#endif // ROKKO_PBLAS_H

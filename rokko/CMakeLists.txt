@@ -2,6 +2,7 @@ include_directories(${ELEMENTAL_INCLUDE_DIRS})
 
 set(ROKKO_SOURCES solver_factory.cpp grid.cpp)
 
+set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c blacs/descinit.c)
 set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdgemm.c)
 
 set(DIRECTORY "${BOOST_INCLUDE_DIR}/libs/system")

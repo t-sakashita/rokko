@@ -10,12 +10,9 @@
 *
 *****************************************************************************/
 
-#include "rokko/pblas.h"
+#include "rokko/blacs.h"
 
-void ROKKO_pdgemm(char TRANSA, char TRANSB, int M, int N, int K, double ALPHA,
-                  const double* A, int IA, int JA, int* DESCA,
-                  const double* B, int IB, int JB, int* DESCB,
-                  double BETA, double* C, int IC, int JC, int* DESCC) {
-  pdgemm_(&TRANSA, &TRANSB, &M, &N, &K, &ALPHA, A, &IA, &JA, DESCA, B, &IB, &JB, DESCB,
-          &BETA, C, &IC, &JC, DESCC);
+void ROKKO_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
+                    int ixtxt, int lld, int* info) {
+  descinit_(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ixtxt, &lld, info);
 }
