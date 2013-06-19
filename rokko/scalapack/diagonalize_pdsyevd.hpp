@@ -4,7 +4,7 @@
 #include "rokko/distributed_matrix.hpp"
 #include "rokko/localized_vector.hpp"
 #include "rokko/blacs.h"
-#include "scalapack.hpp"
+#include "rokko/scalapack.h"
 
 #include <mpi.h>
 
