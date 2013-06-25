@@ -10,7 +10,7 @@ rm -rf scalapack-2.0.2
 if test -f $HOME/source/scalapack-2.0.2.tgz; then
   tar zxf $HOME/source/scalapack-2.0.2.tgz
 else
-  wget -O - http://www.netlib.org/scalapack/scalapack-2.0.2 | tar zxf -
+  wget -O - http://www.netlib.org/scalapack/scalapack-2.0.2.tgz | tar zxf -
 fi
 
 rm -rf scalapack-2.0.2-build && mkdir -p scalapack-2.0.2-build && cd scalapack-2.0.2-build
