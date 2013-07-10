@@ -3,7 +3,8 @@
 
 #include <mpi.h>
 
-#include <Eigen/Dense>
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_matrix.hpp>
 
 namespace rokko {
 
@@ -67,6 +68,7 @@ void create_struct_local_general(const rokko::distributed_matrix<MATRIX_MAJOR>& 
     ++count;
   }
 
+#ifndef NDEBUG
   // print out struct of local matrix
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
@@ -74,6 +76,7 @@ void create_struct_local_general(const rokko::distributed_matrix<MATRIX_MAJOR>& 
       printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
   }
+#endif
 
   MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
   MPI_Type_commit(&local_array_type);
@@ -129,15 +132,19 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
 	array_of_blocklengths[count] = mb;
 	  array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * m_global + (j * nprow + myrow) * mb ) * sizeof(double);
 	  array_of_types[count] = MPI_DOUBLE;
+#ifndef NDEBUG
 	  if (myrank == 0)
 	    std::cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << std::endl;
+#endif          
 	  ++count;
       }
       if (rest_num_block_rows != 0) {
 	array_of_blocklengths[count] = rest_num_block_rows;
 	array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * m_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
+#ifndef NDEBUG
 	if (myrank == 0)
 	    std::cout << "amari: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << array_of_displacements[count] << std::endl;
+#endif
 	array_of_types[count] = MPI_DOUBLE;
 	++count;
       }
@@ -146,7 +153,6 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
   //cout << "before amari: count=" << count << std::endl;
   // 列のあまり
   for (int k=0; k<rest_num_block_cols; ++k) {
-    std::cout << "ddddddddddddddddddddddddddddddd" << std::endl;
     for (int j=0; j<num_block_rows; ++j) {
       array_of_blocklengths[count] = mb;
       array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * m_global + (j * nprow + myrow) * mb ) * sizeof(double);
@@ -154,27 +160,31 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
       ++count;
     }
     if (rest_num_block_rows != 0) {
+#ifndef NDEBUG
       std::cout << "rest: count=" << count << "  disp="  << array_of_displacements[count-1] << std::endl;
+#endif
       array_of_blocklengths[count] = rest_num_block_rows;
       array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * m_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
+#ifndef NDEBUG
       if (myrank == 0)
 	std::cout << "rest_amari: count=" << count << "  disp="  << array_of_displacements[count] << std::endl;
+#endif
       array_of_types[count] = MPI_DOUBLE;
       ++count;
     }
   }
 
-  //if (myrank == 0)
-  //cout << "myrank" << myrank << "  imano_count=" << count << "   num_block_rows_r=" << num_block_rows_r << "  num_block_cols=" << num_block_cols << "  num_block_rows=" << num_block_rows << std::endl;
-
+#ifndef NDEBUG
   // print out struct of global matrix
   if (myrank == 0) {
     for (int i=0; i<count; ++i) {
-	//cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << std::endl;
       printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
+#ifndef NDEBUG
     std::cout << "num_block_rows=" << num_block_rows << std::endl;
+#endif
   }
+#endif
 
   MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
   MPI_Type_commit(&global_array_type);
@@ -188,8 +198,8 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
   array_of_types = 0;
 }
 
-template<typename MATRIX_MAJOR>
-void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix<MATRIX_MAJOR>& mat)
+template<typename LOC_MATRIX_MAJOR, typename DIST_MATRIX_MAJOR>
+void copy_g2l_root(localized_matrix<LOC_MATRIX_MAJOR>& mat_global, const rokko::distributed_matrix<DIST_MATRIX_MAJOR>& mat)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -245,8 +255,8 @@ void copy_g2l_root(Eigen::MatrixXd& mat_global, const rokko::distributed_matrix<
   }
 }
 
-template<typename MATRIX_MAJOR>
-void copy_l2g_root(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_global)
+template<typename DIST_MATRIX_MAJOR, typename LOC_MATRIX_MAJOR>
+void copy_l2g_root(const rokko::distributed_matrix<DIST_MATRIX_MAJOR>& mat, localized_matrix<LOC_MATRIX_MAJOR>& mat_global)
 {
   int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
   int m_local = mat.m_local;  int n_local = mat.n_local;
@@ -273,7 +283,9 @@ void copy_l2g_root(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::Ma
 	//array_of_displacements[count] = ( (i*nb+k) * lld + num_block_rows * mb ) * sizeof(double);
 	//array_of_types[count] = MPI_DOUBLE;
 	for (int c=0; c<rest_num_block_rows; ++c) {
+#ifndef NDEBUG
 	  std::cout << "ROW=" << (num_block_rows*nprow+myrow)*mb+c << "  COL=" << (i*npcol+mycol)*nb+k << "rest_num_block_rows=" << rest_num_block_rows << std::endl;
+#endif
 	  mat_global( (num_block_rows*nprow+myrow)*mb+c, (i*npcol+mycol)*nb+k ) = mat.array[(i*nb+k) * lld + num_block_rows * mb + c];
 	}
 	++count;
@@ -326,9 +338,8 @@ void create_struct_global(const rokko::distributed_matrix<rokko::matrix_row_majo
 }
 
 
-template<typename MATRIX_MAJOR>
-int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_global, int root)
-{
+template<typename DIST_MATRIX_MAJOR, typename LOC_MATRIX_MAJOR>
+int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_matrix<LOC_MATRIX_MAJOR>& mat_global, int root) {
   double* global_array;
 
   if (mat.get_myrank() == root) {
@@ -356,7 +367,7 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
   int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
   int myrank = mat.get_myrank(); int nprocs = mat.get_nprocs();
 
-  double* local_array = mat.get_array_pointer();
+  const double* local_array = mat.get_array_pointer();
 
   MPI_Datatype local_array_type, global_array_type;
   create_struct_local(mat, local_array_type);
@@ -367,7 +378,7 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
 
   for (int proc = 0; proc < nprocs; ++proc) {
     if ((myrank == proc) && (myrank != root)) {
-      ierr = MPI_Send(local_array, sendcount, local_array_type, root, 0, cart_comm);
+      ierr = MPI_Send(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, cart_comm);
       if (ierr != 0) {
 	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
 	MPI_Abort(MPI_COMM_WORLD,78);
@@ -388,7 +399,7 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
 
     if ((proc == root) && (myrank == root)) {
       create_struct_global(mat, global_array_type, root);
-      ierr = MPI_Sendrecv(local_array, sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
+      ierr = MPI_Sendrecv(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
       	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
       	MPI_Abort(MPI_COMM_WORLD,78);
@@ -408,19 +419,12 @@ int gather(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_gl
 }
 
 
-template<typename MATRIX_MAJOR>
-int scatter(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_global, int root)
+template<typename LOC_MATRIX_MAJOR, typename DIST_MATRIX_MAJOR>
+int scatter(localized_matrix<LOC_MATRIX_MAJOR> const& mat_global, distributed_matrix<DIST_MATRIX_MAJOR>& mat, int root)
 {
-  double* global_array;
-
-  if (mat.myrank == root) {
-    // mat_globalは初期化，値の代入後に呼び出されているから，resizeはしない
-    //mat_global.resize(mat.m_global, mat.n_global);
+  const double* global_array;
+  if (mat.get_myrank() == root) {
     global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？
-    //global_array = mat_global.data();  // 本当に、内部では連続な配列になっているか
-    for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
-      global_array[ii] = ii;
-    }
   }
 
   MPI_Status  status;
@@ -434,11 +438,18 @@ int scatter(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_g
 
   MPI_Comm cart_comm = MPI_COMM_WORLD;
 
-  int m_global = mat.m_global;  int n_global = mat.n_global;  int mb = mat.mb;  int nb = mat.nb;
-  int m_local = mat.m_local;  int n_local = mat.n_local;
-  int myrow = mat.myrow;  int mycol = mat.mycol; int nprow = mat.nprow;  int npcol = mat.npcol;
-  int myrank = mat.myrank;
-  int nprocs = mat.nprocs;
+  int m_global = mat.get_m_global();
+  int n_global = mat.get_n_global();
+  int mb = mat.get_mb();
+  int nb = mat.get_nb();
+  int m_local = mat.get_m_local();
+  int n_local = mat.get_n_local();
+  int myrow = mat.get_myrow();
+  int mycol = mat.get_mycol();
+  int nprow = mat.get_nprow();
+  int npcol = mat.get_npcol();
+  int myrank = mat.get_myrank();
+  int nprocs = mat.get_nprocs();
 
   double* local_array = mat.get_array_pointer();
 
@@ -450,7 +461,7 @@ int scatter(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_g
   for (int proc = 0; proc < nprocs; ++proc) {
     if ((proc != root) &&  (myrank == root)) {
       create_struct_global(mat, global_array_type, proc);
-      ierr = MPI_Send(global_array, sendcount, global_array_type, proc, 0, cart_comm);
+      ierr = MPI_Send(const_cast<double*>(global_array), sendcount, global_array_type, proc, 0, cart_comm);
       if (ierr != 0) {
 	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
 	MPI_Abort(MPI_COMM_WORLD,68);
@@ -471,7 +482,7 @@ int scatter(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_g
 
     if ((proc == root) && (myrank == root)) {
       create_struct_global(mat, global_array_type, root);
-      ierr = MPI_Sendrecv(global_array, sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
+      ierr = MPI_Sendrecv(const_cast<double*>(global_array), sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
       printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
       	MPI_Abort(MPI_COMM_WORLD,70);
@@ -489,7 +500,6 @@ int scatter(rokko::distributed_matrix<MATRIX_MAJOR>& mat, Eigen::MatrixXd& mat_g
 
   return ierr;
 }
-
 
 } // namespace rokko
 

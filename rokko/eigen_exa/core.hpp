@@ -9,23 +9,28 @@ namespace eigen_exa {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) { MPI_Fint comm = MPI_Comm_c2f(MPI_COMM_WORLD);  char order = 'R'; eigen_init(&comm, &order); }
+  template <typename GRID_MAJOR>
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
 
-  void finalize() { eigen_free(); }
+  void initialize(int& argc, char**& argv) {}
+
+  void finalize() {}
 
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     int n = mat.get_m_global();
 
     // calculate sizes of my proc's local part of distributed matrix
-    int NPROW = mat.g.get_nprow();
-    int NPCOL = mat.g.get_npcol();
+    int NPROW = mat.get_grid().get_nprow();
+    int NPCOL = mat.get_grid().get_npcol();
 
     int n1 = ((n-1)/NPROW+1);
     int nm;
     int i1 = 6, i2 = 16*4, i3 = 16*4*2;
     CSTAB_get_optdim( n1, i1, i2, i3, nm );
+#ifndef NDEBUG
     std::cout << "nm=" << nm << std::endl;
+#endif
 
     int NB  = 64;
     int nmz = ((n-1)/NPROW+1);
@@ -34,8 +39,10 @@ public:
     nmw = ((nmw-1)/NB+1)*NB+1;
 
     int larray = std::max(nmz, nm)*nmw;
+#ifndef NDEBUG
     std::cout << "larray=" << larray << std::endl;
-
+#endif
+    
     mat.set_lld(nm);
     mat.set_length_array(larray);
     mat.set_block_size(1, 1);

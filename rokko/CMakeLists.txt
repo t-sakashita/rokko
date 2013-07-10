@@ -2,6 +2,9 @@ include_directories(${ELEMENTAL_INCLUDE_DIRS})
 
 set(ROKKO_SOURCES solver_factory.cpp grid.cpp)
 
+set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c blacs/descinit.c)
+set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdgemm.c)
+
 set(DIRECTORY "${BOOST_INCLUDE_DIR}/libs/system")
 if (EXISTS ${DIRECTORY})
   set(SOURCES error_code.cpp)
@@ -37,9 +40,10 @@ if( DEFINED ELEMENTAL_LIBRARIES AND ELEMENTAL_INCLUDE_DIRS )
 endif( DEFINED ELEMENTAL_LIBRARIES AND ELEMENTAL_INCLUDE_DIRS )
 
 if ( DEFINED SCALAPACK_LIB )
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c scalapack/pdlaprnt.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevr.c scalapack/pdsyevx.c)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevd.cpp)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
+#  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
 endif ( DEFINED SCALAPACK_LIB )
 
 add_library(rokko ${ROKKO_SOURCES})

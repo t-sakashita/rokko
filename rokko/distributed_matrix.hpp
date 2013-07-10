@@ -13,11 +13,13 @@
 #ifndef ROKKO_DISTRIBUTED_MATRIX_H
 #define ROKKO_DISTRIBUTED_MATRIX_H
 
+#include "grid.hpp"
+#include "matrix_major.hpp"
+#include "pblas.h"
+
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
-#include <rokko/grid.hpp>
-#include <rokko/matrix_major.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
@@ -79,6 +81,7 @@ public:
   }
 
   double* get_array_pointer() { return array; }
+  const double* get_array_pointer() const { return array; }
 
   int get_length_array() const { return length_array; }
 
@@ -88,7 +91,7 @@ public:
     nb = nb_in;
   }
 
-  const grid& get_grid()const {return g;}
+  const grid& get_grid() const {return g;}
 
   int get_mb() const { return mb; }
   int get_nb() const { return nb; }
@@ -322,6 +325,31 @@ inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int loca
 
 template<typename MATRIX_MAJOR>
 void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) { mat.print(); }
+
+template<typename MATRIX_MAJOR>
+void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool transA,
+             const distributed_matrix<MATRIX_MAJOR>& matB, bool transB,
+             double beta, distributed_matrix<MATRIX_MAJOR>& matC) {
+  int ictxt;
+  ROKKO_blacs_get(-1, 0, &ictxt);
+
+  char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
+  ROKKO_blacs_gridinit(ictxt, char_grid_major, matA.get_grid().get_nprow(), matA.get_grid().get_npcol());
+
+  int descA[9], descB[9], descC[9];
+  int info;
+  ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(), matA.get_nb(), 0, 0, ictxt, std::max(matA.get_m_local(), 1), &info);
+  ROKKO_descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(), matB.get_nb(), 0, 0, ictxt, std::max(matB.get_m_local(), 1), &info);
+  ROKKO_descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(), matC.get_nb(), 0, 0, ictxt, std::max(matC.get_m_local(), 1), &info);
+
+  char char_transA = (transA ? 'T' : 'N');
+  char char_transB = (transB ? 'T' : 'N');
+  ROKKO_pdgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
+               matA.get_n_global(), alpha, matA.get_array_pointer(), 1, 1, descA,
+               matB.get_array_pointer(), 1, 1, descB, beta,
+               matC.get_array_pointer(), 1, 1, descC);
+  ROKKO_blacs_gridexit(&ictxt);
+}
 
 } // namespace rokko
 

@@ -11,18 +11,21 @@ namespace eigen_exa {
 
 template <typename MATRIX_MAJOR>
 void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  //if(mat.g.is_row_major()) throw "eigen_sx doesn't support grid_row_major.  Use eigen_sx with grid_col_major.";
   if(mat.is_row_major()) throw "eigen_sx doesn't support matrix_row_major.  Use eigen_sx with matrix_col_major.";
 
-  int m = 32;  // block_size
+  MPI_Fint comm = MPI_Comm_c2f(mat.get_grid().get_comm());
+  char char_grid_major;
+  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
+  else  char_grid_major = 'C';
+#ifndef NDEBUG
+  std::cout << "eigen_exa: char_grid_major=" << char_grid_major << std::endl;
+#endif
+  eigen_init(comm, &char_grid_major);
 
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
   double* mat_array = mat.get_array_pointer();
   double* eigvecs_array= eigvecs.get_array_pointer();
-
-  std::cout << "dim=" << dim << std::endl;
-  std::cout << "lld=" << lld << std::endl;
 
   int m_forward = 8;
   int m_backward = 128;
@@ -31,6 +34,7 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
   eigen_sx(dim, dim, mat_array, lld, eigvals, eigvecs_array, lld, m_forward, m_backward);
   timer_in.stop(1);
 
+  eigen_free();
 }
 
 template<typename MATRIX_MAJOR>

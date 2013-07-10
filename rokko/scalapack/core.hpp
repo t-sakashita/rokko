@@ -1,7 +1,6 @@
 #ifndef ROKKO_SCALAPACK_CORE_HPP
 #define ROKKO_SCALAPACK_CORE_HPP
 
-#include <rokko/scalapack/scalapack.hpp>
 #include <rokko/scalapack/diagonalize.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevd.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
@@ -17,6 +16,9 @@ struct pdsyevx {};
 template<typename ROUTINE>
 class solver {
 public:
+  template <typename GRID_MAJOR>
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
+
   void initialize(int& argc, char**& argv) {}
 
   void finalize() {}

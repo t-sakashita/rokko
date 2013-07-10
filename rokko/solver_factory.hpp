@@ -30,6 +30,8 @@ private:
   class solver_base {
   public:
     virtual ~solver_base() {}
+    virtual bool is_available_grid_major(grid_row_major_t const& grid_major) = 0;
+    virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
     virtual void initialize(int& argc, char**& argv) = 0;
     virtual void finalize() = 0;
     virtual void diagonalize(distributed_matrix<matrix_row_major>& mat,
@@ -47,6 +49,8 @@ private:
   public:
     solver_wrapper() : solver_impl_() {}
     virtual ~solver_wrapper() {}
+    bool is_available_grid_major(grid_row_major_t const& grid_major) { return solver_impl_.is_available_grid_major(grid_major); };
+    bool is_available_grid_major(grid_col_major_t const& grid_major) { return solver_impl_.is_available_grid_major(grid_major); };
     void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
     void finalize() { solver_impl_.finalize(); }
     void diagonalize(distributed_matrix<matrix_row_major>& mat,
