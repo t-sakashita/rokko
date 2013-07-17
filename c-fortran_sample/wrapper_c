@@ -1,0 +1,83 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
+#include <rokko/solver.hpp>
+#include <rokko/grid.hpp>
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_vector.hpp>
+namespace rokko {
+  /*typedef rokko::grid_col_major grid_major;
+  typedef rokko::matrix_col_major matrix_major;
+  typedef rokko::distributed_matrix distributed_matrix;
+  typedef rokko::localized_vector localized_vector;
+  typedef rokko::solver solver;
+  typedef arokko::grid grid; */
+
+
+    /*    void initialize_distributed_matrix_col_major(rokko::distributed_matrix<rokko::matrix_col_major>* mat, unsigned int dim1, unsigned int dim2, const rokko::grid* g, const rokko::solver* solver ){ 
+      mat = new rokko::distributed_matrix<rokko::matrix_col_major>(dim1, dim2, g, solver);
+      }*/
+  extern "C"{
+    void initialize_distributed_matrix_row_major(distributed_matrix<matrix_row_major>* &mat, int dim1, int dim2, grid* g, solver* solver ){ 
+      mat = new distributed_matrix<matrix_row_major>(dim1, dim2, *g, *solver);
+      }
+    void initialize_distributed_matrix_col_major(distributed_matrix<matrix_col_major>* &mat, int dim1, int dim2, grid* g, solver* solver ){ 
+      mat = new distributed_matrix<matrix_col_major>(dim1, dim2, *g, *solver);
+      }
+    void delete_distributed_matrix_col_major(distributed_matrix<matrix_col_major>* mat){
+      delete mat;
+    }
+    void delete_distributed_matrix_row_major(distributed_matrix<matrix_row_major>* mat){
+      delete mat;
+    }
+
+    void initialize_localized_vector(localized_vector* &w, int dim){
+      w = new localized_vector(dim);
+    }
+
+    void delete_localized_vector(localized_vector* w ){
+      delete w;
+    }
+    
+    void initialize_grid_col_major(grid* &g, MPI_Comm comm){ 
+      g = new grid(comm);
+    }
+    void initialize_grid_row_major(grid* &g, MPI_Comm comm){ 
+      grid_row_major_t grid_row_major;
+      g = new grid(comm, grid_row_major);
+    }
+    int grid_get_myrank(grid* g){
+      return g->get_myrank();
+    }
+    int grid_get_nprocs(grid* g){
+      return g->get_nprocs();
+    }
+    void delete_grid(grid* g){
+      delete g;
+    }
+
+  void initialize_solver(solver* &solver_, char* solver_name, int argc, char *argv[]){
+      std::string solver_name_in(solver_name);
+      std::cout << "new in" <<std::endl;
+
+      solver_ = new solver(solver_name_in);
+      std::cout << "new out" <<std::endl;
+      
+      solver_->initialize(argc,argv);
+    }
+    void delete_solver(solver* solver_){
+      delete solver_;
+    }
+  }    
+    
+
+}
