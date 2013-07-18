@@ -22,7 +22,7 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  ROKKO_blacs_gridinit(ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
 
   int dim = mat.get_m_global();
   int desc[9];

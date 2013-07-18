@@ -22,7 +22,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  ROKKO_blacs_gridinit(ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
 
   int dim = mat.get_m_global();
   int desc[9];
@@ -33,7 +33,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   }
 
 #ifdef DEBUG
-  for (int proc=0; proc<mat.nprocs; ++proc) {
+  for (int proc=0; proc<mat.get_grid().get_nprocs(); ++proc) {
     if (proc == mat.get_grid().get_myrank()) {
       std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << std::endl;
     }

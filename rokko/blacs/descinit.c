@@ -13,6 +13,6 @@
 #include "rokko/blacs.h"
 
 void ROKKO_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
-                    int ixtxt, int lld, int* info) {
-  descinit_(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ixtxt, &lld, info);
+                    int ictxt, int lld, int* info) {
+  descinit_(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ictxt, &lld, info);
 }

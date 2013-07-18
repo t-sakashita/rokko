@@ -20,7 +20,7 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
 #ifndef NDEBUG
   std::cout << "eigen_exa: char_grid_major=" << char_grid_major << std::endl;
 #endif
-  eigen_init(comm, &char_grid_major);
+  eigen_init_exa_wrapper_(&comm, &char_grid_major);
 
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
@@ -34,7 +34,8 @@ void diagonalize(rokko::distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, 
   eigen_sx(dim, dim, mat_array, lld, eigvals, eigvecs_array, lld, m_forward, m_backward);
   timer_in.stop(1);
 
-  eigen_free();
+  int flag = 1;
+  eigen_free_exa_wrapper_(&flag);
 }
 
 template<typename MATRIX_MAJOR>

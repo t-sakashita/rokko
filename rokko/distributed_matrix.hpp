@@ -334,7 +334,7 @@ void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool tr
   ROKKO_blacs_get(-1, 0, &ictxt);
 
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
-  ROKKO_blacs_gridinit(ictxt, char_grid_major, matA.get_grid().get_nprow(), matA.get_grid().get_npcol());
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_grid().get_nprow(), matA.get_grid().get_npcol());
 
   int descA[9], descB[9], descC[9];
   int info;
