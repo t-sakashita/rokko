@@ -59,7 +59,7 @@ namespace rokko {
   }
   
   void* initialize_grid_col_major(MPI_Comm comm){ 
-    return static_cast<void*> (new grid(comm));
+    return static_cast<void*> (new grid(comm, grid_col_major));
   }
   void* initialize_grid_row_major(MPI_Comm comm){ 
     grid_row_major_t grid_row_major;
