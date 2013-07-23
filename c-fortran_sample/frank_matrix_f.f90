@@ -23,6 +23,8 @@ program frank_matrix
   
   real(8),allocatable::w(:),vec(:) !localized_vector
   character(len=100)::solver_name
+  character(len=100)::tmp_str
+  integer args_cnt, arg_len, status
 
   !--MPI variables--
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
@@ -35,15 +37,16 @@ program frank_matrix
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
   comm = MPI_COMM_WORLD
 
-  if (nprocs.eq.1) then
-    write(*,*) "solver name?"
-    read(*,*) solver_name 
-    write(*,*) "matrix dimension?"
-    read(*,*) dim
+  args_cnt = command_argument_count ()
+  if (args_cnt >= 2) then
+     call get_command_argument (1, tmp_str, arg_len, status)
+     solver_name = trim(tmp_str)
+     call get_command_argument (2, tmp_str, arg_len, status)
+     read(tmp_str, *) dim
   else
-    open(10, file="init.dat")
-    read(10,*) solver_name
-    read(10,*) dim
+     write(*,*) "error: command line"
+     write(*,*) "usage: solver_name matrix_size"
+     stop
   endif
 
   call set_timer(timer_)
