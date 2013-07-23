@@ -70,7 +70,7 @@ program frank_matrix
   write(*,*) "finished matrix generation"
 
   do count = 1, 3 
-    call generate_franc_matrix(mat)
+    call generate_frank_matrix(mat)
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
     
     call Diagonalize(solver_, mat, w, Z, timer_)

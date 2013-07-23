@@ -16,7 +16,6 @@ module rokko
   implicit none
   
 
-
   type::distributed_matrix
      Type(c_ptr) ptr_distributed_matrix
   end type distributed_matrix
@@ -42,9 +41,9 @@ module rokko
   end type timer
 
 
-  interface generate_franc_matrix
-     module procedure generate_franc_matrix_distributed, generate_franc_matrix_localized
-  end interface generate_franc_matrix
+  interface generate_frank_matrix
+     module procedure generate_frank_matrix_distributed, generate_frank_matrix_localized
+  end interface generate_frank_matrix
 contains
   subroutine set_solver(solver_, solver_name_)
     implicit none
@@ -105,6 +104,7 @@ contains
         grid_%ptr_grid = test
     end if
   end subroutine set_grid
+
   subroutine del_grid(grid_)
     implicit none
     Type(grid),intent(out)::grid_
@@ -120,6 +120,7 @@ contains
 
     get_myrank_grid = grid_get_myrank(grid_%ptr_grid)
   end function get_myrank_grid
+
   integer function get_nprocs_grid(grid_)
     implicit none
     Type(grid),intent(in)::grid_
@@ -192,6 +193,7 @@ contains
     
     call initialize_localized_vector(vector%ptr_localized_vector, dim)
   end subroutine set_localized_vector
+
   subroutine del_localized_vector(vector)
     implicit none
     Type(localized_vector),intent(inout)::vector
@@ -269,7 +271,7 @@ contains
   end subroutine Diagonalize    
 
 !// frack matrix generator
-  subroutine generate_franc_matrix_distributed(matrix,matrix_major_type)
+  subroutine generate_frank_matrix_distributed(matrix,matrix_major_type)
     implicit none
     Type(distributed_matrix),intent(inout)::matrix
     character(*),intent(in),optional::matrix_major_type
@@ -290,9 +292,9 @@ contains
       call generate_distributed_matrix_col_major(matrix&
          &%ptr_distributed_matrix)
     endif
-  end subroutine generate_franc_matrix_distributed
+  end subroutine generate_frank_matrix_distributed
     
-  subroutine generate_franc_matrix_localized(matrix,matrix_major_type)
+  subroutine generate_frank_matrix_localized(matrix,matrix_major_type)
     implicit none
     Type(localized_matrix),intent(inout)::matrix
     character(*),intent(in),optional::matrix_major_type
@@ -313,7 +315,7 @@ contains
       call generate_localized_matrix_col_major(matrix&
          &%ptr_localized_matrix)
     endif
-  end subroutine generate_franc_matrix_localized
+  end subroutine generate_frank_matrix_localized
 
 
 !//timer routines
