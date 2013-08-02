@@ -54,7 +54,7 @@ endforeach(name)
 unset(TESTS)
 
 # add_rokko_test tests
-set(TESTS frank timer)
+set(TESTS frank timer spin_hamiltonian)
 # set(TESTS frank scatter gather)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
