@@ -7,7 +7,7 @@
 
 int main()
 {
-  int L = 2; //4;
+  int L = 5; //4;
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i=0; i<L-1; ++i) {
@@ -19,12 +19,19 @@ int main()
     v.assign(N, 0);
     v[i] = 1;
     w.assign(N, 0);
-    spin_hamiltonian::multiply(L, lattice, v, w);
+    rokko::spin_hamiltonian::multiply(L, lattice, v, w);
     for (int j=0; j<N; ++j) {
       std::cout << w[j] << " ";
     }
     std::cout << std::endl;
   }
+
+  std::vector<double> v(N);
+  rokko::spin_hamiltonian::fill_diagonal(L, lattice, v);
+  for (int j=0; j<N; ++j) {
+    std::cout << v[j] << " ";
+  }
+  std::cout << std::endl;
 
 }
 
