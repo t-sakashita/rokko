@@ -9,16 +9,16 @@ SCRIPT_DIR=`cd $TMP_DIR && pwd`
 
 mkdir -p $WORK/build
 cd $WORK/build
-rm -rf trilinos-11.2.3-Source
-tar jxf $WORK/source/trilinos-11.2.3-Source.tar.bz2
+rm -rf trilinos-11.4.1-Source
+tar jxf $WORK/source/trilinos-11.4.1-Source.tar.bz2
 
-cd $WORK/build/trilinos-11.2.3-Source
-patch -p1 < $SCRIPT_DIR/trilinos-11.2.3-Source.patch
+cd $WORK/build/trilinos-11.4.1-Source
+patch -p1 < $SCRIPT_DIR/trilinos-11.4.1-Source.patch
 
 cd $WORK/build
-rm -rf trilinos-11.2.3-build
-mkdir -p trilinos-11.2.3-build
-cd trilinos-11.2.3-build
+rm -rf trilinos-11.4.1-build
+mkdir -p trilinos-11.4.1-build
+cd trilinos-11.4.1-build
 
 cmake \
 -D TPL_ENABLE_MPI:BOOL=ON  \
@@ -33,7 +33,7 @@ cmake \
 -D Trilinos_ENABLE_Anasazi:BOOL=ON \
 -D Trilinos_ENABLE_EXAMPLES:BOOL=ON -D Trilinos_ENABLE_TESTS:BOOL=ON \
 -D Trilinos_SKIP_FORTRANCINTERFACE_VERIFY_TEST=ON \
-$WORK/build/trilinos-11.2.3-Source
+$WORK/build/trilinos-11.4.1-Source
 
 make -j8 2>&1 | tee make.log
 make install
