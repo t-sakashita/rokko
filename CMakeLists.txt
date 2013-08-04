@@ -113,3 +113,8 @@ add_subdirectory(sample_elemental)
 add_subdirectory(benchmark)
 add_subdirectory(c-fortran_sample)
 add_subdirectory(sample_slepc)
+
+set(TRILINOS_PREFIX "/home/sakashita/build/install_build")
+if( DEFINED TRILINOS_PREFIX )
+  add_subdirectory(sample_anasazi)
+endif( DEFINED TRILINOS_PREFIX )
