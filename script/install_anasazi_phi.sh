@@ -6,12 +6,12 @@ echo "PREFIX = $PREFIX"
 
 mkdir -p $HOME/build
 cd $HOME/build
-rm -rf trilinos-11.2.3-Source
-tar jxf $HOME/source/trilinos-11.2.3-Source.tar.bz2
+rm -rf trilinos-11.4.1-Source
+tar jxf $HOME/source/trilinos-11.4.1-Source.tar.bz2
 
-mkdir trilinos-11.2.3-build
-rm -rf trilinos-11.2.3-build/*
-cd trilinos-11.2.3-build
+mkdir trilinos-11.4.1-build
+rm -rf trilinos-11.4.1-build/*
+cd trilinos-11.4.1-build
 
 #cmake -DTPL_ENABLE_MPI=ON -DCMAKE_Fortran_COMPILER="openmpif90" -DCMAKE_CXX_COMPILER="openmpicxx" -DCMAKE_C_COMPILER="openmpicc" -DTPL_BLAS_LIBRARIES="-L/opt/local/lib -lptcblas -lptf77b#las -latlas" -DTPL_LAPACK_LIBRARIES="-L/opt/local/lib -llapack" -DCMAKE_INSTALL_PREFIX="$PREFIX" -DTrilinos_ENABLE_Anasazi=ON $HOME/build/trilinos-11.0.3-Source
 
@@ -24,7 +24,7 @@ cmake \
 -D TPL_ENABLE_Boost:BOOL=ON -D Boost_INCLUDE_DIRS:PATH=/opt/nano/alps/alps-20121208-r6630/include/boost/ -D Boost_LIBRARY_DIRS:PATH=/opt/nano/alps/alps-20121208-r6630/lib/ \
 -D Trilinos_ENABLE_Anasazi:BOOL=ON \
 -D Trilinos_ENABLE_EXAMPLES:BOOL=ON -D Trilinos_ENABLE_TESTS:BOOL=ON \
-$HOME/build/trilinos-11.2.3-Source
+$HOME/build/trilinos-11.4.1-Source
 
 make -j4
 make test
