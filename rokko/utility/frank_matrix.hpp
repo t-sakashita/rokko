@@ -11,7 +11,7 @@
 *****************************************************************************/
 
 #ifndef ROKKO_UTILITY_FRANK_MATRIX_HPP
-#define ROKKO_uTILITY_FRANK_MATRIX_HPP
+#define ROKKO_UTILITY_FRANK_MATRIX_HPP
 
 #include <cmath>
 #include <stdexcept>
