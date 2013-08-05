@@ -1,6 +1,6 @@
 if(BUILD_EIGEN_S)
   set(SOURCES cstab_get_optdim.f communication_s.f eigen_dc.f dlaed3x.f eigen_s.f machine_epsilon.f matrix_adjust_s.f pdlaed2x.f pdlaed3x.f eigen_trd_2update.f eigen_trd_Au.f eigen_trd_v.f eigen_trd_u.f eigen_trd_2update_local.f eigen_trd_2update_local_special.f eigen_trd_2update_v.f eigen_trd_d_preserve_restore.f eigen_trd_init_finalize.f eigen_tbk.f eigen_tbk_main.f eigen_tbk_step.f eigen_trd.f CSTAB_mem.c eigen_s_wrap.f)
   add_library(eigen_s ${SOURCES})
-  target_link_libraries(eigen_s ${SCALAPACK_LIB})
+#  target_link_libraries(eigen_s ${SCALAPACK_LIB})
   install(TARGETS eigen_s ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
 endif(BUILD_EIGEN_S)
