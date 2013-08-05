@@ -83,20 +83,24 @@ if (ELPA_LIB)
 endif (ELPA_LIB)
 
 # find Elemental
-find_package(Elemental)
+if (USE_ELEMENTAL)
+   find_package(Elemental)
+endif (USE_ELEMENTAL)
 
 # find PETSc/SLEPc
 # Normally PETSc is built with MPI, if not, use CC=mpicc, etc, so we need to specify CXX as an option.
-set(PETSC_DIR "/home/sakashita/rokko_lib")
-set(SLEPC_DIR "/home/sakashita/rokko_lib")
-find_package(PETSc2 COMPONENTS CXX)
-message(STATUS "Display_main PETSC_LIBRARIES=${PETSC_LIBRARIES}.")
-# Added by Sakashita
-set(PETSC_INCLUDE_DIRS ${PETSC_INCLUDES})
-message(STATUS "Display_main PETSC_INCLUDE_DIRS=${PETSC_INCLUDE_DIRS}.")
-find_package(SLEPc2)
-message(STATUS "Display_main CMAKE_REQUIRED_INCLUDES=${CMAKE_REQUIRED_INCLUDES}.")
-message(STATUS "Display_main CMAKE_REQUIRED_LIBRARIES=${CMAKE_REQUIRED_LIBRARIES}.")
+if (USE_SLEPC)
+   set(PETSC_DIR "/home/sakashita/rokko_lib")
+   set(SLEPC_DIR "/home/sakashita/rokko_lib")
+   find_package(PETSc2 COMPONENTS CXX)
+   message(STATUS "Display_main PETSC_LIBRARIES=${PETSC_LIBRARIES}.")
+   # Added by Sakashita
+   set(PETSC_INCLUDE_DIRS ${PETSC_INCLUDES})
+   message(STATUS "Display_main PETSC_INCLUDE_DIRS=${PETSC_INCLUDE_DIRS}.")
+   find_package(SLEPc2)
+   message(STATUS "Display_main CMAKE_REQUIRED_INCLUDES=${CMAKE_REQUIRED_INCLUDES}.")
+   message(STATUS "Display_main CMAKE_REQUIRED_LIBRARIES=${CMAKE_REQUIRED_LIBRARIES}.")
+endif (USE_SLEPC)
 
 # test environment
 enable_testing()
@@ -114,7 +118,7 @@ add_subdirectory(benchmark)
 add_subdirectory(c-fortran_sample)
 add_subdirectory(sample_slepc)
 
-set(TRILINOS_PREFIX "/home/sakashita/build/install_build")
+#set(TRILINOS_PREFIX "/home/sakashita/build/install_build")
 if( DEFINED TRILINOS_PREFIX )
   add_subdirectory(sample_anasazi)
 endif( DEFINED TRILINOS_PREFIX )
