@@ -17,7 +17,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
   if(mat.get_grid().is_row_major()) throw "Elemental doesn't support grid_row_major.  Use Elemental with grid_col_major.";
   if(mat.is_row_major()) throw "Elemental doesn't support matrix_row_major.  Use Elemental with matrix_col_major.";
 
-  elem::Grid elem_grid(comm, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
+  elem::Grid elem_grid(comm, mat.get_grid().get_nprow());  //row()); //, mat.get_grid().get_npcol());
   elem::DistMatrix<double> elem_mat(mat.get_m_global(), mat.get_n_global(), 0, 0, mat.get_array_pointer(),
                                     mat.get_lld(), elem_grid);
   //elem::DistMatrix<double> elem_eigvecs(mat.m_global, mat.n_global, elem_grid);

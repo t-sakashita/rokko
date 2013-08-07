@@ -12,8 +12,8 @@ message(STATUS "Checking for package 'Elemental'")
 
 # List of possible locations for ELEMENTAL_DIR
 set(elemental_dir_locations "")
-list(APPEND elemental_dir_locations "/usr/lib/elemental-0.77")
-list(APPEND elemental_dir_locations "/usr/local/lib/elemental-0.77")
+list(APPEND elemental_dir_locations "/usr/lib/elemental-0.80")
+list(APPEND elemental_dir_locations "/usr/local/lib/elemental-0.80")
 #list(APPEND elemental_dir_locations "$ENV{HOME}/elemental-0.77")
 
 # Add other possible locations for ELEMENTAL_DIR

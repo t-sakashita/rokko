@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 PREFIX="$1"
-test -z "$PREFIX" && PREFIX="~/opt/nano/rokko"
+test -z "$PREFIX" && PREFIX="~/rokko_lib"
 echo "PREFIX = $PREFIX"
 
 mkdir -p $HOME/build && cd $HOME/build

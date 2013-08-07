@@ -83,9 +83,9 @@ if (ELPA_LIB)
 endif (ELPA_LIB)
 
 # find Elemental
-if (USE_ELEMENTAL)
+if (ELEMENTAL_DIR)
    find_package(Elemental)
-endif (USE_ELEMENTAL)
+endif (ELEMENTAL_DIR)
 
 # find PETSc/SLEPc
 # Normally PETSc is built with MPI, if not, use CC=mpicc, etc, so we need to specify CXX as an option.
