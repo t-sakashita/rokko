@@ -17,7 +17,7 @@
 
 int main()
 {
-  int L = 3; //5;
+  int L = 5;
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i=0; i<L-1; ++i) {
