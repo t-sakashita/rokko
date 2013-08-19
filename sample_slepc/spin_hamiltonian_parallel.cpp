@@ -2,7 +2,21 @@
 #include <petscblaslapack.h>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/utility/spin_hamiltonian.hpp>
+#include <rokko/utility/spin_hamiltonian_parallel.hpp>
 #include <vector>
+#include <iostream>
+
+struct model {
+  int L;
+  std::vector<std::pair<int, int> > lattice;
+  std::vector<double> buffer;
+};
+
+/*
+   User-defined routines
+*/
+PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y);
+PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag);
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -18,73 +32,62 @@ int main(int argc,char **argv)
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size); CHKERRQ(ierr);
 
-  int L = 8;
+  int L = 5;
   ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
   N = 1 << L;
-  std::vector<std::pair<int, int> > lattice;
-  for (int i=0; i<L-1; ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
-  }
 
-  // Create Hermitean matrix                                                           
-  ierr = MatCreate(PETSC_COMM_WORLD, &A); CHKERRQ(ierr);
-  ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, N, N); CHKERRQ(ierr);
-  ierr = MatSetFromOptions(A); CHKERRQ(ierr);
-  ierr = MatSetUp(A); CHKERRQ(ierr);
+  int nproc, myrank;
+  MPI_Comm_size(MPI_COMM_WORLD, &nproc);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 
-  PetscInt Istart, Iend;
-  ierr = MatGetOwnershipRange(A, &Istart, &Iend); CHKERRQ(ierr);
+  int n = nproc;
+  int p = -1;
+  do {
+    n /= 2;
+    ++p;
+  } while (n > 0);
 
-  std::vector<PetscInt> cols;
-  std::vector<double> values;
-
-  for (int k1=Istart; k1<Iend; ++k1) {
-    cols.clear();
-    values.clear();
-    for (int k2=0; k2<N; ++k2) {
-      for (int l=0; l<lattice.size(); ++l) {
-        int i = lattice[l].first;
-        int j = lattice[l].second;
-        //cout << "k=" << k << " i=" << i << " j=" << j << endl;
-        int m1 = 1 << i;
-        int m2 = 1 << j;
-        int m3 = m1 + m2;
-        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (k1 == (k2^m3)) {
-            cols.push_back(k2);
-            values.push_back(0.5);
-          }
-          if (k1 == k2) {
-            cols.push_back(k2);
-            values.push_back(-0.25);
-          }
-        } else if (k1 == k2) {
-          cols.push_back(k2);
-          values.push_back(0.25);
-        }
-      }
+  //std::cerr << "nproc=" << nproc << " p=" << p << std::endl;
+  if (nproc != (1 << p)) {    
+    if ( myrank == 0 ) {
+      std::cout << "This program can be run only for powers of 2" << std::endl;
     }
-    ierr = MatSetValues(A, 1, &k1, cols.size(), &cols[0], &values[0], ADD_VALUES); CHKERRQ(ierr);
+    MPI_Abort(MPI_COMM_WORLD, 1);
   }
+  int local_N = 1 << (L-p);
+  std::cout << "N=" << N << " local_N=" << local_N << std::endl;
 
-  ierr = MatAssemblyBegin(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
-  ierr = MatAssemblyEnd(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
-  //ierr = MatGetLocalSize(A, &n, NULL); CHKERRQ(ierr);
-  MatView(A, PETSC_VIEWER_STDOUT_WORLD);
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     Compute the operator matrix that defines the eigensystem, Ax=kx
+     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  model m;
+  m.L = L;
+  for (int i=0; i<L-1; ++i) {
+    m.lattice.push_back(std::make_pair(i, i+1));
+  }
+  m.buffer.assign(local_N, 0);
+
+  ierr = MatCreateShell(PETSC_COMM_WORLD, local_N, local_N, N, N, &m, &A); CHKERRQ(ierr);
+  ierr = MatSetFromOptions(A);CHKERRQ(ierr);
+  ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)())MatMult_myMat);CHKERRQ(ierr);
+  ierr = MatShellSetOperation(A,MATOP_MULT_TRANSPOSE,(void(*)())MatMult_myMat);CHKERRQ(ierr);
+  ierr = MatShellSetOperation(A,MATOP_GET_DIAGONAL,(void(*)())MatGetDiagonal_myMat);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 Create the eigensolver and set various options
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
   /*
      Create eigensolver context
   */
-  ierr = EPSCreate(PETSC_COMM_WORLD, &eps); CHKERRQ(ierr);
+  ierr = EPSCreate(PETSC_COMM_WORLD,&eps);CHKERRQ(ierr);
 
   /*
      Set operators. In this case, it is a standard eigenvalue problem
   */
-  ierr = EPSSetOperators(eps, A, NULL); CHKERRQ(ierr);
-  ierr = EPSSetProblemType(eps, EPS_HEP); CHKERRQ(ierr);
+  ierr = EPSSetOperators(eps,A,NULL);CHKERRQ(ierr);
+  ierr = EPSSetProblemType(eps,EPS_HEP);CHKERRQ(ierr);
 
   /*
      Set solver parameters at runtime
@@ -109,10 +112,49 @@ int main(int argc,char **argv)
                     Display solution and clean up
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  ierr = EPSPrintSolution(eps,NULL); CHKERRQ(ierr);
-  ierr = EPSDestroy(&eps); CHKERRQ(ierr);
-  ierr = MatDestroy(&A); CHKERRQ(ierr);
+  ierr = EPSPrintSolution(eps,NULL);CHKERRQ(ierr);
+  ierr = EPSDestroy(&eps);CHKERRQ(ierr);
+  ierr = MatDestroy(&A);CHKERRQ(ierr);
   ierr = SlepcFinalize();
   return 0;
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "MatMult_myMat"
+PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
+{
+  PetscFunctionBeginUser;
+  PetscErrorCode ierr;
+  model *m;
+  ierr = MatShellGetContext(A, &m); CHKERRQ(ierr);
+
+  const PetscScalar *px;
+  PetscScalar       *py;
+
+  ierr = VecGetArrayRead(x, &px); CHKERRQ(ierr);
+  ierr = VecGetArray(y, &py); CHKERRQ(ierr);
+  rokko::spin_hamiltonian::multiply(MPI_COMM_WORLD, m->L, m->lattice, px, py, &((m->buffer)[0]));
+  ierr = VecRestoreArrayRead(x,&px); CHKERRQ(ierr);
+  ierr = VecRestoreArray(y,&py); CHKERRQ(ierr);
+
+  PetscFunctionReturn(0);
+}
+
+#undef __FUNCT__
+#define __FUNCT__ "MatGetDiagonal_myMat"
+PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
+{
+  PetscFunctionBeginUser;
+  PetscErrorCode ierr;
+  model *m;
+  ierr = MatShellGetContext(A, &m); CHKERRQ(ierr);
+
+  PetscScalar       *pd;
+
+  ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
+  rokko::spin_hamiltonian::fill_diagonal(m->L, m->lattice, pd);
+  ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
+
+  PetscFunctionReturn(0);
 }
 

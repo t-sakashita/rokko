@@ -44,7 +44,7 @@ unset(TESTS)
 
 # 2 & 4 processes
 
-set(TESTS diagonalize gather scatter product)
+set(TESTS diagonalize gather scatter product spin_hamiltonian_parallel_test)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
