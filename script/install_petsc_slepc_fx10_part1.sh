@@ -1,8 +1,8 @@
 #!/bin/bash
 # Reference: http://www.openpetascale.org/source/PETSc%20Installation%20Guide%20(June%202013).pdf
 
-SOURCE_DIR=$WORK/source
 SCRIPT_DIR=${0%/*}
+SOURCE_DIR=$WORK/source
 INSTALL_DIR=$WORK/rokko_lib/
 
 #wget -O - http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.4.2.tar.gz | tar zxf -
@@ -13,7 +13,7 @@ cd $WORK/build/petsc-3.4.2
 #wget -O - http://www.openpetascale.org/source/petsc-3.4.1_fujitsu_patches.tar.gz | tar zxf -
 tar xvf $SOURCE_DIR/petsc-3.4.1_fujitsu_patches.tar.gz
 
-patch -p0 < $SCRIPT_DIR/petsc-3.4.1_setCompilers.patch
+patch -p0 < petsc-3.4.1_setCompilers.patch
 
 export PETSC_DIR=$PWD
 export PETSC_ARCH=arch-fujitsu-sparc64fx-opt
