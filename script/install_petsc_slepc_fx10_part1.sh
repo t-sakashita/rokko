@@ -11,7 +11,7 @@ tar xvf $SOURCE_DIR/petsc-3.4.2.tar.gz
 
 cd $WORK/build/petsc-3.4.2
 #wget -O - http://www.openpetascale.org/source/petsc-3.4.1_fujitsu_patches.tar.gz | tar zxf -
-tar xvf $SOURCE_DIR/petsc-3.4.1_fujitsu_patches.tar.gz
+tar xvf petsc-3.4.1_fujitsu_patches.tar.gz
 
 patch -p0 < petsc-3.4.1_setCompilers.patch
 
