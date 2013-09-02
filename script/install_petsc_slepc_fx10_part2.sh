@@ -7,12 +7,10 @@ cd petsc-3.4.2
 export PETSC_DIR=$PWD
 export PETSC_ARCH=arch-fujitsu-sparc64fx-opt
 
-#export PETSC_ARCH=  #arch-installed-petsc
+#python ./reconfigure-arch-fujitsu-sparc64fx-opt.py
 
-python ./reconfigure-arch-fujitsu-sparc64fx-opt.py
-
-make all test
-make install
+#make all test
+#make install
 
 cd ..
 
@@ -21,16 +19,20 @@ cd ..
 
 # finished to install PETSc
 
-# start to install SLEPc
+# installing SLEPc
 ##wget http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.2.tar.gz
-##tar xvf slepc-3.4.2.tar.gz
+tar xvf slepc-3.4.2.tar.gz
 cd slepc-3.4.2
 
-export PETSC_DIR=$INSTALL_DIR
 export SLEPC_DIR=$PWD
-export SLEPC_ARCH=  #"arch-installed-petsc"
+export PETSC_DIR=$INSTALL_DIR
+unset PETSC_ARCH
+#export PETSC_ARCH=
 #arch-fujitsu-sparc64fx-opt
 
-./configure
+./configure --prefix=$INSTALL_DIR
+
+export PETSC_ARCH=arch-installed-petsc
 make
-#make test
+make test
+make install
