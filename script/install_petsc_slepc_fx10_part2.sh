@@ -1,29 +1,36 @@
-cd petsc-3.3-p6
+SCRIPT_DIR=${0%/*}
+INSTALL_DIR=/work/n0004/n000402/rokko_lib
 
-#./reconfigure-arch-fujitsu-sparc64fx-opt.py
+cd petsc-3.4.2
 
-#export PETSC_ARCH=arch-fujitsu-sparc64fx-opt
-
-export PETSC_ARCH=                                                                                                                                               
+# When installing petsc, PETSC_DIR must be an current dir name
 export PETSC_DIR=$PWD
+export PETSC_ARCH=arch-fujitsu-sparc64fx-opt
 
+#export PETSC_ARCH=  #arch-installed-petsc
 
-#make all test                                                                                                                                                                             
-#make install                                                                                                                                                                              
+python ./reconfigure-arch-fujitsu-sparc64fx-opt.py
+
+make all test
+make install
 
 cd ..
 
-#export PETSC_DIR=../install_build
 
-# PETScのインストールおわり
+#$INSTALL_DIR
 
-# SLEPcのインストール
-##wget http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.3-p3.tar.gz
-##tar xvf slepc-3.3-p3.tar.gz
-cd slepc-3.3-p3
+# finished to install PETSc
+
+# start to install SLEPc
+##wget http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.2.tar.gz
+##tar xvf slepc-3.4.2.tar.gz
+cd slepc-3.4.2
+
+export PETSC_DIR=$INSTALL_DIR
 export SLEPC_DIR=$PWD
-#export SLEPC_ARCH=arch-fujitsu-sparc64fx-opt
+export SLEPC_ARCH=  #"arch-installed-petsc"
+#arch-fujitsu-sparc64fx-opt
 
 ./configure
 make
-#make test 
+#make test

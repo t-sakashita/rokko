@@ -1,9 +1,8 @@
 #!/bin/bash -x
-#PJM -L "rscunit=unit1"
-#PJM -L "rscgrp=large"
-#PJM --rsc-list "node=8"
-#PJM --rsc-list "elapse=02:00:00"
-#PJM --mpi "proc=8"
+#PJM -L "rscgrp=debug"
+#PJM --rsc-list "node=1"
+#PJM --rsc-list "elapse=0:05:00"
+#PJM --mpi "proc=1"
 #PJM -s
 
 #. /work/system/Env_base
