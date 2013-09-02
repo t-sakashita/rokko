@@ -1,14 +1,18 @@
 #!/bin/bash
-#Ref: http://www.openpetascale.org/source/PETSc%20Installation%20Guide%20(June%202013).pdf
+# Reference: http://www.openpetascale.org/source/PETSc%20Installation%20Guide%20(June%202013).pdf
 
-SOURCE_DIR=/work/n0004/n000402/source
+SOURCE_DIR=$WORK/source
 SCRIPT_DIR=${0%/*}
-INSTALL_DIR=/work/n0004/n000402/rokko_lib/
+INSTALL_DIR=$WORK/rokko_lib/
 
-#wget http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.4.2.tar.gz
+#wget -O - http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.4.2.tar.gz | tar zxf -
+
 tar xvf $SOURCE_DIR/petsc-3.4.2.tar.gz
 
 cd $WORK/build/petsc-3.4.2
+#wget -O - http://www.openpetascale.org/source/petsc-3.4.1_fujitsu_patches.tar.gz | tar zxf -
+tar xvf $SOURCE_DIR/petsc-3.4.1_fujitsu_patches.tar.gz
+
 patch -p0 < $SCRIPT_DIR/petsc-3.4.1_setCompilers.patch
 
 export PETSC_DIR=$PWD
