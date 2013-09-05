@@ -8,7 +8,7 @@ message(STATUS "Display Anasazi_LIBRARIES=${Anasazi_LIBRARIES}.")
 include_directories(${Anasazi_INCLUDE_DIRS})
 link_directories(${Anasazi_LIBRARY_DIRS})
 
-set(TESTS spin_hamiltonian_parallel_LOBPCG)
+set(TESTS spin_hamiltonian_parallel_LOBPCG spin_hamiltonian_parallel_BlockKrylovSchur_product)
 
 if( DEFINED TRILINOS_PREFIX )
   foreach(name ${TESTS})

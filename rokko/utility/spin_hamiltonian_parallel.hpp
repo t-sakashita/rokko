@@ -23,7 +23,7 @@ namespace rokko {
 
 namespace spin_hamiltonian {
 
-void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, const double* v, double* w, double* buffer) {
+void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const double* v, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
   int ierr;
