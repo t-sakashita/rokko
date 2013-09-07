@@ -98,7 +98,7 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::localize
             mat(k1, k2) -= 0.25; // 0.5 * v[k2^m3 ==] - 0.25 * v[k];
           }
         } else if (k1 == k2) {
-          mat(k1,k2) += 0.25;
+          mat(k1, k2) += 0.25;
         }
       }
     }

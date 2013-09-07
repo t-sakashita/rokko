@@ -1,0 +1,143 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
+#ifndef ROKKO_UTILITY_SPIN_HAMILTONIAN2_HPP
+#define ROKKO_UTILITY_SPIN_HAMILTONIAN2_HPP
+
+#include <vector>
+#include <boost/tuple/tuple.hpp>
+
+#include <rokko/localized_matrix.hpp>
+
+namespace rokko {
+
+namespace spin_hamiltonian2 {
+
+void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& vec_j, const double* v, double* w) {
+  int N = 1 << L;
+  for (int l=0; l<lattice.size(); ++l) {
+    int i = lattice[l].first;
+    int j = lattice[l].second;
+    int jx = vec_j[l].get<0>();
+    int jy = vec_j[l].get<1>();
+    int jz = vec_j[l].get<2>();
+
+    double diag_plus = jz / 4.0;
+    double diag_minus = - jz / 4.0;
+    double offdiag_plus = (jx + jy) / 4.0;
+    double offdiag_minus = (jx - jy) / 4.0;
+
+    int m1 = 1 << i;
+    int m2 = 1 << j;
+    int m3 = m1 + m2;
+    for (int k=0; k<N; ++k) {
+      if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0)
+        w[k] += offdiag_plus * v[k^m3] + diag_minus * v[k];
+      }
+      else if ((k & m3) == m2) { // when (bit i == 0, bit j == 1)
+        w[k] += offdiag_plus * v[k^m3] + diag_minus * v[k];
+      }
+      else {
+        w[k] += diag_plus * v[k];
+      }
+      if (((k & m3) == m3) || ((k & m3) == 0)) {
+        w[k] += offdiag_minus * v[k^m3];
+      }
+    }
+  }
+}
+
+void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& vec_j, const std::vector<double>& v, std::vector<double>& w) {
+  multiply(L, lattice, vec_j, &v[0], &w[0]);
+}
+
+void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& vec_j, double* w) {
+  int N = 1 << L;
+  for (int k=0; k<N; ++k) {
+    w[k] = 0;
+  }
+
+  for (int l=0; l<lattice.size(); ++l) {
+    int i = lattice[l].first;
+    int j = lattice[l].second;
+    int jx = vec_j[l].get<0>();
+    int jy = vec_j[l].get<1>();
+    int jz = vec_j[l].get<2>();
+    double diag_plus = jz / 4.0;
+    double diag_minus = - jz/ 4.0;
+
+    int m1 = 1 << i;
+    int m2 = 1 << j;
+    int m3 = m1 + m2;
+    for (int k=0; k<N; ++k) {
+      if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        w[k] += diag_minus;
+      }
+      else if ((k & m3) == m2) {
+        w[k] += diag_minus;
+      }
+      else {
+        w[k] += diag_plus;
+      }
+    }
+  }
+}
+
+void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& vec_j, std::vector<double>& w) {
+  fill_diagonal(L, lattice, vec_j, &w[0]);
+}
+
+template <typename MATRIX_MAJOR>
+void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& vec_j, rokko::localized_matrix<MATRIX_MAJOR>& mat) {
+  mat.setZero();
+  int N = 1 << L;
+  for (int l=0; l<lattice.size(); ++l) {
+    int i = lattice[l].first;
+    int j = lattice[l].second;
+    int jx = vec_j[l].get<0>();
+    int jy = vec_j[l].get<1>();
+    int jz = vec_j[l].get<2>();
+    double diag_plus = jz / 4.0;
+    double diag_minus = - jz/ 4.0;
+    double offdiag_plus = (jx + jy) / 4.0;
+    double offdiag_minus = (jx - jy) / 4.0;
+
+    int m1 = 1 << i;
+    int m2 = 1 << j;
+    int m3 = m1 + m2;
+    for (int k1=0; k1<N; ++k1) {
+      for (int k2=0; k2<N; ++k2) {
+        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          if (k1 == (k2^m3)) {
+            mat(k1, k2) += offdiag_plus;
+          }
+          if (k1 == k2) {
+            mat(k1, k2) += diag_minus; // 0.5 * v[k2^m3 ==] - 0.25 * v[k];
+          }
+        } else if (k1 == k2) {
+          mat(k1, k2) += diag_plus;
+        }
+        if (((k2 & m3) == m3) || ((k2 & m3) == 0)) {
+          if (k1 == (k2^m3)) {
+            mat(k1, k2) += offdiag_minus;
+          }
+        }
+      }
+    }
+  }
+}
+
+} // namespace spin_hamiltonian
+
+} // namespace rokko
+
+#endif ROKKO_UTILITY_SPIN_HAMILTONIAN2_HPP
