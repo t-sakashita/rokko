@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <string>
+#include <boost/config.hpp>
 
 namespace rokko {
 
