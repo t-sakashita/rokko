@@ -19,7 +19,7 @@
 
 int main()
 {
-  int L = 3;
+  int L = 5;
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > vec_j;

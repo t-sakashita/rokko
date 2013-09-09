@@ -40,17 +40,10 @@ void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
-      if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0)
-        w[k] += offdiag_plus * v[k^m3] + diag_minus * v[k];
-      }
-      else if ((k & m3) == m2) { // when (bit i == 0, bit j == 1)
-        w[k] += offdiag_plus * v[k^m3] + diag_minus * v[k];
-      }
-      else {
-        w[k] += diag_plus * v[k];
-      }
-      if (((k & m3) == m3) || ((k & m3) == 0)) {
-        w[k] += offdiag_minus * v[k^m3];
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        w[k] += diag_minus * v[k] + offdiag_plus * v[k^m3];
+      } else {
+        w[k] += diag_plus * v[k] + offdiag_minus * v[k^m3];
       }
     }
   }
@@ -79,13 +72,9 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, cons
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
-      if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         w[k] += diag_minus;
-      }
-      else if ((k & m3) == m2) {
-        w[k] += diag_minus;
-      }
-      else {
+      } else {
         w[k] += diag_plus;
       }
     }
@@ -121,14 +110,14 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
             mat(k1, k2) += offdiag_plus;
           }
           if (k1 == k2) {
-            mat(k1, k2) += diag_minus; // 0.5 * v[k2^m3 ==] - 0.25 * v[k];
+            mat(k1, k2) += diag_minus;
           }
-        } else if (k1 == k2) {
-          mat(k1, k2) += diag_plus;
-        }
-        if (((k2 & m3) == m3) || ((k2 & m3) == 0)) {
+        } else {
           if (k1 == (k2^m3)) {
             mat(k1, k2) += offdiag_minus;
+          }
+          if (k1 == k2) {
+            mat(k1, k2) += diag_plus;
           }
         }
       }
