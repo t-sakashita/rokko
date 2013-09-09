@@ -53,6 +53,18 @@ foreach(name ${TESTS})
 endforeach(name)
 unset(TESTS)
 
+if (SLEPC_LIBRARIES)
+  include_directories(${SLEPC_INCLUDE_DIR} ${PETSC_INCLUDE_DIR})
+  set(TESTS xyz)
+  foreach(name ${TESTS})
+    add_executable(${name} ${name}.cpp)
+    target_link_libraries(${name} rokko ${SLEPC_LIBRARIES} ${PETSC_LIBRARIES} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
+    add_test(${name}-2 ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 2 ${CMAKE_CURRENT_BINARY_DIR}/${name})
+    add_test(${name}-4 ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/${name})
+  endforeach(name)
+  unset(TESTS)
+endif(SLEPC_LIBRARIES)
+
 # add_rokko_test tests
 set(TESTS frank timer spin_hamiltonian spin_hamiltonian2)
 # set(TESTS frank scatter gather)
