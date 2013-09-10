@@ -18,6 +18,7 @@ fi
 cd $HOME/build/elemental-0.80
 patch -p1 < $SCRIPT_DIR/elemental-0.80.patch
 
+cd $HOME/build
 mkdir elemental-0.80-build && cd elemental-0.80-build
 cmake -DCMAKE_CXX_COMPILER=openmpicxx -DCMAKE_C_COMPILER=openmpicc \
     -DCMAKE_Fortran_COMPILER=openmpif90 -DSHARED_LIBRARIES=ON \
