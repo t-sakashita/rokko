@@ -129,4 +129,4 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
 
 } // namespace rokko
 
-#endif ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
+#endif // ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP

@@ -281,4 +281,4 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
 
 } // namespace rokko
 
-#endif ROKKO_UTILITY_XYZ_HAMILTONIAN_PARALLEL_HPP
+#endif // ROKKO_UTILITY_XYZ_HAMILTONIAN_PARALLEL_HPP

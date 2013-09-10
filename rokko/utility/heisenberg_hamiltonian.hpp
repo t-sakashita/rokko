@@ -101,4 +101,4 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::localize
 
 } // namespace rokko
 
-#endif ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
+#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
