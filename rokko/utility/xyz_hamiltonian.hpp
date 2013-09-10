@@ -10,8 +10,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_SPIN_HAMILTONIAN2_HPP
-#define ROKKO_UTILITY_SPIN_HAMILTONIAN2_HPP
+#ifndef ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
+#define ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
 
 #include <vector>
 #include <boost/tuple/tuple.hpp>
@@ -20,7 +20,7 @@
 
 namespace rokko {
 
-namespace spin_hamiltonian2 {
+namespace xyz_hamiltonian {
 
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& vec_j, const double* v, double* w) {
   int N = 1 << L;
@@ -129,4 +129,4 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
 
 } // namespace rokko
 
-#endif ROKKO_UTILITY_SPIN_HAMILTONIAN2_HPP
+#endif ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP

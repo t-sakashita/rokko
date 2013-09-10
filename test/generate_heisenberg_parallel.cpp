@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <vector>
-#include <rokko/utility/spin_hamiltonian_parallel.hpp>
+#include <rokko/utility/heisenberg_hamiltonian_parallel.hpp>
 #include <rokko/localized_matrix.hpp>
 
 int main(int argc, char *argv[]) {
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
       v.assign(N, 0);
       if (myrank == proc) v[i] = 1;
       w.assign(N, 0);
-      rokko::spin_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v, w, buffer);
+      rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v, w, buffer);
       //std::cout << "w=";
       for (int proc = 0; proc<nproc; ++proc) {
 	if (proc == 0) {

@@ -10,15 +10,15 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_SPIN_HAMILTONIAN_HPP
-#define ROKKO_UTILITY_SPIN_HAMILTONIAN_HPP
+#ifndef ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
+#define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
 
 #include <vector>
 #include <rokko/localized_matrix.hpp>
 
 namespace rokko {
 
-namespace spin_hamiltonian {
+namespace heisenberg_hamiltonian {
 
 void multiply(int L, std::vector<std::pair<int, int> >& lattice, const double* v, double* w) {
   int N = 1 << L;
@@ -29,10 +29,7 @@ void multiply(int L, std::vector<std::pair<int, int> >& lattice, const double* v
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
-      if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0)
-        w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
-      }
-      else if ((k & m3) == m2) { // when (bit i == 0, bit j == 1)
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) || (bit i == 0, bit j == 1) 
         w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
       }
       else {
@@ -59,16 +56,11 @@ void fill_diagonal(int L, std::vector<std::pair<int, int> >& lattice, double* w)
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
-      if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-        w[k] -= 0.25;
-        //cout << "if" << endl;
-      }
-      else if ((k & m3) == m2) {
+      if (((k & m3) == m1) && ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         w[k] -= 0.25;
       }
       else {
         w[k] += 0.25;
-        //      cout << "else" << endl;
       }
     }
   }
@@ -95,7 +87,7 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::localize
             mat(k1, k2) += 0.5;
           }
           if (k1 == k2) {
-            mat(k1, k2) -= 0.25; // 0.5 * v[k2^m3 ==] - 0.25 * v[k];
+            mat(k1, k2) -= 0.25;
           }
         } else if (k1 == k2) {
           mat(k1, k2) += 0.25;
@@ -105,8 +97,8 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::localize
   }
 }
 
-} // namespace spin_hamiltonian
+} // namespace heisenberg_hamiltonian
 
 } // namespace rokko
 
-#endif ROKKO_UTILITY_SPIN_HAMILTONIAN_HPP
+#endif ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP

@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <vector>
-#include <rokko/utility/spin_hamiltonian.hpp>
+#include <rokko/utility/heisenberg_hamiltonian.hpp>
 #include <rokko/localized_matrix.hpp>
 
 int main()
@@ -30,7 +30,7 @@ int main()
     v.assign(N, 0);
     v[i] = 1;
     w.assign(N, 0);
-    rokko::spin_hamiltonian::multiply(L, lattice, v, w);
+    rokko::heisenberg_hamiltonian::multiply(L, lattice, v, w);
     for (int j=0; j<N; ++j) {
       std::cout << w[j] << " ";
     }
@@ -39,7 +39,7 @@ int main()
 
   std::cout << "fill_diagonal:" << std::endl;
   std::vector<double> v(N);
-  rokko::spin_hamiltonian::fill_diagonal(L, lattice, v);
+  rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, v);
   for (int j=0; j<N; ++j) {
     std::cout << v[j] << " ";
   }
@@ -47,7 +47,7 @@ int main()
 
   std::cout << "fill_matrix:" << std::endl;
   rokko::localized_matrix<rokko::matrix_col_major> mat(N, N);
-  rokko::spin_hamiltonian::generate(L, lattice, mat);
+  rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
       std::cout << mat(i,j) << " ";
