@@ -14,8 +14,9 @@ else
 fi
 
 cd $HOME/build/petsc-3.4.2
+unset PETSC_DIR
 ./configure --prefix=$PREFIX --with-cc=openmpicc --COPTFLAGS="-O3" --with-cxx=openmpicxx --CXXOPTFLAGS="-O3" --with-fc=openmpif77 --FOPTFLAGS="-O3" --with-mpiexec=openmpiexec \
-    --with-blas-lapack-lib="/opt/local/lib/liblapack.a -lptcblas -lptf77blas -latlas" \
+    --with-blas-lapack-lib="-framework vecLib" \
     --with-blacs-dir=$PREFIX --with-scalapack-dir=$PREFIX --with-c++-support=1 --with-debugging=0
 
 make # -j option can not be specified
