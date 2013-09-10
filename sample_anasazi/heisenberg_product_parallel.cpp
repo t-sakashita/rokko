@@ -15,7 +15,7 @@
 #endif
 #include "Epetra_Map.h"
 
-#include <rokko/utility/spin_hamiltonian_parallel.hpp>
+#include <rokko/utility/heisenberg_hamiltonian_parallel.hpp>
 #include <vector>
 
 class HeisenbergOp : public Epetra_Operator {
@@ -66,7 +66,7 @@ class HeisenbergOp : public Epetra_Operator {
     for (int i=0; i<numvectors; ++i) {
       const double* x = X[i];
       double* y = Y[i];
-      rokko::spin_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
+      rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
     }
     std::cout << "X=" << X << std::endl;
     return 0;

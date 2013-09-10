@@ -1,7 +1,7 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/utility/spin_hamiltonian.hpp>
+#include <rokko/utility/heisenberg_hamiltonian.hpp>
 
 struct model {
   int L;
@@ -108,7 +108,7 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
 
   ierr = VecGetArrayRead(x, &px); CHKERRQ(ierr);
   ierr = VecGetArray(y, &py); CHKERRQ(ierr);
-  rokko::spin_hamiltonian::multiply(m->L, m->lattice, px, py);
+  rokko::heisenberg_hamiltonian::multiply(m->L, m->lattice, px, py);
   ierr = VecRestoreArrayRead(x,&px); CHKERRQ(ierr);
   ierr = VecRestoreArray(y,&py); CHKERRQ(ierr);
 
@@ -127,7 +127,7 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
   PetscScalar       *pd;
 
   ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
-  rokko::spin_hamiltonian::fill_diagonal(m->L, m->lattice, pd);
+  rokko::heisenberg_hamiltonian::fill_diagonal(m->L, m->lattice, pd);
   ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
 
   PetscFunctionReturn(0);

@@ -1,7 +1,7 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/utility/spin_hamiltonian.hpp>
+#include <rokko/utility/heisenberg_hamiltonian.hpp>
 #include <vector>
 
 #undef __FUNCT__

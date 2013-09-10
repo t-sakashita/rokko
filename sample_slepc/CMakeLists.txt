@@ -6,7 +6,8 @@ message(STATUS "Display SLEPC_LIBRARIES=${SLEPC_LIBRARIES}.")
 
 include_directories(${SLEPC_INCLUDE_DIR} ${PETSC_INCLUDE_DIR})
 
-set(TESTS frank_serial spin_hamiltonian_serial spin_hamiltonian_matrix_parallel spin_hamiltonian_parallel)
+set(TESTS frank_1proc heisenberg_1proc heisenberg_matrix)
+# heisenberg_parallel)
 
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
