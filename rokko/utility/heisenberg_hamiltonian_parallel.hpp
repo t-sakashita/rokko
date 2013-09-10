@@ -68,7 +68,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 	}
       } else {
 	int m = 1 << (j-(L-p));
-	MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
+	MPI_Sendrecv((void*)&v[0], N, MPI_DOUBLE,
 		     myrank ^ m, 0,
 		     &buffer[0], N, MPI_DOUBLE, 
 		     myrank ^ m, 0,
@@ -95,7 +95,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
     } else {
       if (j < (L-p)) {
 	int m = 1 << (i-(L-p));
-        MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
+        MPI_Sendrecv((void*)&v[0], N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      &buffer[0], N, MPI_DOUBLE,
                      myrank ^ m, 0,
@@ -121,7 +121,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
       } else {
 	int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
 	if (((myrank & m) != m) && ((myrank & m) != 0)) {
-	  MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
+	  MPI_Sendrecv((void*)&v[0], N, MPI_DOUBLE,
 		       myrank ^ m, 0,
 		       &buffer[0], N, MPI_DOUBLE,
 		       myrank ^ m, 0,
@@ -276,4 +276,4 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
 
 } // namespace rokko
 
-#endif ROKKO_UTILITY_HEISENBERG_HAMILTONIANPARALLEL_HPP
+#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIANPARALLEL_HPP
