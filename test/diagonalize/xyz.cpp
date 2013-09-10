@@ -14,7 +14,7 @@
 #include <boost/foreach.hpp>
 
 #include <rokko/serial_solver.hpp>
-#include <rokko/utility/spin_hamiltonian2.hpp>
+#include <rokko/utility/xyz_hamiltonian.hpp>
 #include <fstream>
 
 #define BOOST_TEST_MODULE test_solver
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                       boost::unit_test::framework::master_test_suite().argv);
     rokko::localized_matrix<rokko::matrix_col_major> mat(dim, dim);
-    rokko::spin_hamiltonian2::generate(L, lattice, coupling, mat);
+    rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
     rokko::localized_vector w(dim);
     rokko::localized_matrix<rokko::matrix_col_major> Z(dim, dim);
     std::cout << "mat=" << mat << std::endl;

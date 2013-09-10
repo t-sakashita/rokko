@@ -14,7 +14,7 @@
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 
-#include <rokko/utility/spin_hamiltonian2.hpp>
+#include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/localized_matrix.hpp>
 
 int main()
@@ -22,10 +22,10 @@ int main()
   int L = 5;
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > vec_j;
+  std::vector<boost::tuple<double, double, double> > coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    vec_j.push_back(boost::make_tuple(1., 1., 1.));
+    coupling.push_back(boost::make_tuple(1., 1., 1.));
   }
 
   std::cout << "multiply:" << std::endl;
@@ -34,7 +34,7 @@ int main()
     v.assign(N, 0);
     v[i] = 1;
     w.assign(N, 0);
-    rokko::spin_hamiltonian2::multiply(L, lattice, vec_j, v, w);
+    rokko::xyz_hamiltonian::multiply(L, lattice, coupling, v, w);
     for (int j=0; j<N; ++j) {
       std::cout << w[j] << " ";
     }
@@ -43,7 +43,7 @@ int main()
 
   std::cout << "fill_diagonal:" << std::endl;
   std::vector<double> v(N);
-  rokko::spin_hamiltonian2::fill_diagonal(L, lattice, vec_j, v);
+  rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, v);
   for (int j=0; j<N; ++j) {
     std::cout << v[j] << " ";
   }
@@ -51,7 +51,7 @@ int main()
 
   std::cout << "fill_matrix:" << std::endl;
   rokko::localized_matrix<rokko::matrix_col_major> mat(N, N);
-  rokko::spin_hamiltonian2::generate(L, lattice, vec_j, mat);
+  rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
       std::cout << mat(i,j) << " ";
