@@ -229,6 +229,10 @@ public:
     return array[get_array_index(local_i, local_j)];
   }
 
+  void update_local(int local_i, int local_j, double value) {
+    array[get_array_index(local_i, local_j)] += value;
+  }
+
   void set_global(int global_i, int global_j, double value) {
     if ((is_gindex(global_i, global_j)))
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
