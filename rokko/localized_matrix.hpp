@@ -25,7 +25,7 @@ struct eigen3_matrix_major;
 
 template<>
 struct eigen3_matrix_major<rokko::matrix_row_major> {
-  static const int value= Eigen::RowMajor;
+  static const int value = Eigen::RowMajor;
 };
 
 template<>

@@ -2,6 +2,9 @@ include_directories(${ELEMENTAL_INCLUDE_DIRS})
 
 set(ROKKO_SOURCES serial_solver_factory.cpp solver_factory.cpp grid.cpp)
 
+#Eigen3
+set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
+
 #LAPACK
 set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp)
 
