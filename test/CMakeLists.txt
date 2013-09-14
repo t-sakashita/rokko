@@ -17,7 +17,7 @@ if (Boost_FOUND)
 endif (Boost_FOUND)
 
 #copy files
-set(PATTERN_FILES "heisenberg.ip")
+set(PATTERN_FILES "heisenberg.ip" "heisenberg2.ip" "xyz.ip")
 foreach( pattern_file ${PATTERN_FILES} )
   message(STATUS "Display_CURRENT_BINARARY: ${CMAKE_CURRENT_BINARY_DIR}")
   message(STATUS "Display_CURRENT_SOURCE: ${CMAKE_CURRENT_SOURCE_DIR}")

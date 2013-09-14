@@ -11,22 +11,49 @@
 *****************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/localized_matrix.hpp>
 
-int main()
+int main(int argc, char *argv[])
 {
-  int L = 5;
-  int N = 1 << L;
+  if (argc <= 1) {
+    std::cerr << "error: " << argv[0] << " xyz.ip" << std::endl;
+    exit(1);
+  }
+
+  std::ifstream ifs(argv[1]);
+  if (!ifs) {
+    std::cout << "can't open file" << std::endl;
+    exit(2);
+  }
+
+  int L, num_bonds;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
-  for (int i=0; i<L-1; ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
-    coupling.push_back(boost::make_tuple(1., 1., 1.));
+  ifs >> L >> num_bonds;
+  for (int i=0; i<num_bonds; ++i) {
+    int j, k;
+    ifs >> j >> k;
+    lattice.push_back(std::make_pair(j, k));
   }
+  
+  for (int i=0; i<num_bonds; ++i) {
+    double jx, jy, jz;
+    ifs >> jx >> jy >> jz;
+    coupling.push_back(boost::make_tuple(jx, jy, jz));
+  }
+  
+  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
+  for (int i=0; i<num_bonds; ++i) {
+    std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+  }
+  int dim = 1 << L;
+  int N = dim;
+  std::cout << "dim=" << dim << std::endl;
 
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
