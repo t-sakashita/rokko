@@ -230,6 +230,7 @@ public:
   }
 
   void update_local(int local_i, int local_j, double value) {
+    //std::cout << "m_local=" << m_local << " n_local=" << n_local << " local_i=" << local_i << " local_j=" << local_j << std::endl;
     array[get_array_index(local_i, local_j)] += value;
   }
 
@@ -250,6 +251,13 @@ public:
     }
   }
 
+  void set_zeros() {
+    for (int local_i=0; local_i<m_local; ++local_i) {
+      for (int local_j=0; local_j<n_local; ++local_j) {
+        set_local(local_i, local_j, 0);
+      }
+    }
+  }
   bool is_row_major() const {
     return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }

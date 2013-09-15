@@ -17,6 +17,7 @@
 #include <boost/tuple/tuple.hpp>
 
 #include <rokko/localized_matrix.hpp>
+#include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
 
@@ -120,6 +121,49 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
           }
           if (k1 == k2) {
             mat(k1, k2) += diag_plus;
+          }
+        }
+      }
+    }
+  }
+}
+
+template <typename MATRIX_MAJOR>
+void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+  //mat.set_zeros();
+  int N = 1 << L;
+  for (int l=0; l<lattice.size(); ++l) {
+    int i = lattice[l].first;
+    int j = lattice[l].second;
+    double jx = coupling[l].get<0>();
+    double jy = coupling[l].get<1>();
+    double jz = coupling[l].get<2>();
+    double diag_plus = jz / 4.0;
+    double diag_minus = - jz/ 4.0;
+    double offdiag_plus = (jx + jy) / 4.0;
+    double offdiag_minus = (jx - jy) / 4.0;
+
+    int m1 = 1 << i;
+    int m2 = 1 << j;
+    int m3 = m1 + m2;
+    for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
+      int k1 = mat.translate_l2g_row(local_i);
+      for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
+        int k2 = mat.translate_l2g_col(local_j);
+        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          if (k1 == (k2^m3)) {
+            mat.update_local(k1, k2, offdiag_plus);
+          }
+          if (k1 == k2) {
+            mat.update_local(k1, k2, diag_minus);
+          }
+        } else {
+          if (k1 == (k2^m3)) {
+            mat.update_local(k1, k2, offdiag_minus);
+          }
+          if (k1 == k2) {
+            std::cout << "k1=" << k1 << " k2=" << k2 << std::endl;
+            //            mat.update_local(k1, k2, diag_plus);
           }
         }
       }
