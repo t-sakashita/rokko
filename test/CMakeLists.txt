@@ -17,13 +17,13 @@ if (Boost_FOUND)
 endif (Boost_FOUND)
 
 #copy files
-set(PATTERN_FILES "heisenberg.ip" "heisenberg2.ip" "xyz.ip")
-foreach( pattern_file ${PATTERN_FILES} )
-  message(STATUS "Display_CURRENT_BINARARY: ${CMAKE_CURRENT_BINARY_DIR}")
-  message(STATUS "Display_CURRENT_SOURCE: ${CMAKE_CURRENT_SOURCE_DIR}")
-  message(STATUS "Display_pattern: ${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file}")
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file} ${CMAKE_CURRENT_BINARY_DIR}/${pattern_file} COPYONLY)
-endforeach( pattern_file )
+#set(PATTERN_FILES "heisenberg.ip" "heisenberg2.ip" "xyz.ip")
+#foreach( pattern_file ${PATTERN_FILES} )
+#  message(STATUS "Display_CURRENT_BINARARY: ${CMAKE_CURRENT_BINARY_DIR}")
+#  message(STATUS "Display_CURRENT_SOURCE: ${CMAKE_CURRENT_SOURCE_DIR}")
+#  message(STATUS "Display_pattern: ${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file}")
+#  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file} ${CMAKE_CURRENT_BINARY_DIR}/${pattern_file} COPYONLY)
+#endforeach( pattern_file )
 
 # single process tests
 set(TESTS solver_factory localized_matrix)
@@ -53,7 +53,7 @@ unset(TESTS)
 
 # 2 & 4 processes
 
-set(TESTS gather scatter generate_heisenberg_parallel)
+set(TESTS gather scatter)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -63,12 +63,12 @@ endforeach(name)
 unset(TESTS)
 
 # add_rokko_test tests
-set(TESTS frank timer generate_heisenberg generate_xyz)
-# set(TESTS frank scatter gather)
+set(TESTS timer)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
   add_rokko_test(${name})
 endforeach(name)
 
+add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
