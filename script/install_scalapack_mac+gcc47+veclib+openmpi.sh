@@ -15,7 +15,10 @@ fi
 
 cd $HOME/build
 mkdir -p scalapack-2.0.2-build && cd scalapack-2.0.2-build
-cmake -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_C_COMPILER=openmpicc -DCMAKE_Fortran_COMPILER=openmpif90 -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_INSTALL_NAME_DIR=$PREFIX/lib $HOME/build/scalapack-2.0.2
+cmake -DCMAKE_C_COMPILER=openmpicc -DCMAKE_Fortran_COMPILER=openmpif90 \
+    -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
+    -DCMAKE_INSTALL_NAME_DIR=$PREFIX/lib \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/scalapack-2.0.2
 
 make -j4
 make install
