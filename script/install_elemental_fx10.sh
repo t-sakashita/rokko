@@ -23,8 +23,9 @@ cd $HOME/build
 mkdir elemental-0.80-build && cd elemental-0.80-build
 cmake -DCMAKE_C_COMPILER=mpifccpx -DCMAKE_C_FLAGS="-Kfast -Xg -mt" \
     -DCMAKE_CXX_COMPILER=mpiFCCpx -DCMAKE_CXX_FLAGS="-Kfast -Xg -mt" \
-    -DCMAKE_Fortran_COMPILER=mpifrtpx -DCMAKE_Fortran_FLAGS="-Kfast -mt" \
-    -DMATH_LIBS="-SSL2 --linkfortran" -DSHARED_LIBRARIES=ON \
+    -DCMAKE_Fortran_COMPILER=mpifrtpx -DCMAKE_Fortran_FLAGS="-Kfast -mt"
+    -DMATH_LIBS="-SSL2 --linkfortran" \
+    -DSHARED_LIBRARIES=ON \
     -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.80
 
 make -j4 all
