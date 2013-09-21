@@ -21,10 +21,12 @@ patch -p1 < $SCRIPT_DIR/elemental-0.80.patch
 cd $HOME/build
 mkdir elemental-0.80-build && cd elemental-0.80-build
 cmake -DCMAKE_CXX_COMPILER=openmpicxx -DCMAKE_C_COMPILER=openmpicc \
-    -DCMAKE_Fortran_COMPILER=openmpif90 -DSHARED_LIBRARIES=ON \
+    -DCMAKE_Fortran_COMPILER=openmpif90 \
     -DMATH_LIBS="-Wl,-framework -Wl,vecLib" \
-    -DCMAKE_INSTALL_NAME_DIR=$PREFIX/lib -DCMAKE_INSTALL_PREFIX=$PREFIX -DELEM_EXAMPLES=ON \
-    -DELEM_TESTS=ON $HOME/build/elemental-0.80
+    -DCMAKE_INSTALL_NAME_DIR=$PREFIX/lib \
+    -DELEM_EXAMPLES=ON -DELEM_TESTS=ON \
+    -DSHARED_LIBRARIES=ON \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.80
 
 make -j4 all
 make install
