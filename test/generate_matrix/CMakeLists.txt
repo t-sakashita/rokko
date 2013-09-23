@@ -26,7 +26,7 @@ endif (Boost_FOUND)
 #endforeach( pattern_file )
 
 #set(TESTS frank heisenberg xyz)
-set(TESTS heisenberg)
+set(TESTS heisenberg xyz)
 
 foreach(name ${TESTS})
   set(target_name generate_matrix_${name})
@@ -36,7 +36,7 @@ foreach(name ${TESTS})
   add_test(${target_name} ${name})
 endforeach(name)
 
-set(TESTS heisenberg_mpi)
+set(TESTS heisenberg_mpi xyz_mpi)
 foreach(name ${TESTS})
   set(target_name generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
