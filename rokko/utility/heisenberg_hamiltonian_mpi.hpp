@@ -203,8 +203,8 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distribu
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int local_k1=0; local_k1<mat.get_m_local(); ++local_k1) {
+      int k1 = mat.translate_l2g_row(local_k1);
       for (int local_k2=0; local_k2<mat.get_n_local(); ++local_k2) {
-        int k1 = mat.translate_l2g_row(local_k1);
         int k2 = mat.translate_l2g_col(local_k2);
         if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (k1 == (k2^m3)) {
