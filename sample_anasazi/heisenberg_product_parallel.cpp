@@ -15,7 +15,7 @@
 #endif
 #include "Epetra_Map.h"
 
-#include <rokko/utility/heisenberg_hamiltonian_parallel.hpp>
+#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <vector>
 
 class HeisenbergOp : public Epetra_Operator {

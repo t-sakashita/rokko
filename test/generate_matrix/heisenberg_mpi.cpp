@@ -12,14 +12,26 @@
 
 #include <iostream>
 #include <vector>
-#include <rokko/utility/heisenberg_hamiltonian_parallel.hpp>
+#include <rokko/solver.hpp>
+#include <rokko/grid.hpp>
+#include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
+#include <rokko/utility/heisenberg_hamiltonian.hpp>
+#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+
+#include <rokko/collective.hpp>
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
 
-  int L = 5;
-  
+  std::string solver_name("scalapack");
+  rokko::solver solver(solver_name);
+  solver.initialize(argc, argv);
+  MPI_Comm comm = MPI_COMM_WORLD;
+  rokko::grid g(comm, rokko::grid_col_major);
+  const int root = 0;
+
+  int L = 5;  
   std::vector<std::pair<int, int> > lattice;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
@@ -48,35 +60,43 @@ int main(int argc, char *argv[]) {
   }
   int N = 1 << (L-p);
 
+  // creating column vectors which forms a heisenberg hamiltonian.
+  int N_global = 1 << L;
+  rokko::localized_matrix<rokko::matrix_col_major> lmat0(N_global, N_global);
   std::vector<double> buffer(N);
-  for (int proc = 0; proc<nproc; ++proc) {
-    for (int i=0; i<N; ++i) {
-      std::vector<double> v, w;
-      v.assign(N, 0);
-      if (myrank == proc) v[i] = 1;
-      w.assign(N, 0);
-      rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v, w, buffer);
-      //std::cout << "w=";
-      for (int proc = 0; proc<nproc; ++proc) {
-	if (proc == 0) {
-	  if (myrank == proc) {
-	    for (int j=0; j<N; ++j) {
-	      std::cout << w[j] << " ";
-	    }
-	  }
-	} else {
-	  if (myrank == proc) {
-	    MPI_Send(&w[0], N, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-	  }
-	  if (myrank == 0) {
-            MPI_Recv(&buffer[0], N, MPI_DOUBLE, proc, 0, MPI_COMM_WORLD, &status);
-	    for (int j=0; j<N; ++j) {
-	      std::cout << buffer[j] << " ";
-	    }
-	  }
-	}
-      }
-      if (myrank == 0) std::cout << std::endl;
+  for (int i=0; i<N; ++i) {
+    std::vector<double> v, w;
+    v.assign(N, 0);
+    v[i] = 1;
+    w.assign(N, 0);
+    rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v, w, buffer);
+    for (int j=0; j<N; ++j) {
+      //lmat0(myrank * N + j, myrank * N + i) = w[j];
+      std::cout << w[j] << " ";
+    }
+    std::cout << std::endl;
+  }
+
+  // create a hamiltonian as a distributed_matrix and gather to compare a matrix genereated by serial version
+  rokko::distributed_matrix<rokko::matrix_col_major> mat(N_global, N_global, g, solver);
+  rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
+
+  rokko::localized_matrix<rokko::matrix_col_major> lmat1(N_global, N_global);
+  rokko::gather(mat, lmat1, root);
+
+  // create a matrix genereated by serail version
+  rokko::localized_matrix<rokko::matrix_col_major> lmat2(N_global, N_global);
+  rokko::heisenberg_hamiltonian::generate(L, lattice, lmat2);
+
+  //mat.print();
+  if (myrank == root) {
+    if (lmat1 == lmat2) {
+      std::cout << "OK: matrix by MPI version 'generate' equals to a matrix by serial version 'genertate'." << std::endl;
+    } else {
+      std::cout << "ERROR: matrix by MPI version 'generate' is differnet from a matrix by serial version 'genertate'." << std::endl;
+      std::cout << "lmat1=" << std::endl << lmat1 << std::endl;
+      std::cout << "lmat2=" << std::endl << lmat2 << std::endl;
+      MPI_Abort(MPI_COMM_WORLD, 1);
     }
   }
 

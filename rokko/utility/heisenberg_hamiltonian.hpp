@@ -56,7 +56,7 @@ void fill_diagonal(int L, std::vector<std::pair<int, int> >& lattice, double* w)
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
-      if (((k & m3) == m1) && ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         w[k] -= 0.25;
       }
       else {
