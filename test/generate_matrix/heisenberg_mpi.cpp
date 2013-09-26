@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   rokko::grid g(comm, rokko::grid_col_major);
   const int root = 0;
 
-  int L = 5;  
+  int L = 4;  
   std::vector<std::pair<int, int> > lattice;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
