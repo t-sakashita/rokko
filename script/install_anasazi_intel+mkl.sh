@@ -16,6 +16,7 @@ cmake \
     -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
     -DTPL_ENABLE_MPI=ON -DMPI_USE_COMPILER_WRAPPERS=ON \
     -DMPI_Fortran_COMPILER="mpif90" -DCMAKE_CXX_COMPILER="mpicxx" -DCMAKE_C_COMPILER="mpicc" \
+    -DCMAKE_CXX_FLAGS="-O3 -xSSE3" -DCMAKE_C_FLAGS="-O3 -xSSE3" -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
     -DBLAS_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_BLAS_LIBRARIES="-mkl=parallel" \
     -DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
     -DTrilinos_ENABLE_Anasazi=ON \
@@ -23,6 +24,6 @@ cmake \
     -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
     $HOME/build/trilinos-11.4.1-Source
 
-make -j4
+make -j4 VERBOSE=1
 make test
 make install

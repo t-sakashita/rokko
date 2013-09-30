@@ -23,6 +23,7 @@ mkdir elemental-0.80-build && cd elemental-0.80-build
 if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
   cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc \
       -DCMAKE_Fortran_COMPILER=mpif90 \
+      -DCMAKE_CXX_FLAGS="-O3 -xSSE3" -DCMAKE_C_FLAGS="-O3 -xSSE3" -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
       -DMATH_LIBS="-mkl=parallel;-lifcore" -DIFCORE_LIB="-lifcore" \
       -DELEM_EXAMPLES=ON -DELEM_TESTS=ON \
       -DSHARED_LIBRARIES=ON \
@@ -30,6 +31,7 @@ if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
 else
   cmake -DCMAKE_CXX_COMPILER=icpc -DCMAKE_C_COMPILER=icc \
       -DCMAKE_Fortran_COMPILER=ifort \
+      -DCMAKE_CXX_FLAGS="-O3 -xSSE3" -DCMAKE_C_FLAGS="-O3 -xSSE3" -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
       -DMPI_C_INCLUDE_PATH="/usr/include" -DMPI_CXX_INCLUDE_PATH="/usr/include" \
       -DMPI_C_LIBRARIES="-lmpi" -DMPI_CXX_LIBRARIES="-lmpi++;-lmpi" \
       -DMPI_Fortran_LIBRARIES="-lmpi" \
@@ -39,5 +41,5 @@ else
       -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.80
 fi
 
-make -j4 all
+make -j4 all VERBOSE=1
 make install

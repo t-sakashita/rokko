@@ -15,7 +15,10 @@ fi
 
 cd $HOME/build/petsc-3.4.2
 unset PETSC_DIR
-./configure --prefix="$PREFIX" --with-cc="mpicc" --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" --with-cxx="mpic++" --with-fc="mpif77" --with-mpiexec="mpiexec" \
+./configure --prefix="$PREFIX" \
+  --with-cc="mpicc" --with-cxx="mpic++" --with-fc="mpif77" \
+  --COPTFLAGS="-O3 -xSSE3" --CXXOPTFLAGS="-O3 -xSSE3" --FOPTFLAGS="-O3 -xSSE3" \
+  --with-mpiexec="mpiexec" \
   --with-blas-lapack-dir=$MKLROOT/bin/intel64 --with-c++-support=1 --with-debugging=0
 
 make # -j option can not be specified
