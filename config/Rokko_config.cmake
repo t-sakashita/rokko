@@ -11,8 +11,6 @@
 # options
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_LAPACKE "Build lapacke library" ON)
-option(BUILD_EIGEN_S "Build eigen_s library" OFF)
-option(BUILD_EIGEN_SX "Build eigen_sx library" OFF)
 
 # RPATH setting
 if(APPLE)
@@ -50,45 +48,25 @@ endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
-# LAPACK/ScaLAPACK fallback
-if ( NOT DEFINED SCALAPACK_LIB )
-  # Find LAPACK libraries
-  find_package(BLAS)
-  if ( BLAS_FOUND )
-    find_package(LAPACK)
-    if ( LAPACK_FOUND )
-      set(SCALAPACK_LIB ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
-      set(SCALAPACK_LIB ${SCALAPACK_LIB} -lscalapack-openmpi -lblacs-openmpi -lblacsCinit-openmpi)
-    endif ( LAPACK_FOUND )
-  endif ( BLAS_FOUND )
-endif ( NOT DEFINED SCALAPACK_LIB )
+find_package(BLAS)
+find_package(LAPACK)
+find_package(SCALAPACK)
+set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
 
-if (EIGEN_EXA_LIB)
-   set(BUILD_EIGEN_SX OFF)
-   set(BUILD_EIGEN_EXA ON)
-endif (EIGEN_EXA_LIB)
-
-if (ELPA_LIB)
-   set(BUILD_ELPA ON)
-endif (ELPA_LIB)
+# find EigenExa
+find_package(EigenExa)
+set(BUILD_EIGENEXA ${EIGENEXA_FOUND})
 
 # find Elemental
-if (ELEMENTAL_DIR)
-   find_package(Elemental)
-endif (ELEMENTAL_DIR)
+find_package(Elemental)
+set(BUILD_ELEMENTAL ${ELEMENTAL_FOUND})
+
+# find Elpa
+find_package(Elpa)
+set(BUILD_ELPA ${ELPA_FOUND})
 
 # find PETSc/SLEPc
-# Normally PETSc is built with MPI, if not, use CC=mpicc, etc, so we need to specify CXX as an option.
-if (USE_SLEPC)
-   set(PETSC_DIR "/home/sakashita/rokko_lib")
-   set(SLEPC_DIR "/home/sakashita/rokko_lib")
-   find_package(PETSc2 COMPONENTS CXX)
-   message(STATUS "Display_main PETSC_LIBRARIES=${PETSC_LIBRARIES}.")
-   # Added by Sakashita
-   set(PETSC_INCLUDE_DIRS ${PETSC_INCLUDES})
-   message(STATUS "Display_main PETSC_INCLUDE_DIRS=${PETSC_INCLUDE_DIRS}.")
-   find_package(SLEPc2)
-   message(STATUS "Display_main CMAKE_REQUIRED_INCLUDES=${CMAKE_REQUIRED_INCLUDES}.")
-   message(STATUS "Display_main CMAKE_REQUIRED_LIBRARIES=${CMAKE_REQUIRED_LIBRARIES}.")
-endif (USE_SLEPC)
-
+find_package(PETSc2 COMPONENTS CXX)
+find_package(SLEPc2)
+set(BUILD_PETSC ${PETSC_FOUND})
+set(BUILD_SLEPC ${SLEPC_FOUND})

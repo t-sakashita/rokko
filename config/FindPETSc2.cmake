@@ -2,7 +2,7 @@
 # Once done this will define
 #
 #  PETSC_FOUND        - system has PETSc
-#  PETSC_INCLUDES     - the PETSc include directories
+#  PETSC_INCLUDE_DIR  - the PETSc include directory
 #  PETSC_LIBRARIES    - Link these to use PETSc
 #  PETSC_COMPILER     - Compiler used by PETSc, helpful to find a compatible MPI
 #  PETSC_DEFINITIONS  - Compiler switches for using PETSc
@@ -21,6 +21,20 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
+
+if(DEFINED PETSC_FOUND)
+  return()
+endif(DEFINED PETSC_FOUND)
+  
+message(STATUS "Checking for PETSc library")
+set(PETSC_FOUND FALSE)
+
+# Standard search path
+set(_PATHS "")
+if(ROKKO_SOLVER_DIR)
+  list(APPEND _PATHS ${ROKKO_SOLVER_DIR})
+endif(ROKKO_SOLVER_DIR)
+list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
 
 set(PETSC_VALID_COMPONENTS
   C
@@ -68,12 +82,17 @@ function (petsc_get_version)
   endif ()
 endfunction ()
 
-find_path (PETSC_DIR include/petsc.h
-  HINTS ENV PETSC_DIR
-  PATHS
-  /usr/lib/petscdir/3.1 /usr/lib/petscdir/3.0.0 /usr/lib/petscdir/2.3.3 /usr/lib/petscdir/2.3.2 # Debian
-  $ENV{HOME}/petsc
-  DOC "PETSc Directory")
+find_path(_PETSC_DIR include/petscversion.h
+  HINTS ${PETSC_DIR} $ENV{PETSC_DIR} PATHS ${_PATHS}
+  DOC "PETSc directory")
+if(_PETSC_DIR)
+  set(PETSC_INCLUDE_DIR "${_PETSC_DIR}/include")
+else(_PETSC_DIR)
+  message(STATUS "PETSc library: not found")
+  set(PETSC_FOUND FALSE)
+  return()
+endif(_PETSC_DIR)
+set(PETSC_DIR ${_PETSC_DIR})
 
 find_program (MAKE_EXECUTABLE NAMES make gmake)
 
@@ -155,8 +174,6 @@ show :
   # Extract include paths and libraries from compile command line
   resolve_includes (petsc_includes_all "${petsc_cpp_line}")
 
-  message (STATUS "petsc_lib_dir ${petsc_lib_dir}")
-
   macro (PETSC_FIND_LIBRARY suffix name)
     set (PETSC_LIBRARY_${suffix} "NOTFOUND" CACHE INTERNAL "Cleared" FORCE) # Clear any stale value, if we got here, we need to find it again
     find_library (PETSC_LIBRARY_${suffix} NAMES ${name} HINTS ${petsc_lib_dir} NO_DEFAULT_PATH)
@@ -190,11 +207,11 @@ show :
       set (PETSC_LIBRARIES_${pkg} "${PETSC_LIBRARY_SINGLE}")
     endforeach ()
   endif ()
-  if (PETSC_LIBRARY_TS)
-    message (STATUS "Recognized PETSc install with separate libraries for each package")
-  else ()
-    message (STATUS "Recognized PETSc install with single library for all packages")
-  endif ()
+  # if (PETSC_LIBRARY_TS)
+  #   message (STATUS "Recognized PETSc install with separate libraries for each package")
+  # else ()
+  #   message (STATUS "Recognized PETSc install with single library for all packages")
+  # endif ()
 
   include(Check${PETSC_LANGUAGE_BINDINGS}SourceRuns)
   macro (PETSC_TEST_RUNS includes libraries runs)
@@ -239,12 +256,12 @@ int main(int argc,char *argv[]) {
 
   petsc_test_runs ("${petsc_includes_minimal}" "${PETSC_LIBRARIES_TS}" petsc_works_minimal)
   if (petsc_works_minimal)
-    message (STATUS "Minimal PETSc includes and libraries work.  This probably means we are building with shared libs.")
+    # message (STATUS "Minimal PETSc includes and libraries work.  This probably means we are building with shared libs.")
     set (petsc_includes_needed "${petsc_includes_minimal}")
   else (petsc_works_minimal)	# Minimal includes fail, see if just adding full includes fixes it
     petsc_test_runs ("${petsc_includes_all}" "${PETSC_LIBRARIES_TS}" petsc_works_allincludes)
     if (petsc_works_allincludes) # It does, we just need all the includes (
-      message (STATUS "PETSc requires extra include paths, but links correctly with only interface libraries.  This is an unexpected configuration (but it seems to work fine).")
+      # message (STATUS "PETSc requires extra include paths, but links correctly with only interface libraries.  This is an unexpected configuration (but it seems to work fine).")
       set (petsc_includes_needed ${petsc_includes_all})
     else (petsc_works_allincludes) # We are going to need to link the external libs explicitly
       resolve_libraries (petsc_libraries_external "${petsc_libs_external}")
@@ -253,14 +270,14 @@ int main(int argc,char *argv[]) {
       endforeach (pkg)
       petsc_test_runs ("${petsc_includes_minimal}" "${PETSC_LIBRARIES_TS}" petsc_works_alllibraries)
       if (petsc_works_alllibraries)
-	 message (STATUS "PETSc only need minimal includes, but requires explicit linking to all dependencies.  This is expected when PETSc is built with static libraries.")
+	 # message (STATUS "PETSc only need minimal includes, but requires explicit linking to all dependencies.  This is expected when PETSc is built with static libraries.")
 	set (petsc_includes_needed ${petsc_includes_minimal})
       else (petsc_works_alllibraries)
 	# It looks like we really need everything, should have listened to Matt
 	set (petsc_includes_needed ${petsc_includes_all})
 	petsc_test_runs ("${petsc_includes_all}" "${PETSC_LIBRARIES_TS}" petsc_works_all)
 	if (petsc_works_all) # We fail anyways
-	  message (STATUS "PETSc requires extra include paths and explicit linking to all dependencies.  This probably means you have static libraries and something unexpected in PETSc headers.")
+	  # message (STATUS "PETSc requires extra include paths and explicit linking to all dependencies.  This probably means you have static libraries and something unexpected in PETSc headers.")
 	else (petsc_works_all) # We fail anyways
 	  message (STATUS "PETSc could not be used, maybe the install is broken.")
 	endif (petsc_works_all)
@@ -285,7 +302,8 @@ int main(int argc,char *argv[]) {
   mark_as_advanced (PETSC_INCLUDES PETSC_LIBRARIES PETSC_COMPILER PETSC_DEFINITIONS PETSC_MPIEXEC PETSC_EXECUTABLE_RUNS)
 endif ()
 
-include (FindPackageHandleStandardArgs)
-find_package_handle_standard_args (PETSc
-  "PETSc could not be found.  Be sure to set PETSC_DIR and PETSC_ARCH."
-  PETSC_INCLUDES PETSC_LIBRARIES PETSC_EXECUTABLE_RUNS)
+set(PETSC_FOUND TRUE)
+message(STATUS "PETSc version: ${PETSC_VERSION}")
+message(STATUS "PETSc include directory: ${PETSC_INCLUDE_DIR}")
+message(STATUS "PETSc libraries: ${PETSC_LIBRARIES}")
+message(STATUS "PETSc definitions: ${PETSC_DEFINITIONS}")
