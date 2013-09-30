@@ -29,6 +29,7 @@ if(OPENMP_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
   # Almost always OpenMP flags are same both for C and for Fortran.
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_C_FLAGS}")
+  set(ALPS_USE_MKL_PARALLEL TRUE)
 endif(OPENMP_FOUND)
 
 # MPI library
@@ -48,9 +49,14 @@ endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
-find_package(BLAS)
-find_package(LAPACK)
-find_package(SCALAPACK)
+# find_package(BLAS)
+find_package(Lapack)
+if(NOT LAPACK_FOUND)
+  message(FATAL "LAPACK not found")
+endif(NOT LAPACK_FOUND)
+
+# find Scalapack
+find_package(Scalapack)
 set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
 
 # find EigenExa
