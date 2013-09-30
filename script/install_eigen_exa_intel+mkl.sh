@@ -20,8 +20,9 @@ patch -p1 < $SCRIPT_DIR/EigenExa-1.3.patch
 cd $HOME/build
 rm -rf EigenExa-1.3-build && mkdir -p EigenExa-1.3-build && cd EigenExa-1.3-build
 cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
-    -DCMAKE_CXX_COMPILER=openmpicxx -DCMAKE_C_COMPILER=openmpicc -DCMAKE_Fortran_COMPILER=openmpif90 \
-    -DSCALAPACK_LIB="-L$PREFIX/lib -lscalapack -Wl,-framework -Wl,vecLib" \
+    -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
+    -DCMAKE_CXX_FLAGS="-O3 -xSSE3" -DCMAKE_C_FLAGS="-O3 -xSSE3" -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
+    -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
     $HOME/build/EigenExa-1.3
 
 make -j4 VERBOSE=1

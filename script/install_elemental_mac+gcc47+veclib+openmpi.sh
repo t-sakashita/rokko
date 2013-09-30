@@ -28,5 +28,5 @@ cmake -DCMAKE_CXX_COMPILER=openmpicxx -DCMAKE_C_COMPILER=openmpicc \
     -DSHARED_LIBRARIES=ON \
     -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.80
 
-make -j4 all
+make -j4 all VERBOSE=1
 make install

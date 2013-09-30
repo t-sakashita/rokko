@@ -17,5 +17,5 @@ cd $HOME/build/slepc-3.4.2
 unset SLEPC_DIR PETSC_DIR PETSC_ARCH
 ./configure --prefix=$PREFIX
 
-make SLEPC_DIR=$PWD PETSC_DIR=/opt/rokko PETSC_ARCH=arch-installed-petsc
-make SLEPC_DIR=$PWD PETSC_DIR=/opt/rokko PETSC_ARCH=arch-installed-petsc install
+make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX PETSC_ARCH=arch-installed-petsc
+make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX PETSC_ARCH=arch-installed-petsc install

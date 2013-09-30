@@ -16,9 +16,9 @@ patch -p1 < $SCRIPT_DIR/elpa_lib-201305-cmake.patch
 
 cd $HOME/build
 mkdir -p elpa_lib-201305-build && cd elpa_lib-201305-build
-cmake -DCMAKE_C_COMPILER=openmpicc \
-    -DCMAKE_Fortran_COMPILER=openmpif90 -DCMAKE_Fortran_FLAGS="-O3 -ffree-line-length-none" \
-    -DSCALAPACK_LIB="-L$PREFIX/lib -lscalapack -Wl,-framework -Wl,vecLib" \
+cmake -DCMAKE_C_COMPILER=mpicc \
+    -DCMAKE_Fortran_COMPILER=mpif90 -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
+    -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
     -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elpa_lib-201305
 
 make -j4 VERBOSE=1

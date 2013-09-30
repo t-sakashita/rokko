@@ -15,9 +15,10 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
     -DTPL_ENABLE_MPI=ON -DMPI_USE_COMPILER_WRAPPERS=ON \
-    -DCMAKE_Fortran_COMPILER="openmpif90" -DCMAKE_CXX_COMPILER="openmpicxx" -DCMAKE_C_COMPILER="openmpicc" \
-    -DTPL_BLAS_LIBRARIES="-framework veclib" \
-    -DTPL_LAPACK_LIBRARIES="-framework veclib" \
+    -DMPI_Fortran_COMPILER="mpif90" -DCMAKE_CXX_COMPILER="mpicxx" -DCMAKE_C_COMPILER="mpicc" \
+    -DCMAKE_CXX_FLAGS="-O3 -xSSE3" -DCMAKE_C_FLAGS="-O3 -xSSE3" -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
+    -DBLAS_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_BLAS_LIBRARIES="-mkl=parallel" \
+    -DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
     -DTrilinos_ENABLE_Anasazi=ON \
     -DTrilinos_ENABLE_Didasko=ON \
     -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
