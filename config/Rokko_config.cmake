@@ -72,7 +72,7 @@ find_package(Elpa)
 set(BUILD_ELPA ${ELPA_FOUND})
 
 # find PETSc/SLEPc
-find_package(PETSc2 COMPONENTS CXX)
-find_package(SLEPc2)
+find_package(PETSc COMPONENTS CXX)
+find_package(SLEPc)
 set(BUILD_PETSC ${PETSC_FOUND})
 set(BUILD_SLEPC ${SLEPC_FOUND})
