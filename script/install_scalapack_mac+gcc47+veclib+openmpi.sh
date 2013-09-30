@@ -20,5 +20,5 @@ cmake -DCMAKE_C_COMPILER=openmpicc -DCMAKE_Fortran_COMPILER=openmpif90 \
     -DCMAKE_INSTALL_NAME_DIR=$PREFIX/lib \
     -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/scalapack-2.0.2
 
-make -j4
+make -j4 VERBOSE=1
 make install

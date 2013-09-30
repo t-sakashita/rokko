@@ -23,8 +23,6 @@ cmake \
     -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
     $HOME/build/trilinos-11.4.1-Source
 
-# -DTPL_ENABLE_Boost=ON -DBoost_INCLUDE_DIRS=/opt/boost/boost_1_53_0
-
-make -j4
+make -j4 VERBOSE=1
 make test
 make install
