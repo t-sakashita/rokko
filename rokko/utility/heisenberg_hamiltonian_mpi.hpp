@@ -17,7 +17,8 @@
 #include <vector>
 #include <iostream>
 
-#include <rokko/localized_matrix.hpp>
+//#include <rokko/localized_matrix.hpp>
+#include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
 
@@ -143,7 +144,7 @@ void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& la
   multiply(comm, L, lattice, &v[0], &w[0], &buffer[0]);
 }
 
-/*
+
 void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
@@ -177,91 +178,12 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
 	int m2 = 1 << j;
 	int m3 = m1 + m2;
 	for (int k=0; k<N; ++k) {
-	  if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-	    w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
-	  }
-	  else if ((k & m3) == m2) {
-	    w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
-	  }
-	  else {
-	    w[k] += 0.25 * v[k];
+	  if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+	    w[k] -= 0.25;
+	  } else {
+	    w[k] += 0.25;
 	  }
 	}
-      } else {
-	int m = 1 << (j-(L-p));
-	MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
-		     myrank ^ m, 0,
-		     &buffer[0], N, MPI_DOUBLE, 
-		     myrank ^ m, 0,
-		     comm, &status);
-	int m1 = 1 << i;
-	if ((myrank & m) == m) { 
-	  for (int k=0; k<N; ++k) {
-	    if ((k & m1) == m1) {
-	      w[k] += 0.25 * v[k];
-	    } else {
-	      w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
-	    }
-	  }
-	} else {
-	  for (int k=0; k<N; ++k) {
-	    if ((k & m1) == m1) {
-	      w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
-	    } else {
-	      w[k] += 0.25 * v[k];
-	    }
-	  }
-	}
-      }
-    } else {
-      if (j < (L-p)) {
-	int m = 1 << (i-(L-p));
-        MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
-                     myrank ^ m, 0,
-                     &buffer[0], N, MPI_DOUBLE,
-                     myrank ^ m, 0,
-                     comm, &status);
-        int m1 = 1 << j;
-        if ((myrank & m) == m) {
-          for (int k=0; k<N; ++k) {
-            if ((k & m1) == m1) {
-              w[k] += 0.25 * v[k];
-            } else {
-              w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
-            }
-          }
-        } else {
-          for (int k=0; k<N; ++k) {
-            if ((k & m1) == m1) {
-	      w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
-            } else {
-	      w[k] += 0.25 * v[k];
-            }
-          }
-	}
-      } else {
-	int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
-	if (((myrank & m) != m) && ((myrank & m) != 0)) {
-	  MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
-		       myrank ^ m, 0,
-		       &buffer[0], N, MPI_DOUBLE,
-		       myrank ^ m, 0,
-		       comm, &status);
-	  for (int k=0; k<N; ++k) {
-	    w[k] += 0.5 * buffer[k] - 0.25 * v[k];
-	  }
-	} else {
-	  for (int k=0; k<N; ++k) {
-            w[k] += 0.25 * v[k];
-          }
-	}
-      }
-    }
-  }
-
-      else {
-        w[k] += 0.25;
-        //      cout << "else" << endl;
       }
     }
   }
@@ -270,7 +192,34 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
 void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, std::vector<double>& w, std::vector<double>& buffer) {
   fill_diagonal(comm, L, lattice, &w[0], &buffer[0]);
 }
-*/
+
+template <typename MATRIX_MAJOR>
+void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+  mat.set_zeros();
+  for (int l=0; l<lattice.size(); ++l) {
+    int i = lattice[l].first;
+    int j = lattice[l].second;
+    int m1 = 1 << i;
+    int m2 = 1 << j;
+    int m3 = m1 + m2;
+    for (int local_k1=0; local_k1<mat.get_m_local(); ++local_k1) {
+      int k1 = mat.translate_l2g_row(local_k1);
+      for (int local_k2=0; local_k2<mat.get_n_local(); ++local_k2) {
+        int k2 = mat.translate_l2g_col(local_k2);
+        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          if (k1 == (k2^m3)) {
+            mat.update_local(local_k1, local_k2, 0.5);
+          }
+          if (k1 == k2) {
+            mat.update_local(local_k1, local_k2, -0.25);
+          }
+        } else if (k1 == k2) {
+          mat.update_local(local_k1, local_k2, 0.25);
+        }
+      }
+    }
+  }
+}
 
 } // namespace heisenberg_hamiltonian
 
