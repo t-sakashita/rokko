@@ -19,9 +19,6 @@ endif (Boost_FOUND)
 #copy files
 set(PATTERN_FILES "heisenberg.ip")
 foreach( pattern_file ${PATTERN_FILES} )
-  message(STATUS "Display_CURRENT_BINARARY: ${CMAKE_CURRENT_BINARY_DIR}")
-  message(STATUS "Display_CURRENT_SOURCE: ${CMAKE_CURRENT_SOURCE_DIR}")
-  message(STATUS "Display_pattern: ${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file}")
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file} ${CMAKE_CURRENT_BINARY_DIR}/${pattern_file} COPYONLY)
 endforeach( pattern_file )
 
