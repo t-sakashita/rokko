@@ -90,7 +90,7 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, cons
 
 template <typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, rokko::localized_matrix<MATRIX_MAJOR>& mat) {
-  mat.setZero();
+  mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
@@ -130,7 +130,7 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
 
 template <typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
-  //mat.set_zeros();
+  mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
@@ -152,18 +152,18 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
         int k2 = mat.translate_l2g_col(local_j);
         if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (k1 == (k2^m3)) {
-            mat.update_local(k1, k2, offdiag_plus);
+            mat.update_local(local_i, local_j, offdiag_plus);
           }
           if (k1 == k2) {
-            mat.update_local(k1, k2, diag_minus);
+            mat.update_local(local_i, local_j, diag_minus);
           }
         } else {
           if (k1 == (k2^m3)) {
-            mat.update_local(k1, k2, offdiag_minus);
+            mat.update_local(local_i, local_j, offdiag_minus);
           }
           if (k1 == k2) {
-            std::cout << "k1=" << k1 << " k2=" << k2 << std::endl;
-            //            mat.update_local(k1, k2, diag_plus);
+            //std::cout << "k1=" << k1 << " k2=" << k2 << std::endl;
+            mat.update_local(local_i, local_j, diag_plus);
           }
         }
       }

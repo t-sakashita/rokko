@@ -50,6 +50,61 @@ public:
   localized_matrix(T const& other) : super_type(other) {}; 
   template <typename T>
   matrix_type& operator=(T const& other) { super_type::operator=(other); return *this; } 
+
+  int translate_l2g_row(const int& local_i) const {
+    return local_i;
+  }
+
+  int translate_l2g_col(const int& local_j) const {
+    return local_j;
+  }
+
+  int translate_g2l_row(const int& global_i) const {
+    return global_i;
+  }
+
+  int translate_g2l_col(const int& global_j) const {
+    return global_j;
+  }
+
+  int get_m_global() const { return this->rows(); }
+  int get_n_global() const { return this->cols(); }
+
+  int get_m_local() const { return this->rows(); }
+  int get_n_local() const { return this->cols(); }
+
+  bool is_gindex_myrow(const int& global_i) const {
+    return true;
+  }
+
+  bool is_gindex_mycol(const int& global_j) const {
+    return true;
+  }
+
+  bool is_gindex(const int& global_i, const int& global_j) const {
+    return true;
+  }
+
+  void set_local(int local_i, int local_j, double value) {
+    this->(local_i, local_j) = value;
+  }
+
+  double get_local(int local_i, int local_j) const {
+    return this->(local_i, local_j);
+  }
+  
+  void update_local(int local_i, int local_j, double value) {
+    this->operator()(local_i, local_j) += value;
+  }
+
+  void set_zeros() {
+    this->setZero();
+  }
+
+  void print() const {
+    std::cout << *this << std::endl;
+  }
+
 };
 
 } // namespace rokko

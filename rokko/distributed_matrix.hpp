@@ -350,9 +350,9 @@ void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool tr
 
   int descA[9], descB[9], descC[9];
   int info;
-  ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(), matA.get_nb(), 0, 0, ictxt, std::max(matA.get_m_local(), 1), &info);
-  ROKKO_descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(), matB.get_nb(), 0, 0, ictxt, std::max(matB.get_m_local(), 1), &info);
-  ROKKO_descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(), matC.get_nb(), 0, 0, ictxt, std::max(matC.get_m_local(), 1), &info);
+  ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(), matA.get_nb(), 0, 0, ictxt, matA.get_lld(), &info);
+  ROKKO_descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(), matB.get_nb(), 0, 0, ictxt, matB.get_lld(), &info);
+  ROKKO_descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(), matC.get_nb(), 0, 0, ictxt, matC.get_lld(), &info);
 
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
