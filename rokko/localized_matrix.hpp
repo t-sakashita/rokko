@@ -15,6 +15,7 @@
 
 #include <rokko/matrix_major.hpp>
 #include <Eigen/Dense>
+#include <iostream>
 
 namespace rokko {
 
@@ -86,11 +87,11 @@ public:
   }
 
   void set_local(int local_i, int local_j, double value) {
-    this->(local_i, local_j) = value;
+    this->operator()(local_i, local_j) = value;
   }
 
   double get_local(int local_i, int local_j) const {
-    return this->(local_i, local_j);
+    return this->operator()(local_i, local_j);
   }
   
   void update_local(int local_i, int local_j, double value) {
