@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace rokko {
 
@@ -263,6 +264,19 @@ public:
   }
   bool is_col_major() const {
     return boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+  }
+
+  template<class FUNC>
+  void generate(FUNC func) {
+    if (m_global != n_global)
+      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+    for(int local_i = 0; local_i < m_local; ++local_i) {
+      for(int local_j = 0; local_j < n_local; ++local_j) {
+        int global_i = translate_l2g_row(local_i);
+        int global_j = translate_l2g_col(local_j);
+        set_local(local_i, local_j, func(global_i, global_j));
+      }
+    }
   }
 
   void print() const {
