@@ -57,6 +57,9 @@ find_package(Lapack)
 if(NOT LAPACK_FOUND)
   message(FATAL_ERROR "LAPACK not found")
 endif(NOT LAPACK_FOUND)
+if(MAC_VECLIB)
+  set(LAPACK_LIBRARIES "-framework vecLib")
+endif(MAC_VECLIB) 
 
 # find Scalapack
 find_package(Scalapack)
