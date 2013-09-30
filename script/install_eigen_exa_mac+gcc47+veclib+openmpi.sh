@@ -24,5 +24,5 @@ cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DSCALAPACK_LIB="-L$PREFIX/lib -lscalapack -Wl,-framework -Wl,vecLib" \
     $HOME/build/EigenExa-1.3
 
-make -j4
+make -j4 VERBOSE=1
 make install
