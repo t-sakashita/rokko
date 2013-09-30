@@ -12,9 +12,24 @@
 *****************************************************************************/
 #include <mpi.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <math.h>
+
 #include "wrapper_c.h"
 #include "frank_matrix_wrapper_c.h"
 #include "timer_wrapper_c.h"
+
+double max(double a, double b) {
+  return a > b ? a : b;					\
+}
+
+unsigned int dim_global;
+
+double frank_calculate_matrix_element(int i, int j) {
+  return dim_global - max(i, j);
+}
+
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
 
@@ -37,6 +52,7 @@ int main(int argc, char *argv[]) {
 
     
   int dim = atoi(argv[2]);
+  dim_global = dim;
   printf("dim= %d \n",dim);
 
   void* solver_;
@@ -61,7 +77,8 @@ int main(int argc, char *argv[]) {
   printf("finished matrix generation\n");
   int count;
   for (count=0; count<3; ++count) {
-    frank_generate_distributed_matrix_col_major(mat);
+
+    generate_distributed_matrix_col_major(mat, frank_calculate_matrix_element);
 
     MPI_Barrier(MPI_COMM_WORLD);
     //timer.start(1);

@@ -24,10 +24,17 @@
 #include <boost/test/unit_test.hpp>
 #endif
 
+unsigned int dim_global;
+
+double frank_calculate_matrix_element(int i, int j) {
+  return dim_global - std::max(i, j);
+}
+
 BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   int argc = boost::unit_test::framework::master_test_suite().argc;
   char** argv = boost::unit_test::framework::master_test_suite().argv;
-  unsigned int dim = 1000;
+  unsigned int dim = 10;
+  dim_global = dim;
   MPI_Init(&argc, &argv);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm, rokko::grid_col_major);
@@ -36,7 +43,8 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
     rokko::solver solver(name);
     solver.initialize(argc, argv);
     rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
-    rokko::frank_matrix::generate(mat);
+    mat.generate(frank_calculate_matrix_element);
+    mat.print();
     //    BOOST_CHECK_CLOSE(mat.get_global(0, 0), dim, 1e-14);
     solver.finalize();
   }

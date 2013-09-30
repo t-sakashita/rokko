@@ -68,3 +68,6 @@ void solver_diagonalize_matrix_row_major_(void** solver_ ,void** mat, void** w, 
   solver_diagonalize_matrix_row_major(*solver_, *mat, *w, *Z, *timer);
 }
 
+//void initialize_distributed_matrix_col_major_(void** mat, int* dim1, int* dim2, void** g, void** solver_ ){
+//  *mat =  initialize_distributed_matrix_col_major(*dim1, *dim2, *g, *solver_);
+//}

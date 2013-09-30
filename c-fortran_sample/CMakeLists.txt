@@ -1,4 +1,4 @@
-set(SAMPLE frank_matrix_c)
+set(SAMPLE frank_matrix_c frank_function_pointer_c)
 
 foreach(name ${SAMPLE})
   add_executable(${name} ${name}.c wrapper_c.cpp timer_wrapper_c.cpp frank_matrix_wrapper_c.cpp)
