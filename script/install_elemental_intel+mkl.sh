@@ -24,7 +24,7 @@ if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
   cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc \
       -DCMAKE_Fortran_COMPILER=mpif90 \
       -DCMAKE_CXX_FLAGS="-O3 -xSSE3" -DCMAKE_C_FLAGS="-O3 -xSSE3" -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
-      -DMATH_LIBS="-mkl=parallel;-lifcore" -DIFCORE_LIB="-lifcore" \
+      -DMATH_LIBS="-mkl=parallel;-lifcore" \
       -DELEM_EXAMPLES=ON -DELEM_TESTS=ON \
       -DSHARED_LIBRARIES=ON \
       -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.80
@@ -35,7 +35,7 @@ else
       -DMPI_C_INCLUDE_PATH="/usr/include" -DMPI_CXX_INCLUDE_PATH="/usr/include" \
       -DMPI_C_LIBRARIES="-lmpi" -DMPI_CXX_LIBRARIES="-lmpi++;-lmpi" \
       -DMPI_Fortran_LIBRARIES="-lmpi" \
-      -DMATH_LIBS="-mkl=parallel;-lifcore" -DIFCORE_LIB="-lifcore" \
+      -DMATH_LIBS="-mkl=parallel;-lifcore" \
       -DELEM_EXAMPLES=ON -DELEM_TESTS=ON \
       -DSHARED_LIBRARIES=ON \
       -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elemental-0.80
