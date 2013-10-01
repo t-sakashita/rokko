@@ -270,7 +270,7 @@ contains
     call del_localized_vector(w_)
   end subroutine Diagonalize    
 
-!// frack matrix generator
+! frank matrix generator
   subroutine generate_frank_matrix_distributed(matrix,matrix_major_type)
     implicit none
     Type(distributed_matrix),intent(inout)::matrix
@@ -279,17 +279,17 @@ contains
     if (present(matrix_major_type)) then
       if (matrix_major_type == "matrix_col_major") then
         
-        call generate_distributed_matrix_col_major(matrix&
+        call frank_generate_distributed_matrix_col_major(matrix&
            &%ptr_distributed_matrix)
       else if (matrix_major_type == "matrix_row_major") then
-        call generate_distributed_matrix_row_major(matrix&
+        call frank_generate_distributed_matrix_row_major(matrix&
            &%ptr_distributed_matrix)
       else
         write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
            &atrix_row_major is accepted"
       endif
     else
-      call generate_distributed_matrix_col_major(matrix&
+      call frank_generate_distributed_matrix_col_major(matrix&
          &%ptr_distributed_matrix)
     endif
   end subroutine generate_frank_matrix_distributed
@@ -302,17 +302,17 @@ contains
     if (present(matrix_major_type)) then
       if (matrix_major_type == "matrix_col_major") then
         
-        call generate_localized_matrix_col_major(matrix&
+        call frank_generate_localized_matrix_col_major(matrix&
            &%ptr_localized_matrix)
       else if (matrix_major_type == "matrix_row_major") then
-        call generate_localized_matrix_row_major(matrix&
+        call frank_generate_localized_matrix_row_major(matrix&
            &%ptr_localized_matrix)
       else
         write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
            &atrix_row_major is accepted"
       endif
     else
-      call generate_localized_matrix_col_major(matrix&
+      call frank_generate_localized_matrix_col_major(matrix&
          &%ptr_localized_matrix)
     endif
   end subroutine generate_frank_matrix_localized

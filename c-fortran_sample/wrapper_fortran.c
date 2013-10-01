@@ -52,22 +52,22 @@ void delete_grid_(void** g){
   delete_grid(*g);
 }
 
-void initialize_solver_(void** solver_, char* solver_name, int* argc, char* argv[], long length_name, long length_arg ){ 
+void initialize_solver_(void** solver_, char* solver_name, int* argc, char* argv[], long length_name, long length_arg ) {
   *solver_ = initialize_solver(solver_name, *argc, argv);
 }
 
-void delete_solver_(void** solver_){
+void delete_solver_(void** solver_) {
   delete_solver(*solver_);
 }
 
-void solver_diagonalize_matrix_col_major_(void** solver_ ,void** mat, void** w, void** Z, void** timer){
+void solver_diagonalize_matrix_col_major_(void** solver_ ,void** mat, void** w, void** Z, void** timer) {
   solver_diagonalize_matrix_col_major(*solver_, *mat, *w, *Z, *timer);
 }
 
-void solver_diagonalize_matrix_row_major_(void** solver_ ,void** mat, void** w, void** Z, void** timer){
+void solver_diagonalize_matrix_row_major_(void** solver_ ,void** mat, void** w, void** Z, void** timer) {
   solver_diagonalize_matrix_row_major(*solver_, *mat, *w, *Z, *timer);
 }
 
-//void initialize_distributed_matrix_col_major_(void** mat, int* dim1, int* dim2, void** g, void** solver_ ){
-//  *mat =  initialize_distributed_matrix_col_major(*dim1, *dim2, *g, *solver_);
-//}
+void generate_distributed_matrix_col_major_(void** mat, double (*func)(int i, int j)) {
+  generate_distributed_matrix_col_major(*mat, func);
+}

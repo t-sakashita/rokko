@@ -291,8 +291,10 @@ public:
   }
 
   void generate(double (*func_in)(int i, int j)) {
-    if (m_global != n_global)
+    if (m_global != n_global) {
+      std::cout << "m_global=" << m_global << " n_global=" << n_global << std::endl;
       BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+    }
 
     class_matrix_element func(func_in);
 

@@ -24,8 +24,8 @@ namespace rokko {
 void* initialize_distributed_matrix_row_major(int dim1, int dim2, void* g, void* solver_ ){ 
   
   grid* g_ = static_cast<grid*>(g);
-    solver* solver__ =static_cast<solver*>(solver_);
-    return static_cast<void*>(new distributed_matrix<matrix_row_major>(dim1, dim2, *g_, *solver__));
+  solver* solver__ =static_cast<solver*>(solver_);
+  return static_cast<void*>(new distributed_matrix<matrix_row_major>(dim1, dim2, *g_, *solver__));
 }
 
 void* initialize_distributed_matrix_col_major(int dim1, int dim2, void* g, void* solver_ ){ 
@@ -116,6 +116,7 @@ void solver_diagonalize_matrix_row_major(void* solver_ ,void* mat, void* w, void
 
 void generate_distributed_matrix_col_major(void* mat, double (*func)(int i, int j)){
   distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
   mat_->generate(func);
 }
 

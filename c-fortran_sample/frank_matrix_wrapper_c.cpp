@@ -16,18 +16,23 @@
 namespace rokko {
   void frank_generate_distributed_matrix_col_major(void* mat){ 
       distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+      std::cout << "m_fglobal=" << mat_->get_m_global() << std::endl;
       frank_matrix::generate(*mat_);
   }
   void frank_generate_distributed_matrix_row_major(void* mat){ 
       distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
+      std::cout << "m_fglobal=" << mat_->get_m_global() << std::endl;
       frank_matrix::generate(*mat_);
   }
   void frank_generate_localized_matrix_col_major(void* mat){ 
       localized_matrix<matrix_col_major>* mat_ = static_cast<localized_matrix<matrix_col_major>*>(mat);
+      std::cout << "m_fglobal=" << mat_->get_m_global() << std::endl;
       frank_matrix::generate(*mat_);
   }
   void frank_generate_localized_matrix_row_major(void* mat){ 
       localized_matrix<matrix_row_major>* mat_ = static_cast<localized_matrix<matrix_row_major>*>(mat);
+      std::cout << "m_fglobal=" << mat_->get_m_global() << std::endl;
       frank_matrix::generate(*mat_);
   }
+
 }
