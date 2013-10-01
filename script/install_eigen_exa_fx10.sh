@@ -20,9 +20,9 @@ patch -p1 < $SCRIPT_DIR/EigenExa-1.3.patch
 cd $HOME/build
 rm -rf EigenExa-1.3-build && mkdir -p EigenExa-1.3-build && cd EigenExa-1.3-build
 cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
-    -DCMAKE_C_COMPILER=openmpicc -DCMAKE_Fortran_COMPILER=openmpif90 \
-    -DSCALAPACK_LIB="-L$PREFIX/lib -lscalapack -Wl,-framework -Wl,vecLib" \
+    -DCMAKE_C_COMPILER=mpifccpx -DCMAKE_Fortran_COMPILER=mpifrtpx \
+    -DCMAKE_C_FLAGS="-Kfast -Xg -KPIC" -DCMAKE_Fortran_FLAGS="-Kfast -KPIC -Kocl -Ksimd -KXFILL -Cpp" -DOpenMP_C_FLAGS="-Kopenmp" \
+    -DSCALAPACK_LIB="-SCALAPACK -SSL2BLAMP" \
     $HOME/build/EigenExa-1.3
-
 make -j4 VERBOSE=1
 make install

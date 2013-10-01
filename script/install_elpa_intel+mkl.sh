@@ -16,10 +16,19 @@ patch -p1 < $SCRIPT_DIR/elpa_lib-201305-cmake.patch
 
 cd $HOME/build
 mkdir -p elpa_lib-201305-build && cd elpa_lib-201305-build
-cmake -DCMAKE_C_COMPILER=mpicc \
-    -DCMAKE_Fortran_COMPILER=mpif90 -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
-    -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-    -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elpa_lib-201305
+if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
+  cmake -DCMAKE_C_COMPILER=mpicc \
+      -DCMAKE_Fortran_COMPILER=mpif90 -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
+      -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elpa_lib-201305
+else
+  cmake -DCMAKE_C_COMPILER=icc \
+      -DCMAKE_Fortran_COMPILER=ifort -DCMAKE_Fortran_FLAGS="-O3 -xSSE3" \
+      -DMPI_C_INCLUDE_PATH="/usr/include" -DMPI_C_LIBRARIES="-lmpi" \
+      -DMPI_Fortran_LIBRARIES="-lmpi" \
+      -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elpa_lib-201305
+fi
 
 make -j4 VERBOSE=1
 make install
