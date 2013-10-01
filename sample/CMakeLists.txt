@@ -8,7 +8,7 @@ foreach(name ${SAMPLE})
 # add_rokko_test(${name})
 endforeach(name)
 
-set(SAMPLE frank_dense_mpi xyz_dense_mpi)
+set(SAMPLE frank_dense_mpi heisenberg_dense_mpi xyz_dense_mpi)
 
 foreach(name ${SAMPLE})
   set(target_name sample_diagonalize_${name})

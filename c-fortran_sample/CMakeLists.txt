@@ -6,7 +6,7 @@ foreach(name ${SAMPLE})
 # add_rokko_test(${name})
 endforeach(name)
 
-set(SAMPLE frank_matrix_f frank_matrix_f_function)
+set(SAMPLE frank_matrix_f frank_matrix_function_f frank_matrix_array_f)
 foreach(name ${SAMPLE})
   add_executable(${name} ${name}.f90 wrapper_c.cpp timer_wrapper_c.cpp frank_matrix_wrapper_c.cpp wrapper_fortran.c timer_wrapper_fortran.c frank_matrix_wrapper_fortran.c rokko_fortran.f90)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${ELPA_LIB} ${SCALAPACK_LIB})  # ${MPI_CXX_LIBRARIES})
