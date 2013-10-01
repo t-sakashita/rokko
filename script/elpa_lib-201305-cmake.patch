@@ -1,7 +1,7 @@
 diff -urN elpa_lib-201305.orig/CMakeLists.txt elpa_lib-201305/CMakeLists.txt
 --- elpa_lib-201305.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/CMakeLists.txt	2013-10-01 15:58:22.000000000 +0900
-@@ -0,0 +1,20 @@
++++ elpa_lib-201305/CMakeLists.txt	2013-10-01 16:17:46.000000000 +0900
+@@ -0,0 +1,19 @@
 +cmake_minimum_required(VERSION 2.8)
 +project(ELPA C Fortran)
 +option(BUILD_SHARED_LIBS "Build shared libraries" ON)
@@ -17,14 +17,13 @@ diff -urN elpa_lib-201305.orig/CMakeLists.txt elpa_lib-201305/CMakeLists.txt
 +endif(APPLE)
 +
 +find_package(MPI)
-+set(CMAKE_EXE_LINKER_FLAGS ${MPI_Fortran_LIBRARIES})
 +
 +add_subdirectory(ELPA_2011.12)
 +add_subdirectory(ELPA_2013.02.BETA)
 +add_subdirectory(ELPA_development_version)
 diff -urN elpa_lib-201305.orig/ELPA_2011.12/CMakeLists.txt elpa_lib-201305/ELPA_2011.12/CMakeLists.txt
 --- elpa_lib-201305.orig/ELPA_2011.12/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/ELPA_2011.12/CMakeLists.txt	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_2011.12/CMakeLists.txt	2013-10-01 16:16:44.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels.f90 src/elpa1_wrap.f)
 +add_library(elpa-2011.12 ${SOURCES})
@@ -35,11 +34,11 @@ diff -urN elpa_lib-201305.orig/ELPA_2011.12/CMakeLists.txt elpa_lib-201305/ELPA_
 +foreach(t ${TARGETS})
 +  add_executable(${t}-2011.12 test/${t}.f90)
 +  set_target_properties(${t}-2011.12 PROPERTIES OUTPUT_NAME ${t})
-+  target_link_libraries(${t}-2011.12 elpa-2011.12)
++  target_link_libraries(${t}-2011.12 elpa-2011.12 ${MPI_Fortran_LIBRARIES})
 +endforeach(t ${TARGETS})
 diff -urN elpa_lib-201305.orig/ELPA_2011.12/src/elpa1_wrap.f elpa_lib-201305/ELPA_2011.12/src/elpa1_wrap.f
 --- elpa_lib-201305.orig/ELPA_2011.12/src/elpa1_wrap.f	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/ELPA_2011.12/src/elpa1_wrap.f	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_2011.12/src/elpa1_wrap.f	2013-10-01 16:16:08.000000000 +0900
 @@ -0,0 +1,39 @@
 +      subroutine get_elpa_row_col_comms_wrap(mpi_comm_global, 
 +     &my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols)
@@ -82,7 +81,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2011.12/src/elpa1_wrap.f elpa_lib-201305/ELP
 +
 diff -urN elpa_lib-201305.orig/ELPA_2011.12/src/elpa2.f90 elpa_lib-201305/ELPA_2011.12/src/elpa2.f90
 --- elpa_lib-201305.orig/ELPA_2011.12/src/elpa2.f90	2013-05-21 14:44:19.000000000 +0900
-+++ elpa_lib-201305/ELPA_2011.12/src/elpa2.f90	2013-10-01 15:50:08.000000000 +0900
++++ elpa_lib-201305/ELPA_2011.12/src/elpa2.f90	2013-10-01 16:16:08.000000000 +0900
 @@ -2411,7 +2411,7 @@
        local_size = limits(my_prow+1) - limits(my_prow)
        if(mod(n-1,np_cols) == my_pcol .and. local_size>0 .and. nx>1) then
@@ -282,7 +281,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2011.12/src/elpa2.f90 elpa_lib-201305/ELPA_2
     ! set band from receive buffer
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/CMakeLists.txt	2013-10-01 16:17:07.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels/elpa2_kernels_complex.f90 src/elpa2_kernels/elpa2_kernels_real.f90 src/elpa1_wrap.f)
 +add_library(elpa-2013.02.beta ${SOURCES})
@@ -293,11 +292,11 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/CMakeLists.txt elpa_lib-201305/
 +foreach(t ${TARGETS})
 +  add_executable(${t}-2013.02.beta test/${t}.f90)
 +  set_target_properties(${t}-2013.02.beta PROPERTIES OUTPUT_NAME ${t})
-+  target_link_libraries(${t}-2013.02.beta elpa-2013.02.beta)
++  target_link_libraries(${t}-2013.02.beta elpa-2013.02.beta ${MPI_Fortran_LIBRARIES})
 +endforeach(t ${TARGETS})
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/src/elpa1_wrap.f elpa_lib-201305/ELPA_2013.02.BETA/src/elpa1_wrap.f
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/src/elpa1_wrap.f	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/ELPA_2013.02.BETA/src/elpa1_wrap.f	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/src/elpa1_wrap.f	2013-10-01 16:16:08.000000000 +0900
 @@ -0,0 +1,39 @@
 +      subroutine get_elpa_row_col_comms_wrap(mpi_comm_global, 
 +     &my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols)
@@ -340,7 +339,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/src/elpa1_wrap.f elpa_lib-20130
 +
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/src/elpa2.f90 elpa_lib-201305/ELPA_2013.02.BETA/src/elpa2.f90
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/src/elpa2.f90	2013-05-21 14:44:19.000000000 +0900
-+++ elpa_lib-201305/ELPA_2013.02.BETA/src/elpa2.f90	2013-10-01 15:56:48.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/src/elpa2.f90	2013-10-01 16:16:08.000000000 +0900
 @@ -2461,7 +2461,7 @@
        local_size = limits(my_prow+1) - limits(my_prow)
        if(mod(n-1,np_cols) == my_pcol .and. local_size>0 .and. nx>1) then
@@ -540,7 +539,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/src/elpa2.f90 elpa_lib-201305/E
     ! set band from receive buffer
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90 elpa_lib-201305/ELPA_2013.02.BETA/test/test_complex2.f90
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90	2013-05-21 14:44:19.000000000 +0900
-+++ elpa_lib-201305/ELPA_2013.02.BETA/test/test_complex2.f90	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/test/test_complex2.f90	2013-10-01 16:16:08.000000000 +0900
 @@ -58,6 +58,7 @@
  
     implicit none
@@ -551,7 +550,7 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_complex2.f90 elpa_lib
     ! Please set system size parameters below!
 diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_real2.f90 elpa_lib-201305/ELPA_2013.02.BETA/test/test_real2.f90
 --- elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_real2.f90	2013-05-21 14:44:19.000000000 +0900
-+++ elpa_lib-201305/ELPA_2013.02.BETA/test/test_real2.f90	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_2013.02.BETA/test/test_real2.f90	2013-10-01 16:16:08.000000000 +0900
 @@ -59,6 +59,7 @@
  
     implicit none
@@ -562,22 +561,22 @@ diff -urN elpa_lib-201305.orig/ELPA_2013.02.BETA/test/test_real2.f90 elpa_lib-20
     ! Please set system size parameters below!
 diff -urN elpa_lib-201305.orig/ELPA_development_version/CMakeLists.txt elpa_lib-201305/ELPA_development_version/CMakeLists.txt
 --- elpa_lib-201305.orig/ELPA_development_version/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/ELPA_development_version/CMakeLists.txt	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_development_version/CMakeLists.txt	2013-10-01 16:17:40.000000000 +0900
 @@ -0,0 +1,11 @@
 +set(SOURCES src/elpa1.f90 src/elpa2.f90 src/elpa2_kernels/elpa2_kernels_complex.f90 src/elpa2_kernels/elpa2_kernels_real.f90 src/elpa_qr/elpa_pdgeqrf.f90 src/elpa_qr/elpa_pdlarfb.f90 src/elpa_qr/elpa_qrkernels.f90 src/elpa_qr/tum_utils.f90 src/elpa1_wrap.f)
 +add_library(elpa-develop ${SOURCES})
-+target_link_libraries(elpa-develop ${SCALAPACK_LIB})
++target_link_libraries(elpa-develop ${SCALAPACK_LIB} ${MPI_Fortran_LIBRARIES})
 +install(TARGETS elpa-develop ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
 +
 +set(TARGETS read_real read_real_gen test_complex test_complex2 test_complex_gen test_real test_real2 test_real_gen)
 +foreach(t ${TARGETS})
 +  add_executable(${t}-develop test/${t}.f90 test/read_test_parameters.f90)
 +  set_target_properties(${t}-develop PROPERTIES OUTPUT_NAME ${t})
-+  target_link_libraries(${t}-develop elpa-develop)
++  target_link_libraries(${t}-develop elpa-develop ${MPI_Fortran_LIBRARIES})
 +endforeach(t ${TARGETS})
 diff -urN elpa_lib-201305.orig/ELPA_development_version/src/elpa1_wrap.f elpa_lib-201305/ELPA_development_version/src/elpa1_wrap.f
 --- elpa_lib-201305.orig/ELPA_development_version/src/elpa1_wrap.f	1970-01-01 09:00:00.000000000 +0900
-+++ elpa_lib-201305/ELPA_development_version/src/elpa1_wrap.f	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_development_version/src/elpa1_wrap.f	2013-10-01 16:16:08.000000000 +0900
 @@ -0,0 +1,39 @@
 +      subroutine get_elpa_row_col_comms_wrap(mpi_comm_global, 
 +     &my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols)
@@ -620,7 +619,7 @@ diff -urN elpa_lib-201305.orig/ELPA_development_version/src/elpa1_wrap.f elpa_li
 +
 diff -urN elpa_lib-201305.orig/ELPA_development_version/src/elpa2.f90 elpa_lib-201305/ELPA_development_version/src/elpa2.f90
 --- elpa_lib-201305.orig/ELPA_development_version/src/elpa2.f90	2013-05-21 14:44:19.000000000 +0900
-+++ elpa_lib-201305/ELPA_development_version/src/elpa2.f90	2013-10-01 15:59:18.000000000 +0900
++++ elpa_lib-201305/ELPA_development_version/src/elpa2.f90	2013-10-01 16:16:08.000000000 +0900
 @@ -2814,7 +2814,7 @@
        local_size = limits(my_prow+1) - limits(my_prow)
        if(mod(n-1,np_cols) == my_pcol .and. local_size>0 .and. nx>1) then
@@ -845,7 +844,7 @@ diff -urN elpa_lib-201305.orig/ELPA_development_version/src/elpa2.f90 elpa_lib-2
     ! set band from receive buffer
 diff -urN elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90 elpa_lib-201305/ELPA_development_version/test/test_complex2.f90
 --- elpa_lib-201305.orig/ELPA_development_version/test/test_complex2.f90	2013-05-21 14:44:19.000000000 +0900
-+++ elpa_lib-201305/ELPA_development_version/test/test_complex2.f90	2013-10-01 15:57:54.000000000 +0900
++++ elpa_lib-201305/ELPA_development_version/test/test_complex2.f90	2013-10-01 16:16:08.000000000 +0900
 @@ -58,6 +58,7 @@
  
     implicit none
