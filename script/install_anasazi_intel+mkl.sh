@@ -25,5 +25,5 @@ cmake \
     $HOME/build/trilinos-11.4.1-Source
 
 make -j4 VERBOSE=1
-make test
+# make test
 make install
