@@ -35,7 +35,7 @@ endforeach(name)
 unset(TESTS)
 
 # multi process tests
-set(TESTS grid solver distributed_matrix frank_functor_mpi)
+set(TESTS grid solver distributed_matrix frank_functor_mpi frank_function_pointer_mpi)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})

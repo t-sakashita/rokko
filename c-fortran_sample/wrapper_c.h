@@ -37,6 +37,8 @@ namespace rokko {
     void delete_solver(void* );
     void solver_diagonalize_matrix_col_major(void*, void*, void*, void*, void*);     void solver_diagonalize_matrix_row_major(void*, void*, void*, void*, void*);
 
+    void generate_distributed_matrix_col_major(void* mat, double (*func)(int i, int j));
+
 #ifdef __cplusplus
   }
 }

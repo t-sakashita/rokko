@@ -6,6 +6,6 @@ set(SOURCES src/lapacke_dsyev.c src/lapacke_dsyev_work.c src/lapacke_dsyevd.c sr
   utils/lapacke_d_nancheck.c utils/lapacke_dge_nancheck.c utils/lapacke_dge_trans.c utils/lapacke_dsy_nancheck.c utils/lapacke_dsy_trans.c utils/lapacke_dtr_nancheck.c utils/lapacke_dtr_trans.c utils/lapacke_lsame.c utils/lapacke_xerbla.c)
 add_library(lapacke ${SOURCES})
 if (NOT STATIC_SCALAPACK)
-  target_link_libraries(lapacke ${SCALAPACK_LIB})
+  target_link_libraries(lapacke ${SCALAPACK_LIBRARIES} ${LAPACK_LIBRARIES})
 endif (NOT STATIC_SCALAPACK)
 install(TARGETS lapacke ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
