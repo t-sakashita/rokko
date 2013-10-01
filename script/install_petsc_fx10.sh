@@ -25,7 +25,6 @@ cd $HOME/build/petsc-3.4.2
   --with-cc="mpifccpx" --CFLAGS="-mt -Xg" --COPTFLAGS="-Kfast" \
   --with-cxx="mpiFCCpx" --CXXFLAGS="-mt -Xg" --CXXOPTFLAGS="-Kfast" \
   --with-fc="mpifrtpx" --FFLAGS="-Kthreadsafe" --FOPTFLAGS="-Kfast" \
-  --LDFLAGS="-lmpi_f77 -lmpi_f90" \
   --with-blas-lapack-lib="-SSL2" \
   --with-x=0 --with-c++-support=1 --with-info=1 --with-debugging=0 --known-mpi-shared-libraries=0 --with-valgrind=0 \
   --with-batch=1 \
