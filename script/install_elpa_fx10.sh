@@ -21,5 +21,5 @@ cmake -DCMAKE_C_COMPILER=mpifccpx \
     -DSCALAPACK_LIB="-SCALAPACK -SSL2" \
     -DCMAKE_INSTALL_PREFIX=$PREFIX $HOME/build/elpa_lib-201305
 
-make -j4
+make -j4 VERBOSE=1
 make install
