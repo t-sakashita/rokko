@@ -11,7 +11,7 @@ PREFIX="$2"
 test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
 echo "PREFIX = $PREFIX"
 
-DEGUB="$3"
+DEBUG="$3"
 test -z "$DEBUG" && DEBUG=0
 echo "DEBUG = $DEBUG"
 

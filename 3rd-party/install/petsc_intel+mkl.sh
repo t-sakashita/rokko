@@ -5,7 +5,7 @@ test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
 echo "PREFIX = $PREFIX"
 DEBUG="$2"
 test -z "$DEBUG" && DEBUG=0
-echo "DEBUG = $DEGUG"
+echo "DEBUG = $DEBUG"
 
 mkdir -p $HOME/build
 cd $HOME/build
