@@ -382,17 +382,17 @@ contains
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
           call set_distributed_matrix_local_col_major(matrix&
-               &%ptr_distributed_matrix, i, j, val)
+               &%ptr_distributed_matrix, i-1, j-1, val)
        else if (matrix_major_type == "matrix_row_major") then
           call set_distributed_matrix_local_row_major(matrix&
-               &%ptr_distributed_matrix, i, j, val)
+               &%ptr_distributed_matrix, i-1, j-1, val)
        else
           write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
                &atrix_row_major is accepted"
        endif
     else
        call set_distributed_matrix_local_col_major(matrix&
-            &%ptr_distributed_matrix, i, j, val)
+            &%ptr_distributed_matrix, i-1, j-1, val)
     endif
   end subroutine set_distributed_matrix_local
 
@@ -410,17 +410,17 @@ contains
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
           get_distributed_matrix_local = get_distributed_matrix_local_col_major(matrix&
-               &%ptr_distributed_matrix, i, j)
+               &%ptr_distributed_matrix, i-1, j-1)
        else if (matrix_major_type == "matrix_row_major") then
           get_distributed_matrix_local = get_distributed_matrix_local_row_major(matrix&
-               &%ptr_distributed_matrix, i, j)
+               &%ptr_distributed_matrix, i-1, j-1)
        else
           write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
                &atrix_row_major is accepted"
        endif
     else
        get_distributed_matrix_local = get_distributed_matrix_local_col_major(matrix&
-            &%ptr_distributed_matrix, i, j)
+            &%ptr_distributed_matrix, i-1, j-1)
     endif
   end function get_distributed_matrix_local
 
