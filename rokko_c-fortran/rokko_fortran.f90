@@ -307,7 +307,7 @@ contains
     endif
   end subroutine generate_frank_matrix_localized
 
-  ! matrix generator according to a given function pointer
+! matrix generator according to a given function pointer
   subroutine generate_distributed_matrix_function(matrix, f, matrix_major_type) !bind(c, name="generate_distributed_matrix_function")
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
@@ -330,6 +330,31 @@ contains
             &%ptr_distributed_matrix, f)
     endif
   end subroutine generate_distributed_matrix_function
+
+! set a value matrix element to distributed_matrix
+  subroutine set_distributed_matrix_local(matrix, i, j, val, matrix_major_type)
+    implicit none
+    type(distributed_matrix), intent(inout) :: matrix
+    integer, intent(in) :: i, j
+    real(8), intent(in) :: val
+    character(*),intent(in),optional :: matrix_major_type
+    
+    if (present(matrix_major_type)) then
+       if (matrix_major_type == "matrix_col_major") then
+          call set_distributed_matrix_local_col_major(matrix&
+               &%ptr_distributed_matrix, i, j, val)
+       else if (matrix_major_type == "matrix_row_major") then
+          call set_distributed_matrix_local_row_major(matrix&
+               &%ptr_distributed_matrix, i, j, val)
+       else
+          write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+               &atrix_row_major is accepted"
+       endif
+    else
+       call set_distributed_matrix_local_col_major(matrix&
+            &%ptr_distributed_matrix, i, j, val)
+    endif
+  end subroutine set_distributed_matrix_local
 
 !timer routines
   subroutine set_timer(timer_)

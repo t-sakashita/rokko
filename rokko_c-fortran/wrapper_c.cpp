@@ -124,4 +124,16 @@ void generate_distributed_matrix_function_col_major(void* mat, double (*func)(in
   mat_->generate(func);
 }
 
+void set_distributed_matrix_local_col_major(void* mat, int i, int j, double val) {
+  distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  mat_->set_local(i, j, val);
+}
+
+void set_distributed_matrix_local_row_major(void* mat, int i, int j, double val) {
+  distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  mat_->set_local(i, j, val);
+}
+
 }

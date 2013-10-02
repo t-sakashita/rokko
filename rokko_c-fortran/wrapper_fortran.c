@@ -75,7 +75,12 @@ void generate_distributed_matrix_function_row_major_(void** mat, double (*func)(
   generate_distributed_matrix_function_row_major(*mat, func);
 }
 
-//void generate_distributed_matrix_(void** mat, double (*func)(int i, int j)) {
-//  generate_distributed_matrix(*mat, func);
-//}
+void set_distributed_matrix_local_row_major_(void** mat, int i, int j, double val) {
+  set_distributed_matrix_local_row_major(*mat, i, j, val);
+}
+
+void set_distributed_matrix_local_col_major_(void** mat, int i, int j, double val) {
+  set_distributed_matrix_local_col_major(*mat, i, j, val);
+}
+
 
