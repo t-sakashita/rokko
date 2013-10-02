@@ -47,8 +47,11 @@ program frank_matrix
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
 
   !---loop variables---
-  integer(c_int) :: i , j, count
-  real(c_double) :: val
+  integer :: i , j, count
+  real(8) :: val
+
+!  integer(c_int) :: i , j, count
+!  real(c_double) :: val
 
   call MPI_init(ierr) 
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
