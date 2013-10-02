@@ -113,7 +113,7 @@ program frank_matrix
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
-    call Diagonalize(solver_, mat, w, Z, timer_)
+    call diagonalize(solver_, mat, w, Z, timer_)
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
   enddo
@@ -134,7 +134,6 @@ program frank_matrix
     write(*,*) "dim = ",dim
     write(*,*) "time = ", get_average_timer(timer_, 1)
   endif
-
 
   call del_distributed_matrix(mat)
   call del_distributed_matrix(Z)

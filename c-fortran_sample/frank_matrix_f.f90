@@ -17,7 +17,7 @@ program frank_matrix
   use rokko
   implicit none
   integer::dim
-  type(distributed_matrix)::Mat,Z !defined in rokko
+  type(distributed_matrix)::mat,Z !defined in rokko
   type(grid)::g !defined in rokko
   type(solver)::solver_ !defined in rokko
   type(timer)::timer_
@@ -38,11 +38,11 @@ program frank_matrix
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
   comm = MPI_COMM_WORLD
 
-  args_cnt = command_argument_count ()
+  args_cnt = command_argument_count()
   if (args_cnt >= 2) then
-     call get_command_argument (1, tmp_str, arg_len, status)
+     call get_command_argument(1, tmp_str, arg_len, status)
      solver_name = trim(tmp_str)
-     call get_command_argument (2, tmp_str, arg_len, status)
+     call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
      write(*,*) "error: command line"
@@ -63,8 +63,7 @@ program frank_matrix
   myrank_g = get_myrank_grid(g)
   nprocs_g = get_nprocs_grid(g)
 
-  write(*,*) myrank_g,nprocs_g,myrank,nprocs
-
+  write(*,*) myrank_g, nprocs_g, myrank, nprocs
 
   call set_distributed_matrix(mat, dim, dim, g, solver_)
   call set_distributed_matrix(Z, dim, dim, g, solver_)
@@ -76,7 +75,7 @@ program frank_matrix
     call generate_frank_matrix(mat)
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
-    call Diagonalize(solver_, mat, w, Z, timer_)
+    call diagonalize(solver_, mat, w, Z, timer_)
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
   enddo

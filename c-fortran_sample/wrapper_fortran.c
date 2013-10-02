@@ -1,19 +1,19 @@
-#include "wrapper_c.h";
+#include "wrapper_c.h"
 #include <mpi.h>
 
-void initialize_distributed_matrix_row_major_(void** mat, int* dim1, int* dim2, void** g, void** solver_ ) {
+void initialize_distributed_matrix_row_major_(void** mat, int* dim1, int* dim2, void** g, void** solver_) {
   *mat = initialize_distributed_matrix_row_major(*dim1, *dim2, *g, *solver_);
 }
 
-void initialize_distributed_matrix_col_major_(void** mat, int* dim1, int* dim2, void** g, void** solver_ ) {
+void initialize_distributed_matrix_col_major_(void** mat, int* dim1, int* dim2, void** g, void** solver_) {
   *mat =  initialize_distributed_matrix_col_major(*dim1, *dim2, *g, *solver_);
 }
 
-void delete_distributed_matrix_col_major_(void**  mat) {
+void delete_distributed_matrix_col_major_(void** mat) {
   delete_distributed_matrix_col_major(*mat);
 }
 
-void delete_distributed_matrix_row_major_(void**  mat) {
+void delete_distributed_matrix_row_major_(void** mat) {
   delete_distributed_matrix_row_major(*mat);
 }
 
@@ -21,7 +21,7 @@ void initialize_localized_vector_(void** vec, int* dim) {
   *vec = initialize_localized_vector(*dim);
 }
 
-void delete_localized_vector_(void** w ) {
+void delete_localized_vector_(void** w) {
   delete_localized_vector(*w);
 }
 

@@ -5,7 +5,7 @@
 !* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 !*                            Synge Todo <wistaria@comp-phys.org>,
 !*                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
-!*    
+!*
 !* Distributed under the Boost Software License, Version 1.0. (See accompanying
 !* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 !*
@@ -14,7 +14,7 @@
 module rokko
   use ISO_C_BINDING
   implicit none
-  
+
   type::distributed_matrix
      Type(c_ptr) ptr_distributed_matrix
   end type distributed_matrix
@@ -49,27 +49,24 @@ contains
     character(*),intent(in):: solver_name_
     integer::argc
     character(len=1)::argv
-    
-    !    integer::argc,lenght_solver_name
-    !    character::argv
-    !    Type(c_ptr)::initialize_solver    
+
+    !    Type(c_ptr)::initialize_solver
     !    external initialize_solver
-    character(len=1),parameter::NULL =char(0)
+    character(len=1),parameter::NULL = char(0)
 
     write(*,*) trim(solver_name_), len(solver_name_)
-    !solver_%ptr_solver = initialize_solver(trim(solver_name_)//NULL)
     call initialize_solver(solver_%ptr_solver, trim(solver_name_)&
          &//NULL, argc, argv)
-    
+
   end subroutine set_solver
   subroutine del_solver(solver_)
     implicit none
     Type(solver),intent(inout)::solver_
-    
+
     call delete_solver(solver_%ptr_solver)
   end subroutine del_solver
-  
-  
+
+
   subroutine set_grid(grid_, comm_, grid_major_type)
     implicit none
     Type(grid),intent(out)::grid_
@@ -79,19 +76,18 @@ contains
 !    Type(c_ptr)::initialize_grid_col_major,initialize_grid_row_major
 !    external initialize_grid_col_major,initialize_grid_row_major
 
-
     write(*,*) "MPI_in = ",comm_
     if (present(grid_major_type)) then
       if (grid_major_type == "grid_col_major") then
-        
+
 !        grid_%ptr_grid = initialize_grid_col_major(comm_)
         call initialize_grid_col_major(grid_%ptr_grid, comm_)
-        
+
       else if (grid_major_type == "grid_row_major") then
 
 !        grid_%ptr_grid = initialize_grid_row_major(comm_)
         call initialize_grid_row_major(grid_%ptr_grid, comm_)
-        
+
       else
         write(0,*) "Incorrect grid_major_type. grid_col_major or grid&
            &_row_major is accepted"
@@ -106,7 +102,7 @@ contains
   subroutine del_grid(grid_)
     implicit none
     Type(grid),intent(out)::grid_
-    
+
     call delete_grid(grid_%ptr_grid)
   end subroutine del_grid
 
@@ -127,7 +123,7 @@ contains
 
     get_nprocs_grid = grid_get_nprocs(grid_%ptr_grid)
   end function get_nprocs_grid
-    
+
   subroutine set_distributed_matrix(matrix, dim1, dim2, g,&
      & solver_, matrix_major_type)
     implicit none
@@ -148,8 +144,8 @@ contains
            &%ptr_distributed_matrix, dim1, dim2, g&
            &%ptr_grid, solver_%ptr_solver)
       else
-        write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
-           &atrix_row_major is accepted"
+        write(0,*) "Incorrect matrix_major_type. matrix_col_major or &
+           &matrix_row_major is accepted"
       endif
     else
       call initialize_distributed_matrix_col_major(matrix&
@@ -162,7 +158,7 @@ contains
     implicit none
     Type(distributed_matrix)::matrix
     character(*),intent(in),optional::matrix_major_type
-    
+
     if (present(matrix_major_type)) then
       if (matrix_major_type == "matrix_col_major") then
 
@@ -172,8 +168,8 @@ contains
         call delete_distributed_matrix_row_major(matrix&
            &%ptr_distributed_matrix)
       else
-        write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
-           &atrix_row_major is accepted"
+        write(0,*) "Incorrect matrix_major_type. matrix_col_major or &
+           &matrix_row_major is accepted"
       endif
     else
       call delete_distributed_matrix_col_major(matrix&
@@ -181,14 +177,11 @@ contains
     endif
   end subroutine del_distributed_matrix
 
-  
-
-
   subroutine set_localized_vector(vector, dim)
     implicit none
     Type(localized_vector),intent(out)::vector
     integer,intent(in)::dim
-    
+
     call initialize_localized_vector(vector%ptr_localized_vector, dim)
   end subroutine set_localized_vector
 
@@ -205,17 +198,17 @@ contains
     integer,intent(in)::i
     real(kind(1d0))::localized_vector_get_element
     external localized_vector_get_element
-    
+
     get_element_localized_vector = localized_vector_get_element(w_&
        &%ptr_localized_vector, i-1)
   end function get_element_localized_vector
-    
+
   subroutine copy_localized_vector(w,w_)
     implicit none
     real(kind(1d0)),intent(out)::w(:)
     Type(localized_vector),intent(in)::w_
     integer::dim,i
-    
+
     dim = size(w)
 
     do i=1,dim
@@ -224,7 +217,7 @@ contains
   end subroutine copy_localized_vector
 
 
-  subroutine Diagonalize(solver_, matrix, w, Z, timer_, matrix_major_type)
+  subroutine diagonalize(solver_, matrix, w, Z, timer_, matrix_major_type)
     implicit none
     Type(solver),intent(inout)::solver_
     Type(distributed_matrix),intent(inout)::matrix,Z
@@ -234,7 +227,7 @@ contains
 
     Type(localized_vector)::w_
     integer::dim
-        
+
     dim = size(w)
     call set_localized_vector(w_, dim)
 
@@ -245,7 +238,7 @@ contains
            &%ptr_distributed_matrix, w_&
            &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
 
-        call copy_localized_vector(w,w_)       
+        call copy_localized_vector(w,w_)
 
       else if (matrix_major_type == "matrix_row_major") then
         call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
@@ -266,7 +259,7 @@ contains
       call copy_localized_vector(w,w_)
     endif
     call del_localized_vector(w_)
-  end subroutine Diagonalize    
+  end subroutine diagonalize
 
 ! frank matrix generator
   subroutine generate_frank_matrix_distributed(matrix,matrix_major_type)
@@ -276,7 +269,7 @@ contains
 
     if (present(matrix_major_type)) then
       if (matrix_major_type == "matrix_col_major") then
-        
+
         call frank_generate_distributed_matrix_col_major(matrix&
            &%ptr_distributed_matrix)
       else if (matrix_major_type == "matrix_row_major") then
@@ -291,7 +284,7 @@ contains
          &%ptr_distributed_matrix)
     endif
   end subroutine generate_frank_matrix_distributed
-    
+
   subroutine generate_frank_matrix_localized(matrix,matrix_major_type)
     implicit none
     Type(localized_matrix),intent(inout)::matrix
@@ -299,7 +292,7 @@ contains
 
     if (present(matrix_major_type)) then
       if (matrix_major_type == "matrix_col_major") then
-        
+
         call frank_generate_localized_matrix_col_major(matrix&
            &%ptr_localized_matrix)
       else if (matrix_major_type == "matrix_row_major") then
@@ -314,7 +307,6 @@ contains
          &%ptr_localized_matrix)
     endif
   end subroutine generate_frank_matrix_localized
-
 
 !timer routines
   subroutine set_timer(timer_)
@@ -349,9 +341,8 @@ contains
     integer,intent(in)::id
     character(*),intent(in)::label
     call timer_registrate(timer_%ptr_timer, id, label)
-    
   end subroutine registrate_timer
-    
+
   real(kind(1d0)) function get_count_timer(timer_, id)
     Type(timer),intent(inout)::timer_
     integer,intent(in):: id
@@ -359,7 +350,6 @@ contains
     external timer_get_count
 
     get_count_timer = timer_get_count(timer_%ptr_timer, id)
-
   end function get_count_timer
 
   real(kind(1d0)) function get_average_timer(timer_, id)
@@ -370,5 +360,5 @@ contains
 
     get_average_timer = timer_get_average(timer_%ptr_timer, id)
   end function get_average_timer
-   
+
 end module rokko
