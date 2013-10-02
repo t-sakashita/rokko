@@ -44,6 +44,9 @@ extern "C"{
   void set_distributed_matrix_local_col_major(void* mat, int i, int j, double val);
   void set_distributed_matrix_local_row_major(void* mat, int i, int j, double val);
 
+  double get_distributed_matrix_local_col_major(void* mat, int i, int j);
+  double get_distributed_matrix_local_row_major(void* mat, int i, int j);
+
   void print_distributed_matrix_col_major(void* mat);
   void print_distributed_matrix_row_major(void* mat);
 

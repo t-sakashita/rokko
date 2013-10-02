@@ -95,8 +95,11 @@ program frank_matrix
     i = 1
     j = 1
     val = 5.2
-    call set_distributed_matrix_local(mat, i, j, val)
+    call set_distributed_matrix_local(mat, 1, 3, 3.4) !val)
+!    call set_distributed_matrix_local(mat, i, j, val)
 !    call set_distributed_matrix_local(mat, 1, 1, val)
+!    print*, "val=", get_distributed_matrix_local(mat, i, j)
+    print*, "val=", get_distributed_matrix_local(mat, 1, 2)
     call print_distributed_matrix(mat)
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
     

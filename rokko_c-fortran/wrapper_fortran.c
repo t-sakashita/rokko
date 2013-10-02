@@ -83,12 +83,22 @@ void set_distributed_matrix_local_col_major_(void** mat, int i, int j, double va
   set_distributed_matrix_local_col_major(*mat, i, j, val);
 }
 
-void print_distributed_matrix_row_major_(void** mat) {
-  print_distributed_matrix_row_major(*mat);
+double get_distributed_matrix_local_row_major_(void** mat, int i, int j) {
+  return get_distributed_matrix_local_row_major(*mat, i, j);
+}
+
+double get_distributed_matrix_local_col_major_(void** mat, int i, int j) {
+  return get_distributed_matrix_local_col_major(*mat, i, j);
 }
 
 void print_distributed_matrix_col_major_(void** mat) {
   print_distributed_matrix_col_major(*mat);
 }
+
+void print_distributed_matrix_row_major_(void** mat) {
+  print_distributed_matrix_row_major(*mat);
+}
+
+
 
 

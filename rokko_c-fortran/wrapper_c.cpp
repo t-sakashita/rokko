@@ -136,6 +136,18 @@ void set_distributed_matrix_local_row_major(void* mat, int i, int j, double val)
   mat_->set_local(i, j, val);
 }
 
+double get_distributed_matrix_local_col_major(void* mat, int i, int j) {
+  distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  return mat_->get_local(i, j);
+}
+
+double get_distributed_matrix_local_row_major(void* mat, int i, int j) {
+  distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  return mat_->get_local(i, j);
+}
+
 void print_distributed_matrix_col_major(void* mat) {
   distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
   std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;

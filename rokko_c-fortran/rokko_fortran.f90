@@ -61,6 +61,26 @@ module rokko
        integer(c_int), intent(in), value :: i, j
        real(c_double), intent(in), value :: val
      end subroutine set_distributed_matrix_local_col_major
+
+     subroutine set_distributed_matrix_local_row_major(matrix, i, j, val) bind(c)
+       use iso_c_binding
+       type(c_ptr), intent(in), value :: matrix
+       integer(c_int), intent(in), value :: i, j
+       real(c_double), intent(in), value :: val
+     end subroutine set_distributed_matrix_local_row_major
+
+     real(c_double) function get_distributed_matrix_local_col_major(matrix, i, j) bind(c, name="get_distributed_matrix_local_col_major")
+       use iso_c_binding
+       type(c_ptr), intent(in), value :: matrix
+       integer(c_int), intent(in), value :: i, j
+     end function get_distributed_matrix_local_col_major
+
+     real(c_double) function get_distributed_matrix_local_row_major(matrix, i, j) bind(c)
+       use iso_c_binding
+       type(c_ptr), intent(in), value :: matrix
+       integer(c_int), intent(in), value :: i, j
+     end function get_distributed_matrix_local_row_major
+
   end interface
 
 contains
@@ -375,6 +395,34 @@ contains
             &%ptr_distributed_matrix, i, j, val)
     endif
   end subroutine set_distributed_matrix_local
+
+! get a value matrix element to distributed_matrix
+  real(c_double) function get_distributed_matrix_local(matrix, i, j, matrix_major_type)
+    implicit none
+    type(distributed_matrix), intent(inout) :: matrix
+    integer(c_int), intent(in), value :: i, j
+    character(*), intent(in), optional :: matrix_major_type
+!    real :: get_distributed_matrix_local_col_major
+!    external get_distributed_matrix_local_col_major
+!    real :: get_distributed_matrix_local_row_major
+!    external get_distributed_matrix_local_row_major
+    
+    if (present(matrix_major_type)) then
+       if (matrix_major_type == "matrix_col_major") then
+          get_distributed_matrix_local = get_distributed_matrix_local_col_major(matrix&
+               &%ptr_distributed_matrix, i, j)
+       else if (matrix_major_type == "matrix_row_major") then
+          get_distributed_matrix_local = get_distributed_matrix_local_row_major(matrix&
+               &%ptr_distributed_matrix, i, j)
+       else
+          write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+               &atrix_row_major is accepted"
+       endif
+    else
+       get_distributed_matrix_local = get_distributed_matrix_local_col_major(matrix&
+            &%ptr_distributed_matrix, i, j)
+    endif
+  end function get_distributed_matrix_local
 
 ! set a value matrix element to distributed_matrix
   subroutine print_distributed_matrix(matrix, matrix_major_type)
