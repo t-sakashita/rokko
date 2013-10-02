@@ -10,7 +10,9 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver_factory.hpp>
-#include <rokko/eigen_exa/core.hpp>
+#include <rokko/eigen_exa.h>
 
-ROKKO_REGISTER_SOLVER(rokko::eigen_exa::solver, "eigen_exa")
+void ROKKO_eigen_sx(int n, int nvec, double *a, int lda, double *w, double *z, int ldz,
+                    int m_forward, int m_backward) {
+  eigen_sx_(&n, &nvec, a, &lda, w, z, &ldz, &m_forward, &m_backward);
+}

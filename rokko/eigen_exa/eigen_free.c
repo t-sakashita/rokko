@@ -10,7 +10,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver_factory.hpp>
-#include <rokko/eigen_exa/core.hpp>
+#include <rokko/eigen_exa.h>
 
-ROKKO_REGISTER_SOLVER(rokko::eigen_exa::solver, "eigen_exa")
+void ROKKO_eigen_free(int flag) {
+  eigen_free_wrap_(&flag);
+}
