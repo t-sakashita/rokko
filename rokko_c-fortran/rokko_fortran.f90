@@ -42,6 +42,21 @@ module rokko
   interface generate_frank_matrix
      module procedure generate_frank_matrix_distributed, generate_frank_matrix_localized
   end interface
+
+  interface
+     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.                                                                  
+       use iso_c_binding
+       type(c_ptr), value :: mat
+       type(c_funptr), value :: f
+     end subroutine generate_distributed_matrix_function_col_major
+     subroutine generate_distributed_matrix_function_row_major(mat, f) bind(c) ! this declation is necessary.                                                                  
+       use iso_c_binding
+       type(c_ptr), value :: mat
+       type(c_funptr), value :: f
+     end subroutine generate_distributed_matrix_function_row_major
+
+  end interface
+
 contains
   subroutine set_solver(solver_, solver_name_)
     implicit none
@@ -316,8 +331,7 @@ contains
     
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
-          call generate_distributed_matrix_function_col_major(matrix&
-               &%ptr_distributed_matrix, f)
+          call generate_distributed_matrix_function_col_major(matrix%ptr_distributed_matrix, f)
        else if (matrix_major_type == "matrix_row_major") then
           call generate_distributed_matrix_function_row_major(matrix&
                &%ptr_distributed_matrix, f)

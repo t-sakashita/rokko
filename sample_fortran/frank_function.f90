@@ -30,23 +30,6 @@ program frank_matrix
   use mod_frank
   implicit none
 
-  interface
-!     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.
-!       use rokko
-!       !       use iso_c_binding
-!       type(distributed_matrix), value :: mat
-!       type(c_funptr), value :: f
-!     end subroutine generate_distributed_matrix_function_col_major
-     
-!     subroutine generate_distributed_matrix_function(mat, f, matrix_major_type) bind(c) ! this declation is necessary.
-!       use rokko
-!       use iso_c_binding
-!       type(distributed_matrix), value :: mat
-!       type(c_funptr), value :: f
-!       character(*), value :: matrix_major_type
-!     end subroutine generate_distributed_matrix_function
-  end interface
-
   integer::dim
   type(distributed_matrix)::mat,Z !defined in rokko
   type(grid)::g !defined in rokko
@@ -60,7 +43,7 @@ program frank_matrix
   integer(c_int) :: n
   common /mydata/n
 
-  !--MPI variables--
+  !---MPI variables--
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
 
   !---loop variables---
@@ -109,8 +92,6 @@ program frank_matrix
 
   do count = 1, 1
     call generate_distributed_matrix_function(mat, c_funloc(func))
-!    call generate_distributed_matrix_function(mat, c_funloc(func))
-!    call generate_distributed_matrix_function_col_major(mat, c_funloc(func))
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
     
@@ -141,7 +122,6 @@ program frank_matrix
   call del_timer(timer_)
   call del_solver(solver_)
   deallocate(w)
-
 
 !!$  allocate(vec(dim))
 !!$  do i=1, dim

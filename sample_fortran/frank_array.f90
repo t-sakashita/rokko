@@ -33,15 +33,6 @@ program frank_matrix
   use mod_frank
   implicit none
 
-  interface
-     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.
-       use rokko
-       use iso_c_binding
-       type(distributed_matrix), value :: mat
-       type(c_funptr), value :: f
-     end subroutine generate_distributed_matrix_function_col_major
-  end interface
-
   integer::dim
   type(distributed_matrix)::mat,Z !defined in rokko
   type(grid)::g !defined in rokko
@@ -109,7 +100,7 @@ program frank_matrix
   write(*,*) "finished matrix generation"
 
   do count = 1, 1
-    call generate_distributed_matrix_function_col_major(mat, c_funloc(func))
+    call generate_distributed_matrix_function(mat, c_funloc(func))
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
