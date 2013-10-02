@@ -8,7 +8,7 @@ fi
 echo "ARCH = $ARCH"
 
 PREFIX="$2"
-test -z "$PREFIX" && PREFIX=$HOME/opt
+test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
 echo "PREFIX = $PREFIX"
 
 DEGUB="$3"
