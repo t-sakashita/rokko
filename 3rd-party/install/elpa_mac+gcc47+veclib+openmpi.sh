@@ -12,7 +12,7 @@ rm -rf elpa_lib-201305 elpa_lib-201305-build
 tar zxf $HOME/source/elpa_lib-201305.tar.gz
 
 cd $HOME/build/elpa_lib-201305
-patch -p1 < $SCRIPT_DIR/elpa_lib-201305-cmake.patch
+patch -p1 < $SCRIPT_DIR/elpa_lib-201305.patch
 
 cd $HOME/build
 mkdir -p elpa_lib-201305-build && cd elpa_lib-201305-build
