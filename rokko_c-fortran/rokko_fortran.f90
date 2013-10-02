@@ -55,6 +55,12 @@ module rokko
        type(c_funptr), value :: f
      end subroutine generate_distributed_matrix_function_row_major
 
+     subroutine set_distributed_matrix_local_col_major(matrix, i, j, val) bind(c)
+       use iso_c_binding
+       type(c_ptr), intent(in), value :: matrix
+       integer(c_int), intent(in), value :: i, j
+       real(c_double), intent(in), value :: val
+     end subroutine set_distributed_matrix_local_col_major
   end interface
 
 contains
@@ -349,9 +355,9 @@ contains
   subroutine set_distributed_matrix_local(matrix, i, j, val, matrix_major_type)
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
-    integer, intent(in) :: i, j
-    real(8), intent(in) :: val
-    character(*),intent(in),optional :: matrix_major_type
+    integer(c_int), intent(in), value :: i, j
+    real(kind(1d0)), intent(in), value :: val
+    character(*), intent(in), optional :: matrix_major_type
     
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
@@ -369,6 +375,29 @@ contains
             &%ptr_distributed_matrix, i, j, val)
     endif
   end subroutine set_distributed_matrix_local
+
+! set a value matrix element to distributed_matrix
+  subroutine print_distributed_matrix(matrix, matrix_major_type)
+    implicit none
+    type(distributed_matrix), intent(inout) :: matrix
+    character(*), intent(in), optional :: matrix_major_type
+    
+    if (present(matrix_major_type)) then
+       if (matrix_major_type == "matrix_col_major") then
+          call print_distributed_matrix_col_major(matrix&
+               &%ptr_distributed_matrix)
+       else if (matrix_major_type == "matrix_row_major") then
+          call print_distributed_matrix_row_major(matrix&
+               &%ptr_distributed_matrix)
+       else
+          write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+               &atrix_row_major is accepted"
+       endif
+    else
+       call print_distributed_matrix_col_major(matrix&
+            &%ptr_distributed_matrix)
+    endif
+  end subroutine print_distributed_matrix
 
 !timer routines
   subroutine set_timer(timer_)

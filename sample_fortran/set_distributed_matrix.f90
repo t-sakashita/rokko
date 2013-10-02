@@ -47,8 +47,8 @@ program frank_matrix
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
 
   !---loop variables---
-  integer :: i,j,count
-  real(8) :: val
+  integer(c_int) :: i , j, count
+  real(c_double) :: val
 
   call MPI_init(ierr) 
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -92,13 +92,12 @@ program frank_matrix
 
   do count = 1, 1
     call generate_distributed_matrix_function(mat, c_funloc(func))
-    i = 2
-    j = 5
-    val = 5.0
-!    call set_distributed_matrix_local(mat, i, j, val)
-!    call generate_distributed_matrix_function(mat, c_funloc(func))
-!    call generate_distributed_matrix_function_col_major(mat, c_funloc(func))
-
+    i = 1
+    j = 1
+    val = 5.2
+    call set_distributed_matrix_local(mat, i, j, val)
+!    call set_distributed_matrix_local(mat, 1, 1, val)
+    call print_distributed_matrix(mat)
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
     
     call diagonalize(solver_, mat, w, Z, timer_)
