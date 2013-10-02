@@ -14,6 +14,7 @@ else
 fi
 
 cd $HOME/build/slepc-3.4.2
+rm -rf $PREFIX/include/slepc*
 unset SLEPC_DIR PETSC_DIR PETSC_ARCH
 ./configure --prefix=$PREFIX
 
