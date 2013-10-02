@@ -1,0 +1,12 @@
+include_directories(${PROJECT_SOURCE_DIR}/c-fortran_sample)
+include_directories(${PROJECT_BINARY_DIR}/c-fortran_sample)
+
+set(SAMPLE frank frank_function frank_array)
+foreach(name ${SAMPLE})
+  set(target_name sample_fortran_${name})
+  add_executable(${target_name} ${name}.f90)
+  set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
+  target_link_libraries(${target_name} rokko_fortran ${ELEMENTAL_LIBRARIES} ${ELPA_LIB} ${SCALAPACK_LIB})
+  SET_TARGET_PROPERTIES(${target_name} PROPERTIES LINKER_LANGUAGE Fortran)
+endforeach(name)
+
