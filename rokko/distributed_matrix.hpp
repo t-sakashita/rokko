@@ -307,23 +307,7 @@ public:
     }
   }
 
-  void print() const {
-    /* each proc prints it's local_array out, in order */
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-	printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
-	printf("Local Matrix:\n");
-	for (int local_i=0; local_i<m_local; ++local_i) {
-	  for (int local_j=0; local_j<n_local; ++local_j) {
-	    printf("%e ",array[get_array_index(local_i, local_j)]);
-	  }
-	  printf("\n");
-	}
-	printf("\n");
-      }
-      MPI_Barrier(g.get_comm());
-    }
-  }
+  void print() const;
 
 private:
 
@@ -376,6 +360,41 @@ inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int loca
   return  local_i + local_j * lld;
 }
 
+template<>
+inline void distributed_matrix<rokko::matrix_row_major>:: print() const {
+  for (int proc=0; proc<nprocs; ++proc) {
+    if (proc == myrank) {
+      printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
+      printf("Local Matrix:\n");
+      for (int local_i=0; local_i<m_local; ++local_i) {
+        for (int local_j=0; local_j<n_local; ++local_j) {
+          printf("%e ", get_local(local_i, local_j));
+        }
+        printf("\n");
+      }
+      printf("\n");
+    }
+    MPI_Barrier(g.get_comm());
+  }
+}
+
+template<>
+inline void distributed_matrix<rokko::matrix_col_major>:: print() const {
+  for (int proc=0; proc<nprocs; ++proc) {
+    if (proc == myrank) {
+      printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
+      printf("Local Matrix:\n");
+      for (int local_j=0; local_j<n_local; ++local_j) {  // j first, i second
+        for (int local_i=0; local_i<m_local; ++local_i) {
+          printf("%e ", get_local(local_i, local_j));
+        }
+        printf("\n");
+      }
+      printf("\n");
+    }
+    MPI_Barrier(g.get_comm());
+  }
+}
 
 template<typename MATRIX_MAJOR>
 void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) { mat.print(); }
