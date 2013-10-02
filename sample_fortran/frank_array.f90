@@ -34,12 +34,12 @@ program frank_matrix
   implicit none
 
   interface
-     subroutine generate_distributed_matrix_col_major(mat, f) bind(c) ! this declation is necessary.
+     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.
        use rokko
        use iso_c_binding
        type(distributed_matrix), value :: mat
        type(c_funptr), value :: f
-     end subroutine generate_distributed_matrix_col_major
+     end subroutine generate_distributed_matrix_function_col_major
   end interface
 
   integer::dim
@@ -109,7 +109,7 @@ program frank_matrix
   write(*,*) "finished matrix generation"
 
   do count = 1, 1
-    call generate_distributed_matrix_col_major(mat, c_funloc(func))
+    call generate_distributed_matrix_function_col_major(mat, c_funloc(func))
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
 

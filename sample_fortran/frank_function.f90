@@ -31,13 +31,21 @@ program frank_matrix
   implicit none
 
   interface
-    subroutine generate_distributed_matrix_col_major(mat, f) bind(c) ! this declation is necessary.
-      use rokko
-      use iso_c_binding
-      type(distributed_matrix), value :: mat
-      type(c_funptr), value :: f
-    end subroutine generate_distributed_matrix_col_major
- end interface
+!     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.
+!       use rokko
+!       !       use iso_c_binding
+!       type(distributed_matrix), value :: mat
+!       type(c_funptr), value :: f
+!     end subroutine generate_distributed_matrix_function_col_major
+     
+!     subroutine generate_distributed_matrix_function(mat, f, matrix_major_type) bind(c) ! this declation is necessary.
+!       use rokko
+!       use iso_c_binding
+!       type(distributed_matrix), value :: mat
+!       type(c_funptr), value :: f
+!       character(*), value :: matrix_major_type
+!     end subroutine generate_distributed_matrix_function
+  end interface
 
   integer::dim
   type(distributed_matrix)::mat,Z !defined in rokko
@@ -100,7 +108,9 @@ program frank_matrix
   write(*,*) "finished matrix generation"
 
   do count = 1, 1
-    call generate_distributed_matrix_col_major(mat, c_funloc(func))
+    call generate_distributed_matrix_function(mat, c_funloc(func))
+!    call generate_distributed_matrix_function(mat, c_funloc(func))
+!    call generate_distributed_matrix_function_col_major(mat, c_funloc(func))
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
     
@@ -126,7 +136,6 @@ program frank_matrix
     write(*,*) "time = ", get_average_timer(timer_, 1)
   endif
 
-
   call del_distributed_matrix(mat)
   call del_distributed_matrix(Z)
   call del_timer(timer_)
@@ -138,8 +147,7 @@ program frank_matrix
 !!$  do i=1, dim
 !!$    call get_column_from_distributed_matrix(vec, Z, i)
 !!$    write(*,"(a,i,a,100e25.15)") "Eigen vector of ",i, "=", vec
-!!$  end do
-    
+!!$  end do    
 !!$  deallocate(vec)
   call MPI_finalize(ierr)
 end program frank_matrix

@@ -292,7 +292,6 @@ contains
 
     if (present(matrix_major_type)) then
       if (matrix_major_type == "matrix_col_major") then
-
         call frank_generate_localized_matrix_col_major(matrix&
            &%ptr_localized_matrix)
       else if (matrix_major_type == "matrix_row_major") then
@@ -307,6 +306,30 @@ contains
          &%ptr_localized_matrix)
     endif
   end subroutine generate_frank_matrix_localized
+
+  ! matrix generator according to a given function pointer
+  subroutine generate_distributed_matrix_function(matrix, f, matrix_major_type) !bind(c, name="generate_distributed_matrix_function")
+    implicit none
+    type(distributed_matrix), intent(inout) :: matrix
+    type(c_funptr), intent(in) :: f   ! use pointer type as default (do not specify value type)
+    character(*),intent(in),optional :: matrix_major_type
+    
+    if (present(matrix_major_type)) then
+       if (matrix_major_type == "matrix_col_major") then
+          call generate_distributed_matrix_function_col_major(matrix&
+               &%ptr_distributed_matrix, f)
+       else if (matrix_major_type == "matrix_row_major") then
+          call generate_distributed_matrix_function_row_major(matrix&
+               &%ptr_distributed_matrix, f)
+       else
+          write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+               &atrix_row_major is accepted"
+       endif
+    else
+       call generate_distributed_matrix_function_col_major(matrix&
+            &%ptr_distributed_matrix, f)
+    endif
+  end subroutine generate_distributed_matrix_function
 
 !timer routines
   subroutine set_timer(timer_)

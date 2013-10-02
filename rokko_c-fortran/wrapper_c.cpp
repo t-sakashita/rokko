@@ -112,7 +112,13 @@ void solver_diagonalize_matrix_row_major(void* solver_ ,void* mat, void* w, void
   solver__ -> diagonalize(*mat_, *w_, *Z_, *timer_);
 }
 
-void generate_distributed_matrix_col_major(void* mat, double (*func)(int i, int j)) {
+void generate_distributed_matrix_function_row_major(void* mat, double (*func)(int i, int j)) {
+  distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  mat_->generate(func);
+}
+
+void generate_distributed_matrix_function_col_major(void* mat, double (*func)(int i, int j)) {
   distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
   std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
   mat_->generate(func);
