@@ -10,7 +10,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver_factory.hpp>
-#include <rokko/eigen_exa/core.hpp>
+#include <rokko/eigen_exa.h>
 
-ROKKO_REGISTER_SOLVER(rokko::eigen_exa::solver, "eigen_exa")
+void ROKKO_cstab_get_optdim(int n_min, int n_unroll, int delta_L1, int delta_L2, int *n_opt) {
+  cstab_get_optdim_(&n_min, &n_unroll, &delta_L1, &delta_L2, n_opt);
+}

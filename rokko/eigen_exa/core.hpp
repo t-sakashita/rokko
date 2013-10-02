@@ -1,7 +1,19 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef ROKKO_EIGEN_EXA_CORE_HPP
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
-#include <rokko/eigen_exa/eigen_exa.hpp>
+#include <rokko/eigen_exa.h>
 #include <rokko/eigen_exa/diagonalize.hpp>
 
 namespace rokko {
@@ -27,7 +39,7 @@ public:
     int n1 = ((n-1)/NPROW+1);
     int nm;
     int i1 = 6, i2 = 16*4, i3 = 16*4*2;
-    CSTAB_get_optdim( n1, i1, i2, i3, nm );
+    ROKKO_cstab_get_optdim(n1, i1, i2, i3, &nm);
 #ifndef NDEBUG
     std::cout << "nm=" << nm << std::endl;
 #endif

@@ -34,10 +34,10 @@ if(BUILD_SCALAPACK)
   # set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
 endif(BUILD_SCALAPACK)
 
-if(BUILD_EIGEN_EXA)
+if(BUILD_EIGENEXA)
   include_directories(${EIGENEXA_INCLUDE_DIR})
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa.cpp)
-endif(BUILD_EIGEN_EXA)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa.cpp eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_init.c eigen_exa/eigen_free.c eigen_exa/cstab_get_optdim.c eigen_exa/eigen_sx.c)
+endif(BUILD_EIGENEXA)
 
 if(BUILD_ELEMENTAL)
   include_directories(${ELEMENTAL_INCLUDE_DIR})
