@@ -23,6 +23,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DCMAKE_C_COMPILER=mpifccpx -DCMAKE_Fortran_COMPILER=mpifrtpx \
     -DCMAKE_C_FLAGS="-Kfast -Xg -KPIC" -DCMAKE_Fortran_FLAGS="-Kfast -KPIC -Kocl -Ksimd -KXFILL -Cpp" -DOpenMP_C_FLAGS="-Kopenmp" \
     -DSCALAPACK_LIB="-SCALAPACK -SSL2BLAMP" \
+    -DUSE_C_LINKER=ON \
     $HOME/build/EigenExa-1.3
 make -j4 VERBOSE=1
 make install
