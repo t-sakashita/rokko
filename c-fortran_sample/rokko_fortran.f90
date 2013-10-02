@@ -15,7 +15,6 @@ module rokko
   use ISO_C_BINDING
   implicit none
   
-
   type::distributed_matrix
      Type(c_ptr) ptr_distributed_matrix
   end type distributed_matrix
@@ -40,10 +39,9 @@ module rokko
      Type(c_ptr) ptr_timer
   end type timer
 
-
   interface generate_frank_matrix
      module procedure generate_frank_matrix_distributed, generate_frank_matrix_localized
-  end interface generate_frank_matrix
+  end interface
 contains
   subroutine set_solver(solver_, solver_name_)
     implicit none
@@ -51,27 +49,27 @@ contains
     character(*),intent(in):: solver_name_
     integer::argc
     character(len=1)::argv
-
-!    integer::argc,lenght_solver_name
-!    character::argv
-!    Type(c_ptr)::initialize_solver    
-!    external initialize_solver
+    
+    !    integer::argc,lenght_solver_name
+    !    character::argv
+    !    Type(c_ptr)::initialize_solver    
+    !    external initialize_solver
     character(len=1),parameter::NULL =char(0)
 
     write(*,*) trim(solver_name_), len(solver_name_)
     !solver_%ptr_solver = initialize_solver(trim(solver_name_)//NULL)
     call initialize_solver(solver_%ptr_solver, trim(solver_name_)&
-       &//NULL, argc, argv)
+         &//NULL, argc, argv)
     
   end subroutine set_solver
   subroutine del_solver(solver_)
     implicit none
     Type(solver),intent(inout)::solver_
-
+    
     call delete_solver(solver_%ptr_solver)
   end subroutine del_solver
-
-
+  
+  
   subroutine set_grid(grid_, comm_, grid_major_type)
     implicit none
     Type(grid),intent(out)::grid_
@@ -318,7 +316,7 @@ contains
   end subroutine generate_frank_matrix_localized
 
 
-!//timer routines
+!timer routines
   subroutine set_timer(timer_)
     implicit none
     Type(timer),intent(out)::timer_
@@ -360,7 +358,7 @@ contains
     real(kind(1d0))::timer_get_count
     external timer_get_count
 
-    get_count_timer =  timer_get_count(timer_%ptr_timer, id)
+    get_count_timer = timer_get_count(timer_%ptr_timer, id)
 
   end function get_count_timer
 
@@ -370,7 +368,7 @@ contains
     real(kind(1d0))::timer_get_average
     external timer_get_average
 
-    get_average_timer =  timer_get_average(timer_%ptr_timer, id)
+    get_average_timer = timer_get_average(timer_%ptr_timer, id)
   end function get_average_timer
    
 end module rokko

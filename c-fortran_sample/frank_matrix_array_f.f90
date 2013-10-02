@@ -10,6 +10,7 @@
 !* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 !*
 !*****************************************************************************/
+
 module mod_frank
   use iso_c_binding
   integer(c_int) :: n
@@ -33,20 +34,20 @@ program frank_matrix
   implicit none
 
   interface
-    subroutine generate_distributed_matrix_col_major(mat, f) bind(c) ! this declation is necessary.
-      use rokko
-      use iso_c_binding
-      type(distributed_matrix), value :: mat
-      type(c_funptr), value :: f
-    end subroutine generate_distributed_matrix_col_major
- end interface
+     subroutine generate_distributed_matrix_col_major(mat, f) bind(c) ! this declation is necessary.
+       use rokko
+       use iso_c_binding
+       type(distributed_matrix), value :: mat
+       type(c_funptr), value :: f
+     end subroutine generate_distributed_matrix_col_major
+  end interface
 
   integer::dim
   type(distributed_matrix)::mat,Z !defined in rokko
   type(grid)::g !defined in rokko
   type(solver)::solver_ !defined in rokko
   type(timer)::timer_
-  
+
   real(8),allocatable::w(:),vec(:) !localized_vector
   character(len=100)::solver_name
   character(len=100)::tmp_str
@@ -56,13 +57,13 @@ program frank_matrix
 !  common /mydata/n
 !  common /mydata/localized_array
 
-  !--MPI variables--
+  !---MPI variables---
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
 
   !---loop variables---
   integer::i,j, count
 
-  call MPI_init(ierr) 
+  call MPI_init(ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
   comm = MPI_COMM_WORLD
@@ -82,9 +83,8 @@ program frank_matrix
   call set_timer(timer_)
   call registrate_timer(timer_, 1, "diagonalize")
 
-  write(*,*) "solver_name=", solver_name  
+  write(*,*) "solver_name=", solver_name
   write(*,*) "dim=",dim
-!  dim = 10
   n = dim
   allocate(localized_array(dim,dim))
   do i = 1, dim
@@ -105,7 +105,6 @@ program frank_matrix
   call set_distributed_matrix(mat, dim, dim, g, solver_)
   call set_distributed_matrix(Z, dim, dim, g, solver_)
   allocate(w(dim));
-  
 
   write(*,*) "finished matrix generation"
 
@@ -113,9 +112,9 @@ program frank_matrix
     call generate_distributed_matrix_col_major(mat, c_funloc(func))
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
-    
+
     call Diagonalize(solver_, mat, w, Z, timer_)
-    
+
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
   enddo
   write(*,*) "finised matrix generation frank"
@@ -143,14 +142,11 @@ program frank_matrix
   call del_solver(solver_)
   deallocate(w)
 
-
 !!$  allocate(vec(dim))
 !!$  do i=1, dim
 !!$    call get_column_from_distributed_matrix(vec, Z, i)
 !!$    write(*,"(a,i,a,100e25.15)") "Eigen vector of ",i, "=", vec
 !!$  end do
-    
 !!$  deallocate(vec)
   call MPI_finalize(ierr)
 end program frank_matrix
-

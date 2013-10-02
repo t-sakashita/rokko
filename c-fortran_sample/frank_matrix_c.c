@@ -10,11 +10,13 @@
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
+
 #include <mpi.h>
 #include <stdio.h>
 #include "wrapper_c.h"
 #include "frank_matrix_wrapper_c.h"
 #include "timer_wrapper_c.h"
+
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
 
@@ -26,22 +28,15 @@ int main(int argc, char *argv[]) {
   timer = initialize_timer();
   timer_registrate(timer, 1, "diagonalize");
     
-
-  //bin/  rokko::timer timer;
-  //timer.registrate( 1, "diagonalize");
-  //mkl_set_num_threads(4);
-    
   char *solver_name;
   solver_name = argv[1];
   printf("solver_name= %s \n",solver_name);
 
-    
   int dim = atoi(argv[2]);
   printf("dim= %d \n",dim);
 
   void* solver_;
   solver_ = initialize_solver(solver_name, argc, argv);
-  
 
   MPI_Comm comm = MPI_COMM_WORLD;
   void* g;
