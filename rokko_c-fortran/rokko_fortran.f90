@@ -445,7 +445,7 @@ contains
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
     integer(c_int), intent(in) :: rows, cols, ld
-    real(c_double), intent(in) :: array(ld,ld)
+    real(c_double), intent(in) :: array(ld, cols)
     character(*),intent(in),optional :: matrix_major_type
 
     if (present(matrix_major_type)) then
