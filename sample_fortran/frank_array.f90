@@ -20,19 +20,6 @@ module mod_frank
   end function func
 end module mod_frank
 
-real*8 function frank_matrix_element(i, j)
-  integer, intent(in) :: i, j
-  integer n
-  common /frank_matrix_common/ n 
-  frank_matrix_element = n - max(dble(i), dble(j))
-end function frank_matrix_element
-
-subroutine frank_matrix_set_dimension(n_in)
-  integer n
-  common /frank_matrix_common/ n
-  n = n_in
-end subroutine frank_matrix_set_dimension
-
 program frank_matrix
   use MPI
   use rokko
@@ -47,7 +34,7 @@ program frank_matrix
   character(len=100)::solver_name
   character(len=100)::tmp_str
   integer args_cnt, arg_len, status
-  real(8) :: array(10,10)
+  real(8), allocatable, dimension(:,:) :: array
   real*8 frank_matrix_element
   external frank_matrix_element
 
@@ -76,8 +63,6 @@ program frank_matrix
 
   write(*,*) "solver_name=", solver_name  
   write(*,*) "dim=",dim
-  dim = 10
-  call frank_matrix_set_dimension(dim)
 
   call set_solver(solver_, solver_name)
   write(*,*) "finished solver generation"
@@ -94,7 +79,7 @@ program frank_matrix
 
   write(*,*) "finished matrix generation"
   
-!  call generate_distributed_matrix_function(mat, frank_matrix_element)
+  allocate(array(dim, dim))
   do i=1, dim
      do j=1, dim
 !        array(i,j) = 9
@@ -120,6 +105,7 @@ program frank_matrix
   call del_distributed_matrix(Z)
   call del_solver(solver_)
   deallocate(w)
+  deallocate(array)
 
   call MPI_finalize(ierr)
 end program frank_matrix
