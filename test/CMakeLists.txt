@@ -9,22 +9,6 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-# Tests using Boost.test
-# Check and build Boost.Test Unit Test Framework
-find_package(Boost 1.48.0 COMPONENTS unit_test_framework)
-if (Boost_FOUND)
-  add_definitions(-DBOOST_TEST_DYN_LINK)
-endif (Boost_FOUND)
-
-#copy files
-#set(PATTERN_FILES "heisenberg.ip" "heisenberg2.ip" "xyz.ip")
-#foreach( pattern_file ${PATTERN_FILES} )
-#  message(STATUS "Display_CURRENT_BINARARY: ${CMAKE_CURRENT_BINARY_DIR}")
-#  message(STATUS "Display_CURRENT_SOURCE: ${CMAKE_CURRENT_SOURCE_DIR}")
-#  message(STATUS "Display_pattern: ${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file}")
-#  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file} ${CMAKE_CURRENT_BINARY_DIR}/${pattern_file} COPYONLY)
-#endforeach( pattern_file )
-
 # single process tests
 set(TESTS solver_factory localized_matrix)
 foreach(name ${TESTS})

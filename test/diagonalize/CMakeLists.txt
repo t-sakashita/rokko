@@ -9,13 +9,6 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-# Tests using Boost.test
-# Check and build Boost.Test Unit Test Framework
-find_package(Boost 1.48.0 COMPONENTS unit_test_framework)
-if (Boost_FOUND)
-  add_definitions(-DBOOST_TEST_DYN_LINK)
-endif (Boost_FOUND)
-
 #copy files
 set(PATTERN_FILES "heisenberg.ip")
 foreach( pattern_file ${PATTERN_FILES} )
