@@ -10,24 +10,12 @@
 !* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 !*
 !*****************************************************************************/
-module mod_frank
-  use iso_c_binding
-  contains
-  real(c_double) function func(i, j) bind(c)
-    integer(c_int) :: n
-    common /mydata/n
-    integer(c_int), value, intent(in) :: i, j
-!    print*, "i=", i
-    func = n - max(dble(i), dble(j))
-  end function func
-end module mod_frank
 
 program frank_matrix
   use iso_c_binding
   use omp_lib
   use MPI
   use rokko
-  use mod_frank
   implicit none
 
   integer::dim
@@ -40,8 +28,6 @@ program frank_matrix
   character(len=100)::solver_name
   character(len=100)::tmp_str
   integer args_cnt, arg_len, status
-  integer(c_int) :: n
-  common /mydata/n
 
   !--MPI variables--
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
@@ -76,7 +62,6 @@ program frank_matrix
   write(*,*) "solver_name=", solver_name  
   write(*,*) "dim=",dim
 !  dim = 10
-  n = dim
 
   call set_solver(solver_, solver_name)
   write(*,*) "finished solver generation"
@@ -91,26 +76,18 @@ program frank_matrix
   call set_distributed_matrix(Z, dim, dim, g, solver_)
   allocate(w(dim));
 
-  write(*,*) "finished matrix generation"
-
-  do count = 1, 1
-    call generate_distributed_matrix_function(mat, c_funloc(func))
-    i = 1
-    j = 1
-    val = 5.2
-    call set_distributed_matrix_local(mat, 1, 3, 3.4) !val)
-!    call set_distributed_matrix_local(mat, i, j, val)
-!    call set_distributed_matrix_local(mat, 1, 1, val)
+  i = 1
+  j = 1
+  val = 5.2
+  call set_distributed_matrix_local(mat, 1, 3, 3.4)
 !    print*, "val=", get_distributed_matrix_local(mat, i, j)
-    print*, "val=", get_distributed_matrix_local(mat, 1, 2)
-    call print_distributed_matrix(mat)
-    call MPI_Barrier(MPI_COMM_WORLD, ierr)
-    
-    call diagonalize(solver_, mat, w, Z, timer_)
-    
-    call MPI_Barrier(MPI_COMM_WORLD, ierr)
-  enddo
-  write(*,*) "finised matrix generation frank"
+  print*, "val=", get_distributed_matrix_local(mat, 1, 2)
+  call print_distributed_matrix(mat)
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+  
+  call diagonalize(solver_, mat, w, Z, timer_)
+  
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
   if (myrank_g .eq. 0) then
     write(*,*) "Computed Eigenvalues = "
@@ -133,7 +110,6 @@ program frank_matrix
   call del_timer(timer_)
   call del_solver(solver_)
   deallocate(w)
-
 
 !!$  allocate(vec(dim))
 !!$  do i=1, dim
