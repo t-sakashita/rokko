@@ -263,8 +263,9 @@ contains
     Type(solver),intent(inout)::solver_
     Type(distributed_matrix),intent(inout)::matrix,Z
     real(kind(1d0))::w(:)
-    Type(timer),intent(inout)::timer_
+    Type(timer),intent(inout), optional::timer_
     character(*),intent(in),optional::matrix_major_type
+    Type(timer) :: timer
 
     Type(localized_vector)::w_
     integer::dim
@@ -272,32 +273,63 @@ contains
     dim = size(w)
     call set_localized_vector(w_, dim)
 
-    if (present(matrix_major_type)) then
-      if (matrix_major_type == "matrix_col_major") then
+    if (present(timer_)) then
+       if (present(matrix_major_type)) then
+          if (matrix_major_type == "matrix_col_major") then
 
-        call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
-           &%ptr_distributed_matrix, w_&
-           &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+             call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
 
-        call copy_localized_vector(w,w_)
-
-      else if (matrix_major_type == "matrix_row_major") then
-        call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
-           &%ptr_distributed_matrix, w_&
-           &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
-
-        call copy_localized_vector(w,w_)
-
-      else
-        write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
-           &atrix_row_major is accepted"
-      endif
+             call copy_localized_vector(w,w_)
+             
+          else if (matrix_major_type == "matrix_row_major") then
+             call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+             
+             call copy_localized_vector(w,w_)
+             
+          else
+             write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+                  &atrix_row_major is accepted"
+          endif
+       else
+          call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+               &%ptr_distributed_matrix, w_&
+               &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+          
+          call copy_localized_vector(w,w_)
+       endif
+       
     else
-      call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
-         &%ptr_distributed_matrix, w_&
-         &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
-
-      call copy_localized_vector(w,w_)
+       if (present(matrix_major_type)) then
+          if (matrix_major_type == "matrix_col_major") then
+             
+             call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer%ptr_timer)
+             
+             call copy_localized_vector(w,w_)
+             
+          else if (matrix_major_type == "matrix_row_major") then
+             call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer%ptr_timer)
+             
+             call copy_localized_vector(w,w_)
+             
+          else
+             write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+                  &atrix_row_major is accepted"
+          endif
+       else
+          call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+               &%ptr_distributed_matrix, w_&
+               &%ptr_localized_vector, Z%ptr_distributed_matrix, timer%ptr_timer)
+          
+          call copy_localized_vector(w,w_)
+       endif
     endif
     call del_localized_vector(w_)
   end subroutine diagonalize
