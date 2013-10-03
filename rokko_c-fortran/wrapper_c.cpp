@@ -136,6 +136,30 @@ void generate_distributed_matrix_function_col_major_fortran(void* mat, double (*
   mat_->generate(func);
 }
 
+void generate_distributed_matrix_array_row_major_fortran(void* mat, double* array, int rows, int cols, int ld) {
+  distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  for (int local_i=0; local_i<mat_->get_m_local(); ++local_i) {
+    for (int local_j=0; local_j<mat_->get_n_local(); ++local_j) {
+      int global_i = mat_->translate_l2g_row(local_i);
+      int global_j = mat_->translate_l2g_col(local_j);
+      mat_->set_local(local_i, local_j, array[global_i * ld + global_j]);
+    }
+  }
+}
+
+void generate_distributed_matrix_array_col_major_fortran(void* mat, double* array, int rows, int cols, int ld) {
+  distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+  std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
+  for (int local_i=0; local_i<mat_->get_m_local(); ++local_i) {
+    for (int local_j=0; local_j<mat_->get_n_local(); ++local_j) {
+      int global_i = mat_->translate_l2g_row(local_i);
+      int global_j = mat_->translate_l2g_col(local_j);
+      mat_->set_local(local_i, local_j, array[global_i + global_j * ld]);
+    }
+  }
+}
+
 void set_distributed_matrix_local_col_major(void* mat, int i, int j, double val) {
   distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
   std::cout << "m_gglobal=" << mat_->get_m_global() << "n_gglobal=" << mat_->get_n_global() << std::endl;
