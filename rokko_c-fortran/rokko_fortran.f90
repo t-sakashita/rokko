@@ -44,16 +44,31 @@ module rokko
   end interface
 
   interface
-     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.                                                                  
+     subroutine generate_distributed_matrix_function_col_major_fortran(mat, f) bind(c) ! this declation is necessary.
        use iso_c_binding
        type(c_ptr), value :: mat
        type(c_funptr), value :: f
-     end subroutine generate_distributed_matrix_function_col_major
-     subroutine generate_distributed_matrix_function_row_major(mat, f) bind(c) ! this declation is necessary.                                                                  
+     end subroutine generate_distributed_matrix_function_col_major_fortran
+
+     subroutine generate_distributed_matrix_function_row_major_fortran(mat, f) bind(c) ! this declation is necessary.
        use iso_c_binding
        type(c_ptr), value :: mat
        type(c_funptr), value :: f
-     end subroutine generate_distributed_matrix_function_row_major
+     end subroutine generate_distributed_matrix_function_row_major_fortran
+
+     subroutine generate_distributed_matrix_array_col_major_fortran(mat, array, rows, cols, ld) bind(c) ! this declation is necessary.
+       use iso_c_binding
+       type(c_ptr), value :: mat
+       type(c_ptr), value, intent(in) :: array
+       integer(c_int), value, intent(in) :: rows, cols, ld
+     end subroutine generate_distributed_matrix_array_col_major_fortran
+
+     subroutine generate_distributed_matrix_array_row_major_fortran(mat, array, rows, cols, ld) bind(c) ! this declation is necessary.
+       use iso_c_binding
+       type(c_ptr), value :: mat
+       type(c_ptr), value, intent(in) :: array
+       integer(c_int), value, intent(in) :: rows, cols, ld
+     end subroutine generate_distributed_matrix_array_row_major_fortran
 
      subroutine set_distributed_matrix_local_col_major(matrix, i, j, val) bind(c)
        use iso_c_binding
@@ -69,7 +84,7 @@ module rokko
        real(c_double), intent(in), value :: val
      end subroutine set_distributed_matrix_local_row_major
 
-     real(c_double) function get_distributed_matrix_local_col_major(matrix, i, j) bind(c, name="get_distributed_matrix_local_col_major")
+     real(c_double) function get_distributed_matrix_local_col_major(matrix, i, j) bind(c) !, name="get_distributed_matrix_local_col_major")
        use iso_c_binding
        type(c_ptr), intent(in), value :: matrix
        integer(c_int), intent(in), value :: i, j
@@ -263,8 +278,9 @@ contains
     Type(solver),intent(inout)::solver_
     Type(distributed_matrix),intent(inout)::matrix,Z
     real(kind(1d0))::w(:)
-    Type(timer),intent(inout)::timer_
+    Type(timer),intent(inout), optional::timer_
     character(*),intent(in),optional::matrix_major_type
+    Type(timer) :: timer
 
     Type(localized_vector)::w_
     integer::dim
@@ -272,32 +288,63 @@ contains
     dim = size(w)
     call set_localized_vector(w_, dim)
 
-    if (present(matrix_major_type)) then
-      if (matrix_major_type == "matrix_col_major") then
+    if (present(timer_)) then
+       if (present(matrix_major_type)) then
+          if (matrix_major_type == "matrix_col_major") then
 
-        call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
-           &%ptr_distributed_matrix, w_&
-           &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+             call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
 
-        call copy_localized_vector(w,w_)
+             call copy_localized_vector(w,w_)
 
-      else if (matrix_major_type == "matrix_row_major") then
-        call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
-           &%ptr_distributed_matrix, w_&
-           &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+          else if (matrix_major_type == "matrix_row_major") then
+             call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
 
-        call copy_localized_vector(w,w_)
+             call copy_localized_vector(w,w_)
 
-      else
-        write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
-           &atrix_row_major is accepted"
-      endif
+          else
+             write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+                  &atrix_row_major is accepted"
+          endif
+       else
+          call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+               &%ptr_distributed_matrix, w_&
+               &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+
+          call copy_localized_vector(w,w_)
+       endif
+
     else
-      call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
-         &%ptr_distributed_matrix, w_&
-         &%ptr_localized_vector, Z%ptr_distributed_matrix, timer_%ptr_timer)
+       if (present(matrix_major_type)) then
+          if (matrix_major_type == "matrix_col_major") then
 
-      call copy_localized_vector(w,w_)
+             call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer%ptr_timer)
+
+             call copy_localized_vector(w,w_)
+
+          else if (matrix_major_type == "matrix_row_major") then
+             call solver_diagonalize_matrix_row_major(solver_%ptr_solver, matrix&
+                  &%ptr_distributed_matrix, w_&
+                  &%ptr_localized_vector, Z%ptr_distributed_matrix, timer%ptr_timer)
+
+             call copy_localized_vector(w,w_)
+
+          else
+             write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+                  &atrix_row_major is accepted"
+          endif
+       else
+          call solver_diagonalize_matrix_col_major(solver_%ptr_solver, matrix&
+               &%ptr_distributed_matrix, w_&
+               &%ptr_localized_vector, Z%ptr_distributed_matrix, timer%ptr_timer)
+
+          call copy_localized_vector(w,w_)
+       endif
     endif
     call del_localized_vector(w_)
   end subroutine diagonalize
@@ -348,28 +395,74 @@ contains
     endif
   end subroutine generate_frank_matrix_localized
 
+!  real(c_double) function generate_func_wrapper(i, j) bind(c)
+!    integer(c_int), value, intent(in) :: i, j
+!    real*8 func
+!    external func
+!    common /generate_func_wrapper_common/ func
+!    generate_func_wrapper = func(i, j)
+!  end function generate_func_wrapper
+
 ! matrix generator according to a given function pointer
   subroutine generate_distributed_matrix_function(matrix, f, matrix_major_type) !bind(c, name="generate_distributed_matrix_function")
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
-    type(c_funptr), intent(in) :: f   ! use pointer type as default (do not specify value type)
+!    type(c_funptr), intent(in) :: f   ! use pointer type as default (do not specify value type)
+    interface
+       real(c_double) function f(i, j)
+         use iso_c_binding
+         integer(c_int), intent(in) :: i, j
+       end function f
+    end interface
+!    procedure(func), intent(in), pointer :: f
+!    real(c_double), intent(in), pointer :: f   ! use pointer type as default (do not specify value type)
     character(*),intent(in),optional :: matrix_major_type
-    
+!    real*8 func
+!    common /generate_func_wrapper_common/ func
+!    func = f
+
+    write(*,*) "f(1,1)=", f(1,1)
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
-          call generate_distributed_matrix_function_col_major(matrix%ptr_distributed_matrix, f)
+          call generate_distributed_matrix_function_col_major_fortran(matrix%ptr_distributed_matrix, c_funloc(f)) !generate_func_wrapper))
        else if (matrix_major_type == "matrix_row_major") then
-          call generate_distributed_matrix_function_row_major(matrix&
-               &%ptr_distributed_matrix, f)
+          call generate_distributed_matrix_function_row_major_fortran(matrix&
+               &%ptr_distributed_matrix, c_funloc(f)) !gererate_func_wrapper))
        else
           write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
                &atrix_row_major is accepted"
        endif
     else
-       call generate_distributed_matrix_function_col_major(matrix&
-            &%ptr_distributed_matrix, f)
+       call generate_distributed_matrix_function_col_major_fortran(matrix&
+            &%ptr_distributed_matrix, c_funloc(f)) !generate_func_wrapper))
     endif
   end subroutine generate_distributed_matrix_function
+
+! matrix generator according to a given fortran array
+! it is inefficient way. do not use in pracitcal calculation.
+  subroutine generate_distributed_matrix_array(matrix, array, rows, cols, ld, matrix_major_type)
+    use iso_c_binding
+    implicit none
+    type(distributed_matrix), intent(inout) :: matrix
+    integer(c_int), intent(in) :: rows, cols, ld
+    real(c_double), intent(in) :: array(ld, cols)
+    character(*),intent(in),optional :: matrix_major_type
+
+    if (present(matrix_major_type)) then
+       if (matrix_major_type == "matrix_col_major") then
+          call generate_distributed_matrix_array_col_major_fortran(matrix%ptr_distributed_matrix, c_loc(array(1,1)), rows, cols, ld)
+       else if (matrix_major_type == "matrix_row_major") then
+          call generate_distributed_matrix_array_row_major_fortran(matrix&
+               &%ptr_distributed_matrix, c_loc(array(1,1)), rows, cols, ld)
+       else
+          write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
+               &atrix_row_major is accepted"
+       endif
+    else
+       call generate_distributed_matrix_array_col_major_fortran(matrix&
+            &%ptr_distributed_matrix, c_loc(array(1,1)), rows, cols, ld)
+    endif
+  end subroutine generate_distributed_matrix_array
 
 ! set a value matrix element to distributed_matrix
   subroutine set_distributed_matrix_local(matrix, i, j, val, matrix_major_type)
@@ -378,7 +471,7 @@ contains
     integer(c_int), intent(in), value :: i, j
     real(kind(1d0)), intent(in), value :: val
     character(*), intent(in), optional :: matrix_major_type
-    
+
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
           call set_distributed_matrix_local_col_major(matrix&
@@ -402,7 +495,7 @@ contains
     type(distributed_matrix), intent(inout) :: matrix
     integer(c_int), intent(in), value :: i, j
     character(*), intent(in), optional :: matrix_major_type
-    
+
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
           get_distributed_matrix_local = get_distributed_matrix_local_col_major(matrix&
@@ -426,7 +519,7 @@ contains
 !    type(distributed_matrix), intent(inout) :: matrix
 !    integer(c_int), intent(in), value :: i, j
 !    character(*), intent(in), optional :: matrix_major_type
-    
+
 !    if (present(matrix_major_type)) then
 !     if (matrix_major_type == "matrix_col_major") then
 !          get_distributed_matrix_global = get_distributed_matrix_global_col_major(matrix&
@@ -449,7 +542,7 @@ contains
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
     character(*), intent(in), optional :: matrix_major_type
-    
+
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
           call print_distributed_matrix_col_major(matrix&

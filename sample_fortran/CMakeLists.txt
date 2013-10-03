@@ -2,6 +2,7 @@ include_directories(${PROJECT_SOURCE_DIR}/rokko_c-fortran)
 include_directories(${PROJECT_BINARY_DIR}/rokko_c-fortran)
 
 set(SAMPLE frank frank_function frank_array set_distributed_matrix)
+#frank_function_array
 foreach(name ${SAMPLE})
   set(target_name sample_fortran_${name})
   add_executable(${target_name} ${name}.f90)
