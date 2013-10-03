@@ -55,15 +55,16 @@ endif(OPENMP_FOUND)
 find_package(MPI)
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
 
+# Boost Library
+find_package(BoostSrc)
+
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR}/3rd-party/lapacke/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd-party/eigen3)
-if (BOOST_INCLUDE_DIR)
-  include_directories(BEFORE ${BOOST_INCLUDE_DIR})
-endif()
+include_directories(BEFORE ${Boost_INCLUDE_DIR})
 
 # find_package(BLAS)
 find_package(Lapack)
