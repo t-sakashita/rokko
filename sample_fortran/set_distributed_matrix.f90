@@ -16,7 +16,6 @@ program frank_matrix
   use omp_lib
   use MPI
   use rokko
-  use mod_frank
   implicit none
 
   integer::dim
@@ -29,8 +28,6 @@ program frank_matrix
   character(len=100)::solver_name
   character(len=100)::tmp_str
   integer args_cnt, arg_len, status
-  integer(c_int) :: n
-  common /mydata/n
 
   !--MPI variables--
   integer::ierr,myrank,nprocs,comm,myrank_g,nprocs_g
@@ -65,7 +62,6 @@ program frank_matrix
   write(*,*) "solver_name=", solver_name  
   write(*,*) "dim=",dim
 !  dim = 10
-  n = dim
 
   call set_solver(solver_, solver_name)
   write(*,*) "finished solver generation"
