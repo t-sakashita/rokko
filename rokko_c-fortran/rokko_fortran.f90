@@ -394,8 +394,9 @@ contains
     type(distributed_matrix), intent(inout) :: matrix
 !    type(c_funptr), intent(in) :: f   ! use pointer type as default (do not specify value type)
     interface
-       real*8 function f(i, j)
-         integer, intent(in) :: i, j
+       real(c_double) function f(i, j)
+         use iso_c_binding
+         integer(c_int), intent(in) :: i, j
        end function f
     end interface
 !    procedure(func), intent(in), pointer :: f
