@@ -389,7 +389,7 @@ contains
           call generate_distributed_matrix_function_col_major_fortran(matrix%ptr_distributed_matrix, &
                c_funloc(f))
        else if (matrix_major_type == "matrix_row_major") then
-          call generate_distributed_matrix_function_row_major_fortran(matrix&%ptr_distributed_matrix, &
+          call generate_distributed_matrix_function_row_major_fortran(matrix%ptr_distributed_matrix, &
                c_funloc(f))
        else
           write(0,*) "Incorrect matrix_major_type. matrix_col_major or matrix_row_major&
