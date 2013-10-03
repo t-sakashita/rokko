@@ -16,6 +16,7 @@
 #include <rokko/matrix_major.hpp>
 #include <Eigen/Dense>
 #include <iostream>
+#include <boost/type_traits.hpp>
 
 namespace rokko {
 
