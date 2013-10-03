@@ -44,16 +44,16 @@ module rokko
   end interface
 
   interface
-     subroutine generate_distributed_matrix_function_col_major(mat, f) bind(c) ! this declation is necessary.                                                                  
+     subroutine generate_distributed_matrix_function_col_major_fortran(mat, f) bind(c) ! this declation is necessary.                                                                  
        use iso_c_binding
        type(c_ptr), value :: mat
        type(c_funptr), value :: f
-     end subroutine generate_distributed_matrix_function_col_major
-     subroutine generate_distributed_matrix_function_row_major(mat, f) bind(c) ! this declation is necessary.                                                                  
+     end subroutine generate_distributed_matrix_function_col_major_fortran
+     subroutine generate_distributed_matrix_function_row_major_fortran(mat, f) bind(c) ! this declation is necessary.                                                                  
        use iso_c_binding
        type(c_ptr), value :: mat
        type(c_funptr), value :: f
-     end subroutine generate_distributed_matrix_function_row_major
+     end subroutine generate_distributed_matrix_function_row_major_fortran
 
      subroutine set_distributed_matrix_local_col_major(matrix, i, j, val) bind(c)
        use iso_c_binding
@@ -348,26 +348,45 @@ contains
     endif
   end subroutine generate_frank_matrix_localized
 
+!  real(c_double) function generate_func_wrapper(i, j) bind(c)
+!    integer(c_int), value, intent(in) :: i, j
+!    real*8 func
+!    external func
+!    common /generate_func_wrapper_common/ func
+!    generate_func_wrapper = func(i, j)
+!  end function generate_func_wrapper
+
 ! matrix generator according to a given function pointer
   subroutine generate_distributed_matrix_function(matrix, f, matrix_major_type) !bind(c, name="generate_distributed_matrix_function")
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
-    type(c_funptr), intent(in) :: f   ! use pointer type as default (do not specify value type)
+!    type(c_funptr), intent(in) :: f   ! use pointer type as default (do not specify value type)
+    interface
+       real*8 function f(i, j)
+         integer, intent(in) :: i, j
+       end function f
+    end interface
+!    procedure(func), intent(in), pointer :: f
+!    real(c_double), intent(in), pointer :: f   ! use pointer type as default (do not specify value type)
     character(*),intent(in),optional :: matrix_major_type
-    
+!    real*8 func
+!    common /generate_func_wrapper_common/ func
+!    func = f
+
+    write(*,*) "f(1,1)=", f(1,1)
     if (present(matrix_major_type)) then
        if (matrix_major_type == "matrix_col_major") then
-          call generate_distributed_matrix_function_col_major(matrix%ptr_distributed_matrix, f)
+          call generate_distributed_matrix_function_col_major_fortran(matrix%ptr_distributed_matrix, c_funloc(f)) !generate_func_wrapper))
        else if (matrix_major_type == "matrix_row_major") then
-          call generate_distributed_matrix_function_row_major(matrix&
-               &%ptr_distributed_matrix, f)
+          call generate_distributed_matrix_function_row_major_fortran(matrix&
+               &%ptr_distributed_matrix, c_funloc(f)) !gererate_func_wrapper))
        else
           write(0,*) "Incorrect matrix_major_type. matrix_col_major or m&
                &atrix_row_major is accepted"
        endif
     else
-       call generate_distributed_matrix_function_col_major(matrix&
-            &%ptr_distributed_matrix, f)
+       call generate_distributed_matrix_function_col_major_fortran(matrix&
+            &%ptr_distributed_matrix, c_funloc(f)) !generate_func_wrapper))
     endif
   end subroutine generate_distributed_matrix_function
 

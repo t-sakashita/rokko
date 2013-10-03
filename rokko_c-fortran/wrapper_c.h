@@ -41,6 +41,9 @@ extern "C"{
   void generate_distributed_matrix_function_col_major(void* mat, double (*func)(int i, int j));
   void generate_distributed_matrix_function_row_major(void* mat, double (*func)(int i, int j));
 
+  void generate_distributed_matrix_function_col_major_fortran(void* mat, double (*func)(int* i, int* j));
+  void generate_distributed_matrix_function_row_major_fortran(void* mat, double (*func)(int* i, int* j));
+
   void set_distributed_matrix_local_col_major(void* mat, int i, int j, double val);
   void set_distributed_matrix_local_row_major(void* mat, int i, int j, double val);
 

@@ -67,12 +67,12 @@ void solver_diagonalize_matrix_row_major_(void** solver_ ,void** mat, void** w, 
   solver_diagonalize_matrix_row_major(*solver_, *mat, *w, *Z, *timer);
 }
 
-void generate_distributed_matrix_function_col_major_(void** mat, double (*func)(int i, int j)) {
-  generate_distributed_matrix_function_col_major(*mat, func);
+void generate_distributed_matrix_function_col_major_(void** mat, double (*func)(int* i, int* j)) {
+  generate_distributed_matrix_function_col_major_fortran(*mat, func);
 }
 
-void generate_distributed_matrix_function_row_major_(void** mat, double (*func)(int i, int j)) {
-  generate_distributed_matrix_function_row_major(*mat, func);
+void generate_distributed_matrix_function_row_major_(void** mat, double (*func)(int* i, int* j)) {
+  generate_distributed_matrix_function_row_major_fortran(*mat, func);
 }
 
 void set_distributed_matrix_local_row_major_(void** mat, int i, int j, double val) {
