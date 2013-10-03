@@ -14,6 +14,19 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 include(add_rokko_test)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(DISABLE_SCALAPACK "Disable Scalapack Library" OFF)
+option(DISABLE_EIGENEXA "Disable EigenExa Library" OFF)
+option(DISABLE_ELEMENTAL "Disable Elemental Library" OFF)
+option(DISABLE_ELPA "Disable Elpa Library" OFF)
+option(DISABLE_PETSC "Disable PETSc Library" OFF)
+option(DISABLE_SLEPC "Disable SLEPc Library" OFF)
+
+if(DISABLE_SCALAPACK)
+  set(DISABLE_EIGENEXA ON)
+endif(DISABLE_SCALAPACK)
+if(DISABLE_PETSC)
+  set(DISABLE_SLEPC ON)
+endif(DISABLE_PETSC)
 
 # RPATH setting
 if(APPLE)
@@ -62,27 +75,50 @@ if(MAC_VECLIB)
 endif(MAC_VECLIB) 
 
 # find Scalapack
-find_package(Scalapack)
-set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
+if(DISABLE_SCALAPACK)
+  set(BUILD_SCALAPACK FALSE)
+else(DISABLE_SCALAPACK)
+  find_package(Scalapack)
+  set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
+endif(DISABLE_SCALAPACK)
 
 # find EigenExa
-find_package(EigenExa)
-set(BUILD_EIGENEXA ${EIGENEXA_FOUND})
+if(DISABLE_EIGENEXA)
+  set(BUILD_EIGENEXA FALSE)
+else(DISABLE_EIGENEXA)
+  find_package(EigenExa)
+  set(BUILD_EIGENEXA ${EIGENEXA_FOUND})
+endif(DISABLE_EIGENEXA)
 
 # find Elemental
-find_package(Elemental)
-set(BUILD_ELEMENTAL ${ELEMENTAL_FOUND})
+if(DISABLE_ELEMENTAL)
+  set(BUILD_ELEMENTAL FALSE)
+else(DISABLE_ELEMENTAL)
+  find_package(Elemental)
+  set(BUILD_ELEMENTAL ${ELEMENTAL_FOUND})
+endif(DISABLE_ELEMENTAL)
 
 # find Elpa
-find_package(Elpa)
-set(BUILD_ELPA ${ELPA_FOUND})
+if(DISABLE_ELPA)
+  set(BUILD_ELPA FALSE)
+else(DISABLE_ELPA)
+  find_package(Elpa)
+  set(BUILD_ELPA ${ELPA_FOUND})
+endif(DISABLE_ELPA)
 
 # find PETSc/SLEPc
-find_package(PETSc COMPONENTS CXX)
-find_package(SLEPc)
-set(BUILD_PETSC ${PETSC_FOUND})
-set(BUILD_SLEPC ${SLEPC_FOUND})
-
+if(DISABLE_PETSC)
+  set(BUILD_PETSC FALSE)
+else(DISABLE_PETSC)
+  find_package(PETSc COMPONENTS CXX)
+  set(BUILD_PETSC ${PETSC_FOUND})
+endif(DISABLE_PETSC)
+if(DISABLE_SLEPC)
+  set(BUILD_SLEPC FALSE)
+else(DISABLE_SLEPC)
+  find_package(SLEPc)
+  set(BUILD_SLEPC ${SLEPC_FOUND})
+endif(DISABLE_SLEPC)
 
 configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/UseRokko.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_BINARY_DIR}/config/add_barista_test.cmake @COPYONLY)
