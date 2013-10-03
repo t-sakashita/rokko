@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
   int count;
   for (count=0; count<3; ++count) {
 
-    generate_distributed_matrix_col_major(mat, frank_calculate_matrix_element);
+    generate_distributed_matrix_function_col_major(mat, frank_calculate_matrix_element);
 
     MPI_Barrier(MPI_COMM_WORLD);
     //timer.start(1);
