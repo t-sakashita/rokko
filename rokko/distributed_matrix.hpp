@@ -307,21 +307,6 @@ public:
     }
   }
 
-  void generate(double (*func_in)(int* i, int* j)) {
-    if (m_global != n_global) {
-      std::cout << "m_global=" << m_global << " n_global=" << n_global << std::endl;
-      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
-    }
-
-    for(int local_i = 0; local_i < m_local; ++local_i) {
-      for(int local_j = 0; local_j < n_local; ++local_j) {
-        int global_i = translate_l2g_row(local_i);
-        int global_j = translate_l2g_col(local_j);
-        set_local(local_i, local_j, func_in(&global_i, &global_j));
-      }
-    }
-  }
-
   void print() const;
 
 private:
@@ -376,10 +361,10 @@ inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int loca
 }
 
 template<>
-inline void distributed_matrix<rokko::matrix_row_major>:: print() const {
+inline void distributed_matrix<rokko::matrix_row_major>::print() const {
   for (int proc=0; proc<nprocs; ++proc) {
     if (proc == myrank) {
-      printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
+      printf("Rank = %d  myrow = %d mycol = %d\n", myrank, myrow, mycol);
       printf("Local Matrix:\n");
       for (int local_i=0; local_i<m_local; ++local_i) {
         for (int local_j=0; local_j<n_local; ++local_j) {
@@ -394,12 +379,12 @@ inline void distributed_matrix<rokko::matrix_row_major>:: print() const {
 }
 
 template<>
-inline void distributed_matrix<rokko::matrix_col_major>:: print() const {
+inline void distributed_matrix<rokko::matrix_col_major>::print() const {
   for (int proc=0; proc<nprocs; ++proc) {
     if (proc == myrank) {
-      printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
+      printf("Rank = %d  myrow = %d mycol = %d\n", myrank, myrow, mycol);
       printf("Local Matrix:\n");
-      for (int local_j=0; local_j<n_local; ++local_j) {  // j first, i second
+      for (int local_j=0; local_j<n_local; ++local_j) { // j first, i second
         for (int local_i=0; local_i<m_local; ++local_i) {
           printf("%e ", get_local(local_i, local_j));
         }

@@ -377,7 +377,7 @@ contains
     implicit none
     type(distributed_matrix), intent(inout) :: matrix
     interface
-       real(c_double) function f(i, j)
+       real(c_double) function f(i, j) bind(c)
          use iso_c_binding
          integer(c_int), intent(in) :: i, j
        end function f
