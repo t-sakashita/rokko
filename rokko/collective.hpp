@@ -189,7 +189,7 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
   MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
   MPI_Type_commit(&global_array_type);
 
-
+  std::cout << "count_max=" << count_max << std::endl;
   delete[] array_of_blocklengths;
   array_of_blocklengths = 0;
   delete[] array_of_displacements;
@@ -418,6 +418,75 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_ma
   return ierr;
 }
 
+// gather to pointer array
+template<typename DIST_MATRIX_MAJOR>
+int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* global_array, int root) {
+  MPI_Status  status;
+  int ierr;
+
+  int local_matrix_rows, local_matrix_cols;
+  int local_num_block_rows, local_num_block_cols;
+
+  int local_rest_block_rows, local_rest_block_cols;
+  int count_max;
+
+  MPI_Comm cart_comm = MPI_COMM_WORLD;
+
+  int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
+  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
+  int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
+  int myrank = mat.get_myrank(); int nprocs = mat.get_nprocs();
+
+  const double* local_array = mat.get_array_pointer();
+
+  MPI_Datatype local_array_type, global_array_type;
+  create_struct_local(mat, local_array_type);
+
+  int rank_recv = root;  // プロセスrank_recvに集約
+  int sendcount = 1;
+  int recvcount = 1;
+
+  for (int proc = 0; proc < nprocs; ++proc) {
+    if ((myrank == proc) && (myrank != root)) {
+      ierr = MPI_Send(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, cart_comm);
+      if (ierr != 0) {
+	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
+	MPI_Abort(MPI_COMM_WORLD,78);
+	exit(78);
+      }
+    }
+    if ((proc != root) &&  (myrank == root)) {
+      create_struct_global(mat, global_array_type, proc);
+      ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
+      if (ierr != 0) {
+	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
+	MPI_Abort(MPI_COMM_WORLD,78);
+	exit(78);
+      }
+      MPI_Type_free(&global_array_type);
+      global_array_type = 0;
+    }
+
+    if ((proc == root) && (myrank == root)) {
+      create_struct_global(mat, global_array_type, root);
+      ierr = MPI_Sendrecv(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
+      if (ierr != 0) {
+      	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
+      	MPI_Abort(MPI_COMM_WORLD,78);
+      	exit(78);
+      }
+      MPI_Type_free(&global_array_type);
+      global_array_type = 0;
+      //copy_l2g_root(mat, mat_global);
+    }
+
+  } // for (int proc = 0; proc < nprocs; ++proc)
+
+  MPI_Type_free(&local_array_type);
+  local_array_type = 0;
+
+  return ierr;
+}
 
 template<typename LOC_MATRIX_MAJOR, typename DIST_MATRIX_MAJOR>
 int scatter(localized_matrix<LOC_MATRIX_MAJOR> const& mat_global, distributed_matrix<DIST_MATRIX_MAJOR>& mat, int root)

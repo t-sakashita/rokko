@@ -44,6 +44,9 @@ extern "C"{
   void generate_distributed_matrix_function_col_major_fortran(void* mat, double (*func)(int* i, int* j));
   void generate_distributed_matrix_function_row_major_fortran(void* mat, double (*func)(int* i, int* j));
 
+  void generate_array_distributed_matrix_col_major_fortran(double* array, void* mat, int rows, int cols, int ld);
+  void generate_array_distributed_matrix_row_major_fortran(double* array, void* mat, int rows, int cols, int ld); 
+
   void generate_distributed_matrix_array_col_major_fortran(void* mat, double* array, int rows, int cols, int ld);
   void generate_distributed_matrix_array_row_major_fortran(void* mat, double* array, int rows, int cols, int ld); 
 
@@ -55,6 +58,8 @@ extern "C"{
 
   void print_distributed_matrix_col_major(void* mat);
   void print_distributed_matrix_row_major(void* mat);
+
+  void all_gather_fortran(void* mat, double* array);
 
 #ifdef __cplusplus
 }

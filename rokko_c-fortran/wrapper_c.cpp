@@ -16,6 +16,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
+#include <rokko/collective.hpp>
 #include "wrapper_c.h"
 
 namespace rokko {
@@ -144,7 +145,8 @@ void generate_distributed_matrix_function_col_major_fortran(void* mat, double (*
   mat_->generate(wrapper);
 }
 
-void generate_distributed_matrix_array_row_major_fortran(void* mat, double* array, int rows, int cols, int ld) {
+// fortran array -> distributed_matrix
+void generate_array_distributed_matrix_row_major_fortran(double* array, void* mat, int rows, int cols, int ld) {
   distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
   for (int local_i=0; local_i<mat_->get_m_local(); ++local_i) {
     for (int local_j=0; local_j<mat_->get_n_local(); ++local_j) {
@@ -155,7 +157,7 @@ void generate_distributed_matrix_array_row_major_fortran(void* mat, double* arra
   }
 }
 
-void generate_distributed_matrix_array_col_major_fortran(void* mat, double* array, int rows, int cols, int ld) {
+void generate_array_distributed_matrix_col_major_fortran(double* array, void* mat, int rows, int cols, int ld) {
   distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
   for (int local_i=0; local_i<mat_->get_m_local(); ++local_i) {
     for (int local_j=0; local_j<mat_->get_n_local(); ++local_j) {
@@ -163,6 +165,38 @@ void generate_distributed_matrix_array_col_major_fortran(void* mat, double* arra
       int global_j = mat_->translate_l2g_col(local_j);
       mat_->set_local(local_i, local_j, array[global_i + global_j * ld]);
     }
+  }
+}
+
+// distributed_matrix -> fortran array
+void generate_distributed_matrix_array_row_major_fortran(void* mat, double* array, int rows, int cols, int ld) {
+  distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*>(mat);
+  for (int local_i=0; local_i<mat_->get_m_local(); ++local_i) {
+    for (int local_j=0; local_j<mat_->get_n_local(); ++local_j) {
+      int global_i = mat_->translate_l2g_row(local_i);
+      int global_j = mat_->translate_l2g_col(local_j);
+      array[global_i * ld + global_j] = mat_->get_local(local_i, local_j);
+    }
+  }
+}
+
+void generate_distributed_matrix_array_col_major_fortran(void* mat, double* array, int rows, int cols, int ld) {
+  distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+  for (int local_i=0; local_i<mat_->get_m_local(); ++local_i) {
+    for (int local_j=0; local_j<mat_->get_n_local(); ++local_j) {
+      int global_i = mat_->translate_l2g_row(local_i);
+      int global_j = mat_->translate_l2g_col(local_j);
+      array[global_i + global_j * ld] = mat_->get_local(local_i, local_j);
+    }
+  }
+}
+
+void all_gather_fortran(void* mat, double* array) {
+  distributed_matrix<rokko::matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
+  double* array2 = new double[mat_->get_m_global() * mat_->get_n_global()];
+  for(int root=0; root<mat_->get_nprocs(); ++root) {
+    std::cout << "gather_root=" << root << "nprocs=" << mat_->get_nprocs() << std::endl;
+    rokko::gather(*mat_, array2, root);
   }
 }
 

@@ -128,12 +128,11 @@ set(ROKKO_FORTRAN_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/librokko_fortran.so")
 
 configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/UseRokko.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_BINARY_DIR}/config/add_barista_test.cmake @COPYONLY)
-#configure_file(${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_BINARY_DIR}/config/add_barista_test.cmake @COPYONLY)
 
 install(FILES ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake  DESTINATION config/)
 install(FILES ${PROJECT_SOURCE_DIR}/config/run_test.cmake  DESTINATION config/)
 install(FILES ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake  DESTINATION config/)
-install(FILES ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake  DESTINATION config/)
+install(FILES ${PROJECT_BINARY_DIR}/config/UseRokko.cmake  DESTINATION config/)
 
 # test environment
 enable_testing()

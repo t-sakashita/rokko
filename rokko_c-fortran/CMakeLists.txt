@@ -17,6 +17,9 @@ install(TARGETS rokko_fortran COMPONENT libraries
         RUNTIME DESTINATION bin)
 
 install(DIRECTORY . COMPONENT headers DESTINATION include/rokko
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.mod"
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
         PATTERN ".git" EXCLUDE PATTERN "CVS" EXCLUDE)
 
+install(DIRECTORY "${PROJECT_BINARY_DIR}/rokko_c-fortran" COMPONENT headers DESTINATION include
+        FILES_MATCHING PATTERN "*.mod"
+        PATTERN ".git" EXCLUDE PATTERN "CVS" EXCLUDE)

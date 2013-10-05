@@ -22,10 +22,10 @@ program frank_matrix
   real(8), allocatable :: w(:), vec(:)
   character(len=100) :: solver_name, tmp_str
   integer args_cnt, arg_len, status
-  real(8), allocatable, dimension(:,:) :: array
+  real(8), allocatable, dimension(:,:) :: array, array_tmp
 
   integer :: ierr, myrank, nprocs
-  integer :: i, j
+  integer :: i, j, proc
 
   call MPI_init(ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -58,12 +58,26 @@ program frank_matrix
         array(i,j) = dble(dim + 1 - max(i, j))
      end do
   end do
+  allocate(array_tmp(dim, dim))
 
   call generate_array_distributed_matrix(array, mat, dim, dim, dim)
-  call print_distributed_matrix(mat)
-
+!  call print_distributed_matrix(mat)
   call diagonalize(solver_, mat, w, Z)
-!  call generate_distributed_matrix_array(Z, array, dim, dim, dim)
+
+  array = 0.0
+  call all_gather(Z, array_tmp)
+  array = matmul(transpose(array_tmp), array_tmp)
+  !  print*, "array=", array
+  do proc = 0, nprocs -1
+     if (proc == myrank) then
+     do i = 1, dim
+        write(*,'(10f8.4)') (array(i, j), j=1, dim)
+     end do
+     print*
+  endif
+  call mpi_barrier(mpi_comm_world, ierr)
+  call sleep(1)
+  end do
 
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "

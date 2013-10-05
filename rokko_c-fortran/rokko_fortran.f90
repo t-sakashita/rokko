@@ -56,17 +56,33 @@ module rokko
        type(c_funptr), value :: f
      end subroutine generate_distributed_matrix_function_row_major_fortran
 
+! array -> distributed_matrix
+     subroutine generate_array_distributed_matrix_col_major_fortran(array, mat, rows, cols, ld) bind(c) ! this declation is necessary.
+       use iso_c_binding
+       type(c_ptr), value, intent(in) :: array
+       type(c_ptr), value :: mat
+       integer(c_int), value, intent(in) :: rows, cols, ld
+     end subroutine generate_array_distributed_matrix_col_major_fortran
+
+     subroutine generate_array_distributed_matrix_row_major_fortran(array, mat, rows, cols, ld) bind(c) ! this declation is necessary.
+       use iso_c_binding
+       type(c_ptr), value, intent(in) :: array
+       type(c_ptr), value :: mat
+       integer(c_int), value, intent(in) :: rows, cols, ld
+     end subroutine generate_array_distributed_matrix_row_major_fortran
+
+! distributed_matrix -> array
      subroutine generate_distributed_matrix_array_col_major_fortran(mat, array, rows, cols, ld) bind(c) ! this declation is necessary.
        use iso_c_binding
        type(c_ptr), value :: mat
-       type(c_ptr), value, intent(in) :: array
+       type(c_ptr), value :: array
        integer(c_int), value, intent(in) :: rows, cols, ld
      end subroutine generate_distributed_matrix_array_col_major_fortran
 
      subroutine generate_distributed_matrix_array_row_major_fortran(mat, array, rows, cols, ld) bind(c) ! this declation is necessary.
        use iso_c_binding
        type(c_ptr), value :: mat
-       type(c_ptr), value, intent(in) :: array
+       type(c_ptr), value :: array
        integer(c_int), value, intent(in) :: rows, cols, ld
      end subroutine generate_distributed_matrix_array_row_major_fortran
 
@@ -95,6 +111,12 @@ module rokko
        type(c_ptr), intent(in), value :: matrix
        integer(c_int), intent(in), value :: i, j
      end function get_distributed_matrix_local_row_major
+
+     subroutine all_gather_fortran(mat, array) bind(c) ! this declation is necessary.
+       use iso_c_binding
+       type(c_ptr), value :: mat
+       type(c_ptr), value :: array
+     end subroutine all_gather_fortran
 
   end interface
 
@@ -148,7 +170,7 @@ contains
   subroutine del_grid(grid_)
     implicit none
     Type(grid),intent(out)::grid_
-    
+
     call delete_grid(grid_%ptr_grid)
   end subroutine del_grid
 
@@ -157,7 +179,7 @@ contains
     Type(grid),intent(in)::grid_
     integer::grid_get_myrank
     external grid_get_myrank
-    
+
     get_myrank_grid = grid_get_myrank(grid_%ptr_grid)
   end function get_myrank_grid
 
@@ -403,12 +425,39 @@ contains
 
   ! matrix generator according to a given fortran array
   ! it is inefficient way. do not use in pracitcal calculation.
+  subroutine generate_array_distributed_matrix(array, matrix, rows, cols, ld, matrix_major_type)
+    use iso_c_binding
+    implicit none
+    integer(c_int), intent(in) :: rows, cols, ld
+    real(c_double), intent(in), target :: array(ld, cols)
+    type(distributed_matrix), intent(inout) :: matrix
+    character(*), intent(in), optional :: matrix_major_type
+
+    if (present(matrix_major_type)) then
+       if (matrix_major_type == "matrix_col_major") then
+          call generate_array_distributed_matrix_col_major_fortran(c_loc(array(1,1)), &
+               matrix%ptr_distributed_matrix, rows, cols, ld)
+       else if (matrix_major_type == "matrix_row_major") then
+          call generate_array_distributed_matrix_row_major_fortran(c_loc(array(1,1)), &
+               matrix%ptr_distributed_matrix, rows, cols, ld)
+       else
+          write(0,*) "Incorrect matrix_major_type. matrix_col_major or matrix_row_major&
+               &is accepted"
+       endif
+    else
+       call generate_array_distributed_matrix_col_major_fortran(c_loc(array(1,1)), matrix%ptr_distributed_matrix, &
+            rows, cols, ld)
+    endif
+  end subroutine generate_array_distributed_matrix
+
+  ! generate fortran array given distributed_matrix
+  ! it is inefficient way. do not use in pracitcal calculation.
   subroutine generate_distributed_matrix_array(matrix, array, rows, cols, ld, matrix_major_type)
     use iso_c_binding
     implicit none
-    type(distributed_matrix), intent(inout) :: matrix
+    type(distributed_matrix), intent(in) :: matrix
     integer(c_int), intent(in) :: rows, cols, ld
-    real(c_double), intent(in), target :: array(ld, cols)
+    real(c_double), intent(out), target :: array(ld, cols)
     character(*), intent(in), optional :: matrix_major_type
 
     if (present(matrix_major_type)) then
@@ -416,7 +465,7 @@ contains
           call generate_distributed_matrix_array_col_major_fortran(matrix%ptr_distributed_matrix, &
                c_loc(array(1,1)), rows, cols, ld)
        else if (matrix_major_type == "matrix_row_major") then
-          call generate_distributed_matrix_array_row_major_fortran(matrix%ptr_distributed_matrix, &
+          call generate_array_distributed_matrix_row_major_fortran(matrix%ptr_distributed_matrix, &
                c_loc(array(1,1)), rows, cols, ld)
        else
           write(0,*) "Incorrect matrix_major_type. matrix_col_major or matrix_row_major&
@@ -553,5 +602,13 @@ contains
 
     get_average_timer = timer_get_average(timer_%ptr_timer, id)
   end function get_average_timer
+
+  subroutine all_gather(matrix, array)
+    use iso_c_binding
+    type(distributed_matrix), intent(inout) :: matrix
+    real(c_double), intent(in), target :: array(*)
+
+    call all_gather_fortran(matrix%ptr_distributed_matrix, c_loc(array))
+  end subroutine all_gather
 
 end module rokko
