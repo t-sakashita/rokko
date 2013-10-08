@@ -90,23 +90,23 @@ template<typename MATRIX_MAJOR>
 void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI_Datatype& global_array_type, int proc)
 {
   int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
-  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
   int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
 
   int myrank = mat.get_myrank();
   int myrow, mycol;
   myrow = mat.get_grid().calculate_grid_row(proc);
   mycol = mat.get_grid().calculate_grid_col(proc);
-  std::cout << "collective_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
+  int m_local = mat.calculate_row_size(myrow);
+  int n_local = mat.calculate_col_size(mycol);
+
 
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
   int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
-  ///type_block_rows += 1;
+  std::cout << "myrank=" << myrank << " type_block_rows=" << type_block_rows << " kn_local=" << n_local << std::endl;
   int count_max = type_block_rows * n_local;
 
-  count_max *= 20;
   std::cout << "proc=" << myrank << "count_max=" << count_max << std::endl;
   //cout << "proc=" << myrank << std::endl;
   //cout << "count_max=" << count_max << std::endl;
@@ -118,7 +118,6 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
   //cout << "num_block_cols=" << num_block_cols << std::endl;
   //cout << "local_matrix_cols=" << local_matrix_cols << std::endl;
   //cout << "rest_num_block_cols=" << rest_num_block_cols << std::endl;
-  std::cout << "collective_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   int*          array_of_blocklengths = new int[count_max];
   MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
@@ -183,7 +182,6 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
     std::cout << "num_block_rows=" << num_block_rows << std::endl;
     //  }
 #endif
-    std::cout << "collective_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
     
     MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
     MPI_Type_commit(&global_array_type);
@@ -342,7 +340,6 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
   int rank_recv = root;  // gather to the process specified by rank_recv
   int sendcount = 1;
   int recvcount = 1;
-  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   for (int proc = 0; proc < nprocs; ++proc) {
     if ((myrank == proc) && (myrank != root)) {
@@ -374,15 +371,11 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
       }
       MPI_Type_free(&global_array_type);
       //copy_l2g_root(mat, mat_global);
-      std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << "proc=" << proc << std::endl;
     }
 
   } // for (int proc = 0; proc < nprocs; ++proc)
 
-  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-
   MPI_Type_free(&local_array_type);
-  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   return ierr;
 }

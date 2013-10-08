@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   rokko::grid g(comm, rokko::grid_col_major);
   int myrank = g.get_myrank();
 
-  const int root = 0;
+  const int root = 1;
 
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);

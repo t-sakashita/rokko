@@ -366,8 +366,8 @@ inline void distributed_matrix<rokko::matrix_col_major>::print() const {
     if (proc == myrank) {
       printf("Rank = %d  myrow = %d mycol = %d\n", myrank, myrow, mycol);
       printf("Local Matrix:\n");
-      for (int local_j=0; local_j<n_local; ++local_j) { // j first, i second
-        for (int local_i=0; local_i<m_local; ++local_i) {
+      for (int local_i=0; local_i<m_local; ++local_i) {
+        for (int local_j=0; local_j<n_local; ++local_j) { // j first, i second
           printf("%e ", get_local(local_i, local_j));
         }
         printf("\n");
