@@ -67,16 +67,18 @@ program frank_matrix
   array = 0.0
   call all_gather(Z, array_tmp)
   array = matmul(transpose(array_tmp), array_tmp)
+  call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
+
   !  print*, "array=", array
-  do proc = 0, nprocs -1
+  do proc = 0, nprocs-1
      if (proc == myrank) then
+      print*, "fmyrank=", myrank
      do i = 1, dim
         write(*,'(10f8.4)') (array(i, j), j=1, dim)
      end do
-     print*
-  endif
-  call mpi_barrier(mpi_comm_world, ierr)
-  call sleep(1)
+     endif
+   call mpi_barrier(mpi_comm_world, ierr)
+!   call sleep(0.1)
   end do
 
   if (myrank.eq.0) then
@@ -89,6 +91,9 @@ program frank_matrix
 !  if (myrank.eq.0) then
 !     print*, "array=", array
 !  endif
+  write(*,*) "myrank:", myrank, " fortran_file:",__FILE__, " line:",&
+             __LINE__
+  call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
 
   call del_distributed_matrix(mat)
   call del_distributed_matrix(Z)
