@@ -82,6 +82,7 @@ BOOST_AUTO_TEST_CASE(test_scatter) {
     run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_col_major());
   if (rank == 0) BOOST_CHECK_EQUAL(success_col_col_col, true);
 
+  /*
   if (rank == 0) std::cout << "test for grid = col, dist = col, loc = row\n";
   bool success_col_col_row =
     run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_row_major());
@@ -96,12 +97,14 @@ BOOST_AUTO_TEST_CASE(test_scatter) {
   bool success_col_row_row =
     run_test(comm, dim, rokko::grid_col_major, rokko::matrix_row_major(), rokko::matrix_row_major());
   if (rank == 0) BOOST_CHECK_EQUAL(success_col_row_row, true);
+  */
 
   if (rank == 0) std::cout << "test for grid = row, dist = col, loc = col\n";
   bool success_row_col_col =
     run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_col_major());
   if (rank == 0) BOOST_CHECK_EQUAL(success_row_col_col, true);
 
+  /*
   if (rank == 0) std::cout << "test for grid = row, dist = col, loc = row\n";
   bool success_row_col_row =
     run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_row_major());
@@ -116,6 +119,7 @@ BOOST_AUTO_TEST_CASE(test_scatter) {
   bool success_row_row_row =
     run_test(comm, dim, rokko::grid_row_major, rokko::matrix_row_major(), rokko::matrix_row_major());
   if (rank == 0) BOOST_CHECK_EQUAL(success_row_row_row, true);
+  */
 
   MPI_Finalize();
 }
