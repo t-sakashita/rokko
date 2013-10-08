@@ -13,10 +13,11 @@ template<typename MATRIX_MAJOR>
 void calculate_local_matrix_size(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, int proc_row, int proc_col, int& local_num_block_rows, int& local_num_block_cols, int& local_matrix_rows, int& local_matrix_cols, int& local_rest_block_rows, int& local_rest_block_cols)
 {
   int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
-  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
-  //int n_local = mat.get_m_local();  int m_local = mat.get_n_local();
+  //int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
 
-  int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
+  int m_local = mat.calculate_row_size(proc_row);
+  int n_local = mat.calculate_col_size(proc_col);
+  int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
 
   int tmp = m_global / mb;
   local_num_block_rows = (tmp + nprow-1 - proc_row) / nprow;
@@ -70,12 +71,12 @@ void create_struct_local_general(const rokko::distributed_matrix<MATRIX_MAJOR>& 
 
 #ifndef NDEBUG
   // print out struct of local matrix
-  if (myrank == 0) {
+  //  if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << std::endl;
       printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
-  }
+    //  }
 #endif
 
   MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &local_array_type);
@@ -101,14 +102,17 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
   int myrow, mycol;
   myrow = mat.get_grid().calculate_grid_row(proc);
   mycol = mat.get_grid().calculate_grid_col(proc);
+  std::cout << "collective_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   int num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols;
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
-  const int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
+  int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
+  ///type_block_rows += 1;
   int count_max = type_block_rows * n_local;
 
-  //cout << "proc=" << myrank << "count_max=" << count_max << std::endl;
+  count_max *= 20;
+  std::cout << "proc=" << myrank << "count_max=" << count_max << std::endl;
   //cout << "proc=" << myrank << std::endl;
   //cout << "count_max=" << count_max << std::endl;
   //cout << "type_block_rows=" << type_block_rows << std::endl;
@@ -119,6 +123,7 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
   //cout << "num_block_cols=" << num_block_cols << std::endl;
   //cout << "local_matrix_cols=" << local_matrix_cols << std::endl;
   //cout << "rest_num_block_cols=" << rest_num_block_cols << std::endl;
+  std::cout << "collective_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   int*          array_of_blocklengths = new int[count_max];
   MPI_Aint*     array_of_displacements = new MPI_Aint[count_max];
@@ -133,7 +138,7 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
 	  array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * m_global + (j * nprow + myrow) * mb ) * sizeof(double);
 	  array_of_types[count] = MPI_DOUBLE;
 #ifndef NDEBUG
-	  if (myrank == 0)
+          //	  if (myrank == 0)
 	    std::cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << std::endl;
 #endif          
 	  ++count;
@@ -142,7 +147,7 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
 	array_of_blocklengths[count] = rest_num_block_rows;
 	array_of_displacements[count] = ( ((i*npcol + mycol)*nb+k) * m_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
 #ifndef NDEBUG
-	if (myrank == 0)
+        //	if (myrank == 0)
 	    std::cout << "amari: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << array_of_displacements[count] << std::endl;
 #endif
 	array_of_types[count] = MPI_DOUBLE;
@@ -166,7 +171,7 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
       array_of_blocklengths[count] = rest_num_block_rows;
       array_of_displacements[count] = ( ((num_block_cols * npcol + mycol)*nb+k) * m_global + (num_block_rows * nprow + myrow) * mb ) * sizeof(double);
 #ifndef NDEBUG
-      if (myrank == 0)
+      //      if (myrank == 0)
 	std::cout << "rest_amari: count=" << count << "  disp="  << array_of_displacements[count] << std::endl;
 #endif
       array_of_types[count] = MPI_DOUBLE;
@@ -176,18 +181,17 @@ void create_struct_global_general(const rokko::distributed_matrix<MATRIX_MAJOR>&
 
 #ifndef NDEBUG
   // print out struct of global matrix
-  if (myrank == 0) {
+  //  if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
-#ifndef NDEBUG
     std::cout << "num_block_rows=" << num_block_rows << std::endl;
+    //  }
 #endif
-  }
-#endif
-
-  MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
-  MPI_Type_commit(&global_array_type);
+    std::cout << "collective_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
+    
+    MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
+    MPI_Type_commit(&global_array_type);
 
   std::cout << "count_max=" << count_max << std::endl;
   delete[] array_of_blocklengths;
@@ -370,11 +374,13 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_ma
   const double* local_array = mat.get_array_pointer();
 
   MPI_Datatype local_array_type, global_array_type;
+
   create_struct_local(mat, local_array_type);
 
   int rank_recv = root;  // プロセスrank_recvに集約
   int sendcount = 1;
   int recvcount = 1;
+  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   for (int proc = 0; proc < nprocs; ++proc) {
     if ((myrank == proc) && (myrank != root)) {
@@ -394,7 +400,6 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_ma
 	exit(78);
       }
       MPI_Type_free(&global_array_type);
-      global_array_type = 0;
     }
 
     if ((proc == root) && (myrank == root)) {
@@ -406,14 +411,16 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_ma
       	exit(78);
       }
       MPI_Type_free(&global_array_type);
-      global_array_type = 0;
       //copy_l2g_root(mat, mat_global);
+      std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << "proc=" << proc << std::endl;
     }
 
   } // for (int proc = 0; proc < nprocs; ++proc)
 
+  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
+
   MPI_Type_free(&local_array_type);
-  local_array_type = 0;
+  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   return ierr;
 }
@@ -441,12 +448,15 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
 
   MPI_Datatype local_array_type, global_array_type;
   create_struct_local(mat, local_array_type);
-
+  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
   int rank_recv = root;  // プロセスrank_recvに集約
   int sendcount = 1;
   int recvcount = 1;
-
+  ierr = 0;
   for (int proc = 0; proc < nprocs; ++proc) {
+    create_struct_global(mat, global_array_type, proc);
+
+    std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
     if ((myrank == proc) && (myrank != root)) {
       ierr = MPI_Send(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, cart_comm);
       if (ierr != 0) {
@@ -456,34 +466,34 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
       }
     }
     if ((proc != root) &&  (myrank == root)) {
-      create_struct_global(mat, global_array_type, proc);
+      std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
       ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
       if (ierr != 0) {
 	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
 	MPI_Abort(MPI_COMM_WORLD,78);
 	exit(78);
       }
-      MPI_Type_free(&global_array_type);
-      global_array_type = 0;
     }
 
     if ((proc == root) && (myrank == root)) {
-      create_struct_global(mat, global_array_type, root);
       ierr = MPI_Sendrecv(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
       	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
       	MPI_Abort(MPI_COMM_WORLD,78);
       	exit(78);
       }
-      MPI_Type_free(&global_array_type);
-      global_array_type = 0;
       //copy_l2g_root(mat, mat_global);
     }
-
+    std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
+    MPI_Type_free(&global_array_type);
+    std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
+    global_array_type = 0;
   } // for (int proc = 0; proc < nprocs; ++proc)
+  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   MPI_Type_free(&local_array_type);
   local_array_type = 0;
+  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
 
   return ierr;
 }
@@ -528,8 +538,8 @@ int scatter(localized_matrix<LOC_MATRIX_MAJOR> const& mat_global, distributed_ma
   int sendcount = 1, recvcount = 1;
 
   for (int proc = 0; proc < nprocs; ++proc) {
+    create_struct_global(mat, global_array_type, proc);
     if ((proc != root) &&  (myrank == root)) {
-      create_struct_global(mat, global_array_type, proc);
       ierr = MPI_Send(const_cast<double*>(global_array), sendcount, global_array_type, proc, 0, cart_comm);
       if (ierr != 0) {
 	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
@@ -550,7 +560,7 @@ int scatter(localized_matrix<LOC_MATRIX_MAJOR> const& mat_global, distributed_ma
     }
 
     if ((proc == root) && (myrank == root)) {
-      create_struct_global(mat, global_array_type, root);
+      //      create_struct_global(mat, global_array_type, root);
       ierr = MPI_Sendrecv(const_cast<double*>(global_array), sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
       printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);

@@ -193,10 +193,11 @@ void generate_distributed_matrix_array_col_major_fortran(void* mat, double* arra
 
 void all_gather_fortran(void* mat, double* array) {
   distributed_matrix<rokko::matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*>(mat);
-  double* array2 = new double[mat_->get_m_global() * mat_->get_n_global()];
+  //double* array2 = new double[mat_->get_m_global() * mat_->get_n_global()];
   for(int root=0; root<mat_->get_nprocs(); ++root) {
-    std::cout << "gather_root=" << root << "nprocs=" << mat_->get_nprocs() << std::endl;
-    rokko::gather(*mat_, array2, root);
+    //const int root = 1;
+    std::cout << "gather_root=" << root << " nprocs=" << mat_->get_nprocs() << std::endl;
+    rokko::gather(*mat_, array, root);
   }
 }
 

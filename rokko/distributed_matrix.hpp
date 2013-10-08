@@ -133,57 +133,39 @@ public:
     set_local_size(calculate_row_size(), calculate_col_size());
   }
 
-  int calculate_row_size() const {
+  int calculate_row_size(int proc_row) const {
     int tmp = m_global / mb;
-    int local_num_block_rows = (tmp - myrow -1) / nprow + 1;
+    int local_num_block_rows = (tmp - proc_row -1) / nprow + 1;
     int rest_block_row = tmp % nprow; // mbに満たないサイズのブロックを持つプロセス
     int local_rest_block_rows;
-    if (myrow == rest_block_row)
+    if (proc_row == rest_block_row)
       local_rest_block_rows = m_global % mb;
     else
       local_rest_block_rows = 0;
 
-#ifndef NDEBUG
-    MPI_Barrier(g.get_comm());
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-        printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
-        std::cout << "local_num_block_rows=" << local_num_block_rows
-                  << "  local_rest_block_rows=" << local_rest_block_rows
-                  << "  rest_block_row=" << rest_block_row << std::endl;
-      }
-      MPI_Barrier(g.get_comm());
-    }
-#endif
-
     return  local_num_block_rows * mb + local_rest_block_rows;
   }
 
-  int calculate_col_size() const {
+  int calculate_row_size() const {
+    return calculate_row_size(myrow);
+  }
+
+  int calculate_col_size(int proc_col) const {
     int tmp = n_global / nb;
-    int local_num_block_cols = (tmp - mycol -1) / npcol + 1;
+    int local_num_block_cols = (tmp - proc_col -1) / npcol + 1;
     int rest_block_col = tmp % npcol; // nbに満たないサイズのブロックを持つプロセス
     int local_rest_block_cols;
-    if (mycol == rest_block_col) {
+    if (proc_col == rest_block_col) {
       local_rest_block_cols = n_global % nb;
     }
     else
       local_rest_block_cols = 0;
 
-#ifndef NDEBUG
-    MPI_Barrier(g.get_comm());
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-        printf("Rank = %d  myrow=%d mycol=%d\n", myrank, myrow, mycol);
-        std::cout << "local_num_block_cols=" << local_num_block_cols
-                  << "  local_rest_block_cols=" << local_rest_block_cols
-                  << "  rest_block_col=" << rest_block_col << std::endl;
-      }
-      MPI_Barrier(g.get_comm());
-    }
-#endif
-
     return  local_num_block_cols * nb + local_rest_block_cols;
+  }
+
+  int calculate_col_size() const {
+    return calculate_col_size(mycol);
   }
 
   int get_lld() const { return lld; };
