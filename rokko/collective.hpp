@@ -341,20 +341,9 @@ void create_struct_global(const rokko::distributed_matrix<rokko::matrix_row_majo
   create_struct_global_general(mat, global_array_type, proc);
 }
 
-
-template<typename DIST_MATRIX_MAJOR, typename LOC_MATRIX_MAJOR>
-int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_matrix<LOC_MATRIX_MAJOR>& mat_global, int root) {
-  double* global_array;
-
-  if (mat.get_myrank() == root) {
-    mat_global.resize(mat.get_m_global(), mat.get_n_global());
-    global_array = &mat_global(0,0);  // 本当に、内部では連続な配列になっているか？
-    //global_array = mat_global.data();  // 本当に、内部では連続な配列になっているか
-    //for (int ii=0; ii<mat.m_global * mat.n_global; ++ii) {
-    //  global_array[ii] = 100*mat.myrank + ii;
-    //}
-  }
-
+// gather to pointer specified array
+template<typename DIST_MATRIX_MAJOR>
+int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* global_array, int root) {
   MPI_Status  status;
   int ierr;
 
@@ -425,77 +414,17 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_ma
   return ierr;
 }
 
-// gather to pointer array
-template<typename DIST_MATRIX_MAJOR>
-int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* global_array, int root) {
-  MPI_Status  status;
-  int ierr;
 
-  int local_matrix_rows, local_matrix_cols;
-  int local_num_block_rows, local_num_block_cols;
+template<typename DIST_MATRIX_MAJOR, typename LOC_MATRIX_MAJOR>
+int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, localized_matrix<LOC_MATRIX_MAJOR>& mat_global, int root) {
+  double* global_array;
 
-  int local_rest_block_rows, local_rest_block_cols;
-  int count_max;
+  if (mat.get_myrank() == root) {
+    mat_global.resize(mat.get_m_global(), mat.get_n_global());
+    global_array = &mat_global(0,0);
+  }
 
-  MPI_Comm cart_comm = MPI_COMM_WORLD;
-
-  int m_global = mat.get_m_global();  int n_global = mat.get_n_global();  int mb = mat.get_mb();  int nb = mat.get_nb();
-  int m_local = mat.get_m_local();  int n_local = mat.get_n_local();
-  int myrow = mat.get_myrow();  int mycol = mat.get_mycol(); int nprow = mat.get_nprow();  int npcol = mat.get_npcol();
-  int myrank = mat.get_myrank(); int nprocs = mat.get_nprocs();
-
-  const double* local_array = mat.get_array_pointer();
-
-  MPI_Datatype local_array_type, global_array_type;
-  create_struct_local(mat, local_array_type);
-  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-  int rank_recv = root;  // プロセスrank_recvに集約
-  int sendcount = 1;
-  int recvcount = 1;
-  ierr = 0;
-  for (int proc = 0; proc < nprocs; ++proc) {
-    create_struct_global(mat, global_array_type, proc);
-
-    std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-    if ((myrank == proc) && (myrank != root)) {
-      ierr = MPI_Send(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, cart_comm);
-      if (ierr != 0) {
-	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
-	MPI_Abort(MPI_COMM_WORLD,78);
-	exit(78);
-      }
-    }
-    if ((proc != root) &&  (myrank == root)) {
-      std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-      ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
-      if (ierr != 0) {
-	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
-	MPI_Abort(MPI_COMM_WORLD,78);
-	exit(78);
-      }
-    }
-
-    if ((proc == root) && (myrank == root)) {
-      ierr = MPI_Sendrecv(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
-      if (ierr != 0) {
-      	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
-      	MPI_Abort(MPI_COMM_WORLD,78);
-      	exit(78);
-      }
-      //copy_l2g_root(mat, mat_global);
-    }
-    std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-    MPI_Type_free(&global_array_type);
-    std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-    global_array_type = 0;
-  } // for (int proc = 0; proc < nprocs; ++proc)
-  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-
-  MPI_Type_free(&local_array_type);
-  local_array_type = 0;
-  std::cout << "gather_myrank:" << myrank << " file:" << __FILE__ << " line:" << __LINE__ << std::endl;
-
-  return ierr;
+  return gather(mat, global_array, root);
 }
 
 template<typename LOC_MATRIX_MAJOR, typename DIST_MATRIX_MAJOR>
