@@ -14,6 +14,8 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 include(add_rokko_test)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_C_BINDING "Build C binding libraries" ON)
+option(BUILD_Fortran_BINDING "Build Fortran binding libraries" ON)
 option(DISABLE_SCALAPACK "Disable Scalapack Library" OFF)
 option(DISABLE_EIGENEXA "Disable EigenExa Library" OFF)
 option(DISABLE_ELEMENTAL "Disable Elemental Library" OFF)
@@ -38,8 +40,14 @@ else(APPLE)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif(APPLE)
 
-# enable C and C++ compilers
-enable_language(C CXX Fortran)
+# C++, C, and Fortran compilers
+enable_language(CXX)
+if(BUILD_C_BINDING)
+  enable_language(C)
+endif(BUILD_C_BINDING)
+if(BUILD_Fortran_BINDING)
+  enable_language(Fortran)
+endif(BUILD_Fortran_BINDING)
 
 # OpenMP
 find_package(OpenMP)
