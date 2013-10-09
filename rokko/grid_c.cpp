@@ -15,7 +15,7 @@
 #include <rokko/rokko.h>
 
 void rokko_grid_construct(rokko_grid* grid, MPI_Comm comm, int grid_major) {
-  if (grid_major = rokko_grid_col_major)
+  if (grid_major == rokko_grid_col_major)
     grid->ptr = static_cast<void*>(new rokko::grid(comm, rokko::grid_col_major));
   else
     grid->ptr = static_cast<void*>(new rokko::grid(comm, rokko::grid_row_major));
