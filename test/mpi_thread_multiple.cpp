@@ -10,9 +10,6 @@
 *
 *****************************************************************************/
 
-#include <mpi.h>
-#include <iostream>
-
 #define BOOST_TEST_MODULE test_mpi_thread_multiple
 #ifndef BOOST_TEST_DYN_LINK
 #include <boost/test/included/unit_test.hpp>
@@ -20,11 +17,20 @@
 #include <boost/test/unit_test.hpp>
 #endif
 
+#include <mpi.h>
+#include <iostream>
+
 BOOST_AUTO_TEST_CASE(test_mpi_thread_multiple) {
+  const int required = MPI_THREAD_MULTIPLE;
   int provided;
   MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
                   &boost::unit_test::framework::master_test_suite().argv,
-                  MPI_THREAD_MULTIPLE, &provided);
-  BOOST_CHECK_EQUAL(provided, MPI_THREAD_MULTIPLE);
+                  required, &provided);
+  BOOST_CHECK_EQUAL(provided, required);
+  if (provided == required) {
+    std::cerr << "MPI_THREAD_MULTIPLE is supported\n";
+  } else {
+    std::cerr << "MPI_THREAD_MULTIPLE is NOT supported\n";
+  }
   MPI_Finalize();
 }
