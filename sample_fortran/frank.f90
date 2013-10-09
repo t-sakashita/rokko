@@ -24,10 +24,10 @@ program frank_matrix
   character(len=100) :: solver_name, tmp_str
   integer arg_len, status
 
-  integer :: ierr, myrank, nprocs
+  integer :: provided, ierr, myrank, nprocs
   integer :: i
 
-  call MPI_init(ierr)
+  call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
