@@ -13,7 +13,7 @@
 
 program frank_matrix
   use MPI
-  use rokko
+  use rokko_f
   implicit none
   integer :: dim
   type(distributed_matrix) :: mat, Z

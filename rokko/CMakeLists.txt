@@ -1,4 +1,22 @@
+#
+# Rokko: Integrated Interface for libraries of eigenvalue decomposition
+#
+# Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+#                            Synge Todo <wistaria@comp-phys.org>
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+#
+
 set(ROKKO_SOURCES serial_solver_factory.cpp solver_factory.cpp grid.cpp)
+if(BUILD_C_BINDING)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp solver_c.cpp localized_vector_c.cpp distributed_matrix_c.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_c.cpp)
+endif(BUILD_C_BINDING)
+if(BUILD_Fortran_BINDING)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.f90 solver_f.f90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_f.f90)
+endif(BUILD_Fortran_BINDING)
 
 # Eigen3
 set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)

@@ -14,14 +14,15 @@
 program frank_matrix
   use MPI
   use rokko
+  use rokko_frank_matrix
   implicit none
   integer :: dim
-  type(distributed_matrix) :: mat, Z
-  type(grid) :: g
-  type(solver) :: solver_
-  real(8), allocatable :: w(:), vec(:)
+  type(rokko_distributed_matrix) :: mat, Z
+  type(rokko_grid) :: grid
+  type(rokko_solver) :: solver
+  type(rokko_localized_vector) :: w
   character(len=100) :: solver_name, tmp_str
-  integer args_cnt, arg_len, status
+  integer arg_len, status
 
   integer :: ierr, myrank, nprocs
   integer :: i
@@ -43,30 +44,31 @@ program frank_matrix
   write(*,*) "solver name = ", trim(solver_name)
   write(*,*) "matrix dimension = ", dim
 
-  call set_solver(solver_, solver_name)
-  call set_grid(g, MPI_COMM_WORLD)
+  call rokko_solver_construct(solver, solver_name)
+  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_col_major)
 
-  call set_distributed_matrix(mat, dim, dim, g, solver_)
-  call set_distributed_matrix(Z, dim, dim, g, solver_)
-  allocate(w(dim));
+  call rokko_distributed_matrix_construct(mat, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_distributed_matrix_construct(Z, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
-  call generate_frank_matrix(mat)
-  call print_distributed_matrix(mat)
+  call rokko_frank_matrix_generate_distributed_matrix(mat)
+  call rokko_distributed_matrix_print(mat)
 
-  call diagonalize(solver_, mat, w, Z)
+  call rokko_solver_diagonalize_distributed_matrix(solver, mat, w, Z)
 
   if (myrank.eq.0) then
-     write(*,*) "Computed Eigenvalues = "
+     write(*,'(A)') "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") w(i)
+        write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
      enddo
   endif
 
-  call del_distributed_matrix(mat)
-  call del_distributed_matrix(Z)
-  call del_solver(solver_)
-  deallocate(w)
+  call rokko_distributed_matrix_destruct(mat)
+  call rokko_distributed_matrix_destruct(Z)
+  call rokko_localized_vector_destruct(w)
+  call rokko_solver_destruct(solver)
+  call rokko_grid_destruct(grid)
 
   call MPI_finalize(ierr)
 end program frank_matrix
