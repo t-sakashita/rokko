@@ -88,11 +88,6 @@ program frank_matrix
      enddo
   endif
 
-!  if (myrank.eq.0) then
-!     print*, "array=", array
-!  endif
-  write(*,*) "myrank:", myrank, " fortran_file:",__FILE__, " line:",&
-             __LINE__
   call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
 
   call del_distributed_matrix(mat)
