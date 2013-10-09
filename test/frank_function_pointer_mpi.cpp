@@ -35,7 +35,8 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   char** argv = boost::unit_test::framework::master_test_suite().argv;
   unsigned int dim = 10;
   dim_global = dim;
-  MPI_Init(&argc, &argv);
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm, rokko::grid_col_major);
   boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
