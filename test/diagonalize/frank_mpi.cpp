@@ -23,10 +23,12 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver) {
-  MPI_Init(&boost::unit_test::framework::master_test_suite().argc,
-             &boost::unit_test::framework::master_test_suite().argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  int provided;
+  MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
+                  &boost::unit_test::framework::master_test_suite().argv,
+                  MPI_THREAD_MULTIPLE, &provided);
 
+  MPI_Comm comm = MPI_COMM_WORLD;
   const int dim = 100;
 
   boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
