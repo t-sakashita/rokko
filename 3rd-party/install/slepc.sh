@@ -6,14 +6,14 @@ echo "PREFIX = $PREFIX"
 
 mkdir -p $HOME/build
 cd $HOME/build
-rm -rf slepc-3.4.2
-if test -f $HOME/source/slepc-3.4.2.tar.gz; then
-  tar zxf $HOME/source/slepc-3.4.2.tar.gz
+rm -rf slepc-3.4.3
+if test -f $HOME/source/slepc-3.4.3.tar.gz; then
+  tar zxf $HOME/source/slepc-3.4.3.tar.gz
 else
-  wget -O - http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.2.tar.gz | tar zxf -
+  wget -O - http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-3.4.3.tar.gz | tar zxf -
 fi
 
-cd $HOME/build/slepc-3.4.2
+cd $HOME/build/slepc-3.4.3
 rm -rf $PREFIX/include/slepc*
 unset SLEPC_DIR PETSC_DIR PETSC_ARCH
 ./configure --prefix=$PREFIX
