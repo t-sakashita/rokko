@@ -7,7 +7,6 @@ namespace rokko {
 
 template<typename T>
 void initialize(int& argc, char**& argv);
-}
 
 template<typename T>
 void finalize();
