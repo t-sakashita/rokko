@@ -63,45 +63,45 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 
     if (i < (L-p)) {
       if (j < (L-p)) {
-	int m1 = 1 << i;
-	int m2 = 1 << j;
-	int m3 = m1 + m2;
-	for (int k=0; k<N; ++k) {
-	  if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-	    w[k] += diag_minus * v[k] + offdiag_plus * v[k^m3];
-	  } else {
-	    w[k] += diag_plus * v[k] + offdiag_minus * v[k^m3];
-	  }
-	}
+        int m1 = 1 << i;
+        int m2 = 1 << j;
+        int m3 = m1 + m2;
+        for (int k=0; k<N; ++k) {
+          if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+            w[k] += diag_minus * v[k] + offdiag_plus * v[k^m3];
+          } else {
+            w[k] += diag_plus * v[k] + offdiag_minus * v[k^m3];
+          }
+        }
       } else {
-	int m = 1 << (j-(L-p));
-	MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
-		     myrank ^ m, 0,
-		     &buffer[0], N, MPI_DOUBLE, 
-		     myrank ^ m, 0,
-		     comm, &status);
-	int m1 = 1 << i;
-	if ((myrank & m) == m) { 
-	  for (int k=0; k<N; ++k) {
-	    if ((k & m1) == m1) {
-	      w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
-	    } else {
-	      w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
-	    }
-	  }
-	} else {
-	  for (int k=0; k<N; ++k) {
-	    if ((k & m1) == m1) {
-	      w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
-	    } else {
-	      w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
-	    }
-	  }
-	}
+        int m = 1 << (j-(L-p));
+        MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
+                     myrank ^ m, 0,
+                     &buffer[0], N, MPI_DOUBLE, 
+                     myrank ^ m, 0,
+                     comm, &status);
+        int m1 = 1 << i;
+        if ((myrank & m) == m) { 
+          for (int k=0; k<N; ++k) {
+            if ((k & m1) == m1) {
+              w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
+            } else {
+              w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
+            }
+          }
+        } else {
+          for (int k=0; k<N; ++k) {
+            if ((k & m1) == m1) {
+              w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
+            } else {
+              w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
+            }
+          }
+        }
       }
     } else {
       if (j < (L-p)) {
-	int m = 1 << (i-(L-p));
+        int m = 1 << (i-(L-p));
         MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      &buffer[0], N, MPI_DOUBLE,
@@ -119,28 +119,28 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
         } else {
           for (int k=0; k<N; ++k) {
             if ((k & m1) == m1) {
-	      w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
+              w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
             } else {
-	      w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
+              w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
             }
           }
-	}
+        }
       } else {
-	int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
-	if (((myrank & m) != m) && ((myrank & m) != 0)) {
-	  MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
-		       myrank ^ m, 0,
-		       &buffer[0], N, MPI_DOUBLE,
-		       myrank ^ m, 0,
-		       comm, &status);
-	  for (int k=0; k<N; ++k) {
-	    w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m];
-	  }
-	} else {
-	  for (int k=0; k<N; ++k) {
-            w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m];
+        int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
+        MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
+                     myrank ^ m, 0,
+                     &buffer[0], N, MPI_DOUBLE,
+                     myrank ^ m, 0,
+                     comm, &status);
+        if (((myrank & m) != m) && ((myrank & m) != 0)) {
+          for (int k=0; k<N; ++k) {
+            w[k] += diag_minus * v[k] + offdiag_plus * buffer[k];
           }
-	}
+        } else {
+          for (int k=0; k<N; ++k) {
+            w[k] += diag_plus * v[k] + offdiag_minus * buffer[k];
+          }
+        }
       }
     }
   }
@@ -180,49 +180,49 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
     int j = lattice[l].second;
     if (i < (L-p)) {
       if (j < (L-p)) {
-	int m1 = 1 << i;
-	int m2 = 1 << j;
-	int m3 = m1 + m2;
-	for (int k=0; k<N; ++k) {
-	  if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-	    w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
-	  }
-	  else if ((k & m3) == m2) {
-	    w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
-	  }
-	  else {
-	    w[k] += 0.25 * v[k];
-	  }
-	}
+        int m1 = 1 << i;
+        int m2 = 1 << j;
+        int m3 = m1 + m2;
+        for (int k=0; k<N; ++k) {
+          if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+            w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
+          }
+          else if ((k & m3) == m2) {
+            w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
+          }
+          else {
+            w[k] += 0.25 * v[k];
+          }
+        }
       } else {
-	int m = 1 << (j-(L-p));
-	MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
-		     myrank ^ m, 0,
-		     &buffer[0], N, MPI_DOUBLE, 
-		     myrank ^ m, 0,
-		     comm, &status);
-	int m1 = 1 << i;
-	if ((myrank & m) == m) { 
-	  for (int k=0; k<N; ++k) {
-	    if ((k & m1) == m1) {
-	      w[k] += 0.25 * v[k];
-	    } else {
-	      w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
-	    }
-	  }
-	} else {
-	  for (int k=0; k<N; ++k) {
-	    if ((k & m1) == m1) {
-	      w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
-	    } else {
-	      w[k] += 0.25 * v[k];
-	    }
-	  }
-	}
+        int m = 1 << (j-(L-p));
+        MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
+                     myrank ^ m, 0,
+                     &buffer[0], N, MPI_DOUBLE, 
+                     myrank ^ m, 0,
+                     comm, &status);
+        int m1 = 1 << i;
+        if ((myrank & m) == m) { 
+          for (int k=0; k<N; ++k) {
+            if ((k & m1) == m1) {
+              w[k] += 0.25 * v[k];
+            } else {
+              w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
+            }
+          }
+        } else {
+          for (int k=0; k<N; ++k) {
+            if ((k & m1) == m1) {
+              w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
+            } else {
+              w[k] += 0.25 * v[k];
+            }
+          }
+        }
       }
     } else {
       if (j < (L-p)) {
-	int m = 1 << (i-(L-p));
+        int m = 1 << (i-(L-p));
         MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      &buffer[0], N, MPI_DOUBLE,
@@ -240,28 +240,28 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
         } else {
           for (int k=0; k<N; ++k) {
             if ((k & m1) == m1) {
-	      w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
+              w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
             } else {
-	      w[k] += 0.25 * v[k];
+              w[k] += 0.25 * v[k];
             }
           }
-	}
+        }
       } else {
-	int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
-	if (((myrank & m) != m) && ((myrank & m) != 0)) {
-	  MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
-		       myrank ^ m, 0,
-		       &buffer[0], N, MPI_DOUBLE,
-		       myrank ^ m, 0,
-		       comm, &status);
-	  for (int k=0; k<N; ++k) {
-	    w[k] += 0.5 * buffer[k] - 0.25 * v[k];
-	  }
-	} else {
-	  for (int k=0; k<N; ++k) {
+        int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
+        if (((myrank & m) != m) && ((myrank & m) != 0)) {
+          MPI_Sendrecv(&v[0], N, MPI_DOUBLE,
+                       myrank ^ m, 0,
+                       &buffer[0], N, MPI_DOUBLE,
+                       myrank ^ m, 0,
+                       comm, &status);
+          for (int k=0; k<N; ++k) {
+            w[k] += 0.5 * buffer[k] - 0.25 * v[k];
+          }
+        } else {
+          for (int k=0; k<N; ++k) {
             w[k] += 0.25 * v[k];
           }
-	}
+        }
       }
     }
   }
