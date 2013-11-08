@@ -71,7 +71,10 @@ int main(int argc, char *argv[])
   */
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    coupling.push_back(boost::make_tuple(1, 1, 1));
+    //coupling.push_back(boost::make_tuple(1, 1, 1));
+    coupling.push_back(boost::make_tuple(1, 0.3, 0.2));
+    //coupling.push_back(boost::make_tuple(0, 1, 0));
+    //coupling.push_back(boost::make_tuple(0, 0.3, 0.5));
   }
 
   int myrank, nprocs;
@@ -140,6 +143,9 @@ int main(int argc, char *argv[])
         std::cout << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
+    }
+    if (myrank == root) {
+      std::cout << std::endl;
     }
   }
 

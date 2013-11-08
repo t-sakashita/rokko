@@ -46,15 +46,14 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
     }
     MPI_Abort(comm, 1);
   }
-
   int N = 1 << (L-p);
 
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
-    int jx = coupling[l].get<0>();
-    int jy = coupling[l].get<1>();
-    int jz = coupling[l].get<2>();
+    double jx = coupling[l].get<0>();
+    double jy = coupling[l].get<1>();
+    double jz = coupling[l].get<2>();
 
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
