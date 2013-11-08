@@ -8,7 +8,7 @@ message(STATUS "Display Anasazi_LIBRARIES=${Anasazi_LIBRARIES}.")
 include_directories(${Anasazi_INCLUDE_DIRS})
 link_directories(${Anasazi_LIBRARY_DIRS})
 
-set(TESTS heisenberg_matrix heisenberg_matrix_LOBPCG heisenberg_product_parallel)
+set(TESTS heisenberg_matrix_LOBPCG heisenberg_mat_mpi heisenberg_matfree_mpi xyz_matfree_mpi)
 
 if( DEFINED TRILINOS_PREFIX )
   foreach(name ${TESTS})

@@ -10,11 +10,13 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_XYZ_HAMILTONIAN_PARALLEL_HPP
-#define ROKKO_UTILITY_XYZ_HAMILTONIAN_PARALLEL_HPP
+#ifndef ROKKO_UTILITY_XYZ_HAMILTONIAN_MPI_HPP
+#define ROKKO_UTILITY_XYZ_HAMILTONIAN_MPI_HPP
 
 #include "mpi.h"
 #include <vector>
+#include <boost/tuple/tuple.hpp>
+
 #include <iostream>
 
 #include <rokko/localized_matrix.hpp>
@@ -281,4 +283,4 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
 
 } // namespace rokko
 
-#endif // ROKKO_UTILITY_XYZ_HAMILTONIAN_PARALLEL_HPP
+#endif // ROKKO_UTILITY_XYZ_HAMILTONIAN_MPI_HPP
