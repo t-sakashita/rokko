@@ -1,12 +1,13 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+#include <rokko/utility/xyz_hamiltonian_mpi.hpp>
 
 struct model {
   MPI_Comm comm;
   int L;
   std::vector<std::pair<int, int> > lattice;
+  std::vector<boost::tuple<double, double, double> > coupling;
   double* buffer;
 };
 
@@ -48,6 +49,7 @@ int main(int argc,char **argv)
 
   for (int i=0; i<L-1; ++i) {
     m.lattice.push_back(std::make_pair(i, i+1));
+    m.coupling.push_back(boost::make_tuple(1, 1, 1));
   }
 
   ierr = MatCreateShell(PETSC_COMM_WORLD, N / size, N / size, N, N, &m, &A); CHKERRQ(ierr);
@@ -115,7 +117,7 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
 
   ierr = VecGetArrayRead(x, &px); CHKERRQ(ierr);
   ierr = VecGetArray(y, &py); CHKERRQ(ierr);
-  rokko::heisenberg_hamiltonian::multiply(m->comm, m->L, m->lattice, px, py, m->buffer);
+  rokko::xyz_hamiltonian::multiply(m->comm, m->L, m->lattice, m->coupling, px, py, m->buffer);
   ierr = VecRestoreArrayRead(x,&px); CHKERRQ(ierr);
   ierr = VecRestoreArray(y,&py); CHKERRQ(ierr);
 
@@ -134,7 +136,7 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
   PetscScalar       *pd;
 
   ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
-  rokko::heisenberg_hamiltonian::fill_diagonal(m->comm, m->L, m->lattice, pd);
+  rokko::xyz_hamiltonian::fill_diagonal(m->comm, m->L, m->lattice, m->coupling, pd);
   ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
 
   PetscFunctionReturn(0);

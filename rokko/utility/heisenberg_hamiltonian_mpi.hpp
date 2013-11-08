@@ -143,7 +143,7 @@ void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& la
 }
 
 
-void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, double* w, double* buffer) {
+void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, double* w) {
   int myrank, nproc;
   MPI_Status status;
   int ierr;
@@ -187,8 +187,8 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
   }
 }
 
-void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, std::vector<double>& w, std::vector<double>& buffer) {
-  fill_diagonal(comm, L, lattice, &w[0], &buffer[0]);
+void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, std::vector<double>& w) {
+  fill_diagonal(comm, L, lattice, &w[0]);
 }
 
 template <typename MATRIX_MAJOR>

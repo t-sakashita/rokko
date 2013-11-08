@@ -1,6 +1,6 @@
 if(BUILD_SLEPC)
   include_directories(${SLEPC_INCLUDE_DIR} ${PETSC_INCLUDE_DIR})
-  set(TESTS frank_1proc heisenberg_1proc heisenberg_matrix)
+  set(TESTS frank_sparse_1proc heisenberg_matfree_1proc heisenberg_matfree_mpi heisenberg_sparse_mpi xyz_matfree_mpi)
 
   foreach(name ${TESTS})
     add_executable(${name} ${name}.cpp)

@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int L = 4;
+  int L = 8;
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
   //
   //  Variables used for the LOBPCG Method
   //
-  const int    nev       = 14;
+  const int    nev       = 1;
   const int    blockSize = 3;
   const int    maxIters  = 500;
   const double tol       = 1.0e-8;
