@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
   rokko::grid g(comm, rokko::grid_col_major);
   const int root = 0;
 
+  /*
   if (argc <= 1) {
     std::cerr << "error: " << argv[0] << " path_to_xyz.ip" << std::endl;
     exit(1);
@@ -46,10 +47,15 @@ int main(int argc, char *argv[])
     std::cout << "can't open file" << std::endl;
     exit(2);
   }
+  */
 
   int L, num_bonds;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
+
+  L = 4;
+  num_bonds = L - 1;
+  /*
   ifs >> L >> num_bonds;
   for (int i=0; i<num_bonds; ++i) {
     int j, k;
@@ -62,20 +68,28 @@ int main(int argc, char *argv[])
     ifs >> jx >> jy >> jz;
     coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
-  
-  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-  for (int i=0; i<num_bonds; ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+  */
+  for (int i=0; i<L-1; ++i) {
+    lattice.push_back(std::make_pair(i, i+1));
+    coupling.push_back(boost::make_tuple(1, 1, 1));
   }
 
-  int myrank, nproc;
+  int myrank, nprocs;
   MPI_Status status;
   int ierr;
 
-  MPI_Comm_size(MPI_COMM_WORLD, &nproc);
+  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 
-  int n = nproc;
+  if (myrank == root) {
+    std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
+    for (int i=0; i<num_bonds; ++i) {
+      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+    }
+  }
+  MPI_Barrier(MPI_COMM_WORLD);
+
+  int n = nprocs;
   int p = -1;
   do {
     n /= 2;
@@ -83,7 +97,7 @@ int main(int argc, char *argv[])
   } while (n > 0);
 
   //std::cerr << "nproc=" << nproc << " p=" << p << std::endl;
-  if (nproc != (1 << p)) {    
+  if (nprocs != (1 << p)) {    
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
     }
@@ -92,44 +106,43 @@ int main(int argc, char *argv[])
   int N = 1 << (L-p);
 
   // creating column vectors which forms a heisenberg hamiltonian.
-  int N_global = 1 << L;
-  rokko::localized_matrix<rokko::matrix_col_major> lmat0(N_global, N_global);
+  int N_seq = 1 << L;
   std::vector<double> buffer(N);
   for (int i=0; i<N; ++i) {
+    // sequential version
+    std::vector<double> v_seq, w_seq;
+    v_seq.assign(N_seq, 0);
+    v_seq[i] = 1;
+    w_seq.assign(N_seq, 0);
+    if (myrank == root) {
+      rokko::xyz_hamiltonian::multiply(L, lattice, coupling, v_seq, w_seq);
+      std::cout << "sequential version:" << std::endl;
+      for (int j=0; j<N_seq; ++j) {
+        std::cout << w_seq[j] << " ";
+      }
+      std::cout << std::endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    // MPI version
     std::vector<double> v, w;
     v.assign(N, 0);
-    v[i] = 1;
+    if (myrank == (i / N))
+      v[i % N] = 1;
     w.assign(N, 0);
     rokko::xyz_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, coupling, v, w, buffer);
-    for (int j=0; j<N; ++j) {
-      //lmat0(myrank * N + j, myrank * N + i) = w[j];
-      std::cout << w[j] << " ";
-    }
-    std::cout << std::endl;
-  }
-
-  // create a hamiltonian as a distributed_matrix and gather to compare a matrix genereated by serial version
-  rokko::distributed_matrix<rokko::matrix_col_major> mat(N_global, N_global, g, solver);
-  rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
-
-  rokko::localized_matrix<rokko::matrix_col_major> lmat1(N_global, N_global);
-  rokko::gather(mat, lmat1, root);
-
-  // create a matrix genereated by serail version
-  rokko::localized_matrix<rokko::matrix_col_major> lmat2(N_global, N_global);
-  rokko::xyz_hamiltonian::generate(L, lattice, coupling, lmat2);
-
-  //mat.print();
-  if (myrank == root) {
-    if (lmat1 == lmat2) {
-      std::cout << "OK: matrix by MPI version 'generate' equals to a matrix by serial version 'genertate'." << std::endl;
-    } else {
-      std::cout << "ERROR: matrix by MPI version 'generate' is differnet from a matrix by serial version 'genertate'." << std::endl;
-      std::cout << "lmat1=" << std::endl << lmat1 << std::endl;
-      std::cout << "lmat2=" << std::endl << lmat2 << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, 1);
+    for (int proc=0; proc<nprocs; ++proc) {
+      if (proc == myrank) {
+        std::cout << "myrank=" << myrank << std::endl;
+        for (int j=0; j<N; ++j) {
+          std::cout << w[j] << " ";
+        }
+        std::cout << std::endl;
+      }
+      MPI_Barrier(MPI_COMM_WORLD);
     }
   }
+
 
   MPI_Finalize();
   return 0;
