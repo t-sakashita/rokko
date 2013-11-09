@@ -106,23 +106,13 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k1=0; k1<N; ++k1) {
-      for (int k2=0; k2<N; ++k2) {
-        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (k1 == (k2^m3)) {
-            mat(k1, k2) += offdiag_plus;
-          }
-          if (k1 == k2) {
-            mat(k1, k2) += diag_minus;
-          }
-        } else {
-          if (k1 == (k2^m3)) {
-            mat(k1, k2) += offdiag_minus;
-          }
-          if (k1 == k2) {
-            mat(k1, k2) += diag_plus;
-          }
-        }
+    for (int k=0; k<N; ++k) {
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        mat(k^m3, k) += offdiag_plus;
+        mat(k, k) += diag_minus;
+      } else {
+        mat(k^m3, k) += offdiag_minus;
+        mat(k, k) += diag_plus;
       }
     }
   }

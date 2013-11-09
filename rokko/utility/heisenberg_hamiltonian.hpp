@@ -15,12 +15,13 @@
 
 #include <vector>
 #include <rokko/localized_matrix.hpp>
+#include <rokko/localized_vector.hpp>
 
 namespace rokko {
 
 namespace heisenberg_hamiltonian {
 
-void multiply(int L, std::vector<std::pair<int, int> >& lattice, const double* v, double* w) {
+void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const double* v, double* w) {
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
@@ -31,19 +32,18 @@ void multiply(int L, std::vector<std::pair<int, int> >& lattice, const double* v
     for (int k=0; k<N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) || (bit i == 0, bit j == 1) 
         w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
-      }
-      else {
+      } else {
         w[k] += 0.25 * v[k];
       }
     }
   }
 }
 
-void multiply(int L, std::vector<std::pair<int, int> >& lattice, const std::vector<double>& v, std::vector<double>& w) {
+void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<double>& v, std::vector<double>& w) {
   multiply(L, lattice, &v[0], &w[0]);
 }
 
-void fill_diagonal(int L, std::vector<std::pair<int, int> >& lattice, double* w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, double* w) {
   int N = 1 << L;
   for (int k=0; k<N; ++k) {
     w[k] = 0;
@@ -66,12 +66,16 @@ void fill_diagonal(int L, std::vector<std::pair<int, int> >& lattice, double* w)
   }
 }
 
-void fill_diagonal(int L, std::vector<std::pair<int, int> >& lattice, std::vector<double>& w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, std::vector<double>& w) {
+  fill_diagonal(L, lattice, &w[0]);
+}
+
+void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, rokko::localized_vector& w) {
   fill_diagonal(L, lattice, &w[0]);
 }
 
 template <typename MATRIX_MAJOR>
-void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::localized_matrix<MATRIX_MAJOR>& mat) {
+void generate(int L, const std::vector<std::pair<int, int> >& lattice, rokko::localized_matrix<MATRIX_MAJOR>& mat) {
   mat.setZero();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
@@ -80,18 +84,12 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::localize
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k1=0; k1<N; ++k1) {
-      for (int k2=0; k2<N; ++k2) {
-        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (k1 == (k2^m3)) {
-            mat(k1, k2) += 0.5;
-          }
-          if (k1 == k2) {
-            mat(k1, k2) -= 0.25;
-          }
-        } else if (k1 == k2) {
-          mat(k1, k2) += 0.25;
-        }
+    for (int k=0; k<N; ++k) {
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        mat(k^m3, k) += 0.5;
+        mat(k, k) -= 0.25;
+      } else {
+        mat(k, k) += 0.25;
       }
     }
   }
