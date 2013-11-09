@@ -200,19 +200,18 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distribu
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int local_k1=0; local_k1<mat.get_m_local(); ++local_k1) {
-      int k1 = mat.translate_l2g_row(local_k1);
-      for (int local_k2=0; local_k2<mat.get_n_local(); ++local_k2) {
-        int k2 = mat.translate_l2g_col(local_k2);
-        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (k1 == (k2^m3)) {
-            mat.update_local(local_k1, local_k2, 0.5);
+    for (int k=0; k<mat.get_n_global(); ++k) {
+      if (mat.is_gindex_mycol(k)) {
+        int local_k = mat.translate_g2l_col(k);
+        if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          if (mat.is_gindex_myrow(k^m3)) {
+            mat.update_local(mat.translate_g2l_row(k^m3), local_k, 0.5);
           }
-          if (k1 == k2) {
-            mat.update_local(local_k1, local_k2, -0.25);
+          if (mat.is_gindex_myrow(k)) {
+            mat.update_local(local_k, local_k, -0.25);
           }
-        } else if (k1 == k2) {
-          mat.update_local(local_k1, local_k2, 0.25);
+        } else if (mat.is_gindex_myrow(k)) {
+          mat.update_local(local_k, local_k, 0.25);
         }
       }
     }

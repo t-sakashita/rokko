@@ -252,6 +252,7 @@ public:
       }
     }
   }
+
   bool is_row_major() const {
     return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }

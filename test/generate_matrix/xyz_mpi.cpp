@@ -149,6 +149,25 @@ int main(int argc, char *argv[])
     }
   }
 
+  // test for generate function
+  rokko::localized_matrix<rokko::matrix_col_major> lmat(N_seq, N_seq);
+  rokko::xyz_hamiltonian::generate(L, lattice, coupling, lmat);
+  
+  rokko::distributed_matrix<rokko::matrix_col_major> mat(N_seq, N_seq, g, solver);
+  rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
+  rokko::localized_matrix<rokko::matrix_col_major> lmat_gather(N_seq, N_seq);
+  rokko::gather(mat, lmat_gather, root);
+
+  if (myrank == root) {
+    std:: cout << "lmat:" << std::endl << lmat << std::endl;
+    std:: cout << "lmat_gather:" << std::endl << lmat_gather << std::endl;
+    if (lmat_gather == lmat) {
+      std::cout << "OK: distributed_matrix by 'generate' equals to a localized_matrix by 'generate'." << std::endl;
+    } else {
+      std::cout << "ERROR: distributed_matrix by 'generate' is differnet from a localized_matrix by 'generate'."<< std::endl;
+      exit(1);
+    }
+  }
 
   MPI_Finalize();
   return 0;
