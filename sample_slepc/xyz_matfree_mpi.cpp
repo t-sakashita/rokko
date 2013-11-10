@@ -24,16 +24,17 @@ int main(int argc,char **argv)
   Mat            A;               /* operator matrix */
   EPS            eps;             /* eigenproblem solver context */
   EPSType        type;
-  PetscMPIInt    size;
-  PetscInt       N, nev;
+  PetscMPIInt    nproc;
+  PetscInt       nev;
   PetscErrorCode ierr;
 
   SlepcInitialize(&argc, &argv, (char*)0, 0);
-  ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size); CHKERRQ(ierr);
+  ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);
 
   int L = 8;
   ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
-  N = 1 << L;
+  PetscInt N_global = 1 << L;
+  PetscInt N_local = N_global / nproc;
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Compute the operator matrix that defines the eigensystem, Ax=kx
@@ -42,7 +43,7 @@ int main(int argc,char **argv)
   model m;
   m.comm = PETSC_COMM_WORLD;
   m.L = L;
-  m.buffer = new double[N];
+  m.buffer = new double[N_local];
   if (m.buffer == 0) {
     MPI_Abort(MPI_COMM_WORLD, 4);
   }
@@ -52,7 +53,7 @@ int main(int argc,char **argv)
     m.coupling.push_back(boost::make_tuple(1, 1, 1));
   }
 
-  ierr = MatCreateShell(PETSC_COMM_WORLD, N / size, N / size, N, N, &m, &A); CHKERRQ(ierr);
+  ierr = MatCreateShell(PETSC_COMM_WORLD, N_local, N_local, N_global, N_global, &m, &A); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A);CHKERRQ(ierr);
   ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)())MatMult_myMat);CHKERRQ(ierr);
   ierr = MatShellSetOperation(A,MATOP_MULT_TRANSPOSE,(void(*)())MatMult_myMat);CHKERRQ(ierr);

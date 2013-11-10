@@ -151,17 +151,41 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 }
 
 void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, double* w) {
-  int N = 1 << L;
+  int myrank, nproc;
+
+  MPI_Comm_size(comm, &nproc);
+  MPI_Comm_rank(comm, &myrank);
+
+  int n = nproc;
+  int p = -1;
+  do {
+    n /= 2;
+    ++p;
+  } while (n > 0);
+
+  if (nproc != (1 << p)) {
+    if ( myrank == 0 ) {
+      std::cout << "This program can be run only for powers of 2" << std::endl;
+    }
+    MPI_Abort(comm, 1);
+  }
+
+  int N_seq = 1 << L;
+  int N = 1 << (L-p);
+  int myrank_shift = myrank * N;
+  int nproc_shift = (nproc-1) * N;
+  int mask = N - 1;
+
   for (int k=0; k<N; ++k) {
     w[k] = 0;
   }
+
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
     double jy = coupling[l].get<1>();
     double jz = coupling[l].get<2>();
-
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
     double offdiag_plus = (jx + jy) / 4.0;
@@ -170,14 +194,17 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k=0; k<N; ++k) {
-      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-        w[k] += diag_minus;
-      } else {
-        w[k] += diag_plus;
+
+    for (int k=0; k<N_seq; ++k) {
+      if (myrank_shift == (k & nproc_shift)) {
+        if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          w[k & mask] += diag_minus;
+        } else {
+          w[k & mask] += diag_plus;
+        }        
       }
-    }
-  }
+    }  // end for k
+  } // end for lattice
 }
 
 void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, std::vector<double>& w) {
@@ -224,7 +251,6 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std
       }
     }
   }
-  std::cout << "aaaabbbbbbbbb" << std::endl;
 }
 
 // The following routine uses local indices.  It works correctly.

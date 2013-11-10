@@ -145,8 +145,6 @@ void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& la
 
 void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, double* w) {
   int myrank, nproc;
-  MPI_Status status;
-  int ierr;
 
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
@@ -165,26 +163,36 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
     MPI_Abort(comm, 1);
   }
 
+  int N_seq = 1 << L;
   int N = 1 << (L-p);
+  int myrank_shift = myrank * N;
+  int nproc_shift = (nproc-1) * N;
+  int mask = N - 1;
+
+  //std::cout << "myrank=" << myrank << " mask=" << mask << " nproc_shift=" << nproc_shift << " myrank_shift=" << myrank_shift << std::endl;
+
+  for (int k=0; k<N; ++k) {
+    w[k] = 0;
+  }
 
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
-    if (i < (L-p)) {
-      if (j < (L-p)) {
-        int m1 = 1 << i;
-        int m2 = 1 << j;
-        int m3 = m1 + m2;
-        for (int k=0; k<N; ++k) {
-          if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-            w[k] -= 0.25;
-          } else {
-            w[k] += 0.25;
-          }
-        }
+
+    int m1 = 1 << i;
+    int m2 = 1 << j;
+    int m3 = m1 + m2;
+
+    for (int k=0; k<N_seq; ++k) {
+      if (myrank_shift == (k & nproc_shift)) {
+        if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          w[k & mask] -= 0.25;
+        } else {
+          w[k & mask] += 0.25;
+        }        
       }
-    }
-  }
+    } // end for k
+  } // end for lattice
 }
 
 void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, std::vector<double>& w) {
@@ -208,10 +216,10 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distribu
             mat.update_local(mat.translate_g2l_row(k^m3), local_k, 0.5);
           }
           if (mat.is_gindex_myrow(k)) {
-            mat.update_local(local_k, local_k, -0.25);
+            mat.update_local(mat.translate_g2l_row(k), local_k, -0.25);
           }
         } else if (mat.is_gindex_myrow(k)) {
-          mat.update_local(local_k, local_k, 0.25);
+          mat.update_local(mat.translate_g2l_row(k), local_k, 0.25);
         }
       }
     }

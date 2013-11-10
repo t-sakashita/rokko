@@ -21,13 +21,13 @@ int main(int argc,char **argv)
   Mat            A;               /* operator matrix */
   EPS            eps;             /* eigenproblem solver context */
   EPSType        type;
-  PetscMPIInt    size;
+  PetscMPIInt    nproc;
   PetscInt       N, nev;
   PetscErrorCode ierr;
 
   SlepcInitialize(&argc, &argv, (char*)0, 0);
-  ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size); CHKERRQ(ierr);
-  if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only");
+  ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);
+  if (nproc != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only");
 
   int L = 8;
   ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);

@@ -24,7 +24,7 @@
 
 #include <boost/tuple/tuple.hpp>
 
-#include <rokko/utility/xyz_hamiltonian.hpp>
+#include <rokko/utility/xyz_hamiltonian_mpi.hpp>
 #include <rokko/utility/sort_eigenpairs.hpp>
 
 #include <boost/lexical_cast.hpp>

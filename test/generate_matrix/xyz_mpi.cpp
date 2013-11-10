@@ -149,6 +149,37 @@ int main(int argc, char *argv[])
     }
   }
 
+  // test fill_diagonal of quantum heisenberg hamiltonian.
+  // sequential version
+  std::vector<double> w_seq;
+  w_seq.assign(N_seq, 0);
+  if (myrank == root) {
+    rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, w_seq);
+    std::cout << "fill_diagonal sequential version:" << std::endl;
+    for (int j=0; j<N_seq; ++j) {
+      std::cout << w_seq[j] << " ";
+    }
+    std::cout << std::endl;
+  }
+  MPI_Barrier(MPI_COMM_WORLD);    
+  // MPI version
+  std::vector<double> w;
+  w.assign(N, 0);
+  if (myrank == root) {  
+    std::cout << "fill_diagonal MPI version:" << std::endl;
+  }
+  rokko::xyz_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, coupling, w);
+  for (int proc=0; proc<nprocs; ++proc) {
+    if (proc == myrank) {
+      std::cout << "myrank=" << myrank << std::endl;
+      for (int j=0; j<N; ++j) {
+        std::cout << w[j] << " ";
+      }
+      std::cout << std::endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+  }
+
   // test for generate function
   rokko::localized_matrix<rokko::matrix_col_major> lmat(N_seq, N_seq);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, lmat);

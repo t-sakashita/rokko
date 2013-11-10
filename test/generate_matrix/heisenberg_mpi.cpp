@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     ifs >> j >> k;
     lattice.push_back(std::make_pair(j, k));
   }
-  
+
   for (int i=0; i<num_bonds; ++i) {
     double jx, jy, jz;
     ifs >> jx >> jy >> jz;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   } while (n > 0);
 
   //std::cerr << "nproc=" << nproc << " p=" << p << std::endl;
-  if (nprocs != (1 << p)) {    
+  if (nprocs != (1 << p)) {
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
     }
@@ -141,10 +141,41 @@ int main(int argc, char *argv[])
     }
   }
 
+  // test fill_diagonal of quantum heisenberg hamiltonian.
+  // sequential version
+  std::vector<double> w_seq;
+  w_seq.assign(N_seq, 0);
+  if (myrank == root) {
+    rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, w_seq);
+    std::cout << "fill_diagonal sequential version:" << std::endl;
+    for (int j=0; j<N_seq; ++j) {
+      std::cout << w_seq[j] << " ";
+    }
+    std::cout << std::endl;
+  }
+  MPI_Barrier(MPI_COMM_WORLD);    
+  // MPI version
+  std::vector<double> w;
+  w.assign(N, 0);
+  if (myrank == root) {  
+    std::cout << "fill_diagonal MPI version:" << std::endl;
+  }
+  rokko::heisenberg_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, w);
+  for (int proc=0; proc<nprocs; ++proc) {
+    if (proc == myrank) {
+      std::cout << "myrank=" << myrank << std::endl;
+      for (int j=0; j<N; ++j) {
+        std::cout << w[j] << " ";
+      }
+      std::cout << std::endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+  }
+
   // test for generate function
   rokko::localized_matrix<rokko::matrix_col_major> lmat(N_seq, N_seq);
   rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
-  
+
   rokko::distributed_matrix<rokko::matrix_col_major> mat(N_seq, N_seq, g, solver);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   rokko::localized_matrix<rokko::matrix_col_major> lmat_gather(N_seq, N_seq);
