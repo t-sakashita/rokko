@@ -58,9 +58,9 @@ class HeisenbergOp : public Epetra_Operator {
   */
   virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
     const int numvectors = X.NumVectors();
-    std::cout << "numvectors=" << numvectors << std::endl;
-    std::cout << "X.GlobalLength()=" << X.GlobalLength() << std::endl;
-    std::cout << "X.MyLength()=" << X.MyLength() << std::endl;
+    //std::cout << "numvectors=" << numvectors << std::endl;
+    //std::cout << "X.GlobalLength()=" << X.GlobalLength() << std::endl;
+    //std::cout << "X.MyLength()=" << X.MyLength() << std::endl;
 
     Y.PutScalar(0);
     for (int i=0; i<numvectors; ++i) {
@@ -68,7 +68,7 @@ class HeisenbergOp : public Epetra_Operator {
       double* y = Y[i];
       rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
     }
-    std::cout << "X=" << X << std::endl;
+    //std::cout << "X=" << X << std::endl;
     return 0;
   }
 
@@ -149,12 +149,10 @@ int main(int argc, char *argv[]) {
 #endif
 
   // Create an Anasazi output manager
-  //
   Anasazi::BasicOutputManager<double> printer;
   printer.stream(Anasazi::Errors) << Anasazi::Anasazi_Version() << endl << endl;
 
   // Get the sorting string from the command line
-  //
   std::string which("LM");
   Teuchos::CommandLineProcessor cmdp(false,true);
   cmdp.setOption("sort",&which,"Targetted eigenvalues (SM or LM).");
@@ -175,28 +173,21 @@ int main(int argc, char *argv[]) {
 
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
-  //
   Epetra_Map Map(N, 0, Comm);
 
   // Get update list and number of local equations from newly created Map.
-  //
   int NumMyElements = Map.NumMyElements();
 
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(&MyGlobalElements[0]);
 
-  //std::vector<int> NumNz(NumMyElements);
-
   // Create an Epetra_Matrix
-  //
   Teuchos::RCP<HeisenbergOp> A = Teuchos::rcp( new HeisenbergOp(MPI_COMM_WORLD, L, lattice) );
 
   //************************************
   // Call the LOBPCG solver manager
   //***********************************
-  //
   //  Variables used for the LOBPCG Method
-  //
   const int    nev       = 10;
   const int    blockSize = 3;
   const int    maxIters  = 500;
@@ -208,25 +199,20 @@ int main(int argc, char *argv[]) {
 
   // Create an Epetra_MultiVector for an initial vector to start the solver.
   // Note:  This needs to have the same number of columns as the blocksize.
-  //
   Teuchos::RCP<Epetra_MultiVector> ivec = Teuchos::rcp( new Epetra_MultiVector(Map, blockSize) );
   ivec->Random();
 
   // Create the eigenproblem.
-  //
   Teuchos::RCP<Anasazi::BasicEigenproblem<double, MV, OP> > MyProblem =
     Teuchos::rcp( new Anasazi::BasicEigenproblem<double, MV, OP>(A, ivec) );
 
   // Inform the eigenproblem that the operator A is symmetric
-  //
   MyProblem->setHermitian(true);
 
   // Set the number of eigenvalues requested
-  //
   MyProblem->setNEV( nev );
 
   // Inform the eigenproblem that you are finishing passing it information
-  //
   bool boolret = MyProblem->setProblem();
   if (boolret != true) {
     printer.print(Anasazi::Errors,"Anasazi::BasicEigenproblem::setProblem() returned an error.\n");
@@ -237,28 +223,24 @@ int main(int argc, char *argv[]) {
   }
 
   // Create parameter list to pass into the solver manager
-  //
   Teuchos::ParameterList MyPL;
   MyPL.set( "Which", which );
   MyPL.set( "Block Size", blockSize );
   MyPL.set( "Maximum Iterations", maxIters );
   MyPL.set( "Convergence Tolerance", tol );
-  //
+
   // Create the solver manager
   Anasazi::SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
-  //
   Anasazi::ReturnType returnCode = MySolverMan.solve();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
-  //
   Anasazi::Eigensolution<double,MV> sol = MyProblem->getSolution();
   std::vector<Anasazi::Value<double> > evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.
-  //
   std::vector<double> normR(sol.numVecs);
   if (sol.numVecs > 0) {
     Teuchos::SerialDenseMatrix<int,double> T(sol.numVecs, sol.numVecs);
@@ -273,7 +255,6 @@ int main(int argc, char *argv[]) {
   }
 
   // Print the results
-  //
   std::ostringstream os;
   os.setf(std::ios_base::right, std::ios_base::adjustfield);
   os<<"Solver manager returned " << (returnCode == Anasazi::Converged ? "converged." : "unconverged.") << endl;

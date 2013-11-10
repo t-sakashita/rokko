@@ -1,6 +1,7 @@
 #include "AnasaziConfigDefs.hpp"
 #include "AnasaziBasicEigenproblem.hpp"
-#include "AnasaziSimpleLOBPCGSolMgr.hpp"
+//#include "AnasaziSimpleLOBPCGSolMgr.hpp"
+#include "AnasaziBlockKrylovSchurSolMgr.hpp"
 #include "AnasaziBasicOutputManager.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 #include "Epetra_CrsMatrix.h"
@@ -20,12 +21,10 @@ int main(int argc, char *argv[]) {
 
 #ifdef HAVE_MPI
   // Initialize MPI
-  //
   MPI_Init(&argc,&argv);
 #endif
 
   // Create an Epetra communicator
-  //
 #ifdef HAVE_MPI
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
 #else
@@ -33,12 +32,10 @@ int main(int argc, char *argv[]) {
 #endif
 
   // Create an Anasazi output manager
-  //
   BasicOutputManager<double> printer;
   printer.stream(Errors) << Anasazi_Version() << endl << endl;
 
   // Get the sorting string from the command line
-  //
   std::string which("LM");
   Teuchos::CommandLineProcessor cmdp(false,true);
   cmdp.setOption("sort",&which,"Targetted eigenvalues (SM or LM).");
@@ -59,59 +56,43 @@ int main(int argc, char *argv[]) {
 
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
-  //
   Epetra_Map Map(N, 0, Comm);
 
   // Get update list and number of local equations from newly created Map.
-  //
   int NumMyElements = Map.NumMyElements();
-
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(&MyGlobalElements[0]);
 
-  //std::vector<int> NumNz(NumMyElements);
-
   // Create an Epetra_Matrix
-  //
   Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow
 
-  // Compute coefficients for discrete convection-diffution operator
-  //
+  // Compute coefficients for hamiltonian matrix of quantum Heisenberg model
   std::vector<double> values;
   std::vector<int> cols;
-  int NumEntries;
-  
-  for (int i=0; i<NumMyElements; ++i) {
-    cout << "i=" << i << endl;
-    int k1 = MyGlobalElements[i];
-    cols.clear();
-    values.clear();
-    for (int k2=0; k2<N; ++k2) {
-      for (int l=0; l<lattice.size(); ++l) {
-        int i = lattice[l].first;
-        int j = lattice[l].second;
-        //cout << "k=" << k << " i=" << i << " j=" << j << endl;
-        int m1 = 1 << i;
-        int m2 = 1 << j;
-        int m3 = m1 + m2;
-        if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (k1 == (k2^m3)) {
-            cols.push_back(k2);
-            values.push_back(0.5);
-          }
-          if (k1 == k2) {
-            cols.push_back(k2);
-            values.push_back(-0.25);
-          }
-        } else if (k1 == k2) {
-          cols.push_back(k2);
-          values.push_back(0.25);
-        }
+
+  for (int l=0; l<lattice.size(); ++l) {
+    for (int row=0; row<NumMyElements; ++row) {
+      cols.clear();
+      values.clear();
+      int k = MyGlobalElements[row];
+      int i = lattice[l].first;
+      int j = lattice[l].second;
+      int m1 = 1 << i;
+      int m2 = 1 << j;
+      int m3 = m1 + m2;
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        cols.push_back(k^m3);
+        values.push_back(0.5);
+        cols.push_back(k);
+        values.push_back(-0.25);
+      } else {
+        cols.push_back(k);
+        values.push_back(0.25);
       }
+      int info = A->InsertGlobalValues(k, cols.size(), &values[0], &cols[0]);
+      //cout << "info=" << info << endl;
+      assert( info==0 );
     }
-    int info = A->InsertGlobalValues(MyGlobalElements[i], cols.size(), &values[0], &cols[0]);
-    cout << "info=" << info << endl;
-    assert( info==0 );
   }
 
   // Finish up
@@ -119,30 +100,10 @@ int main(int argc, char *argv[]) {
   assert( info==0 );
   A->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
 
-  /*
-  // Create a identity matrix for the temporary mass matrix
-  Teuchos::RCP<Epetra_CrsMatrix> M = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, 1) );
-  for (int i=0; i<NumMyElements; i++)
-  {
-    double one = 1.;
-    Values[0] = one;
-    Indices[0] = i;
-    NumEntries = 1;
-    info = M->InsertGlobalValues(MyGlobalElements[i], NumEntries, &Values[0], &Indices[0]);
-    assert( info==0 );
-  }
-  // Finish up
-  info = M->FillComplete();
-  assert( info==0 );
-  M->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
-  */
-  
   //************************************
   // Call the LOBPCG solver manager
   //***********************************
-  //
   //  Variables used for the LOBPCG Method
-  //
   const int    nev       = 10;
   const int    blockSize = 5;
   const int    maxIters  = 500;
@@ -154,25 +115,20 @@ int main(int argc, char *argv[]) {
 
   // Create an Epetra_MultiVector for an initial vector to start the solver.
   // Note:  This needs to have the same number of columns as the blocksize.
-  //
   Teuchos::RCP<Epetra_MultiVector> ivec = Teuchos::rcp( new Epetra_MultiVector(Map, blockSize) );
   ivec->Random();
 
   // Create the eigenproblem.
-  //
   Teuchos::RCP<BasicEigenproblem<double, MV, OP> > MyProblem =
     Teuchos::rcp( new BasicEigenproblem<double, MV, OP>(A, ivec) );
 
   // Inform the eigenproblem that the operator A is symmetric
-  //
   MyProblem->setHermitian(true);
 
   // Set the number of eigenvalues requested
-  //
   MyProblem->setNEV( nev );
 
   // Inform the eigenproblem that you are finishing passing it information
-  //
   bool boolret = MyProblem->setProblem();
   if (boolret != true) {
     printer.print(Errors,"Anasazi::BasicEigenproblem::setProblem() returned an error.\n");
@@ -183,28 +139,24 @@ int main(int argc, char *argv[]) {
   }
 
   // Create parameter list to pass into the solver manager
-  //
   Teuchos::ParameterList MyPL;
   MyPL.set( "Which", which );
   MyPL.set( "Block Size", blockSize );
   MyPL.set( "Maximum Iterations", maxIters );
   MyPL.set( "Convergence Tolerance", tol );
-  //
+
   // Create the solver manager
-  SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
-  //
   ReturnType returnCode = MySolverMan.solve();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
-  //
   Eigensolution<double,MV> sol = MyProblem->getSolution();
   std::vector<Value<double> > evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.
-  //
   std::vector<double> normR(sol.numVecs);
   if (sol.numVecs > 0) {
     Teuchos::SerialDenseMatrix<int,double> T(sol.numVecs, sol.numVecs);
@@ -219,7 +171,6 @@ int main(int argc, char *argv[]) {
   }
 
   // Print the results
-  //
   std::ostringstream os;
   os.setf(std::ios_base::right, std::ios_base::adjustfield);
   os<<"Solver manager returned " << (returnCode == Converged ? "converged." : "unconverged.") << endl;
@@ -242,3 +193,4 @@ int main(int argc, char *argv[]) {
 #endif
   return 0;
 }
+

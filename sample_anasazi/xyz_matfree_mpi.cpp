@@ -58,9 +58,9 @@ class HeisenbergOp : public Epetra_Operator {
   */
   virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
     const int numvectors = X.NumVectors();
-    std::cout << "numvectors=" << numvectors << std::endl;
-    std::cout << "X.GlobalLength()=" << X.GlobalLength() << std::endl;
-    std::cout << "X.MyLength()=" << X.MyLength() << std::endl;
+    //std::cout << "numvectors=" << numvectors << std::endl;
+    //std::cout << "X.GlobalLength()=" << X.GlobalLength() << std::endl;
+    //std::cout << "X.MyLength()=" << X.MyLength() << std::endl;
 
     Y.PutScalar(0);
     for (int i=0; i<numvectors; ++i) {
@@ -173,7 +173,8 @@ int main(int argc, char *argv[]) {
   std::vector<boost::tuple<double, double, double> > coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    coupling.push_back(boost::make_tuple(1, 1, 1));
+    //coupling.push_back(boost::make_tuple(1, 1, 1));
+    coupling.push_back(boost::make_tuple(0.8, 0.3, 0.1));
   }
 
   // Construct a Map that puts approximately the same number of
@@ -200,8 +201,8 @@ int main(int argc, char *argv[]) {
   //
   //  Variables used for the LOBPCG Method
   //
-  const int    nev       = 1;
-  const int    blockSize = 3;
+  const int    nev       = 10;
+  const int    blockSize = 5;
   const int    maxIters  = 500;
   const double tol       = 1.0e-8;
 
