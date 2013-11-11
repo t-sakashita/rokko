@@ -19,7 +19,7 @@ module mod_frank
   real(c_double) function func(i, j) bind(c)
 !    common /mydata/n
 !    common /mydata/localized_array
-    integer(c_int), value, intent(in) :: i, j
+    integer(c_int), intent(in) :: i, j
     print*, "i=", i
     func = localized_array(i+1,j+1)
   end function func
@@ -29,7 +29,7 @@ program frank_matrix
   use iso_c_binding
   use omp_lib
   use MPI
-  use rokko
+  use rokko_f
   use mod_frank
   implicit none
 
@@ -100,7 +100,7 @@ program frank_matrix
   write(*,*) "finished matrix generation"
 
   do count = 1, 1
-    call generate_distributed_matrix_function(mat, c_funloc(func))
+    call generate_distributed_matrix_function(mat, func)
 
     call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
