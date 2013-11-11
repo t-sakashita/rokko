@@ -26,7 +26,7 @@ unset(TESTS)
 
 if (SLEPC_LIBRARIES)
   include_directories(${SLEPC_INCLUDE_DIR} ${PETSC_INCLUDE_DIR})
-  set(TESTS frank_mpi xyz_sparse_slepc_mpi)
+  set(TESTS frank_mpi xyz_slepc_matfree_mpi)
   foreach(name ${TESTS})
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} rokko ${SLEPC_LIBRARIES} ${PETSC_LIBRARIES} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})

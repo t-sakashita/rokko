@@ -1,4 +1,4 @@
-set(BENCHMARKS frank_mpi)
+set(BENCHMARKS frank_mpi heisenberg_dense_mpi)
 
 foreach(name ${BENCHMARKS})
   set(target_name benchmark_${name})
