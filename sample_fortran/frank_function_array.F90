@@ -21,7 +21,7 @@ module mod_frank
 !    common /mydata/localized_array
     integer(c_int), intent(in) :: i, j
     print*, "i=", i
-    func = localized_array(i+1,j+1)
+    func = localized_array(i,j)
   end function func
 end module mod_frank
 
