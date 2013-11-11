@@ -10,7 +10,7 @@
 #
 
 # single process tests
-set(TESTS solver_factory localized_matrix magnetization)
+set(TESTS solver_factory localized_matrix) # magnetization)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
