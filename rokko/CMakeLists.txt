@@ -66,6 +66,12 @@ endif(BUILD_ELPA)
 add_library(rokko ${ROKKO_SOURCES})
 target_link_libraries(rokko lapacke)
 # target_link_libraries(rokko ${MPI_LIBRARY})
+
+# If System Boost is used, link against them
+if(Boost_FOUND)
+  target_link_libraries(rokko ${Boost_LIBRARIES})
+endif(Boost_FOUND)
+
 if(BUILD_SCALAPACK)
   target_link_libraries(rokko ${SCALAPACK_LIBRARIES})
 endif(BUILD_SCALAPACK)
