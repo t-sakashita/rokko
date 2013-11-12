@@ -66,11 +66,6 @@ endif(BUILD_ELPA)
 add_library(rokko ${ROKKO_SOURCES})
 target_link_libraries(rokko lapacke)
 
-# If System Boost is used, link against them
-if(Boost_FOUND)
-  target_link_libraries(rokko ${Boost_LIBRARIES})
-endif(Boost_FOUND)
-
 if (MPI_CXX_Found)
   target_link_libraries(rokko ${MPI_CXX_LIBRARIES})
 endif(MPI_CXX_Found)
