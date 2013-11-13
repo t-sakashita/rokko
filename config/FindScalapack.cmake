@@ -3,7 +3,7 @@
 # Once done this will define
 #
 #  SCALAPACK_FOUND        - system has Scalapack
-#  SCALAPACK_LIBARIES     - libraries for Scalapack
+#  SCALAPACK_LIBRARIES     - libraries for Scalapack
 
 if(DEFINED SCALAPACK_FOUND)
   return()
@@ -25,7 +25,7 @@ if(DEFINED MKL_INCLUDE_DIR)
     PATHS $ENV{MKLROOT}/lib/intel64
     DOC "The Scalapack library")
   if(_SCALAPACK_LIBRARY)
-    list(APPEND SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
+    list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
   else(_SCALAPACK_LIBRARY)
     message(STATUS "Scalapack library: not found")
     set(SCALAPACK_FOUND FALSE)
@@ -36,7 +36,7 @@ if(DEFINED MKL_INCLUDE_DIR)
     PATHS $ENV{MKLROOT}/lib/intel64
     DOC "The BLACS library")
   if(_SCALAPACK_BLACS_LIBRARY)
-    list(APPEND SCALAPACK_LIBRARIES ${_SCALAPACK_BLACS_LIBRARY})
+    list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_BLACS_LIBRARY})
   endif(_SCALAPACK_BLACS_LIBRARY)
 
 else(DEFINED MKL_INCLUDE_DIR)
@@ -57,7 +57,7 @@ else(DEFINED MKL_INCLUDE_DIR)
     PATHS ${_LIBPATHS}
     DOC "The Scalapack library")
   if(_SCALAPACK_LIBRARY)
-    list(APPEND SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
+    list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
   else(_SCALAPACK_LIBRARY)
     message(STATUS "Scalapack library: not found")
     set(SCALAPACK_FOUND FALSE)
@@ -67,4 +67,5 @@ else(DEFINED MKL_INCLUDE_DIR)
 endif(DEFINED MKL_INCLUDE_DIR)
 
 set(SCALAPACK_FOUND TRUE)
+set(SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARIES})
 message(STATUS "Scalapack libraries: ${SCALAPACK_LIBRARIES}")
