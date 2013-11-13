@@ -46,3 +46,31 @@ void rokko_distributed_matrix_print(rokko_distributed_matrix matrix) {
   else
     static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->print();
 }
+
+void rokko_distributed_matrix_set_local(rokko_distributed_matrix* matrix, int local_i, int local_j, double value) {
+    if (matrix->major == rokko_matrix_col_major)
+      static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr)->set_local(local_i,local_j,value);
+    else
+      static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr)->set_local(local_i,local_j,value);
+  }
+
+double rokko_distributed_matrix_get_local(rokko_distributed_matrix matrix, int local_i, int local_j)  { 
+    if (matrix.major == rokko_matrix_col_major)
+      return static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix.ptr)->get_local(local_i,local_j);
+    else
+      return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->get_local(local_i,local_j);
+  }
+
+void rokko_distributed_matrix_set_global(rokko_distributed_matrix* matrix, int global_i, int global_j, double value) {
+    if (matrix->major == rokko_matrix_col_major)
+      static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr)->set_global(global_i,global_j,value);
+    else
+      static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr)->set_global(global_i,global_j,value);
+  }
+
+double rokko_distributed_matrix_get_global(rokko_distributed_matrix matrix, int global_i, int global_j) {
+    if (matrix.major == rokko_matrix_col_major)
+      return static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix.ptr)->get_global(global_i,global_j);
+    else
+      return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->get_global(global_i,global_j);
+  }

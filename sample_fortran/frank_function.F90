@@ -19,7 +19,7 @@ module mod_frank
 contains
   real(c_double) function frank_matrix_element(i, j) bind(c)
     integer(c_int), value, intent(in) :: i, j
-    frank_matrix_element = dble(dim_frank + 1 - max(i, j))
+    frank_matrix_element = dble(dim_frank - max(i, j))
   end function frank_matrix_element
   
   subroutine frank_matrix_set_dimension(dim_in)
