@@ -172,6 +172,14 @@ module rokko
        implicit none
        type(rokko_distributed_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_matrix_destruct
+
+     subroutine rokko_distributed_matrix_generate_function(matrix, func) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(c_funptr), intent(in), value :: func
+     end subroutine rokko_distributed_matrix_generate_function
      
      subroutine rokko_distributed_matrix_print(matrix) bind(c)
        use iso_c_binding

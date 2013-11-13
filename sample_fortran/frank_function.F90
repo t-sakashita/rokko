@@ -11,39 +11,40 @@
 !*
 !*****************************************************************************/
 
-real*8 function frank_matrix_element(i, j)
-  integer, intent(in) :: i, j
-  integer dim
-  common /frank_matrix_common/ dim
-  frank_matrix_element = dble(dim + 1 - max(i, j))
-end function frank_matrix_element
 
-subroutine frank_matrix_set_dimension(dim_in)
-  integer, intent(in) :: dim_in
-  integer dim
-  common /frank_matrix_common/ dim
-  dim = dim_in
-end subroutine frank_matrix_set_dimension
+module mod_frank
+  use iso_c_binding
+  implicit none
+  integer(c_int) dim_frank
+contains
+  real(c_double) function frank_matrix_element(i, j) bind(c)
+    integer(c_int), value, intent(in) :: i, j
+    frank_matrix_element = dble(dim_frank + 1 - max(i, j))
+  end function frank_matrix_element
+  
+  subroutine frank_matrix_set_dimension(dim_in)
+    integer(c_int), intent(in) :: dim_in
+    dim_frank = dim_in
+  end subroutine frank_matrix_set_dimension
+end module mod_frank
 
 program frank_matrix
   use MPI
-  use rokko_f
+  use rokko
+  use mod_frank
   implicit none
   integer :: dim
-  type(distributed_matrix) :: mat, Z
-  type(grid) :: g
-  type(solver) :: solver_
-  real(8), allocatable :: w(:), vec(:)
+  type(rokko_distributed_matrix) :: mat, Z
+  type(rokko_grid) :: grid
+  type(rokko_solver) :: solver
+  type(rokko_localized_vector) :: w
   character(len=100) :: solver_name, tmp_str
-  integer args_cnt, arg_len, status
+  integer arg_len, status
 
-  integer :: ierr, myrank, nprocs
+  integer :: provided,ierr, myrank, nprocs
   integer :: i
 
-  real*8 frank_matrix_element
-  external frank_matrix_element
-
-  call MPI_init(ierr)
+  call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
@@ -60,31 +61,32 @@ program frank_matrix
   write(*,*) "solver name = ", trim(solver_name)
   write(*,*) "matrix dimension = ", dim
 
-  call set_solver(solver_, solver_name)
-  call set_grid(g, MPI_COMM_WORLD)
+  call rokko_solver_construct(solver, solver_name)
+  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_col_major)
 
-  call set_distributed_matrix(mat, dim, dim, g, solver_)
-  call set_distributed_matrix(Z, dim, dim, g, solver_)
-  allocate(w(dim));
+  call rokko_distributed_matrix_construct(mat, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_distributed_matrix_construct(Z, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix from frank_matrix_element function
   call frank_matrix_set_dimension(dim)
-  call generate_distributed_matrix_function(mat, frank_matrix_element)
-  call print_distributed_matrix(mat)
+  call rokko_distributed_matrix_generate_function(mat, c_funloc(frank_matrix_element))
+  call rokko_distributed_matrix_print(mat)
 
-  call diagonalize(solver_, mat, w, Z)
+  call rokko_solver_diagonalize_distributed_matrix(solver, mat, w, Z)
 
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") w(i)
+        write(*,"(f30.20)") rokko_localized_vector_get(w, i)
      enddo
   endif
 
-  call del_distributed_matrix(mat)
-  call del_distributed_matrix(Z)
-  call del_solver(solver_)
-  deallocate(w)
+  call rokko_distributed_matrix_destruct(mat)
+  call rokko_distributed_matrix_destruct(Z)
+  call rokko_localized_vector_destruct(w)
+  call rokko_solver_destruct(solver)
+  call rokko_grid_destruct(grid)
 
   call MPI_finalize(ierr)
 end program frank_matrix
