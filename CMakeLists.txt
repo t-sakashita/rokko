@@ -152,7 +152,7 @@ add_subdirectory(3rd-party)
 add_subdirectory(rokko)
 add_subdirectory(sample_dense)
 add_subdirectory(test)
-add_subdirectory(benchmark)
+add_subdirectory(benchmark_dense)
 add_subdirectory(sample_slepc)
 
 #set(TRILINOS_PREFIX "/home/sakashita/build/install_build")
