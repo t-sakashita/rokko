@@ -30,7 +30,9 @@ class HeisenbergOp : public Epetra_Operator {
   //@{
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
-  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice) {
+  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
+    //ep_comm = Epetra_MpiComm(comm);
+    //ep_map = Epetra_Map(1 << L_, 0, ep_comm);
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;
@@ -114,13 +116,13 @@ class HeisenbergOp : public Epetra_Operator {
   virtual bool HasNormInf() const  { return false; }
 
     //! Returns a pointer to the Epetra_Comm communicator associated with this operator.
-  virtual const Epetra_Comm & Comm() const { return Epetra_MpiComm(comm_); }
+  virtual const Epetra_Comm& Comm() const { return ep_comm; }
 
     //! Returns the Epetra_Map object associated with the domain of this operator.
-  virtual const Epetra_Map & OperatorDomainMap() const { return Epetra_Map(1 << L_, 0, Comm()); }
+  virtual const Epetra_Map& OperatorDomainMap() const { return ep_map; }
 
     //! Returns the Epetra_Map object associated with the range of this operator.
-  virtual const Epetra_Map & OperatorRangeMap() const { return Epetra_Map(1 << L_, 0, Comm()); }
+  virtual const Epetra_Map& OperatorRangeMap() const { return ep_map; }
   //@}
 
   //! @name Operator application method
@@ -135,7 +137,9 @@ class HeisenbergOp : public Epetra_Operator {
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
-  std::vector<std::pair<int, int> > lattice_;  
+  std::vector<std::pair<int, int> > lattice_;
+  Epetra_MpiComm ep_comm;
+  Epetra_Map ep_map;
 };
 
 int main(int argc, char *argv[]) {
@@ -171,7 +175,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int L = 32;
+  int L = 10;
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
@@ -242,8 +246,10 @@ int main(int argc, char *argv[]) {
 
   double start_time, finish_time;
   // Solve the problem
+  MPI_Barrier(MPI_COMM_WORLD);
   start_time = MPI_Wtime();
   Anasazi::ReturnType returnCode = MySolverMan.solve();
+  MPI_Barrier(MPI_COMM_WORLD);
   finish_time = MPI_Wtime();
   double elapsed_time = finish_time - start_time;
 
@@ -252,7 +258,6 @@ int main(int argc, char *argv[]) {
   std::vector<Anasazi::Value<double> > evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
-  /*
   // Compute residuals.
   std::vector<double> normR(sol.numVecs);
   if (sol.numVecs > 0) {
@@ -266,7 +271,6 @@ int main(int argc, char *argv[]) {
     MVT::MvTimesMatAddMv( -1.0, *evecs, T, 1.0, tempAevec );
     MVT::MvNorm( tempAevec, normR );
   }
-  */
 
   if (myrank == 0) {
     //#ifdef _OPENMP_
@@ -284,7 +288,6 @@ int main(int argc, char *argv[]) {
     std::cout << "date = " << ctime(&now)<< std::endl;
   }
 
-  /*
   // Print the results
   std::ostringstream os;
   os.setf(std::ios_base::right, std::ios_base::adjustfield);
@@ -302,7 +305,6 @@ int main(int argc, char *argv[]) {
   }
   os<<"------------------------------------------------------"<<endl;
   printer.print(Anasazi::Errors,os.str());
-  */
 
 #ifdef HAVE_MPI
   MPI_Finalize();
