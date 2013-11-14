@@ -31,8 +31,6 @@ class HeisenbergOp : public Epetra_Operator {
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
   HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
-    //ep_comm = Epetra_MpiComm(comm);
-    //ep_map = Epetra_Map(1 << L_, 0, ep_comm);
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;

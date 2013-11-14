@@ -1,7 +1,7 @@
 #include "AnasaziConfigDefs.hpp"
 #include "AnasaziBasicEigenproblem.hpp"
-#include "AnasaziSimpleLOBPCGSolMgr.hpp"
-//#include "AnasaziBlockKrylovSchurSolMgr.hpp"
+//#include "AnasaziSimpleLOBPCGSolMgr.hpp"
+#include "AnasaziBlockKrylovSchurSolMgr.hpp"
 #include "AnasaziBasicOutputManager.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 #include "Epetra_CrsMatrix.h"
@@ -15,7 +15,7 @@
 #endif
 #include "Epetra_Map.h"
 
-#include <rokko/utility/xyz_hamiltonian_mpi.hpp>
+#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <vector>
 
 class HeisenbergOp : public Epetra_Operator {
@@ -24,7 +24,7 @@ class HeisenbergOp : public Epetra_Operator {
   //@{
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
-  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling) : comm_(comm), L_(L), lattice_(lattice), coupling_(coupling), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
+  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;
@@ -43,16 +43,16 @@ class HeisenbergOp : public Epetra_Operator {
 
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };
   //@}
-
+  
   //! @name Mathematical functions
-  //@{
+  //@{ 
 
     //! Returns the result of a Epetra_Operator applied to a Epetra_MultiVector X in Y.
-    /*!
+    /*! 
     \param In
-           X - A Epetra_MultiVector of dimension NumVectors to multiply with matrix.
+	   X - A Epetra_MultiVector of dimension NumVectors to multiply with matrix.
     \param Out
-           Y -A Epetra_MultiVector of dimension NumVectors containing result.
+	   Y -A Epetra_MultiVector of dimension NumVectors containing result.
 
     \return Integer error code, set to 0 if successful.
   */
@@ -66,22 +66,22 @@ class HeisenbergOp : public Epetra_Operator {
     for (int i=0; i<numvectors; ++i) {
       const double* x = X[i];
       double* y = Y[i];
-      rokko::xyz_hamiltonian::multiply(comm_, L_, lattice_, coupling_, x, y, &(buffer_[0]));
+      rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
     }
     //std::cout << "X=" << X << std::endl;
     return 0;
   }
 
     //! Returns the result of a Epetra_Operator inverse applied to an Epetra_MultiVector X in Y.
-    /*!
+    /*! 
     \param In
-           X - A Epetra_MultiVector of dimension NumVectors to solve for.
+	   X - A Epetra_MultiVector of dimension NumVectors to solve for.
     \param Out
-           Y -A Epetra_MultiVector of dimension NumVectors containing result.
+	   Y -A Epetra_MultiVector of dimension NumVectors containing result.
 
     \return Integer error code, set to 0 if successful.
 
-    \warning In order to work with AztecOO, any implementation of this method must
+    \warning In order to work with AztecOO, any implementation of this method must 
               support the case where X and Y are the same object.
   */
   virtual int ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const { return 0; }
@@ -91,12 +91,12 @@ class HeisenbergOp : public Epetra_Operator {
        \f[\| A \|_\infty = \max_{1\lei\lem} \sum_{j=1}^n |a_{ij}| \f].
 
        \warning This method must not be called unless HasNormInf() returns true.
-    */
+    */ 
   virtual double NormInf() const { return 0; }
   //@}
-
+  
   //! @name Attribute access functions
-  //@{
+  //@{ 
 
     //! Returns a character string describing the operator
   virtual const char * Label() const { return "Heisenberg Hamiltonian"; }
@@ -129,8 +129,7 @@ class HeisenbergOp : public Epetra_Operator {
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
-  std::vector<std::pair<int, int> > lattice_;
-  std::vector<boost::tuple<double, double, double> > coupling_;
+  std::vector<std::pair<int, int> > lattice_;  
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };
@@ -152,12 +151,10 @@ int main(int argc, char *argv[]) {
 #endif
 
   // Create an Anasazi output manager
-  //
   Anasazi::BasicOutputManager<double> printer;
   printer.stream(Anasazi::Errors) << Anasazi::Anasazi_Version() << endl << endl;
 
   // Get the sorting string from the command line
-  //
   std::string which("LM");
   Teuchos::CommandLineProcessor cmdp(false,true);
   cmdp.setOption("sort",&which,"Targetted eigenvalues (SM or LM).");
@@ -168,43 +165,33 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int L = 8;
+  int L = 12;
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    //coupling.push_back(boost::make_tuple(1, 1, 1));
-    coupling.push_back(boost::make_tuple(0.8, 0.3, 0.1));
   }
 
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
-  //
   Epetra_Map Map(N, 0, Comm);
 
   // Get update list and number of local equations from newly created Map.
-  //
   int NumMyElements = Map.NumMyElements();
 
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(&MyGlobalElements[0]);
 
-  //std::vector<int> NumNz(NumMyElements);
-
   // Create an Epetra_Matrix
-  //
-  Teuchos::RCP<HeisenbergOp> A = Teuchos::rcp( new HeisenbergOp(MPI_COMM_WORLD, L, lattice, coupling) );
+  Teuchos::RCP<HeisenbergOp> A = Teuchos::rcp( new HeisenbergOp(MPI_COMM_WORLD, L, lattice) );
 
   //************************************
   // Call the LOBPCG solver manager
   //***********************************
-  //
   //  Variables used for the LOBPCG Method
-  //
   const int    nev       = 10;
-  const int    blockSize = 5;
+  const int    blockSize = 3;
   const int    maxIters  = 500;
   const double tol       = 1.0e-8;
 
@@ -214,25 +201,20 @@ int main(int argc, char *argv[]) {
 
   // Create an Epetra_MultiVector for an initial vector to start the solver.
   // Note:  This needs to have the same number of columns as the blocksize.
-  //
   Teuchos::RCP<Epetra_MultiVector> ivec = Teuchos::rcp( new Epetra_MultiVector(Map, blockSize) );
   ivec->Random();
 
   // Create the eigenproblem.
-  //
   Teuchos::RCP<Anasazi::BasicEigenproblem<double, MV, OP> > MyProblem =
     Teuchos::rcp( new Anasazi::BasicEigenproblem<double, MV, OP>(A, ivec) );
 
   // Inform the eigenproblem that the operator A is symmetric
-  //
   MyProblem->setHermitian(true);
 
   // Set the number of eigenvalues requested
-  //
   MyProblem->setNEV( nev );
 
   // Inform the eigenproblem that you are finishing passing it information
-  //
   bool boolret = MyProblem->setProblem();
   if (boolret != true) {
     printer.print(Anasazi::Errors,"Anasazi::BasicEigenproblem::setProblem() returned an error.\n");
@@ -243,28 +225,24 @@ int main(int argc, char *argv[]) {
   }
 
   // Create parameter list to pass into the solver manager
-  //
   Teuchos::ParameterList MyPL;
   MyPL.set( "Which", which );
   MyPL.set( "Block Size", blockSize );
   MyPL.set( "Maximum Iterations", maxIters );
   MyPL.set( "Convergence Tolerance", tol );
-  //
+
   // Create the solver manager
-  Anasazi::SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  Anasazi::BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
-  //
   Anasazi::ReturnType returnCode = MySolverMan.solve();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
-  //
   Anasazi::Eigensolution<double,MV> sol = MyProblem->getSolution();
   std::vector<Anasazi::Value<double> > evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.
-  //
   std::vector<double> normR(sol.numVecs);
   if (sol.numVecs > 0) {
     Teuchos::SerialDenseMatrix<int,double> T(sol.numVecs, sol.numVecs);
@@ -279,7 +257,6 @@ int main(int argc, char *argv[]) {
   }
 
   // Print the results
-  //
   std::ostringstream os;
   os.setf(std::ios_base::right, std::ios_base::adjustfield);
   os<<"Solver manager returned " << (returnCode == Anasazi::Converged ? "converged." : "unconverged.") << endl;

@@ -56,6 +56,9 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
         int m1 = 1 << i;
         int m2 = 1 << j;
         int m3 = m1 + m2;
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
         for (int k=0; k<N; ++k) {
           if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
             w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
@@ -74,6 +77,9 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      comm, &status);
         int m1 = 1 << i;
         if ((myrank & m) == m) { 
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
           for (int k=0; k<N; ++k) {
             if ((k & m1) == m1) {
               w[k] += 0.25 * v[k];
@@ -82,6 +88,9 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
             }
           }
         } else {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
           for (int k=0; k<N; ++k) {
             if ((k & m1) == m1) {
               w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
@@ -101,6 +110,9 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      comm, &status);
         int m1 = 1 << j;
         if ((myrank & m) == m) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
           for (int k=0; k<N; ++k) {
             if ((k & m1) == m1) {
               w[k] += 0.25 * v[k];
@@ -109,6 +121,9 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
             }
           }
         } else {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
           for (int k=0; k<N; ++k) {
             if ((k & m1) == m1) {
               w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
@@ -125,10 +140,16 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                        &buffer[0], N, MPI_DOUBLE,
                        myrank ^ m, 0,
                        comm, &status);
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
           for (int k=0; k<N; ++k) {
             w[k] += 0.5 * buffer[k] - 0.25 * v[k];
           }
         } else {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
           for (int k=0; k<N; ++k) {
             w[k] += 0.25 * v[k];
           }
