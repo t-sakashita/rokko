@@ -24,7 +24,7 @@ class HeisenbergOp : public Epetra_Operator {
   //@{
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
-  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice) {
+  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;
@@ -108,13 +108,13 @@ class HeisenbergOp : public Epetra_Operator {
   virtual bool HasNormInf() const  { return false; }
 
     //! Returns a pointer to the Epetra_Comm communicator associated with this operator.
-  virtual const Epetra_Comm & Comm() const { return Epetra_MpiComm(comm_); }
+  virtual const Epetra_Comm & Comm() const { return ep_comm; }
 
     //! Returns the Epetra_Map object associated with the domain of this operator.
-  virtual const Epetra_Map & OperatorDomainMap() const { return Epetra_Map(1 << L_, 0, Comm()); }
+  virtual const Epetra_Map & OperatorDomainMap() const { return ep_map; }
 
     //! Returns the Epetra_Map object associated with the range of this operator.
-  virtual const Epetra_Map & OperatorRangeMap() const { return Epetra_Map(1 << L_, 0, Comm()); }
+  virtual const Epetra_Map & OperatorRangeMap() const { return ep_map; }
   //@}
 
   //! @name Operator application method
@@ -130,6 +130,8 @@ class HeisenbergOp : public Epetra_Operator {
   mutable std::vector<double> buffer_;
   int L_;
   std::vector<std::pair<int, int> > lattice_;  
+  Epetra_MpiComm ep_comm;
+  Epetra_Map ep_map;
 };
 
 int main(int argc, char *argv[]) {
@@ -163,7 +165,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int L = 8;
+  int L = 12;
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;

@@ -24,7 +24,7 @@ class HeisenbergOp : public Epetra_Operator {
   //@{
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
-  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling) : comm_(comm), L_(L), lattice_(lattice), coupling_(coupling) {
+  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling) : comm_(comm), L_(L), lattice_(lattice), coupling_(coupling), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;
@@ -43,16 +43,16 @@ class HeisenbergOp : public Epetra_Operator {
 
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };
   //@}
-  
+
   //! @name Mathematical functions
-  //@{ 
+  //@{
 
     //! Returns the result of a Epetra_Operator applied to a Epetra_MultiVector X in Y.
-    /*! 
+    /*!
     \param In
-	   X - A Epetra_MultiVector of dimension NumVectors to multiply with matrix.
+           X - A Epetra_MultiVector of dimension NumVectors to multiply with matrix.
     \param Out
-	   Y -A Epetra_MultiVector of dimension NumVectors containing result.
+           Y -A Epetra_MultiVector of dimension NumVectors containing result.
 
     \return Integer error code, set to 0 if successful.
   */
@@ -73,15 +73,15 @@ class HeisenbergOp : public Epetra_Operator {
   }
 
     //! Returns the result of a Epetra_Operator inverse applied to an Epetra_MultiVector X in Y.
-    /*! 
+    /*!
     \param In
-	   X - A Epetra_MultiVector of dimension NumVectors to solve for.
+           X - A Epetra_MultiVector of dimension NumVectors to solve for.
     \param Out
-	   Y -A Epetra_MultiVector of dimension NumVectors containing result.
+           Y -A Epetra_MultiVector of dimension NumVectors containing result.
 
     \return Integer error code, set to 0 if successful.
 
-    \warning In order to work with AztecOO, any implementation of this method must 
+    \warning In order to work with AztecOO, any implementation of this method must
               support the case where X and Y are the same object.
   */
   virtual int ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const { return 0; }
@@ -91,12 +91,12 @@ class HeisenbergOp : public Epetra_Operator {
        \f[\| A \|_\infty = \max_{1\lei\lem} \sum_{j=1}^n |a_{ij}| \f].
 
        \warning This method must not be called unless HasNormInf() returns true.
-    */ 
+    */
   virtual double NormInf() const { return 0; }
   //@}
-  
+
   //! @name Attribute access functions
-  //@{ 
+  //@{
 
     //! Returns a character string describing the operator
   virtual const char * Label() const { return "Heisenberg Hamiltonian"; }
@@ -108,13 +108,13 @@ class HeisenbergOp : public Epetra_Operator {
   virtual bool HasNormInf() const  { return false; }
 
     //! Returns a pointer to the Epetra_Comm communicator associated with this operator.
-  virtual const Epetra_Comm & Comm() const { return Epetra_MpiComm(comm_); }
+  virtual const Epetra_Comm & Comm() const { return ep_comm; }
 
     //! Returns the Epetra_Map object associated with the domain of this operator.
-  virtual const Epetra_Map & OperatorDomainMap() const { return Epetra_Map(1 << L_, 0, Comm()); }
+  virtual const Epetra_Map & OperatorDomainMap() const { return ep_map; }
 
     //! Returns the Epetra_Map object associated with the range of this operator.
-  virtual const Epetra_Map & OperatorRangeMap() const { return Epetra_Map(1 << L_, 0, Comm()); }
+  virtual const Epetra_Map & OperatorRangeMap() const { return ep_map; }
   //@}
 
   //! @name Operator application method
@@ -129,8 +129,10 @@ class HeisenbergOp : public Epetra_Operator {
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
-  std::vector<std::pair<int, int> > lattice_;  
+  std::vector<std::pair<int, int> > lattice_;
   std::vector<boost::tuple<double, double, double> > coupling_;
+  Epetra_MpiComm ep_comm;
+  Epetra_Map ep_map;
 };
 
 int main(int argc, char *argv[]) {
