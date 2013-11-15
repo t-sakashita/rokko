@@ -88,6 +88,7 @@ void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix*
 
 void rokko_distributed_matrix_print(struct rokko_distributed_matrix matrix);
 
+
 void rokko_distributed_matrix_set_local(struct rokko_distributed_matrix* matrix, int local_i, int local_j, double value);
 
 double rokko_distributed_matrix_get_local(struct rokko_distributed_matrix matrix, int local_i, int local_j);
@@ -96,7 +97,21 @@ void rokko_distributed_matrix_set_global(struct rokko_distributed_matrix* matrix
 
 double rokko_distributed_matrix_get_global(struct rokko_distributed_matrix matrix, int global_i, int global_j);
 
+int rokko_distributed_matrix_get_m_local(struct rokko_distributed_matrix matrix);
 
+int rokko_distributed_matrix_get_n_local(struct rokko_distributed_matrix matrix);
+
+int rokko_distributed_matrix_get_m_global(struct rokko_distributed_matrix matrix);
+
+int rokko_distributed_matrix_get_n_global(struct rokko_distributed_matrix matrix);
+
+int rokko_distributed_matrix_translate_l2g_row(struct rokko_distributed_matrix matrix, int local_i);
+
+int rokko_distributed_matrix_translate_l2g_col(struct rokko_distributed_matrix matrix, int local_j);
+
+int rokko_distributed_matrix_translate_g2l_row(struct rokko_distributed_matrix matrix, int global_i);
+
+int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix matrix, int global_j);
 
 #ifdef __cplusplus
 }
