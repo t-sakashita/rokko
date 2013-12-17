@@ -14,7 +14,7 @@ project(rokko NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 include(add_rokko_test)
 
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(BUILD_C_BINDING "Build C binding libraries" ON)
 option(BUILD_Fortran_BINDING "Build Fortran binding libraries" ON)
 option(DISABLE_SCALAPACK "Disable Scalapack Library" OFF)

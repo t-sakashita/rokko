@@ -51,3 +51,14 @@ solver_factory* solver_factory::instance() {
 solver_factory* solver_factory::instance_ = 0;
 
 } // end namespace rokko
+
+#include <rokko/scalapack/core.hpp>
+#include <rokko/eigen_exa/core.hpp>
+#include <rokko/elpa/core.hpp>
+#include <rokko/elemental/core.hpp>
+
+ROKKO_REGISTER_SOLVER(rokko::scalapack::solver<rokko::scalapack::pdsyev>, "scalapack")
+ROKKO_REGISTER_SOLVER(rokko::eigen_exa::solver, "eigen_exa")
+ROKKO_REGISTER_SOLVER(rokko::elpa::solver, "elpa")
+ROKKO_REGISTER_SOLVER(rokko::elemental::solver, "elemental")
+

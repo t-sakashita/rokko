@@ -115,6 +115,6 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_SOLVER(solver, name) \
-namespace { struct register_caller { register_caller() { rokko::solver_factory::instance()->register_creator<solver>(name); } } caller; }
+  namespace BOOST_JOIN(solver_register, __LINE__) { struct register_caller { register_caller() { rokko::solver_factory::instance()->register_creator<solver>(name); } } caller; }
 
 #endif // ROKKO_SOLVER_FACTORY_H
