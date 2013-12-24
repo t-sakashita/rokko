@@ -64,6 +64,9 @@ if(BUILD_ELPA)
 endif(BUILD_ELPA)
 
 add_library(rokko ${ROKKO_SOURCES})
+if (BUILD_SHARED_LIBS)
+  set_target_properties(rokko PROPERTIES COMPILE_DEFINITIONS ROKKO_BUILD_SHARED_LIBS=1)
+endif (BUILD_SHARED_LIBS)
 target_link_libraries(rokko lapacke)
 
 if (MPI_CXX_FOUND)
