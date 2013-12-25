@@ -52,13 +52,13 @@ solver_factory* solver_factory::instance_ = 0;
 
 } // end namespace rokko
 
-#ifdef ROKKO_BUILE_SHARED_LIBS
+#ifndef ROKKO_BUILD_SHARED_LIBS
 # include <rokko/scalapack/core.hpp>
-# include <rokko/eigen_exa/core.hpp>
-# include <rokko/elpa/core.hpp>
-# include <rokko/elemental/core.hpp>
   ROKKO_REGISTER_SOLVER(rokko::scalapack::solver<rokko::scalapack::pdsyev>, "scalapack")
+# include <rokko/eigen_exa/core.hpp>
   ROKKO_REGISTER_SOLVER(rokko::eigen_exa::solver, "eigen_exa")
+# include <rokko/elpa/core.hpp>
   ROKKO_REGISTER_SOLVER(rokko::elpa::solver, "elpa")
+# include <rokko/elemental/core.hpp>
   ROKKO_REGISTER_SOLVER(rokko::elemental::solver, "elemental")
 #endif
