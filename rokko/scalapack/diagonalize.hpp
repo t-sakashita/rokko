@@ -67,6 +67,7 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distribu
   }
 
   delete[] work;
+  ROKKO_blacs_gridexit(&ictxt);
   return info;
 }
 
