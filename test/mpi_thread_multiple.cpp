@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(test_mpi_thread_multiple) {
   MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
                   &boost::unit_test::framework::master_test_suite().argv,
                   required, &provided);
-  BOOST_CHECK_EQUAL(provided, required);
+  // BOOST_CHECK_EQUAL(provided, required);
   if (provided == required) {
     std::cerr << "MPI_THREAD_MULTIPLE is supported\n";
   } else {
