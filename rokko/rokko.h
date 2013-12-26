@@ -105,6 +105,10 @@ int rokko_distributed_matrix_get_m_global(struct rokko_distributed_matrix matrix
 
 int rokko_distributed_matrix_get_n_global(struct rokko_distributed_matrix matrix);
 
+int rokko_distributed_matrix_get_nprocs(struct rokko_distributed_matrix matrix);
+
+int rokko_distributed_matrix_get_myrank(struct rokko_distributed_matrix matrix);
+
 int rokko_distributed_matrix_translate_l2g_row(struct rokko_distributed_matrix matrix, int local_i);
 
 int rokko_distributed_matrix_translate_l2g_col(struct rokko_distributed_matrix matrix, int local_j);
@@ -112,6 +116,12 @@ int rokko_distributed_matrix_translate_l2g_col(struct rokko_distributed_matrix m
 int rokko_distributed_matrix_translate_g2l_row(struct rokko_distributed_matrix matrix, int global_i);
 
 int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix matrix, int global_j);
+
+int rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root);
+
+int rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
+
+void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array);
 
 #ifdef __cplusplus
 }

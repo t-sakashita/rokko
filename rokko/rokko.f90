@@ -255,6 +255,21 @@ module rokko
        type(rokko_distributed_matrix),value, intent(in) :: matrix
      end function rokko_distributed_matrix_get_n_global
 
+     integer(c_int) function rokko_distributed_matrix_get_nprocs(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix),value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_nprocs
+
+     integer(c_int) function rokko_distributed_matrix_get_myrank(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix),value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_myrank
+       
+
      integer(c_int) function rokko_distributed_matrix_translate_l2g_row(matrix,local_i) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
@@ -296,6 +311,27 @@ module rokko
 !!$       type(rokko_distributed_matrix),intent(out) :: matrix
 !!$       real*8,intent(in):: array(:,:)
 !!$     end subroutine rokko_distributed_matrix_generate_array
+
+
+     ! rokko_cellective
+     integer(c_int) function rokko_gather(matrix, array, root) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix),intent(out) ::matrix
+       type(c_ptr),value,intent(in)::array
+       integer(c_int),value::root
+     end function rokko_gather
+
+     integer(c_int) function rokko_scatter(array, matrix, root) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix),intent(out) ::matrix
+       type(c_ptr),value,intent(in)::array
+       integer(c_int),value::root
+     end function rokko_scatter
+       
   end interface
 contains
   subroutine rokko_distributed_matrix_generate_array(matrix, array)
@@ -315,6 +351,16 @@ contains
       enddo
     enddo
   end subroutine rokko_distributed_matrix_generate_array
+  subroutine rokko_all_gather(matrix, array)
+    implicit none
+    type(rokko_distributed_matrix),intent(out) ::matrix
+    real*8,intent(in):: array(:,:)
+    integer(c_int)::root, nprocs,ierr
+    nprocs = rokko_distributed_matrix_get_nprocs(matrix)
 
+    do root=0, nprocs - 1
+      ierr = rokko_gather(matrix, c_loc(array), root)
+    end do
+  end subroutine rokko_all_gather
 
 end module rokko

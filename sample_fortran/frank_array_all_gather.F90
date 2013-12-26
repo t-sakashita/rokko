@@ -13,21 +13,21 @@
 
 program frank_matrix
   use MPI
-  use rokko_f
+  use rokko
   implicit none
   integer :: dim
-  type(distributed_matrix) :: mat, Z
-  type(grid) :: g
-  type(solver) :: solver_
-  real(8), allocatable :: w(:), vec(:)
+  type(rokko_distributed_matrix) :: mat, Z
+  type(rokko_grid) :: grid
+  type(rokko_solver) :: solver
+  type(rokko_localized_vector) :: w
   character(len=100) :: solver_name, tmp_str
-  integer args_cnt, arg_len, status
+  integer arg_len, status
   real(8), allocatable, dimension(:,:) :: array, array_tmp
 
-  integer :: ierr, myrank, nprocs
+  integer :: provided,ierr, myrank, nprocs
   integer :: i, j, proc
 
-  call MPI_init(ierr)
+  call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
@@ -44,12 +44,12 @@ program frank_matrix
   write(*,*) "solver name = ", trim(solver_name)
   write(*,*) "matrix dimension = ", dim
 
-  call set_solver(solver_, solver_name)
-  call set_grid(g, MPI_COMM_WORLD)
+  call rokko_solver_construct(solver, solver_name)
+  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_col_major)
 
-  call set_distributed_matrix(mat, dim, dim, g, solver_)
-  call set_distributed_matrix(Z, dim, dim, g, solver_)
-  allocate(w(dim));
+  call rokko_distributed_matrix_construct(mat, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_distributed_matrix_construct(Z, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix as a localized matrix
   allocate(array(dim, dim))
@@ -60,12 +60,12 @@ program frank_matrix
   end do
   allocate(array_tmp(dim, dim))
 
-  call generate_array_distributed_matrix(array, mat, dim, dim, dim)
-!  call print_distributed_matrix(mat)
-  call diagonalize(solver_, mat, w, Z)
+  call rokko_distributed_matrix_generate_array(mat,array)
+  call rokko_distributed_matrix_print(mat)
+  call rokko_solver_diagonalize_distributed_matrix(solver, mat, w, Z)
 
   array = 0.0
-  call all_gather(Z, array_tmp)
+  call rokko_all_gather(Z, array_tmp)
   array = matmul(transpose(array_tmp), array_tmp)
   call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
 
@@ -84,17 +84,18 @@ program frank_matrix
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") w(i)
+        write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
      enddo
   endif
 
   call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
 
-  call del_distributed_matrix(mat)
-  call del_distributed_matrix(Z)
-  call del_solver(solver_)
-  deallocate(w)
-  deallocate(array)
+  call rokko_distributed_matrix_destruct(mat)
+  call rokko_distributed_matrix_destruct(Z)
+  call rokko_localized_vector_destruct(w)
+  call rokko_solver_destruct(solver)
+  call rokko_grid_destruct(grid)
+  deallocate(array,array_tmp)
 
   call MPI_finalize(ierr)
 end program frank_matrix

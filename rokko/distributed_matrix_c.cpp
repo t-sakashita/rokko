@@ -13,6 +13,7 @@
 
 #include <rokko/solver.hpp>
 #include <rokko/distributed_matrix.hpp>
+#include <rokko/collective.hpp>
 #include <rokko/rokko.h>
 
 void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int dim1, int dim2,
@@ -100,6 +101,20 @@ int rokko_distributed_matrix_get_n_global(struct rokko_distributed_matrix matrix
       return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->get_n_global();
   }
 
+int rokko_distributed_matrix_get_nprocs(struct rokko_distributed_matrix matrix){
+    if (matrix.major == rokko_matrix_col_major)
+      return static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix.ptr)->get_nprocs();
+    else
+      return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->get_nprocs();
+  }
+
+int rokko_distributed_matrix_get_myrank(struct rokko_distributed_matrix matrix){
+    if (matrix.major == rokko_matrix_col_major)
+      return static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix.ptr)->get_myrank();
+    else
+      return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->get_myrank();
+  }
+
 int rokko_distributed_matrix_translate_l2g_row(struct rokko_distributed_matrix matrix, int local_i){
     if (matrix.major == rokko_matrix_col_major)
       return static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix.ptr)->translate_l2g_row(local_i);
@@ -124,3 +139,40 @@ int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix m
     else
       return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_col(global_j);
   }
+
+int rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root){
+  if (matrix->major == rokko_matrix_col_major){
+    rokko::distributed_matrix<rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr);
+    return rokko::gather(*ptr_, array, root);
+  }
+  else{
+    rokko::distributed_matrix<rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr);
+    return rokko::gather(*ptr_, array, root);
+  }
+}
+
+int rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root){
+  if (matrix->major == rokko_matrix_col_major){
+    rokko::distributed_matrix<rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr);
+    return rokko::scatter(global_array, *ptr_, root);
+  }
+  else{
+    rokko::distributed_matrix<rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr);
+    return rokko::scatter(global_array, *ptr_, root);
+  }
+}
+
+void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array){
+  if (matrix->major == rokko_matrix_col_major){
+    rokko::distributed_matrix<rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr);
+    for(int root = 0; root < ptr_->get_nprocs(); ++root) {
+      rokko::gather(*ptr_, array, root);
+    }
+  }
+  else{
+    rokko::distributed_matrix<rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr);
+    for(int root = 0; root < ptr_->get_nprocs(); ++root) {
+      rokko::gather(*ptr_, array, root);
+    }
+  }
+}
