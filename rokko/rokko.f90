@@ -359,7 +359,7 @@ contains
     nprocs = rokko_distributed_matrix_get_nprocs(matrix)
 
     do root=0, nprocs - 1
-      ierr = rokko_gather(matrix, c_loc(array), root)
+      ierr = rokko_gather(matrix, c_loc(array(1,1)), root)
     end do
   end subroutine rokko_all_gather
 
