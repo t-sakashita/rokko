@@ -354,7 +354,7 @@ contains
   subroutine rokko_all_gather(matrix, array)
     implicit none
     type(rokko_distributed_matrix),intent(out) ::matrix
-    real*8,intent(in):: array(:,:)
+    real*8,intent(in),target:: array(:,:)
     integer(c_int)::root, nprocs,ierr
     nprocs = rokko_distributed_matrix_get_nprocs(matrix)
 
