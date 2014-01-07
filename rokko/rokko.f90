@@ -356,10 +356,12 @@ contains
     type(rokko_distributed_matrix),intent(out) ::matrix
     real*8,intent(in),target:: array(:,:)
     integer(c_int)::root, nprocs,ierr
+    real*8, pointer :: parray
     nprocs = rokko_distributed_matrix_get_nprocs(matrix)
 
+    parray => array(1,1)
     do root=0, nprocs - 1
-      ierr = rokko_gather(matrix, c_loc(array(1,1)), root)
+      ierr = rokko_gather(matrix, c_loc(parray), root)
     end do
   end subroutine rokko_all_gather
 
