@@ -94,9 +94,9 @@ if(BUILD_ELPA)
   target_link_libraries(rokko ${ELPA_LIBRARIES})
 endif(BUILD_ELPA)
 
-if(Boost_LIBRARIES)
+if(Boost_FOUND)
   target_link_libraries(rokko ${Boost_LIBRARIES})
-endif(Boost_LIBRARIES)
+endif(Boost_FOUND)
 
 install(TARGETS rokko COMPONENT libraries
         ARCHIVE DESTINATION lib
