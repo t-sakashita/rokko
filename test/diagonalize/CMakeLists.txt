@@ -26,7 +26,7 @@ unset(TESTS)
 
 if (SLEPC_LIBRARIES)
   include_directories(${SLEPC_INCLUDE_DIR} ${PETSC_INCLUDE_DIR})
-  set(TESTS frank_mpi xyz_slepc_matfree_mpi)
+  set(TESTS frank_mpi)
   foreach(name ${TESTS})
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} rokko ${SLEPC_LIBRARIES} ${PETSC_LIBRARIES} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -47,10 +47,9 @@ endif(SLEPC_LIBRARIES)
 #endforeach(name)
 
 
-set(TESTS heisenberg xyz xyz_file)
+set(TESTS heisenberg xyz xyz_file xyz_slepc_matfree)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
-  target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
+  target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${SLEPC_LIBRARIES} ${PETSC_LIBRARIES} ${MPI_CXX_LIBRARIES})
   add_rokko_test(${name})
 endforeach(name)
-
