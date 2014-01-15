@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+# Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 #                            Synge Todo <wistaria@comp-phys.org>
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -23,6 +23,7 @@ option(DISABLE_ELEMENTAL "Disable Elemental Library" OFF)
 option(DISABLE_ELPA "Disable Elpa Library" OFF)
 option(DISABLE_PETSC "Disable PETSc Library" OFF)
 option(DISABLE_SLEPC "Disable SLEPc Library" OFF)
+option(DISABLE_ANASAZI "Disable Anasazi Library" OFF)
 
 if(DISABLE_SCALAPACK)
   set(DISABLE_EIGENEXA ON)
@@ -130,6 +131,13 @@ else(DISABLE_SLEPC)
   set(BUILD_SLEPC ${SLEPC_FOUND})
 endif(DISABLE_SLEPC)
 
+# find Anasazi
+if(DISABLE_ANASAZI)
+  set(BUILD_ANASAZI FALSE)
+else(DISABLE_ANASAZI)
+  find_package(Anasazi)
+  set(BUILD_ANASAZI ${ANASAZI_FOUND})
+endif(DISABLE_ANASAZI)
 
 set(ROKKO_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
 set(ROKKO_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/librokko.so")
@@ -150,17 +158,14 @@ include(CTest)
 # directories
 add_subdirectory(3rd-party)
 add_subdirectory(rokko)
+add_subdirectory(rokko_c-fortran)
+
 add_subdirectory(sample_dense)
 add_subdirectory(test)
 add_subdirectory(benchmark_dense)
 add_subdirectory(sample_slepc)
+add_subdirectory(sample_anasazi)
+add_subdirectory(benchmark_anasazi)
 
-#set(TRILINOS_PREFIX "/home/sakashita/build/install_build")
-if( DEFINED TRILINOS_PREFIX )
-  add_subdirectory(sample_anasazi)
-  add_subdirectory(benchmark_anasazi)
-endif( DEFINED TRILINOS_PREFIX )
-
-add_subdirectory(rokko_c-fortran)
 add_subdirectory(sample_c)
-#add_subdirectory(sample_fortran)
+add_subdirectory(sample_fortran)
