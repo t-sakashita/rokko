@@ -53,7 +53,7 @@ else(DEFINED MKL_INCLUDE_DIR)
   endforeach()
 
   find_library(_SCALAPACK_LIBRARY
-    NAMES scalapack
+    NAMES scalapack scalapack-openmpi scalapack-mpich
     PATHS ${_LIBPATHS}
     DOC "The Scalapack library")
   if(_SCALAPACK_LIBRARY)
