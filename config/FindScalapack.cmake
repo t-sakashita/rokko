@@ -22,7 +22,7 @@ if(DEFINED MKL_INCLUDE_DIR)
 
   find_library(_SCALAPACK_LIBRARY
     NAMES mkl_scalapack_lp64
-    PATHS $ENV{MKLROOT}/lib/intel64
+    PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
     DOC "The Scalapack library")
   if(_SCALAPACK_LIBRARY)
     list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_LIBRARY})
@@ -33,7 +33,7 @@ if(DEFINED MKL_INCLUDE_DIR)
   endif(_SCALAPACK_LIBRARY)
   find_library(_SCALAPACK_BLACS_LIBRARY
     NAMES mkl_blacs_intelmpi_lp64
-    PATHS $ENV{MKLROOT}/lib/intel64
+    PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
     DOC "The BLACS library")
   if(_SCALAPACK_BLACS_LIBRARY)
     list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_BLACS_LIBRARY})
