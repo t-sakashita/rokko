@@ -24,6 +24,11 @@ if(ROKKO_SOLVER_DIR)
 endif(ROKKO_SOLVER_DIR)
 list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
 
+# Standard paths for Debian with version number
+file(GLOB tmp "/usr/lib/petscdir/*")
+list(APPEND _PATHS ${tmp})
+unset(tmp)
+
 function (petsc_get_version)
   if (EXISTS "${PETSC_DIR}/include/petscversion.h")
     file (STRINGS "${PETSC_DIR}/include/petscversion.h" vstrings REGEX "#define PETSC_VERSION_(RELEASE|MAJOR|MINOR|SUBMINOR|PATCH) ")

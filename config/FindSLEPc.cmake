@@ -24,6 +24,11 @@ if(ROKKO_SOLVER_DIR)
 endif(ROKKO_SOLVER_DIR)
 list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
 
+# Standard paths for Debian with version number
+file(GLOB tmp "/usr/lib/slepcdir/*")
+list(APPEND _PATHS ${tmp})
+unset(tmp)
+
 # Set debian_arches (PETSC_ARCH for Debian-style installations)
 #foreach (debian_arches linux kfreebsd)
 #  if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
