@@ -88,11 +88,11 @@ int main(int argc, char *argv[]) {
 #endif
 
   if (myrank == 0) {
-    //#ifdef _OPENMP_
+    #ifdef _OPENMP
     std::cout << "num_procs = " << nprocs << std::endl;
     std::cout << "num_threads = " << omp_get_max_threads() << std::endl;
     //std::cout << "num_threads = " << mkl_get_num_threads() << std::endl;
-    //#endif
+    #endif
     std::cout << "solver_name = " << solver_name << std::endl;
     std::cout << "matrix = frank" << std::endl;
     std::cout << "dim = " << dim << std::endl;
