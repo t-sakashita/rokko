@@ -49,6 +49,16 @@ if(BUILD_C_BINDING)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
   enable_language(Fortran)
+  # ancient gfortran does not support iso_c_bindings
+  try_compile(CMake_Fortran_SUPPORTS_ISO_C_BINDING
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/check_iso_c_binding.f90
+    OUTPUT_VARIABLE LOG)
+  #MESSAGE("LOG: ${LOG}")
+  if(NOT CMake_Fortran_SUPPORTS_ISO_C_BINDING)
+    set(BUILD_Fortran_BINDING OFF)
+    MESSAGE("Do not build Fortran binding since the fortran compiler does not support iso_c_binding.")
+  endif(NOT CMake_Fortran_SUPPORTS_ISO_C_BINDING)
 endif(BUILD_Fortran_BINDING)
 
 # OpenMP
