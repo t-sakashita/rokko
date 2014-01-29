@@ -1,0 +1,121 @@
+#!/usr/bin/env python
+
+import os.path, sys, ConfigParser
+import optparse
+import subprocess
+from subprocess import Popen, PIPE
+from subprocess import check_call
+
+## main routine
+if __name__ == "__main__":
+    all_solvers = ["eigen_s", "eigen_sx", "scalapack", "scalapack_pdsyevd", "scalapack_pdsyevx", "elemental"]
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--submit",
+                      action="store_true", dest="submit", default=False,
+                      help="submit batch jobs")
+    parser.add_option('--solver',
+                      action="store",
+                      type="string",
+                      help="eigenvalue solver type")
+    parser.add_option('--dim',
+                      action="store",
+                      type="int",
+                      help="matrix dimension")
+    parser.add_option('--np',
+                      action="store",
+                      type="int",
+                      help="number of processes")
+    parser.add_option('--nt',
+                      action="store",
+                      type="int",
+                      help="number of threads")
+
+    parser.add_option('--max_dim',
+                      action="store",
+                      type="int",
+                      help="max of matrix dimension")
+    parser.add_option('--max_np',
+                      action="store",
+                      type="int",
+                      help="max of number of processes")
+    parser.add_option('--min_np',
+                      action="store",
+                      type="int", default=1,
+                      help="min of number of processes")
+    parser.add_option('--step_dim',
+                      action="store",
+                      type="int", default=1,
+                      help="step of matrix dimension")
+    parser.add_option('--step_np',
+                      action="store",
+                      type="int", default=1,
+                      help="step of number of processes")
+
+    parser.add_option('--max_nt',
+                      action="store",
+                      type="int",
+                      help="max of number of threads")
+    parser.add_option('--min_nt',
+                      action="store",
+                      type="int", default=1,
+                      help="min of number of threads")
+    parser.add_option('--step_nt',
+                      action="store",
+                      type="int", default=1,
+                      help="step of number of threads")
+
+
+    (options, args) = parser.parse_args()
+    solver = options.solver
+    print "specified solver=", solver
+    if solver not in all_solvers:
+        print "error: solver must be either one of " + str(all_solvers)
+	sys.exit(1);
+
+    if options.max_dim:
+        dims = range(options.step_dim, options.max_dim+1, options.step_dim)
+    elif options.dim:
+        dims = [options.dim]
+    else:
+        dims = [1000]
+
+    if options.max_np:
+        nps = range(options.min_np, options.max_np+1, options.step_np)
+    elif options.np:
+        nps = [options.np]
+    else:
+        nps = [4]
+
+    if (options.max_nt):
+        nts = range(options.min_nt, options.max_nt+1, options.step_nt)
+    elif options.nt:
+        nts = [options.nt]
+    else:
+        nts = [1]
+
+    machine_name = "phi"
+    run_dir = "$HOME/build/rokko/benchmark"
+    run_filename = "./frank_matrix"
+
+    job_name_prefix = machine_name + "_" + solver
+    mpirun_command = "mpirun"
+
+    script_names = [];
+
+    for np in nps:
+        for nt in nts:
+            for dim in dims:
+                job_name = job_name_prefix + "_dim" + str(dim) + "_np" + str(np) + "_nt" + str(nt)
+                print "np=", np
+                script_name = os.path.join(job_name + ".sh")
+                commandline_arg = solver + " " + str(dim)
+                run_filename2 = os.path.expandvars(run_dir + "/" + run_filename)
+                out = open(job_name + ".o", 'w')
+                err = open(job_name + ".e", 'w')
+                check_call([mpirun_command, "-np", str(np),
+                            "-env", "OMP_NUM_THREADS", str(nt),
+                            run_filename2, solver, str(dim)], stdout = out, stderr = err)
+                script_names.append(script_name)
+                out.close()
+                err.close()
+                print "finished job : ", job_name

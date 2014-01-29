@@ -1,0 +1,11 @@
+--- elemental-0.80.orig/CMakeLists.txt
++++ elemental-0.80/CMakeLists.txt
+@@ -185,7 +185,7 @@
+   set(HAVE_F90_INTERFACE FALSE)
+   if(CMAKE_Fortran_COMPILER_SUPPORTS_F90)
+     include(FortranCInterface)
+-    FortranCInterface_VERIFY(CXX)
++# :   FortranCInterface_VERIFY(CXX)
+     if(FortranCInterface_VERIFIED_CXX)
+       set(HAVE_F90_INTERFACE TRUE)
+       FortranCInterface_HEADER(
