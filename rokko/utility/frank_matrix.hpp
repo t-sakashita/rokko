@@ -13,11 +13,15 @@
 #ifndef ROKKO_UTILITY_FRANK_MATRIX_HPP
 #define ROKKO_UTILITY_FRANK_MATRIX_HPP
 
+#include <config.hpp>
+
 #include <cmath>
 #include <stdexcept>
 #include <boost/throw_exception.hpp>
 #include <rokko/localized_matrix.hpp>
+#ifdef HAVE_MPI
 #include <rokko/distributed_matrix.hpp>
+#endif
 
 namespace rokko {
 
@@ -35,6 +39,7 @@ public:
     }
   }
 
+#ifdef HAVE_MPI
   template<typename MATRIX_MAJOR>
   static void generate(rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
@@ -59,7 +64,7 @@ public:
       }
     }
   }
-
+#endif
   // calculate k-th smallest eigenvalue of dim-dimensional Frank matrix (k=0...dim-1)
   static double eigenvalue(int dim, int k) {
     return 1 / (2 * (1 - std::cos(M_PI * (2 * k + 1) / (2 * dim + 1))));

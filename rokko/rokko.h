@@ -11,7 +11,11 @@
 *
 *****************************************************************************/
 
+#include <config.hpp>
+
+#ifdef HAVE_MPI
 #include <mpi.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,10 +26,12 @@ enum {
   rokko_matrix_col_major = 3, rokko_matrix_row_major = 4
 };
   
+#ifdef HAVE_MPI
 struct rokko_grid {
   void* ptr;
   int major;
 };
+#endif
 
 struct rokko_solver {
   void* ptr;
@@ -40,6 +46,7 @@ struct rokko_localized_matrix {
   int major;
 };
 
+#ifdef HAVE_MPI
 struct rokko_distributed_matrix {
   void* ptr;
   int major;
@@ -54,6 +61,7 @@ void rokko_grid_destruct(struct rokko_grid* grid);
 int rokko_grid_get_myrank(struct rokko_grid grid);
 
 int rokko_grid_get_nprocs(struct rokko_grid grid);
+#endif
  
 void rokko_solver_construct(struct rokko_solver* solver, char* solver_name, int argc, char** argv);
 
@@ -61,9 +69,11 @@ void rokko_solver_construct_f(struct rokko_solver* solver, char* solver_name);
 
 void rokko_solver_destruct(struct rokko_solver* solver);
 
+#ifdef HAVE_MPI
 void rokko_solver_diagonalize_distributed_matrix(struct rokko_solver* solver,
   struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
   struct rokko_distributed_matrix* eigvecs);
+#endif
 
 void rokko_localized_vector_construct(struct rokko_localized_vector* vec, int dim1);
 
@@ -78,6 +88,7 @@ void rokko_localized_matrix_construct(struct rokko_localized_matrix* matrix, int
   
 void rokko_localized_matrix_destruct(struct rokko_localized_matrix* matrix);
 
+#ifdef HAVE_MPI
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
     struct rokko_grid grid, struct rokko_solver solver, int matrix_major);
   
@@ -122,6 +133,7 @@ int rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int roo
 int rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
 
 void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array);
+#endif
 
 #ifdef __cplusplus
 }

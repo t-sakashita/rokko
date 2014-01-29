@@ -3,4 +3,6 @@
 
 #define ROKKO_VERSION "0.1"
 
+#cmakedefine HAVE_MPI
+
 #endif // ROKKO_CONFIG_HPP

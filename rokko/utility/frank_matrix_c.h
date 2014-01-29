@@ -20,7 +20,9 @@
 extern "C"{
 #endif
 
+#ifdef HAVE_MPI
 void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix* matrix);
+#endif
 
 void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix* matrix);
 

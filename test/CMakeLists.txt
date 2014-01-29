@@ -18,6 +18,7 @@ foreach(name ${TESTS})
 endforeach(name)
 unset(TESTS)
 
+if(BUILD_MPI)
 # multi process tests
 set(TESTS grid solver localized2distributed_matrix distributed_matrix frank_functor_mpi frank_function_pointer_mpi mpi_thread_multiple)
 foreach(name ${TESTS})
@@ -46,6 +47,7 @@ foreach(name ${TESTS})
   add_test(${name}-4 ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/${name})
 endforeach(name)
 unset(TESTS)
+endif(BUILD_MPI)
 
 # add_rokko_test tests
 set(TESTS timer)

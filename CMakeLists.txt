@@ -25,12 +25,24 @@ option(DISABLE_PETSC "Disable PETSc Library" OFF)
 option(DISABLE_SLEPC "Disable SLEPc Library" OFF)
 option(DISABLE_ANASAZI "Disable Anasazi Library" OFF)
 
+option(DISABLE_MPI "Disable MPI support" OFF)
+option(DISABLE_CUDA "Disable CUDA support" ON)
+
 if(DISABLE_SCALAPACK)
   set(DISABLE_EIGENEXA ON)
 endif(DISABLE_SCALAPACK)
 if(DISABLE_PETSC)
   set(DISABLE_SLEPC ON)
 endif(DISABLE_PETSC)
+
+# MPI disable settings
+if(DISABLE_MPI)
+  set(DISABLE_SCALAPACK ON)
+  set(DISABLE_EIGENEXA ON)
+  set(DISABLE_ELEMENTAL ON)
+  set(DISABLE_ELPA ON)
+  set(DISABLE_SLEPC ON)
+endif(DISABLE_MPI)
 
 # RPATH setting
 if(APPLE)
@@ -72,8 +84,18 @@ if(OPENMP_FOUND)
 endif(OPENMP_FOUND)
 
 # MPI library
-find_package(MPI)
-set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
+if(DISABLE_MPI)
+  set(BUILD_MPI OFF)
+else(DISABLE_MPI)
+  find_package(MPI)
+  if(MPI_FOUND)
+    set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
+    set(BUILD_MPI ON)
+    option(HAVE_MPI "Have MPI related stuff" ON)
+  else(MPI_FOUND)
+    set(BUILD_MPI OFF)
+  endif(MPI_FOUND)
+endif(DISABLE_MPI)
 
 # Boost Library
 find_package(BoostSrc)
@@ -161,6 +183,11 @@ install(FILES ${PROJECT_SOURCE_DIR}/config/run_test.cmake  DESTINATION config/)
 install(FILES ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake  DESTINATION config/)
 install(FILES ${PROJECT_BINARY_DIR}/config/UseRokko.cmake  DESTINATION config/)
 
+# find CUDA
+if(NOT DISABLE_CUDA)
+  find_package(CUDA)
+endif(NOT DISABLE_CUDA)
+
 # test environment
 enable_testing()
 include(CTest)
@@ -168,18 +195,28 @@ include(CTest)
 # directories
 add_subdirectory(3rd-party)
 add_subdirectory(rokko)
-if (BUILD_Fortran_BINDING)
+if (BUILD_Fortran_BINDING AND BUILD_MPI)
   add_subdirectory(rokko_c-fortran)
-endif (BUILD_Fortran_BINDING)
+endif (BUILD_Fortran_BINDING AND BUILD_MPI)
 
+if(BUILD_MPI)
 add_subdirectory(sample_dense)
+endif(BUILD_MPI)
 add_subdirectory(test)
 add_subdirectory(benchmark_dense)
 add_subdirectory(sample_slepc)
 add_subdirectory(sample_anasazi)
 add_subdirectory(benchmark_anasazi)
 
-if (BUILD_Fortran_BINDING)
+
+if (BUILD_Fortran_BINDING AND BUILD_MPI)
   add_subdirectory(sample_c)
   add_subdirectory(sample_fortran)
-endif (BUILD_Fortran_BINDING)
+endif (BUILD_Fortran_BINDING AND BUILD_MPI)
+
+# config file
+configure_file(
+  "${PROJECT_SOURCE_DIR}/rokko/config.hpp.in"
+  "${PROJECT_BINARY_DIR}/rokko/config.hpp"
+)
+

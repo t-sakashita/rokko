@@ -14,6 +14,7 @@
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/utility/frank_matrix_c.h>
 
+#ifdef HAVE_MPI
 void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix* matrix) {
   if (matrix->major == rokko_matrix_col_major)
     rokko::frank_matrix::generate(
@@ -22,6 +23,7 @@ void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix* ma
     rokko::frank_matrix::generate(
       *static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr));
 }
+#endif
 
 void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix* matrix) {
   if (matrix->major == rokko_matrix_col_major)
