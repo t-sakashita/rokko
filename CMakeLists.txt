@@ -174,6 +174,12 @@ else(DISABLE_ANASAZI)
   set(BUILD_ANASAZI ${ANASAZI_FOUND})
 endif(DISABLE_ANASAZI)
 
+# find CUDA
+if(NOT DISABLE_CUDA)
+  enable_language(Fortran)
+  find_package(CUDA)
+endif(NOT DISABLE_CUDA)
+
 set(ROKKO_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
 set(ROKKO_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/librokko.so")
 set(ROKKO_FORTRAN_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/librokko_fortran.so")
@@ -186,11 +192,15 @@ install(FILES ${PROJECT_SOURCE_DIR}/config/run_test.cmake  DESTINATION config/)
 install(FILES ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake  DESTINATION config/)
 install(FILES ${PROJECT_BINARY_DIR}/config/UseRokko.cmake  DESTINATION config/)
 
-# find CUDA
-if(NOT DISABLE_CUDA)
-  enable_language(Fortran)
-  find_package(CUDA)
-endif(NOT DISABLE_CUDA)
+# config file
+configure_file(
+  "${PROJECT_SOURCE_DIR}/rokko/config.hpp.in"
+  "${PROJECT_BINARY_DIR}/rokko/config.hpp"
+)
+
+# Add the binary tree to the search path for include files
+# so that we will find config.hpp
+include_directories("${PROJECT_BINARY_DIR}")
 
 # test environment
 enable_testing()
@@ -219,10 +229,4 @@ if (BUILD_Fortran_BINDING AND BUILD_MPI)
   add_subdirectory(sample_c)
   add_subdirectory(sample_fortran)
 endif (BUILD_Fortran_BINDING AND BUILD_MPI)
-
-# config file
-configure_file(
-  "${PROJECT_SOURCE_DIR}/rokko/config.hpp.in"
-  "${PROJECT_BINARY_DIR}/rokko/config.hpp"
-)
 

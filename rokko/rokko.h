@@ -11,7 +11,7 @@
 *
 *****************************************************************************/
 
-#include <config.hpp>
+#include <rokko/config.hpp>
 
 #ifdef HAVE_MPI
 #include <mpi.h>
