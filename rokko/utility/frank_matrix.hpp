@@ -13,7 +13,7 @@
 #ifndef ROKKO_UTILITY_FRANK_MATRIX_HPP
 #define ROKKO_UTILITY_FRANK_MATRIX_HPP
 
-#include <config.hpp>
+#include <rokko/config.hpp>
 
 #include <cmath>
 #include <stdexcept>

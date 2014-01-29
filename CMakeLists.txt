@@ -42,6 +42,8 @@ if(DISABLE_MPI)
   set(DISABLE_ELEMENTAL ON)
   set(DISABLE_ELPA ON)
   set(DISABLE_SLEPC ON)
+  set(BUILD_C_BINDING OFF)
+  set(BUILD_Fortran_BINDING OFF)
 endif(DISABLE_MPI)
 
 # RPATH setting
@@ -56,6 +58,7 @@ endif(APPLE)
 
 # C++, C, and Fortran compilers
 enable_language(CXX)
+enable_language(C)
 if(BUILD_C_BINDING)
   enable_language(C)
 endif(BUILD_C_BINDING)
@@ -185,6 +188,7 @@ install(FILES ${PROJECT_BINARY_DIR}/config/UseRokko.cmake  DESTINATION config/)
 
 # find CUDA
 if(NOT DISABLE_CUDA)
+  enable_language(Fortran)
   find_package(CUDA)
 endif(NOT DISABLE_CUDA)
 
@@ -203,7 +207,9 @@ if(BUILD_MPI)
 add_subdirectory(sample_dense)
 endif(BUILD_MPI)
 add_subdirectory(test)
+if(BUILD_MPI)
 add_subdirectory(benchmark_dense)
+endif(BUILD_MPI)
 add_subdirectory(sample_slepc)
 add_subdirectory(sample_anasazi)
 add_subdirectory(benchmark_anasazi)

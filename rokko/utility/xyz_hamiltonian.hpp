@@ -13,11 +13,15 @@
 #ifndef ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
 #define ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
 
+#include <rokko/config.hpp>
+
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 
 #include <rokko/localized_matrix.hpp>
+#ifdef HAVE_MPI
 #include <rokko/distributed_matrix.hpp>
+#endif
 
 namespace rokko {
 

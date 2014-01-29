@@ -8,9 +8,13 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
+include_directories("${PROJECT_BINARY_DIR}")
 
 # single process tests
-set(TESTS solver_factory localized_matrix) # magnetization)
+if(BUILD_MPI)
+  set(TESTS solver_factory) # magnetization)
+endif(BUILD_MPI)
+set(TESTS localized_matrix) # magnetization)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
