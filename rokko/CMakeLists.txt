@@ -113,7 +113,7 @@ if(BUILD_ELPA)
   target_link_libraries(rokko ${ELPA_LIBRARIES})
 endif(BUILD_ELPA)
 if(BUILD_MAGMA)
-  target_link_libraries(rokko ${CUDA_cublas_LIBRARIES} ${MAGMA_LIBRARIES})
+  target_link_libraries(rokko ${CUDA_cublas_LIBRARY} ${CUDA_CUDART_LIBRARY} ${MAGMA_LIBRARIES})
 endif(BUILD_MAGMA)
 
 if(Boost_FOUND)
