@@ -34,7 +34,7 @@ int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals, localized_
   magma_int_t lwork, liwork, aux_iwork[1];
   double aux_work[1];
 
-  magma_dsyevd(MagmaVec, 'V', dim, NULL, dim, NULL, aux_work, -1, aux_iwork, -1, &info);
+  magma_dsyevd(MagmaVec, MagmaLower, dim, NULL, dim, NULL, aux_work, -1, aux_iwork, -1, &info);
   lwork  = (magma_int_t) aux_work[0];
   double h_work[lwork];
   liwork = aux_iwork[0];
@@ -42,7 +42,7 @@ int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals, localized_
   magma_int_t *iwork;
   // eigenvalue decomposition
   timer_in.start(1);
-  magma_dsyevd(MagmaVec, 'V', dim, &mat(0,0), dim, eigvals, h_work, lwork, iwork, liwork, &info);
+  magma_dsyevd(MagmaVec, MagmaLower, dim, &mat(0,0), dim, eigvals, h_work, lwork, iwork, liwork, &info);
   timer_in.stop(1);
   eigvecs = mat;
 
