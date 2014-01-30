@@ -5,4 +5,8 @@
 
 #cmakedefine HAVE_MPI
 
+#cmakedefine HAVE_MAGMA
+
+#cmakedefine HAVE_CUBLAS
+
 #endif // ROKKO_CONFIG_HPP

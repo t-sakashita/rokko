@@ -2,7 +2,8 @@
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
 # Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-#                            Synge Todo <wistaria@comp-phys.org>
+#                            Synge Todo <wistaria@comp-phys.org>,
+#               2014-2014 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -32,6 +33,11 @@ set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
 
 # LAPACK
 set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp)
+
+# MAGMA
+if(BUILD_MAGMA)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} magma/magma.cpp)
+endif(BUILD_MAGMA)
 
 # BLACS
 if(BUILD_MPI)
@@ -106,6 +112,9 @@ endif(BUILD_ELEMENTAL)
 if(BUILD_ELPA)
   target_link_libraries(rokko ${ELPA_LIBRARIES})
 endif(BUILD_ELPA)
+if(BUILD_MAGMA)
+  target_link_libraries(rokko ${CUDA_cublas_LIBRARIES} ${MAGMA_LIBRARIES})
+endif(BUILD_MAGMA)
 
 if(Boost_FOUND)
   target_link_libraries(rokko ${Boost_LIBRARIES})
