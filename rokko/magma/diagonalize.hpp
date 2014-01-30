@@ -27,6 +27,7 @@ namespace magma {
 
 template<typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+  magma_init();
   int info;
 
   int dim = mat.rows();
