@@ -15,7 +15,7 @@ fi
 
 cd $HOME/build/petsc-3.4.3
 unset PETSC_DIR
-./configure --prefix=$PREFIX --with-cc=openmpicc --COPTFLAGS="-O3" --with-cxx=openmpicxx --CXXOPTFLAGS="-O3" --with-fc=openmpif77 --FOPTFLAGS="-O3" --with-mpiexec=openmpiexec \
+./configure --prefix=$PREFIX --with-cc=mpicc-openmpi-gcc48 --COPTFLAGS="-O3" --with-cxx=mpicxx-openmpi-gcc48 --CXXOPTFLAGS="-O3" --with-fc=mpif77-openmpi-gcc48 --FOPTFLAGS="-O3" --with-mpiexec=mpiexec-openmpi-gcc48 \
     --with-blas-lapack-lib="-framework vecLib" \
     --with-blacs-dir=$PREFIX --with-scalapack-dir=$PREFIX --with-c++-support=1 --with-debugging=0
 
