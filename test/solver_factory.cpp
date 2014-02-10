@@ -2,7 +2,8 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>,
+*               2014-2014 by Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -22,8 +23,7 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver_factory) {
-    boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
-    BOOST_FOREACH(std::string name, instance->solver_names()) {
+    BOOST_FOREACH(std::string name, rokko::solver_factory::solver_names()) {
         std::cerr << name << std::endl;
     }
 }

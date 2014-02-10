@@ -1,11 +1,11 @@
-#ifndef ROKKO_SORT_EIGENPAIRS_H
-#define ROKKO_SORT_EIGENPAIRS_H
+#ifndef ROKKO_UTILITY_SORT_EIGENPAIRS_H
+#define ROKKO_UTILITY_SORT_EIGENPAIRS_H
 
 namespace rokko {
 
 template<typename MATRIX_MAJOR>  
-int sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATRIX_MAJOR>& eigvec_global, localized_vector& eigval_sorted, localized_matrix<MATRIX_MAJOR>& eigvec_sorted)
-{
+void sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATRIX_MAJOR>& eigvec,
+  localized_vector& eigval_sorted, localized_matrix<MATRIX_MAJOR>& eigvec_sorted) {
   int dim = eigval.size();
   int* q = new int[dim];
 
@@ -31,9 +31,8 @@ int sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATRI
     eigvec_sorted.col(k) = eigvec_global.col(q[k]);
   }
   delete[] q;
-  return 0;
 }
 
 } // namespace rokko
 
-#endif // ROKKO_SORT_EIGENPAIRS_H
+#endif // ROKKO_UTILITY_SORT_EIGENPAIRS_H

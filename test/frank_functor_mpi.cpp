@@ -3,13 +3,13 @@
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
 * Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+*               2014-2014    Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include <rokko/grid.hpp>
@@ -42,8 +42,7 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm, rokko::grid_col_major);
-  boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
-  BOOST_FOREACH(std::string name, instance->solver_names()) {
+  BOOST_FOREACH(std::string name, rokko::solver_factory::solver_names()) {
     rokko::solver solver(name);
     solver.initialize(argc, argv);
     rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);

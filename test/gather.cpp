@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2014 by Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -32,7 +32,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
     rng(eng, boost::uniform_real<>());
   
-  rokko::solver solver(rokko::solver_factory::instance()->solver_names()[0]);
+  rokko::solver solver(rokko::solver_factory::solver_names()[0]);
   rokko::grid g(comm, grid_major);
   rokko::distributed_matrix<DIST_MAT_MAJOR> mat(dim, dim, g, solver);
   for (int i = 0; i < dim; ++i) {

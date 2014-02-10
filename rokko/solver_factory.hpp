@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 *                            Synge Todo <wistaria@comp-phys.org>,
 *               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
 *
@@ -101,14 +101,14 @@ public:
     creators_[name] = creator_pointer_type(new solver_creator<solver_wrapper<SOLVER> >());
     return isnew;
   }
-  std::vector<std::string> solver_names() const;
+  static std::vector<std::string> solver_names();
   bool unregister_creator(std::string const& name);
   static solver_factory* instance();
 protected:
   creator_pointer_type make_creator(std::string const& name) const;
 private:
   static solver_factory* instance_;
-  static int initialize_;
+  // static int initialize_;
   creator_map_type creators_;
 };
 

@@ -21,6 +21,7 @@
 #include <rokko/utility/sort_eigenpairs.hpp>
 
 int main(int argc, char *argv[]) {
+try {
   typedef rokko::matrix_col_major matrix_major;
 
   if (argc <= 2) {
@@ -28,70 +29,84 @@ int main(int argc, char *argv[]) {
     exit(34);
   }
   std::string solver_name(argv[1]);
+  std::cout << "solver = " << solver_name << std::endl;
   std::ifstream ifs(argv[2]);
   if (!ifs) {
     std::cout << "can't open file" << std::endl;
     exit(1);
   }
+  std::cout << "lattice file = " << argv[2] << std::endl;
 
-  int L, num_bonds;
+  rokko::serial_solver solver(solver_name);
+  solver.initialize(argc, argv);
+
+  int N, num_bonds;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
-  ifs >> L >> num_bonds;
-  for (int i=0; i<num_bonds; ++i) {
+  ifs >> N >> num_bonds;
+  for (int i = 0; i < num_bonds; ++i) {
     int j, k;
     ifs >> j >> k;
     lattice.push_back(std::make_pair(j, k));
   }
   
-  for (int i=0; i<num_bonds; ++i) {
+  for (int i = 0; i < num_bonds; ++i) {
     double jx, jy, jz;
     ifs >> jx >> jy >> jz;
     coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
-  
-  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-  for (int i=0; i<num_bonds; ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
-  }
-  int dim = 1 << L;
-  std::cout << "dim=" << dim << std::endl;
-  rokko::serial_solver solver(solver_name);
-  solver.initialize(argc, argv);
 
-  rokko::localized_matrix<rokko::matrix_col_major> mat(dim, dim);
-  rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
-  std::cout << mat << std::endl;
+  std::cout << "number of sites = " << N << " number of bonds = " << num_bonds << std::endl;
+  int dim = 1 << N;
+  std::cout << "matrix dimension = " << dim << std::endl;
+  rokko::localized_matrix<matrix_major> mat(dim, dim);
+  rokko::xyz_hamiltonian::generate(N, lattice, coupling, mat);
 
-  rokko::localized_vector w(dim);
-  rokko::localized_matrix<rokko::matrix_col_major> eigvec(dim, dim);
+  rokko::localized_matrix<matrix_major> mat_in(mat);
+  rokko::localized_vector eigval(dim);
+  rokko::localized_matrix<matrix_major> eigvec(dim, dim);
 
-  try {
-    solver.diagonalize(mat, w, eigvec);
-  }
-  catch (const char *e) {
-    std::cout << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  solver.diagonalize(mat_in, eigval, eigvec);
 
-  std::cout << "eigvec:" << eigvec << std::endl;
-  
-  std::cout.precision(20);
   rokko::localized_vector eigval_sorted(dim);
-  rokko::localized_matrix<rokko::matrix_col_major> eigvec_sorted(dim, dim);
-  rokko::sort_eigenpairs(w, eigvec, eigval_sorted, eigvec_sorted);
-  std::cout << "Computed Eigenvalues= " << eigval_sorted.transpose() << std::endl;
-  
-  std::cout.precision(3);
-  std::cout << "Check the orthogonality of Eigenvectors:" << std::endl
-            << eigvec_sorted * eigvec_sorted.transpose() << std::endl;
-  
-  rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
-  std::cout << "residual := A x - lambda x = " << std::endl
-         << mat * eigvec_sorted.col(1)  -  eigval_sorted(1) * eigvec_sorted.col(1) << std::endl;
-  std::cout << "Are all the following values equal to some eigenvalue = " << std::endl
-            << (mat * eigvec_sorted.col(0)).array() / eigvec_sorted.col(0).array() << std::endl;
+  rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
+  rokko::sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted);
+
+  std::cout.precision(10);
+  std::cout << "10 Lowest Eigenvalues (value, degeneracy, residue)" << std::endl;
+  int index = dim - 1;
+  int deg = 0;
+  double val = eigval_sorted(index);
+  double res = 0;
+  for (int i = 0; i < 10; ++i) {
+    for (; index >= 0; --index) {
+      bool change = (std::abs((eigval_sorted(index) - val) / val) > 1e-10);
+      if (!change) {
+        ++deg;
+        res = std::max(res, std::abs(eigvec_sorted.transpose().row(index) * mat *
+                                     eigvec_sorted.col(index) - eigval_sorted(index)));
+      }
+      if (change || index == 0) {
+        std::cout << i + 1 << ":\t" << val << '\t' << deg << '\t' << res << std::endl;
+        val = eigval_sorted(index);
+        deg = 1;
+        res = std::abs(eigvec_sorted.transpose().row(index) * mat *
+                       eigvec_sorted.col(index) - eigval_sorted(index));
+        break;
+      }
+    }
+    if (index == 0) break;
+  }
 
   solver.finalize();
   return 0;
+}
+catch (std::exception& exc) {
+  std::cerr << exc.what() << "\n";
+  return -1;
+}
+catch (...) {
+  std::cerr << "Fatal Error: Unknown Exception!\n";
+  return -2;
+}
 }
