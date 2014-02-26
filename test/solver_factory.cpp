@@ -23,7 +23,7 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver_factory) {
-    BOOST_FOREACH(std::string name, rokko::solver_factory::solver_names()) {
+    BOOST_FOREACH(std::string name, rokko::solver_factory::parallel_dense_solver_names()) {
         std::cerr << name << std::endl;
     }
 }

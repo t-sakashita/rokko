@@ -43,7 +43,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #endif
   
   int success_local = 1;
-  rokko::solver solver(rokko::solver_factory::solver_names()[0]);
+  rokko::parallel_dense_solver solver(rokko::solver_factory::parallel_dense_solver_names()[0]);
   rokko::grid g(comm, grid_major);
   for (int r = 0; r < size; ++r) {
     rokko::distributed_matrix<DIST_MAT_MAJOR> mat(dim, dim, g, solver);

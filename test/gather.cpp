@@ -32,7 +32,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
     rng(eng, boost::uniform_real<>());
   
-  rokko::solver solver(rokko::solver_factory::solver_names()[0]);
+  rokko::parallel_dense_solver solver(rokko::solver_factory::parallel_dense_solver_names()[0]);
   rokko::grid g(comm, grid_major);
   rokko::distributed_matrix<DIST_MAT_MAJOR> mat(dim, dim, g, solver);
   for (int i = 0; i < dim; ++i) {
