@@ -40,27 +40,27 @@ try {
   rokko::serial_solver solver(solver_name);
   solver.initialize(argc, argv);
 
-  int N, num_bonds;
+  int num_sites, num_bonds;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
-  ifs >> N >> num_bonds;
+  ifs >> num_sites >> num_bonds;
   for (int i = 0; i < num_bonds; ++i) {
     int j, k;
     ifs >> j >> k;
     lattice.push_back(std::make_pair(j, k));
   }
-  
   for (int i = 0; i < num_bonds; ++i) {
     double jx, jy, jz;
     ifs >> jx >> jy >> jz;
     coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
+  int dim = 1 << num_sites;
+  std::cout << "number of sites = " << num_sites << std::endl
+            << "number of bonds = " << num_bonds << std::endl
+            << "matrix dimension = " << dim << std::endl;
 
-  std::cout << "number of sites = " << N << " number of bonds = " << num_bonds << std::endl;
-  int dim = 1 << N;
-  std::cout << "matrix dimension = " << dim << std::endl;
   rokko::localized_matrix<matrix_major> mat(dim, dim);
-  rokko::xyz_hamiltonian::generate(N, lattice, coupling, mat);
+  rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
 
   rokko::localized_matrix<matrix_major> mat_in(mat);
   rokko::localized_vector eigval(dim);

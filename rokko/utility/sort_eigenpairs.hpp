@@ -9,10 +9,10 @@ void sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATR
   int dim = eigval.size();
   int* q = new int[dim];
 
-  // 固有値を（絶対値のではなく）昇順に並べる
+  // 固有値を（絶対値ではなく）昇順に並べる
   if (q==NULL) {
     std::cerr << "error: q" << std::endl;
-    return 1;
+    return;
   }
 
   double emax;
@@ -28,7 +28,7 @@ void sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATR
       }
     }
     eigval_sorted(k) = eigval(q[k]);
-    eigvec_sorted.col(k) = eigvec_global.col(q[k]);
+    eigvec_sorted.col(k) = eigvec.col(q[k]);
   }
   delete[] q;
 }
