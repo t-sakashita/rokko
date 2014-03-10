@@ -12,7 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
-#include <rokko/solver_factory.hpp>
+#include <rokko/serial_solver_factory.hpp>
 
 #define BOOST_TEST_MODULE test_solver_factory
 #ifndef BOOST_TEST_DYN_LINK
