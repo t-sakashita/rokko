@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 *                            Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -25,7 +25,7 @@
 
 namespace rokko {
 
-class solver;
+class parallel_dense_solver;
 
 class class_matrix_element {
 public:

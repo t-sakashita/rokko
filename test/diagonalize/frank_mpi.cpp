@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = rokko::solver_factory::solver_names();
+    names = rokko::solver_factory::parallel_dense_solver_names();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
   BOOST_FOREACH(std::string name, names) {
     std::cout << "solver=" << name << std::endl;
-    rokko::solver solver(name);
+    rokko::parallel_dense_solver solver(name);
     if (solver.is_available_grid_major(rokko::grid_col_major)) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
   BOOST_FOREACH(std::string name, names) {
     std::cout << "solver=" << name << std::endl;
-    rokko::solver solver(name);
+    rokko::parallel_dense_solver solver(name);
     if (solver.is_available_grid_major(rokko::grid_row_major)) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);

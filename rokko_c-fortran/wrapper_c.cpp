@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 *                            Synge Todo <wistaria@comp-phys.org>,
 *                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
 *
@@ -33,13 +33,13 @@ struct element_function_wrapper {
 
 void* initialize_distributed_matrix_row_major(int dim1, int dim2, void* g, void* solver_ ) {
   grid* g_ = static_cast<grid*>(g);
-  solver* solver__ =static_cast<solver*>(solver_);
+  parallel_dense_solver* solver__ =static_cast<parallel_dense_solver*>(solver_);
   return static_cast<void*>(new distributed_matrix<matrix_row_major>(dim1, dim2, *g_, *solver__));
 }
 
 void* initialize_distributed_matrix_col_major(int dim1, int dim2, void* g, void* solver_ ) {
   grid* g_ = static_cast<grid*>(g);
-  solver* solver__ =static_cast<solver*>(solver_);
+  parallel_dense_solver* solver__ =static_cast<parallel_dense_solver*>(solver_);
   return static_cast<void*>(new distributed_matrix<matrix_col_major>(dim1, dim2, *g_, *solver__));
 }
 
@@ -93,19 +93,19 @@ void delete_grid(void* g) {
 
 void* initialize_solver(char* solver_name, int argc, char *argv[]) {
   std::string solver_name_in(solver_name);
-  solver* solver_ = new solver(solver_name_in);
+  parallel_dense_solver* solver_ = new parallel_dense_solver(solver_name_in);
   solver_->initialize(argc,argv);
   return static_cast<void*>(solver_);
 }
 
 void delete_solver(void* solver_) {
-  solver* solver__ = static_cast<solver*>(solver_);
+  parallel_dense_solver* solver__ = static_cast<parallel_dense_solver*>(solver_);
   solver__ -> finalize();
   delete solver__;
 }
 
 void solver_diagonalize_matrix_col_major(void* solver_ ,void* mat, void* w, void* Z, void* timer) {
-  solver* solver__ = static_cast<solver*>(solver_);
+  parallel_dense_solver* solver__ = static_cast<parallel_dense_solver*>(solver_);
   distributed_matrix<matrix_col_major>* mat_ = static_cast<distributed_matrix<matrix_col_major>*> (mat);
   localized_vector* w_ = static_cast<localized_vector*>(w);
   distributed_matrix<matrix_col_major>* Z_ = static_cast<distributed_matrix<matrix_col_major>*> (Z);
@@ -114,7 +114,7 @@ void solver_diagonalize_matrix_col_major(void* solver_ ,void* mat, void* w, void
 }
 
 void solver_diagonalize_matrix_row_major(void* solver_ ,void* mat, void* w, void* Z, void* timer) {
-  solver* solver__ = static_cast<solver*>(solver_);
+  parallel_dense_solver* solver__ = static_cast<parallel_dense_solver*>(solver_);
   distributed_matrix<matrix_row_major>* mat_ = static_cast<distributed_matrix<matrix_row_major>*> (mat);
   localized_vector* w_ = static_cast<localized_vector*>(w);
   distributed_matrix<matrix_row_major>* Z_ = static_cast<distributed_matrix<matrix_row_major>*> (Z);
