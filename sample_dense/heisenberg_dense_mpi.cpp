@@ -13,7 +13,6 @@
 #include <mpi.h>
 #include <iostream>
 #include <fstream>
-#include <boost/lexical_cast.hpp>
 
 #include <rokko/solver.hpp>
 #include <rokko/grid.hpp>
