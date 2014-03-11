@@ -8,23 +8,26 @@
 
 namespace rokko {
 
-struct grid_row_major {};
+extern struct grid_row_major_t {} grid_row_major;
 
-struct grid_col_major {};
+extern struct grid_col_major_t {} grid_col_major;
 
-class grid_base {
+class grid {
 public:
-  virtual int calculate_grid_row(int proc_rank) const = 0;
-  virtual int calculate_grid_col(int proc_rank) const = 0;
-  virtual ~grid_base() {}
-  virtual bool is_row_major() const = 0;
-  virtual bool is_col_major() const = 0;
-};
+  // This constructor produces 2D grid whose row size is longer.  In EigenK's grid creation, the variables nprow, npcol are changed with this constructor's one, and in EigenK's sample main program, some strange substitution is done: "NPROW = size_of_col  NPCOL = size_of_row".  So, this constructor's 2D grid size is consistent with EigenK's 2D grid one.
 
-template<typename GRID_MAJOR = rokko::grid_row_major>
-class grid : public grid_base, private boost::noncopyable {
-public:
-  grid(MPI_Comm& comm) {
+  explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : comm(comm_in) {
+    initialize(grid_col_major);
+  }
+
+  template <typename GRID_MAJOR>
+  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major) : comm(comm_in) {
+    initialize(grid_major);
+  }
+  
+  /* The following 2D grid size is consistent with EigenK's 2D grid creator's one, but it is actually changed with actual EigenK's 2D grid row/col size. So we don't use it.
+  grid(MPI_Comm comm_in = MPI_COMM_WORLD) { //: comm(comm_in) {
+    comm = comm_in;
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
 
@@ -38,43 +41,52 @@ public:
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
   }
+*/
 
-  ~grid()  {}
+  MPI_Comm get_comm() const { return comm; }
+  int get_nprocs() const { return nprocs; }
+  int get_nprow() const { return nprow; }
+  int get_npcol() const { return npcol; }
+  int get_myrank() const { return myrank; }
+  int get_myrow() const { return myrow; }
+  int get_mycol() const { return mycol; }
 
-  int calculate_grid_row(int proc_rank) const;
-  int calculate_grid_col(int proc_rank) const;
+  bool is_row_major() const { return is_row; }
+  bool is_col_major() const { return !is_row_major(); }
 
-  bool is_row_major() const {
-    return boost::is_same<GRID_MAJOR, grid_row_major>::value;
+  int calculate_grid_row(int proc_rank) const { 
+    return is_row ? proc_rank / npcol
+                  : proc_rank % nprow;
   }
-  bool is_col_major() const {
-    return boost::is_same<GRID_MAJOR, grid_col_major>::value;
+  int calculate_grid_col(int proc_rank) const { 
+    return is_row ? proc_rank % npcol
+                  : proc_rank / nprow;
   }
-  
+protected:
+  template <typename GRID_MAJOR>
+  void initialize(GRID_MAJOR) {
+    MPI_Comm_size(comm, &nprocs);
+    MPI_Comm_rank(comm, &myrank);
+    nprow = int(std::sqrt(nprocs + 0.5));
+    while (1) {
+      if ( nprow == 1 ) break;
+      if ( (nprocs % nprow) == 0 ) break;
+      nprow = nprow - 1;
+    }
+    npcol = nprocs / nprow;
+    is_row = boost::is_same<GRID_MAJOR, grid_row_major_t>::value;
+    myrow = calculate_grid_row(myrank);
+    mycol = calculate_grid_col(myrank);
+  }
+
+private:
+  MPI_Comm comm;
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
+  bool is_row;
+
 };
-
-template<>
-inline int grid<rokko::grid_row_major>::calculate_grid_row(int proc_rank) const {
-  return proc_rank / nprow;
-}
-
-template<>
-inline int grid<rokko::grid_row_major>::calculate_grid_col(int proc_rank) const {
-  return proc_rank % nprow;
-}
-
-template<>
-inline int grid<rokko::grid_col_major>::calculate_grid_row(int proc_rank) const {
-  return proc_rank % npcol;
-}
-
-template<>
-inline int grid<rokko::grid_col_major>::calculate_grid_col(int proc_rank) const {
-  return proc_rank / npcol;
-}
 
 } // namespace rokko
 

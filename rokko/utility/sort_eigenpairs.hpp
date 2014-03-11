@@ -1,19 +1,17 @@
-#ifndef ROKKO_SORT_EIGENPAIRS_H
-#define ROKKO_SORT_EIGENPAIRS_H
+#ifndef ROKKO_UTILITY_SORT_EIGENPAIRS_H
+#define ROKKO_UTILITY_SORT_EIGENPAIRS_H
+
+#include <vector>
 
 namespace rokko {
 
-int sort_eigenpairs(const Eigen::VectorXd& eigval, const Eigen::MatrixXd& eigvec_global, Eigen::VectorXd& eigval_sorted, Eigen::MatrixXd& eigvec_sorted)
-{
+// sort eivanvalue and eigenvectors in ascending order
+
+template<typename MATRIX_MAJOR>  
+void sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATRIX_MAJOR>& eigvec,
+  localized_vector& eigval_sorted, localized_matrix<MATRIX_MAJOR>& eigvec_sorted) {
   int dim = eigval.size();
-  int* q = new int[dim];
-
-  // 固有値を（絶対値のではなく）昇順に並べる
-  if (q==NULL) {
-    std::cerr << "error: q" << std::endl;
-    return 1;
-  }
-
+  std::vector<int> q(dim);
   double emax;
   for (int i=0; i<dim; ++i) q[i] = i;
   for (int k=0; k<dim; ++k) {
@@ -27,12 +25,10 @@ int sort_eigenpairs(const Eigen::VectorXd& eigval, const Eigen::MatrixXd& eigvec
       }
     }
     eigval_sorted(k) = eigval(q[k]);
-    eigvec_sorted.col(k) = eigvec_global.col(q[k]);
+    eigvec_sorted.col(k) = eigvec.col(q[k]);
   }
-  delete[] q;
-  return 0;
 }
 
 } // namespace rokko
 
-#endif // ROKKO_SORT_EIGENPAIRS_H
+#endif // ROKKO_UTILITY_SORT_EIGENPAIRS_H

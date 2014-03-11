@@ -6,14 +6,11 @@
 namespace rokko {
 
 template<typename T>
-void initialize(int& argc, char**& argv)
-{
-}
+void initialize(int& argc, char**& argv);
 
 template<typename T>
-void finalize()
-{
-}
+void finalize();
+
 
 } // namespace rokko
 
