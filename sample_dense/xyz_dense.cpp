@@ -30,13 +30,12 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
   std::string solver_name(argv[1]);
-  std::cout << "solver = " << solver_name << std::endl;
+
   std::ifstream ifs(argv[2]);
   if (!ifs) {
     std::cout << "can't open file" << std::endl;
     exit(1);
   }
-  std::cout << "lattice file = " << argv[2] << std::endl;
   int num_sites, num_bonds;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
@@ -52,7 +51,9 @@ int main(int argc, char *argv[]) {
     coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
   int dim = 1 << num_sites;
-  std::cout << "number of sites = " << num_sites << std::endl
+  std::cout << "solver = " << solver_name << std::endl
+            << "lattice file = " << argv[2] << std::endl
+            << "number of sites = " << num_sites << std::endl
             << "number of bonds = " << num_bonds << std::endl
             << "matrix dimension = " << dim << std::endl;
 
