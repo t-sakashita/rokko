@@ -46,7 +46,7 @@ endif(SLEPC_LIBRARIES)
 #  add_rokko_test(${target_name})
 #endforeach(name)
 
-set(TESTS heisenberg xyz xyz_file)
+set(TESTS frank heisenberg xyz xyz_file)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${SLEPC_LIBRARIES} ${PETSC_LIBRARIES} ${MPI_CXX_LIBRARIES})

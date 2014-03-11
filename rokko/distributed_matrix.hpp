@@ -290,7 +290,7 @@ public:
     }
   }
 
-  void print() const;
+  void print(std::ostream& os = std::cout) const;
 
 private:
 
@@ -343,37 +343,17 @@ inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int loca
   return  local_i + local_j * lld;
 }
 
-template<>
-inline void distributed_matrix<rokko::matrix_row_major>::print() const {
-  for (int proc=0; proc<nprocs; ++proc) {
+template<typename MATRIX_MAJOR>
+void distributed_matrix<MATRIX_MAJOR>::print(std::ostream& os) const {
+  for (int proc = 0; proc < nprocs; ++proc) {
     if (proc == myrank) {
-      printf("Rank = %d  myrow = %d mycol = %d\n", myrank, myrow, mycol);
-      printf("Local Matrix:\n");
-      for (int local_i=0; local_i<m_local; ++local_i) {
-        for (int local_j=0; local_j<n_local; ++local_j) {
-          printf("%e ", get_local(local_i, local_j));
-        }
-        printf("\n");
+      os << "Rank = " << myrank << ", myrow = " << myrow << ", mycol = " << mycol << std::endl;
+      for (int local_i = 0; local_i < m_local; ++local_i) {
+        for (int local_j = 0; local_j < n_local; ++local_j)
+          os << "  " << get_local(local_i, local_j);
+        os << std::endl;
       }
-      printf("\n");
-    }
-    MPI_Barrier(g.get_comm());
-  }
-}
-
-template<>
-inline void distributed_matrix<rokko::matrix_col_major>::print() const {
-  for (int proc=0; proc<nprocs; ++proc) {
-    if (proc == myrank) {
-      printf("Rank = %d  myrow = %d mycol = %d\n", myrank, myrow, mycol);
-      printf("Local Matrix:\n");
-      for (int local_i=0; local_i<m_local; ++local_i) {
-        for (int local_j=0; local_j<n_local; ++local_j) { // j first, i second
-          printf("%e ", get_local(local_i, local_j));
-        }
-        printf("\n");
-      }
-      printf("\n");
+      os.flush();
     }
     MPI_Barrier(g.get_comm());
   }
@@ -381,6 +361,12 @@ inline void distributed_matrix<rokko::matrix_col_major>::print() const {
 
 template<typename MATRIX_MAJOR>
 void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) { mat.print(); }
+
+template<typename MATRIX_MAJOR>
+std::ostream& operator<<(std::ostream& os, rokko::distributed_matrix<MATRIX_MAJOR> const& mat) {
+  mat.print(os);
+  return os;
+}
 
 template<typename MATRIX_MAJOR>
 void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool transA,
