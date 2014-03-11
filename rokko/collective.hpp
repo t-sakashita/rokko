@@ -133,7 +133,7 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
 	  array_of_types[count] = MPI_DOUBLE;
 #ifndef NDEBUG
           //	  if (myrank == 0)
-	    std::cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << std::endl;
+          // std::cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << std::endl;
 #endif          
 	  ++count;
       }
@@ -176,10 +176,10 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
 #ifndef NDEBUG
   // print out struct of global matrix
   //  if (myrank == 0) {
-    for (int i=0; i<count; ++i) {
-      printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
-    }
-    std::cout << "num_block_rows=" << num_block_rows << std::endl;
+  // for (int i=0; i<count; ++i) {
+  // printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
+  // }
+  // std::cout << "num_block_rows=" << num_block_rows << std::endl;
     //  }
 #endif
     

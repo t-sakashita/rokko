@@ -65,20 +65,20 @@ public:
     stride_mycol = mycol * nb;
     stride_npcol = nb * (npcol - 1);
 
-#ifndef NDEBUG
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-        std::cout << "proc=" << proc << std::endl;
-        std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-        std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
-        std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
-        std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
-        std::cout << "  lld=" << lld << std::endl;
-        std::cout << "  length_array=" << length_array << std::endl;
-      }
-      MPI_Barrier(g.get_comm());
-    }
-#endif
+// #ifndef NDEBUG
+//     for (int proc=0; proc<nprocs; ++proc) {
+//       if (proc == myrank) {
+//         std::cout << "proc=" << proc << std::endl;
+//         std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
+//         std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
+//         std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
+//         std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
+//         std::cout << "  lld=" << lld << std::endl;
+//         std::cout << "  length_array=" << length_array << std::endl;
+//       }
+//       MPI_Barrier(g.get_comm());
+//     }
+// #endif
 
     array = new double[length_array];
     if (array == 0) {
