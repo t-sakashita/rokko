@@ -39,8 +39,8 @@ int main(int argc,char **argv)
 
   model m;
   m.L = L;
-  for (int i=0; i<L-1; ++i) {
-    m.lattice.push_back(std::make_pair(i, i+1));
+  for (int i=0; i<L; ++i) {
+    m.lattice.push_back(std::make_pair(i, (i+1)%L));
   }
 
   ierr = MatCreateShell(PETSC_COMM_WORLD, N, N, N, N, &m, &A); CHKERRQ(ierr);

@@ -137,6 +137,8 @@ class HeisenbergOp : public Epetra_Operator {
 
 int main(int argc, char *argv[]) {
 
+  using std::endl;
+
 #ifdef HAVE_MPI
   // Initialize MPI
   //
@@ -173,8 +175,8 @@ int main(int argc, char *argv[]) {
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
-  for (int i=0; i<L-1; ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
+  for (int i=0; i<L; ++i) {
+    lattice.push_back(std::make_pair(i, (i+1)%L));
     //coupling.push_back(boost::make_tuple(1, 1, 1));
     coupling.push_back(boost::make_tuple(0.8, 0.3, 0.1));
   }
