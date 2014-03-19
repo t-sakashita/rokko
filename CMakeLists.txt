@@ -171,6 +171,7 @@ add_subdirectory(rokko)
 if (BUILD_Fortran_BINDING)
   add_subdirectory(rokko_c-fortran)
 endif (BUILD_Fortran_BINDING)
+add_subdirectory(tool)
 
 add_subdirectory(sample_dense)
 add_subdirectory(test)

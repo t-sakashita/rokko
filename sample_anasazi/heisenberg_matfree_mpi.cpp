@@ -136,6 +136,8 @@ class HeisenbergOp : public Epetra_Operator {
 
 int main(int argc, char *argv[]) {
 
+  using std::endl;
+
 #ifdef HAVE_MPI
   // Initialize MPI
   //
