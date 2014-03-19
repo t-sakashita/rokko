@@ -22,8 +22,8 @@ int main(int argc,char **argv)
   ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
   N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  for (int i=0; i<L-1; ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
+  for (int i=0; i<L; ++i) {
+    lattice.push_back(std::make_pair(i, (i+1)%L));
   }
 
   // Create Hermitean matrix                                                           

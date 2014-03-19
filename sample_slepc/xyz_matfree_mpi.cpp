@@ -48,8 +48,8 @@ int main(int argc,char **argv)
     MPI_Abort(MPI_COMM_WORLD, 4);
   }
 
-  for (int i=0; i<L-1; ++i) {
-    m.lattice.push_back(std::make_pair(i, i+1));
+  for (int i=0; i<L; ++i) {
+    m.lattice.push_back(std::make_pair(i, (i+1)%L));
     m.coupling.push_back(boost::make_tuple(1, 1, 1));
   }
 
