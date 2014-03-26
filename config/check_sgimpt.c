@@ -1,15 +1,15 @@
 #include <mpi.h>
 
 #ifdef OMPI_MPI_H // OpenMPI
-  nonexistent();
+#error
 #endif
 
 #ifdef MPICH2 // MPICH2 or Intel MPI
-  nonexistent();
+#error
 #endif
 
 #ifdef MVAPICH2_VERSION //MVAPICH2
-  nonexistent();
+#error
 #endif
 
 int main(int argc, char** argv) {

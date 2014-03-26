@@ -22,6 +22,8 @@ using namespace Anasazi;
 
 int main(int argc, char *argv[]) {
 
+  using std::endl;
+
 #ifdef HAVE_MPI
   // Initialize MPI
   MPI_Init(&argc,&argv);
