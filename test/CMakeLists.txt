@@ -27,7 +27,7 @@ foreach(name ${TESTS})
 endforeach(name)
 unset(TESTS)
 
-set(TESTS grid_mpi)
+set(TESTS grid_mpi grid_1d_mpi)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
