@@ -7,7 +7,7 @@
 
 namespace rokko {
 
-// sort eivanvalue and eigenvectors in ascending order
+// sort eivanvalue and eigenvectors 
 
 template<typename MATRIX_MAJOR>  
 void sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATRIX_MAJOR>& eigvec,
@@ -16,20 +16,33 @@ void sort_eigenpairs(const localized_vector& eigval, const localized_matrix<MATR
 {
   int dim = eigval.size();
   std::vector<int> q(dim);
-  double emax;
+  double tmp;
   for (int i=0; i<dim; ++i) q[i] = i;
   for (int k=0; k<dim; ++k) {
-    emax = eigval(q[k]);
+    tmp = eigval(q[k]);
     for (int i=k+1; i<dim; ++i) {
-      if (emax < eigval(q[i])) {       // 昇順になっていないとき、交換
-        emax = eigval(q[i]);
-        int qq = q[k];
-        q[k] = q[i];
-        q[i] = qq;
+      if(ascending){
+        if (tmp > eigval(q[i])) { 
+          tmp = eigval(q[i]);
+          int qq = q[k];
+          q[k] = q[i];
+          q[i] = qq;
+        }
+      }else{
+        if (tmp < eigval(q[i])) { 
+          tmp = eigval(q[i]);
+          int qq = q[k];
+          q[k] = q[i];
+          q[i] = qq;
+        }
       }
     }
     eigval_sorted(k) = eigval(q[k]);
-    eigvec_sorted.col(k) = eigvec.col(q[k]);
+    if(eigvec_sorted.is_col_major()){
+      eigvec_sorted.col(k) = eigvec.col(q[k]);
+    }else{
+      eigvec_sorted.row(k) = eigvec.row(q[k]);
+    }
   }
 }
 
