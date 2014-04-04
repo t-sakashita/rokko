@@ -55,5 +55,15 @@ foreach(name ${TESTS})
   add_rokko_test(${name})
 endforeach(name)
 
+# utility tests
+set(TESTS sort_eigenpairs)
+foreach(name ${TESTS})
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} rokko ${Boost_LIBRARIES})
+  add_test(${name} ${name})
+endforeach(name)
+unset(TESTS)
+
+
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
