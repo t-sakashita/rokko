@@ -10,7 +10,6 @@
 #
 
 # single process tests
-<<<<<<< HEAD
 if(BUILD_MPI)
   set(TESTS solver_factory) # magnetization)
 endif(BUILD_MPI)
