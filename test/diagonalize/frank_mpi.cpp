@@ -2,14 +2,14 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>,
+*               2014-2014    Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include <rokko/solver.hpp>
@@ -31,12 +31,10 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   MPI_Comm comm = MPI_COMM_WORLD;
   const int dim = 100;
 
-  boost::shared_ptr<rokko::solver_factory> instance(rokko::solver_factory::instance());
-
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = instance->solver_names();
+    names = rokko::solver_factory::parallel_dense_solver_names();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);
@@ -45,7 +43,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
   BOOST_FOREACH(std::string name, names) {
     std::cout << "solver=" << name << std::endl;
-    rokko::solver solver(name);
+    rokko::parallel_dense_solver solver(name);
     if (solver.is_available_grid_major(rokko::grid_col_major)) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);
@@ -70,7 +68,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
   BOOST_FOREACH(std::string name, names) {
     std::cout << "solver=" << name << std::endl;
-    rokko::solver solver(name);
+    rokko::parallel_dense_solver solver(name);
     if (solver.is_available_grid_major(rokko::grid_row_major)) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);

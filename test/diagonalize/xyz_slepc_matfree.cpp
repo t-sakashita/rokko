@@ -32,6 +32,7 @@ int main(int argc,char **argv)
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size); CHKERRQ(ierr);
   if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only");
 
+  /* 
   char str[100];
   ierr = PetscOptionsGetString(NULL,"-filename", str, 100, NULL); CHKERRQ(ierr);
   //std::string filename(str);
@@ -41,19 +42,20 @@ int main(int argc,char **argv)
   //  if (!ifs) {
 
   //}
+  */
 
   int num_bonds;
   model m;
-  ifs >> m.L >> num_bonds;
+  std::cin >> m.L >> num_bonds;
   for (int i=0; i<num_bonds; ++i) {
     int j, k;
-    ifs >> j >> k;
+    std::cin >> j >> k;
     m.lattice.push_back(std::make_pair(j, k));
   }
 
   for (int i=0; i<num_bonds; ++i) {
     double jx, jy, jz;
-    ifs >> jx >> jy >> jz;
+    std::cin >> jx >> jy >> jz;
     m.coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
 

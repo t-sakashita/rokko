@@ -10,10 +10,11 @@
 #
 
 # single process tests
+<<<<<<< HEAD
 if(BUILD_MPI)
   set(TESTS solver_factory) # magnetization)
 endif(BUILD_MPI)
-set(TESTS ${TESTS} localized_matrix serial_solver)
+set(TESTS ${TESTS} serial_solver_factory localized_matrix serial_solver)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -31,7 +32,7 @@ foreach(name ${TESTS})
 endforeach(name)
 unset(TESTS)
 
-set(TESTS grid_mpi)
+set(TESTS grid_mpi grid_1d_mpi)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -59,6 +60,16 @@ foreach(name ${TESTS})
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
   add_rokko_test(${name})
 endforeach(name)
+
+# utility tests
+set(TESTS sort_eigenpairs)
+foreach(name ${TESTS})
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} rokko ${Boost_LIBRARIES})
+  add_test(${name} ${name})
+endforeach(name)
+unset(TESTS)
+
 
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)

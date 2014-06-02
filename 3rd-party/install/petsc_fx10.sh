@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Reference: http://www.openpetascale.org/source/PETSc%20Installation%20Guide%20(June%202013).pdf
+# Reference: PETSc(Version 3.4.3) and PETSc-OMP(Version 3.3-omp) in http://www.openpetascale.org/index.php/public/page/download
 
 PREFIX="$1"
 test -z "$PREFIX" && PREFIX=$HOME/opt/rokko
@@ -10,22 +10,22 @@ SCRIPT_DIR=`cd $dir && pwd`
 
 mkdir -p $HOME/build
 cd $HOME/build
-rm -rf petsc-3.4.2
-if test -f $HOME/source/petsc-3.4.2.tar.gz; then
-  tar zxf $HOME/source/petsc-3.4.2.tar.gz
+rm -rf petsc-3.4.3
+if test -f $HOME/source/petsc-3.4.3.tar.gz; then
+  tar zxf $HOME/source/petsc-3.4.3.tar.gz
 else
-  wget -O - http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.4.2.tar.gz | tar zxf -
+  wget -O - http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.4.3.tar.gz | tar zxf -
 fi
 
-cd $HOME/build/petsc-3.4.2
-patch -p0 < $SCRIPT_DIR/petsc-3.4.2-fx10.patch
+cd $HOME/build/petsc-3.4.3
+patch -p0 < $SCRIPT_DIR/petsc-3.4.3-fx10.patch
 
-cd $HOME/build/petsc-3.4.2
+cd $HOME/build/petsc-3.4.3
+
 ./configure --prefix=$PREFIX \
-  --with-cc="mpifccpx" --CFLAGS="-mt -Xg" --COPTFLAGS="-Kfast" \
+  --with-cc="mpifccpx" --CFLAGS="-mt -Xg -lmpi_f77 -lmpi_f90" --COPTFLAGS="-Kfast" \
   --with-cxx="mpiFCCpx" --CXXFLAGS="-mt -Xg" --CXXOPTFLAGS="-Kfast" \
-  --with-fc="mpifrtpx" --FFLAGS="-Kthreadsafe" --FOPTFLAGS="-Kfast" \
-  --LDFLAGS="-lmpi_f77 -lmpi_f90" \
+  --with-fc="mpifrtpx" --FFLAGS="-Kthreadsafe -lmpi_f77 -lmpi_f90" --FOPTFLAGS="-Kfast" \
   --with-blas-lapack-lib="-SSL2" \
   --with-x=0 --with-c++-support=1 --with-info=1 --with-debugging=0 --known-mpi-shared-libraries=0 --with-valgrind=0 \
   --with-batch=1 \
@@ -45,7 +45,8 @@ cd $HOME/build/petsc-3.4.2
   --known-bits-per-byte=8 \
   --known-sizeof-MPI_Comm=8 \
   --known-sizeof-MPI_Fint=4 \
-  --known-mpi-long-double=1
+  --known-mpi-long-double=1 \
+  --with-openmp
 
 make # -j option can not be specified
 make install

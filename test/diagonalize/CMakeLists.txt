@@ -10,7 +10,7 @@
 #
 
 #copy files
-set(PATTERN_FILES "heisenberg.ip")
+set(PATTERN_FILES "heisenberg.ip" "xyz_slepc_matfree.ip")
 foreach( pattern_file ${PATTERN_FILES} )
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file} ${CMAKE_CURRENT_BINARY_DIR}/${pattern_file} COPYONLY)
 endforeach( pattern_file )

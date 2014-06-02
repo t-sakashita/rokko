@@ -15,7 +15,7 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
     -DTPL_ENABLE_MPI=ON -DMPI_USE_COMPILER_WRAPPERS=ON \
-    -DCMAKE_Fortran_COMPILER="openmpif90" -DCMAKE_CXX_COMPILER="openmpicxx" -DCMAKE_C_COMPILER="openmpicc" \
+    -DCMAKE_Fortran_COMPILER="mpif90-openmpi-gcc48" -DCMAKE_CXX_COMPILER="mpicxx-openmpi-gcc48" -DCMAKE_C_COMPILER="mpicc-openmpi-gcc48" \
     -DTPL_BLAS_LIBRARIES="-framework veclib" \
     -DTPL_LAPACK_LIBRARIES="-framework veclib" \
     -DTrilinos_ENABLE_Anasazi=ON \

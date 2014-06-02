@@ -9,11 +9,11 @@ echo "DEBUG = $DEBUG"
 
 mkdir -p $HOME/build
 cd $HOME/build
-rm -rf trilinos-11.4.3-Source trilinos-11.4.3-Source-build
-tar xf $HOME/source/trilinos-11.4.3-Source.tar
+rm -rf trilinos-11.4.2-Source trilinos-11.4.2-Source-build
+tar jxf $HOME/source/trilinos-11.4.2-Source.tar.bz2
 
 cd $HOME/build
-mkdir -p trilinos-11.4.3-Source-build && cd trilinos-11.4.3-Source-build
+mkdir -p trilinos-11.4.2-Source-build && cd trilinos-11.4.2-Source-build
 if [ "$DEBUG" = "0" ]; then
     OPTFLAGS="-O3 -xSSE3"
 else
@@ -29,7 +29,7 @@ if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
 	-DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
 	-DTrilinos_ENABLE_Anasazi=ON \
 	-DTrilinos_ENABLE_Didasko=ON \
-	$HOME/build/trilinos-11.4.3-Source
+	$HOME/build/trilinos-11.4.2-Source
 else
     cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
 	-DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
@@ -42,7 +42,7 @@ else
 	-DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
 	-DTrilinos_ENABLE_Anasazi=ON \
 	-DTrilinos_ENABLE_Didasko=ON \
-	$HOME/build/trilinos-11.4.3-Source
+	$HOME/build/trilinos-11.4.2-Source
 fi
 
 make -j4 VERBOSE=1

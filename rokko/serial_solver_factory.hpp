@@ -88,7 +88,7 @@ public:
     creators_[name] = creator_pointer_type(new serial_solver_creator<serial_solver_wrapper<SOLVER> >());
     return isnew;
   }
-  std::vector<std::string> solver_names() const;
+  static std::vector<std::string> solver_names();
   bool unregister_creator(std::string const& name);
   static serial_solver_factory* instance();
 protected:

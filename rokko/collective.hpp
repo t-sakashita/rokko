@@ -69,7 +69,7 @@ void create_struct_local(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MPI
   //  if (myrank == 0) {
     for (int i=0; i<count; ++i) {
       //cout << "proc=" << proc << "  count=" << count << " lengthhhhh=" << array_of_blocklengths[i] << std::endl;
-      printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
+      // printf("local Type proc=%d count=%d:  length=%3d  disp=%3d\n", myrank, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
     }
     //  }
 #endif
@@ -104,10 +104,10 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
   calculate_local_matrix_size(mat, myrow, mycol, num_block_rows, num_block_cols, local_matrix_rows, local_matrix_cols, rest_num_block_rows, rest_num_block_cols);
 
   int type_block_rows = (m_local + mb - 1) / mb;   // 切り上げ
-  std::cout << "myrank=" << myrank << " type_block_rows=" << type_block_rows << " kn_local=" << n_local << std::endl;
+  // std::cout << "myrank=" << myrank << " type_block_rows=" << type_block_rows << " kn_local=" << n_local << std::endl;
   int count_max = type_block_rows * n_local;
 
-  std::cout << "proc=" << myrank << "count_max=" << count_max << std::endl;
+  //std::cout << "proc=" << myrank << "count_max=" << count_max << std::endl;
   //cout << "proc=" << myrank << std::endl;
   //cout << "count_max=" << count_max << std::endl;
   //cout << "type_block_rows=" << type_block_rows << std::endl;
@@ -133,7 +133,7 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
 	  array_of_types[count] = MPI_DOUBLE;
 #ifndef NDEBUG
           //	  if (myrank == 0)
-	    std::cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << std::endl;
+          // std::cout << "verify: count=" << count << "  length=" << array_of_blocklengths[count] << "  disp="  << (int)array_of_displacements[count] << std::endl;
 #endif          
 	  ++count;
       }
@@ -176,17 +176,17 @@ void create_struct_global(const rokko::distributed_matrix<MATRIX_MAJOR>& mat, MP
 #ifndef NDEBUG
   // print out struct of global matrix
   //  if (myrank == 0) {
-    for (int i=0; i<count; ++i) {
-      printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
-    }
-    std::cout << "num_block_rows=" << num_block_rows << std::endl;
+  // for (int i=0; i<count; ++i) {
+  // printf("global Type proc=%d count=%d:  length=%3d  disp=%3d\n", proc, i, array_of_blocklengths[i], (int)array_of_displacements[i]/8);
+  // }
+  // std::cout << "num_block_rows=" << num_block_rows << std::endl;
     //  }
 #endif
     
     MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, &global_array_type);
     MPI_Type_commit(&global_array_type);
 
-  std::cout << "count_max=" << count_max << std::endl;
+  // std::cout << "count_max=" << count_max << std::endl;
   delete[] array_of_blocklengths;
   array_of_blocklengths = 0;
   delete[] array_of_displacements;

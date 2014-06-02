@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 *                            Synge Todo <wistaria@comp-phys.org>,
 *                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
 *
@@ -20,10 +20,12 @@ void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int di
                                         rokko_grid grid, rokko_solver solver, int matrix_major) {
   if (matrix_major == rokko_matrix_col_major)
     matrix->ptr = new rokko::distributed_matrix<rokko::matrix_col_major>(dim1, dim2,
-      *static_cast<rokko::grid*>(grid.ptr), *static_cast<rokko::solver*>(solver.ptr));
+      *static_cast<rokko::grid*>(grid.ptr),
+      *static_cast<rokko::parallel_dense_solver*>(solver.ptr));
   else
     matrix->ptr = new rokko::distributed_matrix<rokko::matrix_row_major>(dim1, dim2,
-      *static_cast<rokko::grid*>(grid.ptr), *static_cast<rokko::solver*>(solver.ptr));
+      *static_cast<rokko::grid*>(grid.ptr),
+      *static_cast<rokko::parallel_dense_solver*>(solver.ptr));
   matrix->major = matrix_major;
 }
 void rokko_distributed_matrix_destruct(rokko_distributed_matrix* matrix) {

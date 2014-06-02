@@ -20,8 +20,8 @@ patch -p1 < $SCRIPT_DIR/elemental-0.80.patch
 
 cd $HOME/build
 mkdir elemental-0.80-build && cd elemental-0.80-build
-cmake -DCMAKE_CXX_COMPILER=openmpicxx -DCMAKE_C_COMPILER=openmpicc \
-    -DCMAKE_Fortran_COMPILER=openmpif90 \
+cmake -DCMAKE_CXX_COMPILER=mpicxx-openmpi-gcc48 -DCMAKE_C_COMPILER=mpicc-openmpi-gcc48 \
+    -DCMAKE_Fortran_COMPILER=mpif90-openmpi-gcc48 \
     -DMATH_LIBS="-Wl,-framework -Wl,vecLib" \
     -DCMAKE_INSTALL_NAME_DIR=$PREFIX/lib \
     -DELEM_EXAMPLES=ON -DELEM_TESTS=ON \

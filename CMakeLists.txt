@@ -222,6 +222,7 @@ add_subdirectory(rokko)
 if (BUILD_Fortran_BINDING AND BUILD_MPI)
   add_subdirectory(rokko_c-fortran)
 endif (BUILD_Fortran_BINDING AND BUILD_MPI)
+add_subdirectory(tool)
 
 if(BUILD_MPI)
 add_subdirectory(sample_dense)

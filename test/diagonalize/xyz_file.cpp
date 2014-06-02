@@ -4,13 +4,13 @@
 *
 * Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
 *                            Tatsuya Sakashita <t-sakashit@issp.u-tokyo.ac.jp>
+*               2014-2014    Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include <rokko/serial_solver.hpp>
@@ -25,12 +25,10 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver) {
-  boost::shared_ptr<rokko::serial_solver_factory> instance(rokko::serial_solver_factory::instance());
-
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = instance->solver_names();
+    names = rokko::serial_solver_factory::solver_names();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);

@@ -37,18 +37,30 @@ if(DEFINED MKL_INCLUDE_DIR)
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/config/check_sgimpt.c
     OUTPUT_VARIABLE LOG)
-  if (_SGI_MPT)
+  if(_SGI_MPT)
     find_library(_SCALAPACK_BLACS_LIBRARY
       NAMES mkl_blacs_sgimpt_lp64
       PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
       DOC "The BLACS library")
-    MESSAGE("LOG: SGI MPT is used")
-  else (_SGI_MPT)
-    find_library(_SCALAPACK_BLACS_LIBRARY
-      NAMES mkl_blacs_intelmpi_lp64
-      PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
-      DOC "The BLACS library")
-    MESSAGE("LOG: Intel MPI/MPICH2/MVAPICH is used")
+    MESSAGE(STASTUS "SGI MPT is used")
+  else(_SGI_MPT)
+    try_compile(_OPENMPI
+      ${CMAKE_CURRENT_BINARY_DIR}
+      ${CMAKE_CURRENT_SOURCE_DIR}/config/check_openmpi.c
+      OUTPUT_VARIABLE LOG)
+    if(_OPENMPI)
+      find_library(_SCALAPACK_BLACS_LIBRARY
+        NAMES mkl_blacs_openmpi_lp64
+        PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
+        DOC "The BLACS library")
+      MESSAGE(STATUS "OpenMPI is used")
+    else(_OPENMPI)
+      find_library(_SCALAPACK_BLACS_LIBRARY
+        NAMES mkl_blacs_intelmpi_lp64
+        PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
+        DOC "The BLACS library")
+      MESSAGE(STATUS "Intel MPI/MPICH2/MVAPICH is used")
+    endif(_OPENMPI)
   endif(_SGI_MPT)
   if(_SCALAPACK_BLACS_LIBRARY)
     list(APPEND _SCALAPACK_LIBRARIES ${_SCALAPACK_BLACS_LIBRARY})
