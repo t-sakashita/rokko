@@ -13,7 +13,7 @@
 #include <iostream>
 #include <boost/foreach.hpp>
 
-#include <rokko/serial_solver.hpp>
+#include <rokko/solver.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/heisenberg_hamiltonian.hpp>
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   if (argc <= 1) {
     std::cerr << "error: " << argv[0] << " solver_name" << std::endl
               << "available solvers:";
-    BOOST_FOREACH(std::string name, rokko::serial_solver_factory::solver_names())
+    BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers())
       std::cerr << ' ' << name;
     std::cerr << std::endl;
     exit(34);
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   }
   lattice.push_back(std::make_pair(L-1, 0));
 
-  rokko::serial_solver solver(solver_name);
+  rokko::serial_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
             << "solver = " << solver_name << std::endl

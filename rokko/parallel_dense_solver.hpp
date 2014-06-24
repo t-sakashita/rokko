@@ -50,6 +50,12 @@ public:
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {
     solver_impl_->optimized_matrix_size(mat);
   }
+  static std::vector<std::string> solvers() {
+    return solver_factory::parallel_dense_solver_names();
+  }
+  static std::string default_solver() {
+    return solver_factory::default_parallel_dense_solver_name();
+  }
 private:
   solver_factory::parallel_dense_solver_pointer_type solver_impl_;
 };

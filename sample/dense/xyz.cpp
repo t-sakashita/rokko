@@ -15,7 +15,7 @@
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 
-#include <rokko/serial_solver.hpp>
+#include <rokko/solver.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   if (argc <= 2) {
     std::cerr << "error: " << argv[0] << " solver_name lattice_file" << std::endl
               << "available solvers:";
-    BOOST_FOREACH(std::string name, rokko::serial_solver_factory::solver_names())
+    BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers())
       std::cerr << ' ' << name;
     std::cerr << std::endl;
     exit(34);
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
             << "number of bonds = " << num_bonds << std::endl
             << "matrix dimension = " << dim << std::endl;
 
-  rokko::serial_solver solver(solver_name);
+  rokko::serial_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
 
   rokko::localized_matrix<matrix_major> mat(dim, dim);

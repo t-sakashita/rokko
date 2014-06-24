@@ -1,6 +1,6 @@
 if(BUILD_ANASAZI)
   include_directories(${ANASAZI_INCLUDE_DIR})
-  set(TESTS heisenberg_crs_mpi heisenberg_matfree_mpi xyz_crs_mpi xyz_matfree_mpi)
+  set(TESTS xyz_crs_mpi xyz_matfree_mpi)
   foreach(name ${TESTS})
     set(target_name sample_anasazi_diagonalize_${name})
     add_executable(${target_name} ${name}.cpp)

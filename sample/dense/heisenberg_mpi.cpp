@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     if (myrank == root) {
       std::cerr << "error: " << argv[0] << " solver_name" << std::endl
                 << "available solvers:";
-      BOOST_FOREACH(std::string name, rokko::solver_factory::parallel_dense_solver_names())
+      BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers())
         std::cerr << ' ' << name;
       std::cerr << std::endl;
     }

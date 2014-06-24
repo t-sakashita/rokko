@@ -13,7 +13,7 @@
 #ifndef ROKKO_SERIAL_DENSE_SOLVER_HPP
 #define ROKKO_SERIAL_DENSE_SOLVER_HPP
 
-#include <rokko/serial_solver_factory.hpp>
+#include <rokko/solver_factory.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
@@ -24,7 +24,7 @@ namespace rokko {
 class serial_dense_solver {
 public:
   serial_dense_solver(std::string const& solver_name) {
-    solver_impl_ = serial_solver_factory::instance()->make_solver(solver_name);
+    solver_impl_ = solver_factory::instance()->make_serial_dense_solver(solver_name);
   }
   void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
   void finalize() { solver_impl_->finalize(); }
@@ -39,8 +39,14 @@ public:
     timer_dumb timer_in;
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
   }
+  static std::vector<std::string> solvers() {
+    return solver_factory::serial_dense_solver_names();
+  }
+  static std::string default_solver() {
+    return solver_factory::default_serial_dense_solver_name();
+  }
 private:
-  serial_solver_factory::solver_pointer_type solver_impl_;
+  solver_factory::serial_dense_solver_pointer_type solver_impl_;
 };
 
 } // end namespace rokko

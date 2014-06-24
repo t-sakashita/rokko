@@ -235,6 +235,7 @@ int main(int argc, char *argv[]) {
 
   // Create the solver manager
   Anasazi::SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  //Anasazi::BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
   Anasazi::ReturnType returnCode = MySolverMan.solve();

@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = rokko::solver_factory::parallel_dense_solver_names();
+    names = rokko::parallel_dense_solver::solvers();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);

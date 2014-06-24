@@ -13,17 +13,17 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
-#include <rokko/solver_factory.hpp>
+#include <rokko/solver.hpp>
 
-#define BOOST_TEST_MODULE test_solver_factory
+#define BOOST_TEST_MODULE test_parallel_dense_solvers
 #ifndef BOOST_TEST_DYN_LINK
 #include <boost/test/included/unit_test.hpp>
 #else
 #include <boost/test/unit_test.hpp>
 #endif
 
-BOOST_AUTO_TEST_CASE(test_solver_factory) {
-    BOOST_FOREACH(std::string name, rokko::solver_factory::parallel_dense_solver_names()) {
-        std::cerr << name << std::endl;
-    }
+BOOST_AUTO_TEST_CASE(test_parallel_dense_solvers) {
+  BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
+    std::cerr << name << std::endl;
+  }
 }

@@ -21,7 +21,14 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver) {
-  BOOST_FOREACH(std::string name, rokko::solver_factory::parallel_dense_solver_names()) {
+  BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers()) {
+    std::cerr << name << std::endl;
+    rokko::serial_dense_solver solver(name);
+    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
+                      boost::unit_test::framework::master_test_suite().argv);
+    solver.finalize();
+  }
+  BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
     std::cerr << name << std::endl;
     rokko::parallel_dense_solver solver(name);
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,

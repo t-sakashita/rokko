@@ -12,6 +12,7 @@
 #ifndef ROKKO_SOLVER_HPP
 #define ROKKO_SOLVER_HPP
 
+#include <rokko/serial_dense_solver.hpp>
 #include <rokko/parallel_dense_solver.hpp>
 
 #endif // ROKKO_SOLVER_HPP
