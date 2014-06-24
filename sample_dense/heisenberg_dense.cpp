@@ -12,18 +12,17 @@
 
 #include <iostream>
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <rokko/serial_solver.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/heisenberg_hamiltonian.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  if (argc <= 2) {
-    std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl
+  if (argc <= 1) {
+    std::cerr << "error: " << argv[0] << " solver_name" << std::endl
               << "available solvers:";
     BOOST_FOREACH(std::string name, rokko::serial_solver_factory::solver_names())
       std::cerr << ' ' << name;
@@ -33,17 +32,23 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
   std::string solver_name(argv[1]);
-  unsigned int dim = boost::lexical_cast<unsigned int>(argv[2]);
+  int L = 8;
+  int dim = 1 << L;
+  std::vector<std::pair<int, int> > lattice;
+  for (int i = 0; i < L-1; ++i) {
+    lattice.push_back(std::make_pair(i, i+1));
+  }
+  lattice.push_back(std::make_pair(L-1, 0));
 
   rokko::serial_solver solver(solver_name);
   solver.initialize(argc, argv);
-  std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
+  std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
             << "solver = " << solver_name << std::endl
+            << "L = " << L << std::endl
             << "dimension = " << dim << std::endl;
 
   rokko::localized_matrix<matrix_major> mat(dim, dim);
-  rokko::frank_matrix::generate(mat);
-  std::cout << "Frank matrix:\n" << mat << std::endl;
+  rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
 
   rokko::localized_vector eigval(dim);
   rokko::localized_matrix<matrix_major> eigvec(dim, dim);
@@ -54,18 +59,14 @@ int main(int argc, char *argv[]) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }
-  rokko::frank_matrix::generate(mat);
+  rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
 
-  bool sorted = true;
-  for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
-  if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
-
-  std::cout << "eigenvalues:\n" << eigval.transpose() << std::endl
-            << "eigvectors:\n" << eigvec << std::endl;
-  std::cout << "orthogonality of eigenvectors:" << std::endl
-            << eigvec.transpose() * eigvec << std::endl;
-  std::cout << "residual of the smallest eigenvalue/vector (A x - lambda x):" << std::endl
-            << (mat * eigvec.col(0) - eigval(0) * eigvec.col(0)).transpose() << std::endl;
+  std::cout << "smallest eigenvalues:";
+  for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(i);
+  std::cout << std::endl;
+  std::cout << "residual of the smallest eigenvalue/vector: |x A x - lambda| = "
+            << std::abs(eigvec.col(0).transpose() * mat * eigvec.col(0) - eigval(0))
+            << std::endl;
 
   solver.finalize();
 }
