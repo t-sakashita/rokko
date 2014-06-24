@@ -174,7 +174,7 @@ if (BUILD_Fortran_BINDING)
 endif (BUILD_Fortran_BINDING)
 add_subdirectory(tool)
 
-add_subdirectory(sample_dense)
+add_subdirectory(sample)
 add_subdirectory(test)
 add_subdirectory(benchmark_dense)
 add_subdirectory(sample_slepc)
