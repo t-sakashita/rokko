@@ -11,8 +11,8 @@
 *****************************************************************************/
 
 #include <iostream>
-#include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <rokko/serial_solver.hpp>
 #include <rokko/localized_matrix.hpp>
