@@ -10,8 +10,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SERIAL_SOLVER_HPP
-#define ROKKO_SERIAL_SOLVER_HPP
+#ifndef ROKKO_SERIAL_DENSE_SOLVER_HPP
+#define ROKKO_SERIAL_DENSE_SOLVER_HPP
 
 #include <rokko/serial_solver_factory.hpp>
 #include <rokko/localized_matrix.hpp>
@@ -21,9 +21,9 @@
 
 namespace rokko {
 
-class serial_solver {
+class serial_dense_solver {
 public:
-  serial_solver(std::string const& solver_name) {
+  serial_dense_solver(std::string const& solver_name) {
     solver_impl_ = serial_solver_factory::instance()->make_solver(solver_name);
   }
   void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
@@ -45,4 +45,4 @@ private:
 
 } // end namespace rokko
 
-#endif // ROKKO_SERIAL_SOLVER_HPP
+#endif // ROKKO_SERIAL_DENSE_SOLVER_HPP
