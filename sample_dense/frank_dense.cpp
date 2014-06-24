@@ -12,18 +12,22 @@
 
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 
 #include <rokko/serial_solver.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#include <rokko/utility/sort_eigenpairs.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
   if (argc <= 2) {
-    std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl;
+    std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl
+              << "available solvers:";
+    BOOST_FOREACH(std::string name, rokko::serial_solver_factory::solver_names())
+      std::cerr << ' ' << name;
+    std::cerr << std::endl;
     exit(34);
   }
 
@@ -52,17 +56,16 @@ int main(int argc, char *argv[]) {
   }
   rokko::frank_matrix::generate(mat);
 
-  rokko::localized_vector eigval_sorted(dim);
-  rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
-  rokko::sort_eigenpairs(w, eigvec, eigval_sorted, eigvec_sorted);
-  std::cout << "eigenvalues:\n" << eigval_sorted.transpose() << std::endl
-            << "eigvectors:\n" << eigvec_sorted << std::endl;
+  bool sorted = true;
+  for (unsigned int i = 1; i < dim; ++i) sorted &= (w(i-1) <= w(i));
+  if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
+
+  std::cout << "eigenvalues:\n" << w.transpose() << std::endl
+            << "eigvectors:\n" << eigvec << std::endl;
   std::cout << "orthogonality of eigenvectors:" << std::endl
-            << eigvec_sorted.transpose() * eigvec_sorted << std::endl;
-  std::cout << "residual of the largest eigenvalue/vector (A x - lambda x):" << std::endl
-            << (mat * eigvec_sorted.col(0) - eigval_sorted(0) * eigvec_sorted.col(0)).transpose()
-            << std::endl;
+            << eigvec.transpose() * eigvec << std::endl;
+  std::cout << "residual of the smallest eigenvalue/vector (A x - lambda x):" << std::endl
+            << (mat * eigvec.col(0) - w(0) * eigvec.col(0)).transpose() << std::endl;
 
   solver.finalize();
-  return 0;
 }
