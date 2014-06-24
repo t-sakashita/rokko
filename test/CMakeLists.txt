@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+# Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 #                            Synge Todo <wistaria@comp-phys.org>,
 #               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
 #
@@ -10,7 +10,7 @@
 #
 
 # single process tests
-set(TESTS serial_solver_factory solver_factory localized_matrix) # magnetization)
+set(TESTS serial_dense_solvers parallel_dense_solvers localized_matrix)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
