@@ -14,6 +14,7 @@
 #ifndef ROKKO_SOLVER_FACTORY_H
 #define ROKKO_SOLVER_FACTORY_H
 
+#include <rokko/factory.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
