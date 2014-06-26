@@ -50,7 +50,7 @@ public:
   static product_pointer_type make_product(std::string const& name = "") {
     factory* f = factory::instance();
     if (name == "") {
-      if (f->default_sd_solver_ != "") {
+      if (f->default_product_ != "") {
         return f->make_creator(f->default_product_)->create();
       } else {
         std::cerr << "Error: default product is not defined\n";
@@ -74,7 +74,7 @@ public:
   static std::vector<std::string> product_names() {
     factory* f = factory::instance();
     std::vector<std::string> retvec;
-    for (typename creator_map_type::const_iterator it = f.creators_.begin();
+    for (typename creator_map_type::const_iterator it = f->creators_.begin();
          it != f->creators_.end(); ++it) {
       retvec.push_back(it->first);
     }
@@ -114,6 +114,6 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_PRODUCT(base, product, name, priority) \
-  namespace { namespace BOOST_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance()->register_creator<solver>(name, priority); } } caller; } }
+  namespace { namespace BOOST_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance()->register_creator<product>(name, priority); } } caller; } }
 
 #endif // ROKKO_FACTORY_H
