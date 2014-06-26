@@ -27,10 +27,10 @@ public:
   typedef Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
   solver_anasazi() {}
   ~solver_anasazi() {}
-  void diagonalize(distributed_crs_matrix_anasazi const& mat,
+  void diagonalize(distributed_crs_matrix const& mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
-    problem_ = Teuchos::rcp(new eigenproblem_t(mat.get_pointer(), ivec.get_pointer()));
+    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.matrix_impl_.get())->matrix_, ivec.get_pointer()));
     problem_->setHermitian(true);
     problem_->setNEV(num_evals);
     problem_->setProblem();

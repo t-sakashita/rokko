@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include <rokko/anasazi/core.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::mapping_1d map(dim, g);
-  rokko::distributed_crs_matrix_anasazi mat(map);
+  rokko::distributed_crs_matrix mat("anasazi", map);
   std::vector<double> values;
   std::vector<int> cols;
   for (int k = 0; k < map.num_rows(); ++k) {
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
     values.push_back(diag);
     mat.insert(row, cols, values);
   }
-  mat.finish_insert();
+  mat.complete();
 
   rokko::distributed_multivector_anasazi ivec(map, blockSize);
   ivec.init_random();
