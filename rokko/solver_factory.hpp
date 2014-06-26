@@ -106,35 +106,19 @@ private:
     solver_type solver_impl_;
   };
 
-  class abstract_sd_solver_creator {
+  template<typename BASE>
+  class abstract_creator {
   public:
-    virtual ~abstract_sd_solver_creator() {}
-    virtual boost::shared_ptr<sd_solver_base> create() const = 0;
+    virtual ~abstract_creator() {}
+    virtual boost::shared_ptr<BASE> create() const = 0;
   };
 
-  template <typename SOLVER>
-  class sd_solver_creator : public abstract_sd_solver_creator {
+  template <typename BASE, typename SOLVER>
+  class creator : public abstract_creator<BASE> {
   public:
-    virtual ~sd_solver_creator() {}
-    typedef SOLVER solver_type;
-    boost::shared_ptr<sd_solver_base> create() const {
-      return boost::shared_ptr<sd_solver_base>(new solver_type());
-    }
-  };
-
-  class abstract_pd_solver_creator {
-  public:
-    virtual ~abstract_pd_solver_creator() {}
-    virtual boost::shared_ptr<pd_solver_base> create() const = 0;
-  };
-
-  template <typename SOLVER>
-  class pd_solver_creator : public abstract_pd_solver_creator {
-  public:
-    virtual ~pd_solver_creator() {}
-    typedef SOLVER solver_type;
-    boost::shared_ptr<pd_solver_base> create() const {
-      return boost::shared_ptr<pd_solver_base>(new solver_type());
+    virtual ~creator() {}
+    boost::shared_ptr<BASE> create() const {
+      return boost::shared_ptr<BASE>(new SOLVER());
     }
   };
 
@@ -143,8 +127,10 @@ public:
   typedef boost::shared_ptr<pd_solver_base> parallel_dense_solver_pointer_type;
 
 private:
+  typedef abstract_creator<sd_solver_base> abstract_sd_solver_creator;
   typedef boost::shared_ptr<abstract_sd_solver_creator> sd_creator_pointer_type;
   typedef std::map<std::string, sd_creator_pointer_type> sd_creator_map_type;
+  typedef abstract_creator<pd_solver_base> abstract_pd_solver_creator;
   typedef boost::shared_ptr<abstract_pd_solver_creator> pd_creator_pointer_type;
   typedef std::map<std::string, pd_creator_pointer_type> pd_creator_map_type;
 public:
@@ -157,7 +143,7 @@ public:
   bool register_serial_dense_creator(std::string const& name, int priority = 0) {
     bool isnew = (sd_creators_.find(name) == sd_creators_.end());
     sd_creators_[name] = sd_creator_pointer_type(
-      new sd_solver_creator<sd_solver_wrapper<SOLVER> >());
+      new creator<sd_solver_base, sd_solver_wrapper<SOLVER> >());
     if (priority >= sd_largest_priority_) {
       sd_largest_priority_ = priority;
       default_sd_solver_ = name;
@@ -168,7 +154,7 @@ public:
   bool register_parallel_dense_creator(std::string const& name, int priority = 0) {
     bool isnew = (pd_creators_.find(name) == pd_creators_.end());
     pd_creators_[name] = pd_creator_pointer_type(
-      new pd_solver_creator<pd_solver_wrapper<SOLVER> >());
+      new creator<pd_solver_base, pd_solver_wrapper<SOLVER> >());
     if (priority >= pd_largest_priority_) {
       pd_largest_priority_ = priority;
       default_pd_solver_ = name;
