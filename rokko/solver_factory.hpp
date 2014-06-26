@@ -34,7 +34,11 @@ private:
     virtual void initialize(int& argc, char**& argv) = 0;
     virtual void finalize() = 0;
     virtual void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
+      localized_matrix<matrix_row_major>& eigvecs) = 0;
+    virtual void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
       localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
+    virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
+      localized_matrix<matrix_col_major>& eigvecs) = 0;
     virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
       localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
   };
@@ -48,8 +52,18 @@ private:
     void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
     void finalize() { solver_impl_.finalize(); }
     void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
+      localized_matrix<matrix_row_major>& eigvecs) {
+      timer_dumb timer;
+      solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    }
+    void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
       localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
       solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+    }
+    void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
+      localized_matrix<matrix_col_major>& eigvecs) {
+      timer_dumb timer;
+      solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
     }
     void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
       localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
@@ -67,7 +81,11 @@ private:
     virtual void initialize(int& argc, char**& argv) = 0;
     virtual void finalize() = 0;
     virtual void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
+      distributed_matrix<matrix_row_major>& eigvecs) = 0;
+    virtual void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
       distributed_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
+    virtual void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
+      distributed_matrix<matrix_col_major>& eigvecs) = 0;
     virtual void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
       distributed_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
     virtual void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) = 0;
@@ -89,8 +107,18 @@ private:
     void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
     void finalize() { solver_impl_.finalize(); }
     void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
+      distributed_matrix<matrix_row_major>& eigvecs) {
+      timer_dumb timer;
+      solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    }
+    void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
       distributed_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
       solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+    }
+    void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
+      distributed_matrix<matrix_col_major>& eigvecs) {
+      timer_dumb timer;
+      solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
     }
     void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
       distributed_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
