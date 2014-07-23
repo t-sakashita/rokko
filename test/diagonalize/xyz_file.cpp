@@ -13,7 +13,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <rokko/serial_solver.hpp>
+#include <rokko/solver.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <fstream>
 
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = rokko::serial_solver_factory::solver_names();
+    names = rokko::serial_dense_solver::solvers();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     int dim = 1 << L;
 
     std::cout << "solver=" << name << std::endl;
-    rokko::serial_solver solver(name);
+    rokko::serial_dense_solver solver(name);
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                       boost::unit_test::framework::master_test_suite().argv);
     rokko::localized_matrix<rokko::matrix_col_major> mat(dim, dim);

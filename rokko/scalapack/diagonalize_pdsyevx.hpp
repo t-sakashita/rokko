@@ -1,18 +1,31 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>,
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVX_HPP
 #define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVX_HPP
 
-#include "rokko/distributed_matrix.hpp"
-#include "rokko/localized_vector.hpp"
-#include "rokko/blacs.h"
-#include "rokko/scalapack.h"
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_vector.hpp>
+#include <rokko/blacs.h>
+#include <rokko/scalapack.h>
 
 #include <mpi.h>
 
 namespace rokko {
 namespace scalapack {
 
-template<typename MATRIX_MAJOR>
-int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+template<typename MATRIX_MAJOR, typename TIMER>
+int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+  distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
   int ictxt;
   int info;
 
@@ -43,8 +56,7 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
 
   int vl = 0, vu = 0;
   int il, iu;
-  double abstol = ROKKO_pdlamch(ictxt, 'U');  // get optimized absolute tolerance
-  //std::cout << "abstol=" << abstol << std::endl;
+  double abstol = ROKKO_pdlamch(ictxt, 'U');
   int num_eigval_found, num_eigvec_found;
   int orfac = -1;  // default value 10^{-3} is used.
   int* ifail = new int[dim];
@@ -69,13 +81,13 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   long liwork = -1;
 
   // work配列のサイズの問い合わせ
-  timer_in.start(1);
+  timer.start(1);
   ROKKO_pdsyevx('V', 'A', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
                 vl, vu, il, iu,
-                abstol, &num_eigval_found, &num_eigvec_found, eigvals, orfac,
+                abstol, &num_eigval_found, &num_eigvec_found, &eigvals[0], orfac,
                 eigvecs.get_array_pointer(), 1, 1, desc,
                 work, lwork, iwork, liwork, ifail, iclustr, gap, &info);
-  timer_in.stop(1);
+  timer.stop(1);
 
   if (info) {
     std::cerr << "error at pdsyevx function (query for sizes for workarrays." << std::endl;
@@ -96,7 +108,7 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
 
   // 固有値分解
   ROKKO_pdsyevx('V', 'A', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                vl, vu, il, iu, abstol, &num_eigval_found, &num_eigvec_found, eigvals, orfac,
+                vl, vu, il, iu, abstol, &num_eigval_found, &num_eigvec_found, &eigvals[0], orfac,
                 eigvecs.get_array_pointer(), 1, 1, desc,
                 work, lwork, iwork, liwork, ifail, iclustr, gap, &info);
 
@@ -111,12 +123,6 @@ int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   delete[] iclustr;
   delete[] gap;
   return info;
-}
-
-template<class MATRIX_MAJOR>
-int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  return diagonalize_x(mat, &eigvals[0], eigvecs, timer_in);
 }
 
 } // namespace scalapack

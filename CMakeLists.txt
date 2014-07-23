@@ -33,28 +33,28 @@ if(DISABLE_PETSC)
 endif(DISABLE_PETSC)
 
 # RPATH setting
-if(APPLE)
+if(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
   set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
-else(APPLE)
+else(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
   set(CMAKE_SKIP_BUILD_RPATH FALSE)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif(APPLE)
+  set(CMAKE_MACOSX_RPATH 1)
+endif(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
 
 # C++, C, and Fortran compilers
 enable_language(CXX)
 if(BUILD_C_BINDING)
   enable_language(C)
 endif(BUILD_C_BINDING)
+enable_language(Fortran)
 if(BUILD_Fortran_BINDING)
-  enable_language(Fortran)
   # ancient gfortran does not support iso_c_bindings
   try_compile(CMake_Fortran_SUPPORTS_ISO_C_BINDING
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/config/check_iso_c_binding.f90
     OUTPUT_VARIABLE LOG)
-  #MESSAGE("LOG: ${LOG}")
   if(NOT CMake_Fortran_SUPPORTS_ISO_C_BINDING)
     set(BUILD_Fortran_BINDING OFF)
     MESSAGE("Do not build Fortran binding since the fortran compiler does not support iso_c_binding.")
@@ -173,7 +173,7 @@ if (BUILD_Fortran_BINDING)
 endif (BUILD_Fortran_BINDING)
 add_subdirectory(tool)
 
-add_subdirectory(sample_dense)
+add_subdirectory(sample)
 add_subdirectory(test)
 add_subdirectory(benchmark_dense)
 add_subdirectory(sample_slepc)

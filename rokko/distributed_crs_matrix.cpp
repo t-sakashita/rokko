@@ -9,20 +9,7 @@
 *
 *****************************************************************************/
 
-#include <boost/shared_ptr.hpp>
-#include <boost/foreach.hpp>
+#include "distributed_crs_matrix.hpp"
 
-#include <rokko/serial_solver_factory.hpp>
-
-#define BOOST_TEST_MODULE test_solver_factory
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
-
-BOOST_AUTO_TEST_CASE(test_solver_factory) {
-    BOOST_FOREACH(std::string name, rokko::serial_solver_factory::solver_names()) {
-        std::cerr << name << std::endl;
-    }
-}
+template<>
+rokko::detail::dc_matrix_factory *rokko::detail::dc_matrix_factory::instance_ = 0;

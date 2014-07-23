@@ -1,18 +1,32 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>,
+*               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
 #define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
 
-#include "rokko/distributed_matrix.hpp"
-#include "rokko/localized_vector.hpp"
-#include "rokko/blacs.h"
-#include "rokko/scalapack.h"
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_vector.hpp>
+#include <rokko/blacs.h>
+#include <rokko/scalapack.h>
 
 #include <mpi.h>
 
 namespace rokko {
 namespace scalapack {
 
-template<typename MATRIX_MAJOR>
-int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+template<typename MATRIX_MAJOR, typename TIMER>
+int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+  distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
   int ictxt;
   int info;
 
@@ -22,23 +36,18 @@ int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   if(mat.get_grid().is_row_major())  char_grid_major = 'R';
   else  char_grid_major = 'C';
 
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol()); // ColがMPI_Comm_createと互換
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(),
+    mat.get_grid().get_npcol());
   int dim = mat.get_m_global();
   int desc[9];
-  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), 0, 0, ictxt, mat.get_lld(), &info);
+  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(),
+    0, 0, ictxt, mat.get_lld(), &info);
   if (info) {
-    std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld() << "." << std::endl;
+    std::cerr << "error " << info << " at descinit function of descA " << "mA="
+              << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld()
+              << "." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
-
-#ifdef DEBUG
-  for (int proc=0; proc<mat.nprocs; ++proc) {
-    if (proc == mat.g.get_myrank()) {
-      std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << "  mb=" << mat.get_mb() << "  nb=" << mat.get_nb() << " lld=" << mat.get_lld() << std::endl;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
-#endif
 
   double* work = new double[1];
   int* iwork = new int[1];
@@ -47,7 +56,7 @@ int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
 
   // work配列のサイズの問い合わせ
   ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                eigvals, eigvecs.get_array_pointer(), 1, 1, desc,
+                &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc,
                 work, lwork, iwork, liwork, &info);
   if (info) {
     std::cerr << "error at pdsyev function (query for sizes for workarrays." << std::endl;
@@ -67,11 +76,11 @@ int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   }
 
   // 固有値分解
-  timer_in.start(1);
+  timer.start(1);
   ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                eigvals, eigvecs.get_array_pointer(), 1, 1, desc,
+                &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc,
                 work, lwork, iwork, liwork, &info);
-  timer_in.stop(1);
+  timer.stop(1);
 
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info  << std::endl;
@@ -81,12 +90,6 @@ int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, double* eigvals, distri
   delete[] work;
   delete[] iwork;
   return info;
-}
-
-template<class MATRIX_MAJOR>
-int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  return diagonalize_d(mat, &eigvals[0], eigvecs, timer_in);
 }
 
 } // namespace scalapack

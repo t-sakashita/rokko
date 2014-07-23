@@ -1,3 +1,15 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>,
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef ROKKO_ELEMENTAL_CORE_HPP
 #define ROKKO_ELEMENTAL_CORE_HPP
 
@@ -11,14 +23,12 @@ namespace elemental {
 class solver {
 public:
   template <typename GRID_MAJOR>
-  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return boost::is_same<GRID_MAJOR, grid_col_major_t>::value; }
-
+  bool is_available_grid_major(GRID_MAJOR const& grid_major) {
+    return boost::is_same<GRID_MAJOR, grid_col_major_t>::value;
+  }
   void initialize(int& argc, char**& argv) { elem::Initialize(argc, argv); }
-
   void finalize() { elem::Finalize(); }
-
   void optimized_grid_size() {}
-
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     mat.set_block_size(1, 1); // set mb = nb = 1
@@ -30,11 +40,10 @@ public:
     mat.set_default_lld();
     mat.set_default_length_array();
   }
-
-  template<typename MATRIX_MAJOR>
+  template<typename MATRIX_MAJOR, typename TIMER>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-    rokko::elemental::diagonalize(mat, eigvals, eigvecs, timer_in);
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
+    rokko::elemental::diagonalize(mat, eigvals, eigvecs, timer);
   }
 };
 

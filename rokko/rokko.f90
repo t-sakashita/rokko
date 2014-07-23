@@ -82,6 +82,7 @@ module rokko
      ! rokko_solver
 
      subroutine rokko_solver_construct(solver, solver_name)
+       use iso_c_binding
        import rokko_solver
        implicit none
        type(rokko_solver), intent(inout) :: solver

@@ -12,19 +12,23 @@
 
 #include <iostream>
 #include <fstream>
+#include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
 
-#include <rokko/serial_solver.hpp>
+#include <rokko/solver.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
-#include <rokko/utility/sort_eigenpairs.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
   if (argc <= 2) {
-    std::cerr << "error: " << argv[0] << " solver_name lattice_file" << std::endl;
+    std::cerr << "error: " << argv[0] << " solver_name lattice_file" << std::endl
+              << "available solvers:";
+    BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers())
+      std::cerr << ' ' << name;
+    std::cerr << std::endl;
     exit(34);
   }
 
@@ -51,20 +55,21 @@ int main(int argc, char *argv[]) {
     coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
   int dim = 1 << num_sites;
-  std::cout << "solver = " << solver_name << std::endl
+  std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
+            << "solver = " << solver_name << std::endl
             << "lattice file = " << argv[2] << std::endl
             << "number of sites = " << num_sites << std::endl
             << "number of bonds = " << num_bonds << std::endl
             << "matrix dimension = " << dim << std::endl;
 
-  rokko::serial_solver solver(solver_name);
+  rokko::serial_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
 
   rokko::localized_matrix<matrix_major> mat(dim, dim);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
+
   rokko::localized_vector eigval(dim);
   rokko::localized_matrix<matrix_major> eigvec(dim, dim);
-
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }
@@ -74,14 +79,12 @@ int main(int argc, char *argv[]) {
   }
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
 
-  rokko::localized_vector eigval_sorted(dim);
-  rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
-  rokko::sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted);
-  std::cout << "eigenvalues:\n" << eigval_sorted.transpose() << std::endl;
-  std::cout << "residual of the largest eigenvalue/vector (A x - lambda x):" << std::endl
-            << (mat * eigvec_sorted.col(0) - eigval_sorted(0) * eigvec_sorted.col(0)).transpose()
+  std::cout << "smallest eigenvalues:";
+  for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(i);
+  std::cout << std::endl;
+  std::cout << "residual of the smallest eigenvalue/vector: |x A x - lambda| = "
+            << std::abs(eigvec.col(0).transpose() * mat * eigvec.col(0) - eigval(0))
             << std::endl;
 
   solver.finalize();
-  return 0;
 }

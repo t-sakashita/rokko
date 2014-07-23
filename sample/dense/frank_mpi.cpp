@@ -12,6 +12,7 @@
 
 #include <mpi.h>
 #include <iostream>
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <rokko/solver.hpp>
@@ -21,7 +22,6 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#include <rokko/utility/sort_eigenpairs.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
@@ -35,8 +35,13 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   if (argc <= 2) {
-    if (myrank == root)
-      std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl;
+    if (myrank == root) {
+      std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl
+                << "available solvers:";
+      BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers())
+        std::cerr << ' ' << name;
+      std::cerr << std::endl;
+    }
     MPI_Abort(MPI_COMM_WORLD, 34);
   }
 
@@ -47,7 +52,8 @@ int main(int argc, char *argv[]) {
   rokko::parallel_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
   if (myrank == root)
-    std::cout << "solver = " << solver_name << std::endl
+    std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
+              << "solver = " << solver_name << std::endl
               << "dimension = " << dim << std::endl;
 
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
@@ -57,11 +63,10 @@ int main(int argc, char *argv[]) {
   rokko::localized_matrix<matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, root);
 
-  rokko::localized_vector w(dim);
+  rokko::localized_vector eigval(dim);
   rokko::distributed_matrix<matrix_major> eigvec(dim, dim, g, solver);
-
   try {
-    solver.diagonalize(mat, w, eigvec);
+    solver.diagonalize(mat, eigval, eigvec);
   }
   catch (const char *e) {
     if (myrank == root) std::cout << "Exception : " << e << std::endl;
@@ -71,19 +76,19 @@ int main(int argc, char *argv[]) {
   rokko::localized_matrix<matrix_major> eigvec_loc;
   rokko::gather(eigvec, eigvec_loc, root);
   if (myrank == root) {
-    rokko::localized_vector eigval_sorted(dim);
-    rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
-    rokko::sort_eigenpairs(w, eigvec_loc, eigval_sorted, eigvec_sorted);
-    std::cout << "eigenvalues:\n" << eigval_sorted.transpose() << std::endl
-              << "eigvectors:\n" << eigvec_sorted << std::endl;
+    bool sorted = true;
+    for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+    if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
+
+    std::cout << "eigenvalues:\n" << eigval.transpose() << std::endl
+              << "eigvectors:\n" << eigvec_loc << std::endl;
     std::cout << "orthogonality of eigenvectors:" << std::endl
-              << eigvec_sorted.transpose() * eigvec_sorted << std::endl;
+              << eigvec_loc.transpose() * eigvec_loc << std::endl;
     std::cout << "residual of the largest eigenvalue/vector (A x - lambda x):" << std::endl
-              << (mat_loc * eigvec_sorted.col(0) - eigval_sorted(0) * eigvec_sorted.col(0)).transpose()
+              << (mat_loc * eigvec_loc.col(0) - eigval(0) * eigvec_loc.col(0)).transpose()
               << std::endl;
   }
 
   solver.finalize();
   MPI_Finalize();
-  return 0;
 }

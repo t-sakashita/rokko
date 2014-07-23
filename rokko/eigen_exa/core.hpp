@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 *                            Synge Todo <wistaria@comp-phys.org>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -23,11 +23,8 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
-
   void initialize(int& argc, char**& argv) {}
-
   void finalize() {}
-
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     int n = mat.get_m_global();
@@ -63,9 +60,9 @@ public:
     mat.set_local_size(m_local, n_local);
   }
 
-  template<typename MATRIX_MAJOR>
+  template<typename MATRIX_MAJOR, typename TIMER>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
     rokko::eigen_exa::diagonalize(mat, eigvals, eigvecs, timer_in);
   }
 };
@@ -74,4 +71,3 @@ public:
 } // namespace rokko
 
 #endif // ROKKO_EIGEN_EXA_CORE_HPP
-

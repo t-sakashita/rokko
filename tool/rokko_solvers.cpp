@@ -10,15 +10,15 @@
 *****************************************************************************/
 
 #include <boost/foreach.hpp>
-#include <rokko/solver_factory.hpp>
+#include <rokko/solver.hpp>
 
 int main() {
   std::cout << "[serial dense solvers]\n";
-  BOOST_FOREACH(std::string name, rokko::solver_factory::serial_dense_solver_names()) {
+  BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers()) {
     std::cout << "  " << name << std::endl;
   }
   std::cout << "[parallel dense solvers]\n";
-  BOOST_FOREACH(std::string name, rokko::solver_factory::parallel_dense_solver_names()) {
+  BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
     std::cout << "  " << name << std::endl;
   }
   return 0;

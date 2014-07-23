@@ -1,3 +1,15 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+*                            Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
 #ifndef ROKKO_ELPA_CORE_HPP
 #define ROKKO_ELPA_CORE_HPP
 
@@ -12,13 +24,9 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
-
   void initialize(int& argc, char**& argv) {}
-
   void finalize() {}
-
   void optimized_grid_size() {}
-
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     // Determine mb, nb, lld, larray
@@ -35,36 +43,15 @@ public:
     mat.set_default_lld();
     mat.set_default_length_array();
   }
-
-  void diagonalize(distributed_matrix<rokko::matrix_row_major>& mat, localized_vector& eigvals,
-                   distributed_matrix<rokko::matrix_row_major>& eigvecs, timer& timer_in);
-
-  void diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
-                   distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in);
+  template <typename MATRIX_MAJOR, typename TIMER>
+  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
+    rokko::elpa::diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
 };
-
-/*
-template<typename MATRIX_MAJOR>
-inline void solver<rokko::elpa::pdsyev>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                                                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  rokko::elpa::diagonalize(mat, eigvals, eigvecs, timer_in);
-}
-*/
-
-inline void solver::diagonalize(distributed_matrix<rokko::matrix_row_major>& mat, localized_vector& eigvals,
-                                                          distributed_matrix<rokko::matrix_row_major>& eigvecs, timer& timer_in) {
-  rokko::elpa::diagonalize(mat, eigvals, eigvecs, timer_in);
-}
-
-
-inline void solver::diagonalize(distributed_matrix<rokko::matrix_col_major>& mat, localized_vector& eigvals,
-                                                          distributed_matrix<rokko::matrix_col_major>& eigvecs, timer& timer_in) {
-  rokko::elpa::diagonalize(mat, eigvals, eigvecs, timer_in);
-}
 
 } // namespace elpa
 } // namespace rokko
 
 
 #endif // ROKKO_ELPA_CORE_HPP
-
