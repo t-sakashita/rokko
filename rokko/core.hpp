@@ -14,5 +14,5 @@ void finalize();
 
 } // namespace rokko
 
-#endif // ROKKO_CORE_EIGEN_S_HPP
+#endif // ROKKO_CORE_HPP
 
