@@ -345,7 +345,7 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
     if ((myrank == proc) && (myrank != root)) {
       ierr = MPI_Send(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, cart_comm);
       if (ierr != 0) {
-	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
+	std::cerr << "Error with Recv (Gather). ierr=" << ierr << "\nExiting\n";
 	MPI_Abort(MPI_COMM_WORLD,78);
 	exit(78);
       }
@@ -354,7 +354,7 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
       create_struct_global(mat, global_array_type, proc);
       ierr = MPI_Recv(global_array, recvcount, global_array_type, proc, 0, cart_comm, &status);
       if (ierr != 0) {
-	printf("Error with Recv (Gather). ierr=%d\nExiting\n", ierr);
+	std::cerr << "Error with Recv (Gather). ierr=" << ierr << "\nExiting\n";
 	MPI_Abort(MPI_COMM_WORLD,78);
 	exit(78);
       }
@@ -365,7 +365,7 @@ int gather(rokko::distributed_matrix<DIST_MATRIX_MAJOR> const& mat, double* glob
       create_struct_global(mat, global_array_type, root);
       ierr = MPI_Sendrecv(const_cast<double*>(local_array), sendcount, local_array_type, root, 0, global_array, recvcount, global_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
-      	printf("Error with Sendrecv (Gather). ierr=%d\nExiting\n", ierr);
+      	std::cerr << "Error with Sendrecv (Gather). ierr=" << ierr << "\nExiting\n";
       	MPI_Abort(MPI_COMM_WORLD,78);
       	exit(78);
       }
@@ -431,7 +431,7 @@ int scatter(double* global_array, distributed_matrix<DIST_MATRIX_MAJOR>& mat, in
     if ((proc != root) &&  (myrank == root)) {
       ierr = MPI_Send(const_cast<double*>(global_array), sendcount, global_array_type, proc, 0, cart_comm);
       if (ierr != 0) {
-	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
+	std::cerr << "Error with Recv (Scatter). ierr=" << ierr << "\nExiting\n";
 	MPI_Abort(MPI_COMM_WORLD,68);
 	exit(78);
       }
@@ -441,7 +441,7 @@ int scatter(double* global_array, distributed_matrix<DIST_MATRIX_MAJOR>& mat, in
     if ((myrank == proc) && (myrank != root)) {
       ierr = MPI_Recv(local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
-	printf("Error with Recv (Scatter). ierr=%d\nExiting\n", ierr);
+	std::cerr << "Error with Recv (Scatter). ierr=" << ierr << "\nExiting\n";
 	MPI_Abort(MPI_COMM_WORLD,69);
 	exit(78);
       }
@@ -451,7 +451,7 @@ int scatter(double* global_array, distributed_matrix<DIST_MATRIX_MAJOR>& mat, in
       create_struct_global(mat, global_array_type, root);
       ierr = MPI_Sendrecv(const_cast<double*>(global_array), sendcount, global_array_type, root, 0, local_array, recvcount, local_array_type, root, 0, cart_comm, &status);
       if (ierr != 0) {
-      printf("Error with Sendrecv (Scatter). ierr=%d\nExiting\n", ierr);
+        std::cerr << "Error with Sendrecv (Scatter). ierr=" << ierr << "\nExiting\n";
       	MPI_Abort(MPI_COMM_WORLD,70);
 	exit(78);
       }

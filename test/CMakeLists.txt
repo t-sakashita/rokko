@@ -10,7 +10,7 @@
 #
 
 # single process tests
-set(TESTS serial_dense_solvers parallel_dense_solvers localized_matrix)
+set(TESTS localized_matrix serial_dense_solvers solver) # magnetization)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -19,7 +19,7 @@ endforeach(name)
 unset(TESTS)
 
 # multi process tests
-set(TESTS grid solver localized2distributed_matrix distributed_matrix frank_functor_mpi frank_function_pointer_mpi mpi_thread_multiple)
+set(TESTS grid localized2distributed_matrix distributed_matrix frank_functor_mpi frank_function_pointer_mpi mpi_thread_multiple)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
