@@ -104,166 +104,38 @@ c    ne     @ number of eigenvalues to calculate
 c    eps    @ limit of error
 
       implicit real*8 (a-h,o-z)
-      dimension alpha(ndim),beta(ndim),E(ne),b2(2000)
+      dimension alpha(ndim),beta(ndim),E(ne)
+      common /stedat/w(150), iblock(150), isplit(150), work(5*150),
+     &     iwork(3*150)
 c
-      if(ndim.gt.2000)then
-          print *,' #(E04)# ndim given to bisec exceeds 2000'
-          stop
-      end if
-      if(ne.gt.ndim.or.ne.le.0)then
-          print *,' #(E05)# ne given to bisec out of range'
-          stop
-      end if
-c
-c*** initial bound
-      range=abs(alpha(1))+abs(beta(1))
-      do 10 k=2,ndim-1
- 10   range=max(range,abs(beta(k-1))+abs(alpha(k))+abs(beta(k)))
-      range=max(range,abs(beta(ndim-1))+abs(alpha(ndim)))
-      range=-range
-c
-      b2(1)=0.d0
-      do 20 i=2,ndim
- 20   b2(i)=beta(i-1)**2
-c
-      epsabs=abs(range)*eps
-      do 30 i=1,ne
- 30   E(i)=-range
-      b=range
-c
-c*** bisection method
-      do 100 k=1,ne
-        a=E(k)
-        do 110 j=1,100
-          c=(a+b)/2.d0
-          if(abs(a-b).lt.epsabs)goto 100
-          numneg=0
-          g=1.d0
-          ipass=0
-          do 120 i=1,ndim
-            if(ipass.eq.0)then
-              g=c-alpha(i)-b2(i)/g
-              else if(ipass.eq.1)then
-                ipass=2
-              else
-                g=c-alpha(i)
-                ipass=0
-            end if
-c
-            if(ipass.eq.0)then
-              if(g.le.0.d0)numneg=numneg+1
-              if(abs(g).le.abs(b2(i)*epsabs*eps))ipass=1
-            end if
- 120      continue
-          numneg=ndim-numneg
-          if(numneg.lt.k)then
-            b=c
-          else
-            a=c
-            do 130 i=k,min(numneg,ne)
- 130        E(i)=c
-          end if
- 110    continue
- 100   continue
-       end
+      call dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, alpha, beta,
+     &     m, nsplit, w, iblock, isplit, work, iwork, info)
+      do i = 1, ne
+         E(i) = w(i)
+      end do
+      end
 c
 c*** eigenvector of a tridiagonal matrix by inverse iteration ***
 c                 for the large/medium routines
 c
-      subroutine vec12(E,ndim,nvec,di,bl,bu,bv,cm,lex)
+      subroutine vec12(E,ndim,nvec)
 c
 c    E(4)       @  4 lowest eigenvalues
 c    ndim       @  matrix dimension
 c    nvec       @  number of vectors to calculate
-c    di - lex      working areas
 c
       implicit real*8 (a-h,o-z)
       dimension E(4)
-      dimension di(ndim),bl(ndim),bu(ndim),bv(ndim),cm(ndim),lex(ndim)
       common /vecdat/alpha(150),beta(150),v(150,5)
+      common /stedat/w(150), iblock(150), isplit(150), work(5*150),
+     &     iwork(3*150)
+      dimension ifail(4)
 c
-      do 10 k=1,nvec
-c
-        do 100 j=1,ndim
-          di(j)=E(k)-alpha(j)
-          bl(j)=-beta(j)
-          bu(j)=-beta(j)
- 100    continue
-c
-c*** LU decomposition
-        do 110 j=1,ndim-1
-         if(abs(di(j)).gt.abs(bl(j)))then
-c--- non pivoting
-           lex(j)=0
-           if(abs(di(j)).lt.1.d-13)di(j)=1.d-13
-           cm(j+1)=bl(j)/di(j)
-           di(j+1)=di(j+1)-cm(j+1)*bu(j)
-           bv(j)=0.d0
-         else
-c--- pivoting
-           lex(j)=1
-           cm(j+1)=di(j)/bl(j)
-           di(j)=bl(j)
-           s=bu(j)
-           bu(j)=di(j+1)
-           bv(j)=bu(j+1)
-           di(j+1)=s-cm(j+1)*bu(j)
-           bu(j+1)= -cm(j+1)*bv(j)
-         end if
- 110    continue
-        if(abs(di(ndim)).lt.1.d-13)di(ndim)=1.d-13
-c
-c--- initial vector
-        do 120 j=1,ndim
- 120    v(j,k)=1.d0/(float(j)*5.d0)
-c
-c*** degeneracy check up
-        if(k.eq.1)then
-           km=k
-        else if(abs(E(k)-E(km)).gt.1.d-13)then
-           km=k
-        else
-           do 130 i=km,k-1
-             prd=0.d0
-             do 140 j=1,ndim
- 140         prd=prd+v(j,i)*v(j,k)
-             do 150 j=1,ndim
- 150         v(j,k)=v(j,k)-prd*v(j,i)
- 130       continue
-        end if
-c
-c*** inverse iteration
-        do 160 l=1,k-km+3
-          if((l.ne.1).or.(k.ne.km))then
-c--- forward substitution
-            do 170 j=1,ndim-1
-              if(lex(j).eq.0)then
-                v(j+1,k)=v(j+1,k)-cm(j+1)*v(j,k)
-              else
-                s=v(j,k)
-                v(j,k)=v(j+1,k)
-                v(j+1,k)=s-cm(j+1)*v(j,k)
-              end if
- 170        continue
-          end if
-c--- backward substitution
-          do 180 j=ndim,1,-1
-            s=v(j,k)
-            if(j.le.ndim-1)s=s-bu(j)*v(j+1,k)
-            if(j.le.ndim-2)s=s-bv(j)*v(j+2,k)
-            v(j,k)=s/di(j)
- 180      continue
-c
-c*** normalization
-          dnorm=0.d0
-          do 190 j=1,ndim
- 190      dnorm=dnorm+v(j,k)**2
-          if(dnorm.gt.1.d-13)dnorm=1./sqrt(dnorm)
-          do 200 j=1,ndim
- 200      v(j,k)=v(j,k)*dnorm
- 160    continue
-c
- 10   continue
+      do i = 1, 4
+         w(i) = E(i)
+      end do
+      call dstein(ndim, alpha, beta, 4, E, iblock, isplit, v, 150,
+     &     work, iwork, ifail, info)
       end
 c
 c************* xx correlation function **************

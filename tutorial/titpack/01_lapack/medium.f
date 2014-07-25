@@ -185,8 +185,7 @@ c*** convergence check
           if(i.gt.20.and.mod(i,5).eq.0)then
              call bisec(alpha,beta,i,E,4,eps)
              if(abs((ebefor-E(2))/E(2)).lt.1.0d-13)then
-                if(nvec.gt.0)call vec12(E,i,nvec,wk(1,1),wk(1,2),
-     &                            wk(1,3),wk(1,4),wk(1,5),iwk)
+                if(nvec.gt.0)call vec12(E,i,nvec)
                 itr=i
                 return
              end if
