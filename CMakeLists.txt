@@ -149,17 +149,10 @@ else(DISABLE_ANASAZI)
   set(BUILD_ANASAZI ${ANASAZI_FOUND})
 endif(DISABLE_ANASAZI)
 
-set(ROKKO_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
-set(ROKKO_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/librokko.so")
-set(ROKKO_FORTRAN_LIBRARIES "${CMAKE_INSTALL_PREFIX}/lib/librokko_fortran.so")
+set(ROKKO_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
-configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/UseRokko.cmake @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_BINARY_DIR}/config/add_barista_test.cmake @COPYONLY)
-
-install(FILES ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake  DESTINATION config/)
-install(FILES ${PROJECT_SOURCE_DIR}/config/run_test.cmake  DESTINATION config/)
-install(FILES ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake  DESTINATION config/)
-install(FILES ${PROJECT_BINARY_DIR}/config/UseRokko.cmake  DESTINATION config/)
+configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake @ONLY)
+install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
 
 # test environment
 enable_testing()
