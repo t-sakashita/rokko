@@ -103,10 +103,14 @@ c    E      # eigenvalues
 c    ne     @ number of eigenvalues to calculate
 c    eps    @ limit of error
 
-      implicit real*8 (a-h,o-z)
-      dimension alpha(ndim),beta(ndim),E(ne)
+      implicit none
+      real*8 alpha(ndim), beta(ndim), E(ne), eps
+      integer*4 ndim, ne
+      real*8 w, work
+      integer*4 iblock, isplit, iwork
       common /stedat/w(150), iblock(150), isplit(150), work(5*150),
      &     iwork(3*150)
+      integer*4 m, nsplit, info, i
 c
       call dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, alpha, beta,
      &     m, nsplit, w, iblock, isplit, work, iwork, info)
@@ -124,12 +128,14 @@ c    E(4)       @  4 lowest eigenvalues
 c    ndim       @  matrix dimension
 c    nvec       @  number of vectors to calculate
 c
-      implicit real*8 (a-h,o-z)
-      dimension E(4)
+      implicit none
+      real*8 E(4)
+      integer*4 ndim, nvec, iblock, isplit, iwork
+      real*8 alpha, beta, v, w, work
       common /vecdat/alpha(150),beta(150),v(150,5)
       common /stedat/w(150), iblock(150), isplit(150), work(5*150),
      &     iwork(3*150)
-      dimension ifail(4)
+      integer*4 ifail(4), i, info
 c
       do i = 1, 4
          w(i) = E(i)
