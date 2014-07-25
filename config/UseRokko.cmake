@@ -19,12 +19,17 @@ if(NOT ROKKO_USE_FILE_INCLUDED)
   # MPI library
   find_package(MPI)
   set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
+  set(ROKKO_LIBRARIES ${ROKKO_LIBRARIES} ${MPI_CXX_LIBRARIES})
 
   # Add include directories needed to use ROKKO and dependent libraries
-  include_directories(${ROKKO_INCLUDE_DIR} ${Rokko_Boost_INCLUDE_DIR} ${ROKKO_EIGENEXA_INCLUDE_DIR} ${ROKKO_ELEMENTAL_INCLUDE_DIR} ${ROKKO_ANASAZI_INCLUDE_DIR} ${ROKKO_PETSC_INCLUDE_DIR} ${ROKKO_SLEPC_INCLUDE_DIR})
+  include_directories(${MPI_CXX_INCLUDE_PATH} ${ROKKO_INCLUDE_DIR} ${Rokko_Boost_INCLUDE_DIR} ${ROKKO_EIGENEXA_INCLUDE_DIR} ${ROKKO_ELEMENTAL_INCLUDE_DIR} ${ROKKO_ANASAZI_INCLUDE_DIR} ${ROKKO_PETSC_INCLUDE_DIR} ${ROKKO_SLEPC_INCLUDE_DIR})
 
   # Add link directories needed to use ROKKO and dependent libraries
   link_directories(${ROKKO_ROOT_DIR}/lib)
+
+  # RPATH setting
+  set(CMAKE_INSTALL_NAME_DIR "${ROKKO_ROOT_DIR}/lib" FORCE)
+  set(CMAKE_INSTALL_RPATH "${ROKKO_ROOT_DIR}/lib" FORCE)
 
   # test macro
   include(${ROKKO_ROOT_DIR}/share/rokko/add_rokko_test.cmake)
