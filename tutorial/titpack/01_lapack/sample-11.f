@@ -29,10 +29,9 @@ c------------------------------------------------------------
       call elm3(n,idim,ipair,bondwt,zrtio,ibond,
      &          elemnt,idim,list1,list2)
 c
-      eps=1.d-13
       nvec=1
       ne=4
-      call diag(elemnt,idim,idim,E,v,ne,nvec,eps,wk,iwk)
+      call diag(elemnt,idim,idim,E,v,ne,nvec,wk,iwk)
       print 100,E
   100 format(/' [Eigenvalues]  '/2x,4f14.8)
 c*** Do not forget to call elm3 again before calling check3
