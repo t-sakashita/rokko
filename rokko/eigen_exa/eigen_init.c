@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa.h>
+#include <rokko/eigen_exa/eigen_exa.h>
 
 void ROKKO_eigen_init(MPI_Comm comm, char grid_major) {
   MPI_Fint fcomm = MPI_Comm_c2f(comm);

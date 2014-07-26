@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/scalapack.h"
+#include <rokko/scalapack/scalapack.h>
 
 void ROKKO_pdelset(double* A, int ia, int ja, const int* descA, double alpha) {
   pdelset_(A, &ia, &ja, descA, &alpha);

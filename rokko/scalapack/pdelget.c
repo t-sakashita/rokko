@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/scalapack.h"
+#include <rokko/scalapack/scalapack.h>
 
 void ROKKO_pdelget(char scope, char top, double* alpha,
                    const double* A, int ia, int ja, const int* descA) {

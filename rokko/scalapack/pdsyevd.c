@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/scalapack.h"
+#include <rokko/scalapack/scalapack.h>
 
 void ROKKO_pdsyevd(char jobz, char uplo, int n,
                    double* A, int ia, int ja, const int* descA,

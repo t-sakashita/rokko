@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa.h>
+#include <rokko/eigen_exa/eigen_exa.h>
 
 void ROKKO_eigen_free(int flag) {
   eigen_free_wrap_(&flag);

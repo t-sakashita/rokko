@@ -13,7 +13,7 @@
 #ifndef ROKKO_EIGEN_EXA_CORE_HPP
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
-#include <rokko/eigen_exa.h>
+#include <rokko/eigen_exa/eigen_exa.h>
 #include <rokko/eigen_exa/diagonalize.hpp>
 
 namespace rokko {
