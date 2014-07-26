@@ -15,7 +15,7 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/eigen_exa.h>
+#include <rokko/eigen_exa/eigen_exa.h>
 
 namespace rokko {
 namespace eigen_exa {

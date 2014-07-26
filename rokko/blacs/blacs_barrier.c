@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_blacs_barrier(int ictxt, char score) {
   blacs_barrier_(&ictxt, &score);

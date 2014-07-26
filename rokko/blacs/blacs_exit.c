@@ -10,6 +10,6 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_blacs_exit(int conti) { blacs_exit_(&conti); }

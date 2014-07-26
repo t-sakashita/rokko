@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/scalapack.h"
+#include <rokko/scalapack/scalapack.h>
 
 double ROKKO_pdlamch(int icnt, char cmch) {
   return pdlamch_(&icnt, &cmch);

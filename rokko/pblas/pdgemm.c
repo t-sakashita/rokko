@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/pblas.h"
+#include <rokko/pblas/pblas.h>
 
 void ROKKO_pdgemm(char TRANSA, char TRANSB, int M, int N, int K, double ALPHA,
                   const double* A, int IA, int JA, int* DESCA,
