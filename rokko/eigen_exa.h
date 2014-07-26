@@ -23,11 +23,12 @@ void eigen_init_wrap_(const MPI_Fint*, const char*);
 void eigen_free_wrap_(const int*);
 void cstab_get_optdim_(const int*, const int*, const int*, const int*, int*);
 void eigen_sx_(const int*, const int*, double*, const int*, double*, double*, const int*,
-               const int*, const int*);
+	       const int*, const int*, char*);
 
 void ROKKO_eigen_init(MPI_Comm, char);
 void ROKKO_eigen_free(int);
 void ROKKO_cstab_get_optdim(int, int, int, int, int*);
+void ROKKO_eigen_get_matdims(int, int, int*, int*);
 void ROKKO_eigen_sx(int, int, double*, int, double*, double*, int, int, int);
 
 #ifdef __cplusplus
