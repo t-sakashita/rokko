@@ -23,7 +23,7 @@ class distributed_operator {
 public:
   distributed_operator() {}
   ~distributed_operator() {}
-  void multiply(const double* x, double* y) {};
+  void multiply(const double* x, double* y) const {};
 };
 
 

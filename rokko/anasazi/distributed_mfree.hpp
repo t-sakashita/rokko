@@ -24,14 +24,13 @@ namespace anasazi {
 
 class distributed_mfree_operator : public Epetra_Operator {
 public:
-  //typedef rokko::distributed_mfree_operator base;
-  distributed_mfree_operator(rokko::distributed_operator op, mapping_1d const& map_) : op_(op), ep_comm(MPI_COMM_WORLD), ep_map(map_.get_epetra_map()) {}
+  distributed_mfree_operator(const rokko::distributed_operator& op, mapping_1d const& map) : op_(op), ep_comm(MPI_COMM_WORLD), ep_map(map.get_epetra_map()) {}
 
   ~distributed_mfree_operator() {};
 
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };
 
-  virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) {
+  virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
     const int numvectors = X.NumVectors();
 
     Y.PutScalar(0);
@@ -39,7 +38,6 @@ public:
       const double* x = X[i];
       double* y = Y[i];
       op_.multiply(x, y);
-	//      rokko::xyz_hamiltonian::multiply(comm_, L_, lattice_, coupling_, x, y, &(buffer_[0]));
     }
     //std::cout << "X=" << X << std::endl;
     return 0;
@@ -62,7 +60,7 @@ public:
   virtual const Epetra_Map & OperatorRangeMap() const { return ep_map; }
 
 private:
-  rokko::distributed_operator op_;
+  const rokko::distributed_operator& op_;
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
@@ -81,7 +79,7 @@ public:
   }
   void define_operator(rokko::distributed_operator& op) {
     op_ = op;
-    //op_ = Teuchos::rcp( new op );
+    anasazi_op_ = Teuchos::rcp( new rokko::anasazi::distributed_mfree_operator(op_, map_) );
   }
 private:
   mapping_1d map_;
