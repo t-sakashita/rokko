@@ -85,10 +85,11 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::mapping_1d map(dim, g);
-  rokko::distributed_crs_matrix mat("anasazi", map);
-  rokko::distributed_mfree mat_free("anasazi", map);
+  //rokko::distributed_crs_matrix mat("anasazi", map);
+  rokko::distributed_mfree mat("anasazi", map);
   heisenberg_op  aa(MPI_COMM_WORLD, L, lattice);
-  mat_free.define_operator(aa);  //Teuchos::rcp( new heisenberg_op(MPI_COMM_WORLD, L, lattice, coupling) );
+  mat.define_operator(aa);  //Teuchos::rcp( new heisenberg_op(MPI_COMM_WORLD, L, lattice) );
+  /*
   std::vector<double> values;
   std::vector<int> cols;
   for (int k = 0; k < map.num_rows(); ++k) {
@@ -115,6 +116,7 @@ int main(int argc, char *argv[]) {
     mat.insert(row, cols, values);
   }
   mat.complete();
+  */
 
   rokko::distributed_multivector_anasazi ivec(map, blockSize);
   ivec.init_random();
