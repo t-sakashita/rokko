@@ -15,7 +15,7 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/blacs.h>
+#include <rokko/blacs/blacs.h>
 #include <rokko/elpa/elpa.hpp>
 
 #include <mpi.h>
