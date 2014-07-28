@@ -15,7 +15,8 @@
 
 #include "grid.hpp"
 #include "matrix_major.hpp"
-#include "pblas.h"
+#include <rokko/blacs/blacs.h>
+#include <rokko/pblas/pblas.h>
 
 #include <iostream>
 #include <cstdlib>

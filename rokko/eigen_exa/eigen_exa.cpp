@@ -13,4 +13,5 @@
 #include <rokko/parallel_dense_solver.hpp>
 #include <rokko/eigen_exa/core.hpp>
 
-ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::eigen_exa::solver, "eigen_exa", 40)
+ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::eigen_exa::solver<rokko::eigen_exa::eigen_s>, "eigen_exa_s", 40)
+ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::eigen_exa::solver<rokko::eigen_exa::eigen_sx>, "eigen_exa_sx", 40)
