@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/scalapack.h"
+#include <rokko/scalapack/scalapack.h>
 
 void ROKKO_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA, int irprnt,
                     int icprnt, const char* cmatnm, int nout, double* work) {

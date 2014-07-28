@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_blacs_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol) {
   blacs_gridinfo_(&ictxt, nprow, npcol, myrow, mycol);

@@ -8,21 +8,21 @@ SCRIPT_DIR=`cd $dir && pwd`
 
 mkdir -p $HOME/build
 cd $HOME/build
-rm -rf EigenExa-1.3
-if test -f $HOME/source/EigenExa-1.3.tgz; then
-  tar zxf $HOME/source/EigenExa-1.3.tgz
+rm -rf EigenExa-2.2a
+if test -f $HOME/source/EigenExa-2.2a.tgz; then
+  tar zxf $HOME/source/EigenExa-2.2a.tgz
 else
-  wget -O - http://www.aics.riken.jp/labs/lpnctrt/EigenExa-1.3.tgz | tar zxf -
+  wget -O - http://www.aics.riken.jp/labs/lpnctrt/EigenExa-2.2a.tgz | tar zxf -
 fi
-cd $HOME/build/EigenExa-1.3
-patch -p1 < $SCRIPT_DIR/EigenExa-1.3.patch
+cd $HOME/build/EigenExa-2.2a
+patch -p1 < $SCRIPT_DIR/EigenExa-2.2a.patch
 
 cd $HOME/build
-rm -rf EigenExa-1.3-build && mkdir -p EigenExa-1.3-build && cd EigenExa-1.3-build
+rm -rf EigenExa-2.2a-build && mkdir -p EigenExa-2.2a-build && cd EigenExa-2.2a-build
 cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DCMAKE_C_COMPILER=mpicc-openmpi-gcc48 -DCMAKE_Fortran_COMPILER=mpif90-openmpi-gcc48 \
-    -DSCALAPACK_LIB="-L$PREFIX/lib -lscalapack -Wl,-framework -Wl,vecLib" \
-    $HOME/build/EigenExa-1.3
+    -DSCALAPACK_LIB="-L$PREFIX/lib -L /opt/local/lib -lscalapack -Wl,-framework -Wl,vecLib" \
+    $HOME/build/EigenExa-2.2a
 
 make -j4 VERBOSE=1
 make install

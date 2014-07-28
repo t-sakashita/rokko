@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_blacs_pinfo(int* mypnum, int* nprocs) {
   blacs_pinfo_(mypnum, nprocs);

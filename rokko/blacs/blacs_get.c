@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_blacs_get(int context, int request, int* value) {
   blacs_get_(&context, &request, value);

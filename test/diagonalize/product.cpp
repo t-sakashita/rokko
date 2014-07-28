@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/solver.hpp>
-#include <rokko/pblas.h>
+#include <rokko/pblas/pblas.h>
 #include <rokko/utility/frank_matrix.hpp>
 
 #include <boost/lexical_cast.hpp>

@@ -53,7 +53,7 @@ endif(BUILD_SCALAPACK)
 
 if(BUILD_EIGENEXA)
   include_directories(${EIGENEXA_INCLUDE_DIR})
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_init.c eigen_exa/eigen_free.c eigen_exa/cstab_get_optdim.c eigen_exa/eigen_sx.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_init.c eigen_exa/eigen_free.c eigen_exa/cstab_get_optdim.c eigen_exa/eigen_s.c eigen_exa/eigen_sx.c)
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa.cpp)
   endif(BUILD_SHARED_LIBS)

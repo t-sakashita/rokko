@@ -13,8 +13,6 @@
 #ifndef ROKKO_PBLAS_H
 #define ROKKO_PBLAS_H
 
-#include "blacs.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

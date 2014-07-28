@@ -10,6 +10,6 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_blacs_gridexit(int* ictxt) { blacs_gridexit_(ictxt); }

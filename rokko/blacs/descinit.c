@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include "rokko/blacs.h"
+#include <rokko/blacs/blacs.h>
 
 void ROKKO_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
                     int ictxt, int lld, int* info) {
