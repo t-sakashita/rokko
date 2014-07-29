@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include <rokko/anasazi/core.hpp>
+#include <rokko/mapping_1d.hpp>
 #include <rokko/distributed_mfree.hpp>
 
 #include "AnasaziConfigDefs.hpp"
@@ -27,11 +28,13 @@
 #include <vector>
 
 
-class heisenberg_op : public rokko::distributed_operator {
+class heisenberg_op : public rokko::distributed_mfree {
 public:
-  heisenberg_op(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice) {
+  heisenberg_op(rokko::mapping_1d const& map, int L, const std::vector<std::pair<int, int> >& lattice) : L_(L), lattice_(lattice) {
+    map_ = get_mapping_1d();
+    comm_ = MPI_COMM_WORLD;
     int nproc;
-    MPI_Comm_size(MPI_COMM_WORLD, &nproc);
+    MPI_Comm_size(comm_, &nproc);
     int n = nproc;
     int p = -1;
     do {
@@ -86,13 +89,11 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::mapping_1d map(dim, g);
-  rokko::distributed_mfree mat("anasazi", map);
-  heisenberg_op  aa(MPI_COMM_WORLD, L, lattice);
-  mat.define_operator(aa);  //Teuchos::rcp( new heisenberg_op(MPI_COMM_WORLD, L, lattice) );
+  heisenberg_op  mat(map, L, lattice);
 
   rokko::distributed_multivector_anasazi ivec(map, blockSize);
   ivec.init_random();
-  solver.diagonalize(mat, ivec, nev, blockSize, maxIters, tol);
+  solver.diagonalize(&mat, ivec, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
     std::cout << "smallest eigenvalues:";
