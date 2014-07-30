@@ -48,7 +48,6 @@ public:
   ~heisenberg_op() {}
 
   void multiply(const double* x, double* y) const {
-    std::cout << "multiply" << std::endl;
     rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
   }
 private:

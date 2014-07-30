@@ -123,7 +123,7 @@ public:
       std::cout << "setProblem()_error" << std::endl;
     }
     Anasazi::ReturnType returnCode = solvermanager.solve();
-    if (returnCode != true) {
+    if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
 
