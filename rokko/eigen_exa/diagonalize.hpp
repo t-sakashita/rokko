@@ -22,7 +22,7 @@ namespace eigen_exa {
 
 template <typename MATRIX_MAJOR>
 void diagonalize_s(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                 rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+		   rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
   if(mat.is_row_major())
     throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
   ROKKO_eigen_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
@@ -30,14 +30,29 @@ void diagonalize_s(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vecto
   int lld = mat.get_lld();
   timer_in.start(1);
   ROKKO_eigen_s(dim, dim, mat.get_array_pointer(), lld, &eigvals[0], eigvecs.get_array_pointer(),
-                 lld, 8, 128);
+		lld, 8, 128, 'A');
+  timer_in.stop(1);
+  ROKKO_eigen_free(1);
+}
+
+template <typename MATRIX_MAJOR>
+void diagonalize_s(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+		   timer& timer_in) {
+  if(mat.is_row_major())
+    throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
+  ROKKO_eigen_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
+  int dim = mat.get_m_global();
+  int lld = mat.get_lld();
+  timer_in.start(1);
+  ROKKO_eigen_s(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
+		lld, 8, 128, 'N');
   timer_in.stop(1);
   ROKKO_eigen_free(1);
 }
 
 template <typename MATRIX_MAJOR>
 void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                 rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+		    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
   if(mat.is_row_major())
     throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
   ROKKO_eigen_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
@@ -45,7 +60,22 @@ void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vect
   int lld = mat.get_lld();
   timer_in.start(1);
   ROKKO_eigen_sx(dim, dim, mat.get_array_pointer(), lld, &eigvals[0], eigvecs.get_array_pointer(),
-                 lld, 8, 128);
+		lld, 8, 128, 'A');
+  timer_in.stop(1);
+  ROKKO_eigen_free(1);
+}
+
+template <typename MATRIX_MAJOR>
+void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+		    timer& timer_in) {
+  if(mat.is_row_major())
+    throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
+  ROKKO_eigen_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
+  int dim = mat.get_m_global();
+  int lld = mat.get_lld();
+  timer_in.start(1);
+  ROKKO_eigen_sx(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
+                 lld, 8, 128, 'N');
   timer_in.stop(1);
   ROKKO_eigen_free(1);
 }

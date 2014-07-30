@@ -13,7 +13,6 @@
 #include <rokko/eigen_exa/eigen_exa.h>
 
 void ROKKO_eigen_s(int n, int nvec, double *a, int lda, double *w, double *z, int ldz,
-                    int m_forward, int m_backward) {
-  char mode = 'A';
+		   int m_forward, int m_backward, char mode) {
   eigen_s_(&n, &nvec, a, &lda, w, z, &ldz, &m_forward, &m_backward, &mode);
 }
