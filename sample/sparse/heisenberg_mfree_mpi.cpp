@@ -3,6 +3,7 @@
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
 * Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+*                       Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,21 +12,10 @@
 
 #include <mpi.h>
 #include <iostream>
+#include <vector>
 
 #include <rokko/anasazi/core.hpp>
-#include <rokko/mapping_1d.hpp>
-#include <rokko/distributed_mfree.hpp>
-
-#include "AnasaziConfigDefs.hpp"
-#include "AnasaziBasicEigenproblem.hpp"
-#include "AnasaziSimpleLOBPCGSolMgr.hpp"
-#include "AnasaziBasicOutputManager.hpp"
-#include "AnasaziEpetraAdapter.hpp"
-#include "Epetra_CrsMatrix.h"
-#include "Teuchos_CommandLineProcessor.hpp"
-
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
-#include <vector>
 
 
 class heisenberg_op : public rokko::distributed_mfree {

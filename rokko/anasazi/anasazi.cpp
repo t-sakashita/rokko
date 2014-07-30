@@ -10,8 +10,6 @@
 *****************************************************************************/
 
 #include "distributed_crs_matrix.hpp"
-//#include "distributed_mfree.hpp"
 
 ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::anasazi::distributed_crs_matrix, "anasazi", 10);
 
-//ROKKO_REGISTER_DISTRIBUTED_MFREE(rokko::anasazi::distributed_mfree, "anasazi", 10);

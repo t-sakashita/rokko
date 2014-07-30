@@ -12,17 +12,17 @@
 #ifndef ROKKO_ANASAZI_SOLVER_H
 #define ROKKO_ANASAZI_SOLVER_H
 
-#include "distributed_crs_matrix.hpp"
 #include <rokko/distributed_mfree.hpp>
+#include "distributed_crs_matrix.hpp"
 #include "distributed_multivector.hpp"
 
-#include "AnasaziEpetraAdapter.hpp"
-#include "Epetra_CrsMatrix.h"
-#include "Epetra_MpiComm.h"
-#include "Epetra_Map.h"
+#include <AnasaziEpetraAdapter.hpp>
+#include <Epetra_CrsMatrix.h>
+#include <Epetra_MpiComm.h>
+#include <Epetra_Map.h>
 
 #include <AnasaziBasicEigenproblem.hpp>
-#include "AnasaziBlockKrylovSchurSolMgr.hpp"
+#include <AnasaziBlockKrylovSchurSolMgr.hpp>
 #include <Teuchos_RCPDecl.hpp>
 
 namespace rokko {
@@ -102,10 +102,9 @@ public:
   }
 
 
-  void diagonalize(rokko::distributed_mfree* mat,
+  void diagonalize(rokko::distributed_mfree* const mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
-
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp( new anasazi_mfree_operator(mat) );
     problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, ivec.get_pointer()));
     problem_->setHermitian(true);
