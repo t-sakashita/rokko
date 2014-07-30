@@ -14,7 +14,7 @@
 void test(int n, double total_sz) {
   std::vector<int> list1;
   std::vector<std::vector<int> > list2;
-  int idim = sz(8, total_sz, list1, list2);
+  int idim = sz(n, total_sz, list1, list2);
   std::cout << n << ' ' << total_sz << ' ' << idim << std::endl;
   int ihf = (n + 1) / 2;
   int ihfbit = 1 << ihf;
@@ -31,6 +31,7 @@ void test(int n, double total_sz) {
 }
 
 int main() {
+  test(16, 0);
   test(8, 0);
   test(8, 1);
 }

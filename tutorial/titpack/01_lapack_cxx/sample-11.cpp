@@ -19,6 +19,8 @@
 #include "titpack.hpp"
 
 int main() {
+  std::cout.precision(10);
+
   // lattice structure
   int n = 8;
   int ibond = n;
@@ -42,9 +44,8 @@ int main() {
   //   int idim = sztn(n, 0, list1, list2);
 
   // Hamiltonian matrix
-  matrix_type elemnt(idim, idim);
+  matrix_type elemnt;
   elm3(n, ipair, bondwt, zrtio, elemnt, list1, list2);
-  
   
   std::vector<double> E;
   matrix_type v;

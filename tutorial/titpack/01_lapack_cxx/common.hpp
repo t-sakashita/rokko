@@ -17,6 +17,7 @@
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/tuple/tuple.hpp>
 
 typedef boost::numeric::ublas::matrix<double> matrix_type;
 
@@ -42,10 +43,11 @@ void datack(std::vector<int> const& ipair, int n);
 // eigenvalues by the bisection method
 //
 
-void bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
-           std::vector<double>& E, int ne, double eps,
-           int& m, int& nsplit, std::vector<int>& iblock, std::vector<int>& isplit,
-           std::vector<double>& w);
+boost::tuple<int, int>
+bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
+      std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
+      std::vector<int>& isplit, double *w);
+// return value # m and nsplit
 // alpha  @ diagonal element
 // beta   @ subdiagonal element
 // ndim   @ matrix dimension
@@ -58,8 +60,8 @@ void bisec(std::vector<double> const& alpha, std::vector<double> const& beta, in
 // 
 
 void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
-           std::vector<double> const& E, matrix_type& z,
-           std::vector<int>& iblock, std::vector<int>& isplit, std::vector<double>& w);
+           std::vector<double> const& E, int nvec, matrix_type& z,
+           std::vector<int>& iblock, std::vector<int>& isplit, double *w);
 // E(4)       @  4 lowest eigenvalues
 // ndim       @  matrix dimension
 // nvec       @  number of vectors to calculate

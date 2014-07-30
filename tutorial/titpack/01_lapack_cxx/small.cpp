@@ -32,6 +32,7 @@ void elm3(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
   datack(ipair, n);
   
   // initialization
+  elemnt.resize(idim, idim);
   for (int i = 0; i < idim; ++i)
     for (int j = 0; j < idim; ++j)
       elemnt(i, j) = 0;

@@ -77,24 +77,28 @@ void datack(std::vector<int> const& ipair, int n) {
   }
 }
 
-void bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
-           std::vector<double>& E, int ne, double eps,
-           int& m, int& nsplit, std::vector<int>& iblock, std::vector<int>& isplit,
-           std::vector<double>& w) {
+boost::tuple<int, int>
+bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
+      std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
+      std::vector<int>& isplit, double *w) {
+  E.resize(ne);
+  iblock.resize(ndim);
+  isplit.resize(ndim);
+  int m, nsplit;
   int info = LAPACKE_dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, &alpha[0], &beta[0],
                             &m, &nsplit, &w[0], &iblock[0], &isplit[0]);
-  for (int i = 0; i < ne; ++i) {
-    E[i] = w[i];
-  }
+  for (int i = 0; i < ne; ++i) E[i] = w[i];
+  return boost::make_tuple(m, nsplit);
 }
 
 void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
-           std::vector<double> const& E, matrix_type& z,
-           std::vector<int>& iblock, std::vector<int>& isplit, std::vector<double>& w) {
-  for (int i = 0; i < 4; ++i) w[i] = E[i];
-  int ifail[4];
-  int info = LAPACKE_dstein(LAPACK_ROW_MAJOR, ndim, &alpha[0], &beta[0], 4, &w[0], &iblock[0],
-                            &isplit[0], &z(0,0), 150, &ifail[0]);
+           std::vector<double> const& E, int nvec, matrix_type& z,
+           std::vector<int>& iblock, std::vector<int>& isplit, double *w) {
+  z.resize(nvec, ndim);
+  for (int i = 0; i < nvec; ++i) w[i] = E[i];
+  std::vector<int> ifail(nvec);
+  int info = LAPACKE_dstein(LAPACK_COL_MAJOR, ndim, &alpha[0], &beta[0], nvec, w, &iblock[0],
+                            &isplit[0], &z(0,0), ndim, &ifail[0]);
 }
 
 void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
