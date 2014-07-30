@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int L = 12;
+  int L = 8;
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
