@@ -108,13 +108,12 @@ void zcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
 //
 // Orthogonalization of the eigenvectors
 //
-// ideclr  @  declared array size in the main program
+// return value #  degree of degenearcy
 // ev      @# vectors to be orthogonalized / orthogonalized vectors
 // norm(j) #  norm of the j-th vector returned
-// idgn    #  degree of degenearcy
 // numvec  @  number of vectors to be checked
 
-void orthg(matrix_type& ev, std::vector<double>& norm, int& idgn, int numvec);
+int orthg(matrix_type& ev, std::vector<double>& norm, int numvec);
 
 //
 // configurations with the specified sz
