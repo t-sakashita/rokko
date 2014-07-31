@@ -89,6 +89,7 @@ int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
+  if (wk.size1() < 2 || wk.size2() != idim) wk.resize(2, idim);
   return lnc2z(elemnt, loc, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(1,0));
 }
 

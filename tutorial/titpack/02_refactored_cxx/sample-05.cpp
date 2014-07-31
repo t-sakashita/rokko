@@ -34,32 +34,27 @@ int main() {
   std::vector<double> bondwt(ibond, -1);
   std::vector<double> zrtio(ibond, 1);
 
-  // table of configurations
-  std::vector<int> list1;
-  std::vector<std::vector<int> > list2;
-  int idim = sz(n, 0, list1, list2);
-  // You may alternatively use szdy or sztn for faster processing
-  //   int idim = szdy(n, 0, list1, list2);
-  // or
-  //   int idim = sztn(n, 0, list1, list2);
+  // table of configurations and Hamiltonian operator
+  subspace ss(n, 0);
+  hamiltonian hop(ss, ipair, bondwt, zrtio);
 
   // Eigenvalues
   int nvec = 1;
-  matrix_type v(2, idim);
+  matrix_type v(2, ss.dimension());
   for (int k = 0; k < 2; ++k) {
-    int iv = 20 + (idim / 2) * k;
+    int iv = 20 + (ss.dimension() / 2) * k;
     std::vector<double> E, alpha, beta;
     matrix_type coeff;
     matrix_type wk;
-    int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, wk, list1, list2);
+    int itr = lnc1(hop, nvec, iv, E, alpha, beta, coeff, wk);
     
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
 
     matrix_type x;
-    lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, wk, list1, list2);
-    for (int i = 0; i < idim; ++i) v(k, i) = x(0, i);
+    lncv1(hop, nvec, iv, alpha, beta, coeff, x, itr, wk);
+    for (int i = 0; i < ss.dimension(); ++i) v(k, i) = x(0, i);
   }
   
   // Degeneracy check

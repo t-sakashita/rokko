@@ -53,7 +53,7 @@ int main() {
   int iv = idim / 5 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
-  matrix_type v(2, idim);
+  matrix_type v;
   int itr = lnc2(elemnt, loc, nvec, iv, E, alpha, beta, coeff, v);
   
   std::cout << "[Eigenvalues]\n";

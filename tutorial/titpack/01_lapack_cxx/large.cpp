@@ -28,6 +28,7 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
+  if (wk.size1() < 2 || wk.size2() != idim) wk.resize(2, idim);
   return lnc1z(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(1,0),
                list1, list2);
 }

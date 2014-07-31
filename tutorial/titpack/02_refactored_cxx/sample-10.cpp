@@ -34,46 +34,39 @@ int main() {
   std::vector<double> bondwt(ibond, -1);
   std::vector<double> zrtio(ibond, 1);
 
-  // table of configurations
-  std::vector<int> list1;
-  std::vector<std::vector<int> > list2;
-  int idim = sz(n, 0.5, list1, list2);
-  // You may alternatively use szdy or sztn for faster processing
-  //   int idim = szdy(n, 0, list1, list2);
-  // or
-  //   int idim = sztn(n, 0, list1, list2);
+  // table of configurations and Hamiltonian operator
+  subspace ss(n, 0);
+  hamiltonian hop(ss, ipair, bondwt, zrtio);
 
   // matrix elements
-  matrix_type elemnt;
-  i_matrix_type loc;
-  elm2(n, ipair, bondwt, zrtio, elemnt, loc, list1, list2);
-
+  crs_matrix mat(hop);
+  
   // Eigenvalues
   int nvec = 1;
-  matrix_type v(3, idim);
+  matrix_type v(3, hop.dimension());
   for (int k = 0; k < 3; ++k) {
-    int iv = 90 + (idim / 3) * k;
+    int iv = 90 + (hop.dimension() / 3) * k;
     std::vector<double> E, alpha, beta;
     matrix_type coeff;
     matrix_type wk;
-    int itr = lnc2(elemnt, loc, nvec, iv, E, alpha, beta, coeff, wk);
+    int itr = lnc2(mat, nvec, iv, E, alpha, beta, coeff, wk);
     
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
 
     matrix_type x;
-    lncv2(elemnt, loc, nvec, iv, alpha, beta, coeff, x, itr, wk);
+    lncv2(mat, nvec, iv, alpha, beta, coeff, x, itr, wk);
     std::cout << "[Eigenvector components (selected)]";
     int count = 0;
-    for (int i = 12; i < idim; i += idim/20, ++count) {
+    for (int i = 12; i < hop.dimension(); i += hop.dimension()/20, ++count) {
       if (count % 4 == 0) std::cout << std::endl;
       std::cout << '\t' << x(0, i);
     }
     std::cout << std::endl;
-    check2(elemnt, loc, x, 0, wk, 0);
+    check2(mat, x, 0, wk, 0);
 
-    for (int i = 0; i < idim; ++i) v(k, i) = x(0, i);
+    for (int i = 0; i < hop.dimension(); ++i) v(k, i) = x(0, i);
   }
   
   // Degeneracy check

@@ -38,15 +38,16 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 // eigenvalues by the Lanczos method
 // --- dummy routine for simple working area
 //
-
-int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
-         std::vector<double>& E, std::vector<double>& alpha, std::vector<double>& beta,
-         matrix_type& coeff, matrix_type& wk);
 // return value # number of iterations required for convergence
 // nvec      @ number of eigenvectors to calculate in lncvec
 // iv        @ location of the nonzero element of the initial vector
 // E         # eigenvalues
 // wk        working areas
+
+
+int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
+         std::vector<double>& E, std::vector<double>& alpha, std::vector<double>& beta,
+         matrix_type& coeff, matrix_type& wk);
 
 //
 // eigenvalues by the Lanczos method
@@ -59,29 +60,27 @@ int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
 //
 // eigenvector by the Lanczos method
 //
-  
-void lncv2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
-           std::vector<double> const& alpha, std::vector<double> const& beta,
-           matrix_type const& coeff, matrix_type& x, int itr, matrix_type& wk);
 // nvec      @ number of eigenvectors to be calculated
 // iv        @ location of the nonzero element of the initial vector
 // x         # eigenvector
 // itr     @ number of interations for convergence
 // wk         working area
 
+void lncv2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
+           std::vector<double> const& alpha, std::vector<double> const& beta,
+           matrix_type const& coeff, matrix_type& x, int itr, matrix_type& wk);
+
 //
 // eigenvector by the Lanczos method
-//
-
-void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
-            std::vector<double> const& alpha, std::vector<double> const& beta,
-            matrix_type const& coeff, matrix_type& x, int itr, double *v1, double *v0);
-
 //
 // check of the eigenvector and eigenvalue
 //
 // x           @ eigenvector to be checked
 // v           # H*x
+
+void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
+            std::vector<double> const& alpha, std::vector<double> const& beta,
+            matrix_type const& coeff, matrix_type& x, int itr, double *v1, double *v0);
 
 double check2(matrix_type const& elemnt, i_matrix_type const& loc, const double *x,
               matrix_type& v, int vindex);
