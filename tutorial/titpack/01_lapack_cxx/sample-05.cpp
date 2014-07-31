@@ -11,7 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #4 *****************
+/************* Sample main program #5 *****************
 * 1d Heisenberg antiferromagnet with 16 spins
 * Eigenvector of an excited state by inv1
 ******************************************************/
