@@ -66,7 +66,7 @@ int main() {
   matrix_type x;
   lncv2(elemnt, loc, 1, iv, alpha, beta, coeff, x, itr, v);
   // You may alternatively use inv1 / Note: dimension v(4, idim) -
-  //   call inv2(elemnt, loc, E[0], iv, x, itr, v);
+  //   inv2(elemnt, loc, E[0], iv, x, v);
 
   std::cout << "[Eigenvector components (selected)]";
   int count = 0;
