@@ -11,9 +11,9 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #7 *****************
+/************* Sample main program #8 *****************
 * 1d Heisenberg antiferromagnet with 16 spins
-* Eigenvector by inv2
+* Eigenvector of an excited state by inv2
 ******************************************************/
 
 #include "titpack.hpp"
@@ -49,7 +49,7 @@ int main() {
   elm2(n, ipair, bondwt, zrtio, elemnt, loc, list1, list2);
   
   // Eigenvalues
-  int nvec = 1;
+  int nvec = 3;
   int iv = idim / 5 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
@@ -63,7 +63,7 @@ int main() {
 
   // Ground-state eigenvector
   std::vector<double> x;
-  inv2(elemnt, loc, E[0], iv, x, v);
+  inv2(elemnt, loc, E[2], iv, x, v);
 
   std::cout << "[Eigenvector components (selected)]";
   int count = 0;
@@ -76,13 +76,4 @@ int main() {
   // Precision check and correlation functions
   double Hexpec = check2(elemnt, loc, x, v, 0);
 
-  std::vector<int> npair;
-  npair.push_back(1);
-  npair.push_back(2);
-  std::vector<double> sxx(1), szz(1);
-  xcorr(n, npair, x, sxx, list1, list2);
-  zcorr(n, npair, x, szz, list1);
-  std::cout << "[Nearest neighbor correlation functions]\n\t" 
-            << "sxx : " << sxx[0]
-            << ", szz : " << szz[0] << std::endl;
 }

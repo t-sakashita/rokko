@@ -341,7 +341,7 @@ int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
 
   // initialization
   double bnorm = 0;
-  for (int i=0; i < idim; ++i) {
+  for (int i = 0; i < idim; ++i) {
     bnorm += b[i] * b[i];
     r[i] = b[i];
     p[i] = b[i];

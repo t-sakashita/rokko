@@ -341,7 +341,7 @@ int cg2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, std::ve
 
   // initialization
   double bnorm = 0;
-  for (int i=0; i < idim; ++i) {
+  for (int i = 0; i < idim; ++i) {
     bnorm += b[i] * b[i];
     r[i] = b[i];
     p[i] = b[i];
