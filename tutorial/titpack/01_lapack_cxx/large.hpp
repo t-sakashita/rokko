@@ -33,7 +33,7 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
          std::vector<double>& alpha, std::vector<double>& beta, matrix_type& coeff,
          matrix_type& wk, std::vector<int> const& list1,
          std::vector<std::vector<int> > const& list2);
-// return valur # number of iterations required for convergence
+// return value # number of iterations required for convergence
 // nvec      @ number of eigenvectors to calculate in lncvec
 // iv        @ location of the nonzero element of the initial vector
 // E         # eigenvalues

@@ -20,6 +20,7 @@
 #include <boost/tuple/tuple.hpp>
 
 typedef boost::numeric::ublas::matrix<double> matrix_type;
+typedef boost::numeric::ublas::matrix<int> i_matrix_type;
 
 //
 // configurations with the specified sz
