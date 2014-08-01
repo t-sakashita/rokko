@@ -7,9 +7,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(titpack NONE)
 enable_language(CXX Fortran)
 
-find_package(ROKKO REQUIRED PATHS ${ROKKO_ROOT_DIR} $ENV{ROKKO_HOME}
+find_package(Rokko REQUIRED PATHS ${ROKKO_ROOT_DIR} $ENV{ROKKO_HOME}
   NO_SYSTEM_ENVIRONMENT_PATH)
-message(STATUS "Found ROKKO: ${ROKKO_ROOT_DIR}")
+message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
 include(${ROKKO_USE_FILE})
 message(STATUS ${ROKKO_USE_FILE})
 
