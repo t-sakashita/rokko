@@ -49,7 +49,7 @@ int main() {
   int iv = idim / 3 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
-  matrix_type v;
+  matrix_type v(2, idim);
   int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
   
   std::cout << "[Eigenvalues]\n";

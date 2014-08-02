@@ -81,9 +81,9 @@ boost::tuple<int, int>
 bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
       std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
       std::vector<int>& isplit, double *w) {
-  if (E.size() < ne) E.resize(ne);
-  if (iblock.size() < ndim) iblock.resize(ndim);
-  if (isplit.size() < ndim) isplit.resize(ndim);
+  E.resize(ne);
+  iblock.resize(ndim);
+  isplit.resize(ndim);
   int m, nsplit;
   int info = LAPACKE_dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, &alpha[0], &beta[0],
                             &m, &nsplit, &w[0], &iblock[0], &isplit[0]);
@@ -94,7 +94,7 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
 void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
            std::vector<double> const& E, int nvec, matrix_type& z,
            std::vector<int>& iblock, std::vector<int>& isplit, double *w) {
-  if (z.size1() < nvec || z.size2() != ndim) z.resize(nvec, ndim);
+  z.resize(nvec, ndim);
   for (int i = 0; i < nvec; ++i) w[i] = E[i];
   std::vector<int> ifail(nvec);
   int info = LAPACKE_dstein(LAPACK_COL_MAJOR, ndim, &alpha[0], &beta[0], nvec, w, &iblock[0],
@@ -183,41 +183,39 @@ void zcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
   zcorr(n, npair, &x[0], szz, list1);
 }
 
-int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
-  if (numvec <= 1) {
+void orthg(int idim, matrix_type& ev, std::vector<double>& norm, int& idgn, int numvec) {
+  if (numvec < 1) {
     std::cerr << " #(W03)# Number of vectors is less than 2 in orthg\n";
-    return -1;
+    return;
   }
-  if (norm.size() < numvec) norm.resize(numvec);
-  int idim = ev.size2();
-  for (int i = 0; i < numvec; ++i) {
+  for (int i=0; i < numvec; ++i) {
     double dnorm = 0;
-    for (int j = 0; j < idim; ++j) dnorm += ev(i, j) * ev(i, j);
+    for (int j = 0; j < idim; ++j) dnorm += ev(i,j) * ev(i,j);
     if (dnorm < 1e-20) {
       std::cerr << " #(W04)# Null vector given to orthg. Location is " << i << std::endl;
-      return -1;
+      return;
     }
     dnorm = 1 / std::sqrt(dnorm);
-    for (int j = 0; j < idim; ++j) ev(i, j) *= dnorm;
+    for (int j = 0; j < idim; ++j) ev(i,j) *= dnorm;
   }
-  int idgn = numvec;
-  norm[0] = 1;
+  idgn = numvec;
+  norm[1] = 1;
 
   // orthogonalization
   for (int i = 1; i < numvec; ++i) {
     norm[i] = 1;
-    for (int j = 0; j < i; ++j) {
+    for (int j=0; j < i-1; ++j) {
       double prjct = 0;
-      for (int l = 0; l < idim; ++l) prjct += ev(i, l) * ev(j, l);
-      for (int l = 0; l < idim; ++l) ev(i, l) -= prjct * ev(j, l);
+      for (int l = 0; l < idim; ++l) prjct += ev(i,l)*ev(j,l);
+      for (int l = 0; l < idim; ++l) ev(i,l) -= prjct * ev(j,l);
     }
     double vnorm = 0;
-    for (int l = 0; l < idim; ++l) vnorm += ev(i, l) * ev(i, l);
+    for (int l = 0; l < idim; ++l) vnorm += ev(i,l) * ev(i,l);
     if (vnorm > 1e-15) {
       vnorm = 1 / std::sqrt(vnorm);
-      for (int l = 0; l < idim; ++l) ev(i, l) *= vnorm;
+      for (int l = 0; l < idim; ++l) ev(i,l) *= vnorm;
     } else {
-      for (int l = 0; l < idim; ++l) ev(i, l) = 0;
+      for (int l = 0; l < idim; ++l) ev(i,l) = 0;
       --idgn;
       norm[i] = 0;
     }
@@ -225,14 +223,13 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
 
   // check orthogonality
   for (int i = 1; i < numvec; ++i) {
-    for (int j = 0; j < i; ++j) {
+    for (int j = 0; j < i - 1; ++j) {
       double prd = 0;
-      for (int l = 0; l < idim; ++l) prd += ev(i, l) * ev(j, l);
+      for (int l = 0; l < idim; ++l) prd += ev(i,l)*ev(j,l);
       if (std::abs(prd) > 1e-10) {
         std::cerr << " #(W05)# Non-orthogonal vectors at " << i << ' ' << j << std::endl
                   << "         Overlap : " << prd << std::endl;
       }
     }
   }
-  return idgn;
 }

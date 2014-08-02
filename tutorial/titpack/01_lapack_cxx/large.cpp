@@ -28,7 +28,6 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() < 2 || wk.size2() != idim) wk.resize(2, idim);
   return lnc1z(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(1,0),
                list1, list2);
 }
@@ -113,8 +112,6 @@ void lncv1(int n, std::vector<int> const& ipair, std::vector<double> const& bond
     std::cerr << " #(W08)# nvec given to lncv1 out of range\n";
     return;
   }
-  int idim = list1.size();
-  if (wk.size1() < 2 || wk.size2() != idim) wk.resize(2, idim);
   lncv1z(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(1,0),
          list1, list2);
 }
@@ -125,7 +122,6 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
             int itr, double *v1, double *v0, std::vector<int> const& list1,
             std::vector<std::vector<int> > const& list2) {
   int idim = list1.size();
-  if (x.size1() < nvec || x.size2() != idim) x.resize(nvec, idim);
 
   // initialization
   for (int i = 0; i < idim; ++i) {
@@ -134,6 +130,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
   }
   v1[iv] = 1;
   
+  x.resize(nvec, idim);
   for (int k = 0; k < nvec; ++k) {
     for (int i = 1; i < idim; ++i) x(k, i) = 0;
     x(k, iv) = coeff(k, 0);
@@ -220,7 +217,6 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
               std::vector<std::vector<int> > const& list2) {
   int idim = list1.size();
   int ibond = ipair.size() / 2;
-  if (v.size1() < vindex || v.size2() != idim) v.resize(vindex, idim);
 
   int ihf = (n + 1) / 2;
   int ihfbit = 1 << ihf;
@@ -291,7 +287,7 @@ void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
           matrix_type& wk, std::vector<int> const& list1,
           std::vector<std::vector<int> > const& list2) {
   int idim = list1.size();
-  if (wk.size1() < 4 || wk.size2() != idim) wk.resize(4, idim);
+  wk.resize(4, idim);
   inv1z(n, ipair, bondwt, zrtio, Eig, iv, x, &wk(0,0), &wk(1,0), &wk(2,0), &wk(3,0), list1, list2);
 }
 
@@ -300,7 +296,7 @@ void inv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bond
            double *b, double *p, double *r, double *y, std::vector<int> const& list1,
            std::vector<std::vector<int> > const& list2) {
   int idim = list1.size();
-  if (x.size() != idim) x.resize(idim);
+  x.resize(idim);
   for (int i = 0; i < idim; ++i) b[i] = 0;
   b[iv]=1;
 
@@ -342,7 +338,7 @@ int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
 
   // initialization
   double bnorm = 0;
-  for (int i = 0; i < idim; ++i) {
+  for (int i=0; i < idim; ++i) {
     bnorm += b[i] * b[i];
     r[i] = b[i];
     p[i] = b[i];

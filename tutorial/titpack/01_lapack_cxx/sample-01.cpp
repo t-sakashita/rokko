@@ -49,7 +49,7 @@ int main() {
   int iv = idim / 3 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
-  matrix_type v;
+  matrix_type v(2, idim);
   int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
   
   std::cout << "[Eigenvalues]\n";
@@ -61,7 +61,7 @@ int main() {
   matrix_type x;
   lncv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
   // You may alternatively use inv1 / Note: dimension v(4, idim) -
-  //   inv1(elemnt, loc, E[0], iv, x, itr, v, list1, list2);
+  //   call inv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
 
   std::cout << "[Eigenvector components (selected)]";
   int count = 0;

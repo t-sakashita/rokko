@@ -20,7 +20,6 @@
 #include <boost/tuple/tuple.hpp>
 
 typedef boost::numeric::ublas::matrix<double> matrix_type;
-typedef boost::numeric::ublas::matrix<int> i_matrix_type;
 
 //
 // configurations with the specified sz
@@ -109,12 +108,13 @@ void zcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
 //
 // Orthogonalization of the eigenvectors
 //
-// return value #  degree of degenearcy
+// ideclr  @  declared array size in the main program
 // ev      @# vectors to be orthogonalized / orthogonalized vectors
 // norm(j) #  norm of the j-th vector returned
+// idgn    #  degree of degenearcy
 // numvec  @  number of vectors to be checked
 
-int orthg(matrix_type& ev, std::vector<double>& norm, int numvec);
+void orthg(matrix_type& ev, std::vector<double>& norm, int& idgn, int numvec);
 
 //
 // configurations with the specified sz
