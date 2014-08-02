@@ -19,7 +19,7 @@ PETSC_DIR=$PWD
 
 ./configure --prefix=$PREFIX --with-cc=mpicc --COPTFLAGS="-O3" --with-cxx=mpicxx --CXXOPTFLAGS="-O3" --with-fc=mpif77 --FOPTFLAGS="-O3" --with-mpiexec=mpirun \
     --with-blas-lapack-lib="-framework vecLib" \
-    --with-blacs-dir=$PREFIX --with-c++-support=1 --with-debugging=0
+    --with-blacs-dir=$PREFIX --with-c++-support=1 --with-debugging=1 --with-valgrind-include=/usr/local/include/
 
 make # -j option can not be specified
 make install
