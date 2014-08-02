@@ -11,9 +11,9 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #3 *****************
+/************* Sample main program #8 *****************
 * 1d Heisenberg antiferromagnet with 16 spins
-* Eigenvectors of excited states by lncv1
+* Eigenvectors of excited states by lncv2
 ******************************************************/
 
 #include "titpack.hpp"
@@ -43,13 +43,18 @@ int main() {
   // or
   //   int idim = sztn(n, 0, list1, list2);
 
+  // matrix elements
+  matrix_type elemnt;
+  i_matrix_type loc;
+  elm2(n, ipair, bondwt, zrtio, elemnt, loc, list1, list2);
+  
   // Eigenvalues
   int nvec = 3;
-  int iv = idim / 3 - 1;
+  int iv = idim / 5 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
   matrix_type v;
-  int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
+  int itr = lnc2(elemnt, loc, nvec, iv, E, alpha, beta, coeff, v);
   
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
@@ -58,9 +63,7 @@ int main() {
 
   // Ground-state eigenvector
   matrix_type x;
-  lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, v, list1, list2);
-  // You may alternatively use inv1 / Note: dimension v(4, idim) -
-  //   call inv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
+  lncv2(elemnt, loc, nvec, iv, alpha, beta, coeff, x, itr, v);
 
   std::cout << "[Eigenvector components (selected)]";
   int count = 0;
@@ -71,5 +74,6 @@ int main() {
   std::cout << std::endl;
 
   // Precision check and correlation functions
-  double Hexpec = check1(n, ipair, bondwt, zrtio, x, nvec - 1, v, 0, list1, list2);
+  double Hexpec = check2(elemnt, loc, x, nvec - 1, v, 0);
+
 }

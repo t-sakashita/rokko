@@ -9,7 +9,6 @@
 *
 *****************************************************************************/
 
-#include "common.hpp"
 #include "small.hpp"
 #include "medium.hpp"
 #include "large.hpp"

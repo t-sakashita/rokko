@@ -101,86 +101,64 @@ void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, in
                             &isplit[0], &z(0,0), ndim, &ifail[0]);
 }
 
-void xcorr(int n, std::vector<int> const& npair, const double *x,
-           std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2) {
-  int idim = list1.size();
+void xcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
+           std::vector<double>& sxx) {
   int nbond = npair.size() / 2;
-  int ihf = (n + 1) / 2;
-  int ihfbit = 1 << ihf;
-  int irght = (1 << ihf) - 1;
-  int ilft = ((1 << n) - 1) ^ irght;
-
   for (int k=0; k < nbond; ++k) {
     int i1 = npair[k * 2];
     int i2 = npair[k * 2 + 1];
-    if (i1 < 0 || i1 >= n || i2 < 0 || i2 >= n || i1 == i2) {
+    if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
       std::cerr << " #(W01)# Wrong site number given to xcorr\n";
       return;
     }
     double corr = 0;
     int is = (1 << i1) + (1 << i2);
-    for (int j = 0; j < idim; ++j) {
-      int ibit = list1[j] & is;
-      if (ibit != 0 && ibit != is) {
-        int iexchg = list1[j] ^ is;
-        int ia = iexchg & irght;
-        int ib = (iexchg & ilft) / ihfbit;
-        corr += x[j] * x[list2[0][ia] + list2[1][ib]];
-      }
+    for (int j = 0; j < ss.dimension(); ++j) {
+      int ibit = ss.config(j) & is;
+      if (ibit != 0 && ibit != is) corr += x[j] * x[ss.config2index(ss.config(j) ^ is)];
     }
     sxx[k] = corr / 4;
   }
 }
 
-void xcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
-           std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2) {
-  xcorr(n, npair, &x[0], sxx, list1, list2);
+void xcorr(subspace const& ss, std::vector<int> const& npair, std::vector<double> const& x,
+           std::vector<double>& sxx) {
+  xcorr(ss, npair, &x[0], sxx);
 }
 
-void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
-           std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2) {
-  xcorr(n, npair, &x(xindex, 0), sxx, list1, list2);
+void xcorr(subspace const& ss, std::vector<int> const& npair, matrix_type const& x, int xindex,
+           std::vector<double>& sxx) {
+  xcorr(ss, npair, &x(xindex, 0), sxx);
 }
 
-void zcorr(int n, std::vector<int> const& npair, const double *x,
-           std::vector<double>& szz, std::vector<int>& list1) {
-  int idim = list1.size();
+void zcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
+           std::vector<double>& szz) {
   int nbond = npair.size() / 2;
-
   for (int k = 0; k < nbond; ++k) {
     int i1 = npair[k * 2];
     int i2 = npair[k * 2 + 1];
-    if (i1 < 0 || i1 >= n || i2 < 0 || i2 >= n || i1 == i2) {
+    if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
       std::cerr << " #(W02)# Wrong site number given to zcorr\n";
       return;
     }
     double corr = 0;
     int is = (1 << i1) + (1 << i2);
-    for (int j = 0; j < idim; ++j) {
-      int ibit = list1[j] & is;
-      double factor;
-      if (ibit == 0 || ibit == is) {
-        factor = 1;
-      } else {
-        factor = -1;
-      }
-      corr += factor * x[j] * x[j];
+    for (int j = 0; j < ss.dimension(); ++j) {
+      int ibit = ss.config(j) & is;
+      corr += ((ibit == 0 || ibit == is) ? 1.0 : -1.0) * x[j] * x[j];
     }
     szz[k] = corr / 4;
   }
 }
 
-void zcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
-           std::vector<double>& szz, std::vector<int>& list1) {
-  zcorr(n, npair, &x(xindex, 0), szz, list1);
+void zcorr(subspace const& ss, std::vector<int> const& npair, matrix_type const& x, int xindex,
+           std::vector<double>& szz) {
+  zcorr(ss, npair, &x(xindex, 0), szz);
 }
 
-void zcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
-           std::vector<double>& szz, std::vector<int>& list1) {
-  zcorr(n, npair, &x[0], szz, list1);
+void zcorr(subspace const& ss, std::vector<int> const& npair, std::vector<double> const& x,
+           std::vector<double>& szz) {
+  zcorr(ss, npair, &x[0], szz);
 }
 
 int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
