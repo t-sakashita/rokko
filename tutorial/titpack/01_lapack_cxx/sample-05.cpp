@@ -11,9 +11,9 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #3 *****************
+/************* Sample main program #5 *****************
 * 1d Heisenberg antiferromagnet with 16 spins
-* Eigenvectors of excited states by lncv1
+* Eigenvector of an excited state by inv1
 ******************************************************/
 
 #include "titpack.hpp"
@@ -44,32 +44,26 @@ int main() {
   //   int idim = sztn(n, 0, list1, list2);
 
   // Eigenvalues
-  int nvec = 3;
-  int iv = idim / 3 - 1;
-  std::vector<double> E, alpha, beta;
-  matrix_type coeff;
-  matrix_type v;
-  int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
-  
-  std::cout << "[Eigenvalues]\n";
-  for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
-  std::cout << std::endl;
-  std::cout << "[Iteration number]\n\t" << itr << std::endl;
+  int nvec = 1;
+  matrix_type v(2, idim);
+  for (int k = 0; k < 2; ++k) {
+    int iv = 20 + (idim / 2) * k;
+    std::vector<double> E, alpha, beta;
+    matrix_type coeff;
+    matrix_type wk;
+    int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, wk, list1, list2);
+    
+    std::cout << "# " << k << " [Eigenvalues]\n";
+    for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
+    std::cout << std::endl;
 
-  // Ground-state eigenvector
-  matrix_type x;
-  lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, v, list1, list2);
-  // You may alternatively use inv1 / Note: dimension v(4, idim) -
-  //   call inv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
-
-  std::cout << "[Eigenvector components (selected)]";
-  int count = 0;
-  for (int i = 12; i < idim; i += idim/20, ++count) {
-    if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(nvec - 1, i);
+    matrix_type x;
+    lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, wk, list1, list2);
+    for (int i = 0; i < idim; ++i) v(k, i) = x(0, i);
   }
-  std::cout << std::endl;
-
-  // Precision check and correlation functions
-  double Hexpec = check1(n, ipair, bondwt, zrtio, x, nvec - 1, v, 0, list1, list2);
+  
+  // Degeneracy check
+  std::vector<double> norm;
+  int idgn = orthg(v, norm, 2);
+  std::cout << " [Degeneracy] : " << idgn << "   Norm : " << norm[0] << '\t' << norm[1] << std::endl;
 }

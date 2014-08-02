@@ -14,6 +14,7 @@
 #ifndef TITPACK_COMMON_HPP
 #define TITPACK_COMMON_HPP
 
+#include "subspace.hpp"
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -76,17 +77,14 @@ void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, in
 // sxx         # xx correlation function
 // list1,list2 @ spin configurations generated in 'sz'
 
-void xcorr(int n, std::vector<int> const& npair, const double *x,
-           std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2);
+void xcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
+           std::vector<double>& sxx);
 
-void xcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
-           std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2);
+void xcorr(subspace const& ss, std::vector<int> const& npair,
+           std::vector<double> const& x, std::vector<double>& sxx);
 
-void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
-           std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2);
+void xcorr(subspace const& ss, std::vector<int> const& npair,
+           matrix_type const& x, int xindex, std::vector<double>& sxx);
 
 //
 // ************* zz correlation function **************
@@ -97,14 +95,14 @@ void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xinde
 // szz         # zz correlation function
 // list1,list2 @ spin configurations generated in 'sz'
 
-void zcorr(int n, std::vector<int> const& npair, const double *x,
-           std::vector<double>& szz, std::vector<int>& list1);
+void zcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
+           std::vector<double>& szz);
 
-void zcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
-           std::vector<double>& szz, std::vector<int>& list1);
+void zcorr(subspace const& ss, std::vector<int> const& npair,
+           matrix_type const& x, int xindex, std::vector<double>& szz);
 
-void zcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
-           std::vector<double>& szz, std::vector<int>& list1);
+void zcorr(subspace const& ss, std::vector<int> const& npair,
+           std::vector<double> const& x, std::vector<double>& szz);
 
 //
 // Orthogonalization of the eigenvectors

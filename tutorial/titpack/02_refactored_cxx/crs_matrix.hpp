@@ -9,7 +9,24 @@
 *
 *****************************************************************************/
 
+#ifndef TITPACK_CRS_MATRIX_HPP
+#define TITPACK_CRS_MATRIX_HPP
+
 #include "common.hpp"
-#include "small.hpp"
-#include "medium.hpp"
-#include "large.hpp"
+#include "hamiltonian.hpp"
+
+//
+// crs_matrix
+//
+
+class crs_matrix {
+public:
+  crs_matrix(hamiltonian const& hop);
+  int dimension() const { return elemnt_.size2(); }
+  double multiply(const double *v1, double *v0) const;
+private:
+  matrix_type elemnt_;
+  i_matrix_type loc_;
+};
+
+#endif

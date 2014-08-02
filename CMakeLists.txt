@@ -93,7 +93,9 @@ if(NOT LAPACK_FOUND)
 endif(NOT LAPACK_FOUND)
 if(MAC_VECLIB)
   set(LAPACK_LIBRARIES "-framework vecLib")
-endif(MAC_VECLIB) 
+endif(MAC_VECLIB)
+string(REGEX REPLACE ";" " " BLAS_LIBS "${BLAS_LIBRARIES}")
+string(REGEX REPLACE ";" " " LAPACK_LIBS "${LAPACK_LIBRARIES}")
 
 # find Scalapack
 if(DISABLE_SCALAPACK)
@@ -102,6 +104,7 @@ else(DISABLE_SCALAPACK)
   find_package(Scalapack)
   set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
 endif(DISABLE_SCALAPACK)
+string(REGEX REPLACE ";" " " SCAPALACK_LIBS "${SCAPALACK_LIBRARIES}")
 
 # find EigenExa
 if(DISABLE_EIGENEXA)
@@ -110,6 +113,7 @@ else(DISABLE_EIGENEXA)
   find_package(EigenExa)
   set(BUILD_EIGENEXA ${EIGENEXA_FOUND})
 endif(DISABLE_EIGENEXA)
+string(REGEX REPLACE ";" " " EIGENEXA_LIBS "${EIGENEXA_LIBRARIES}")
 
 # find Elemental
 if(DISABLE_ELEMENTAL)
@@ -118,6 +122,7 @@ else(DISABLE_ELEMENTAL)
   find_package(Elemental)
   set(BUILD_ELEMENTAL ${ELEMENTAL_FOUND})
 endif(DISABLE_ELEMENTAL)
+string(REGEX REPLACE ";" " " ELEMENTAL_LIBS "${ELEMENTAL_LIBRARIES}")
 
 # find Elpa
 if(DISABLE_ELPA)
@@ -126,6 +131,7 @@ else(DISABLE_ELPA)
   find_package(Elpa)
   set(BUILD_ELPA ${ELPA_FOUND})
 endif(DISABLE_ELPA)
+string(REGEX REPLACE ";" " " ELPA_LIBS "${ELPA_LIBRARIES}")
 
 # find PETSc/SLEPc
 if(DISABLE_PETSC)
@@ -140,6 +146,8 @@ else(DISABLE_SLEPC)
   find_package(SLEPc)
   set(BUILD_SLEPC ${SLEPC_FOUND})
 endif(DISABLE_SLEPC)
+string(REGEX REPLACE ";" " " PETSC_LIBS "${PETSC_LIBRARIES}")
+string(REGEX REPLACE ";" " " SLEPC_LIBS "${SLEPC_LIBRARIES}")
 
 # find Anasazi
 if(DISABLE_ANASAZI)
@@ -148,11 +156,13 @@ else(DISABLE_ANASAZI)
   find_package(Anasazi)
   set(BUILD_ANASAZI ${ANASAZI_FOUND})
 endif(DISABLE_ANASAZI)
+string(REGEX REPLACE ";" " " ANASAZI_LIBS "${ANASAZI_LIBRARIES}")
 
 set(ROKKO_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
 configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake @ONLY)
-install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
+configure_file(${PROJECT_SOURCE_DIR}/config/include.mk.in ${PROJECT_BINARY_DIR}/config/include.mk @ONLY)
+install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake ${PROJECT_BINARY_DIR}/config/include.mk ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
 
 # test environment
 enable_testing()
