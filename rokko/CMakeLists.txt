@@ -10,7 +10,7 @@
 
 set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp)
 if(BUILD_ANASAZI)
-  set(ROKKO_AOURCES ${ROKKO_SOURCES} distributed_crs_matrix.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} distributed_crs_matrix.cpp)
 endif(BUILD_ANASAZI)
 if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp solver_c.cpp localized_vector_c.cpp distributed_matrix_c.cpp)
