@@ -23,12 +23,9 @@ namespace rokko {
 
 class solver_slepc {
 public:
-  solver_slepc() {
-    SlepcInitialize(NULL, NULL, (char*)0, 0);
-  }
+  solver_slepc() {}
 
-  ~solver_slepc() {
-  }
+  ~solver_slepc() {}
 
   void diagonalize(distributed_crs_matrix const& mat,
                    distributed_multivector_slepc const& ivec,
@@ -37,6 +34,8 @@ public:
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       N, nev;
+    SlepcInitialize(NULL, NULL, (char*)0, 0);
+
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -55,20 +54,26 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type); //CHKERRQ(ierr);
     ierr = EPSGetDimensions(eps,&nev,NULL,NULL); //CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); //CHKERRQ(ierr);
-    PetscScalar eval, eval_dummy;
-    Vec evec, evec_dummy;
+    PetscScalar eval_r, eval_i;
+    Vec evec_r, evec_i;
+    MatGetVecs(A, NULL, &evec_r);
+    MatGetVecs(A, NULL, &evec_i);
+
     PetscInt nconv;
     EPSGetConverged(eps, &nconv);
     std::cout << "nconv=" << nconv << std::endl;
+ 
     for (PetscInt i = 0; i<nconv; ++i) {
-      EPSGetEigenpair(eps, i, &eval, &eval_dummy, evec, evec_dummy);
-      evals_.push_back((double)eval);
+      EPSGetEigenpair(eps, i, &eval_r, &eval_i, evec_r, evec_i);
+      evals_.push_back((double)eval_r);
       std::cout << "evec=";
-      VecView(evec, PETSC_VIEWER_STDOUT_WORLD);
+      //VecView(evec, PETSC_VIEWER_STDOUT_WORLD);
     }
 
-    /* Display solution and clean up */
-    ierr = EPSPrintSolution(eps,NULL); //CHKERRQ(ierr);
+    /*
+    // Display solution and clean up
+    ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
+    */
 
     ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
