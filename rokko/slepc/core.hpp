@@ -22,61 +22,47 @@
 
 namespace rokko {
 
-class slepc_mfree_operator {
-public:
-  slepc_mfree_operator(rokko::distributed_mfree_slepc* op) : op_(op) {}
-
-  ~slepc_mfree_operator() {};
-
 #undef __FUNCT__
 #define __FUNCT__ "MatMult_myMat"
-  PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
-    /*    //PetscFunctionBeginUser;
-    PetscErrorCode ierr;
+PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
+  PetscFunctionBeginUser;
+  PetscErrorCode ierr;
+  
+  rokko::distributed_mfree_slepc *op_ctx;
+  ierr = MatShellGetContext(A, &op_ctx); CHKERRQ(ierr);
+  
+  PetscScalar const * px;
+  PetscScalar * py;
 
-    PetscScalar const * px;
-    PetscScalar * py;
-    VecType vectype;
-    //VecGetType(y, &vectype);
-    //std::cout << "vectype=" << vectype << std::endl;
-    Vec z;
-    z = y;
-    ierr = VecGetArrayRead(x, &px);  CHKERRQ(ierr);
-    VecCreate(PETSC_COMM_WORLD,&z);
-    VecSetSizes(z,128,256);
-
-    ierr = VecGetArray(z, &py);  CHKERRQ(ierr);
-    
-    //op_->multiply(px, py);
-
-    ierr = VecRestoreArrayRead(x,&px);  CHKERRQ(ierr);
-    //ierr = VecRestoreArray(y,&py);  CHKERRQ(ierr);
-    
-    PetscFunctionReturn(0);*/
-  }
+  ierr = VecGetArrayRead(x, &px);  CHKERRQ(ierr);
+  ierr = VecGetArray(y, &py);  CHKERRQ(ierr);
+  
+  op_ctx->multiply(px, py);
+  
+  ierr = VecRestoreArrayRead(x,&px);  CHKERRQ(ierr);
+  ierr = VecRestoreArray(y,&py);  CHKERRQ(ierr);
+  
+  PetscFunctionReturn(0);
+}
 
 #undef __FUNCT__
 #define __FUNCT__ "MatGetDiagonal_myMat"
-  PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
-    PetscFunctionBeginUser;
-    PetscErrorCode ierr;
-    
-    PetscScalar       *pd;
-    
-    ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
-    op_->diagonal(pd);
-    ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
-    
-    PetscFunctionReturn(0);
-  }
+PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
+  PetscFunctionBeginUser;
+  PetscErrorCode ierr;
 
-private:
-  distributed_mfree_slepc* op_;
-  MPI_Comm comm_;
-  mutable std::vector<double> buffer_;
-  int L_;
-  std::vector<std::pair<int, int> > lattice_;
-};
+  rokko::distributed_mfree_slepc *op_ctx;
+  ierr = MatShellGetContext(A, &op_ctx); CHKERRQ(ierr);
+
+  PetscScalar *pd;
+  
+  ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
+  op_ctx->diagonal(pd);
+  ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
+  
+  PetscFunctionReturn(0);
+}
+
 
 class solver_slepc {
 public:
@@ -152,18 +138,15 @@ public:
     PetscMPIInt    size;
     PetscInt       nev;
 
-    slepc_mfree_operator slepc_op_(mat);
     // define matrix-free type operator
     std::cout << "mat->get_mapping_1d().num_rows()=" << mat->get_mapping_1d().num_rows() << std::endl;
     std::cout << " mat->get_mapping_1d().dimension()=" <<  mat->get_mapping_1d().dimension() << std::endl;
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().dimension(), mat->get_mapping_1d().dimension(), NULL, &A); //CHKERRQ(ierr);
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().dimension(), mat->get_mapping_1d().dimension(), mat, &A); //CHKERRQ(ierr);
     ierr = MatSetFromOptions(A); //CHKERRQ(ierr);
-    PetscErrorCode (slepc_mfree_operator::*func_mult)(Mat, Vec, Vec) =&slepc_mfree_operator::MatMult_myMat;
-    PetscErrorCode (slepc_mfree_operator::*func_diag)(Mat, Vec) =&slepc_mfree_operator::MatGetDiagonal_myMat;
 
-    ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())(slepc_op_.*func_mult)); //CHKERRQ(ierr);
-    ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE,  (void(*)())(slepc_op_.*func_mult)); //CHKERRQ(ierr);
-    ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())(slepc_op_.*func_diag)); //CHKERRQ(ierr);
+    ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())MatMult_myMat); //CHKERRQ(ierr);
+    ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat); //CHKERRQ(ierr);
+    ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat); //CHKERRQ(ierr);
 
     EPS            eps;             /* eigenproblem solver context */
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
