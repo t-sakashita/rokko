@@ -164,7 +164,7 @@ void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& la
 }
 
 
-void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, double* w) {
+void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> > const& lattice, double* w) {
   int myrank, nproc;
 
   MPI_Comm_size(comm, &nproc);

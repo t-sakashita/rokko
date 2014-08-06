@@ -25,8 +25,14 @@ public:
     return map_;
   }
   virtual void multiply(const double* x, double* y) const = 0;
+
 protected:
   mapping_1d map_;
+};
+
+class distributed_mfree_slepc : public rokko::distributed_mfree {
+public:
+  virtual void diagonal(double* x) const = 0;
 };
 
 } // end namespace rokko

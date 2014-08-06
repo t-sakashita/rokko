@@ -32,7 +32,7 @@ endforeach(name)
 endif(BUILD_ANASAZI)
 
 if(BUILD_SLEPC)
-set(SAMPLE heisenberg_crs_mpi_slepc)
+set(SAMPLE heisenberg_crs_mpi_slepc heisenberg_mfree_mpi_slepc)
 foreach(name ${SAMPLE})
   set(target_name sample_sparse_${name})
   add_executable(${target_name} ${name}.cpp)

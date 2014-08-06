@@ -16,10 +16,67 @@
 #include "distributed_crs_matrix.hpp"
 #include "distributed_multivector.hpp"
 
+#include <petscvec.h>
 #include <slepceps.h>
 #include <petscblaslapack.h>
 
 namespace rokko {
+
+class slepc_mfree_operator {
+public:
+  slepc_mfree_operator(rokko::distributed_mfree_slepc* op) : op_(op) {}
+
+  ~slepc_mfree_operator() {};
+
+#undef __FUNCT__
+#define __FUNCT__ "MatMult_myMat"
+  PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
+    /*    //PetscFunctionBeginUser;
+    PetscErrorCode ierr;
+
+    PetscScalar const * px;
+    PetscScalar * py;
+    VecType vectype;
+    //VecGetType(y, &vectype);
+    //std::cout << "vectype=" << vectype << std::endl;
+    Vec z;
+    z = y;
+    ierr = VecGetArrayRead(x, &px);  CHKERRQ(ierr);
+    VecCreate(PETSC_COMM_WORLD,&z);
+    VecSetSizes(z,128,256);
+
+    ierr = VecGetArray(z, &py);  CHKERRQ(ierr);
+    
+    //op_->multiply(px, py);
+
+    ierr = VecRestoreArrayRead(x,&px);  CHKERRQ(ierr);
+    //ierr = VecRestoreArray(y,&py);  CHKERRQ(ierr);
+    
+    PetscFunctionReturn(0);*/
+  }
+
+#undef __FUNCT__
+#define __FUNCT__ "MatGetDiagonal_myMat"
+  PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
+    PetscFunctionBeginUser;
+    PetscErrorCode ierr;
+    
+    PetscScalar       *pd;
+    
+    ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
+    op_->diagonal(pd);
+    ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
+    
+    PetscFunctionReturn(0);
+  }
+
+private:
+  distributed_mfree_slepc* op_;
+  MPI_Comm comm_;
+  mutable std::vector<double> buffer_;
+  int L_;
+  std::vector<std::pair<int, int> > lattice_;
+};
 
 class solver_slepc {
 public:
@@ -39,6 +96,7 @@ public:
     PetscMPIInt    size;
     PetscInt       nev;
 
+    EPS            eps;             /* eigenproblem solver context */
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -86,16 +144,78 @@ public:
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
-  void diagonalize(rokko::distributed_mfree* const mat,
+  void diagonalize(rokko::distributed_mfree_slepc* const mat,
                    distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
+    Mat            A;
+    EPSType        type;
+    PetscMPIInt    size;
+    PetscInt       nev;
+
+    slepc_mfree_operator slepc_op_(mat);
+    // define matrix-free type operator
+    std::cout << "mat->get_mapping_1d().num_rows()=" << mat->get_mapping_1d().num_rows() << std::endl;
+    std::cout << " mat->get_mapping_1d().dimension()=" <<  mat->get_mapping_1d().dimension() << std::endl;
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().dimension(), mat->get_mapping_1d().dimension(), NULL, &A); //CHKERRQ(ierr);
+    ierr = MatSetFromOptions(A); //CHKERRQ(ierr);
+    PetscErrorCode (slepc_mfree_operator::*func_mult)(Mat, Vec, Vec) =&slepc_mfree_operator::MatMult_myMat;
+    PetscErrorCode (slepc_mfree_operator::*func_diag)(Mat, Vec) =&slepc_mfree_operator::MatGetDiagonal_myMat;
+
+    ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())(slepc_op_.*func_mult)); //CHKERRQ(ierr);
+    ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE,  (void(*)())(slepc_op_.*func_mult)); //CHKERRQ(ierr);
+    ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())(slepc_op_.*func_diag)); //CHKERRQ(ierr);
+
+    EPS            eps;             /* eigenproblem solver context */
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetOperators(eps, A, NULL); //CHKERRQ(ierr);
+    ierr = EPSSetProblemType(eps, EPS_HEP); //CHKERRQ(ierr);
+    //ierr = EPSSetDimensions(eps, num_evals, block_size, PETSC_DECIDE); //CHKERRQ(ierr);
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE); //CHKERRQ(ierr);
+    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    /* Set solver parameters at runtime */
+    ierr = EPSSetFromOptions(eps); //CHKERRQ(ierr);
+    
+    /* Solve the eigensystem */       
+    ierr = EPSSolve(eps); //CHKERRQ(ierr);
+    
+    /* Optional: Get some information from the solver and display it */
+    ierr = EPSGetType(eps, &type); //CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type); //CHKERRQ(ierr);
+    ierr = EPSGetDimensions(eps, &nev, NULL, NULL); //CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); //CHKERRQ(ierr);
+
+    PetscInt nconv;
+    EPSGetConverged(eps, &nconv);
+
+    if (nconv == 0) {
+      std::cout << "doesn't converge" << std::endl;
+    }
+
+    PetscScalar eval_r, eval_i;
+    Vec evec_r, evec_i;
+    MatGetVecs(A, NULL, &evec_r);
+    MatGetVecs(A, NULL, &evec_i);
+ 
+    for (PetscInt i = 0; i<nconv; ++i) {
+      EPSGetEigenpair(eps, i, &eval_r, &eval_i, evec_r, evec_i);
+      evals_.push_back((double)eval_r);
+      //VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
+    }
+
+    // Display solution and clean up
+    //ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
+
+    ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
+    ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
+    ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
+    ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
   std::vector<double> eigenvalues() const { return evals_; }
   distributed_multivector_slepc eigenvectors() const { return evecs_; }
 private:
   PetscErrorCode ierr;
-  EPS            eps;             /* eigenproblem solver context */
   std::vector<double> evals_;
   distributed_multivector_slepc evecs_;
 };
