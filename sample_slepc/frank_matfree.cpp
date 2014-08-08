@@ -150,18 +150,16 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
     ++k;
   }
   //std::cout << "mat=" << std::endl << mat << std::endl;
-
+  /*
   for(int j = 0; j < len_y; ++j) {
     py[j] = 0.;
   }
-
+  */
   for(int i = 0; i < len_y; ++i) {
     for(int j = 0; j < n; ++j) {
       py[i] += mat(i,j) * pgx[j];
     }
   }
-
-  //rokko::heisenberg_hamiltonian::multiply(m->comm, m->L, m->lattice, px, py, m->buffer);
 
   // destroy scatter context and local vector when no longer needed
   VecScatterDestroy(&ctx);
@@ -197,7 +195,6 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
     ++k;
   }
 
-  //rokko::heisenberg_hamiltonian::fill_diagonal(m->comm, m->L, m->lattice, pd);
   ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
