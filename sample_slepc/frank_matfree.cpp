@@ -23,17 +23,21 @@ int main(int argc,char **argv)
   Mat            A;               /* operator matrix */
   EPS            eps;             /* eigenproblem solver context */
   EPSType        type;
-  PetscMPIInt    nproc;
+  PetscMPIInt    nproc, myproc;
   PetscInt       nev;
   PetscErrorCode ierr;
 
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);
+  ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&myproc); CHKERRQ(ierr);
 
   int L = 3;
   ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
   PetscInt N_global = 10; //1 << L;
   PetscInt N_local = N_global / nproc;
+  if (myproc < (N_global % nproc)) {
+    ++N_local;
+  }
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Compute the operator matrix that defines the eigensystem, Ax=kx
@@ -111,7 +115,7 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
   //model *m;
   //ierr = MatShellGetContext(A, &m); CHKERRQ(ierr);*/
 
-  VecView(x);
+  //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
 
   PetscInt len_x, len_y;
   ierr = VecGetLocalSize(x, &len_x);  CHKERRQ(ierr);
@@ -119,8 +123,16 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
   //std::cout << "len_x=" << len_x << "len_y=" << len_y << std::endl;
 
   const PetscScalar *px;
-  PetscScalar       *py;
+  PetscScalar       *py, *pgx;
 
+  VecScatter ctx;
+  Vec vout;
+  VecScatterCreateToAll(x,&ctx,&vout);
+  // scatter as many times as you need
+  VecScatterBegin(ctx,x,vout,INSERT_VALUES,SCATTER_FORWARD);
+  VecScatterEnd(ctx,x,vout,INSERT_VALUES,SCATTER_FORWARD);
+
+  ierr = VecGetArray(vout, &pgx); CHKERRQ(ierr);
   ierr = VecGetArrayRead(x, &px); CHKERRQ(ierr);
   ierr = VecGetArray(y, &py); CHKERRQ(ierr);
 
@@ -129,7 +141,6 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
   PetscInt A_m, n;
   ierr = MatGetSize(A, &A_m, &n); CHKERRQ(ierr);
   //std::cout << "Istart=" << Istart << "Iend=" << Iend << std::endl;
-  //int local_rows = Iend - Istart + 1;
   rokko::localized_matrix<> mat(len_y, n);
   int k = 0;
   for(int i = Istart; i < Iend; ++i) {
@@ -145,12 +156,18 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
   }
 
   for(int i = 0; i < len_y; ++i) {
-    for(int j = 0; j < len_y; ++j) {
-      py[i] += mat(i,j) * px[j];
+    for(int j = 0; j < n; ++j) {
+      py[i] += mat(i,j) * pgx[j];
     }
   }
 
   //rokko::heisenberg_hamiltonian::multiply(m->comm, m->L, m->lattice, px, py, m->buffer);
+
+  // destroy scatter context and local vector when no longer needed
+  VecScatterDestroy(&ctx);
+  //VecView(vout, PETSC_VIEWER_STDOUT_WORLD);
+  VecDestroy(&vout);
+
   ierr = VecRestoreArrayRead(x,&px); CHKERRQ(ierr);
   ierr = VecRestoreArray(y,&py); CHKERRQ(ierr);
 
