@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
   int L, num_bonds;
   std::vector<std::pair<int, int> > lattice;
 
-  L = 4;
+  L = 8;
   num_bonds = L - 1;
   /*
   ifs >> L >> num_bonds;
@@ -105,6 +105,8 @@ int main(int argc, char *argv[])
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
+  double* recv_buffer = new double[N_seq];
+  double* send_buffer = new double[N];
   std::vector<double> buffer(N);
   for (int i=0; i<N; ++i) {
     // sequential version
@@ -124,9 +126,8 @@ int main(int argc, char *argv[])
 
     // MPI version
     std::vector<double> v, w;
-    v.assign(N, 0);
-    if (myrank == (i / N))
-      v[i % N] = 1;
+    v.assign(N, -2.);
+    MPI_Scatter(&v_seq[0], N, MPI_DOUBLE, &v[0], N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     w.assign(N, 0);
     rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v, w, buffer);
     for (int proc=0; proc<nprocs; ++proc) {
@@ -139,6 +140,30 @@ int main(int argc, char *argv[])
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Gather(&w[0], N, MPI_DOUBLE, recv_buffer, N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (myrank == 0) {
+      std::cout << "seq=";
+      for (int j=0; j<N_seq; ++j) {
+	std::cout << w_seq[j] << " ";
+      }
+      std::cout << std::endl;
+      std::cout << "recv=";
+      for (int j=0; j<N_seq; ++j) {
+	std::cout << recv_buffer[j] << " ";
+      }
+      std::cout << std::endl;
+      for (int j=0; j<N_seq; ++j) {
+	if (w_seq[j] != recv_buffer[j]) {
+	  std::cout << "j=" << j << "  w_seq[j]=" << w_seq[j] << "  recv[j]=" << recv_buffer[j] << std::endl;
+	  exit(1);
+	}
+      }
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+
   }
 
   // test fill_diagonal of quantum heisenberg hamiltonian.
