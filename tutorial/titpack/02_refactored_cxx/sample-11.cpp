@@ -22,6 +22,7 @@
 int main(int argc, char** argv) {
   std::cout.precision(10);
   options opt(argc, argv, 8);
+  if (!opt.valid) std::abort();
 
   // lattice structure
   int n = opt.N;
