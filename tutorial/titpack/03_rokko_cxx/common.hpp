@@ -22,7 +22,7 @@
 
 #include <rokko/localized_matrix.hpp>
 
-typedef rokko::localized_matrix<rokko::matrix_col_major> matrix_type;
+typedef rokko::localized_matrix<rokko::matrix_row_major> matrix_type;
 typedef boost::numeric::ublas::matrix<int> i_matrix_type;
 
 //
