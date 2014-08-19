@@ -46,6 +46,13 @@ int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
   return diagonalize(mat, &eigvals[0], eigvecs, timer_in);
 }
 
+template<class MATRIX_MAJOR>
+int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
+                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+  eigvals.assign(mat.rows(), 0);
+  return diagonalize(mat, &eigvals[0], eigvecs, timer_in);
+}
+
 } // namespace lapack
 } // namespace rokko
 
