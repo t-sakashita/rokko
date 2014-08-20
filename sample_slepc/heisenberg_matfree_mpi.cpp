@@ -2,6 +2,7 @@
 #include <petscblaslapack.h>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+#include <rokko/utility/heisenberg_hamiltonian.hpp>
 
 struct model {
   MPI_Comm comm;
@@ -71,12 +72,13 @@ int main(int argc,char **argv)
   */
   ierr = EPSSetOperators(eps,A,NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps,EPS_HEP); CHKERRQ(ierr);
-  ierr = EPSSetDimensions(eps, 5, 100, 100); CHKERRQ(ierr);
+  //ierr = EPSSetDimensions(eps, 5, 100, 100); CHKERRQ(ierr);
+  ierr = EPSSetDimensions(eps, 5, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
   ierr = EPSSetTolerances(eps, (PetscScalar) 1., (PetscInt) 200);   CHKERRQ(ierr);
-  Vec v0;
+  /*  Vec v0;
   MatGetVecs(A, &v0, NULL);
   VecSet(v0,1.0);
-  EPSSetInitialSpace(eps,1,&v0);
+  EPSSetInitialSpace(eps,1,&v0);*/
   /*
      Set solver parameters at runtime
   */
@@ -119,6 +121,12 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
 
   ierr = VecGetArrayRead(x, &px); CHKERRQ(ierr);
   ierr = VecGetArray(y, &py); CHKERRQ(ierr);
+  PetscInt len_x, len_y;
+  ierr = VecGetLocalSize(x, &len_x);  CHKERRQ(ierr);
+  ierr = VecGetLocalSize(y, &len_y); CHKERRQ(ierr);
+  //for(int j = 0; j < len_y; ++j) {
+  //  py[j] = 0.;
+  //}
   rokko::heisenberg_hamiltonian::multiply(m->comm, m->L, m->lattice, px, py, m->buffer);
   ierr = VecRestoreArrayRead(x,&px); CHKERRQ(ierr);
   ierr = VecRestoreArray(y,&py); CHKERRQ(ierr);

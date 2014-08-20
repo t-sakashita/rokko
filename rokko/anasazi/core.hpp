@@ -27,6 +27,8 @@
 
 namespace rokko {
 
+namespace anasazi {
+
 class anasazi_mfree_operator : public Epetra_Operator {
 public:
   anasazi_mfree_operator(rokko::distributed_mfree* op) : op_(op), ep_comm(Epetra_MpiComm(MPI_COMM_WORLD)), ep_map(op->get_mapping_1d().get_epetra_map()) {}
@@ -74,12 +76,12 @@ private:
   Epetra_Map ep_map;
 };
 
-class solver_anasazi {
+class solver {
 public:
   typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> eigenproblem_t;
   typedef Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
-  solver_anasazi() {}
-  ~solver_anasazi() {}
+  solver() {}
+  ~solver() {}
   void diagonalize(distributed_crs_matrix const& mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
@@ -131,6 +133,10 @@ public:
     evecs_.get_pointer() = sol.Evecs;
   }
 
+  void make_crs_matrix(sparse_crs_matrix* mat) {
+    mat = new anasazi_crs_matrix(); 
+  }
+
   std::vector<Anasazi::Value<double> > eigenvalues() const { return evals_; }
   distributed_multivector_anasazi eigenvectors() const { return evecs_; }
 private:
@@ -138,6 +144,8 @@ private:
   std::vector<Anasazi::Value<double> > evals_;
   distributed_multivector_anasazi evecs_;
 };
+
+} // namespace anasazi
 
 } // namespace rokko
 

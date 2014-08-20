@@ -14,5 +14,6 @@
 
 #include <rokko/serial_dense_solver.hpp>
 #include <rokko/parallel_dense_solver.hpp>
+#include <rokko/parallel_sparse_solver.hpp>
 
 #endif // ROKKO_SOLVER_HPP

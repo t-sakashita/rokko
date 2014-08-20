@@ -11,5 +11,7 @@
 
 #include "distributed_crs_matrix.hpp"
 
-ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::anasazi::distributed_crs_matrix, "anasazi", 10);
+ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::anasazi::solver, "anasazi", 40)
+
+//ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::anasazi::distributed_crs_matrix, "anasazi", 10);
 
