@@ -22,8 +22,11 @@ namespace lapack {
 
 template<typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  int info;
 
+  if(mat.is_col_major())
+    throw "LAPACKE doesn't support matrix_col_major.  Use LAPACK with matrix_row_major.";
+
+  int info;
   int dim = mat.rows();
 
   // eigenvalue decomposition
