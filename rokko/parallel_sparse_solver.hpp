@@ -14,7 +14,7 @@
 #define ROKKO_PARALLEL_SPARSE_SOLVER_HPP
 
 #include <rokko/factory.hpp>
-#include <rokko/distributed_matrix.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -29,11 +29,15 @@ public:
   virtual ~ps_solver_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(distributed_crs_matrix& mat,//localized_vector& eigvals
+  virtual void diagonalize(rokko::detail::distributed_crs_matrix& mat,//localized_vector& eigvals
+			   distributed_multivector_anasazi const& eigvec,
+			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
+  virtual void diagonalize(rokko::detail::distributed_crs_matrix& mat,//localized_vector& eigvals
 			   distributed_multivector_anasazi const& eigvec,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
+  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) = 0;
 };
-  
+
 template<typename SOLVER>
 class ps_solver_wrapper : public ps_solver_base {
   typedef SOLVER solver_type;
@@ -42,9 +46,14 @@ public:
   virtual ~ps_solver_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(distributed_crs_matrix& mat,//localized_vector& eigvals
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,//localized_vector& eigvals
 		   distributed_multivector_anasazi const& eigvec,
-		   int num_evals, int block_size, int max_iters, double tol, ) {
+		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
+    solver_impl_.diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer);
+  }
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,//localized_vector& eigvals
+		   distributed_multivector_anasazi const& eigvec,
+		   int num_evals, int block_size, int max_iters, double tol) {
     timer_dumb timer;
     solver_impl_.diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer);
   }
@@ -61,6 +70,10 @@ public:
                    distributed_matrix& eigvecs, timer& timer_in) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
     }*/
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
+    return solver_impl_.create_distributed_crs_matrix(map);
+  }
+  
 private:
   solver_type solver_impl_;
 };
@@ -79,10 +92,24 @@ public:
   }
   void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
   void finalize() { solver_impl_->finalize(); }
-  void diagonalize(distributed_matrix& mat,// localized_vector& eigvals, 
+  //void diagonalize(rokko::detail::distributed_crs_matrix& mat,// localized_vector& eigvals, 
+  //		   distributed_multivector_anasazi const& eigvec,
+  //		   int num_evals, int block_size, int max_iters, double tol, timer& timer_in) {
+  //    solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer_in);
+  //  }
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,// localized_vector& eigvals, 
 		   distributed_multivector_anasazi const& eigvec,
-		   int num_evals, int block_size, int max_iters, double tol, timer& timer_in) {
-    solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer_in);
+		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
+    solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer);
+  }
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,// localized_vector& eigvals, 
+		   distributed_multivector_anasazi const& eigvec,
+		   int num_evals, int block_size, int max_iters, double tol) {
+    solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol);
+  }
+
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
+    return solver_impl_->create_distributed_crs_matrix(map);
   }
   /*void diagonalize(distributed_matrix& mat, localized_vector& eigvals,
     rokko::distributed_matrix& eigvecs, timer& timer_in) {
@@ -105,8 +132,6 @@ private:
 
 } // end namespace rokko
 
-#endif // ROKKO_PARALLEL_SPARSE_SOLVER_HPP
-
 #define ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
@@ -115,3 +140,5 @@ struct register_caller { \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
+
+#endif // ROKKO_PARALLEL_SPARSE_SOLVER_HPP

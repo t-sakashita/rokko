@@ -13,7 +13,7 @@
 #define ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_H
 
 #include <rokko/mapping_1d.hpp>
-//#include <rokko/distributed_crs_matrix.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 
 #include <Epetra_CrsMatrix.h>
 #include <AnasaziEpetraAdapter.hpp>
@@ -22,12 +22,12 @@
 namespace rokko {
 namespace anasazi {
 
-
-class distributed_crs_matrix {
+class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
-  distributed_crs_matrix(rokko::anasazi::solver& solver_in) {}
-  ~distributed_crs_matrix() {}
-  void initialize(mapping_1d const& map, ) {
+  distributed_crs_matrix(mapping_1d const& map) {
+    initialize(map);
+  }
+  void initialize(mapping_1d const& map) {
     map_ = map;
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_.get_epetra_map(), map_.dimension()));
   }
@@ -38,10 +38,11 @@ public:
     matrix_->FillComplete();
     matrix_->SetTracebackMode(1);
   }
+  Teuchos::RCP<Epetra_CrsMatrix> get_matrix() {
+    return matrix_;
+  }
 private:
   mapping_1d map_;
-  std::vector<int> rows_;
-public:
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;  
 };
 

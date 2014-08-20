@@ -21,7 +21,7 @@
 namespace rokko {
 namespace slepc {
     
-class distributed_crs_matrix : public rokko::detail::dc_matrix_base {
+class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
   typedef rokko::detail::dc_matrix_base super_type;
   distributed_crs_matrix() : super_type() {}

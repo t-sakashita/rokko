@@ -12,9 +12,11 @@
 #ifndef ROKKO_ANASAZI_SOLVER_H
 #define ROKKO_ANASAZI_SOLVER_H
 
+#include <rokko/anasazi/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include "distributed_crs_matrix.hpp"
+//#include "distributed_crs_matrix.hpp"
 #include "distributed_multivector.hpp"
+#include <rokko/utility/timer.hpp>
 
 #include <AnasaziEpetraAdapter.hpp>
 #include <Epetra_CrsMatrix.h>
@@ -82,10 +84,12 @@ public:
   typedef Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
   solver() {}
   ~solver() {}
+  void initialize(int& argc, char**& argv) {}
+  void finalize() {}
   void diagonalize(distributed_crs_matrix const& mat,
                    distributed_multivector_anasazi const& ivec,
-                   int num_evals, int block_size, int max_iters, double tol) {
-    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.matrix_impl_.get())->matrix_, ivec.get_pointer()));
+                   int num_evals, int block_size, int max_iters, double tol, timer& time) {
+    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat->get_matrix().get_matrix(), ivec.get_pointer()));
     problem_->setHermitian(true);
     problem_->setNEV(num_evals);
     problem_->setProblem();
@@ -102,7 +106,6 @@ public:
     evals_ = sol.Evals;
     evecs_.get_pointer() = sol.Evecs;
   }
-
 
   void diagonalize(rokko::distributed_mfree* const mat,
                    distributed_multivector_anasazi const& ivec,
@@ -133,8 +136,8 @@ public:
     evecs_.get_pointer() = sol.Evecs;
   }
 
-  void make_crs_matrix(sparse_crs_matrix* mat) {
-    mat = new anasazi_crs_matrix(); 
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
+    return new anasazi::distributed_crs_matrix(map);
   }
 
   std::vector<Anasazi::Value<double> > eigenvalues() const { return evals_; }
