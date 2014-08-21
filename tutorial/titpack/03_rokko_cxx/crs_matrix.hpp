@@ -9,9 +9,24 @@
 *
 *****************************************************************************/
 
-#include "distributed_crs_matrix.hpp"
+#ifndef TITPACK_CRS_MATRIX_HPP
+#define TITPACK_CRS_MATRIX_HPP
 
-ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::anasazi::solver, "anasazi", 40)
+#include "common.hpp"
+#include "hamiltonian.hpp"
 
-//ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::anasazi::distributed_crs_matrix, "anasazi", 10);
+//
+// crs_matrix
+//
 
+class crs_matrix {
+public:
+  crs_matrix(hamiltonian const& hop);
+  int dimension() const { return elemnt_.cols(); }
+  double multiply(const double *v1, double *v0) const;
+private:
+  matrix_type elemnt_;
+  i_matrix_type loc_;
+};
+
+#endif

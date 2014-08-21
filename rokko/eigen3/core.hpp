@@ -14,6 +14,7 @@
 
 #include <rokko/eigen3/diagonalize.hpp>
 #include <iostream>
+#include <vector>
 
 namespace rokko {
 namespace eigen3 {
@@ -24,6 +25,11 @@ public:
   void finalize() {}
   template<typename MATRIX_MAJOR, typename TIMER>
   void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+                   localized_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
+    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
+  template<typename MATRIX_MAJOR, typename TIMER>
+  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
                    localized_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
     rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer_in);
   }

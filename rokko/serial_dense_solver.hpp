@@ -35,6 +35,15 @@ public:
                            localized_matrix<matrix_col_major>& eigvecs) = 0;
   virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
                            localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
+
+  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
+                           localized_matrix<matrix_row_major>& eigvecs) = 0;
+  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
+                           localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
+  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
+                           localized_matrix<matrix_col_major>& eigvecs) = 0;
+  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
+                           localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
 };
   
 template<typename SOLVER>
@@ -63,6 +72,25 @@ public:
                    localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
   }
+
+  void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
+                   localized_matrix<matrix_row_major>& eigvecs) {
+    timer_dumb timer;
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  }
+  void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
+                   localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
+  void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
+                   localized_matrix<matrix_col_major>& eigvecs) {
+    timer_dumb timer;
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  }
+  void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
+                   localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
 private:
   solver_type solver_impl_;
 };
@@ -85,6 +113,17 @@ public:
   }
   template<typename MATRIX_MAJOR>
   void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+                   localized_matrix<MATRIX_MAJOR>& eigvecs) {
+    timer_dumb timer_in;
+    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
+  template<typename MATRIX_MAJOR>
+  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
+                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  }
+  template<typename MATRIX_MAJOR>
+  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
                    localized_matrix<MATRIX_MAJOR>& eigvecs) {
     timer_dumb timer_in;
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
