@@ -15,6 +15,7 @@
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include "distributed_multivector.hpp"
+#include <rokko/utility/timer.hpp>
 
 #include <petscvec.h>
 #include <slepceps.h>
@@ -127,6 +128,16 @@ public:
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
+                   distributed_multivector_anasazi const& ivec,
+                   int num_evals, int block_size, int max_iters, double tol) {
+  }
+
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
+                   distributed_multivector_anasazi const& ivec,
+                   int num_evals, int block_size, int max_iters, double tol, timer& time) {
+  }
+
   void diagonalize(rokko::distributed_mfree_slepc* const mat,
                    distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
@@ -190,6 +201,10 @@ public:
     ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
     ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
+  }
+
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
+    return new slepc::distributed_crs_matrix();
   }
 
   std::vector<double> eigenvalues() const { return evals_; }
