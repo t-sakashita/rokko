@@ -72,7 +72,7 @@ public:
   ~solver() {}
   void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   void finalize() {}
-  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
+  void diagonalize(rokko::distributed_crs_matrix& mat,
                    distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
     Mat            A = *(reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix());
@@ -128,12 +128,12 @@ public:
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
-  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
+  void diagonalize(rokko::distributed_crs_matrix& mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
   }
 
-  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
+  void diagonalize(rokko::distributed_crs_matrix& mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
   }

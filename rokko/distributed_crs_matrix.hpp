@@ -25,6 +25,8 @@ public:
   virtual void complete() = 0;
 };
 
+} // end namespace detail
+
 class distributed_crs_matrix {
 public:
   template<typename SOLVER>
@@ -37,14 +39,13 @@ public:
   void complete() {
     mat->complete();
   }
-  distributed_crs_matrix_base* get_matrix() {
+  detail::distributed_crs_matrix_base* get_matrix() {
     return mat;
   }
   //private:
-  distributed_crs_matrix_base* mat;
+  detail::distributed_crs_matrix_base* mat;
 };
 
-} // end namespace detail
 } // end namespace rokko
 
 #endif // ROKKO_DISTRIBUTED_CRS_MATRIX_HPP

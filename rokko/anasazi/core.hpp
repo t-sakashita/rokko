@@ -85,7 +85,7 @@ public:
   ~solver() {}
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
+  void diagonalize(rokko::distributed_crs_matrix& mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), ivec.get_pointer()));
