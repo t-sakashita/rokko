@@ -12,8 +12,12 @@
 #ifndef ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
 #define ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
 
+#include <rokko/slepc/distributed_crs_matrix.hpp>
+#include <rokko/distributed_mfree.hpp>
+#include "distributed_multivector.hpp"
+#include <rokko/utility/timer.hpp>
+
 #include <rokko/mapping_1d.hpp>
-#include <rokko/distributed_crs_matrix.hpp>
 
 #include <slepceps.h>
 #include <petscblaslapack.h>
@@ -23,8 +27,7 @@ namespace slepc {
     
 class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
-  typedef rokko::detail::dc_matrix_base super_type;
-  distributed_crs_matrix() : super_type() {}
+  distributed_crs_matrix() {}
   ~distributed_crs_matrix() {}
   #undef __FUNCT__
   #define __FUNCT__ "SSSS/initialize"
@@ -48,6 +51,9 @@ public:
   void complete() {
     ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
     ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
+  }
+  Mat* get_matrix() {
+    return &matrix_;
   }
 private:
   mapping_1d map_;

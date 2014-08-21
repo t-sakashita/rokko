@@ -14,6 +14,7 @@
 #define ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 
 #include <rokko/mapping_1d.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 
 namespace rokko {
 
@@ -26,6 +27,7 @@ public:
 };
 
 class distributed_crs_matrix {
+public:
   template<typename SOLVER>
   distributed_crs_matrix(mapping_1d const& map, SOLVER const& solver_in) {
     mat = solver_in.create_distributed_crs_matrix(map);
@@ -39,7 +41,7 @@ class distributed_crs_matrix {
   distributed_crs_matrix_base* get_matrix() {
     return mat;
   }
-private:
+  //private:
   distributed_crs_matrix_base* mat;
 };
 

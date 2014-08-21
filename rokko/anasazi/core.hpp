@@ -14,7 +14,6 @@
 
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-//#include "distributed_crs_matrix.hpp"
 #include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
 
@@ -86,10 +85,10 @@ public:
   ~solver() {}
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  void diagonalize(distributed_crs_matrix const& mat,
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
-    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat->get_matrix().get_matrix(), ivec.get_pointer()));
+    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), ivec.get_pointer()));
     problem_->setHermitian(true);
     problem_->setNEV(num_evals);
     problem_->setProblem();

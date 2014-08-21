@@ -41,7 +41,7 @@ public:
   Teuchos::RCP<Epetra_CrsMatrix> get_matrix() {
     return matrix_;
   }
-private:
+  //private:
   mapping_1d map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;  
 };

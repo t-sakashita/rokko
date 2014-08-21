@@ -9,7 +9,8 @@
 *
 *****************************************************************************/
 
-#include "distributed_crs_matrix.hpp"
+#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/slepc/core.hpp>
 
-ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::slepc::distributed_crs_matrix, "slepc", 10);
+//ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::slepc::distributed_crs_matrix, "slepc", 10);
 

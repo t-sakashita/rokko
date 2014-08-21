@@ -74,10 +74,10 @@ public:
     //ierr = SlepcFinalize();
   }
 
-  void diagonalize(distributed_crs_matrix const& mat,
+  void diagonalize(rokko::detail::distributed_crs_matrix& mat,
                    distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
-    Mat            A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.matrix_impl_.get())->matrix_;          
+    Mat            A = *(reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix());
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
