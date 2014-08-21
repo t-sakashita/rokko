@@ -14,7 +14,6 @@
 #define ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 
 #include <rokko/mapping_1d.hpp>
-#include <rokko/distributed_crs_matrix.hpp>
 
 namespace rokko {
 

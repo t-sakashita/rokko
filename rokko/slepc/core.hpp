@@ -9,11 +9,11 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_SOLVER_H
-#define ROKKO_ANASAZI_SOLVER_H
+#ifndef ROKKO_SLEPC_SOLVER_H
+#define ROKKO_SLEPC_SOLVER_H
 
+#include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include "distributed_crs_matrix.hpp"
 #include "distributed_multivector.hpp"
 
 #include <petscvec.h>
@@ -21,6 +21,7 @@
 #include <petscblaslapack.h>
 
 namespace rokko {
+namespace slepc {
 
 #undef __FUNCT__
 #define __FUNCT__ "MatMult_myMat"
@@ -64,16 +65,12 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
 }
 
 
-class solver_slepc {
-public:
-  solver_slepc() {
-    SlepcInitialize(NULL, NULL, (char*)0, 0);
-  }
-
-  ~solver_slepc() {
-    //ierr = SlepcFinalize();
-  }
-
+class solver {
+public: 
+  solver() {}
+  ~solver() {}
+  void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
+  void finalize() {}
   void diagonalize(rokko::detail::distributed_crs_matrix& mat,
                    distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
@@ -203,6 +200,7 @@ private:
   distributed_multivector_slepc evecs_;
 };
 
+} // namespace slepc
 } // namespace rokko
 
 #endif // ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
