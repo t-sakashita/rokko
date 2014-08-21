@@ -30,7 +30,7 @@ public:
 class distributed_crs_matrix {
 public:
   template<typename SOLVER>
-  distributed_crs_matrix(mapping_1d const& map, SOLVER const& solver_in) {
+  distributed_crs_matrix(mapping_1d const& map, SOLVER& solver_in) {
     mat = solver_in.create_distributed_crs_matrix(map);
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {

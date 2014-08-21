@@ -12,7 +12,7 @@
 #ifndef ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
 #define ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
 
-#include <rokko/slepc/distributed_crs_matrix.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
