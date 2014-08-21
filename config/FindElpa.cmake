@@ -1,5 +1,4 @@
 # - Try to find Elpa
-#
 # Once done this will define
 #
 #  ELPA_FOUND        - system has Elpa
@@ -10,13 +9,15 @@ if(DEFINED ELPA_FOUND)
 endif(DEFINED ELPA_FOUND)
   
 message(STATUS "Checking for Elpa library")
+set(ELPA_FOUND FALSE)
 
 # Standard search path
 set(_PATHS "")
-if(ROKKO_SOLVER_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR})
-endif(ROKKO_SOLVER_DIR)
-list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
+if(ELPA_DIR)
+  set(_PATHS ${ELPA_DIR})
+else(ELPA_DIR)
+  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+endif(ELPA_DIR)
 
 foreach (_PATH ${_PATHS})
   list(APPEND _LIBPATHS "${_PATH}/lib")
