@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_H
-#define ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_H
+#ifndef ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_HPP
+#define ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_HPP
 
 #include <rokko/mapping_1d.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
@@ -29,7 +29,7 @@ public:
   }
   void initialize(mapping_1d const& map) {
     map_ = map;
-    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_.get_epetra_map(), map_.dimension()));
+    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_.get_epetra_map(), map_.get_dim()));
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
@@ -49,4 +49,4 @@ public:
 } // namespace anasazi
 } // namespace rokko
 
-#endif // ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_H
+#endif // ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_HPP

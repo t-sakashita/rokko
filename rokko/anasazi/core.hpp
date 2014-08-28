@@ -17,6 +17,9 @@
 #include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
 
+#include <rokko/grid_1d.hpp>
+#include <rokko/anasazi/mapping_1d.hpp>
+
 #include <AnasaziEpetraAdapter.hpp>
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_MpiComm.h>
@@ -32,7 +35,7 @@ namespace anasazi {
 
 class anasazi_mfree_operator : public Epetra_Operator {
 public:
-  anasazi_mfree_operator(rokko::distributed_mfree* op) : op_(op), ep_comm(Epetra_MpiComm(MPI_COMM_WORLD)), ep_map(op->get_mapping_1d().get_epetra_map()) {}
+  anasazi_mfree_operator(rokko::distributed_mfree* op) : op_(op), ep_comm(Epetra_MpiComm(MPI_COMM_WORLD)), ep_map(reinterpret_cast<anasazi::mapping_1d>(op->get_mapping_1d()).get_epetra_map()) {}
 
   ~anasazi_mfree_operator() {};
 
@@ -137,6 +140,14 @@ public:
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
     return new anasazi::distributed_crs_matrix(map);
+  }
+
+  rokko::detail::mapping_1d_base* create_mapping_1d(int dim, rokko::grid_1d const& g) {
+    return new anasazi::mapping_1d(dim, g);
+  }
+
+  rokko::detail::mapping_1d_base* create_mapping_1d() {
+    return new anasazi::mapping_1d();
   }
 
   std::vector<Anasazi::Value<double> > eigenvalues() const { return evals_; }
