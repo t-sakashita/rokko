@@ -18,9 +18,6 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 
-#include <rokko/grid_1d.hpp>
-#include <rokko/mapping_1d.hpp>
-
 #include <rokko/anasazi/distributed_multivector.hpp>
 
 namespace rokko {
@@ -39,7 +36,6 @@ public:
 			   distributed_multivector_anasazi const& eigvec,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
   virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) = 0;
-  virtual rokko::detail::mapping_1d_base* create_mapping_1d(int dim, rokko::grid_1d const& g) = 0;
 };
 
 template<typename SOLVER>
@@ -76,10 +72,6 @@ public:
     }*/
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
     return solver_impl_.create_distributed_crs_matrix(map);
-  }
-
-  rokko::detail::mapping_1d_base* create_mapping_1d(int dim, rokko::grid_1d const& g) {
-    return solver_impl_.create_mapping_1d(dim, g);
   }
   
 private:
@@ -119,10 +111,6 @@ public:
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
     return solver_impl_->create_distributed_crs_matrix(map);
   }
-  rokko::detail::mapping_1d_base* create_mapping_1d(int dim, rokko::grid_1d const& g) {
-    return solver_impl_->create_mapping_1d(dim, g);
-  }
-
   /*void diagonalize(distributed_matrix& mat, localized_vector& eigvals,
     rokko::distributed_matrix& eigvecs, timer& timer_in) {
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
