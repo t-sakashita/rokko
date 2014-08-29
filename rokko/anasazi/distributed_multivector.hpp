@@ -24,8 +24,8 @@ namespace rokko {
 class distributed_multivector_anasazi {
 public:
   distributed_multivector_anasazi() {}
-  distributed_multivector_anasazi(mapping_1d const& map, int blocksize) : map_(map) {
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(reinterpret_cast<anasazi::mapping_1d*>(map_.get_mapping_1d())->get_epetra_map(), blocksize));
+  distributed_multivector_anasazi(rokkko::anasazi::mapping_1d const& map, int blocksize) : map_(map) {
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_.get_epetra_map(), blocksize));
   }
   ~distributed_multivector_anasazi() {}
   void init_random() {
