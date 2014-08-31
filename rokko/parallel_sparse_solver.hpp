@@ -35,7 +35,7 @@ public:
   virtual void diagonalize(rokko::distributed_crs_matrix& mat,//localized_vector& eigvals
 			   distributed_multivector_anasazi const& eigvec,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
-  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) = 0;
+  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(anasazi::mapping_1d const& map) = 0;
 };
 
 template<typename SOLVER>
@@ -70,7 +70,7 @@ public:
                    distributed_matrix& eigvecs, timer& timer_in) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
     }*/
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(anasazi::mapping_1d const& map) {
     return solver_impl_.create_distributed_crs_matrix(map);
   }
   
@@ -108,7 +108,7 @@ public:
     solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol);
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(anasazi::mapping_1d const& map) {
     return solver_impl_->create_distributed_crs_matrix(map);
   }
   /*void diagonalize(distributed_matrix& mat, localized_vector& eigvals,

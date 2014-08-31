@@ -13,7 +13,6 @@
 #define ROKKO_ANASAZI_MAPPING_1D_HPP
 
 #include <rokko/grid_1d.hpp>
-#include <rokko/mapping_1d.hpp>
 
 #include <Epetra_MpiComm.h>
 #include <Epetra_Map.h>

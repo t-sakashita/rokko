@@ -147,9 +147,9 @@ public:
     PetscInt       nev;
 
     // define matrix-free type operator
-    std::cout << "mat->get_mapping_1d().num_rows()=" << mat->get_mapping_1d().num_rows() << std::endl;
-    std::cout << " mat->get_mapping_1d().dimension()=" <<  mat->get_mapping_1d().dimension() << std::endl;
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().num_rows(), mat->get_mapping_1d().dimension(), mat->get_mapping_1d().dimension(), mat, &A); //CHKERRQ(ierr);
+    std::cout << "mat->get_mapping_1d().num_local_rows()=" << mat->get_mapping_1d().num_local_rows() << std::endl;
+    std::cout << " mat->get_mapping_1d().get_dim()=" <<  mat->get_mapping_1d().get_dim() << std::endl;
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_mapping_1d().num_local_rows(), mat->get_mapping_1d().num_local_rows(), mat->get_mapping_1d().get_dim(), mat->get_mapping_1d().get_dim(), mat, &A); //CHKERRQ(ierr);
     ierr = MatSetFromOptions(A); //CHKERRQ(ierr);
 
     ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())MatMult_myMat); //CHKERRQ(ierr);

@@ -13,7 +13,7 @@
 #ifndef ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 #define ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 
-#include <rokko/mapping_1d.hpp>
+#include <rokko/anasazi/mapping_1d.hpp>
 
 namespace rokko {
 
@@ -30,7 +30,7 @@ public:
 class distributed_crs_matrix {
 public:
   template<typename SOLVER>
-  distributed_crs_matrix(mapping_1d const& map, SOLVER& solver_in) {
+  distributed_crs_matrix(anasazi::mapping_1d const& map, SOLVER& solver_in) {
     mat = solver_in.create_distributed_crs_matrix(map);
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
