@@ -41,9 +41,13 @@ public:
   Teuchos::RCP<Epetra_CrsMatrix> get_matrix() {
     return matrix_;
   }
+  int get_dim() {
+    return dim_;
+  }
   //private:
   mapping_1d map_;
-  Teuchos::RCP<Epetra_CrsMatrix> matrix_;  
+  Teuchos::RCP<Epetra_CrsMatrix> matrix_;
+  int dim_;
 };
 
 } // namespace anasazi

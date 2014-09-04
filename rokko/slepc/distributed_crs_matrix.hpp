@@ -55,7 +55,11 @@ public:
   Mat* get_matrix() {
     return &matrix_;
   }
+  int get_dim() {
+    return dim_;
+  }
 private:
+  int dim_;
   mapping_1d map_;
   std::vector<int> rows_;
   PetscErrorCode ierr;

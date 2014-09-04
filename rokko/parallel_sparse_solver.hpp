@@ -29,11 +29,9 @@ public:
   virtual ~ps_solver_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(rokko::distributed_crs_matrix& mat,//localized_vector& eigvals
-			   distributed_multivector_anasazi const& eigvec,
+  virtual void diagonalize(rokko::distributed_crs_matrix& mat,
 			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
-  virtual void diagonalize(rokko::distributed_crs_matrix& mat,//localized_vector& eigvals
-			   distributed_multivector_anasazi const& eigvec,
+  virtual void diagonalize(rokko::distributed_crs_matrix& mat,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
   virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(anasazi::mapping_1d const& map) = 0;
 };
@@ -46,16 +44,14 @@ public:
   virtual ~ps_solver_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(rokko::distributed_crs_matrix& mat,//localized_vector& eigvals
-		   distributed_multivector_anasazi const& eigvec,
+  void diagonalize(rokko::distributed_crs_matrix& mat,
 		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer);
+    solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  void diagonalize(rokko::distributed_crs_matrix& mat,//localized_vector& eigvals
-		   distributed_multivector_anasazi const& eigvec,
+  void diagonalize(rokko::distributed_crs_matrix& mat,
 		   int num_evals, int block_size, int max_iters, double tol) {
     timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer);
+    solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
   /*void diagonalize(distributed_matrix& mat, localized_vector& eigvals,
                    distributed_matrix& eigvecs, timer& timer_in) {
@@ -100,12 +96,12 @@ public:
   void diagonalize(rokko::distributed_crs_matrix& mat,// localized_vector& eigvals, 
 		   distributed_multivector_anasazi const& eigvec,
 		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
-    solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol, timer);
+    solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
   void diagonalize(rokko::distributed_crs_matrix& mat,// localized_vector& eigvals, 
 		   distributed_multivector_anasazi const& eigvec,
 		   int num_evals, int block_size, int max_iters, double tol) {
-    solver_impl_->diagonalize(mat, eigvec, num_evals, block_size, max_iters, tol);
+    solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(anasazi::mapping_1d const& map) {

@@ -34,7 +34,7 @@ namespace anasazi {
 
 class anasazi_mfree_operator : public Epetra_Operator {
 public:
-  anasazi_mfree_operator(rokko::distributed_mfree* op, mapping_1d const& map) : op_(op), ep_map(map.get_epetra_map()), ep_comm(map.get_epetra_comm()) {}
+  anasazi_mfree_operator(rokko::distributed_mfree* op, mapping_1d const* map) : op_(op), ep_map(map->get_epetra_map()), ep_comm(map->get_epetra_comm()) {}
 
   ~anasazi_mfree_operator() {};
 
@@ -88,9 +88,11 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
   void diagonalize(rokko::distributed_crs_matrix& mat,
-                   distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
-    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), ivec.get_pointer()));
+    map_ = new mapping_1d(mat.get_dim());
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
+    multivector_->Random();
+    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
     problem_->setHermitian(true);
     problem_->setNEV(num_evals);
     problem_->setProblem();
@@ -109,11 +111,12 @@ public:
   }
 
   void diagonalize(rokko::distributed_mfree* const mat,
-                   distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
-    mapping_1d map;  // create default Epetra_Map using MPI_COMM_WORLD
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp( new anasazi_mfree_operator(mat, map) );
-    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, ivec.get_pointer()));
+    map_ = new mapping_1d(mat->get_dim());
+    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp( new anasazi_mfree_operator(mat, map_) );
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
+    multivector_->Random();
+    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
     problem_->setHermitian(true);
     problem_->setNEV(num_evals);
     problem_->setProblem();
@@ -145,6 +148,8 @@ public:
   std::vector<Anasazi::Value<double> > eigenvalues() const { return evals_; }
   distributed_multivector_anasazi eigenvectors() const { return evecs_; }
 private:
+  mapping_1d* map_;
+  Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
   std::vector<Anasazi::Value<double> > evals_;
   distributed_multivector_anasazi evecs_;

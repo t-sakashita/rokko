@@ -23,6 +23,7 @@ class distributed_crs_matrix_base {
 public:
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
   virtual void complete() = 0;
+  virtual int get_dim() = 0;
 };
 
 } // end namespace detail
@@ -38,6 +39,9 @@ public:
   }
   void complete() {
     mat->complete();
+  }
+  int get_dim() {
+    return mat->get_dim();
   }
   detail::distributed_crs_matrix_base* get_matrix() {
     return mat;
