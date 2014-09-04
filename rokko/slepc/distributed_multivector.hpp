@@ -12,7 +12,6 @@
 #ifndef ROKKO_SLEPC_DISTRIBUTED_MULTIVECTOR_H
 #define ROKKO_SLEPC_DISTRIBUTED_MULTIVECTOR_H
 
-#include <rokko/mapping_1d.hpp>
 
 
 namespace rokko {
@@ -20,7 +19,7 @@ namespace rokko {
 class distributed_multivector_slepc {
 public:
   distributed_multivector_slepc() {}
-  distributed_multivector_slepc(mapping_1d const& map, int blocksize) : map_(map) {
+  distributed_multivector_slepc(int blocksize) : map_(map) {
   }
   ~distributed_multivector_slepc() {}
   void init_random() {

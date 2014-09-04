@@ -13,6 +13,8 @@
 #define ROKKO_ANASAZI_SOLVER_H
 
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
+#include <rokko/anasazi/mapping_1d.hpp>
+
 #include <rokko/distributed_mfree.hpp>
 #include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
@@ -32,7 +34,7 @@ namespace anasazi {
 
 class anasazi_mfree_operator : public Epetra_Operator {
 public:
-  anasazi_mfree_operator(rokko::distributed_mfree* op) : op_(op), ep_comm(Epetra_MpiComm(MPI_COMM_WORLD)), ep_map(op->get_mapping_1d().get_epetra_map()) {}
+  anasazi_mfree_operator(rokko::distributed_mfree* op, mapping_1d const& map) : op_(op), ep_map(map.get_epetra_map()), ep_comm(map.get_epetra_comm()) {}
 
   ~anasazi_mfree_operator() {};
 
@@ -109,7 +111,8 @@ public:
   void diagonalize(rokko::distributed_mfree* const mat,
                    distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp( new anasazi_mfree_operator(mat) );
+    mapping_1d map;  // create default Epetra_Map using MPI_COMM_WORLD
+    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp( new anasazi_mfree_operator(mat, map) );
     problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, ivec.get_pointer()));
     problem_->setHermitian(true);
     problem_->setNEV(num_evals);
