@@ -141,8 +141,8 @@ public:
     evecs_.get_pointer() = sol.Evecs;
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
-    return new anasazi::distributed_crs_matrix(map);
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
+    return new anasazi::distributed_crs_matrix(row_dim, col_dim);
   }
 
   std::vector<Anasazi::Value<double> > eigenvalues() const { return evals_; }

@@ -24,12 +24,12 @@ namespace anasazi {
 
 class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
-  distributed_crs_matrix(mapping_1d const& map) {
-    initialize(map);
+  explicit distributed_crs_matrix(int row_dim, int col_dim) {
+    initialize(row_dim, col_dim);
   }
-  void initialize(mapping_1d const& map) {
-    map_ = map;
-    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_.get_epetra_map(), map_.get_dim()));
+  void initialize(int row_dim, int col_dim) {
+    map_ = new mapping_1d(row_dim);
+    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), col_dim));    
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
@@ -45,7 +45,7 @@ public:
     return dim_;
   }
   //private:
-  mapping_1d map_;
+  mapping_1d* map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
   int dim_;
 };

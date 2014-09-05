@@ -31,8 +31,8 @@ public:
 class distributed_crs_matrix {
 public:
   template<typename SOLVER>
-  distributed_crs_matrix(anasazi::mapping_1d const& map, SOLVER& solver_in) {
-    mat = solver_in.create_distributed_crs_matrix(map);
+  explicit distributed_crs_matrix(int row_dim, int col_dim, SOLVER& solver_in) {
+    mat = solver_in.create_distributed_crs_matrix(row_dim, col_dim);
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     mat->insert(row, cols, values);

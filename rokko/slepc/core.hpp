@@ -73,7 +73,6 @@ public:
   void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   void finalize() {}
   void diagonalize(rokko::distributed_crs_matrix& mat,
-                   distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
     Mat            A = *(reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix());
     EPSType        type;
@@ -128,18 +127,12 @@ public:
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
-  void diagonalize(rokko::distributed_crs_matrix& mat,
-                   distributed_multivector_anasazi const& ivec,
-                   int num_evals, int block_size, int max_iters, double tol) {
-  }
 
   void diagonalize(rokko::distributed_crs_matrix& mat,
-                   distributed_multivector_anasazi const& ivec,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
   }
 
   void diagonalize(rokko::distributed_mfree_slepc* const mat,
-                   distributed_multivector_slepc const& ivec,
                    int num_evals, int block_size, int max_iters, double tol) {
     Mat            A;
     EPSType        type;
@@ -147,9 +140,7 @@ public:
     PetscInt       nev;
 
     // define matrix-free type operator
-    std::cout << "mat->get_mapping_1d().num_local_rows()=" << mat->get_mapping_1d().num_local_rows() << std::endl;
-    std::cout << " mat->get_mapping_1d().get_dim()=" <<  mat->get_mapping_1d().get_dim() << std::endl;
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_mapping_1d().num_local_rows(), mat->get_mapping_1d().num_local_rows(), mat->get_mapping_1d().get_dim(), mat->get_mapping_1d().get_dim(), mat, &A); //CHKERRQ(ierr);
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, &A); //CHKERRQ(ierr);
     ierr = MatSetFromOptions(A); //CHKERRQ(ierr);
 
     ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())MatMult_myMat); //CHKERRQ(ierr);
@@ -203,8 +194,8 @@ public:
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(mapping_1d const& map) {
-    return new slepc::distributed_crs_matrix();
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
+    return new slepc::distributed_crs_matrix(row_dim, col_dim);
   }
 
   std::vector<double> eigenvalues() const { return evals_; }

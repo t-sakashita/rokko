@@ -19,13 +19,11 @@ namespace rokko {
 class distributed_multivector_slepc {
 public:
   distributed_multivector_slepc() {}
-  distributed_multivector_slepc(int blocksize) : map_(map) {
+  distributed_multivector_slepc(int blocksize) {
   }
   ~distributed_multivector_slepc() {}
   void init_random() {
   }
-private:
-  mapping_1d map_;
 };
 
 } // namespace rokko

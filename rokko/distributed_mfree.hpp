@@ -22,6 +22,7 @@ public:
 
   virtual void multiply(const double* x, double* y) const = 0;
   virtual int get_dim() const = 0;
+  virtual int get_num_local_rows() const = 0;
 };
 
 class distributed_mfree_slepc : public rokko::distributed_mfree {

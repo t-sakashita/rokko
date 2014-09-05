@@ -14,10 +14,7 @@
 
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
-
-#include <rokko/mapping_1d.hpp>
 
 #include <slepceps.h>
 #include <petscblaslapack.h>
@@ -29,17 +26,22 @@ class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base
 public:
   distributed_crs_matrix() {}
   ~distributed_crs_matrix() {}
+
+  distributed_crs_matrix(int row_dim, int col_dim) {
+    initialize(row_dim, col_dim);
+  }
+
   #undef __FUNCT__
   #define __FUNCT__ "SSSS/initialize"
-  void initialize(mapping_1d const& map) {
-    map_ = map;
+  void initialize(int row_dim, int col_dim) {
     ierr = MatCreate(PETSC_COMM_WORLD, &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, map_.dimension(), map_.dimension());  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
 
     PetscInt Istart, Iend;
     ierr = MatGetOwnershipRange(matrix_, &Istart, &Iend); //CHKERRQ(ierr);
+    num_local_rows_ = Iend - Istart + 1;
   }
   #undef __FUNCT__
   #define __FUNCT__ "SSSS/insert"
@@ -58,10 +60,12 @@ public:
   int get_dim() {
     return dim_;
   }
+  int get_num_local_rows() {
+    return num_local_rows_;
+  }
 private:
   int dim_;
-  mapping_1d map_;
-  std::vector<int> rows_;
+  int num_local_rows_;
   PetscErrorCode ierr;
 public:
   Mat matrix_;
