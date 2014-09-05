@@ -26,6 +26,9 @@ class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base
 public:
   explicit distributed_crs_matrix(int row_dim, int col_dim) {
     initialize(row_dim, col_dim);
+    num_local_rows_ = map_->get_epetra_map().NumMyElements();
+    start_rows_ = map_->get_epetra_map().MinMyGID();
+    end_rows_ = map_->get_epetra_map().MaxMyGID();
   }
   void initialize(int row_dim, int col_dim) {
     map_ = new mapping_1d(row_dim);
@@ -44,10 +47,20 @@ public:
   int get_dim() {
     return dim_;
   }
+  int num_local_rows() {
+    return num_local_rows_;
+  }
+  int start_rows() {
+    return start_rows_;
+  }
+  int end_rows() {
+    return end_rows_;
+  }
   //private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
   int dim_;
+  int num_local_rows_, start_rows_, end_rows_;
 };
 
 } // namespace anasazi

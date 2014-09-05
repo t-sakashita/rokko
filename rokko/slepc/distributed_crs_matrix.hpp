@@ -38,10 +38,9 @@ public:
     ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
-
-    PetscInt Istart, Iend;
-    ierr = MatGetOwnershipRange(matrix_, &Istart, &Iend); //CHKERRQ(ierr);
-    num_local_rows_ = Iend - Istart + 1;
+    dim_ = row_dim;
+    ierr = MatGetOwnershipRange(matrix_, &start_rows_, &end_rows_); //CHKERRQ(ierr);
+    num_local_rows_ = end_rows_ - start_rows_ + 1;
   }
   #undef __FUNCT__
   #define __FUNCT__ "SSSS/insert"
@@ -60,12 +59,20 @@ public:
   int get_dim() {
     return dim_;
   }
-  int get_num_local_rows() {
+  int num_local_rows() {
     return num_local_rows_;
   }
+  int start_rows() {
+    return start_rows_;
+  }
+  int end_rows() {
+    return end_rows_;
+  }
+
 private:
   int dim_;
   int num_local_rows_;
+  int start_rows_, end_rows_;
   PetscErrorCode ierr;
 public:
   Mat matrix_;

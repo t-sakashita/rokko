@@ -24,6 +24,9 @@ public:
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
   virtual void complete() = 0;
   virtual int get_dim() = 0;
+  virtual int num_local_rows() = 0;
+  virtual int start_rows() = 0;
+  virtual int end_rows() = 0;
 };
 
 } // end namespace detail
@@ -42,6 +45,15 @@ public:
   }
   int get_dim() {
     return mat->get_dim();
+  }
+  int num_local_rows() {
+    return mat->num_local_rows();
+  }
+  int start_rows() {
+    return mat->start_rows();
+  }
+  int end_rows() {
+    return mat->end_rows();
   }
   detail::distributed_crs_matrix_base* get_matrix() {
     return mat;
