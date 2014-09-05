@@ -14,14 +14,15 @@
 #include <iostream>
 #include <vector>
 
-#include <rokko/anasazi/core.hpp>
+#include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+
+#include <rokko/distributed_mfree.hpp>
 
 
 class heisenberg_op : public rokko::distributed_mfree {
 public:
-  heisenberg_op(rokko::mapping_1d const& map, int L, const std::vector<std::pair<int, int> >& lattice) : L_(L), lattice_(lattice) {
-    map_ = get_mapping_1d();
+  heisenberg_op(int L, const std::vector<std::pair<int, int> >& lattice) : L_(L), lattice_(lattice) {
     comm_ = MPI_COMM_WORLD;
     int nproc;
     MPI_Comm_size(comm_, &nproc);
@@ -32,6 +33,7 @@ public:
       ++p;
     } while (n > 0);
     int local_N = 1 << (L-p);
+    dim_ = 1 << L;
     buffer_.assign(local_N, 0);
   }
 
@@ -40,10 +42,19 @@ public:
   void multiply(const double* x, double* y) const {
     rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
   }
+  int get_dim() const {
+    return dim_;
+  }
+  int get_num_local_rows() const {
+    return local_N;
+  }
+
 private:
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
+  int dim_;
+  int local_N;
   std::vector<std::pair<int, int> > lattice_;
 };
 
@@ -70,19 +81,16 @@ int main(int argc, char *argv[]) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::solver_anasazi solver;
+  rokko::parallel_sparse_solver solver("anasazi");
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
               << "solver = LOBPCG" << std::endl
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_1d map(dim, g);
-  heisenberg_op  mat(map, L, lattice);
+  heisenberg_op  mat(L, lattice);
 
-  rokko::distributed_multivector_anasazi ivec(map, blockSize);
-  ivec.init_random();
-  solver.diagonalize(&mat, ivec, nev, blockSize, maxIters, tol);
+  solver.diagonalize(&mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
     std::cout << "smallest eigenvalues:";
