@@ -36,6 +36,9 @@ int main(int argc, char *argv[]) {
   Epetra_SerialComm Comm;
 #endif
 
+  int myrank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+
   // Create an Anasazi output manager
   BasicOutputManager<double> printer;
   printer.stream(Errors) << Anasazi_Version() << endl << endl;
@@ -70,6 +73,11 @@ int main(int argc, char *argv[]) {
   int NumMyElements = Map.NumMyElements();
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(&MyGlobalElements[0]);
+  std::cout << "myrank=" << myrank << "MinLID=" << Map.MinLID() << std::endl;
+  std::cout << "myrank=" << myrank << "MinMyGID=" << Map.MinMyGID() << std::endl;
+  std::cout << "myrank=" << myrank << "MaxMyGID=" << Map.MaxMyGID() << std::endl;
+
+  // + map_->get_epetra_map().NumMyElements();
 
   // Create an Epetra_Matrix
   Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow

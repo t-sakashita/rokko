@@ -73,13 +73,12 @@ public:
   void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   void finalize() {}
   void diagonalize(rokko::distributed_crs_matrix& mat,
-                   int num_evals, int block_size, int max_iters, double tol) {
-    Mat            A = *(reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix());
+                   int num_evals, int block_size, int max_iters, double tol, timer& time) {
+    A = *(reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix());
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
 
-    EPS            eps;             /* eigenproblem solver context */
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -100,10 +99,9 @@ public:
     ierr = EPSGetDimensions(eps, &nev, NULL, NULL); //CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); //CHKERRQ(ierr);
 
-    PetscInt nconv;
-    EPSGetConverged(eps, &nconv);
+    EPSGetConverged(eps, &num_conv_);
 
-    if (nconv == 0) {
+    if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
 
@@ -112,7 +110,7 @@ public:
     MatGetVecs(A, NULL, &evec_r);
     MatGetVecs(A, NULL, &evec_i);
  
-    for (PetscInt i = 0; i<nconv; ++i) {
+    for (PetscInt i = 0; i<num_conv_; ++i) {
       EPSGetEigenpair(eps, i, &eval_r, &eval_i, evec_r, evec_i);
       evals_.push_back((double)eval_r);
       //VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
@@ -121,20 +119,14 @@ public:
     // Display solution and clean up
     //ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
 
-    ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
-    ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
-    ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
-    ierr = MatDestroy(&A); //CHKERRQ(ierr);
+    //ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
+    //   ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
+    //ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
+    //ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
-
-  void diagonalize(rokko::distributed_crs_matrix& mat,
+  void diagonalize(rokko::distributed_mfree* const mat,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
-  }
-
-  void diagonalize(rokko::distributed_mfree_slepc* const mat,
-                   int num_evals, int block_size, int max_iters, double tol) {
-    Mat            A;
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
@@ -147,7 +139,6 @@ public:
     ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat); //CHKERRQ(ierr);
     ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat); //CHKERRQ(ierr);
 
-    EPS            eps;             /* eigenproblem solver context */
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, A, NULL); //CHKERRQ(ierr);
@@ -167,10 +158,9 @@ public:
     ierr = EPSGetDimensions(eps, &nev, NULL, NULL); //CHKERRQ(ierr);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); //CHKERRQ(ierr);
 
-    PetscInt nconv;
-    EPSGetConverged(eps, &nconv);
+    EPSGetConverged(eps, &num_conv_);
 
-    if (nconv == 0) {
+    if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
 
@@ -179,7 +169,7 @@ public:
     MatGetVecs(A, NULL, &evec_r);
     MatGetVecs(A, NULL, &evec_i);
  
-    for (PetscInt i = 0; i<nconv; ++i) {
+    for (PetscInt i = 0; i<num_conv_; ++i) {
       EPSGetEigenpair(eps, i, &eval_r, &eval_i, evec_r, evec_i);
       evals_.push_back((double)eval_r);
       //VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
@@ -194,16 +184,29 @@ public:
     ierr = MatDestroy(&A); //CHKERRQ(ierr);
   }
 
+  double eigenvalue(int i) const {
+    PetscScalar eval_r, eval_i;
+    EPSGetEigenvalue(eps, i, &eval_r, &eval_i);
+    return eval_r;
+  }
+
+  int num_conv() const {
+    return num_conv_;
+  }
+
+  //distributed_multivector_slepc eigenvectors() const { return evecs_; }
+
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
     return new slepc::distributed_crs_matrix(row_dim, col_dim);
   }
 
-  std::vector<double> eigenvalues() const { return evals_; }
-  distributed_multivector_slepc eigenvectors() const { return evecs_; }
 private:
+  Mat            A;
+  EPS            eps;             /* eigenproblem solver context */
   PetscErrorCode ierr;
   std::vector<double> evals_;
   distributed_multivector_slepc evecs_;
+  int num_conv_;
 };
 
 } // namespace slepc

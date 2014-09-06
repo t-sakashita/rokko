@@ -32,9 +32,9 @@ public:
       n /= 2;
       ++p;
     } while (n > 0);
-    int local_N = 1 << (L-p);
-    dim_ = 1 << L;
+    local_N = 1 << (L-p);
     buffer_.assign(local_N, 0);
+    dim_ = 1 << L;
   }
 
   ~heisenberg_op() {}
@@ -53,9 +53,9 @@ private:
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
-  int dim_;
   int local_N;
   std::vector<std::pair<int, int> > lattice_;
+  int dim_;
 };
 
 
@@ -82,20 +82,21 @@ int main(int argc, char *argv[]) {
   }
 
   rokko::parallel_sparse_solver solver("anasazi");
+
+  heisenberg_op  mat(L, lattice);
+
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
               << "solver = LOBPCG" << std::endl
               << "L = " << L << std::endl
-              << "dimension = " << dim << std::endl;
-
-  heisenberg_op  mat(L, lattice);
+              << "dimension = " << mat.get_dim() << std::endl;
 
   solver.diagonalize(&mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
     std::cout << "smallest eigenvalues:";
-    for (int i = 0; i < solver.eigenvalues().size(); ++i)
-      std::cout << ' ' << solver.eigenvalues()[i].realpart;
+    for (int i = 0; i < solver.num_conv(); ++i)
+      std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 
