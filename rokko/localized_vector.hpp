@@ -26,7 +26,7 @@ public:
   template <typename T>
   localized_vector(T const & other) : super_type(other) {}
   template <typename T>
-  localized_vector& operator=(T const& other) { super_type::operator=(other); return *this;}
+  localized_vector& operator=(T const& other) { super_type::operator=(other); return *this; }
 };
 
 

@@ -31,10 +31,29 @@ int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd>  ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();
-  //info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', dim, &mat(0,0), dim, eigvals);
   timer_in.stop(1);
 
   return info;
+}
+
+template<typename MATRIX_MAJOR>
+int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals_in,
+		localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+  Eigen::Map<Eigen::VectorXd> eigvals(&eigvals_in[0], eigvals_in.size());
+
+  int info;
+
+  int dim = mat.rows();
+
+  // eigenvalue decomposition
+  timer_in.start(1);
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd>  ES(mat);
+  eigvals = ES.eigenvalues();
+  eigvecs = ES.eigenvectors();
+  timer_in.stop(1);
+
+  return info;
+  //return diagonalize(mat, eigvals, eigvecs, timer_in);
 }
 
 } // namespace eigen3

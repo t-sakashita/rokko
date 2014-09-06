@@ -79,6 +79,7 @@ int main(int argc,char **argv)
   MatGetVecs(A, &v0, NULL);
   VecSet(v0,1.0);
   EPSSetInitialSpace(eps,1,&v0);*/
+
   /*
      Set solver parameters at runtime
   */

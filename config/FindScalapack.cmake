@@ -1,5 +1,4 @@
 # - Try to find Scalapack
-#
 # Once done this will define
 #
 #  SCALAPACK_FOUND        - system has Scalapack
@@ -70,10 +69,11 @@ else(DEFINED MKL_INCLUDE_DIR)
 
   # Standard search path
   set(_PATHS "")
-  if(ROKKO_SOLVER_DIR)
-    list(APPEND _PATHS ${ROKKO_SOLVER_DIR})
-  endif(ROKKO_SOLVER_DIR)
-  list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
+  if(SCALAPACK_DIR)
+    set(_PATHS ${SCALAPACK_DIR})
+  else(SCALAPACK_DIR)
+    list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+  endif(SCALAPACK_DIR)
 
   foreach (_PATH ${_PATHS})
     list(APPEND _LIBPATHS "${_PATH}/lib")
