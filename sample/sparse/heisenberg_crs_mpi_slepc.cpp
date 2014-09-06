@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
 
   if (myrank == root) {
     std::cout << "smallest eigenvalues:";
-    //    for (int i = 0; i < solver.eigenvalues().size(); ++i)
-    //      std::cout << ' ' << solver.eigenvalues()[i];
+    for (int i = 0; i < solver.num_conv(); ++i)
+      std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 

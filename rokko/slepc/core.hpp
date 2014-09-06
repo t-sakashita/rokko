@@ -68,7 +68,7 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
 
 class solver {
 public: 
-  solver() {}
+  solver() { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   ~solver() {}
   void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   void finalize() {}
