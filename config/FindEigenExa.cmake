@@ -1,38 +1,38 @@
 # - Try to find EigenExa
-#
 # Once done this will define
 #
 #  EIGENEXA_FOUND        - system has EigenExa
 #  EIGENEXA_INCLUDE_DIR  - include directories for EigenExa
 #  EIGENEXA_LIBARIES     - libraries for EigenExa
+#  EIGENEXA_DIR          - directory where EigenExa is installed
 
 if(DEFINED EIGENEXA_FOUND)
   return()
 endif(DEFINED EIGENEXA_FOUND)
   
 message(STATUS "Checking for EigenExa library")
+set(EIGENEXA_FOUND FALSE)
 
 # Standard search path
 set(_PATHS "")
-if(ROKKO_SOLVER_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR})
-endif(ROKKO_SOLVER_DIR)
-list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
+if(EIGENEXA_DIR)
+  set(_PATHS ${EIGENEXA_DIR})
+else(EIGENEXA_DIR)
+  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+endif(EIGENEXA_DIR)
 
-find_path(_EIGENEXA_DIR include/eigen_libs.mod
-  HINTS ${EIGENEXA_DIR} $ENV{EIGENEXA_DIR} PATHS ${_PATHS}
-  DOC "EigenExa directory")
-if(_EIGENEXA_DIR)
-  set(EIGENEXA_INCLUDE_DIR "${_EIGENEXA_DIR}/include")
-else(_EIGENEXA_DIR)
+find_path(EIGENEXA_DIR include/eigen_libs.mod PATHS ${_PATHS} DOC "EigenExa directory")
+
+if(EIGENEXA_DIR)
+  set(EIGENEXA_INCLUDE_DIR "${EIGENEXA_DIR}/include")
+else(EIGENEXA_DIR)
   message(STATUS "EigenExa library: not found")
-  set(EIGENEXA_FOUND FALSE)
   return()
-endif(_EIGENEXA_DIR)
+endif(EIGENEXA_DIR)
 
 find_library(_EIGENEXA_LIBRARY
   NAME EigenExa
-  PATHS ${_EIGENEXA_DIR}/lib
+  PATHS ${EIGENEXA_DIR}/lib
   DOC "The EigenExa library")
 if(_EIGENEXA_LIBRARY)
   list(APPEND EIGENEXA_LIBRARIES ${_EIGENEXA_LIBRARY})

@@ -6,11 +6,11 @@ echo "PREFIX = $PREFIX"
 
 mkdir -p $HOME/build
 cd $HOME/build
-rm -rf trilinos-11.4.2-Source trilinos-11.4.2-Source-build
-tar jxf $HOME/source/trilinos-11.4.2-Source.tar.bz2
+rm -rf trilinos-11.8.1-Source trilinos-11.8.1-Source-build
+tar jxf $HOME/source/trilinos-11.8.1-Source.tar.bz2
 
 cd $HOME/build
-mkdir -p trilinos-11.4.2-Source-build && cd trilinos-11.4.2-Source-build
+mkdir -p trilinos-11.8.1-Source-build && cd trilinos-11.8.1-Source-build
 cmake \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
@@ -22,7 +22,7 @@ cmake \
     -DTrilinos_ENABLE_Didasko=ON \
     -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
     -DCMAKE_INSTALL_RPATH="$PREFIX/lib" -DCMAKE_SKIP_BUILD_RPATH=ON -DCMAKE_BUILD_WITH_INSTALL_RPATH=OFF -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON -DCMAKE_MACOSX_RPATH=1 \
-    $HOME/build/trilinos-11.4.2-Source
+    $HOME/build/trilinos-11.8.1-Source
 
 make -j4 VERBOSE=1
 make test

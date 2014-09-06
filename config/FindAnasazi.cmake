@@ -4,7 +4,7 @@
 #  ANASAZI_FOUND        - system has Anasazi
 #  ANASAZI_INCLUDE_DIR  - include directories for Anasazi
 #  ANASAZI_LIBARIES     - libraries for Anasazi
-#  ANASAZI_DIR          - directory where Anasazi is built
+#  ANASAZI_DIR          - directory where Anasazi is installed
 
 if(DEFINED ANASAZI_FOUND)
   return()
@@ -15,15 +15,14 @@ set(ANASAZI_FOUND FALSE)
 
 # Standard search path
 set(_PATHS "")
-if(ROKKO_SOLVER_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR})
-endif(ROKKO_SOLVER_DIR)
-list(APPEND _PATHS ${CMAKE_INSTALL_PREFIX} "/opt/nano/rokko" "/opt/rokko" "/opt" "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt")
+if(ANASAZI_DIR)
+  set(_PATHS ${ANASAZI_DIR})
+else(ANASAZI_DIR)
+  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+endif(ANASAZI_DIR)
 
 # Try to figure out ANASAZI_DIR by finding Anasazi_config.h
-find_path(ANASAZI_DIR include/Anasazi_config.h
-  PATHS ${_PATHS}
-  DOC "Anasazi directory")
+find_path(ANASAZI_DIR include/Anasazi_config.h PATHS ${_PATHS} DOC "Anasazi directory")
 
 if(ANASAZI_DIR)
   set(ANASAZI_INCLUDE_DIR "${ANASAZI_DIR}/include")

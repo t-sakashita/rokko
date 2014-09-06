@@ -22,8 +22,11 @@ namespace lapack {
 
 template<typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  int info;
 
+  if(mat.is_col_major())
+    throw "LAPACKE doesn't support matrix_col_major.  Use LAPACK with matrix_row_major.";
+
+  int info;
   int dim = mat.rows();
 
   // eigenvalue decomposition
@@ -43,6 +46,13 @@ int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals, localized_
 template<class MATRIX_MAJOR>
 int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
                 localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+  return diagonalize(mat, &eigvals[0], eigvecs, timer_in);
+}
+
+template<class MATRIX_MAJOR>
+int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
+                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+  eigvals.assign(mat.rows(), 0);
   return diagonalize(mat, &eigvals[0], eigvecs, timer_in);
 }
 
