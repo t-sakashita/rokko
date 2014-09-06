@@ -12,7 +12,7 @@
 #include <mpi.h>
 #include <iostream>
 
-#include <rokko/anasazi/core.hpp>
+#include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 
 int main(int argc, char *argv[]) {
@@ -37,19 +37,17 @@ int main(int argc, char *argv[]) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::solver_anasazi solver;
+  rokko::parallel_sparse_solver solver("anasazi");
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
               << "solver = LOBPCG" << std::endl
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_1d map(dim, g);
-  rokko::distributed_crs_matrix mat("anasazi", map);
+  rokko::distributed_crs_matrix mat(dim, dim, solver);
   std::vector<double> values;
   std::vector<int> cols;
-  for (int k = 0; k < map.num_rows(); ++k) {
-    int row = map.rows()[k];
+  for (int row = mat.start_rows(); row < mat.end_rows(); ++row) {
     cols.clear();
     values.clear();
     double diag = 0;
@@ -73,14 +71,13 @@ int main(int argc, char *argv[]) {
   }
   mat.complete();
 
-  rokko::distributed_multivector_anasazi ivec(map, blockSize);
-  ivec.init_random();
-  solver.diagonalize(mat, ivec, nev, blockSize, maxIters, tol);
+  solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
+    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
     std::cout << "smallest eigenvalues:";
-    for (int i = 0; i < solver.eigenvalues().size(); ++i)
-      std::cout << ' ' << solver.eigenvalues()[i].realpart;
+    for (int i = 0; i < solver.num_conv(); ++i)
+      std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 

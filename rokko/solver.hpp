@@ -14,6 +14,7 @@
 
 #include <rokko/serial_dense_solver.hpp>
 #include <rokko/parallel_dense_solver.hpp>
+
 #if defined(BUILD_ANASAZI) || defined(BUILD_SCALAPACK)
 #include <rokko/parallel_sparse_solver.hpp>
 #endif // defined(BUILD_ANASAZI) || defined(BUILD_SCALAPACK)

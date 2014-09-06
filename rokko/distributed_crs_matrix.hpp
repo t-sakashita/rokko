@@ -13,51 +13,56 @@
 #ifndef ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 #define ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 
-#include <rokko/factory.hpp>
-#include <rokko/mapping_1d.hpp>
+#include <rokko/anasazi/mapping_1d.hpp>
 
 namespace rokko {
 
 namespace detail {
 
-class dc_matrix_base {
+class distributed_crs_matrix_base {
 public:
-  dc_matrix_base() {}
-  ~dc_matrix_base() {}
-  virtual void initialize(mapping_1d const& map) = 0;
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
   virtual void complete() = 0;
+  virtual int get_dim() = 0;
+  virtual int num_local_rows() = 0;
+  virtual int start_rows() = 0;
+  virtual int end_rows() = 0;
 };
-    
-typedef factory<dc_matrix_base> dc_matrix_factory;
-  
+
 } // end namespace detail
-  
+
 class distributed_crs_matrix {
 public:
-  distributed_crs_matrix(std::string const& solver_name, mapping_1d const& map) {
-    matrix_impl_ = detail::dc_matrix_factory::instance()->make_product(solver_name);
-    matrix_impl_->initialize(map);
-  }
-  distributed_crs_matrix() {
-    matrix_impl_ = detail::dc_matrix_factory::instance()->make_product();
+  template<typename SOLVER>
+  explicit distributed_crs_matrix(int row_dim, int col_dim, SOLVER& solver_in) {
+    mat = solver_in.create_distributed_crs_matrix(row_dim, col_dim);
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    matrix_impl_->insert(row, cols, values);
+    mat->insert(row, cols, values);
   }
-  void complete() { matrix_impl_->complete(); }
-// private:
-  detail::dc_matrix_factory::product_pointer_type matrix_impl_;
+  void complete() {
+    mat->complete();
+  }
+  int get_dim() {
+    return mat->get_dim();
+  }
+  int num_local_rows() {
+    return mat->num_local_rows();
+  }
+  int start_rows() {
+    return mat->start_rows();
+  }
+  int end_rows() {
+    return mat->end_rows();
+  }
+  detail::distributed_crs_matrix_base* get_matrix() {
+    return mat;
+  }
+  //private:
+  detail::distributed_crs_matrix_base* mat;
 };
 
 } // end namespace rokko
 
 #endif // ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 
-#define ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(matrix, name, priority)    \
-namespace { namespace BOOST_JOIN(register, __LINE__) { \
-struct register_caller { \
-  typedef rokko::factory<rokko::detail::dc_matrix_base> factory; \
-  register_caller() { factory::instance()->register_creator<matrix>(name, priority); } \
-} caller; \
-} }

@@ -12,8 +12,9 @@
 #ifndef ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
 #define ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
 
-#include <rokko/mapping_1d.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
+#include <rokko/distributed_mfree.hpp>
+#include <rokko/utility/timer.hpp>
 
 #include <slepceps.h>
 #include <petscblaslapack.h>
@@ -21,22 +22,25 @@
 namespace rokko {
 namespace slepc {
     
-class distributed_crs_matrix : public rokko::detail::dc_matrix_base {
+class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
-  typedef rokko::detail::dc_matrix_base super_type;
-  distributed_crs_matrix() : super_type() {}
+  distributed_crs_matrix() {}
   ~distributed_crs_matrix() {}
+
+  distributed_crs_matrix(int row_dim, int col_dim) {
+    initialize(row_dim, col_dim);
+  }
+
   #undef __FUNCT__
   #define __FUNCT__ "SSSS/initialize"
-  void initialize(mapping_1d const& map) {
-    map_ = map;
+  void initialize(int row_dim, int col_dim) {
     ierr = MatCreate(PETSC_COMM_WORLD, &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, map_.dimension(), map_.dimension());  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
-
-    PetscInt Istart, Iend;
-    ierr = MatGetOwnershipRange(matrix_, &Istart, &Iend); //CHKERRQ(ierr);
+    dim_ = row_dim;
+    ierr = MatGetOwnershipRange(matrix_, &start_rows_, &end_rows_); //CHKERRQ(ierr);
+    num_local_rows_ = end_rows_ - start_rows_ + 1;
   }
   #undef __FUNCT__
   #define __FUNCT__ "SSSS/insert"
@@ -49,9 +53,26 @@ public:
     ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
     ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
   }
+  Mat* get_matrix() {
+    return &matrix_;
+  }
+  int get_dim() {
+    return dim_;
+  }
+  int num_local_rows() {
+    return num_local_rows_;
+  }
+  int start_rows() {
+    return start_rows_;
+  }
+  int end_rows() {
+    return end_rows_;
+  }
+
 private:
-  mapping_1d map_;
-  std::vector<int> rows_;
+  int dim_;
+  int num_local_rows_;
+  int start_rows_, end_rows_;
   PetscErrorCode ierr;
 public:
   Mat matrix_;

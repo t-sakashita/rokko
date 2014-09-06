@@ -9,7 +9,8 @@
 *
 *****************************************************************************/
 
-#include "distributed_crs_matrix.hpp"
+#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/anasazi/core.hpp>
 
-ROKKO_REGISTER_DISTRIBUTED_CRS_MATRIX(rokko::anasazi::distributed_crs_matrix, "anasazi", 10);
+ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::anasazi::solver, "anasazi", 40)
 

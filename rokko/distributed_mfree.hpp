@@ -13,21 +13,16 @@
 #ifndef ROKKO_DISTRIBUTED_MFREE_HPP
 #define ROKKO_DISTRIBUTED_MFREE_HPP
 
-#include <rokko/mapping_1d.hpp>
-
 namespace rokko {
 
 class distributed_mfree {
 public:
   distributed_mfree() {}
   ~distributed_mfree() {}
-  mapping_1d get_mapping_1d() {
-    return map_;
-  }
-  virtual void multiply(const double* x, double* y) const = 0;
 
-protected:
-  mapping_1d map_;
+  virtual void multiply(const double* x, double* y) const = 0;
+  virtual int get_dim() const = 0;
+  virtual int get_num_local_rows() const = 0;
 };
 
 class distributed_mfree_slepc : public rokko::distributed_mfree {

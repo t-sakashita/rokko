@@ -8,10 +8,8 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp)
-if(BUILD_ANASAZI)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} distributed_crs_matrix.cpp)
-endif(BUILD_ANASAZI)
+set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp parallel_sparse_solver.cpp)
+
 if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp solver_c.cpp localized_vector_c.cpp distributed_matrix_c.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_c.cpp)

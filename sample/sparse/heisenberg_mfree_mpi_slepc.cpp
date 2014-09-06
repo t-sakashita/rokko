@@ -14,13 +14,14 @@
 #include <iostream>
 #include <vector>
 
-#include <rokko/slepc/core.hpp>
+#include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+
+#include <rokko/distributed_mfree.hpp>
 
 class heisenberg_op : public rokko::distributed_mfree_slepc {
 public:
-  heisenberg_op(rokko::mapping_1d const& map, int L, const std::vector<std::pair<int, int> >& lattice) : L_(L), lattice_(lattice) {
-    map_ = map;
+  heisenberg_op(int L, const std::vector<std::pair<int, int> >& lattice) : L_(L), lattice_(lattice) {
     comm_ = MPI_COMM_WORLD;
     int nproc;
     MPI_Comm_size(comm_, &nproc);
@@ -30,8 +31,9 @@ public:
       n /= 2;
       ++p;
     } while (n > 0);
-    int local_N = 1 << (L-p);
+    local_N = 1 << (L-p);
     buffer_.assign(local_N, 0);
+    dim_ = 1 << L;
   }
 
   ~heisenberg_op() {}
@@ -44,11 +46,21 @@ public:
     rokko::heisenberg_hamiltonian::fill_diagonal(comm_, L_, lattice_, x);
   }
 
+  int get_dim() const {
+    return dim_;
+  }
+
+  int get_num_local_rows() const {
+    return local_N;
+  }
+
 private:
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
+  int local_N;
   std::vector<std::pair<int, int> > lattice_;
+  int dim_;
 };
 
 
@@ -68,30 +80,27 @@ int main(int argc, char *argv[]) {
   double tol = 1.0e-8;
 
   int L = 8;
-  int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i = 0; i < L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::solver_slepc solver;
+  rokko::parallel_sparse_solver solver("slepc");
+  heisenberg_op  mat(L, lattice);
+
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
               << "solver = LOBPCG" << std::endl
               << "L = " << L << std::endl
-              << "dimension = " << dim << std::endl;
+              << "dimension = " << mat.get_dim() << std::endl;
 
-  rokko::mapping_1d map(dim, g);
-  heisenberg_op  mat(map, L, lattice);
-
-  rokko::distributed_multivector_slepc ivec(map, blockSize);
-  ivec.init_random();
-  solver.diagonalize(&mat, ivec, nev, blockSize, maxIters, tol);
+  solver.diagonalize(&mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
+    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
     std::cout << "smallest eigenvalues:";
-    for (int i = 0; i < solver.eigenvalues().size(); ++i)
-      std::cout << ' ' << solver.eigenvalues()[i];
+    for (int i = 0; i < solver.num_conv(); ++i)
+      std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 

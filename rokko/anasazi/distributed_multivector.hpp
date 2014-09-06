@@ -9,10 +9,10 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_DISTRIBUTED_MULTIVECTOR_H
-#define ROKKO_ANASAZI_DISTRIBUTED_MULTIVECTOR_H
+#ifndef ROKKO_ANASAZI_DISTRIBUTED_MULTIVECTOR_HPP
+#define ROKKO_ANASAZI_DISTRIBUTED_MULTIVECTOR_HPP
 
-#include <rokko/mapping_1d.hpp>
+#include <rokko/anasazi/mapping_1d.hpp>
 
 #include <Epetra_MultiVector.h>
 #include <AnasaziEpetraAdapter.hpp>
@@ -23,7 +23,7 @@ namespace rokko {
 class distributed_multivector_anasazi {
 public:
   distributed_multivector_anasazi() {}
-  distributed_multivector_anasazi(mapping_1d const& map, int blocksize) : map_(map) {
+  distributed_multivector_anasazi(anasazi::mapping_1d const& map, int blocksize) : map_(map) {
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_.get_epetra_map(), blocksize));
   }
   ~distributed_multivector_anasazi() {}
@@ -32,10 +32,10 @@ public:
   }
   Teuchos::RCP<Epetra_MultiVector> get_pointer() const { return multivector_; }
 private:
-  mapping_1d map_;
+  anasazi::mapping_1d map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;  
 };
 
 } // namespace rokko
 
-#endif // ROKKO_ANASAZI_DISTRIBUTED_MULTIVECTOR_H
+#endif // ROKKO_ANASAZI_DISTRIBUTED_MULTIVECTOR_HPP
