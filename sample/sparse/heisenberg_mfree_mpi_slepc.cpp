@@ -80,7 +80,6 @@ int main(int argc, char *argv[]) {
   double tol = 1.0e-8;
 
   int L = 8;
-  //int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i = 0; i < L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
@@ -98,6 +97,7 @@ int main(int argc, char *argv[]) {
   solver.diagonalize(&mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
+    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
     std::cout << "smallest eigenvalues:";
     for (int i = 0; i < solver.num_conv(); ++i)
       std::cout << ' ' << solver.eigenvalue(i);
