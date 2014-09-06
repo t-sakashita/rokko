@@ -26,6 +26,7 @@ class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base
 public:
   explicit distributed_crs_matrix(int row_dim, int col_dim) {
     initialize(row_dim, col_dim);
+    dim_ = row_dim;
     num_local_rows_ = map_->get_epetra_map().NumMyElements();
     start_rows_ = map_->get_epetra_map().MinMyGID();
     end_rows_ = map_->get_epetra_map().MaxMyGID();

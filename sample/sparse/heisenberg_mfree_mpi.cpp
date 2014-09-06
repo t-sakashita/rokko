@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   std::cout.precision(5);
-  int nev = 1;
+  int nev = 10;
   int blockSize = 5;
   int maxIters = 500;
   double tol = 1.0e-8;

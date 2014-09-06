@@ -74,9 +74,10 @@ int main(int argc, char *argv[]) {
   solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
+    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
     std::cout << "smallest eigenvalues:";
-    //    for (int i = 0; i < solver.eigenvalues().size(); ++i)
-    //      std::cout << ' ' << solver.eigenvalues()[i].realpart;
+    for (int i = 0; i < solver.num_conv(); ++i)
+      std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 
