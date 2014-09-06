@@ -76,6 +76,7 @@ public:
   void finalize() {}
   void diagonalize(rokko::distributed_crs_matrix& mat,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
+    num_local_rows_ = mat.num_local_rows();
     A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
     EPSType        type;
     PetscMPIInt    size;
@@ -107,19 +108,13 @@ public:
       std::cout << "doesn't converge" << std::endl;
     }
 
-    PetscScalar eval_r, eval_i;
-    Vec evec_r, evec_i;
-    MatGetVecs(*A, NULL, &evec_r);
-    MatGetVecs(*A, NULL, &evec_i);
- 
-
     // Display solution and clean up
     //ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
 
     //ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
     //   ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
     //ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
-    ierr = MatDestroy(A); //CHKERRQ(ierr);
+    //ierr = MatDestroy(A); //CHKERRQ(ierr);
   }
 
   void diagonalize(rokko::distributed_mfree* const mat,
@@ -129,6 +124,7 @@ public:
     PetscInt       nev;
 
     // define matrix-free type operator
+    num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
     ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A); //CHKERRQ(ierr);
     ierr = MatSetFromOptions(*A); //CHKERRQ(ierr);
@@ -162,24 +158,29 @@ public:
       std::cout << "doesn't converge" << std::endl;
     }
 
-
-    Vec evec_r, evec_i;
-    MatGetVecs(*A, NULL, &evec_r);
-    MatGetVecs(*A, NULL, &evec_i);
- 
-
     // Display solution and clean up
     //ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
 
-    ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
-    ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
-    ierr = MatDestroy(A); //CHKERRQ(ierr);
+    //ierr = MatDestroy(A); //CHKERRQ(ierr);
   }
 
   double eigenvalue(int i) const {
     PetscScalar eval_r, eval_i;
     EPSGetEigenvalue(eps, i, &eval_r, &eval_i);
     return eval_r;
+  }
+
+  void eigenvector(int i, std::vector<double>& vec) const {
+    Vec evec_r, evec_i;
+    vec.resize(num_local_rows_);
+    //vec.resize(100);
+    MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
+    MatGetVecs(*A, NULL, &evec_i);
+    VecPlaceArray(evec_r, &vec[0]);
+
+    EPSGetEigenvector(eps, i, evec_r, evec_i);
+    VecDestroy(&evec_r); //CHKERRQ(ierr);
+    VecDestroy(&evec_i); //CHKERRQ(ierr);
   }
 
   int num_conv() const {
@@ -193,11 +194,10 @@ public:
   }
 
 private:
+  int num_local_rows_;
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
   PetscErrorCode ierr;
-  std::vector<double> evals_;
-  distributed_multivector_slepc evecs_;
   int num_conv_;
 };
 

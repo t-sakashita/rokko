@@ -149,6 +149,9 @@ public:
     return problem_->getSolution().Evals[i].realpart;
   }
 
+  void eigenvector(int i, std::vector<double>& vec) const {
+  }
+
   //distributed_multivector_anasazi eigenvector() const { /*return sol_->Evecs; }
   int num_conv() const {
     return num_conv_;
