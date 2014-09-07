@@ -33,7 +33,7 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
          std::vector<double>& alpha, std::vector<double>& beta, matrix_type& coeff,
          matrix_type& wk, std::vector<int> const& list1,
          std::vector<std::vector<int> > const& list2);
-// return valur # number of iterations required for convergence
+// return value # number of iterations required for convergence
 // nvec      @ number of eigenvectors to calculate in lncvec
 // iv        @ location of the nonzero element of the initial vector
 // E         # eigenvalues
@@ -87,54 +87,59 @@ double mltply(int n, std::vector<int> const& ipair, std::vector<double> const& b
 //
 // check of the eigenvector and eigenvalue
 //
+// x           @ eigenvector to be checked
+// v           # H*x
+// list1,list2 @ spin configurations generated in 'sz'
+
+double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
+              std::vector<double> const& zrtio, const double *x,
+              matrix_type& v, int vindex, std::vector<int> const& list1,
+              std::vector<std::vector<int> > const& list2);
 
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, matrix_type const& x, int xindex,
               matrix_type& v, int vindex, std::vector<int> const& list1,
               std::vector<std::vector<int> > const& list2);
-// x           @ eigenvector to be checked
-// v           # H*x
-// list1,list2 @ spin configurations generated in 'sz'
+
+double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
+              std::vector<double> const& zrtio, std::vector<double> const& x,
+              matrix_type& v, int vindex, std::vector<int> const& list1,
+              std::vector<std::vector<int> > const& list2);
 
 //
 // inverse iteration
 //   --- dummy routine for simple working area
 //
 
-void check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
-            std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
-            matrix_type& wk, std::vector<int> const& list1,
-            std::vector<std::vector<int> > const& list2);
-// Eig         @ eigenvalue
-// v          @ location of the nonzero element of the initial vector
-// x           # eigenvector
-// wk            working area
-// list1,list2 @ spin configurations generated in 'sz'
+void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
+          std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
+          matrix_type& wk, std::vector<int> const& list1,
+          std::vector<std::vector<int> > const& list2);
 
 //
 // inverse iteration
 //
+// b            working area for the rhs of (H-E(approx))*x=b
+// p,r,y        working area used in the routine cg1
 
 void inv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
            std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
            double *b, double *p, double *r, double *y, std::vector<int> const& list1,
            std::vector<std::vector<int> > const& list2);
-// b            working area for the rhs of (H-E(approx))*x=b
-// p,r,y        working area used in the routine cg1
 
 //
 // solution of linear equations -- cg method
 //
-
-int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
-           std::vector<double> const& zrtio, double Eig, std::vector<double>& x,
-           double *b, double *p, double *r, double *y, std::vector<int> const& list1,
-           std::vector<std::vector<int> > const& list2);
 // return value # number of iterations required for convergence
 // Eig         @ eigenvalue
 // x           # eigenvector
 // b             working area for the rhs of (H-E(approx))*x=b
 // p,r,y         working area used in the routine cg
 // list1,list2 @ spin configurations generated in 'sz'
+
+int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
+        std::vector<double> const& zrtio, double Eig, std::vector<double>& x,
+        double *b, double *p, double *r, double *y, std::vector<int> const& list1,
+        std::vector<std::vector<int> > const& list2);
 
 #endif

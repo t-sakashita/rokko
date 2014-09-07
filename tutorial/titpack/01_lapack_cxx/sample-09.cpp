@@ -11,10 +11,9 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #1 *****************
+/************* Sample main program #9 *****************
 * 1d Heisenberg antiferromagnet with 16 spins
-* Eigenvalues and an eigenvector / lnc1, lncv1
-* Precision check and correlation functions
+* Eigenvector of an excited state by inv2
 ******************************************************/
 
 #include "titpack.hpp"
@@ -44,13 +43,18 @@ int main() {
   // or
   //   int idim = sztn(n, 0, list1, list2);
 
+  // matrix elements
+  matrix_type elemnt;
+  i_matrix_type loc;
+  elm2(n, ipair, bondwt, zrtio, elemnt, loc, list1, list2);
+  
   // Eigenvalues
-  int nvec = 1;
-  int iv = idim / 3 - 1;
+  int nvec = 3;
+  int iv = idim / 5 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
   matrix_type v;
-  int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
+  int itr = lnc2(elemnt, loc, nvec, iv, E, alpha, beta, coeff, v);
   
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
@@ -58,29 +62,18 @@ int main() {
   std::cout << "[Iteration number]\n\t" << itr << std::endl;
 
   // Ground-state eigenvector
-  matrix_type x;
-  lncv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
-  // You may alternatively use inv1 / Note: dimension v(4, idim) -
-  //   inv1(elemnt, loc, E[0], iv, x, itr, v, list1, list2);
+  std::vector<double> x;
+  inv2(elemnt, loc, E[2], iv, x, v);
 
   std::cout << "[Eigenvector components (selected)]";
   int count = 0;
   for (int i = 12; i < idim; i += idim/20, ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(0, i);
+    std::cout << '\t' << x[i];
   }
   std::cout << std::endl;
 
   // Precision check and correlation functions
-  double Hexpec = check1(n, ipair, bondwt, zrtio, x, 0, v, 0, list1, list2);
+  double Hexpec = check2(elemnt, loc, x, v, 0);
 
-  std::vector<int> npair;
-  npair.push_back(1);
-  npair.push_back(2);
-  std::vector<double> sxx(1), szz(1);
-  xcorr(n, npair, x, 0, sxx, list1, list2);
-  zcorr(n, npair, x, 0, szz, list1);
-  std::cout << "[Nearest neighbor correlation functions]\n\t" 
-            << "sxx : " << sxx[0]
-            << ", szz : " << szz[0] << std::endl;
 }

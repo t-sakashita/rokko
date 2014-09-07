@@ -11,10 +11,9 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #1 *****************
+/************* Sample main program #3 *****************
 * 1d Heisenberg antiferromagnet with 16 spins
-* Eigenvalues and an eigenvector / lnc1, lncv1
-* Precision check and correlation functions
+* Eigenvectors of excited states by lncv1
 ******************************************************/
 
 #include "titpack.hpp"
@@ -45,7 +44,7 @@ int main() {
   //   int idim = sztn(n, 0, list1, list2);
 
   // Eigenvalues
-  int nvec = 1;
+  int nvec = 3;
   int iv = idim / 3 - 1;
   std::vector<double> E, alpha, beta;
   matrix_type coeff;
@@ -59,28 +58,18 @@ int main() {
 
   // Ground-state eigenvector
   matrix_type x;
-  lncv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
+  lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, v, list1, list2);
   // You may alternatively use inv1 / Note: dimension v(4, idim) -
-  //   inv1(elemnt, loc, E[0], iv, x, itr, v, list1, list2);
+  //   call inv1(n, ipair, bondwt, zrtio, 1, iv, alpha, beta, coeff, x, itr, v, list1, list2);
 
   std::cout << "[Eigenvector components (selected)]";
   int count = 0;
   for (int i = 12; i < idim; i += idim/20, ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(0, i);
+    std::cout << '\t' << x(nvec - 1, i);
   }
   std::cout << std::endl;
 
   // Precision check and correlation functions
-  double Hexpec = check1(n, ipair, bondwt, zrtio, x, 0, v, 0, list1, list2);
-
-  std::vector<int> npair;
-  npair.push_back(1);
-  npair.push_back(2);
-  std::vector<double> sxx(1), szz(1);
-  xcorr(n, npair, x, 0, sxx, list1, list2);
-  zcorr(n, npair, x, 0, szz, list1);
-  std::cout << "[Nearest neighbor correlation functions]\n\t" 
-            << "sxx : " << sxx[0]
-            << ", szz : " << szz[0] << std::endl;
+  double Hexpec = check1(n, ipair, bondwt, zrtio, x, nvec - 1, v, 0, list1, list2);
 }
