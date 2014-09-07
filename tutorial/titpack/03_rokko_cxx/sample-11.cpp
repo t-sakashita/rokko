@@ -17,12 +17,15 @@
 ******************************************************/
 
 #include "titpack.hpp"
+#include "options.hpp"
 
 int main(int argc, char** argv) {
   std::cout.precision(10);
+  options opt(argc, argv, 8);
+  if (!opt.valid) std::abort();
 
   // lattice structure
-  int n = 8;
+  int n = opt.N;
   int ibond = n;
   std::vector<int> ipair;
   for (int i = 0; i < ibond; ++i) {
