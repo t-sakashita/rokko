@@ -2,15 +2,15 @@
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
 # Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-#                            Synge Todo <wistaria@comp-phys.org>,
-#               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+#                            Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>,
+#               2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
 # single process tests
-set(TESTS localized_matrix serial_dense_solvers solver) # magnetization)
+set(TESTS localized_matrix matrix_major serial_dense_solvers solver)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
@@ -63,7 +63,6 @@ foreach(name ${TESTS})
   add_test(${name} ${name})
 endforeach(name)
 unset(TESTS)
-
 
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
