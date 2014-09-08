@@ -13,9 +13,9 @@ message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
 include(${ROKKO_USE_FILE})
 message(STATUS ${ROKKO_USE_FILE})
 
-add_library(titpack common.f large.f medium.f small.f)
+add_library(titpack common.f large.f medium.f small.f clock.f90)
 
-set(SAMPLES sample-01 sample-02 sample-03 sample-04 sample-05 sample-06 sample-07 sample-08 sample-09 sample-10 sample-11)
+set(SAMPLES sample-01 sample-02 sample-03 sample-04 sample-05 sample-06 sample-07 sample-08 sample-09 sample-10 sample-11 sample-11-14)
 foreach(name ${SAMPLES})
   add_executable(${name} ${name}.f)
   target_link_libraries(${name} titpack ${ROKKO_LIBRARIES})

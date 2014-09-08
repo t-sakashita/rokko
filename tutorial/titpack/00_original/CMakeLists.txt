@@ -7,9 +7,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(titpack NONE)
 enable_language(Fortran)
 
-add_library(titpack common.f large.f medium.f small.f)
+add_library(titpack common.f large.f medium.f small.f clock.f90)
 
-set(SAMPLES sample-01 sample-02 sample-03 sample-04 sample-05 sample-06 sample-07 sample-08 sample-09 sample-10 sample-11)
+set(SAMPLES sample-01 sample-02 sample-03 sample-04 sample-05 sample-06 sample-07 sample-08 sample-09 sample-10 sample-11 sample-11-14)
 foreach(name ${SAMPLES})
   add_executable(${name} ${name}.f)
   target_link_libraries(${name} titpack)

@@ -7,7 +7,7 @@ c************ Sample main program #11 *****************
 c  1d Heisenberg antiferromagnet with 8 spins
 c    Eigenvalues and an eigenvector by diag
 c*************************************************
-      parameter (n=8,idim=70,ibond=n)
+      parameter (n=14,idim=3432,ibond=n)
       implicit real*8 (a-h,o-z)
       dimension E(4)
       dimension elemnt(idim,idim)
@@ -18,7 +18,8 @@ c*************************************************
 c
       data bondwt/ibond*-1.0d0/
       data zrtio/ibond*1.0d0/
-      data ipair/1,2, 2,3, 3,4, 4,5, 5,6, 6,7, 7,8, 8,1/
+      data ipair/1,2, 2,3, 3,4, 4,5, 5,6, 6,7, 7,8, 8,9,
+     &     9,10, 10,11, 11,12, 12,13, 13,14, 14,1/
 c
       call clock(t1)
       call sz(n,idim,0.0d0,list1,list2)
@@ -31,9 +32,10 @@ c------------------------------------------------------------
      &          elemnt,idim,list1,list2)
 c
       call clock(t2)
+      eps=1.d-13
       nvec=1
       ne=4
-      call diag(elemnt,idim,idim,E,v,ne,nvec,wk,iwk)
+      call diag(elemnt,idim,idim,E,v,ne,nvec,eps,wk,iwk)
       call clock(t3)
       print 100,E
   100 format(/' [Eigenvalues]  '/2x,4f14.8)
