@@ -150,6 +150,15 @@ public:
   }
 
   void eigenvector(int i, std::vector<double>& vec) const {
+     Teuchos::RCP<Epetra_MultiVector> evecs_;
+     double* vec_pt = (*problem_->getSolution().Evecs)[i];
+     //Epetra_Vector evec = (*problem_->getSolution().Evecs)[i];
+     for (int j=0; j < map_->get_num_local_rows(); ++j) {
+       vec.push_back(vec_pt[j]);
+     }
+
+     //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
+     //double* eve = problem_->getSolution()->Evecs[i];
   }
 
   //distributed_multivector_anasazi eigenvector() const { /*return sol_->Evecs; }
@@ -161,8 +170,7 @@ private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
-  std::vector<Anasazi::Value<double> > evals_;
-  distributed_multivector_anasazi evecs_;
+  //std::vector<Anasazi::Value<double> > evals_;
   int num_conv_;
 };
 
