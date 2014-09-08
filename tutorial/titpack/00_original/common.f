@@ -104,10 +104,10 @@ c    ne     @ number of eigenvalues to calculate
 c    eps    @ limit of error
 
       implicit real*8 (a-h,o-z)
-      dimension alpha(ndim),beta(ndim),E(ne),b2(2000)
+      dimension alpha(ndim),beta(ndim),E(ne),b2(4000)
 c
-      if(ndim.gt.2000)then
-          print *,' #(E04)# ndim given to bisec exceeds 2000'
+      if(ndim.gt.4000)then
+          print *,' #(E04)# ndim given to bisec exceeds 4000'
           stop
       end if
       if(ne.gt.ndim.or.ne.le.0)then
