@@ -15,7 +15,7 @@
 
 void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, matrix_type& elemnt, i_matrix_type& loc,
-          std::vector<int> const& list1, std::vector<std::vector<int> > const& list2) {
+          std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2) {
   int idim = list1.size();
   int ibond = ipair.size() / 2;
   int ic = ibond + 1;
@@ -27,11 +27,11 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 
   datack(ipair, n);
   // initialization
-  if (elemnt.size1() < ic || elemnt.size2() != idim) elemnt.resize(ic, idim);
-  if (loc.size1() < ic || loc.size2() != idim) loc.resize(ic, idim);
+  if (elemnt.size1() != idim || elemnt.size2() < ic) elemnt.resize(idim, ic);
+  if (loc.size1() != idim || loc.size2() < ic) loc.resize(idim, ic);
   for (int i = 0; i < ic; ++i)
     for (int j = 0; j < idim; ++j)
-      elemnt(i, j) = 0;
+      elemnt(j, i) = 0;
 
   // diagonal elements
   for (int k = 0; k < ibond; ++k) {
@@ -44,11 +44,11 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
     for (int i = 0; i < idim; ++i) {
       int ibit = list1[i] & is;
       if (ibit == 0 || ibit == is) {
-        elemnt(ic - 1, i) += wght;
+        elemnt(i, ic - 1) += wght;
       } else {
-        elemnt(ic - 1, i) -= wght;
+        elemnt(i, ic - 1) -= wght;
       }
-      loc(ic - 1, i) = i;
+      loc(i, ic - 1) = i;
     }
   }
   
@@ -63,14 +63,14 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
     for (int i = 0; i < idim; ++i) {
       int ibit = list1[i] & is;
       if (ibit == 0 || ibit == is) {
-        elemnt(k, i) = 0;
-        loc(k, i) = i;
+        elemnt(i, k) = 0;
+        loc(i, k) = i;
       } else {
-        elemnt(k, i) = wght;
+        elemnt(i, k) = wght;
         int iexchg = list1[i] ^ is;
         int ia = iexchg & irght;
         int ib = (iexchg & ilft) / ihfbit;
-        loc(k, i) = list2[0][ia] + list2[1][ib];
+        loc(i, k) = list2[ia].first + list2[ib].second;
       }
     }
   }
@@ -79,7 +79,7 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
          std::vector<double>& E, std::vector<double>& alpha, std::vector<double>& beta,
          matrix_type& coeff, matrix_type& wk) {
-  int idim = elemnt.size2();
+  int idim = elemnt.size1();
   if (iv < 0 ||  iv >= idim) {
     std::cerr << " #(E08)# Incorrect iv given to lnc2\n";
     return -1;
@@ -89,17 +89,17 @@ int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() < 2 || wk.size2() != idim) wk.resize(2, idim);
-  return lnc2z(elemnt, loc, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(1,0));
+  if (wk.size1() != idim || wk.size2() < 2) wk.resize(idim, 2);
+  return lnc2z(elemnt, loc, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1));
 }
 
 int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
           std::vector<double>& E, std::vector<double>& alpha, std::vector<double>& beta,
           matrix_type& coeff, double *v1, double *v0) {
-  int ic = elemnt.size1();
-  int idim = elemnt.size2();
+  int idim = elemnt.size1();
+  int ic = elemnt.size2();
   std::vector<int> iblock, isplit;
-  matrix_type work(5, 150);
+  matrix_type work(150, 5);
   double eps = 1e-10;
   int m, nsplit;
   double ebefor;
@@ -117,7 +117,7 @@ int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
   double prdct = 0;
   for (int k = 0; k < ic; ++k) {
     for (int j = 0; j < idim; ++j) {
-      double temp = elemnt(k, j) * v1[loc(k, j)];
+      double temp = elemnt(j, k) * v1[loc(j, k)];
       v0[j] += temp;
       prdct += v1[j] * temp;
     }
@@ -140,7 +140,7 @@ int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
     double prdct = 0;
     for (int k = 0; k < ic; ++k) {
       for (int j = 0; j < idim; ++j) {
-        double temp = elemnt(k, j) * v1[loc(k, j)];
+        double temp = elemnt(j, k) * v1[loc(j, k)];
         v0[j] += temp;
         prdct += v1[j] * temp;
       }
@@ -182,17 +182,17 @@ void lncv2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv
     std::cerr << " #(W14)# nvec given to lncv2 out of range\n";
     return;
   }
-  int idim = elemnt.size2();
-  if (wk.size1() < 2 || wk.size2() != idim) wk.resize(2, idim);
-  lncv2z(elemnt, loc, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(1,0));
+  int idim = elemnt.size1();
+  if (wk.size1() != idim || wk.size2() < 2) wk.resize(idim, 2);
+  lncv2z(elemnt, loc, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1));
 }
 
 void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
             std::vector<double> const& alpha, std::vector<double> const& beta,
             matrix_type const& coeff, matrix_type& x, int itr, double *v1, double *v0) {
-  int ic = elemnt.size1();
-  int idim = elemnt.size2();
-  if (x.size1() < nvec || x.size2() != idim) x.resize(nvec, idim);
+  int idim = elemnt.size1();
+  int ic = elemnt.size2();
+  if (x.size1() != idim || x.size2() < nvec) x.resize(idim, nvec);
 
   // initialization
   for (int i = 0; i < idim; ++i) {
@@ -202,15 +202,15 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
   v1[iv] = 1;
   
   for (int k = 0; k < nvec; ++k) {
-    for (int i = 1; i < idim; ++i) x(k, i) = 0;
-    x(k, iv) = coeff(k, 0);
+    for (int i = 1; i < idim; ++i) x(i, k) = 0;
+    x(iv, k) = coeff(0, k);
   }
 
   // alpha(0) and beta(0)
   double prdct = 0;
   for (int k = 0; k < ic; ++k) {
     for (int j = 0; j < idim; ++j) {
-      double temp = elemnt(k, j) * v1[loc(k, j)];
+      double temp = elemnt(j, k) * v1[loc(j, k)];
       v0[j] += temp;
       prdct += v1[j] * temp;
     }
@@ -219,7 +219,7 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
   double beta0 = beta[0];
   for (int k = 0; k < nvec; ++k)
     for (int j = 0; j < idim; ++j)
-      x(k, j) += coeff(k, 1) * (v0[j] - alpha0 * v1[j]) / beta0;
+      x(j, k) += coeff(1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
 
   // iteration
   for (int i = 1; i < itr - 1; ++i) {
@@ -232,7 +232,7 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
     double prdct = 0;
     for (int k = 0; k < ic; ++k) {
       for (int j = 0; j < idim; ++j) {
-        double temp = elemnt(k, j) * v1[loc(k, j)];
+        double temp = elemnt(j, k) * v1[loc(j, k)];
         v0[j] += temp;
         prdct += v1[j] * temp;
       }
@@ -241,23 +241,23 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
     beta0 = beta[i];
     for (int k = 0; k < nvec; ++k)
       for (int j = 1; j < idim; ++j)
-        x(k, j) += coeff(k, i + 1) * (v0[j] - alpha0 * v1[j]) / beta0;
+        x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
   
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
-    for (int j = 0; j < idim; ++j) dnorm += x(k, j) * x(k, j);
+    for (int j = 0; j < idim; ++j) dnorm += x(j, k) * x(j, k);
     dnorm = std::sqrt(dnorm);
-    for (int j = 0; j < idim; ++j) x(k, j) /= dnorm;
+    for (int j = 0; j < idim; ++j) x(j, k) /= dnorm;
   }
 }
 
 double check2(matrix_type const& elemnt, i_matrix_type const& loc, const double *x,
               matrix_type& v, int vindex) {
-  int ic = elemnt.size1();
-  int idim = elemnt.size2();
-  if (v.size1() < vindex || v.size2() != idim) v.resize(vindex, idim);
+  int idim = elemnt.size1();
+  int ic = elemnt.size2();
+  if (v.size1() != idim || v.size2() < vindex) v.resize(idim, vindex);
 
   double dnorm = 0;
   for (int i = 0; i < idim; ++i) dnorm += x[i] * x[i];
@@ -266,20 +266,20 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, const double 
     return 0;
   }
 
-  for (int i = 0; i < idim; ++i) v(vindex, i) = 0;
+  for (int i = 0; i < idim; ++i) v(i, vindex) = 0;
   for (int k = 0; k < ic; ++k)
     for (int j = 0; j < idim; ++j)
-      v(vindex, j) += elemnt(k, j)  * x[loc(k, j)];
+      v(j, vindex) += elemnt(j, k)  * x[loc(j, k)];
   
   double prd = 0;
-  for (int i = 0; i < idim; ++i) prd += v(vindex, i) * x[i];
+  for (int i = 0; i < idim; ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check2\n"
             << "<x*H*x> = "<< prd << std::endl
             << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";
   int count = 0;
   for (int i = std::min((int)(idim / 3), 13) - 1; i < idim; i += std::max(1,idim/20), ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << v(vindex, i) / x[i];
+    std::cout << '\t' << v(i, vindex) / x[i];
   }
   std::cout << std::endl
             << "---------------------------------------------------\n";
@@ -288,7 +288,7 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, const double 
 
 double check2(matrix_type const& elemnt, i_matrix_type const& loc, matrix_type const& x, int xindex,
               matrix_type& v, int vindex) {
-  check2(elemnt, loc, &x(xindex, 0), v, vindex);
+  check2(elemnt, loc, &x(0, xindex), v, vindex);
 }
 
 double check2(matrix_type const& elemnt, i_matrix_type const& loc, std::vector<double> const& x,
@@ -298,15 +298,15 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, std::vector<d
 
 void inv2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int iv,
           std::vector<double>& x, matrix_type& wk) {
-  int idim = elemnt.size2();
-  wk.resize(4, idim);
-  inv2z(elemnt, loc, Eig, iv, x, &wk(0,0), &wk(1,0), &wk(2,0), &wk(3,0));
+  int idim = elemnt.size1();
+  wk.resize(idim, 4);
+  inv2z(elemnt, loc, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 
 void inv2z(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int iv,
            std::vector<double>& x, double *b, double *p, double *r, double *y) {
-  int ic = elemnt.size1();
-  int idim = elemnt.size2();
+  int idim = elemnt.size1();
+  int ic = elemnt.size2();
   if (x.size() != idim) x.resize(idim);
   for (int i = 0; i < idim; ++i) b[i] = 0;
   b[iv]=1;
@@ -337,8 +337,8 @@ void inv2z(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int 
 
 int cg2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, std::vector<double>& x,
         double *b, double *p, double *r, double *y) {
-  int ic = elemnt.size1();
-  int idim = elemnt.size2();
+  int idim = elemnt.size1();
+  int ic = elemnt.size2();
 
   // initialization
   double bnorm = 0;
@@ -354,7 +354,7 @@ int cg2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, std::ve
     for (int i = 0; i < idim; ++i) y[i] = -Eig * p[i];
     for (int k = 0; k < ic; ++k)
       for (int i = 0; i < idim; ++i)
-        y[i] += elemnt(k, i) * p[loc(k, i)];
+        y[i] += elemnt(i, k) * p[loc(i, k)];
     double rp = 0;
     double yp = 0;
     for (int i = 0; i < idim; ++i) {

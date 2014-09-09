@@ -25,7 +25,7 @@ int main() {
   double t1 = tm.elapsed();
 
   // lattice structure
-  int n = 8;
+  int n = 14;
   int ibond = n;
   std::vector<int> ipair;
   for (int i = 0; i < ibond; ++i) {

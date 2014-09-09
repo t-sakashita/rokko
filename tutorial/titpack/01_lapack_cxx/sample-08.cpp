@@ -36,7 +36,7 @@ int main() {
 
   // table of configurations
   std::vector<int> list1;
-  std::vector<std::vector<int> > list2;
+  std::vector<std::pair<int, int> > list2;
   int idim = sz(n, 0, list1, list2);
   // You may alternatively use szdy or sztn for faster processing
   //   int idim = szdy(n, 0, list1, list2);
@@ -69,11 +69,10 @@ int main() {
   int count = 0;
   for (int i = 12; i < idim; i += idim/20, ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(nvec - 1, i);
+    std::cout << '\t' << x(i, nvec - 1);
   }
   std::cout << std::endl;
 
   // Precision check and correlation functions
   double Hexpec = check2(elemnt, loc, x, nvec - 1, v, 0);
-
 }

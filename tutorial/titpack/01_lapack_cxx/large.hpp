@@ -32,7 +32,7 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
          std::vector<double> const& zrtio, int nvec, int iv, std::vector<double>& E,
          std::vector<double>& alpha, std::vector<double>& beta, matrix_type& coeff,
          matrix_type& wk, std::vector<int> const& list1,
-         std::vector<std::vector<int> > const& list2);
+         std::vector<std::pair<int, int> > const& list2);
 // return value # number of iterations required for convergence
 // nvec      @ number of eigenvectors to calculate in lncvec
 // iv        @ location of the nonzero element of the initial vector
@@ -48,7 +48,7 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
           std::vector<double> const& zrtio, int nvec, int iv, std::vector<double>& E,
           std::vector<double>& alpha, std::vector<double>& beta, matrix_type& coeff,
           double *v1, double *v0, std::vector<int> const& list1,
-          std::vector<std::vector<int> > const& list2);
+          std::vector<std::pair<int, int> > const& list2);
 
 //
 // eigenvector by the Lanczos method
@@ -58,7 +58,7 @@ void lncv1(int n, std::vector<int> const& ipair, std::vector<double> const& bond
            std::vector<double> const& zrtio, int nvec, int iv, std::vector<double> const& alpha,
            std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,
            int itr, matrix_type& wk, std::vector<int> const& list1,
-           std::vector<std::vector<int> > const& list2);
+           std::vector<std::pair<int, int> > const& list2);
 // nvec      @ number of eigenvectors to be calculated
 // iv        @ location of the nonzero element of the initial vector
 // x         # eigenvector
@@ -74,7 +74,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
             std::vector<double> const& zrtio, int nvec, int iv, std::vector<double> const& alpha,
             std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,
             int itr, double *v1, double *v0, std::vector<int> const& list1,
-            std::vector<std::vector<int> > const& list2);
+            std::vector<std::pair<int, int> > const& list2);
 
 //
 // matrix multiplication
@@ -82,7 +82,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
 
 double mltply(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, double *v1, double *v0,
-              std::vector<int> const& list1, std::vector<std::vector<int> > const& list2);
+              std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2);
 
 //
 // check of the eigenvector and eigenvalue
@@ -94,17 +94,17 @@ double mltply(int n, std::vector<int> const& ipair, std::vector<double> const& b
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, const double *x,
               matrix_type& v, int vindex, std::vector<int> const& list1,
-              std::vector<std::vector<int> > const& list2);
+              std::vector<std::pair<int, int> > const& list2);
 
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, matrix_type const& x, int xindex,
               matrix_type& v, int vindex, std::vector<int> const& list1,
-              std::vector<std::vector<int> > const& list2);
+              std::vector<std::pair<int, int> > const& list2);
 
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, std::vector<double> const& x,
               matrix_type& v, int vindex, std::vector<int> const& list1,
-              std::vector<std::vector<int> > const& list2);
+              std::vector<std::pair<int, int> > const& list2);
 
 //
 // inverse iteration
@@ -114,7 +114,7 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
 void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
           matrix_type& wk, std::vector<int> const& list1,
-          std::vector<std::vector<int> > const& list2);
+          std::vector<std::pair<int, int> > const& list2);
 
 //
 // inverse iteration
@@ -125,7 +125,7 @@ void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 void inv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
            std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
            double *b, double *p, double *r, double *y, std::vector<int> const& list1,
-           std::vector<std::vector<int> > const& list2);
+           std::vector<std::pair<int, int> > const& list2);
 
 //
 // solution of linear equations -- cg method
@@ -140,6 +140,6 @@ void inv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bond
 int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
         std::vector<double> const& zrtio, double Eig, std::vector<double>& x,
         double *b, double *p, double *r, double *y, std::vector<int> const& list1,
-        std::vector<std::vector<int> > const& list2);
+        std::vector<std::pair<int, int> > const& list2);
 
 #endif

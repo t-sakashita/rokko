@@ -13,7 +13,7 @@
 
 void test(int n, double total_sz) {
   std::vector<int> list1;
-  std::vector<std::vector<int> > list2;
+  std::vector<std::pair<int, int> > list2;
   int idim = sz(n, total_sz, list1, list2);
   std::cout << n << ' ' << total_sz << ' ' << idim << std::endl;
   int ihf = (n + 1) / 2;
@@ -23,7 +23,7 @@ void test(int n, double total_sz) {
   for (int i = 0; i < list1.size(); ++i) {
     int ia = list1[i] & irght;
     int ib = (list1[i] & ilft) / ihfbit;
-    if (i != list2[0][ia] + list2[1][ib]) {
+    if (i != list2[ia].first + list2[ib].second) {
       std::cerr << "Incorrect table list1 and list2\n";
       std::abort();
     }

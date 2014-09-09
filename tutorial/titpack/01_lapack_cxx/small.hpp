@@ -23,7 +23,7 @@
 
 void elm3(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, matrix_type& elemnt,
-          std::vector<int> const& list1, std::vector<std::vector<int> > const& list2);
+          std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2);
 // n           @ lattice size
 // ipair       @ pairs of sites connected by bonds
 // bondwt      @ exchange interaction of each bond Jxy

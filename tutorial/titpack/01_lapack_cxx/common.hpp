@@ -19,8 +19,8 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/tuple/tuple.hpp>
 
-typedef boost::numeric::ublas::matrix<double> matrix_type;
-typedef boost::numeric::ublas::matrix<int> i_matrix_type;
+typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
+typedef boost::numeric::ublas::matrix<int, boost::numeric::ublas::column_major> i_matrix_type;
 
 //
 // configurations with the specified sz
@@ -32,7 +32,7 @@ typedef boost::numeric::ublas::matrix<int> i_matrix_type;
 // list2        #  inverse list of list1 expressed by the
 //                 2-dim search method of M. Ogata and H.Q. Lin.
 
-int sz(int n, double szval, std::vector<int>& list1, std::vector<std::vector<int> >& list2);
+int sz(int n, double szval, std::vector<int>& list1, std::vector<std::pair<int, int> >& list2);
 
 //
 // data check of pairs of sites
@@ -78,15 +78,15 @@ void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, in
 
 void xcorr(int n, std::vector<int> const& npair, const double *x,
            std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2);
+           std::vector<std::pair<int, int> >& list2);
 
 void xcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
            std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2);
+           std::vector<std::pair<int, int> >& list2);
 
 void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
            std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::vector<int> >& list2);
+           std::vector<std::pair<int, int> >& list2);
 
 //
 // ************* zz correlation function **************
@@ -133,6 +133,6 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec);
 // ==============================================================
 
 void szdy(int n, int idim, double szval, std::vector<int>& list1,
-          std::vector<std::vector<int> >& list2);
+          std::vector<std::pair<int, int> >& list2);
 
 #endif

@@ -36,7 +36,7 @@ int main() {
 
   // table of configurations
   std::vector<int> list1;
-  std::vector<std::vector<int> > list2;
+  std::vector<std::pair<int, int> > list2;
   int idim = sz(n, 0, list1, list2);
   // You may alternatively use szdy or sztn for faster processing
   //   int idim = szdy(n, 0, list1, list2);
@@ -45,21 +45,21 @@ int main() {
 
   // Eigenvalues
   int nvec = 1;
-  matrix_type v(2, idim);
+  matrix_type v(idim, 2);
+  std::vector<double> E, alpha, beta;
+  matrix_type coeff;
+  matrix_type wk;
+  matrix_type x;
   for (int k = 0; k < 2; ++k) {
     int iv = 20 + (idim / 2) * k;
-    std::vector<double> E, alpha, beta;
-    matrix_type coeff;
-    matrix_type wk;
     int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, wk, list1, list2);
     
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
 
-    matrix_type x;
     lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, wk, list1, list2);
-    for (int i = 0; i < idim; ++i) v(k, i) = x(0, i);
+    for (int i = 0; i < idim; ++i) v(i, k) = x(i, 0);
   }
   
   // Degeneracy check

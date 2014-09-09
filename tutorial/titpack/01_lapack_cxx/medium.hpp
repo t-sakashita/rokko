@@ -32,7 +32,7 @@
 
 void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, matrix_type& elemnt, i_matrix_type& loc,
-          std::vector<int> const& list1, std::vector<std::vector<int> > const& list2);
+          std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2);
 
 //
 // eigenvalues by the Lanczos method
@@ -116,7 +116,6 @@ void inv2z(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int 
 // x           # eigenvector
 // b             working area for the rhs of (H-E(approx))*x=b
 // p,r,y         working area used in the routine cg
-// list1,list2 @ spin configurations generated in 'sz'
 
 int cg2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, std::vector<double>& x,
         double *b, double *p, double *r, double *y);
