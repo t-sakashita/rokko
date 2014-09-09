@@ -173,12 +173,13 @@ public:
   void eigenvector(int i, std::vector<double>& vec) const {
     Vec evec_r, evec_i;
     vec.resize(num_local_rows_);
-    //vec.resize(100);
     MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
     MatGetVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
 
     EPSGetEigenvector(eps, i, evec_r, evec_i);
+
+    VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
     VecDestroy(&evec_r); //CHKERRQ(ierr);
     VecDestroy(&evec_i); //CHKERRQ(ierr);
   }

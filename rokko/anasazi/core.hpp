@@ -150,13 +150,13 @@ public:
   }
 
   void eigenvector(int i, std::vector<double>& vec) const {
+    vec.resize(map_->get_num_local_rows());
      Teuchos::RCP<Epetra_MultiVector> evecs_;
      double* vec_pt = (*problem_->getSolution().Evecs)[i];
-     //Epetra_Vector evec = (*problem_->getSolution().Evecs)[i];
      for (int j=0; j < map_->get_num_local_rows(); ++j) {
        vec.push_back(vec_pt[j]);
      }
-
+     //std::cout << *problem_->getSolution().Evecs << std::endl;
      //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
      //double* eve = problem_->getSolution()->Evecs[i];
   }
