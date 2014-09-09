@@ -25,8 +25,8 @@ int lnc1(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() < 2 || wk.size2() != hop.dimension()) wk.resize(2, hop.dimension());
-  return lnc1z(hop, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(1,0));
+  if (wk.size1() != hop.dimension() || wk.size1() < 2) wk.resize(hop.dimension(), 2);
+  return lnc1z(hop, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1));
 }
 
 int lnc1z(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
@@ -104,14 +104,14 @@ void lncv1(hamiltonian const& hop, int nvec, int iv, std::vector<double> const& 
     std::cerr << " #(W08)# nvec given to lncv1 out of range\n";
     return;
   }
-  if (wk.size1() < 2 || wk.size2() != hop.dimension()) wk.resize(2, hop.dimension());
-  lncv1z(hop, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(1,0));
+  if (wk.size1() != hop.dimension() || wk.size2() < 2) wk.resize(hop.dimension(), 2);
+  lncv1z(hop, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1));
 }
 
 void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const& alpha,
             std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,
             int itr, double *v1, double *v0) {
-  if (x.size1() < nvec || x.size2() != hop.dimension()) x.resize(nvec, hop.dimension());
+  if (x.size1() != hop.dimension() || x.size2() < nvec) x.resize(hop.dimension(), nvec);
 
   // initialization
   for (int i = 0; i < hop.dimension(); ++i) {
@@ -121,8 +121,8 @@ void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const&
   v1[iv] = 1;
   
   for (int k = 0; k < nvec; ++k) {
-    for (int i = 1; i < hop.dimension(); ++i) x(k, i) = 0;
-    x(k, iv) = coeff(k, 0);
+    for (int i = 0; i < hop.dimension(); ++i) x(i, k) = 0;
+    x(iv, k) = coeff(0, k);
   }
 
   // alpha(0) and beta(0)
@@ -131,7 +131,7 @@ void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const&
   double beta0 = beta[0];
   for (int k = 0; k < nvec; ++k)
     for (int j = 0; j < hop.dimension(); ++j)
-      x(k, j) += coeff(k, 1) * (v0[j] - alpha0 * v1[j]) / beta0;
+      x(j, k) += coeff(1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
 
   // iteration
   for (int i = 1; i < itr - 1; ++i) {
@@ -146,21 +146,21 @@ void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const&
     beta0 = beta[i];
     for (int k = 0; k < nvec; ++k)
       for (int j = 1; j < hop.dimension(); ++j)
-        x(k, j) += coeff(k, i + 1) * (v0[j] - alpha0 * v1[j]) / beta0;
+        x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
   
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
-    for (int j = 0; j < hop.dimension(); ++j) dnorm += x(k, j) * x(k, j);
+    for (int j = 0; j < hop.dimension(); ++j) dnorm += x(j, k) * x(j, k);
     dnorm = std::sqrt(dnorm);
-    for (int j = 0; j < hop.dimension(); ++j) x(k, j) /= dnorm;
+    for (int j = 0; j < hop.dimension(); ++j) x(j, k) /= dnorm;
   }
 }
 
 double check1(hamiltonian const& hop, const double *x, matrix_type& v, int vindex) {
   int ibond = hop.num_bonds();
-  if (v.size1() < vindex || v.size2() != hop.dimension()) v.resize(vindex, hop.dimension());
+  if (v.size1() != hop.dimension() || v.size2() < vindex) v.resize(hop.dimension(), vindex);
 
   double dnorm = 0;
   for (int i = 0; i < hop.dimension(); ++i) dnorm += x[i] * x[i];
@@ -169,11 +169,11 @@ double check1(hamiltonian const& hop, const double *x, matrix_type& v, int vinde
     return 0;
   }
 
-  for (int i = 0; i < hop.dimension(); ++i) v(vindex, i) = 0;
-  hop.multiply(x, &v(vindex, 0));
+  for (int i = 0; i < hop.dimension(); ++i) v(i, vindex) = 0;
+  hop.multiply(x, &v(0, vindex));
   
   double prd = 0;
-  for (int i = 0; i < hop.dimension(); ++i) prd += v(vindex, i) * x[i];
+  for (int i = 0; i < hop.dimension(); ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check1\n"
             << "<x*H*x> = "<< prd << std::endl
             << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";
@@ -181,7 +181,7 @@ double check1(hamiltonian const& hop, const double *x, matrix_type& v, int vinde
   for (int i = std::min((int)(hop.dimension() / 3), 13) - 1; i < hop.dimension();
        i += std::max(1,hop.dimension()/20), ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << v(vindex, i) / x[i];
+    std::cout << '\t' << v(i, vindex) / x[i];
   }
   std::cout << std::endl
             << "---------------------------------------------------\n";
@@ -190,7 +190,7 @@ double check1(hamiltonian const& hop, const double *x, matrix_type& v, int vinde
 
 double check1(hamiltonian const& hop, matrix_type const& x, int xindex, matrix_type& v,
               int vindex) {
-  return check1(hop, &x(xindex, 0), v, vindex);
+  return check1(hop, &x(0, xindex), v, vindex);
 }
 
 double check1(hamiltonian const& hop, std::vector<double> const& x, matrix_type& v, int vindex) {
@@ -198,8 +198,8 @@ double check1(hamiltonian const& hop, std::vector<double> const& x, matrix_type&
 }
 
 void inv1(hamiltonian const& hop, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {
-  if (wk.size1() < 4 || wk.size2() != hop.dimension()) wk.resize(4, hop.dimension());
-  inv1z(hop, Eig, iv, x, &wk(0,0), &wk(1,0), &wk(2,0), &wk(3,0));
+  if (wk.size1() != hop.dimension() || wk.size2() < 4) wk.resize(hop.dimension(), 4);
+  inv1z(hop, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 
 void inv1z(hamiltonian const& hop, double Eig, int iv, std::vector<double>& x, double *b,

@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
   int count = 0;
   for (int i = 12; i < hop.dimension(); i += hop.dimension()/20, ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(nvec - 1, i);
+    std::cout << '\t' << x(i, nvec - 1);
   }
   std::cout << std::endl;
 

@@ -22,7 +22,7 @@
 class crs_matrix {
 public:
   crs_matrix(hamiltonian const& hop);
-  int dimension() const { return elemnt_.size2(); }
+  int dimension() const { return elemnt_.size1(); }
   double multiply(const double *v1, double *v0) const;
 private:
   matrix_type elemnt_;

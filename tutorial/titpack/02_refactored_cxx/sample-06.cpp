@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
   int count = 0;
   for (int i = 12; i < ss.dimension(); i += ss.dimension()/20, ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(0, i);
+    std::cout << '\t' << x(i, 0);
   }
   std::cout << std::endl;
 

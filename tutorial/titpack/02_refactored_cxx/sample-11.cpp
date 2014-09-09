@@ -18,11 +18,14 @@
 
 #include "titpack.hpp"
 #include "options.hpp"
+#include <boost/timer.hpp>
 
 int main(int argc, char** argv) {
   std::cout.precision(10);
   options opt(argc, argv, 8);
   if (!opt.valid) std::abort();
+  boost::timer tm;
+  double t1 = tm.elapsed();
 
   // lattice structure
   int n = opt.N;
@@ -44,11 +47,13 @@ int main(int argc, char** argv) {
   // Hamiltonian matrix
   matrix_type elemnt;
   elm3(hop, elemnt);
+  double t2 = tm.elapsed();
   
   std::vector<double> E;
   matrix_type v;
   int nvec = 1;
   diag(elemnt, E, v, nvec);
+  double t3 = tm.elapsed();
 
   int ne = 4;
   std::cout << "[Eigenvalues]\n";
@@ -58,6 +63,7 @@ int main(int argc, char** argv) {
   // // Do not forget to call elm3 again before calling check3
   elm3(hop, elemnt);
   check3(elemnt, v, 0);
+  double t4 = tm.elapsed();
   
   std::vector<int> npair;
   npair.push_back(1);
@@ -68,4 +74,9 @@ int main(int argc, char** argv) {
   std::vector<double> szz(1);
   zcorr(ss, npair, v, 0, szz);
   std::cout << "szz: " << szz[0] << std::endl;
+  double t5 = tm.elapsed();
+  std::cerr << "initialize      " << (t2-t1) << " sec\n"
+            << "diagonalization " << (t3-t2) << " sec\n"
+            << "check           " << (t4-t3) << " sec\n"
+            << "correlation     " << (t5-t4) << " sec\n";
 }

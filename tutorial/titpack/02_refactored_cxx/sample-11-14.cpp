@@ -11,19 +11,21 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-/************* Sample main program #1 *****************
-* 1d Heisenberg antiferromagnet with 16 spins
-* Eigenvalues and an eigenvector / lnc1, lncv1
-* Precision check and correlation functions
+/************ Sample main program #11 *****************
+* 1d Heisenberg antiferromagnet with 8 spins
+* Eigenvalues and an eigenvector by diag
 ******************************************************/
 
 #include "titpack.hpp"
 #include "options.hpp"
+#include <boost/timer.hpp>
 
 int main(int argc, char** argv) {
   std::cout.precision(10);
-  options opt(argc, argv, 16);
+  options opt(argc, argv, 14);
   if (!opt.valid) std::abort();
+  boost::timer tm;
+  double t1 = tm.elapsed();
 
   // lattice structure
   int n = opt.N;
@@ -42,41 +44,39 @@ int main(int argc, char** argv) {
   subspace ss(n, 0);
   hamiltonian hop(ss, ipair, bondwt, zrtio);
 
-  // Eigenvalues
-  int nvec = 1;
-  int iv = hop.dimension() / 3 - 1;
-  std::vector<double> E, alpha, beta;
-  matrix_type coeff;
-  matrix_type v;
-  int itr = lnc1(hop, nvec, iv, E, alpha, beta, coeff, v);
+  // Hamiltonian matrix
+  matrix_type elemnt;
+  elm3(hop, elemnt);
+  double t2 = tm.elapsed();
   
+  std::vector<double> E;
+  matrix_type v;
+  int nvec = 1;
+  diag(elemnt, E, v, nvec);
+  double t3 = tm.elapsed();
+
+  int ne = 4;
   std::cout << "[Eigenvalues]\n";
-  for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
-  std::cout << std::endl;
-  std::cout << "[Iteration number]\n\t" << itr << std::endl;
-
-  // Ground-state eigenvector
-  matrix_type x;
-  lncv1(hop, 1, iv, alpha, beta, coeff, x, itr, v);
-
-  std::cout << "[Eigenvector components (selected)]";
-  int count = 0;
-  for (int i = 12; i < hop.dimension(); i += hop.dimension()/20, ++count) {
-    if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << x(i, 0);
-  }
+  for (int i = 0; i < ne; ++i) std::cout << '\t' << E[i];
   std::cout << std::endl;
 
-  // Precision check and correlation functions
-  double Hexpec = check1(hop, x, 0, v, 0);
-
+  // // Do not forget to call elm3 again before calling check3
+  elm3(hop, elemnt);
+  check3(elemnt, v, 0);
+  double t4 = tm.elapsed();
+  
   std::vector<int> npair;
   npair.push_back(1);
   npair.push_back(2);
-  std::vector<double> sxx(1), szz(1);
-  xcorr(ss, npair, x, 0, sxx);
-  zcorr(ss, npair, x, 0, szz);
-  std::cout << "[Nearest neighbor correlation functions]\n\t" 
-            << "sxx : " << sxx[0]
-            << ", szz : " << szz[0] << std::endl;
+  std::vector<double> sxx(1);
+  xcorr(ss, npair, v, 0, sxx);
+  std::cout << "sxx: " << sxx[0] << std::endl;
+  std::vector<double> szz(1);
+  zcorr(ss, npair, v, 0, szz);
+  std::cout << "szz: " << szz[0] << std::endl;
+  double t5 = tm.elapsed();
+  std::cerr << "initialize      " << (t2-t1) << " sec\n"
+            << "diagonalization " << (t3-t2) << " sec\n"
+            << "check           " << (t4-t3) << " sec\n"
+            << "correlation     " << (t5-t4) << " sec\n";
 }

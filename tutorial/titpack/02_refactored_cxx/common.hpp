@@ -20,26 +20,8 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/tuple/tuple.hpp>
 
-typedef boost::numeric::ublas::matrix<double> matrix_type;
-typedef boost::numeric::ublas::matrix<int> i_matrix_type;
-
-//
-// configurations with the specified sz
-//
-// return value @  dimension of the matrix
-// n            @  lattice size
-// szval        @  total sz
-// list1(i)     #  i-th spin configuration
-// list2        #  inverse list of list1 expressed by the
-//                 2-dim search method of M. Ogata and H.Q. Lin.
-
-int sz(int n, double szval, std::vector<int>& list1, std::vector<std::vector<int> >& list2);
-
-//
-// data check of pairs of sites
-//
-
-void datack(std::vector<int> const& ipair, int n);
+typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
+typedef boost::numeric::ublas::matrix<int, boost::numeric::ublas::column_major> i_matrix_type;
 
 //
 // eigenvalues by the bisection method

@@ -15,68 +15,6 @@
 #include <lapacke.h>
 #include <iostream>
 
-int sz(int n, double szval, std::vector<int>& list1, std::vector<std::vector<int> >& list2) {
-  if (szval < -1e-13 || szval > (n/2 - 1 + 1e-13)) {
-    std::cerr << " #(E01)# Variable szval given to sz out of range\n";
-    std::abort();
-  }
-
-  // initialization
-  int ihf = (n + 1) / 2;
-  int ihfbit = 1 << ihf;
-  int irght = ihfbit - 1;
-  int ilft = ((1 << n) - 1) ^ irght;
-  int iupspn = n / 2 + (n % 2) + (int)(szval + 0.001);
-
-  list1.clear();
-  list2.resize(2);
-  list2[0].resize(1 << ihf);
-  list2[1].resize(1 << (n - ihf));
-
-  // main loop
-  int icnt = 0;
-  int ja = 0;
-  int jb = 0;
-  int ibpatn = 0;
-  for (int i = 0; i < (1 << n); ++i) {
-    int isz = 0;
-    for (int j = 0; j < n; ++j) {
-      isz += (i >> j) & 1;
-    }
-    if (isz == iupspn) {
-      list1.push_back(i);
-      int ia = i & irght;
-      int ib = (i & ilft) / ihfbit;
-      if (ib == ibpatn) {
-        list2[0][ia] = ja;
-        list2[1][ib] = jb;
-      } else {
-        ibpatn = ib;
-        ja = 0;
-        jb = icnt;
-        list2[0][ia] = ja;
-        list2[1][ib] = jb;
-      }
-      ++ja;
-      ++icnt;
-    }
-  }
-  return icnt;
-}
-
-void datack(std::vector<int> const& ipair, int n) {
-  int ibond = ipair.size() / 2;
-  for (int k = 0; k < ibond; ++k) {
-    int isite1 = ipair[k * 2];
-    int isite2 = ipair[k * 2 + 1];
-    if (isite1 < 0 || isite2 < 0 || isite1 >= n || isite2 >= n) {
-      std::cerr << " #(E03)# Incorrect data in ipair\n"
-                << "         Location :  " << k * 2 << ", " << k * 2 + 1 << std::endl;
-      std::abort();
-    }
-  }
-}
-
 boost::tuple<int, int>
 bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
       std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
@@ -94,7 +32,7 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
 void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
            std::vector<double> const& E, int nvec, matrix_type& z,
            std::vector<int>& iblock, std::vector<int>& isplit, double *w) {
-  if (z.size1() < nvec || z.size2() != ndim) z.resize(nvec, ndim);
+  if (z.size1() != ndim || z.size2() < nvec) z.resize(ndim, nvec);
   for (int i = 0; i < nvec; ++i) w[i] = E[i];
   std::vector<int> ifail(nvec);
   int info = LAPACKE_dstein(LAPACK_COL_MAJOR, ndim, &alpha[0], &beta[0], nvec, w, &iblock[0],
@@ -128,7 +66,7 @@ void xcorr(subspace const& ss, std::vector<int> const& npair, std::vector<double
 
 void xcorr(subspace const& ss, std::vector<int> const& npair, matrix_type const& x, int xindex,
            std::vector<double>& sxx) {
-  xcorr(ss, npair, &x(xindex, 0), sxx);
+  xcorr(ss, npair, &x(0, xindex), sxx);
 }
 
 void zcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
@@ -153,7 +91,7 @@ void zcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
 
 void zcorr(subspace const& ss, std::vector<int> const& npair, matrix_type const& x, int xindex,
            std::vector<double>& szz) {
-  zcorr(ss, npair, &x(xindex, 0), szz);
+  zcorr(ss, npair, &x(0, xindex), szz);
 }
 
 void zcorr(subspace const& ss, std::vector<int> const& npair, std::vector<double> const& x,
@@ -167,16 +105,16 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
     return -1;
   }
   if (norm.size() < numvec) norm.resize(numvec);
-  int idim = ev.size2();
+  int idim = ev.size1();
   for (int i = 0; i < numvec; ++i) {
     double dnorm = 0;
-    for (int j = 0; j < idim; ++j) dnorm += ev(i, j) * ev(i, j);
+    for (int j = 0; j < idim; ++j) dnorm += ev(j, i) * ev(j, i);
     if (dnorm < 1e-20) {
       std::cerr << " #(W04)# Null vector given to orthg. Location is " << i << std::endl;
       return -1;
     }
     dnorm = 1 / std::sqrt(dnorm);
-    for (int j = 0; j < idim; ++j) ev(i, j) *= dnorm;
+    for (int j = 0; j < idim; ++j) ev(j, i) *= dnorm;
   }
   int idgn = numvec;
   norm[0] = 1;
@@ -186,16 +124,16 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
     norm[i] = 1;
     for (int j = 0; j < i; ++j) {
       double prjct = 0;
-      for (int l = 0; l < idim; ++l) prjct += ev(i, l) * ev(j, l);
-      for (int l = 0; l < idim; ++l) ev(i, l) -= prjct * ev(j, l);
+      for (int l = 0; l < idim; ++l) prjct += ev(l, i) * ev(l, j);
+      for (int l = 0; l < idim; ++l) ev(l, i) -= prjct * ev(l, j);
     }
     double vnorm = 0;
-    for (int l = 0; l < idim; ++l) vnorm += ev(i, l) * ev(i, l);
+    for (int l = 0; l < idim; ++l) vnorm += ev(l, i) * ev(l, i);
     if (vnorm > 1e-15) {
       vnorm = 1 / std::sqrt(vnorm);
-      for (int l = 0; l < idim; ++l) ev(i, l) *= vnorm;
+      for (int l = 0; l < idim; ++l) ev(l, i) *= vnorm;
     } else {
-      for (int l = 0; l < idim; ++l) ev(i, l) = 0;
+      for (int l = 0; l < idim; ++l) ev(l, i) = 0;
       --idgn;
       norm[i] = 0;
     }
@@ -205,7 +143,7 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
   for (int i = 1; i < numvec; ++i) {
     for (int j = 0; j < i; ++j) {
       double prd = 0;
-      for (int l = 0; l < idim; ++l) prd += ev(i, l) * ev(j, l);
+      for (int l = 0; l < idim; ++l) prd += ev(l, i) * ev(l, j);
       if (std::abs(prd) > 1e-10) {
         std::cerr << " #(W05)# Non-orthogonal vectors at " << i << ' ' << j << std::endl
                   << "         Overlap : " << prd << std::endl;

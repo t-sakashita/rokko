@@ -27,12 +27,12 @@ public:
   int config2index(int c) const {
     int ia = c & irght_;
     int ib = (c & ilft_) / ihfbit_;
-    return list2_[0][ia] + list2_[1][ib];
+    return list2_[ia].first + list2_[ib].second;
   }
 private:
   int n_, ihfbit_, irght_, ilft_;
   std::vector<int> list1_;
-  std::vector<std::vector<int> > list2_;
+  std::vector<std::pair<int, int> > list2_;
 };
 
 #endif

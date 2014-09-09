@@ -17,12 +17,12 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
   int ic = ibond + 1;
 
   // initialization
-  if (elemnt_.size1() < ic || elemnt_.size2() != hop.dimension())
-    elemnt_.resize(ic, hop.dimension());
-  if (loc_.size1() < ic || loc_.size2() != hop.dimension()) loc_.resize(ic, hop.dimension());
+  if (elemnt_.size1() != hop.dimension() || elemnt_.size2() < ic)
+    elemnt_.resize(hop.dimension(), ic);
+  if (loc_.size1() != hop.dimension() || loc_.size2() < ic) loc_.resize(hop.dimension(), ic);
   for (int i = 0; i < ic; ++i)
     for (int j = 0; j < hop.dimension(); ++j)
-      elemnt_(i, j) = 0;
+      elemnt_(j, i) = 0;
 
   // diagonal elements
   for (int k = 0; k < ibond; ++k) {
@@ -32,8 +32,8 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
     double wght = -hop.bond_weight(k) * hop.z_ratio(k) * 0.5;
     for (int i = 0; i < hop.dimension(); ++i) {
       int ibit = hop.config(i) & is;
-      elemnt_(ic - 1, i) += (ibit == 0 || ibit == is) ? wght : -wght;
-      loc_(ic - 1, i) = i;
+      elemnt_(i, ic - 1) += (ibit == 0 || ibit == is) ? wght : -wght;
+      loc_(i, ic - 1) = i;
     }
   }
   
@@ -46,11 +46,11 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
     for (int i = 0; i < hop.dimension(); ++i) {
       int ibit = hop.config(i) & is;
       if (ibit == 0 || ibit == is) {
-        elemnt_(k, i) = 0;
-        loc_(k, i) = i;
+        elemnt_(i, k) = 0;
+        loc_(i, k) = i;
       } else {
-        elemnt_(k, i) = wght;
-        loc_(k, i) = hop.config2index(hop.config(i) ^ is);
+        elemnt_(i, k) = wght;
+        loc_(i, k) = hop.config2index(hop.config(i) ^ is);
       }
     }
   }
@@ -58,9 +58,9 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
 
 double crs_matrix::multiply(const double *v1, double *v0) const {
   double prdct = 0;
-  for (int k = 0; k < elemnt_.size1(); ++k) {
+  for (int k = 0; k < elemnt_.size2(); ++k) {
     for (int j = 0; j < dimension(); ++j) {
-      double temp = elemnt_(k, j) * v1[loc_(k, j)];
+      double temp = elemnt_(j, k) * v1[loc_(j, k)];
       v0[j] += temp;
       prdct += v1[j] * temp;
     }

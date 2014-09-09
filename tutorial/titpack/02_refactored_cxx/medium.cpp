@@ -25,8 +25,8 @@ int lnc2(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() < 2 || wk.size2() != mat.dimension()) wk.resize(2, mat.dimension());
-  return lnc2z(mat, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(1,0));
+  if (wk.size1() != mat.dimension() || wk.size2() < 2) wk.resize(mat.dimension(), 2);
+  return lnc2z(mat, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1));
 }
 
 int lnc2z(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
@@ -102,14 +102,14 @@ void lncv2(crs_matrix const& mat, int nvec, int iv,
     std::cerr << " #(W14)# nvec given to lncv2 out of range\n";
     return;
   }
-  if (wk.size1() < 2 || wk.size2() != mat.dimension()) wk.resize(2, mat.dimension());
-  lncv2z(mat, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(1,0));
+  if (wk.size1() != mat.dimension() || wk.size2() < 2) wk.resize(mat.dimension(), 2);
+  lncv2z(mat, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1));
 }
 
 void lncv2z(crs_matrix const& mat, int nvec, int iv,
             std::vector<double> const& alpha, std::vector<double> const& beta,
             matrix_type const& coeff, matrix_type& x, int itr, double *v1, double *v0) {
-  if (x.size1() < nvec || x.size2() != mat.dimension()) x.resize(nvec, mat.dimension());
+  if (x.size1() != mat.dimension() || x.size2() < nvec) x.resize(mat.dimension(), nvec);
 
   // initialization
   for (int i = 0; i < mat.dimension(); ++i) {
@@ -119,8 +119,8 @@ void lncv2z(crs_matrix const& mat, int nvec, int iv,
   v1[iv] = 1;
   
   for (int k = 0; k < nvec; ++k) {
-    for (int i = 1; i < mat.dimension(); ++i) x(k, i) = 0;
-    x(k, iv) = coeff(k, 0);
+    for (int i = 0; i < mat.dimension(); ++i) x(i, k) = 0;
+    x(iv, k) = coeff(0, k);
   }
 
   // alpha(0) and beta(0)
@@ -129,7 +129,7 @@ void lncv2z(crs_matrix const& mat, int nvec, int iv,
   double beta0 = beta[0];
   for (int k = 0; k < nvec; ++k)
     for (int j = 0; j < mat.dimension(); ++j)
-      x(k, j) += coeff(k, 1) * (v0[j] - alpha0 * v1[j]) / beta0;
+      x(j, k) += coeff(1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
 
   // iteration
   for (int i = 1; i < itr - 1; ++i) {
@@ -144,20 +144,20 @@ void lncv2z(crs_matrix const& mat, int nvec, int iv,
     beta0 = beta[i];
     for (int k = 0; k < nvec; ++k)
       for (int j = 1; j < mat.dimension(); ++j)
-        x(k, j) += coeff(k, i + 1) * (v0[j] - alpha0 * v1[j]) / beta0;
+        x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
   
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
-    for (int j = 0; j < mat.dimension(); ++j) dnorm += x(k, j) * x(k, j);
+    for (int j = 0; j < mat.dimension(); ++j) dnorm += x(j, k) * x(j, k);
     dnorm = std::sqrt(dnorm);
-    for (int j = 0; j < mat.dimension(); ++j) x(k, j) /= dnorm;
+    for (int j = 0; j < mat.dimension(); ++j) x(j, k) /= dnorm;
   }
 }
 
 double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex) {
-  if (v.size1() < vindex || v.size2() != mat.dimension()) v.resize(vindex, mat.dimension());
+  if (v.size1() != mat.dimension() || v.size2() < vindex) v.resize(mat.dimension(), vindex);
 
   double dnorm = 0;
   for (int i = 0; i < mat.dimension(); ++i) dnorm += x[i] * x[i];
@@ -166,11 +166,11 @@ double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex
     return 0;
   }
 
-  for (int i = 0; i < mat.dimension(); ++i) v(vindex, i) = 0;
-  mat.multiply(x, &v(vindex, 0));
+  for (int i = 0; i < mat.dimension(); ++i) v(i, vindex) = 0;
+  mat.multiply(x, &v(0, vindex));
   
   double prd = 0;
-  for (int i = 0; i < mat.dimension(); ++i) prd += v(vindex, i) * x[i];
+  for (int i = 0; i < mat.dimension(); ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check2\n"
             << "<x*H*x> = "<< prd << std::endl
             << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";
@@ -178,7 +178,7 @@ double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex
   for (int i = std::min((int)(mat.dimension() / 3), 13) - 1; i < mat.dimension();
        i += std::max(1,mat.dimension()/20), ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << v(vindex, i) / x[i];
+    std::cout << '\t' << v(i, vindex) / x[i];
   }
   std::cout << std::endl
             << "---------------------------------------------------\n";
@@ -187,7 +187,7 @@ double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex
 
 double check2(crs_matrix const& mat, matrix_type const& x, int xindex,
               matrix_type& v, int vindex) {
-  check2(mat, &x(xindex, 0), v, vindex);
+  check2(mat, &x(0, xindex), v, vindex);
 }
 
 double check2(crs_matrix const& mat, std::vector<double> const& x,
@@ -196,8 +196,8 @@ double check2(crs_matrix const& mat, std::vector<double> const& x,
 }
 
 void inv2(crs_matrix const& mat, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {
-  wk.resize(4, mat.dimension());
-  inv2z(mat, Eig, iv, x, &wk(0,0), &wk(1,0), &wk(2,0), &wk(3,0));
+  if (wk.size1() != mat.dimension() || wk.size2() < 4) wk.resize(mat.dimension(), 4);
+  inv2z(mat, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 
 void inv2z(crs_matrix const& mat, double Eig, int iv,

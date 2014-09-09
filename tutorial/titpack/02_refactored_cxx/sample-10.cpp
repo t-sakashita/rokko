@@ -46,30 +46,30 @@ int main(int argc, char** argv) {
   
   // Eigenvalues
   int nvec = 1;
-  matrix_type v(3, hop.dimension());
+  matrix_type v(hop.dimension(), 3);
+  std::vector<double> E, alpha, beta;
+  matrix_type coeff;
+  matrix_type wk;
+  matrix_type x;
   for (int k = 0; k < 3; ++k) {
     int iv = 90 + (hop.dimension() / 3) * k;
-    std::vector<double> E, alpha, beta;
-    matrix_type coeff;
-    matrix_type wk;
     int itr = lnc2(mat, nvec, iv, E, alpha, beta, coeff, wk);
     
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
 
-    matrix_type x;
     lncv2(mat, nvec, iv, alpha, beta, coeff, x, itr, wk);
     std::cout << "[Eigenvector components (selected)]";
     int count = 0;
     for (int i = 12; i < hop.dimension(); i += hop.dimension()/20, ++count) {
       if (count % 4 == 0) std::cout << std::endl;
-      std::cout << '\t' << x(0, i);
+      std::cout << '\t' << x(i, 0);
     }
     std::cout << std::endl;
     check2(mat, x, 0, wk, 0);
 
-    for (int i = 0; i < hop.dimension(); ++i) v(k, i) = x(0, i);
+    for (int i = 0; i < hop.dimension(); ++i) v(i, k) = x(i, 0);
   }
   
   // Degeneracy check
