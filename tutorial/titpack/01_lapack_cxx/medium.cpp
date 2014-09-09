@@ -299,7 +299,7 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, std::vector<d
 void inv2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int iv,
           std::vector<double>& x, matrix_type& wk) {
   int idim = elemnt.size1();
-  wk.resize(idim, 4);
+  if (wk.size1() != idim || wk.size2() < 4) wk.resize(idim, 4);
   inv2z(elemnt, loc, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 
