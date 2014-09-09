@@ -69,12 +69,12 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   std::cout.precision(5);
-  int nev = 10;
-  int blockSize = 5;
+  int nev = 1;
+  int blockSize = 1;
   int maxIters = 500;
   double tol = 1.0e-8;
 
-  int L = 8;
+  int L = 3;
   int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i = 0; i < L; ++i) {
@@ -99,15 +99,20 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < solver.num_conv(); ++i)
       std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
-    std::cout << "corresponding eigenvectors:";
   }
+
+  MPI_Barrier(MPI_COMM_WORLD);
 
   std::vector<double> eigvec;
 
   //for (int i = 0; i < solver.num_conv(); ++i) {
   solver.eigenvector(0, eigvec);
 
-  if (myrank == root) {
+  MPI_Barrier(MPI_COMM_WORLD);
+
+  //if (myrank == root) {
+  if (myrank == 1) {
+  std::cout << "corresponding eigenvectors:";
     for (int j=0; j<eigvec.size(); ++j)
       std::cout << ' ' << eigvec[j];
     std::cout << std::endl;
