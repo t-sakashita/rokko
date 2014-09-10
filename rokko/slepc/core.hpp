@@ -117,12 +117,13 @@ public:
     //ierr = MatDestroy(A); //CHKERRQ(ierr);
   }
 
-  void diagonalize(rokko::distributed_mfree* const mat,
+  void diagonalize(rokko::distributed_mfree& mat_in,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
 
+    rokko::distributed_mfree* mat = &mat_in;
     // define matrix-free type operator
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();

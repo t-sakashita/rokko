@@ -35,9 +35,9 @@ public:
 			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
   virtual void diagonalize(rokko::distributed_crs_matrix& mat,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
-  virtual void diagonalize(rokko::distributed_mfree* mat,
+  virtual void diagonalize(rokko::distributed_mfree& mat,
 			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
-  virtual void diagonalize(rokko::distributed_mfree* mat,
+  virtual void diagonalize(rokko::distributed_mfree& mat,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
   virtual double eigenvalue(int i) const = 0;
   virtual void eigenvector(int i, std::vector<double>& vec) const = 0;
@@ -62,11 +62,11 @@ public:
     timer_dumb timer;
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  void diagonalize(rokko::distributed_mfree* mat,
+  void diagonalize(rokko::distributed_mfree& mat,
 		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  void diagonalize(rokko::distributed_mfree* mat,
+  void diagonalize(rokko::distributed_mfree& mat,
 		   int num_evals, int block_size, int max_iters, double tol) {
     timer_dumb timer;
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
@@ -116,12 +116,12 @@ public:
     solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
 
-  void diagonalize(rokko::distributed_mfree* mat,
+  void diagonalize(rokko::distributed_mfree& mat,
 		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
     solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
 
-  void diagonalize(rokko::distributed_mfree* mat,
+  void diagonalize(rokko::distributed_mfree& mat,
 		   int num_evals, int block_size, int max_iters, double tol) {
     solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
