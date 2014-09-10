@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
               << "L = " << L << std::endl
               << "dimension = " << mat.get_dim() << std::endl;
 
-  solver.diagonalize(&mat, nev, blockSize, maxIters, tol);
+  solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 
   if (myrank == root) {
     std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;

@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
               << "L = " << L << std::endl
               << "dimension = " << mat.get_dim() << std::endl;
 
-  solver.diagonalize(&mat, nev, blockSize, maxIters, tol);
+  solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 
   MPI_Barrier(MPI_COMM_WORLD);
 
