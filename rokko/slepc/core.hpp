@@ -117,12 +117,13 @@ public:
     //ierr = MatDestroy(A); //CHKERRQ(ierr);
   }
 
-  void diagonalize(rokko::distributed_mfree* const mat,
+  void diagonalize(rokko::distributed_mfree& mat_in,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
 
+    rokko::distributed_mfree* mat = &mat_in;
     // define matrix-free type operator
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
@@ -173,12 +174,13 @@ public:
   void eigenvector(int i, std::vector<double>& vec) const {
     Vec evec_r, evec_i;
     vec.resize(num_local_rows_);
-    //vec.resize(100);
     MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
     MatGetVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
 
     EPSGetEigenvector(eps, i, evec_r, evec_i);
+
+    VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
     VecDestroy(&evec_r); //CHKERRQ(ierr);
     VecDestroy(&evec_i); //CHKERRQ(ierr);
   }

@@ -73,13 +73,25 @@ int main(int argc, char *argv[]) {
 
   solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 
+  std::vector<double> eigvec;
   if (myrank == root) {
     std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
     std::cout << "smallest eigenvalues:";
     for (int i = 0; i < solver.num_conv(); ++i)
       std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
+    std::cout << "corresponding eigenvectors:";
   }
+
+  //for (int i = 0; i < solver.num_conv(); ++i) {
+  solver.eigenvector(0, eigvec);
+
+  if (myrank == root) {
+    for (int j=0; j<eigvec.size(); ++j)
+      std::cout << ' ' << eigvec[j];
+    std::cout << std::endl;
+  }
+  //}
 
   MPI_Finalize();
 }

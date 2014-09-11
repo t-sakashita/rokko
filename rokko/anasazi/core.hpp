@@ -35,7 +35,7 @@ namespace anasazi {
 
 class anasazi_mfree_operator : public Epetra_Operator {
 public:
-  anasazi_mfree_operator(rokko::distributed_mfree* op, mapping_1d const* map) : op_(op), ep_map(map->get_epetra_map()), ep_comm(map->get_epetra_comm()) {}
+  anasazi_mfree_operator(rokko::distributed_mfree* const op, mapping_1d const* map) : op_(op), ep_map(map->get_epetra_map()), ep_comm(map->get_epetra_comm()) {}
 
   ~anasazi_mfree_operator() {};
 
@@ -109,8 +109,9 @@ public:
     //sol = new Anasazi::Eigensolution<double, Epetra_MultiVector> problem_->getSolution();
   }
 
-  void diagonalize(rokko::distributed_mfree* const mat,
+  void diagonalize(rokko::distributed_mfree& mat_in,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
+    rokko::distributed_mfree* mat = &mat_in;
     map_ = new mapping_1d(mat->get_dim());
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp( new anasazi_mfree_operator(mat, map_) );
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
@@ -150,6 +151,15 @@ public:
   }
 
   void eigenvector(int i, std::vector<double>& vec) const {
+    vec.resize(map_->get_num_local_rows());
+     Teuchos::RCP<Epetra_MultiVector> evecs_;
+     double* vec_pt = (*problem_->getSolution().Evecs)[i];
+     for (int j=0; j < map_->get_num_local_rows(); ++j) {
+       vec.push_back(vec_pt[j]);
+     }
+     //std::cout << *problem_->getSolution().Evecs << std::endl;
+     //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
+     //double* eve = problem_->getSolution()->Evecs[i];
   }
 
   //distributed_multivector_anasazi eigenvector() const { /*return sol_->Evecs; }
@@ -161,8 +171,7 @@ private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
-  std::vector<Anasazi::Value<double> > evals_;
-  distributed_multivector_anasazi evecs_;
+  //std::vector<Anasazi::Value<double> > evals_;
   int num_conv_;
 };
 
