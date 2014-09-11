@@ -13,7 +13,7 @@
 #include <iostream>
 #include <cstdlib>
 
-subspace::subspace(int n, double szval) : n_(n), list1_(), list2_(2, std::vector<int>()) {
+subspace::subspace(int n, double szval) : n_(n), list1_(), list2_() {
   if (szval < -1e-13 || szval > (n/2 - 1 + 1e-13)) {
     std::cerr << " #(E01)# Variable szval given to sz out of range\n";
     std::abort();
@@ -26,9 +26,8 @@ subspace::subspace(int n, double szval) : n_(n), list1_(), list2_(2, std::vector
   ilft_ = ((1 << n) - 1) ^ irght_;
   int iupspn = n / 2 + (n % 2) + (int)(szval + 0.001);
   
-  list2_[0].resize(1 << ihf);
-  list2_[1].resize(1 << (n - ihf));
-  
+  list2_.resize(std::max(1 << ihf, 1 << (n - ihf)));
+
   // main loop
   int icnt = 0;
   int ja = 0;
@@ -44,14 +43,14 @@ subspace::subspace(int n, double szval) : n_(n), list1_(), list2_(2, std::vector
       int ia = i & irght_;
       int ib = (i & ilft_) / ihfbit_;
       if (ib == ibpatn) {
-        list2_[0][ia] = ja;
-        list2_[1][ib] = jb;
+        list2_[ia].first = ja;
+        list2_[ib].second = jb;
       } else {
         ibpatn = ib;
         ja = 0;
         jb = icnt;
-        list2_[0][ia] = ja;
-        list2_[1][ib] = jb;
+        list2_[ia].first = ja;
+        list2_[ib].second = jb;
       }
       ++ja;
       ++icnt;

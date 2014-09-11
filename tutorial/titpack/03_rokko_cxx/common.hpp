@@ -15,60 +15,10 @@
 #define TITPACK_COMMON_HPP
 
 #include "subspace.hpp"
+#include <cmath>
+#include <iostream>
 #include <vector>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/tuple/tuple.hpp>
-
-#include <rokko/localized_matrix.hpp>
-
-typedef rokko::localized_matrix<rokko::matrix_row_major> matrix_type;
-typedef boost::numeric::ublas::matrix<int> i_matrix_type;
-
-//
-// configurations with the specified sz
-//
-// return value @  dimension of the matrix
-// n            @  lattice size
-// szval        @  total sz
-// list1(i)     #  i-th spin configuration
-// list2        #  inverse list of list1 expressed by the
-//                 2-dim search method of M. Ogata and H.Q. Lin.
-
-int sz(int n, double szval, std::vector<int>& list1, std::vector<std::vector<int> >& list2);
-
-//
-// data check of pairs of sites
-//
-
-void datack(std::vector<int> const& ipair, int n);
-
-//
-// eigenvalues by the bisection method
-//
-// return value # m and nsplit
-// alpha  @ diagonal element
-// beta   @ subdiagonal element
-// ndim   @ matrix dimension
-// E      # eigenvalues
-// ne     @ number of eigenvalues to calculate
-// eps    @ limit of error
-
-boost::tuple<int, int>
-bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
-      std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
-      std::vector<int>& isplit, double *w);
-
-//
-// eigenvector of a tridiagonal matrix by inverse iteration for the large/medium routines
-// 
-// E(4)       @  4 lowest eigenvalues
-// ndim       @  matrix dimension
-// nvec       @  number of vectors to calculate
-
-void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
-           std::vector<double> const& E, int nvec, matrix_type& z,
-           std::vector<int>& iblock, std::vector<int>& isplit, double *w);
+#include <mpi.h>
 
 //
 // xx correlation function
@@ -85,26 +35,63 @@ void xcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
 void xcorr(subspace const& ss, std::vector<int> const& npair,
            std::vector<double> const& x, std::vector<double>& sxx);
 
+template<typename MATRIX>
 void xcorr(subspace const& ss, std::vector<int> const& npair,
-           matrix_type const& x, int xindex, std::vector<double>& sxx);
+           MATRIX const& x, int xindex, std::vector<double>& sxx) {
+  xcorr(ss, npair, &x(0, xindex), sxx);
+}
 
 //
 // ************* zz correlation function **************
 //
-// n           @ lattice size
-// npair       @ pair of sites (k,l) <Sz(k)Sz(l)>
-// x           @ eigenvetor
-// szz         # zz correlation function
-// list1,list2 @ spin configurations generated in 'sz'
 
-void zcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
-           std::vector<double>& szz);
-
+template<typename MATRIX>
 void zcorr(subspace const& ss, std::vector<int> const& npair,
-           matrix_type const& x, int xindex, std::vector<double>& szz);
+           MATRIX const& x, int xindex, std::vector<double>& szz) {
+  int nbond = npair.size() / 2;
+  for (int k = 0; k < nbond; ++k) {
+    int i1 = npair[k * 2];
+    int i2 = npair[k * 2 + 1];
+    if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
+      std::cerr << " #(W02)# Wrong site number given to zcorr\n";
+      return;
+    }
+    double corr = 0;
+    int is = (1 << i1) + (1 << i2);
+    for (int i = 0; i < ss.dimension(); ++i) {
+      int ibit = ss.config(i) & is;
+      corr += ((ibit == 0 || ibit == is) ? 1.0 : -1.0) * x(i, xindex) * x(i, xindex);
+    }
+    szz[k] = corr / 4;
+  }
+}
 
-void zcorr(subspace const& ss, std::vector<int> const& npair,
-           std::vector<double> const& x, std::vector<double>& szz);
+template<typename MATRIX>
+void zcorr(MPI_Comm comm, subspace const& ss, std::vector<int> const& npair,
+           MATRIX const& x, int xindex, std::vector<double>& szz) {
+  int nbond = npair.size() / 2;
+  std::vector<double> szz_local(nbond);
+  if (x.is_gindex_mycol(xindex)) {
+    for (int k = 0; k < nbond; ++k) {
+      int i1 = npair[k * 2];
+      int i2 = npair[k * 2 + 1];
+      if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
+        std::cerr << " #(W02)# Wrong site number given to zcorr\n";
+        return;
+      }
+      double corr = 0;
+      int is = (1 << i1) + (1 << i2);
+      for (int local_i = 0; local_i < x.get_m_local(); ++local_i) {
+        int i = x.translate_l2g_row(local_i);
+        int ibit = ss.config(i) & is;
+        double val = x.get_global(i, xindex);
+        corr += ((ibit == 0 || ibit == is) ? 1.0 : -1.0) * val * val;
+      }
+      szz_local[k] = corr / 4;
+    }
+  }
+  MPI_Reduce(&szz_local[0], &szz[0], nbond, MPI_DOUBLE, MPI_SUM, 0, comm);
+}
 
 //
 // Orthogonalization of the eigenvectors
@@ -114,25 +101,59 @@ void zcorr(subspace const& ss, std::vector<int> const& npair,
 // norm(j) #  norm of the j-th vector returned
 // numvec  @  number of vectors to be checked
 
-int orthg(matrix_type& ev, std::vector<double>& norm, int numvec);
+template<typename MATRIX>
+int orthg(MATRIX& ev, std::vector<double>& norm, int numvec) {
+  if (numvec <= 1) {
+    std::cerr << " #(W03)# Number of vectors is less than 2 in orthg\n";
+    return -1;
+  }
+  if (norm.size() < numvec) norm.resize(numvec);
+  int idim = ev.rows();
+  for (int i = 0; i < numvec; ++i) {
+    double dnorm = 0;
+    for (int j = 0; j < idim; ++j) dnorm += ev(j, i) * ev(j, i);
+    if (dnorm < 1e-20) {
+      std::cerr << " #(W04)# Null vector given to orthg. Location is " << i << std::endl;
+      return -1;
+    }
+    dnorm = 1 / std::sqrt(dnorm);
+    for (int j = 0; j < idim; ++j) ev(j, i) *= dnorm;
+  }
+  int idgn = numvec;
+  norm[0] = 1;
 
-//
-// configurations with the specified sz
-//
-// n          @  lattice size
-// idim       @  dimension of the matrix
-// szval      @  total sz
-// list1(i)   #  i-th spin configuration
-// list2      #  inverse list of list1 expressed by the
-//               2-dim search method of M. Ogata and H.Q. Lin.
-// ==============================================================
-//      This routine is equivalent to sz but is faster than sz.
-//      This routine has been developed by Daijiro Yoshioka,
-//      University of Tokyo.  The copyright of szdy belongs to him.
-//                                              1993/5/10
-// ==============================================================
+  // orthogonalization
+  for (int i = 1; i < numvec; ++i) {
+    norm[i] = 1;
+    for (int j = 0; j < i; ++j) {
+      double prjct = 0;
+      for (int l = 0; l < idim; ++l) prjct += ev(l, i) * ev(l, j);
+      for (int l = 0; l < idim; ++l) ev(l, i) -= prjct * ev(l, j);
+    }
+    double vnorm = 0;
+    for (int l = 0; l < idim; ++l) vnorm += ev(l, i) * ev(l, i);
+    if (vnorm > 1e-15) {
+      vnorm = 1 / std::sqrt(vnorm);
+      for (int l = 0; l < idim; ++l) ev(l, i) *= vnorm;
+    } else {
+      for (int l = 0; l < idim; ++l) ev(l, i) = 0;
+      --idgn;
+      norm[i] = 0;
+    }
+  }
 
-void szdy(int n, int idim, double szval, std::vector<int>& list1,
-          std::vector<std::vector<int> >& list2);
+  // check orthogonality
+  for (int i = 1; i < numvec; ++i) {
+    for (int j = 0; j < i; ++j) {
+      double prd = 0;
+      for (int l = 0; l < idim; ++l) prd += ev(l, i) * ev(l, j);
+      if (std::abs(prd) > 1e-10) {
+        std::cerr << " #(W05)# Non-orthogonal vectors at " << i << ' ' << j << std::endl
+                  << "         Overlap : " << prd << std::endl;
+      }
+    }
+  }
+  return idgn;
+}
 
 #endif

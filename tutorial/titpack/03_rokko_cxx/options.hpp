@@ -17,10 +17,11 @@
 
 struct options {
   unsigned int N;
+  std::string solver;
   bool valid;
 
-  options(unsigned int argc, char *argv[], unsigned int N_def) :
-    N(N_def), valid(true) {
+  options(unsigned int argc, char *argv[], unsigned int N_def, std::string const& solver_def, bool print = true) :
+    N(N_def), solver(solver_def), valid(true) {
     for (unsigned int i = 1; i < argc; ++i) {
       switch (argv[i][0]) {
       case '-' :
@@ -28,6 +29,9 @@ struct options {
         case 'N' :
           if (++i == argc) { usage(); return; }
           N = boost::lexical_cast<unsigned int>(argv[i]); break;
+        case 's' :
+          if (++i == argc) { usage(); return; }
+          solver = argv[i]; break;
         case 'h' :
           usage(std::cout); return;
         default :
@@ -39,14 +43,21 @@ struct options {
       }
     }
     if (N <= 0) {
-      std::cerr << "invalid parameter\n"; usage(); return;
+      if (print) {
+        std::cerr << "invalid parameter\n"; usage();
+      }
+      return;
     }
-    std::cout << "System Size = " << N << '\n';
+    if (print) {
+      std::cout << "System Size = " << N << '\n';
+      std::cout << "Solver Name = " << solver << '\n';
+    }
   }
 
   void usage(std::ostream& os = std::cerr) {
     os << "[command line options]\n"
        << "  -N int    System Size\n"
+       << "  -s solver Solver Name\n"
        << "  -h        this help\n";
     valid = false;
   }

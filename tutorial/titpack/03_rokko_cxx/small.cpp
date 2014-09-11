@@ -17,31 +17,6 @@
 #include <boost/tuple/tuple.hpp>
 
 void elm3(hamiltonian const& hop, matrix_type& elemnt) {
-  // initialization
-  elemnt.resize(hop.dimension(), hop.dimension());
-  for (int i = 0; i < hop.dimension(); ++i)
-    for (int j = 0; j < hop.dimension(); ++j)
-      elemnt(i, j) = 0;
-
-  // elments
-  for (int k = 0; k < hop.num_bonds(); ++k) {
-    int isite1, isite2;
-    boost::tie(isite1, isite2) = hop.site_pair(k);
-    int is = (1 << isite1) + (1 << isite2);
-    double wght = hop.bond_weight(k);
-    double diag = 0.5 * wght * hop.z_ratio(k);
-    for (int i = 0; i < hop.dimension(); ++i) {
-      int ibit = hop.config(i) & is;
-      if (ibit == 0 || ibit == is) {
-        elemnt(i,i) -= diag;
-      } else {
-        elemnt(i,i) += diag;
-        int newcfg = hop.config2index(hop.config(i) ^ is);
-        elemnt(i, newcfg) = -wght;
-      }
-    }
-  }
-}
 
 void diag(matrix_type& elemnt, std::vector<double>& E, matrix_type& v, int nvec) {
   if (elemnt.rows() != elemnt.cols()) {
@@ -67,7 +42,8 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
 
   double dnorm = 0;
   for (int j=0; j < idim; ++j) {
-    dnorm += x(xindex, j) * x(xindex, j);
+    // dnorm += x(xindex, j) * x(xindex, j);
+    dnorm += x(j, xindex) * x(j, xindex);
   }
   if (dnorm < 1e-30) {
     std::cerr << " #(W18)# Null vector given to check3\n";
@@ -77,10 +53,12 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
       
   for (int j = 0; j < idim; ++j)
     for (int i = 0; i < idim; ++i)
-      v[j] += elemnt(j, i) * x(xindex, i);
+      // v[j] += elemnt(j, i) * x(xindex, i);
+      v[j] += elemnt(i, j) * x(i, xindex);
 
   double prd = 0;
-  for (int i = 0; i < idim; ++i) prd += v[i] * x(xindex, i);
+  // for (int i = 0; i < idim; ++i) prd += v[i] * x(xindex, i);
+  for (int i = 0; i < idim; ++i) prd += v[i] * x(i, xindex);
   
   std::cout << "---------------------------- Information from check3\n"
             << "<x*H*x> = "<< prd << std::endl
@@ -88,7 +66,7 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
   int count = 0;
   for (int i = std::min((int)(idim / 3), 13) - 1; i < idim; i += std::max(1,idim/20), ++count) {
     if (count % 4 == 0) std::cout << std::endl;
-    std::cout << '\t' << v[i]/x(xindex, i);
+    std::cout << '\t' << v[i]/x(i, xindex);
   }
   std::cout << std::endl
             << "---------------------------------------------------\n";
