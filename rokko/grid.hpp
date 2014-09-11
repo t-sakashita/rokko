@@ -32,7 +32,7 @@ public:
   // size_of_row".  So, this constructor's 2D grid size is consistent
   // with EigenK's 2D grid one.
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : comm(comm_in) {
-    initialize(grid_col_major);
+    initialize(grid_row_major);
   }
   template <typename GRID_MAJOR>
   grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major) : comm(comm_in) {
@@ -80,6 +80,7 @@ protected:
   void initialize(GRID_MAJOR) {
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
+    is_row = boost::is_same<GRID_MAJOR, grid_row_major_t>::value;
     nprow = int(std::sqrt(nprocs + 0.5));
     while (1) {
       if ( nprow == 1 ) break;
@@ -89,7 +90,6 @@ protected:
     npcol = nprocs / nprow;
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
-    is_row = boost::is_same<GRID_MAJOR, grid_row_major_t>::value;
   }
 private:
   MPI_Comm comm;

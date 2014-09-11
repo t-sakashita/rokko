@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   rokko::parallel_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm, rokko::grid_col_major);
+  rokko::grid g(comm);
   const int root = 0;
 
   /*

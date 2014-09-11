@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+! Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 !                            Synge Todo <wistaria@comp-phys.org>,
 !                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
 !
@@ -13,7 +13,7 @@
 
 subroutine rokko_grid_construct(grid, comm, grid_major)
   use iso_c_binding
-  use rokko_f, only: rokko_grid, rokko_grid_col_major
+  use rokko_f, only: rokko_grid, rokko_grid_row_major
   implicit none
   interface
      subroutine rokko_grid_construct_f(grid, comm, grid_major) bind(c)
@@ -33,7 +33,7 @@ subroutine rokko_grid_construct(grid, comm, grid_major)
   if (present(grid_major)) then
      grid_major_out = grid_major
   else
-     grid_major_out = rokko_grid_col_major
+     grid_major_out = rokko_grid_row_major
   endif
   call rokko_grid_construct_f(grid, comm_out, grid_major_out)
 end subroutine rokko_grid_construct

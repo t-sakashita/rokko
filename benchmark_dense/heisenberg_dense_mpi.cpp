@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
   solver.initialize(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm, rokko::grid_col_major);
+  rokko::grid g(comm);
   int myrank = g.get_myrank();
   int nprocs = g.get_nprocs();
 

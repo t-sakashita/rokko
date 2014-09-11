@@ -46,7 +46,7 @@ program frank_matrix
   write(*,*) "matrix dimension = ", dim
 
   call rokko_solver_construct(solver, solver_name)
-  call rokko_grid_construct(grid, MPI_COMM_WORLD,rokko_grid_col_major)
+  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
 
   call rokko_distributed_matrix_construct(mat, dim, dim, grid, solver, rokko_matrix_col_major)
   call rokko_distributed_matrix_construct(Z, dim, dim, grid, solver, rokko_matrix_col_major) 

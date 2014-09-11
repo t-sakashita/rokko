@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm, rokko::grid_col_major);
+  rokko::grid g(comm);
   BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
     rokko::parallel_dense_solver solver(name);
     solver.initialize(argc, argv);

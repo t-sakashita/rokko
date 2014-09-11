@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
 
-  rokko::grid g(comm, rokko::grid_col_major);
+  rokko::grid g(comm);
   int myrank = g.get_myrank();
   int root = 0;
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
-  rokko::localized_matrix<matrix_major> eigvec_loc;
+  rokko::localized_matrix<matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, root);
   if (myrank == root) {
     std::cout << "smallest eigenvalues:";
