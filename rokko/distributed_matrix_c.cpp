@@ -142,25 +142,23 @@ int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix m
       return static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_col(global_j);
   }
 
-int rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root){
+void rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root){
   if (matrix->major == rokko_matrix_col_major){
     rokko::distributed_matrix<rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr);
-    return rokko::gather(*ptr_, array, root);
-  }
-  else{
+    rokko::gather(*ptr_, array, root);
+  } else {
     rokko::distributed_matrix<rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr);
-    return rokko::gather(*ptr_, array, root);
+    rokko::gather(*ptr_, array, root);
   }
 }
 
-int rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root){
+void rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root){
   if (matrix->major == rokko_matrix_col_major){
     rokko::distributed_matrix<rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(matrix->ptr);
-    return rokko::scatter(global_array, *ptr_, root);
-  }
-  else{
+    rokko::scatter(global_array, *ptr_, root);
+  } else {
     rokko::distributed_matrix<rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr);
-    return rokko::scatter(global_array, *ptr_, root);
+    rokko::scatter(global_array, *ptr_, root);
   }
 }
 
@@ -170,8 +168,7 @@ void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array){
     for(int root = 0; root < ptr_->get_nprocs(); ++root) {
       rokko::gather(*ptr_, array, root);
     }
-  }
-  else{
+  } else {
     rokko::distributed_matrix<rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(matrix->ptr);
     for(int root = 0; root < ptr_->get_nprocs(); ++root) {
       rokko::gather(*ptr_, array, root);

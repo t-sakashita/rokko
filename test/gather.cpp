@@ -27,7 +27,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   MPI_Comm_size(comm, &size);
   MPI_Comm_rank(comm, &rank);
 
-  // seme seed for all processes
+  // same seed for all processes
   boost::mt19937 eng;
   boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
     rng(eng, boost::uniform_real<>());
@@ -49,25 +49,30 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   rokko::localized_matrix<LOC_MAT_MAJOR> lmat(dim, dim);
   for (int r = 0; r < size; ++r) {
     rokko::gather(mat, lmat, r);
-  }
 #ifndef NDEBUG
-  std::cout << lmat << std::endl;
+    if (rank == r) { 
+      std::cout << lmat << std::endl;
+      std::cout.flush();
+    }
+    MPI_Barrier(comm);
 #endif
+  }
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
       if (mat.is_gindex(i, j) && std::abs(mat.get_global(i, j) - lmat(i, j)) >  10e-12)
-        success_local = 0;
+          success_local = 0;
     }
   }
 
   int success;
   MPI_Allreduce(&success_local, &success, 1, MPI_INT, MPI_PROD, comm);
+  BOOST_CHECK_EQUAL(success, true);
   return success;
 }
 
 BOOST_AUTO_TEST_CASE(test_gather) {
   MPI_Init(&boost::unit_test::framework::master_test_suite().argc,
-             &boost::unit_test::framework::master_test_suite().argv);
+           &boost::unit_test::framework::master_test_suite().argv);
   MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
@@ -79,44 +84,32 @@ BOOST_AUTO_TEST_CASE(test_gather) {
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
 
   if (rank == 0) std::cout << "test for grid = col, dist = col, loc = col\n";
-  bool success_col_col_col =
-    run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_col_major());
-  if (rank == 0) BOOST_CHECK_EQUAL(success_col_col_col, true);
+  run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_col_major());
 
-  //  if (rank == 0) std::cout << "test for grid = col, dist = col, loc = row\n";
-  //  bool success_col_col_row =
-  //    run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_row_major());
-  //  if (rank == 0) BOOST_CHECK_EQUAL(success_col_col_row, true);
+  /*
+  if (rank == 0) std::cout << "test for grid = col, dist = col, loc = row\n";
+  run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_row_major());
 
-  //  if (rank == 0) std::cout << "test for grid = col, dist = row, loc = col\n";
-  //  bool success_col_row_col =
-  //    run_test(comm, dim, rokko::grid_col_major, rokko::matrix_row_major(), rokko::matrix_col_major());
-  //  if (rank == 0) BOOST_CHECK_EQUAL(success_col_row_col, true);
+  if (rank == 0) std::cout << "test for grid = col, dist = row, loc = col\n";
+  run_test(comm, dim, rokko::grid_col_major, rokko::matrix_row_major(), rokko::matrix_col_major());
 
-  //  if (rank == 0) std::cout << "test for grid = col, dist = row, loc = row\n";
-  //  bool success_col_row_row =
-  //    run_test(comm, dim, rokko::grid_col_major, rokko::matrix_row_major(), rokko::matrix_row_major());
-  //  if (rank == 0) BOOST_CHECK_EQUAL(success_col_row_row, true);
+  if (rank == 0) std::cout << "test for grid = col, dist = row, loc = row\n";
+  run_test(comm, dim, rokko::grid_col_major, rokko::matrix_row_major(), rokko::matrix_row_major());
+  */
 
-  ///  if (rank == 0) std::cout << "test for grid = row, dist = col, loc = col\n";
-  ///  bool success_row_col_col =
-  ///    run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_col_major());
-  ///  if (rank == 0) BOOST_CHECK_EQUAL(success_row_col_col, true);
+  if (rank == 0) std::cout << "test for grid = row, dist = col, loc = col\n";
+  run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_col_major());
 
-  //  if (rank == 0) std::cout << "test for grid = row, dist = col, loc = row\n";
-  //  bool success_row_col_row =
-  //    run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_row_major());
-  //  if (rank == 0) BOOST_CHECK_EQUAL(success_row_col_row, true);
+  /*
+  if (rank == 0) std::cout << "test for grid = row, dist = col, loc = row\n";
+  run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_row_major());
 
-  //  if (rank == 0) std::cout << "test for grid = row, dist = row, loc = col\n";
-  //  bool success_row_row_col =
-  //    run_test(comm, dim, rokko::grid_row_major, rokko::matrix_row_major(), rokko::matrix_col_major());
-  //  if (rank == 0) BOOST_CHECK_EQUAL(success_row_row_col, true);
+  if (rank == 0) std::cout << "test for grid = row, dist = row, loc = col\n";
+  run_test(comm, dim, rokko::grid_row_major, rokko::matrix_row_major(), rokko::matrix_col_major());
 
-  //  if (rank == 0) std::cout << "test for grid = row, dist = row, loc = row\n";
-  //  bool success_row_row_row =
-  //    run_test(comm, dim, rokko::grid_row_major, rokko::matrix_row_major(), rokko::matrix_row_major());
-  //  if (rank == 0) BOOST_CHECK_EQUAL(success_row_row_row, true);
+  if (rank == 0) std::cout << "test for grid = row, dist = row, loc = row\n";
+  run_test(comm, dim, rokko::grid_row_major, rokko::matrix_row_major(), rokko::matrix_row_major());
+  */
 
   MPI_Finalize();
 }

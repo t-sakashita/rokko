@@ -117,9 +117,9 @@ int rokko_distributed_matrix_translate_g2l_row(struct rokko_distributed_matrix m
 
 int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix matrix, int global_j);
 
-int rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root);
+void rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root);
 
-int rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
+void rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
 
 void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array);
 
