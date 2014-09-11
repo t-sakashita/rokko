@@ -75,45 +75,39 @@ public:
   int get_m_local() const { return this->rows(); }
   int get_n_local() const { return this->cols(); }
 
-  bool is_gindex_myrow(const int& global_i) const {
-    return true;
-  }
-
-  bool is_gindex_mycol(const int& global_j) const {
-    return true;
-  }
-
-  bool is_gindex(const int& global_i, const int& global_j) const {
-    return true;
-  }
+  bool is_gindex_myrow(const int& global_i) const { return true; }
+  bool is_gindex_mycol(const int& global_j) const { return true; }
+  bool is_gindex(const int& global_i, const int& global_j) const { return true; }
 
   void set_local(int local_i, int local_j, double value) {
     this->operator()(local_i, local_j) = value;
   }
-
+  void update_local(int local_i, int local_j, double value) {
+    this->operator()(local_i, local_j) += value;
+  }
   double get_local(int local_i, int local_j) const {
     return this->operator()(local_i, local_j);
   }
   
-  void update_local(int local_i, int local_j, double value) {
-    this->operator()(local_i, local_j) += value;
+  void set_global(int global_i, int global_j, double value) {
+    set_local(global_i, global_j, value);
   }
+  void update_global(int global_i, int global_j, double value) {
+    update_local(global_i, global_j, value);
+  }
+  double get_global(int global_i, int global_j, double value) {
+    return get_local(global_i, global_j, value);
+  }
+  double get_global_checked(int global_i, int global_j, double value) {
+    return get_local(global_i, global_j, value);
+  }
+  
+  void set_zeros() { this->setZero(); }
 
-  void set_zeros() {
-    this->setZero();
-  }
+  bool is_row_major() const { return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value; }
+  bool is_col_major() const { return boost::is_same<MATRIX_MAJOR, matrix_col_major>::value; }
 
-  bool is_row_major() const {
-    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
-  }
-  bool is_col_major() const {
-    return boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
-  }
-
-  void print() const {
-    std::cout << *this << std::endl;
-  }
-
+  void print() const { std::cout << *this << std::endl; }
 };
 
 } // namespace rokko

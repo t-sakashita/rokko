@@ -220,18 +220,22 @@ public:
     array[get_array_index(local_i, local_j)] = value;
   }
 
-  double get_local(int local_i, int local_j) const {
-    return array[get_array_index(local_i, local_j)];
+  void update_local(int local_i, int local_j, double value) {
+    array[get_array_index(local_i, local_j)] += value;
   }
 
-  void update_local(int local_i, int local_j, double value) {
-    //std::cout << "m_local=" << m_local << " n_local=" << n_local << " local_i=" << local_i << " local_j=" << local_j << std::endl;
-    array[get_array_index(local_i, local_j)] += value;
+  double get_local(int local_i, int local_j) const {
+    return array[get_array_index(local_i, local_j)];
   }
 
   void set_global(int global_i, int global_j, double value) {
     if ((is_gindex(global_i, global_j)))
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
+  }
+
+  void update_global(int global_i, int global_j, double value) {
+    if ((is_gindex(global_i, global_j)))
+      update_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
   }
 
   double get_global(int global_i, int global_j) const {
