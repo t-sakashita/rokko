@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_SOLVER_H
-#define ROKKO_SLEPC_SOLVER_H
+#ifndef ROKKO_SLEPC_CORE_HPP
+#define ROKKO_SLEPC_CORE_HPP
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
@@ -206,4 +206,4 @@ private:
 } // namespace slepc
 } // namespace rokko
 
-#endif // ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
+#endif // ROKKO_SLEPC_CORE_HPP

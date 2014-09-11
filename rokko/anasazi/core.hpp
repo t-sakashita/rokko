@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_SOLVER_H
-#define ROKKO_ANASAZI_SOLVER_H
+#ifndef ROKKO_ANASAZI_CORE_HPP
+#define ROKKO_ANASAZI_CORE_HPP
 
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
@@ -179,4 +179,4 @@ private:
 
 } // namespace rokko
 
-#endif // ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_H
+#endif // ROKKO_ANASAZI_CORE_HPP

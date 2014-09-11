@@ -140,7 +140,6 @@ private:
 
 } // end namespace rokko
 
-#endif // ROKKO_SERIAL_DENSE_SOLVER_HPP
 
 #define ROKKO_REGISTER_SERIAL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
@@ -150,3 +149,5 @@ struct register_caller { \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
+
+#endif // ROKKO_SERIAL_DENSE_SOLVER_HPP
