@@ -27,7 +27,7 @@ set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp)
 
 # BLACS
 set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c blacs/descinit.c)
-set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdgemm.c)
+set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdcopy.c pblas/pdgemm.c)
 
 if(Boost_SOURCE_DIR)
   set(SOURCES error_code.cpp)

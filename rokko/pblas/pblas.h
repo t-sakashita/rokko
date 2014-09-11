@@ -17,6 +17,17 @@
 extern "C" {
 #endif
 
+// Level 1 PBLAS
+
+void pdcopy_(const int* N,
+             const double* X, const int* IX, const int* JX, int* DESCX, const int* INCX,
+             double* Y, const int* IY, const int* JY, int *DESCY, const int* INCY);
+
+void ROKKO_pdcopy(int N, const double* X, int IX, int JX, int* DESCX, int INCX,
+                  double* Y, int IY, int JY, int *DESCY, int INCY);
+
+// Level 3 PBLAS
+
 void pdgemm_(const char* TRANSA, const char* TRANSB,
              const int* M, const int* N, const int* K,
              const double* ALPHA,
