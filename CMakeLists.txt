@@ -175,9 +175,6 @@ include(CTest)
 # directories
 add_subdirectory(3rd-party)
 add_subdirectory(rokko)
-if (BUILD_Fortran_BINDING)
-  add_subdirectory(rokko_c-fortran)
-endif (BUILD_Fortran_BINDING)
 add_subdirectory(tool)
 
 if (BUILD_TESTS)
