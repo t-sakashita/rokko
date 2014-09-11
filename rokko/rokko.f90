@@ -80,14 +80,6 @@ module rokko
      end function rokko_grid_get_nprocs
 
      ! rokko_solver
-
-     subroutine rokko_solver_construct(solver, solver_name)
-       use iso_c_binding
-       import rokko_solver
-       implicit none
-       type(rokko_solver), intent(inout) :: solver
-       character(*), intent(in) :: solver_name
-     end subroutine rokko_solver_construct
      
      subroutine rokko_solver_destruct(solver) bind(c)
        use iso_c_binding
@@ -367,5 +359,23 @@ contains
       ierr = rokko_gather(matrix, c_loc(parray), root)
     end do
   end subroutine rokko_all_gather
+
+subroutine rokko_solver_construct(solver, solver_name)
+  use iso_c_binding
+!  import rokko_solver
+  implicit none
+  interface
+     subroutine rokko_solver_construct_f(solver, solver_name) bind(c)
+       use iso_c_binding
+       import rokko_solver
+       implicit none
+       type(rokko_solver), intent(out) :: solver
+       character(kind=c_char), intent(in) :: solver_name(*)
+     end subroutine rokko_solver_construct_f
+  end interface
+  type(rokko_solver), intent(inout) :: solver
+  character(*), intent(in) :: solver_name
+  call rokko_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
+end subroutine rokko_solver_construct
 
 end module rokko

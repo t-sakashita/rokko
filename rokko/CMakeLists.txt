@@ -15,7 +15,7 @@ if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_c.cpp)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.f90 solver_f.f90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.f90)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_f.f90)
 endif(BUILD_Fortran_BINDING)
 
