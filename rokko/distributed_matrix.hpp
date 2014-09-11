@@ -373,21 +373,24 @@ std::ostream& operator<<(std::ostream& os, rokko::distributed_matrix<MATRIX_MAJO
   return os;
 }
 
+// C = alpha A * B + beta C
 template<typename MATRIX_MAJOR>
 void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool transA,
              const distributed_matrix<MATRIX_MAJOR>& matB, bool transB,
              double beta, distributed_matrix<MATRIX_MAJOR>& matC) {
   int ictxt;
   ROKKO_blacs_get(-1, 0, &ictxt);
-
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_grid().get_nprow(), matA.get_grid().get_npcol());
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
 
   int descA[9], descB[9], descC[9];
   int info;
-  ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(), matA.get_nb(), 0, 0, ictxt, matA.get_lld(), &info);
-  ROKKO_descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(), matB.get_nb(), 0, 0, ictxt, matB.get_lld(), &info);
-  ROKKO_descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(), matC.get_nb(), 0, 0, ictxt, matC.get_lld(), &info);
+  ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(), matA.get_nb(),
+                 0, 0, ictxt, matA.get_lld(), &info);
+  ROKKO_descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(), matB.get_nb(),
+                 0, 0, ictxt, matB.get_lld(), &info);
+  ROKKO_descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(), matC.get_nb(),
+                 0, 0, ictxt, matC.get_lld(), &info);
 
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
@@ -396,6 +399,70 @@ void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool tr
                matB.get_array_pointer(), 1, 1, descB, beta,
                matC.get_array_pointer(), 1, 1, descC);
   ROKKO_blacs_gridexit(&ictxt);
+}
+
+// Y = alpha A * X + beta Y
+template<typename MATRIX_MAJOR>
+void product_v(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool transA,
+               const distributed_matrix<MATRIX_MAJOR>& vecX, bool transX, int xindex,
+               double beta, distributed_matrix<MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+  int ictxt;
+  ROKKO_blacs_get(-1, 0, &ictxt);
+  char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
+
+  int descA[9], descX[9], descY[9];
+  int info;
+  ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(), matA.get_nb(),
+                 0, 0, ictxt, matA.get_lld(), &info);
+  ROKKO_descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(), vecX.get_nb(),
+                 0, 0, ictxt, vecX.get_lld(), &info);
+  ROKKO_descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(), vecY.get_nb(),
+                 0, 0, ictxt, vecY.get_lld(), &info);
+
+  char char_transA = (transA ? 'T' : 'N');
+  int ix = (transX ? xindex + 1 : 1);
+  int jx = (transX ? 1 : xindex + 1);
+  int incx = (transX ? vecX.get_m_global() : 1);
+  int iy = (transY ? yindex + 1: 1);
+  int jy = (transY ? 1 : yindex + 1);
+  int incy = (transY ? vecY.get_m_global() : 1);
+  ROKKO_pdgemv(char_transA, matA.get_m_global(), matA.get_n_global(), alpha,
+               matA.get_array_pointer(), 1, 1, descA,
+               vecX.get_array_pointer(), ix, jx, descX, incx, beta,
+               vecY.get_array_pointer(), iy, jy, descY, incy);
+  ROKKO_blacs_gridexit(&ictxt);
+}
+
+// dot = X * Y
+template<typename MATRIX_MAJOR>
+double dot_product(const distributed_matrix<MATRIX_MAJOR>& vecX, bool transX, int xindex,
+                   const distributed_matrix<MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+  int ictxt;
+  ROKKO_blacs_get(-1, 0, &ictxt);
+  char char_grid_major = (vecX.get_grid().is_row_major() ? 'R' : 'C');
+  ROKKO_blacs_gridinit(&ictxt, char_grid_major, vecX.get_nprow(), vecX.get_npcol());
+
+  int descX[9], descY[9];
+  int info;
+  ROKKO_descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(), vecX.get_nb(),
+                 0, 0, ictxt, vecX.get_lld(), &info);
+  ROKKO_descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(), vecY.get_nb(),
+                 0, 0, ictxt, vecY.get_lld(), &info);
+
+  int n = (transX ? vecX.get_n_global() : vecX.get_m_global());
+  int ix = (transX ? xindex + 1 : 1);
+  int jx = (transX ? 1 : xindex + 1);
+  int incx = (transX ? vecX.get_m_global() : 1);
+  int iy = (transY ? yindex + 1: 1);
+  int jy = (transY ? 1 : yindex + 1);
+  int incy = (transY ? vecY.get_m_global() : 1);
+  double dot;
+  ROKKO_pddot(n, &dot, vecX.get_array_pointer(), ix, jx, descX, incx,
+              vecY.get_array_pointer(), iy, jy, descY, incy);
+
+  ROKKO_blacs_gridexit(&ictxt);
+  return dot;
 }
 
 } // namespace rokko

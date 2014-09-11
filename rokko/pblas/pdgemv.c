@@ -11,7 +11,10 @@
 
 #include <rokko/pblas/pblas.h>
 
-void ROKKO_pdcopy(int N, const double* X, int IX, int JX, int* DESCX, int INCX,
-                  double* Y, int IY, int JY, int *DESCY, int INCY) {
-  PBLAS_pdcopy(&N, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY);
+void ROKKO_pdgemv(char TRANS, int M, int N, double ALPHA,
+                  const double* A, int IA, int JA, int* DESCA,
+                  const double* X, int IX, int JX, int* DESCX, int INCX, double BETA,
+                  double* Y, int IY, int JY, int* DESCY, int INCY) {
+  PBLAS_pdgemv(&TRANS, &M, &N, &ALPHA, A, &IA, &JA, DESCA, X, &IX, &JX, DESCX, &INCX, &BETA,
+               Y, &IY, &JY, DESCY, &INCY);
 }

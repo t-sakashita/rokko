@@ -11,7 +11,8 @@
 
 #include <rokko/pblas/pblas.h>
 
-void ROKKO_pdcopy(int N, const double* X, int IX, int JX, int* DESCX, int INCX,
-                  double* Y, int IY, int JY, int *DESCY, int INCY) {
-  PBLAS_pdcopy(&N, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY);
+void ROKKO_pddot(int N, double* DOT,
+                 const double* X, int IX, int JX, int* DESCX, int INCX,
+                 const double* Y, int IY, int JY, int* DESCY, int INCY) {
+  PBLAS_pddot(&N, DOT, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY);
 }
