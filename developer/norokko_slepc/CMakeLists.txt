@@ -4,7 +4,7 @@ if(BUILD_SLEPC)
   # set(TESTS heisenberg_matfree_mpi_try2 heisenberg_matfree_1proc_try ${TESTS})
 
   foreach(name ${TESTS})
-    set(target_name sample_slepc_diagonalize_${name})
+    set(target_name norokko_slepc_diagonalize_${name})
     add_executable(${target_name} ${name}.cpp)
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
     target_link_libraries(${target_name} rokko)
