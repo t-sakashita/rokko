@@ -18,7 +18,6 @@
 
 #include <rokko/distributed_mfree.hpp>
 
-#include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
 
 #include <AnasaziEpetraAdapter.hpp>
@@ -163,7 +162,6 @@ public:
      //double* eve = problem_->getSolution()->Evecs[i];
   }
 
-  //distributed_multivector_anasazi eigenvector() const { /*return sol_->Evecs; }
   int num_conv() const {
     return num_conv_;
   }

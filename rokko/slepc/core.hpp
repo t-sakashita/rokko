@@ -15,7 +15,6 @@
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
 
 #include <petscvec.h>
@@ -189,8 +188,6 @@ public:
   int num_conv() const {
     return num_conv_;
   }
-
-  //distributed_multivector_slepc eigenvectors() const { return evecs_; }
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
     return new slepc::distributed_crs_matrix(row_dim, col_dim);
