@@ -18,7 +18,7 @@
 void xcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
            std::vector<double>& sxx) {
   int nbond = npair.size() / 2;
-  for (int k=0; k < nbond; ++k) {
+  for (int k = 0; k < nbond; ++k) {
     int i1 = npair[k * 2];
     int i2 = npair[k * 2 + 1];
     if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {

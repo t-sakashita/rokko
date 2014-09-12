@@ -67,7 +67,8 @@ int main(int argc, char** argv) {
 
   // // Do not forget to call elm3 again before calling check3
   elm3(hop, elemnt);
-  check3(elemnt, v, 0);
+  matrix_type w(hop.dimension(), 1);
+  check3(elemnt, v, 0, w);
   double t4 = tm.elapsed();
   
   std::vector<int> npair;

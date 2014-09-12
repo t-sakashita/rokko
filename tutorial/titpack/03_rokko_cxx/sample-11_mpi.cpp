@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm, rokko::grid_col_major);
+  rokko::grid g(comm);
   int myrank = g.get_myrank();
   int root = 0;
 
@@ -80,19 +80,26 @@ int main(int argc, char** argv) {
 
   // // Do not forget to call elm3 again before calling check3
   elm3(hop, elemnt);
-  // check3(elemnt, v, 0);
+  matrix_type w(hop.dimension(), 1, g, solver);
+  check3_mpi(elemnt, v, 0, w);
+  std::cout.flush();
   MPI_Barrier(comm);
   double t4 = tm.elapsed();
   
   std::vector<int> npair;
   npair.push_back(1);
   npair.push_back(2);
-  // std::vector<double> sxx(1);
-  // xcorr(ss, npair, v, 0, sxx);
-  // std::cout << "sxx: " << sxx[0] << std::endl;
+  std::vector<double> sxx(1);
+  matrix_type sxmat(hop.dimension(), hop.dimension(), g, solver);
+  xcorr3_mpi(ss, npair, v, 0, sxx, sxmat, w);
+  if (v.is_gindex(0, 0))
+    std::cout << "sxx: " << sxx[0] << std::endl;
+  std::cout.flush();
+  MPI_Barrier(comm);
   std::vector<double> szz(1);
   zcorr(comm, ss, npair, v, 0, szz);
   if (myrank == 0) std::cout << "szz: " << szz[0] << std::endl;
+  std::cout.flush();
   MPI_Barrier(comm);
   double t5 = tm.elapsed();
 
