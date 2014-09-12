@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+! Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 !                            Synge Todo <wistaria@comp-phys.org>,
 !                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>,
 !                            Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
