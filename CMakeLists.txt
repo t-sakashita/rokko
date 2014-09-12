@@ -14,6 +14,11 @@ project(rokko NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 include(add_rokko_test)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
+message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
+
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_C_BINDING "Build C binding libraries" ON)
 option(BUILD_Fortran_BINDING "Build Fortran binding libraries" ON)
