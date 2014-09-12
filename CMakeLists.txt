@@ -187,6 +187,7 @@ if (BUILD_TESTS)
 endif (BUILD_TESTS)
 
 if (BUILD_EXAMPLES)
+  add_subdirectory(sample)
   add_subdirectory(developer)
   if (BUILD_Fortran_BINDING)
     add_subdirectory(sample_c)
