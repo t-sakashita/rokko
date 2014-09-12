@@ -80,6 +80,13 @@ if(OPENMP_FOUND)
   set(ALPS_USE_MKL_PARALLEL TRUE)
 endif(OPENMP_FOUND)
 
+# Linker for Fortran Program
+option(USE_Fortran_LINKER "Use Fortran linker for Fortran program" OFF)
+string(REGEX MATCH "ifort" IS_INTEL_FORTRAN "${CMAKE_Fortran_COMPILER}")
+if(USE_Fortran_LINKER OR IS_INTEL_FORTRAN)
+  set(ROKKO_USE_Fortran_LINKER 1)
+endif(USE_Fortran_LINKER OR IS_INTEL_FORTRAN)
+
 # MPI library
 find_package(MPI)
 set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
