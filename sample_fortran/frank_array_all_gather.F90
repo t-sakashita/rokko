@@ -72,7 +72,7 @@ program frank_matrix
   !  print*, "array=", array
   do proc = 0, nprocs-1
      if (proc == myrank) then
-      print*, "fmyrank=", myrank
+        print*, "fmyrank=", myrank
      do i = 1, dim
         write(*,'(10f8.4)') (array(i, j), j=1, dim)
      end do

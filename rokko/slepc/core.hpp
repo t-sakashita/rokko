@@ -2,15 +2,16 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>,
+*                       Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_SOLVER_H
-#define ROKKO_SLEPC_SOLVER_H
+#ifndef ROKKO_SLEPC_CORE_HPP
+#define ROKKO_SLEPC_CORE_HPP
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
@@ -206,4 +207,4 @@ private:
 } // namespace slepc
 } // namespace rokko
 
-#endif // ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_H
+#endif // ROKKO_SLEPC_CORE_HPP

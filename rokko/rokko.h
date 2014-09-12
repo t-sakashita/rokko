@@ -11,6 +11,9 @@
 *
 *****************************************************************************/
 
+#ifndef ROKKO_H
+#define ROKKO_H
+
 #include <mpi.h>
 
 #ifdef __cplusplus
@@ -126,3 +129,5 @@ void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array);
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ROKKO_H

@@ -20,8 +20,6 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 
-//#include <rokko/anasazi/distributed_multivector.hpp>
-
 namespace rokko {
 
 namespace detail {

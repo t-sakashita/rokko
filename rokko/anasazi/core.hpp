@@ -2,15 +2,16 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>,
+*                       Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_SOLVER_H
-#define ROKKO_ANASAZI_SOLVER_H
+#ifndef ROKKO_ANASAZI_CORE_HPP
+#define ROKKO_ANASAZI_CORE_HPP
 
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
@@ -179,4 +180,4 @@ private:
 
 } // namespace rokko
 
-#endif // ROKKO_ANASAZI_DISTRIBUTED_CRS_MATRIX_H
+#endif // ROKKO_ANASAZI_CORE_HPP
