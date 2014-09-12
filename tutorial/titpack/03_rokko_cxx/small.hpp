@@ -25,10 +25,7 @@
 
 template<typename MATRIX>
 void elm3(hamiltonian const& hop, MATRIX& elemnt) {
-  // initialization
   elemnt.set_zeros();
-
-  // elments
   for (int k = 0; k < hop.num_bonds(); ++k) {
     int isite1, isite2;
     boost::tie(isite1, isite2) = hop.site_pair(k);
@@ -53,15 +50,13 @@ void elm3(hamiltonian const& hop, MATRIX& elemnt) {
 
 template<typename MATRIX>
 void elm3_sx(subspace const& ss, int i1, int i2, MATRIX& elemnt) {
-  // initialization
   elemnt.set_zeros();
-
   if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
     std::cerr << " #(W01)# Wrong site number given to xcorr\n";
     return;
   }
   int is = (1 << i1) + (1 << i2);
-#pragma omp parallel for schedule(static)
+  #pragma omp parallel for schedule(static)
   for (int i = 0; i < ss.dimension(); ++i) {
     if (elemnt.is_gindex_myrow(i)) {
       int ibit = ss.config(i) & is;
@@ -84,7 +79,6 @@ void elm3_sx(subspace const& ss, int i1, int i2, MATRIX& elemnt) {
 template<typename MATRIX>
 double check3(MATRIX const& elemnt, MATRIX const& x, int xindex, MATRIX& y) {
   int idim = elemnt.rows();
-
   double dnorm = 0;
   for (int j = 0; j < idim; ++j) {
     dnorm += x(j, xindex) * x(j, xindex);
@@ -93,15 +87,12 @@ double check3(MATRIX const& elemnt, MATRIX const& x, int xindex, MATRIX& y) {
     std::cerr << " #(W18)# Null vector given to check3\n";
     return 0;
   }
-      
   for (int i = 0; i < idim; ++i) {
     y(i, xindex) = 0;
     for (int j = 0; j < idim; ++j) y(i, xindex) += elemnt(i, j) * x(j, xindex);
   }
-
   double prd = 0;
   for (int i = 0; i < idim; ++i) prd += y(i, xindex) * x(i, xindex);
-  
   std::cout << "---------------------------- Information from check3\n"
             << "<x*H*x> = "<< prd << std::endl
             << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";
@@ -110,8 +101,7 @@ double check3(MATRIX const& elemnt, MATRIX const& x, int xindex, MATRIX& y) {
     if (count % 4 == 0) std::cout << std::endl;
     std::cout << '\t' << y(i, xindex) / x(i, xindex);
   }
-  std::cout << std::endl
-            << "---------------------------------------------------\n";
+  std::cout << std::endl << "---------------------------------------------------\n";
   return prd;
 }
 
@@ -122,30 +112,26 @@ double check3_mpi(MATRIX const& elemnt, MATRIX const& x, int xindex, MATRIX& y) 
   product_v(1.0, elemnt, false, x, false, xindex, 0.0, y, false, xindex);
   double prd = dot_product(x, false, xindex, y, false, xindex) / dnorm;
 
-  std::cout.flush();
-  MPI_Barrier(elemnt.get_grid().get_comm());
   if (x.is_gindex(0, xindex)) {
     std::cout << "---------------------------- Information from check3\n"
               << "<x*H*x> = "<< prd << std::endl
               << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";
-    std::cout.flush();
   }
+  std::cout << std::flush;
   MPI_Barrier(elemnt.get_grid().get_comm());
   int count = 0;
   for (int i = std::min((int)(idim / 3), 13) - 1; i < idim; i += std::max(1,idim/20), ++count) {
     if (x.is_gindex(i, xindex)) {
       if (count % 4 == 0) std::cout << std::endl;
       std::cout << '\t' << y.get_global(i, xindex) / x.get_global(i, xindex);
-      std::cout.flush();
     }
+    std::cout << std::flush;
     MPI_Barrier(elemnt.get_grid().get_comm());
   }
   if (x.is_gindex(0, xindex)) {
-    std::cout << std::endl
-              << "---------------------------------------------------\n";
-    std::cout.flush();
+    std::cout << std::endl << "---------------------------------------------------\n";
   }
-  MPI_Barrier(elemnt.get_grid().get_comm());
+  std::cout << std::flush;
   return prd;
 }
 

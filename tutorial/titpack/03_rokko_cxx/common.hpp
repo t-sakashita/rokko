@@ -67,8 +67,8 @@ void zcorr(subspace const& ss, std::vector<int> const& npair,
 }
 
 template<typename MATRIX>
-void zcorr(MPI_Comm comm, subspace const& ss, std::vector<int> const& npair,
-           MATRIX const& x, int xindex, std::vector<double>& szz) {
+void zcorr_mpi(subspace const& ss, std::vector<int> const& npair,
+               MATRIX const& x, int xindex, std::vector<double>& szz) {
   int nbond = npair.size() / 2;
   std::vector<double> szz_local(nbond);
   if (x.is_gindex_mycol(xindex)) {
@@ -90,7 +90,7 @@ void zcorr(MPI_Comm comm, subspace const& ss, std::vector<int> const& npair,
       szz_local[k] = corr / 4;
     }
   }
-  MPI_Reduce(&szz_local[0], &szz[0], nbond, MPI_DOUBLE, MPI_SUM, 0, comm);
+  MPI_Reduce(&szz_local[0], &szz[0], nbond, MPI_DOUBLE, MPI_SUM, 0, x.get_grid().get_comm());
 }
 
 //

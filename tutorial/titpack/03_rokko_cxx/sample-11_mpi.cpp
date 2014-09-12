@@ -29,16 +29,13 @@ typedef rokko::distributed_matrix<rokko::matrix_col_major> matrix_type;
 int main(int argc, char** argv) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
-  int myrank = g.get_myrank();
-  int root = 0;
+  rokko::grid g;
 
   std::cout.precision(10);
-  options opt(argc, argv, 8, solver_type::default_solver(), myrank == 0);
-  if (!opt.valid) MPI_Abort(MPI_COMM_WORLD, 34);
+  options opt(argc, argv, 8, solver_type::default_solver(), g.get_myrank() == 0);
+  if (!opt.valid) MPI_Abort(MPI_COMM_WORLD, 1);
   boost::timer tm;
-  MPI_Barrier(comm);
+  MPI_Barrier(g.get_comm());
   double t1 = tm.elapsed();
 
   // lattice structure
@@ -63,7 +60,7 @@ int main(int argc, char** argv) {
   // Hamiltonian matrix
   matrix_type elemnt(hop.dimension(), hop.dimension(), g, solver);
   elm3(hop, elemnt);
-  MPI_Barrier(comm);
+  MPI_Barrier(g.get_comm());
   double t2 = tm.elapsed();
   
   rokko::localized_vector E(hop.dimension());
@@ -71,19 +68,20 @@ int main(int argc, char** argv) {
   solver.diagonalize(elemnt, E, v);
   double t3 = tm.elapsed();
 
-  if (myrank == 0) {
+  if (g.get_myrank() == 0) {
     int ne = 4;
     std::cout << "[Eigenvalues]\n";
     for (int i = 0; i < ne; ++i) std::cout << '\t' << E[i];
-    std::cout << std::endl;
+    std::cout << std::endl << std::flush;
   }
+  MPI_Barrier(g.get_comm());
 
-  // // Do not forget to call elm3 again before calling check3
+  // Do not forget to call elm3 again before calling check3
   elm3(hop, elemnt);
   matrix_type w(hop.dimension(), 1, g, solver);
   check3_mpi(elemnt, v, 0, w);
-  std::cout.flush();
-  MPI_Barrier(comm);
+  std::cout << std::flush;
+  MPI_Barrier(g.get_comm());
   double t4 = tm.elapsed();
   
   std::vector<int> npair;
@@ -92,18 +90,17 @@ int main(int argc, char** argv) {
   std::vector<double> sxx(1);
   matrix_type sxmat(hop.dimension(), hop.dimension(), g, solver);
   xcorr3_mpi(ss, npair, v, 0, sxx, sxmat, w);
-  if (v.is_gindex(0, 0))
-    std::cout << "sxx: " << sxx[0] << std::endl;
-  std::cout.flush();
-  MPI_Barrier(comm);
+  if (v.is_gindex(0, 0)) std::cout << "sxx: " << sxx[0] << std::endl;
+  std::cout << std::flush;
+  MPI_Barrier(g.get_comm());
   std::vector<double> szz(1);
-  zcorr(comm, ss, npair, v, 0, szz);
-  if (myrank == 0) std::cout << "szz: " << szz[0] << std::endl;
-  std::cout.flush();
-  MPI_Barrier(comm);
+  zcorr_mpi(ss, npair, v, 0, szz);
+  if (g.get_myrank() == 0) std::cout << "szz: " << szz[0] << std::endl;
+  std::cout << std::flush;
+  MPI_Barrier(g.get_comm());
   double t5 = tm.elapsed();
 
-  if (myrank == 0) {
+  if (g.get_myrank() == 0) {
     std::cerr << "initialize      " << (t2-t1) << " sec\n"
               << "diagonalization " << (t3-t2) << " sec\n"
               << "check           " << (t4-t3) << " sec\n"
