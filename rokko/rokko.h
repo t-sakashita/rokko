@@ -1,15 +1,15 @@
 /*****************************************************************************
-*
-* Rokko: Integrated Interface for libraries of eigenvalue decomposition
-*
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
-*                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
-*
-* Distributed under the Boost Software License, Version 1.0. (See accompanying
-* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-*
-*****************************************************************************/
+ *
+ * Rokko: Integrated Interface for libraries of eigenvalue decomposition
+ *
+ * Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+ *                            Synge Todo <wistaria@comp-phys.org>,
+ *                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
+ *
+ * Distributed under the Boost Software License, Version 1.0. (See accompanying
+ * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+ *
+ *****************************************************************************/
 
 #ifndef ROKKO_H
 #define ROKKO_H
@@ -65,8 +65,8 @@ void rokko_solver_construct_f(struct rokko_solver* solver, char* solver_name);
 void rokko_solver_destruct(struct rokko_solver* solver);
 
 void rokko_solver_diagonalize_distributed_matrix(struct rokko_solver* solver,
-  struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
-  struct rokko_distributed_matrix* eigvecs);
+						 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
+						 struct rokko_distributed_matrix* eigvecs);
 
 void rokko_localized_vector_construct(struct rokko_localized_vector* vec, int dim1);
 
@@ -77,20 +77,19 @@ double rokko_localized_vector_get(struct rokko_localized_vector vec, int i);
 double rokko_localized_vector_get_f(struct rokko_localized_vector vec, int i);
 
 void rokko_localized_matrix_construct(struct rokko_localized_matrix* matrix, int dim1, int dim2,
-  int matrix_major);
+				      int matrix_major);
   
 void rokko_localized_matrix_destruct(struct rokko_localized_matrix* matrix);
 
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
-    struct rokko_grid grid, struct rokko_solver solver, int matrix_major);
+					struct rokko_grid grid, struct rokko_solver solver, int matrix_major);
   
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix* matrix,
-  double (*func)(int i, int j));
+						double (*func)(int i, int j));
 
 void rokko_distributed_matrix_print(struct rokko_distributed_matrix matrix);
-
 
 void rokko_distributed_matrix_set_local(struct rokko_distributed_matrix* matrix, int local_i, int local_j, double value);
 
