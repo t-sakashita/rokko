@@ -85,6 +85,12 @@ if(BUILD_SLEPC)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_SLEPC)
 
+if(BUILD_C_BINDING)
+  if(BUILD_ANASAZI OR BUILD_SLEPC)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver_c.cpp distributed_crs_matrix_c.cpp)
+  endif(BUILD_ANASAZI OR BUILD_SLEPC)
+endif(BUILD_C_BINDING)
+
 add_library(rokko ${ROKKO_SOURCES})
 if (BUILD_SHARED_LIBS)
   set_target_properties(rokko PROPERTIES COMPILE_DEFINITIONS ROKKO_BUILD_SHARED_LIBS=1)
