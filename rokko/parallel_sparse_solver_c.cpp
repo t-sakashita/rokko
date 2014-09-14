@@ -31,13 +31,22 @@ void rokko_parallel_sparse_solver_destruct(rokko_parallel_sparse_solver* solver)
   delete ptr;
 }
 
-/*
-void rokko_parallel_sparse_solver_diagonalize_distributed_matrix(struct rokko_parallel_sparse_solver* solver,
-  struct rokko_distributed_crs_matrix* mat, struct rokko_localized_vector* eigvals,
-  struct rokko_distributed_crs_matrix* eigvecs) {
-    static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->diagonalize(
-      *static_cast<rokko::distributed_crs_matrix*>(mat->ptr),
-      *static_cast<rokko::localized_vector*>(eigvals->ptr),
-      *static_cast<rokko::distributed_crs_matrix*>(eigvecs->ptr));
+void rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(struct rokko_parallel_sparse_solver* solver,
+								 struct rokko_distributed_crs_matrix* mat,
+								 int num_evals, int block_size, int max_iters, double tol) {
+  static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->ptr),
+									num_evals, block_size, max_iters, tol);
 }
-*/
+
+double rokko_parallel_sparse_solver_eigenvalue(struct rokko_parallel_sparse_solver* solver, int i) {
+  return static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->eigenvalue(i);
+}
+
+void rokko_parallel_sparse_solver_eigenvector(struct rokko_parallel_sparse_solver* solver, int i, double* vec) {
+  static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->eigenvector(i, vec);
+}
+
+int rokko_parallel_sparse_solver_num_conv(struct rokko_parallel_sparse_solver* solver) {
+  return static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->num_conv();
+}
+

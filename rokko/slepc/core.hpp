@@ -171,9 +171,8 @@ public:
     return eval_r;
   }
 
-  void eigenvector(int i, std::vector<double>& vec) const {
+  void eigenvector(int i, double* vec) const {
     Vec evec_r, evec_i;
-    vec.resize(num_local_rows_);
     MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
     MatGetVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
@@ -183,6 +182,13 @@ public:
     VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
     VecDestroy(&evec_r); //CHKERRQ(ierr);
     VecDestroy(&evec_i); //CHKERRQ(ierr);
+  }
+
+  void eigenvector(int i, std::vector<double>& vec) const {
+    if (vec.size() < num_local_rows_) {
+      vec.resize(num_local_rows_);
+    }
+    eigenvector(i, &vec[0]);
   }
 
   int num_conv() const {

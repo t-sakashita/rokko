@@ -40,3 +40,6 @@ int rokko_distributed_crs_matrix_end_row(struct rokko_distributed_crs_matrix* ma
   return static_cast<rokko::distributed_crs_matrix*>(matrix->ptr)->end_row();
 }
 
+int rokko_distributed_crs_matrix_num_local_rows(struct rokko_distributed_crs_matrix* matrix) {
+  return static_cast<rokko::distributed_crs_matrix*>(matrix->ptr)->num_local_rows();
+}

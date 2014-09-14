@@ -26,46 +26,47 @@ int main(int argc, char *argv[]) {
 
   int root = 0;
 
-  int nev = 1;
-  int blockSize = 1;
+  int nev = 10;
+  int blockSize = 5;
   int maxIters = 500;
   double tol = 1.0e-8;
 
-  int L = 3;
+  int L = 8;
   int dim = 1 << L;
   int lattice_first[L], lattice_second[L];
-  int count, l;
-  count = 0;
+  int l;
   for (l = 0; l < L; ++l) {
-    lattice_first[count] = l;
-    lattice_second[count] = (l+1) % L;
+    lattice_first[l] = l;
+    lattice_second[l] = (l+1) % L;
   }
 
   char solver_name[7] = "anasazi";
+  struct rokko_parallel_sparse_solver solver;
+  rokko_parallel_sparse_solver_construct(&solver, solver_name, argc, argv);
 
   struct rokko_distributed_crs_matrix mat, Z;
-  struct rokko_parallel_sparse_solver solver;
-
   struct rokko_localized_vector w;
 
   printf("solver name = %s\n", solver_name);
   printf("matrix dimension = %d\n", dim);
 
-  rokko_parallel_sparse_solver_construct(&solver, solver_name, argc, argv);
   rokko_distributed_crs_matrix_construct(&mat, dim, dim, solver);
   rokko_distributed_crs_matrix_construct(&Z, dim, dim, solver);
-  rokko_localized_vector_construct(&w, dim);
 
   int row;
   int row_start = rokko_distributed_crs_matrix_start_row(&mat);
   int row_end = rokko_distributed_crs_matrix_end_row(&mat);
   int cols[dim];
   double values[dim];
+
+  printf("row_start = %d\n", row_start);
+  printf("row_end = %d\n", row_end);
  
-  int diag;
+  int count;
+  double diag;
   int i, j, m1, m2, m3;
-  count = 0;
   for (row = row_start; row < row_end; ++row) {
+    count = 0;
     diag = 0;
     for (l = 0;  l < L; ++l) {
       i = lattice_first[l];
@@ -85,24 +86,39 @@ int main(int argc, char *argv[]) {
     cols[count] = row;
     values[count] = diag;
     ++count;
-    rokko_distributed_crs_matrix_insert(&mat, count, row, cols, values);
+    rokko_distributed_crs_matrix_insert(&mat, row, count, cols, values);
   }
 
   rokko_distributed_crs_matrix_complete(&mat);
-  //rokko_solver_diagonalize_distributed_crs_matrix(&solver, &mat);
+  rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(&solver, &mat, nev, blockSize, maxIters, tol);
+  int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
+  int num_conv = rokko_parallel_sparse_solver_num_conv(&solver);
+  printf("number of converged eigenpairs=%d\n", num_conv);
+
+  i = 0;
+  double eig_val = rokko_parallel_sparse_solver_eigenvalue(&solver, i);
+
+  //double* eig_vec;
+  //eig_vec = (double *)malloc(sizeof(double) * num_local_rows);
+  double eig_vec[dim];
+  rokko_parallel_sparse_solver_eigenvector(&solver, i, eig_vec);
 
   /*
   rokko_distributed_crs_matrix_print(mat);
-
-  if (myrank == 0) {
-    printf("Computed Eigenvalues =\n");
-    for (i = 0; i < dim; ++i)
-      printf("%30.20f\n", rokko_localized_vector_get(w, i));
-  }
   */
+
+  if (myrank == root) {
+    printf("number of converged eigenpairs=%d\n", num_conv);
+    printf("Computed Eigenvalue =\n");
+    printf("%30.20f\n", eig_val);
+    printf("Computed Eigenvector =\n");
+    for (j = 0; j < num_local_rows; ++j)
+      printf("%30.20f ", eig_vec[j]);
+    printf("\n");    
+  }
+
   rokko_distributed_crs_matrix_destruct(&mat);
   rokko_distributed_crs_matrix_destruct(&Z);
-  rokko_localized_vector_destruct(&w);
 
   rokko_parallel_sparse_solver_destruct(&solver);
 
