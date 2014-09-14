@@ -30,7 +30,7 @@ struct rokko_distributed_crs_matrix {
 
 void rokko_parallel_sparse_solver_construct(struct rokko_parallel_sparse_solver* solver, char* solver_name, int argc, char** argv);
 
-void rokko_paralle_sparse_solver_construct_f(struct rokko_parallel_sparse_solver* solver, char* solver_name);
+void rokko_parallel_sparse_solver_construct_f(struct rokko_parallel_sparse_solver* solver, char* solver_name);
 
 void rokko_parallel_sparse_solver_destruct(struct rokko_parallel_sparse_solver* solver);
 
