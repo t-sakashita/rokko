@@ -23,13 +23,7 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
-
   int root = 0;
-
-  int nev = 10;
-  int blockSize = 5;
-  int maxIters = 500;
-  double tol = 1.0e-8;
 
   int L = 8;
   int dim = 1 << L;
@@ -41,14 +35,19 @@ int main(int argc, char *argv[]) {
   }
 
   char solver_name[7] = "anasazi";
+  printf("solver name = %s\n", solver_name);
+  if (myrank == root) {
+    printf("Eigenvalue decomposition of antiferromagnetic Heisenberg chain\n");
+    printf("solver = anasazi/Krylov-Schur\n");
+    printf("L = %d\n", L);
+    printf("dimension = %d\n", dim);
+  }
+
   struct rokko_parallel_sparse_solver solver;
   rokko_parallel_sparse_solver_construct(&solver, solver_name, argc, argv);
 
   struct rokko_distributed_crs_matrix mat, Z;
   struct rokko_localized_vector w;
-
-  printf("solver name = %s\n", solver_name);
-  printf("matrix dimension = %d\n", dim);
 
   rokko_distributed_crs_matrix_construct(&mat, dim, dim, solver);
   rokko_distributed_crs_matrix_construct(&Z, dim, dim, solver);
@@ -58,9 +57,6 @@ int main(int argc, char *argv[]) {
   int row_end = rokko_distributed_crs_matrix_end_row(&mat);
   int cols[dim];
   double values[dim];
-
-  printf("row_start = %d\n", row_start);
-  printf("row_end = %d\n", row_end);
  
   int count;
   double diag;
@@ -88,24 +84,21 @@ int main(int argc, char *argv[]) {
     ++count;
     rokko_distributed_crs_matrix_insert(&mat, row, count, cols, values);
   }
-
   rokko_distributed_crs_matrix_complete(&mat);
+
+  int nev = 10;
+  int blockSize = 5;
+  int maxIters = 500;
+  double tol = 1.0e-8;
   rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(&solver, &mat, nev, blockSize, maxIters, tol);
-  int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
   int num_conv = rokko_parallel_sparse_solver_num_conv(&solver);
-  printf("number of converged eigenpairs=%d\n", num_conv);
 
-  i = 0;
-  double eig_val = rokko_parallel_sparse_solver_eigenvalue(&solver, i);
-
+  double eig_val = rokko_parallel_sparse_solver_eigenvalue(&solver, 0);
   //double* eig_vec;
   //eig_vec = (double *)malloc(sizeof(double) * num_local_rows);
-  double eig_vec[dim];
+  int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
+  double eig_vec[num_local_rows];
   rokko_parallel_sparse_solver_eigenvector(&solver, i, eig_vec);
-
-  /*
-  rokko_distributed_crs_matrix_print(mat);
-  */
 
   if (myrank == root) {
     printf("number of converged eigenpairs=%d\n", num_conv);
@@ -119,7 +112,6 @@ int main(int argc, char *argv[]) {
 
   rokko_distributed_crs_matrix_destruct(&mat);
   rokko_distributed_crs_matrix_destruct(&Z);
-
   rokko_parallel_sparse_solver_destruct(&solver);
 
   MPI_Finalize();
