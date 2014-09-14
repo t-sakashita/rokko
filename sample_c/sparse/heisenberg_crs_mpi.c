@@ -13,7 +13,6 @@
 
 #include <mpi.h>
 #include <rokko/rokko.h>
-#include <rokko/rokko_sparse.h>
 
 #include <stdio.h>
 #include <stdlib.h>
