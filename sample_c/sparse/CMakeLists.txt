@@ -8,7 +8,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(SAMPLE heisenberg_crs_mpi)
+set(SAMPLE heisenberg_crs_mpi) # heisenberg_mfree_mpi)
 foreach(name ${SAMPLE})
   set(target_name sparse_sample_c_${name})
   add_executable(${target_name} ${name}.c)

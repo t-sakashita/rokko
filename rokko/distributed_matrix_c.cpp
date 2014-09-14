@@ -17,7 +17,7 @@
 #include <rokko/rokko.h>
 
 void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int dim1, int dim2,
-                                        rokko_grid grid, rokko_solver solver, int matrix_major) {
+                                        rokko_grid grid, rokko_parallel_dense_solver solver, int matrix_major) {
   if (matrix_major == rokko_matrix_col_major)
     matrix->ptr = new rokko::distributed_matrix<rokko::matrix_col_major>(dim1, dim2,
 									 *static_cast<rokko::grid*>(grid.ptr),

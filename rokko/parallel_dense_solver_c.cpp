@@ -14,24 +14,24 @@
 #include <rokko/solver.hpp>
 #include <rokko/rokko.h>
 
-void rokko_solver_construct(rokko_solver* solver, char* solver_name, int argc, char** argv) {
+void rokko_parallel_dense_solver_construct(rokko_parallel_dense_solver* solver, char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::parallel_dense_solver(std::string(solver_name));
   static_cast<rokko::parallel_dense_solver*>(solver->ptr)->initialize(argc, argv);
 }
 
-void rokko_solver_construct_f(rokko_solver* solver, char* solver_name) {
+void rokko_parallel_dense_solver_construct_f(rokko_parallel_dense_solver* solver, char* solver_name) {
   int argc = 0;
   char** argv;
-  rokko_solver_construct(solver, solver_name, argc, argv);
+  rokko_parallel_dense_solver_construct(solver, solver_name, argc, argv);
 }
 
-void rokko_solver_destruct(rokko_solver* solver) {
+void rokko_parallel_dense_solver_destruct(rokko_parallel_dense_solver* solver) {
   rokko::parallel_dense_solver* ptr = static_cast<rokko::parallel_dense_solver*>(solver->ptr);
   ptr->finalize();
   delete ptr;
 }
 
-void rokko_solver_diagonalize_distributed_matrix(struct rokko_solver* solver,
+void rokko_parallel_dense_solver_diagonalize_distributed_matrix(struct rokko_parallel_dense_solver* solver,
   struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
   struct rokko_distributed_matrix* eigvecs) {
   if (mat->major == rokko_matrix_col_major)

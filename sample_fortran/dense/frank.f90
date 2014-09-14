@@ -19,7 +19,7 @@ program frank_matrix
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
   type(rokko_grid) :: grid
-  type(rokko_solver) :: solver
+  type(rokko_parallel_dense_solver) :: solver
   type(rokko_localized_vector) :: w
   character(len=100) :: solver_name, tmp_str
   integer arg_len, status
@@ -44,7 +44,7 @@ program frank_matrix
   write(*,*) "solver name = ", trim(solver_name)
   write(*,*) "matrix dimension = ", dim
 
-  call rokko_solver_construct(solver, solver_name)
+  call rokko_parallel_dense_solver_construct(solver, solver_name)
   call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
 
   call rokko_distributed_matrix_construct(mat, dim, dim, grid, solver, rokko_matrix_col_major)
@@ -55,7 +55,7 @@ program frank_matrix
   call rokko_frank_matrix_generate_distributed_matrix(mat)
   call rokko_distributed_matrix_print(mat)
 
-  call rokko_solver_diagonalize_distributed_matrix(solver, mat, w, Z)
+  call rokko_parallel_dense_solver_diagonalize_distributed_matrix(solver, mat, w, Z)
 
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
@@ -67,7 +67,7 @@ program frank_matrix
   call rokko_distributed_matrix_destruct(mat)
   call rokko_distributed_matrix_destruct(Z)
   call rokko_localized_vector_destruct(w)
-  call rokko_solver_destruct(solver)
+  call rokko_parallel_dense_solver_destruct(solver)
   call rokko_grid_destruct(grid)
 
   call MPI_finalize(ierr)
