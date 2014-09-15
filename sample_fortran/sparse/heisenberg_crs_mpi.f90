@@ -26,6 +26,10 @@ program frank_matrix
   integer :: row, start_row, end_row
   integer(c_int), allocatable, dimension(:) :: cols
   real(c_double), allocatable, dimension(:) :: values
+
+  real(c_double) :: eig_val
+  real(c_double), allocatable, dimension(:) :: eig_vec
+
 !  integer(4), allocatable, dimension(:) :: cols
 !  real(8), allocatable, dimension(:) :: values
 
@@ -34,6 +38,7 @@ program frank_matrix
   character(len=100) :: solver_name, tmp_str
   integer :: arg_len, status
   integer :: num_evals, block_size, max_iters
+  integer :: num_local_rows, num_conv
   real(8) :: tol
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
@@ -51,11 +56,10 @@ program frank_matrix
      lattice_second(k) = mod(k, L)
   end do
 
-  print*, "lattice_first=", lattice_first
-  print*, "lattice_second=", lattice_second
-
-  write(*,*) "solver name = ", trim(solver_name)
-  write(*,*) "matrix dimension = ", dim
+  if (myrank == 0) then
+     write(*,*) "solver name = ", trim(solver_name)
+     write(*,*) "matrix dimension = ", dim
+  endif
 
   call rokko_parallel_sparse_solver_construct(solver, solver_name)
 
@@ -63,8 +67,6 @@ program frank_matrix
 
   start_row = rokko_distributed_crs_matrix_start_row(mat);
   end_row = rokko_distributed_crs_matrix_end_row(mat);
-  print*, "row_start=", start_row
-  print*, "row_end=", end_row
 
   allocate( cols(dim) )
   allocate( values(dim) )
@@ -90,13 +92,10 @@ program frank_matrix
      count = count + 1
      cols(count) = row
      values(count) = diag
-     print*, "count=", count
-     print*, "cols=", cols
-     print*, "values=", values
      call rokko_distributed_crs_matrix_insert(mat, row, count, cols, values)
   end do
   call rokko_distributed_crs_matrix_complete(mat)
-  call rokko_distributed_crs_matrix_print(mat)
+!  call rokko_distributed_crs_matrix_print(mat)
 
   num_evals = 10
   block_size = 5
@@ -104,12 +103,19 @@ program frank_matrix
   tol = 1.0e-8
   call rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(solver, mat, num_evals, block_size, max_iters, tol)
 
-  ! if (myrank.eq.0) then
-  !    write(*,'(A)') "Computed Eigenvalues = "
-  !    do i = 1, dim
-  !       write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
-  !    enddo
-  ! endif
+  num_conv = rokko_parallel_sparse_solver_num_conv(solver);
+  eig_val = rokko_parallel_sparse_solver_eigenvalue(solver, 0);
+  num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
+  print*, "num_local_rows=", num_local_rows
+  allocate( eig_vec(num_local_rows) )
+  call rokko_parallel_sparse_solver_eigenvector(solver, 0, eig_vec)
+
+  if (myrank.eq.0) then
+     print*, "number of converged eigenpairs=", num_conv
+     print*, "Computed Eigenvalues = ", eig_val
+     print*, "Computed Eigenvector = "
+     print '(8f10.4)', eig_vec
+  endif
 
   call rokko_distributed_crs_matrix_destruct(mat)
   call rokko_parallel_sparse_solver_destruct(solver)

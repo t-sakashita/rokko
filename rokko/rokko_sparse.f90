@@ -61,13 +61,15 @@ module rokko_sparse
        integer(c_int), value, intent(in) :: i
      end function rokko_parallel_sparse_solver_eigenvalue
 
-     real(c_double) function rokko_parallel_sparse_solver_eigenvector(solver, i) bind(c)
+     subroutine rokko_parallel_sparse_solver_eigenvector(solver, i, eig_vec) bind(c)
        use iso_c_binding
        import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
        implicit none
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
        integer(c_int), value, intent(in) :: i
-     end function rokko_parallel_sparse_solver_eigenvector
+!       real(kind=c_double), intent(inout) :: eig_vec(*)
+       real(c_double), dimension(*), intent(inout) :: eig_vec
+     end subroutine rokko_parallel_sparse_solver_eigenvector
 
      
      ! rokko_distributed_crs_matrix
@@ -95,8 +97,8 @@ module rokko_sparse
        implicit none
        type(rokko_distributed_crs_matrix), intent(inout) :: matrix
        integer(c_int), value, intent(in) :: row, col_size
-       integer(c_int), dimension(col_size) :: cols
-       real(c_double), dimension(col_size) :: values
+       integer(c_int), dimension(col_size), intent(in) :: cols
+       real(c_double), dimension(col_size), intent(in) :: values
      end subroutine rokko_distributed_crs_matrix_insert
 
      subroutine rokko_distributed_crs_matrix_complete(matrix) bind(c)
