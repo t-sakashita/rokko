@@ -16,68 +16,15 @@ module rokko_sparse
   use iso_c_binding
   implicit none
 
-  enum, bind(c)
-     enumerator :: rokko_grid_col_major = 1, rokko_grid_row_major = 2
-     enumerator :: rokko_matrix_col_major = 3, rokko_matrix_row_major = 4
-  end enum
-
-  type, bind(c) :: rokko_grid
-     type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_grid
-
   type, bind(c) :: rokko_parallel_sparse_solver
      type(c_ptr) ptr
   end type rokko_parallel_sparse_solver
   
-  type, bind(c) :: rokko_localized_vector
-     type(c_ptr) ptr
-  end type rokko_localized_vector
-
-  type, bind(c) :: rokko_localized_matrix
-     type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_localized_matrix
-
   type, bind(c) :: rokko_distributed_crs_matrix
      type(c_ptr) ptr
-     integer(c_int) major
   end type rokko_distributed_crs_matrix
 
-  interface rokko_grid_construct
-     subroutine rokko_grid_construct_f(grid, comm, grid_major) bind(c)
-       use iso_c_binding
-       import rokko_grid
-       implicit none
-       type(rokko_grid), intent(out) :: grid
-       integer(c_int), value, intent(in) :: comm
-       integer(c_int), value, intent(in) :: grid_major
-     end subroutine rokko_grid_construct_f
-  end interface rokko_grid_construct
-  
   interface
-
-     ! rokko_grid
-     
-     subroutine rokko_grid_destruct(grid) bind(c)
-       import rokko_grid
-       implicit none
-       type(rokko_grid), intent(inout) :: grid
-     end subroutine rokko_grid_destruct
-
-     integer(c_int) function rokko_grid_get_myrank(grid) bind(c)
-       use iso_c_binding
-       import rokko_grid
-       implicit none
-       type(rokko_grid), value, intent(in) :: grid
-     end function rokko_grid_get_myrank
-
-     integer(c_int) function rokko_grid_get_nprocs(grid) bind(c)
-       use iso_c_binding
-       import rokko_grid
-       implicit none
-       type(rokko_grid), value, intent(in) :: grid
-     end function rokko_grid_get_nprocs
 
      ! rokko_parallel_sparse_solver
      
@@ -88,26 +35,27 @@ module rokko_sparse
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
      end subroutine rokko_parallel_sparse_solver_destruct
 
-     subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(solver, mat, eigvals, eigvecs) bind(c)
+     subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(solver, mat, &
+          & num_evals, block_size, max_iters, tol) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
        implicit none
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
        type(rokko_distributed_crs_matrix), intent(inout) :: mat
-       type(rokko_localized_vector), intent(inout) :: eigvals
-       type(rokko_distributed_crs_matrix), intent(inout) :: eigvecs
+       integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
+       real(8), value, intent(in) :: tol
      end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix
 
      integer(c_int) function rokko_parallel_sparse_solver_num_conv(solver) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
        implicit none
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
      end function rokko_parallel_sparse_solver_num_conv
 
      real(c_double) function rokko_parallel_sparse_solver_eigenvalue(solver, i) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
        implicit none
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
        integer(c_int), value, intent(in) :: i
@@ -115,7 +63,7 @@ module rokko_sparse
 
      real(c_double) function rokko_parallel_sparse_solver_eigenvector(solver, i) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
        implicit none
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
        integer(c_int), value, intent(in) :: i
@@ -147,8 +95,8 @@ module rokko_sparse
        implicit none
        type(rokko_distributed_crs_matrix), intent(inout) :: matrix
        integer(c_int), value, intent(in) :: row, col_size
-       integer(c_int), intent(in) :: cols
-       real(c_double), intent(in) :: values
+       integer(c_int), intent(in) :: cols(:)
+       real(8), intent(in) :: values(:)
      end subroutine rokko_distributed_crs_matrix_insert
 
      subroutine rokko_distributed_crs_matrix_complete(matrix) bind(c)
