@@ -95,8 +95,9 @@ module rokko_sparse
        implicit none
        type(rokko_distributed_crs_matrix), intent(inout) :: matrix
        integer(c_int), value, intent(in) :: row, col_size
-       integer(c_int), intent(in) :: cols(:)
-       real(8), intent(in) :: values(:)
+       integer(c_int), dimension(col_size) :: cols
+!       integer(c_int), target :: cols(col_size)
+       real(c_double), dimension(col_size) :: values
      end subroutine rokko_distributed_crs_matrix_insert
 
      subroutine rokko_distributed_crs_matrix_complete(matrix) bind(c)
@@ -131,6 +132,7 @@ module rokko_sparse
      end function rokko_distributed_crs_matrix_num_local_rows
 
   end interface
+
 contains
 
 subroutine rokko_parallel_sparse_solver_construct(solver, solver_name)

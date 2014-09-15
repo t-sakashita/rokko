@@ -24,8 +24,10 @@ program frank_matrix
   real(8) :: diag
   integer :: i, j, m1, m2, m3, count
   integer :: row, start_row, end_row
-  integer, allocatable, dimension(:) :: cols
-  real(8), allocatable, dimension(:) :: values
+  integer(c_int), allocatable, target, dimension(:) :: cols
+  real(c_double), allocatable, target, dimension(:) :: values
+!  integer(4), allocatable, dimension(:) :: cols
+!  real(8), allocatable, dimension(:) :: values
 
   type(rokko_parallel_sparse_solver) :: solver
   type(rokko_distributed_crs_matrix) :: mat
@@ -46,7 +48,7 @@ program frank_matrix
   allocate( lattice_second(L) )
   do k = 1, L
      lattice_first(k) = k - 1
-     lattice_second(k) = k
+     lattice_second(k) = mod(k, L)
   end do
 
   write(*,*) "solver name = ", trim(solver_name)
@@ -82,9 +84,11 @@ program frank_matrix
            diag = diag + 0.25
         end if
      end do
-     cols(count) = row;
-     values(count) = diag;
-     count = count + 1;
+     cols(count) = row
+     values(count) = diag
+     count = count + 1
+     print*, "cols=", cols
+     print*, "values=", values
      call rokko_distributed_crs_matrix_insert(mat, row, count, cols, values);
   end do
   call rokko_distributed_crs_matrix_complete(mat);

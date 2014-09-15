@@ -42,6 +42,11 @@ public:
     mat->insert(row, cols, values);
   }
   void insert(int row, int col_size, int* cols, double* const values) {
+    std::cout << "cnt=" << col_size << std::endl;
+    for (int i=0; i< col_size; ++i) {
+      std::cout << "cols[" << i << "]=" << cols[i] << std::endl;
+      std::cout << "values[" << i << "]=" << values[i] << std::endl;
+    }
     mat->insert(row, col_size, cols, values);
   }
   void complete() {
