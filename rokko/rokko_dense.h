@@ -24,7 +24,11 @@ enum {
   rokko_grid_col_major = 1, rokko_grid_row_major = 2,
   rokko_matrix_col_major = 3, rokko_matrix_row_major = 4
 };
-  
+
+struct rokko_serial_dense_solver {
+  void* ptr;
+};
+
 struct rokko_grid {
   void* ptr;
   int major;
@@ -48,6 +52,18 @@ struct rokko_distributed_matrix {
   int major;
 };
 
+
+/* serial_dense_sover */
+void rokko_serial_dense_solver_construct(struct rokko_serial_dense_solver* solver, char* solver_name, int argc, char** argv);
+void rokko_serial_dense_solver_construct_f(struct rokko_serial_dense_solver* solver, char* solver_name);
+void rokko_serial_dense_solver_destruct(struct rokko_serial_dense_solver* solver);
+void rokko_serial_dense_solver_diagonalize_localized_matrix(struct rokko_serial_dense_solver* solver,
+							    struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
+							    struct rokko_localized_matrix* eigvecs);
+
+
+/* parallel_dense_sover */
+
 void rokko_grid_construct(struct rokko_grid* grid, MPI_Comm comm, int grid_major);
 
 void rokko_grid_construct_f(struct rokko_grid* grid, int comm, int grid_major);
@@ -68,6 +84,8 @@ void rokko_parallel_dense_solver_diagonalize_distributed_matrix(struct rokko_par
 						 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
 						 struct rokko_distributed_matrix* eigvecs);
 
+/* localized_matrix */
+
 void rokko_localized_vector_construct(struct rokko_localized_vector* vec, int dim1);
 
 void rokko_localized_vector_destruct(struct rokko_localized_vector* vec);
@@ -81,6 +99,9 @@ void rokko_localized_matrix_construct(struct rokko_localized_matrix* matrix, int
   
 void rokko_localized_matrix_destruct(struct rokko_localized_matrix* matrix);
 
+void rokko_localized_matrix_print(struct rokko_localized_matrix matrix);
+
+/* distributed_matrix */
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
 					struct rokko_grid grid, struct rokko_parallel_dense_solver solver, int matrix_major);
   

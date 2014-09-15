@@ -8,7 +8,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(SAMPLE frank frank_function_pointer)
+set(SAMPLE frank frank_mpi frank_function_pointer)
 foreach(name ${SAMPLE})
   set(target_name sample_c_${name})
   add_executable(${target_name} ${name}.c)
