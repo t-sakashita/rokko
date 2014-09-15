@@ -51,6 +51,9 @@ program frank_matrix
      lattice_second(k) = mod(k, L)
   end do
 
+  print*, "lattice_first=", lattice_first
+  print*, "lattice_second=", lattice_second
+
   write(*,*) "solver name = ", trim(solver_name)
   write(*,*) "matrix dimension = ", dim
 
@@ -68,35 +71,37 @@ program frank_matrix
 
   do row = start_row, end_row
      count = 0
-     diag = 0;
+     diag = 0
      do k = 1, L
         i = lattice_first(k)
         j = lattice_second(k)
         m1 = ishft(1, i)
         m2 = ishft(1, j)
         m3 = m1 + m2
-        if ( iand(row, m3) == m1 .or. iand(row, m3) == m2 ) then
+        if ( (iand(row, m3) == m1) .or. (iand(row, m3) == m2) ) then
+           count = count + 1
            cols(count) = ieor(row, m3)
            values(count) = 0.5
-           count = count + 1
            diag = diag - 0.25
         else
            diag = diag + 0.25
         end if
      end do
+     count = count + 1
      cols(count) = row
      values(count) = diag
-     count = count + 1
-!     print*, "cols=", cols
-!     print*, "values=", values
-     call rokko_distributed_crs_matrix_insert(mat, row, count, cols, values);
+     print*, "count=", count
+     print*, "cols=", cols
+     print*, "values=", values
+     call rokko_distributed_crs_matrix_insert(mat, row, count, cols, values)
   end do
-  call rokko_distributed_crs_matrix_complete(mat);
+  call rokko_distributed_crs_matrix_complete(mat)
+  call rokko_distributed_crs_matrix_print(mat)
 
-  num_evals = 10;
-  block_size = 5;
-  max_iters = 500;
-  tol = 1.0e-8;
+  num_evals = 10
+  block_size = 5
+  max_iters = 500
+  tol = 1.0e-8
   call rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(solver, mat, num_evals, block_size, max_iters, tol)
 
   ! if (myrank.eq.0) then

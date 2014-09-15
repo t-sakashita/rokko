@@ -130,6 +130,14 @@ module rokko_sparse
        type(rokko_distributed_crs_matrix), intent(out) :: matrix
      end function rokko_distributed_crs_matrix_num_local_rows
 
+     subroutine rokko_distributed_crs_matrix_print(matrix) &
+          bind(c)
+       use iso_c_binding
+       import rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(out) :: matrix
+     end subroutine rokko_distributed_crs_matrix_print
+
   end interface
 
 contains

@@ -61,6 +61,9 @@ public:
   int end_row() {
     return end_row_;
   }
+  void print() {
+    std::cout << *matrix_ << std::endl;
+  }
   //private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;

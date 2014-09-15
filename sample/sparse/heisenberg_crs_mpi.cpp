@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   int maxIters = 500;
   double tol = 1.0e-8;
 
-  int L = 8;
+  int L = 2;
   int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i = 0; i < L; ++i) {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   rokko::distributed_crs_matrix mat(dim, dim, solver);
   std::vector<double> values;
   std::vector<int> cols;
-  for (int row = mat.start_row(); row < mat.end_row(); ++row) {
+  for (int row = mat.start_row(); row <= mat.end_row(); ++row) {
     cols.clear();
     values.clear();
     double diag = 0;
@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
     mat.insert(row, cols, values);
   }
   mat.complete();
+  mat.print();
 
   solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 

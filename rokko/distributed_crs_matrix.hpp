@@ -28,6 +28,7 @@ public:
   virtual int num_local_rows() = 0;
   virtual int start_row() = 0;
   virtual int end_row() = 0;
+  virtual void print() = 0;
 };
 
 } // end namespace detail
@@ -59,10 +60,14 @@ public:
   int end_row() {
     return mat->end_row();
   }
+  void print() {
+    mat->print();
+  }
   detail::distributed_crs_matrix_base* get_matrix() {
     return mat;
   }
-  //private:
+
+private:
   detail::distributed_crs_matrix_base* mat;
 };
 

@@ -72,6 +72,9 @@ public:
   int end_row() {
     return end_row_;
   }
+  void print() {
+    MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
+  }
 
 private:
   int dim_;
