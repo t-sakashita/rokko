@@ -97,36 +97,6 @@ module rokko_sparse
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_distributed_crs_matrix), intent(inout) :: eigvecs
      end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix
-
-     ! rokko_localized_vector
-
-     subroutine rokko_localized_vector_construct(vec, dim1) bind(c)
-       use iso_c_binding
-       import rokko_localized_vector
-       implicit none
-       type(rokko_localized_vector), intent(out) :: vec
-       integer(c_int), value, intent(in) :: dim1
-     end subroutine rokko_localized_vector_construct
-
-     subroutine rokko_localized_vector_destruct(vec) bind(c)
-       use iso_c_binding
-       import rokko_localized_vector
-       implicit none
-       type(rokko_localized_vector), intent(inout) :: vec
-     end subroutine rokko_localized_vector_destruct
-  end interface
-
-  interface rokko_localized_vector_get
-     real(c_double) function rokko_localized_vector_get_f(vec, i) bind(c)
-       use iso_c_binding
-       import rokko_localized_vector
-       implicit none
-       type(rokko_localized_vector), value, intent(in) :: vec
-       integer(c_int), value, intent(in) :: i
-     end function rokko_localized_vector_get_f
-  end interface rokko_localized_vector_get
-
-  interface
      
      ! rokko_distributed_crs_matrix
 
