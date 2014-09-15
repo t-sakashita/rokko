@@ -24,8 +24,8 @@ program frank_matrix
   real(8) :: diag
   integer :: i, j, m1, m2, m3, count
   integer :: row, start_row, end_row
-  integer(c_int), allocatable, target, dimension(:) :: cols
-  real(c_double), allocatable, target, dimension(:) :: values
+  integer(c_int), allocatable, dimension(:) :: cols
+  real(c_double), allocatable, dimension(:) :: values
 !  integer(4), allocatable, dimension(:) :: cols
 !  real(8), allocatable, dimension(:) :: values
 
@@ -42,7 +42,7 @@ program frank_matrix
 
   solver_name = "anasazi"
 
-  L = 3
+  L = 8
   dim = ishft(1,L)
   allocate( lattice_first(L) )
   allocate( lattice_second(L) )
@@ -87,8 +87,8 @@ program frank_matrix
      cols(count) = row
      values(count) = diag
      count = count + 1
-     print*, "cols=", cols
-     print*, "values=", values
+!     print*, "cols=", cols
+!     print*, "values=", values
      call rokko_distributed_crs_matrix_insert(mat, row, count, cols, values);
   end do
   call rokko_distributed_crs_matrix_complete(mat);

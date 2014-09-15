@@ -96,7 +96,6 @@ module rokko_sparse
        type(rokko_distributed_crs_matrix), intent(inout) :: matrix
        integer(c_int), value, intent(in) :: row, col_size
        integer(c_int), dimension(col_size) :: cols
-!       integer(c_int), target :: cols(col_size)
        real(c_double), dimension(col_size) :: values
      end subroutine rokko_distributed_crs_matrix_insert
 

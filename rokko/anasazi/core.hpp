@@ -90,6 +90,7 @@ public:
   void finalize() {}
   void diagonalize(rokko::distributed_crs_matrix& mat,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
+    std::cout << "num_evals=" << num_evals << " block_size=" << block_size << " max_iters=" << max_iters << " tol=" << tol << std::endl;
     map_ = new mapping_1d(mat.get_dim());
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
     multivector_->Random();
