@@ -87,7 +87,7 @@ module rokko_sparse
        implicit none
        type(rokko_parallel_sparse_solver), intent(inout) :: solver
      end subroutine rokko_parallel_sparse_solver_destruct
-     
+
      subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(solver, mat, eigvals, eigvecs) bind(c)
        use iso_c_binding
        import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
@@ -97,6 +97,30 @@ module rokko_sparse
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_distributed_crs_matrix), intent(inout) :: eigvecs
      end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix
+
+     integer(c_int) function rokko_parallel_sparse_solver_num_conv(solver) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+     end function rokko_parallel_sparse_solver_num_conv
+
+     real(c_double) function rokko_parallel_sparse_solver_eigenvalue(solver, i) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       integer(c_int), value, intent(in) :: i
+     end function rokko_parallel_sparse_solver_eigenvalue
+
+     real(c_double) function rokko_parallel_sparse_solver_eigenvector(solver, i) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       integer(c_int), value, intent(in) :: i
+     end function rokko_parallel_sparse_solver_eigenvector
+
      
      ! rokko_distributed_crs_matrix
 
@@ -116,6 +140,47 @@ module rokko_sparse
        implicit none
        type(rokko_distributed_crs_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_crs_matrix_destruct
+
+     subroutine rokko_distributed_crs_matrix_insert(matrix, row, col_size, cols, values) bind(c)
+       use iso_c_binding
+       import rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(inout) :: matrix
+       integer(c_int), value, intent(in) :: row, col_size
+       integer(c_int), intent(in) :: cols
+       real(c_double), intent(in) :: values
+     end subroutine rokko_distributed_crs_matrix_insert
+
+     subroutine rokko_distributed_crs_matrix_complete(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(inout) :: matrix
+     end subroutine rokko_distributed_crs_matrix_complete
+
+     integer(c_int) function rokko_distributed_crs_matrix_start_row(matrix) &
+          bind(c)
+       use iso_c_binding
+       import rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(out) :: matrix
+     end function rokko_distributed_crs_matrix_start_row
+
+     integer(c_int) function rokko_distributed_crs_matrix_end_row(matrix) &
+          bind(c)
+       use iso_c_binding
+       import rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(out) :: matrix
+     end function rokko_distributed_crs_matrix_end_row
+
+     integer(c_int) function rokko_distributed_crs_matrix_num_local_rows(matrix) &
+          bind(c)
+       use iso_c_binding
+       import rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(out) :: matrix
+     end function rokko_distributed_crs_matrix_num_local_rows
 
   end interface
 contains
