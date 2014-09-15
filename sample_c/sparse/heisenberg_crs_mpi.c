@@ -34,8 +34,9 @@ int main(int argc, char *argv[]) {
   }
 
   char solver_name[7] = "anasazi";
-  printf("solver name = %s\n", solver_name);
+
   if (myrank == root) {
+    printf("solver name = %s\n", solver_name);
     printf("Eigenvalue decomposition of antiferromagnetic Heisenberg chain\n");
     printf("solver = anasazi/Krylov-Schur\n");
     printf("L = %d\n", L);
@@ -86,15 +87,13 @@ int main(int argc, char *argv[]) {
   rokko_distributed_crs_matrix_complete(&mat);
 
   int nev = 10;
-  int blockSize = 5;
-  int maxIters = 500;
+  int block_size = 5;
+  int max_iters = 500;
   double tol = 1.0e-8;
-  rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(&solver, &mat, nev, blockSize, maxIters, tol);
+  rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(&solver, &mat, nev, block_size, max_iters, tol);
   int num_conv = rokko_parallel_sparse_solver_num_conv(&solver);
 
   double eig_val = rokko_parallel_sparse_solver_eigenvalue(&solver, 0);
-  //double* eig_vec;
-  //eig_vec = (double *)malloc(sizeof(double) * num_local_rows);
   int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
   double eig_vec[num_local_rows];
   rokko_parallel_sparse_solver_eigenvector(&solver, i, eig_vec);

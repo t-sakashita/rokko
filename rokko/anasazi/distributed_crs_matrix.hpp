@@ -64,7 +64,7 @@ public:
   void print() {
     std::cout << *matrix_ << std::endl;
   }
-  //private:
+private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
   int dim_;
