@@ -1,7 +1,7 @@
 #include "AnasaziConfigDefs.hpp"
 #include "AnasaziBasicEigenproblem.hpp"
-//#include "AnasaziSimpleLOBPCGSolMgr.hpp"
-#include "AnasaziBlockKrylovSchurSolMgr.hpp"
+#include "AnasaziSimpleLOBPCGSolMgr.hpp"
+//#include "AnasaziBlockKrylovSchurSolMgr.hpp"
 #include "AnasaziBasicOutputManager.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 #include "Epetra_CrsMatrix.h"
@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  int L = 12;
+  int L = 8;
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
   //***********************************
   //  Variables used for the LOBPCG Method
   const int    nev       = 10;
-  const int    blockSize = 3;
+  const int    blockSize = 5;
   const int    maxIters  = 500;
   const double tol       = 1.0e-8;
 
@@ -234,7 +234,8 @@ int main(int argc, char *argv[]) {
   MyPL.set( "Convergence Tolerance", tol );
 
   // Create the solver manager
-  Anasazi::BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  Anasazi::SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  //Anasazi::BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
   Anasazi::ReturnType returnCode = MySolverMan.solve();

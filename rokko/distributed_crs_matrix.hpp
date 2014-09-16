@@ -22,11 +22,13 @@ namespace detail {
 class distributed_crs_matrix_base {
 public:
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
+  virtual void insert(int row, int col_size, int* cols, double* const values) = 0;
   virtual void complete() = 0;
   virtual int get_dim() = 0;
   virtual int num_local_rows() = 0;
-  virtual int start_rows() = 0;
-  virtual int end_rows() = 0;
+  virtual int start_row() = 0;
+  virtual int end_row() = 0;
+  virtual void print() = 0;
 };
 
 } // end namespace detail
@@ -40,6 +42,9 @@ public:
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     mat->insert(row, cols, values);
   }
+  void insert(int row, int col_size, int* cols, double* const values) {
+    mat->insert(row, col_size, cols, values);
+  }
   void complete() {
     mat->complete();
   }
@@ -49,16 +54,20 @@ public:
   int num_local_rows() {
     return mat->num_local_rows();
   }
-  int start_rows() {
-    return mat->start_rows();
+  int start_row() {
+    return mat->start_row();
   }
-  int end_rows() {
-    return mat->end_rows();
+  int end_row() {
+    return mat->end_row();
+  }
+  void print() {
+    mat->print();
   }
   detail::distributed_crs_matrix_base* get_matrix() {
     return mat;
   }
-  //private:
+
+private:
   detail::distributed_crs_matrix_base* mat;
 };
 

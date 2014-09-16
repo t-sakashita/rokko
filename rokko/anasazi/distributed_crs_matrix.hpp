@@ -29,8 +29,8 @@ public:
     initialize(row_dim, col_dim);
     dim_ = row_dim;
     num_local_rows_ = map_->get_epetra_map().NumMyElements();
-    start_rows_ = map_->get_epetra_map().MinMyGID();
-    end_rows_ = map_->get_epetra_map().MaxMyGID();
+    start_row_ = map_->get_epetra_map().MinMyGID();
+    end_row_ = map_->get_epetra_map().MaxMyGID();
   }
   void initialize(int row_dim, int col_dim) {
     map_ = new mapping_1d(row_dim);
@@ -38,6 +38,9 @@ public:
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
+  }
+  void insert(int row, int col_size, int* cols, double* const values) {
+    matrix_->InsertGlobalValues(row, col_size, values, cols);
   }
   void complete() {
     matrix_->FillComplete();
@@ -52,17 +55,20 @@ public:
   int num_local_rows() {
     return num_local_rows_;
   }
-  int start_rows() {
-    return start_rows_;
+  int start_row() {
+    return start_row_;
   }
-  int end_rows() {
-    return end_rows_;
+  int end_row() {
+    return end_row_;
   }
-  //private:
+  void print() {
+    std::cout << *matrix_ << std::endl;
+  }
+private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
   int dim_;
-  int num_local_rows_, start_rows_, end_rows_;
+  int num_local_rows_, start_row_, end_row_;
 };
 
 } // namespace anasazi

@@ -14,7 +14,7 @@
 module rokko_frank_matrix
   use iso_c_binding
   implicit none
-  
+
   interface
 
      subroutine rokko_frank_matrix_generate_localized_matrix(matrix) bind(c)
@@ -31,3 +31,4 @@ module rokko_frank_matrix
 
   end interface
 end module rokko_frank_matrix
+

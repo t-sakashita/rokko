@@ -39,6 +39,7 @@ public:
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
   virtual double eigenvalue(int i) const = 0;
   virtual void eigenvector(int i, std::vector<double>& vec) const = 0;
+  virtual void eigenvector(int i, double* vec) const = 0;
   virtual int num_conv() const = 0;
   virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) = 0;
 };
@@ -74,6 +75,10 @@ public:
   }
 
   void eigenvector(int i, std::vector<double>& vec) const {
+    solver_impl_.eigenvector(i, vec);
+  }
+
+  void eigenvector(int i, double* vec) const {
     solver_impl_.eigenvector(i, vec);
   }
 
@@ -129,6 +134,10 @@ public:
   }
 
   void eigenvector(int i, std::vector<double>& vec) const {
+    solver_impl_->eigenvector(i, vec);
+  }
+
+  void eigenvector(int i, double* vec) const {
     solver_impl_->eigenvector(i, vec);
   }
 

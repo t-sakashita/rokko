@@ -15,7 +15,6 @@
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
 
 #include <petscvec.h>
@@ -172,9 +171,8 @@ public:
     return eval_r;
   }
 
-  void eigenvector(int i, std::vector<double>& vec) const {
+  void eigenvector(int i, double* vec) const {
     Vec evec_r, evec_i;
-    vec.resize(num_local_rows_);
     MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
     MatGetVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
@@ -186,11 +184,16 @@ public:
     VecDestroy(&evec_i); //CHKERRQ(ierr);
   }
 
+  void eigenvector(int i, std::vector<double>& vec) const {
+    if (vec.size() < num_local_rows_) {
+      vec.resize(num_local_rows_);
+    }
+    eigenvector(i, &vec[0]);
+  }
+
   int num_conv() const {
     return num_conv_;
   }
-
-  //distributed_multivector_slepc eigenvectors() const { return evecs_; }
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
     return new slepc::distributed_crs_matrix(row_dim, col_dim);

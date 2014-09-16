@@ -18,7 +18,6 @@
 
 #include <rokko/distributed_mfree.hpp>
 
-#include "distributed_multivector.hpp"
 #include <rokko/utility/timer.hpp>
 
 #include <AnasaziEpetraAdapter.hpp>
@@ -105,9 +104,16 @@ public:
     pl.set("Maximum Iterations", max_iters);
     pl.set("Convergence Tolerance", tol);
     solvermanager_t solvermanager(problem_, pl);
-    solvermanager.solve();
+    bool boolret = problem_->setProblem();
+    if (boolret != true) {
+      std::cout << "setProblem()_error" << std::endl;
+    }
+    Anasazi::ReturnType returnCode = solvermanager.solve();
+    if (returnCode == Anasazi::Unconverged) {
+      std::cout << "solvermanager.solve()_error" << std::endl;
+    }
 
-    //sol = new Anasazi::Eigensolution<double, Epetra_MultiVector> problem_->getSolution();
+    num_conv_ = problem_->getSolution().numVecs;
   }
 
   void diagonalize(rokko::distributed_mfree& mat_in,
@@ -152,18 +158,28 @@ public:
   }
 
   void eigenvector(int i, std::vector<double>& vec) const {
-    vec.resize(map_->get_num_local_rows());
-     Teuchos::RCP<Epetra_MultiVector> evecs_;
-     double* vec_pt = (*problem_->getSolution().Evecs)[i];
-     for (int j=0; j < map_->get_num_local_rows(); ++j) {
-       vec.push_back(vec_pt[j]);
-     }
-     //std::cout << *problem_->getSolution().Evecs << std::endl;
-     //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
-     //double* eve = problem_->getSolution()->Evecs[i];
+    if (vec.size() < map_->get_num_local_rows()) {
+      vec.resize(map_->get_num_local_rows());
+    }
+    double* vec_pt = (*problem_->getSolution().Evecs)[i];
+    for (int j=0; j < map_->get_num_local_rows(); ++j) {
+      vec[j] = vec_pt[j];
+    }
+    //std::cout << *problem_->getSolution().Evecs << std::endl;
+    //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
+    //double* eve = problem_->getSolution()->Evecs[i];
   }
 
-  //distributed_multivector_anasazi eigenvector() const { /*return sol_->Evecs; }
+  void eigenvector(int i, double* vec) const {
+    double* vec_pt = (*problem_->getSolution().Evecs)[i];
+    for (int j=0; j < map_->get_num_local_rows(); ++j) {
+      vec[j] = vec_pt[j];
+    }
+    //std::cout << *problem_->getSolution().Evecs << std::endl;
+    //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
+    //double* eve = problem_->getSolution()->Evecs[i];
+  }
+
   int num_conv() const {
     return num_conv_;
   }

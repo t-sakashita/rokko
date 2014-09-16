@@ -26,6 +26,10 @@ module rokko
      integer(c_int) major
   end type rokko_grid
 
+  type, bind(c) :: rokko_serial_dense_solver
+     type(c_ptr) ptr
+  end type rokko_serial_dense_solver
+
   type, bind(c) :: rokko_parallel_dense_solver
      type(c_ptr) ptr
   end type rokko_parallel_dense_solver
@@ -57,6 +61,27 @@ module rokko
   
   interface
 
+     ! rokko_paralll_dense_solver
+     
+     subroutine rokko_serial_dense_solver_destruct(solver) bind(c)
+       use iso_c_binding
+       import rokko_serial_dense_solver
+       implicit none
+       type(rokko_serial_dense_solver), intent(inout) :: solver
+     end subroutine rokko_serial_dense_solver_destruct
+     
+     subroutine rokko_serial_dense_solver_diagonalize_localized_matrix(solver, mat, eigvals, eigvecs) bind(c)
+       use iso_c_binding
+       import rokko_serial_dense_solver, rokko_localized_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_serial_dense_solver), intent(inout) :: solver
+       type(rokko_localized_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_localized_matrix), intent(inout) :: eigvecs
+     end subroutine rokko_serial_dense_solver_diagonalize_localized_matrix
+
+     ! rokko_localized_vector
+
      ! rokko_grid
      
      subroutine rokko_grid_destruct(grid) bind(c)
@@ -79,24 +104,24 @@ module rokko
        type(rokko_grid), value, intent(in) :: grid
      end function rokko_grid_get_nprocs
 
-     ! rokko_solver
+     ! rokko_parallel_dense_solver
      
-     subroutine rokko_solver_destruct(solver) bind(c)
+     subroutine rokko_parallel_dense_solver_destruct(solver) bind(c)
        use iso_c_binding
-       import rokko_solver
+       import rokko_parallel_dense_solver
        implicit none
-       type(rokko_solver), intent(inout) :: solver
-     end subroutine rokko_solver_destruct
+       type(rokko_parallel_dense_solver), intent(inout) :: solver
+     end subroutine rokko_parallel_dense_solver_destruct
      
-     subroutine rokko_solver_diagonalize_distributed_matrix(solver, mat, eigvals, eigvecs) bind(c)
+     subroutine rokko_parallel_dense_solver_diagonalize_distributed_matrix(solver, mat, eigvals, eigvecs) bind(c)
        use iso_c_binding
-       import rokko_solver, rokko_distributed_matrix, rokko_localized_vector
+       import rokko_parallel_dense_solver, rokko_distributed_matrix, rokko_localized_vector
        implicit none
-       type(rokko_solver), intent(inout) :: solver
+       type(rokko_parallel_dense_solver), intent(inout) :: solver
        type(rokko_distributed_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_distributed_matrix), intent(inout) :: eigvecs
-     end subroutine rokko_solver_diagonalize_distributed_matrix
+     end subroutine rokko_parallel_dense_solver_diagonalize_distributed_matrix
 
      ! rokko_localized_vector
 
@@ -145,18 +170,25 @@ module rokko
        implicit none
        type(rokko_localized_matrix), intent(inout) :: matrix
      end subroutine rokko_localized_matrix_destruct
+
+     subroutine rokko_localized_matrix_print(matrix) bind(c)
+       use iso_c_binding
+       import rokko_localized_matrix
+       implicit none
+       type(rokko_localized_matrix), value, intent(in) :: matrix
+     end subroutine rokko_localized_matrix_print
      
      ! rokko_distributed_matrix
 
      subroutine rokko_distributed_matrix_construct(matrix, dim1, dim2, grid, solver, matrix_major) &
           bind(c)
        use iso_c_binding
-       import rokko_grid, rokko_solver, rokko_distributed_matrix
+       import rokko_grid, rokko_parallel_dense_solver, rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), intent(out) :: matrix
        integer(c_int), value, intent(in) :: dim1, dim2
        type(rokko_grid), value, intent(in) :: grid
-       type(rokko_solver), value, intent(in) :: solver
+       type(rokko_parallel_dense_solver), value, intent(in) :: solver
        integer(c_int), value, intent(in) :: matrix_major
      end subroutine rokko_distributed_matrix_construct
      
@@ -360,22 +392,40 @@ contains
     end do
   end subroutine rokko_all_gather
 
-subroutine rokko_solver_construct(solver, solver_name)
-  use iso_c_binding
-!  import rokko_solver
-  implicit none
-  interface
-     subroutine rokko_solver_construct_f(solver, solver_name) bind(c)
-       use iso_c_binding
-       import rokko_solver
-       implicit none
-       type(rokko_solver), intent(out) :: solver
-       character(kind=c_char), intent(in) :: solver_name(*)
-     end subroutine rokko_solver_construct_f
-  end interface
-  type(rokko_solver), intent(inout) :: solver
-  character(*), intent(in) :: solver_name
-  call rokko_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
-end subroutine rokko_solver_construct
+  subroutine rokko_parallel_dense_solver_construct(solver, solver_name)
+    use iso_c_binding
+    !  import rokko_parallel_dense_solver
+    implicit none
+    interface
+       subroutine rokko_parallel_dense_solver_construct_f(solver, solver_name) bind(c)
+         use iso_c_binding
+         import rokko_parallel_dense_solver
+         implicit none
+         type(rokko_parallel_dense_solver), intent(out) :: solver
+         character(kind=c_char), intent(in) :: solver_name(*)
+       end subroutine rokko_parallel_dense_solver_construct_f
+    end interface
+    type(rokko_parallel_dense_solver), intent(inout) :: solver
+    character(*), intent(in) :: solver_name
+    call rokko_parallel_dense_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
+  end subroutine rokko_parallel_dense_solver_construct
+
+  subroutine rokko_serial_dense_solver_construct(solver, solver_name)
+    use iso_c_binding
+    !  import rokko_serial_dense_solver
+    implicit none
+    interface
+       subroutine rokko_serial_dense_solver_construct_f(solver, solver_name) bind(c)
+         use iso_c_binding
+         import rokko_serial_dense_solver
+         implicit none
+         type(rokko_serial_dense_solver), intent(out) :: solver
+         character(kind=c_char), intent(in) :: solver_name(*)
+       end subroutine rokko_serial_dense_solver_construct_f
+    end interface
+    type(rokko_serial_dense_solver), intent(inout) :: solver
+    character(*), intent(in) :: solver_name
+    call rokko_serial_dense_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
+  end subroutine rokko_serial_dense_solver_construct
 
 end module rokko
