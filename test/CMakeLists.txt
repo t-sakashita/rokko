@@ -19,7 +19,10 @@ endforeach(name)
 unset(TESTS)
 
 # multi process tests
-set(TESTS grid localized2distributed_matrix distributed_matrix frank_functor_mpi frank_function_pointer_mpi mpi_thread_multiple)
+if(BUILD_ANASAZI)
+  include_directories(${ANASAZI_INCLUDE_DIR})
+endif(BUILD_ANASAZI)
+set(TESTS grid localized2distributed_matrix distributed_matrix frank_functor_mpi frank_function_pointer_mpi mpi_thread_multiple parallel_dense_solvers parallel_sparse_solvers)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
