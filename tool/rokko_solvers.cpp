@@ -12,7 +12,6 @@
 
 #include <boost/foreach.hpp>
 #include <rokko/solver.hpp>
-#include <rokko/parallel_sparse_solver.hpp>
 
 int main() {
   std::cout << "[serial dense solvers]\n";
@@ -23,11 +22,13 @@ int main() {
   BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
     std::cout << "  " << name << std::endl;
   }
-  //#if defined(BUILD_ANASAZI) || defined(BUILD_SLEPC)
+
+#if defined(ROKKO_HAVE_ANASAZI) || defined(ROKKO_HAVE_SLEPC)
   std::cout << "[parallel sparse solvers]\n";
   BOOST_FOREACH(std::string name, rokko::parallel_sparse_solver::solvers()) {
     std::cout << "  " << name << std::endl;
   }
-  //#endif // defined(BUILD_ANASAZI) || defined(BUILD_SLEPC)
+#endif // defined(ROKKO_HAVE_ANASAZI) || defined(ROKKO_HAVE_SLEPC)
+
   return 0;
 }

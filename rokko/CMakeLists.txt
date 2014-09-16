@@ -8,7 +8,10 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp parallel_sparse_solver.cpp)
+set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp)
+if(BUILD_ANASAZI OR BUILD_SLEPC)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver.cpp)
+endif(BUILD_ANASAZI OR BUILD_SLEPC)
 
 if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} localized_vector_c.cpp localized_matrix_c.cpp)

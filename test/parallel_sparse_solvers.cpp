@@ -14,8 +14,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
-//#include <rokko/solver.hpp>
-#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/solver.hpp>
 
 #define BOOST_TEST_MODULE test_parallel_sparse_solvers
 #ifndef BOOST_TEST_DYN_LINK
