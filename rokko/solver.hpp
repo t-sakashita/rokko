@@ -12,11 +12,13 @@
 #ifndef ROKKO_SOLVER_HPP
 #define ROKKO_SOLVER_HPP
 
+#include <rokko/config.hpp>
+
 #include <rokko/serial_dense_solver.hpp>
 #include <rokko/parallel_dense_solver.hpp>
 
-#if defined(BUILD_ANASAZI) || defined(BUILD_SLEPC)
+#if defined(ROKKO_HAVE_ANASAZI) || defined(ROKKO_HAVE_SLEPC)
 #include <rokko/parallel_sparse_solver.hpp>
-#endif // defined(BUILD_ANASAZI) || defined(BUILD_SLEPC)
+#endif // defined(ROKKO_HAVE_ANASAZI) || defined(ROKKO_HAVE_SLEPC)
 
 #endif // ROKKO_SOLVER_HPP

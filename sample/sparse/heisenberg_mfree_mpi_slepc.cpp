@@ -14,6 +14,7 @@
 #include <iostream>
 #include <vector>
 
+#include <rokko/grid_1d.hpp>
 #include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 

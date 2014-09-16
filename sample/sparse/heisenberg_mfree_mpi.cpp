@@ -14,11 +14,10 @@
 #include <iostream>
 #include <vector>
 
+#include <rokko/grid_1d.hpp>
 #include <rokko/parallel_sparse_solver.hpp>
-#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
-
 #include <rokko/distributed_mfree.hpp>
-
+#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 
 class heisenberg_op : public rokko::distributed_mfree {
 public:

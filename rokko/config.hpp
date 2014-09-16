@@ -1,6 +1,0 @@
-#ifndef ROKKO_CONFIG_HPP
-#define ROKKO_CONFIG_HPP
-
-#define ROKKO_VERSION "0.1"
-
-#endif // ROKKO_CONFIG_HPP

@@ -12,6 +12,7 @@
 #include <mpi.h>
 #include <iostream>
 
+#include <rokko/grid_1d.hpp>
 #include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 

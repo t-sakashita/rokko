@@ -57,6 +57,7 @@ enable_language(CXX)
 if(BUILD_C_BINDING)
   enable_language(C)
 endif(BUILD_C_BINDING)
+set(ROKKO_HAVE_C_BINDING ${BUILD_C_BINDING})
 enable_language(Fortran)
 if(BUILD_Fortran_BINDING)
   # ancient gfortran does not support iso_c_bindings
@@ -69,6 +70,7 @@ if(BUILD_Fortran_BINDING)
     MESSAGE("Do not build Fortran binding since the fortran compiler does not support iso_c_binding.")
   endif(NOT CMake_Fortran_SUPPORTS_ISO_C_BINDING)
 endif(BUILD_Fortran_BINDING)
+set(ROKKO_HAVE_Fortran_BINDING ${BUILD_Fortran_BINDING})
 
 # OpenMP
 find_package(OpenMP)
@@ -96,6 +98,7 @@ find_package(BoostSrc)
 
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 include_directories(${MPI_CXX_INCLUDE_PATH})
+include_directories(${PROJECT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR}/3rd-party/lapacke/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke/include)
@@ -120,6 +123,7 @@ else(DISABLE_SCALAPACK)
   find_package(Scalapack)
   set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
 endif(DISABLE_SCALAPACK)
+set(ROKKO_HAVE_SCALAPACK ${BUILD_SCALAPACK})
 string(REGEX REPLACE ";" " " SCAPALACK_LIBS "${SCAPALACK_LIBRARIES}")
 
 # find EigenExa
@@ -129,6 +133,7 @@ else(DISABLE_EIGENEXA)
   find_package(EigenExa)
   set(BUILD_EIGENEXA ${EIGENEXA_FOUND})
 endif(DISABLE_EIGENEXA)
+set(ROKKO_HAVE_EIGENEXA ${BUILD_EIGENEXA})
 string(REGEX REPLACE ";" " " EIGENEXA_LIBS "${EIGENEXA_LIBRARIES}")
 
 # find Elemental
@@ -138,6 +143,7 @@ else(DISABLE_ELEMENTAL)
   find_package(Elemental)
   set(BUILD_ELEMENTAL ${ELEMENTAL_FOUND})
 endif(DISABLE_ELEMENTAL)
+set(ROKKO_HAVE_ELEMENTAL ${BUILD_ELEMENTAL})
 string(REGEX REPLACE ";" " " ELEMENTAL_LIBS "${ELEMENTAL_LIBRARIES}")
 
 # find Elpa
@@ -147,6 +153,7 @@ else(DISABLE_ELPA)
   find_package(Elpa)
   set(BUILD_ELPA ${ELPA_FOUND})
 endif(DISABLE_ELPA)
+set(ROKKO_HAVE_ELPA ${BUILD_ELPA})
 string(REGEX REPLACE ";" " " ELPA_LIBS "${ELPA_LIBRARIES}")
 
 # find PETSc/SLEPc
@@ -162,6 +169,8 @@ else(DISABLE_SLEPC)
   find_package(SLEPc)
   set(BUILD_SLEPC ${SLEPC_FOUND})
 endif(DISABLE_SLEPC)
+set(ROKKO_HAVE_PETSC ${BUILD_PETSC})
+set(ROKKO_HAVE_SLEPC ${BUILD_SLEPC})
 string(REGEX REPLACE ";" " " PETSC_LIBS "${PETSC_LIBRARIES}")
 string(REGEX REPLACE ";" " " SLEPC_LIBS "${SLEPC_LIBRARIES}")
 
@@ -172,10 +181,12 @@ else(DISABLE_ANASAZI)
   find_package(Anasazi)
   set(BUILD_ANASAZI ${ANASAZI_FOUND})
 endif(DISABLE_ANASAZI)
+set(ROKKO_HAVE_ANASAZI ${BUILD_ANASAZI})
 string(REGEX REPLACE ";" " " ANASAZI_LIBS "${ANASAZI_LIBRARIES}")
 
 set(ROKKO_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
+configure_file(${PROJECT_SOURCE_DIR}/rokko/config.hpp.in ${PROJECT_BINARY_DIR}/rokko/config.hpp)
 configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/config/include.mk.in ${PROJECT_BINARY_DIR}/config/include.mk @ONLY)
 install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake ${PROJECT_BINARY_DIR}/config/include.mk ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
