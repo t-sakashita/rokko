@@ -10,8 +10,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MATRIX_H
-#define ROKKO_DISTRIBUTED_MATRIX_H
+#ifndef ROKKO_DISTRIBUTED_MATRIX_HPP
+#define ROKKO_DISTRIBUTED_MATRIX_HPP
 
 #include "grid.hpp"
 #include "matrix_major.hpp"
@@ -312,8 +312,6 @@ private:
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
 
   grid g;
-
-private:
   ///int info;
 };
 
@@ -467,4 +465,4 @@ double dot_product(const distributed_matrix<MATRIX_MAJOR>& vecX, bool transX, in
 
 } // namespace rokko
 
-#endif // ROKKO_DISTRIBUTED_MATRIX_H
+#endif // ROKKO_DISTRIBUTED_MATRIX_HPP
