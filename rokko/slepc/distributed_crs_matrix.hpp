@@ -60,19 +60,19 @@ public:
   Mat* get_matrix() {
     return &matrix_;
   }
-  int get_dim() {
+  int get_dim() const {
     return dim_;
   }
-  int num_local_rows() {
+  int num_local_rows() const {
     return num_local_rows_;
   }
-  int start_row() {
+  int start_row() const {
     return start_row_;
   }
-  int end_row() {
+  int end_row() const {
     return end_row_;
   }
-  void print() {
+  void print() const {
     MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
   }
 
