@@ -20,7 +20,10 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
-  rokko::parallel_sparse_solver solver("slepc");
+  std::string solver_name(rokko::parallel_sparse_solver::default_solver());
+  if (argc >= 2) solver_name = argv[1];
+  rokko::parallel_sparse_solver solver(solver_name);
+
   int dim = 4;
   rokko::distributed_crs_matrix mat(dim, dim, solver);
 
@@ -30,7 +33,6 @@ int main(int argc, char *argv[]) {
 
   int current = 0;
   for (int row = 0; row < dim; ++row) {
-    std::cout << "current=" << current << std::endl;
     mat.insert(row, num_nonzero_cols[row], &nonzero_cols[current], &values[current]);
     current += num_nonzero_cols[row]; 
   }
