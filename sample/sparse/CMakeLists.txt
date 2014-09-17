@@ -10,7 +10,7 @@
 
 if(BUILD_ANASAZI)
   include_directories(${ANASAZI_INCLUDE_DIR})
-  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi)
+  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi distributed_crs_matrix)
   foreach(name ${SAMPLE})
     set(target_name sample_sparse_${name})
     add_executable(${target_name} ${name}.cpp)
