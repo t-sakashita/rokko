@@ -19,10 +19,8 @@
 
 #include <mpi.h>
 #include <iostream>
+#include <rokko/rokko.hpp>
 #include <boost/timer.hpp>
-#include <rokko/grid_1d.hpp>
-#include <rokko/solver.hpp>
-#include <rokko/distributed_crs_matrix.hpp>
 #include "titpack.hpp"
 #include "options.hpp"
 

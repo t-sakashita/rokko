@@ -16,10 +16,11 @@
 * Eigenvalues and an eigenvector by diag
 ******************************************************/
 
+#include <iostream>
+#include <rokko/rokko.hpp>
+#include <boost/timer.hpp>
 #include "titpack.hpp"
 #include "options.hpp"
-#include <boost/timer.hpp>
-#include <rokko/solver.hpp>
 
 typedef rokko::serial_dense_solver solver_type;
 typedef rokko::localized_matrix<rokko::matrix_col_major> matrix_type;

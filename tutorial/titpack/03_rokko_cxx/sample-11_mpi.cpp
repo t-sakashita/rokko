@@ -18,8 +18,8 @@
 
 #include <mpi.h>
 #include <iostream>
+#include <rokko/rokko.hpp>
 #include <boost/timer.hpp>
-#include <rokko/solver.hpp>
 #include "titpack.hpp"
 #include "options.hpp"
 
