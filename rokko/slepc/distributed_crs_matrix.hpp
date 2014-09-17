@@ -81,7 +81,6 @@ private:
   int num_local_rows_;
   int start_row_, end_row_;
   PetscErrorCode ierr;
-public:
   Mat matrix_;
 };
 
