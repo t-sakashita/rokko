@@ -187,6 +187,7 @@ string(REGEX REPLACE ";" " " ANASAZI_LIBS "${ANASAZI_LIBRARIES}")
 set(ROKKO_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
 configure_file(${PROJECT_SOURCE_DIR}/rokko/config.hpp.in ${PROJECT_BINARY_DIR}/rokko/config.hpp)
+install(FILES ${PROJECT_BINARY_DIR}/rokko/config.hpp COMPONENT headers DESTINATION include/rokko/)
 configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/config/include.mk.in ${PROJECT_BINARY_DIR}/config/include.mk @ONLY)
 install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake ${PROJECT_BINARY_DIR}/config/include.mk ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
