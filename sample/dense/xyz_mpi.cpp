@@ -13,16 +13,11 @@
 #include <mpi.h>
 #include <iostream>
 #include <fstream>
-#include <boost/foreach.hpp>
-#include <boost/tuple/tuple.hpp>
-
-#include <rokko/solver.hpp>
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/xyz_hamiltonian_mpi.hpp>
+#include <boost/foreach.hpp>
+#include <boost/tuple/tuple.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
@@ -30,26 +25,17 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
+  std::string solver_name(rokko::parallel_dense_solver::default_solver());
+  std::string lattice_file("xyz.dat");
+  if (argc >= 2) solver_name = argv[1];
+  if (argc >= 3) lattice_file = argv[2];
 
   rokko::grid g(comm);
   int myrank = g.get_myrank();
   int root = 0;
 
-  if (argc <= 2) {
-    if (myrank == root) {
-      std::cerr << "error: " << argv[0] << " solver_name lattice_file" << std::endl
-                << "available solvers:";
-      BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers())
-        std::cerr << ' ' << name;
-      std::cerr << std::endl;
-    }
-    MPI_Abort(MPI_COMM_WORLD, 34);
-  }
-
   std::cout.precision(5);
-  std::string solver_name(argv[1]);
-
-  std::ifstream ifs(argv[2]);
+  std::ifstream ifs(lattice_file.c_str());
   if (!ifs) {
     std::cout << "can't open file" << std::endl;
     exit(1);
@@ -73,7 +59,7 @@ int main(int argc, char *argv[]) {
   if (myrank == root) {
     std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
               << "solver = " << solver_name << std::endl
-              << "lattice file = " << argv[2] << std::endl
+              << "lattice file = " << lattice_file << std::endl
               << "number of sites = " << num_sites << std::endl
               << "number of bonds = " << num_bonds << std::endl
               << "matrix dimension = " << dim << std::endl;

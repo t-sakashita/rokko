@@ -12,16 +12,11 @@
 
 #include <mpi.h>
 #include <iostream>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <rokko/solver.hpp>
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
@@ -29,25 +24,16 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
+  unsigned int dim = 10;
+  std::string solver_name(rokko::parallel_dense_solver::default_solver());
+  if (argc >= 2) solver_name = argv[1];
+  if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
 
   rokko::grid g(comm);
   int myrank = g.get_myrank();
   int root = 0;
 
-  if (argc <= 2) {
-    if (myrank == root) {
-      std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl
-                << "available solvers:";
-      BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers())
-        std::cerr << ' ' << name;
-      std::cerr << std::endl;
-    }
-    MPI_Abort(MPI_COMM_WORLD, 34);
-  }
-
   std::cout.precision(5);
-  std::string solver_name(argv[1]);
-  unsigned int dim = boost::lexical_cast<unsigned int>(argv[2]);
 
   rokko::parallel_dense_solver solver(solver_name);
   solver.initialize(argc, argv);

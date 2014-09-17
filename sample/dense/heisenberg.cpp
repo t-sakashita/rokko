@@ -12,26 +12,16 @@
 
 #include <iostream>
 #include <boost/foreach.hpp>
-
-#include <rokko/solver.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/utility/heisenberg_hamiltonian.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  if (argc <= 1) {
-    std::cerr << "error: " << argv[0] << " solver_name" << std::endl
-              << "available solvers:";
-    BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers())
-      std::cerr << ' ' << name;
-    std::cerr << std::endl;
-    exit(34);
-  }
+  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  if (argc >= 2) solver_name = argv[1];
 
   std::cout.precision(5);
-  std::string solver_name(argv[1]);
   int L = 8;
   int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;

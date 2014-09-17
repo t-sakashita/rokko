@@ -12,49 +12,35 @@
 
 #include <mpi.h>
 #include <iostream>
-
-#include <rokko/solver.hpp>
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
-
+#include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
-
 #include <rokko/utility/frank_matrix.hpp>
-#include <rokko/utility/sort_eigenpairs.hpp>
-
 #include <boost/lexical_cast.hpp>
+
+typedef rokko::matrix_col_major matrix_major;
+// typedef rokko::matrix_row_major matrix_major;
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
-  //typedef rokko::matrix_row_major matrix_major;
-  typedef rokko::matrix_col_major matrix_major;
+  unsigned int dim = 10;
+  std::string solver_name(rokko::parallel_dense_solver::default_solver());
+  if (argc >= 2) solver_name = argv[1];
+  if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
 
-  if (argc <= 2) {
-    std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 34);
-  }
-
-  std::string solver_name(argv[1]);
-  unsigned int dim = boost::lexical_cast<unsigned int>(argv[2]);
+  rokko::grid g;
+  if (g.get_myrank() == 0) std::cout << "dimension = " << dim << std::endl;
+  std::cout << std::flush;
+  MPI_Barrier(g.get_comm());
 
   rokko::parallel_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
-
-  MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
-  int myrank = g.get_myrank();
-
-  const int root = 1;
-
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);
   mat.print();
 
   rokko::localized_matrix<matrix_major> lmat(dim, dim);
-  rokko::gather(mat, lmat, root);
-  if (myrank == root)
+  rokko::gather(mat, lmat, 0);
+  if (g.get_myrank() == 0)
     std::cout << "lmat:" << std::endl << lmat << std::endl;
 
   solver.finalize();

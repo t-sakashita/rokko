@@ -12,30 +12,20 @@
 
 #include <iostream>
 #include <fstream>
+#include <rokko/rokko.hpp>
+#include <rokko/utility/xyz_hamiltonian.hpp>
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
-
-#include <rokko/solver.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
-#include <rokko/utility/xyz_hamiltonian.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  if (argc <= 2) {
-    std::cerr << "error: " << argv[0] << " solver_name lattice_file" << std::endl
-              << "available solvers:";
-    BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers())
-      std::cerr << ' ' << name;
-    std::cerr << std::endl;
-    exit(34);
-  }
-
+  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  std::string lattice_file("xyz.dat");
+  if (argc >= 2) solver_name = argv[1];
+  if (argc >= 3) lattice_file = argv[2];
   std::cout.precision(5);
-  std::string solver_name(argv[1]);
-
-  std::ifstream ifs(argv[2]);
+  std::ifstream ifs(lattice_file.c_str());
   if (!ifs) {
     std::cout << "can't open file" << std::endl;
     exit(1);
@@ -57,7 +47,7 @@ int main(int argc, char *argv[]) {
   int dim = 1 << num_sites;
   std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
             << "solver = " << solver_name << std::endl
-            << "lattice file = " << argv[2] << std::endl
+            << "lattice file = " << lattice_file << std::endl
             << "number of sites = " << num_sites << std::endl
             << "number of bonds = " << num_bonds << std::endl
             << "matrix dimension = " << dim << std::endl;

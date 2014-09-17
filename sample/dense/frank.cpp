@@ -11,29 +11,20 @@
 *****************************************************************************/
 
 #include <iostream>
+#include <rokko/rokko.hpp>
+#include <rokko/utility/frank_matrix.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-
-#include <rokko/solver.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
-#include <rokko/utility/frank_matrix.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  if (argc <= 2) {
-    std::cerr << "error: " << argv[0] << " solver_name matrix_size" << std::endl
-              << "available solvers:";
-    BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers())
-      std::cerr << ' ' << name;
-    std::cerr << std::endl;
-    exit(34);
-  }
+  unsigned int dim = 10;
+  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  if (argc >= 2) solver_name = argv[1];
+  if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
 
   std::cout.precision(5);
-  std::string solver_name(argv[1]);
-  unsigned int dim = boost::lexical_cast<unsigned int>(argv[2]);
 
   rokko::serial_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
