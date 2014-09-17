@@ -14,10 +14,7 @@
 #ifdef __cplusplus
 
 #include <rokko/solver.hpp>
-#include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/grid_1d.hpp>
 
 #else
 
