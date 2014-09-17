@@ -20,15 +20,15 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
+  rokko::parallel_sparse_solver solver("slepc");
   int dim = 4;
-  rokko::parallel_sparse_solver solver("anasazi");
   rokko::distributed_crs_matrix mat(dim, dim, solver);
 
   int rows[] = {1, 1, 2, 3, 3, 4};
 
   int num_nonzero_cols[] = {2, 1, 2, 1};
   int nonzero_cols[] = {0, 1, 3, 0, 3, 2};
-  double values[] = {1., 2., 4., 1., 4., 3.};
+  double values[] = {7.1, 5.2, 6.4, 0.2, 4.3, 0.5};
 
   int current = 0;
   for (int row = 0; row < dim; ++row) {
