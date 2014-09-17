@@ -13,11 +13,10 @@
 #ifndef ROKKO_ANASAZI_CORE_HPP
 #define ROKKO_ANASAZI_CORE_HPP
 
+#include <rokko/distributed_vector.hpp>
+#include <rokko/distributed_mfree.hpp>
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
-
-#include <rokko/distributed_mfree.hpp>
-
 #include <rokko/utility/timer.hpp>
 
 #include <AnasaziEpetraAdapter.hpp>
@@ -153,36 +152,23 @@ public:
     return new anasazi::distributed_crs_matrix(row_dim, col_dim);
   }
 
-  double eigenvalue(int i) const {
-    return problem_->getSolution().Evals[i].realpart;
+  double eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
+
+  void eigenvector(int k, std::vector<double>& vec) const {
+    if (vec.size() < map_->get_num_local_rows()) vec.resize(map_->get_num_local_rows());
+    eigenvector(k, &(vec[0]));
+  }
+  void eigenvector(int k, double* vec) const {
+    double* vec_pt = (*problem_->getSolution().Evecs)[k];
+    std::copy(vec_pt, vec_pt + map_->get_num_local_rows(), vec);
+  }
+  void eigenvector(int k, distributed_vector& vec) const {
+    vec.initialize(map_->get_dim(), map_->get_epetra_map().MinMyGID(),
+                   map_->get_epetra_map().MaxMyGID() + 1);
+    eigenvector(k, vec.get_storage());
   }
 
-  void eigenvector(int i, std::vector<double>& vec) const {
-    if (vec.size() < map_->get_num_local_rows()) {
-      vec.resize(map_->get_num_local_rows());
-    }
-    double* vec_pt = (*problem_->getSolution().Evecs)[i];
-    for (int j=0; j < map_->get_num_local_rows(); ++j) {
-      vec[j] = vec_pt[j];
-    }
-    //std::cout << *problem_->getSolution().Evecs << std::endl;
-    //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
-    //double* eve = problem_->getSolution()->Evecs[i];
-  }
-
-  void eigenvector(int i, double* vec) const {
-    double* vec_pt = (*problem_->getSolution().Evecs)[i];
-    for (int j=0; j < map_->get_num_local_rows(); ++j) {
-      vec[j] = vec_pt[j];
-    }
-    //std::cout << *problem_->getSolution().Evecs << std::endl;
-    //std::cout << (*problem_->getSolution().Evecs)[i] << std::endl;
-    //double* eve = problem_->getSolution()->Evecs[i];
-  }
-
-  int num_conv() const {
-    return num_conv_;
-  }
+  int num_conv() const { return num_conv_; }
 
 private:
   mapping_1d* map_;

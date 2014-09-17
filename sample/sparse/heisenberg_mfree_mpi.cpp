@@ -13,50 +13,44 @@
 #include <mpi.h>
 #include <iostream>
 #include <vector>
-
-#include <rokko/grid_1d.hpp>
-#include <rokko/parallel_sparse_solver.hpp>
-#include <rokko/distributed_mfree.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 
 class heisenberg_op : public rokko::distributed_mfree {
 public:
-  heisenberg_op(int L, const std::vector<std::pair<int, int> >& lattice) : L_(L), lattice_(lattice) {
+  heisenberg_op(int L, const std::vector<std::pair<int, int> >& lattice)
+    : L_(L), lattice_(lattice) {
     comm_ = MPI_COMM_WORLD;
-    int nproc;
-    MPI_Comm_size(comm_, &nproc);
-    int n = nproc;
+    int size, rank;
+    MPI_Comm_size(comm_, &size);
+    MPI_Comm_rank(comm_, &rank);
+    int n = size;
     int p = -1;
     do {
       n /= 2;
       ++p;
     } while (n > 0);
-    local_N = 1 << (L-p);
-    buffer_.assign(local_N, 0);
     dim_ = 1 << L;
+    num_local_rows_ = 1 << (L-p);
+    local_offset_ = num_local_rows_ * rank;
+    buffer_.assign(num_local_rows_, 0);
   }
-
   ~heisenberg_op() {}
 
   void multiply(const double* x, double* y) const {
     rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
   }
-  int get_dim() const {
-    return dim_;
-  }
-  int get_num_local_rows() const {
-    return local_N;
-  }
+  int get_dim() const { return dim_; }
+  int get_local_offset() const { return local_offset_; }
+  int get_num_local_rows() const { return num_local_rows_; }
 
 private:
   MPI_Comm comm_;
-  mutable std::vector<double> buffer_;
   int L_;
-  int local_N;
   std::vector<std::pair<int, int> > lattice_;
-  int dim_;
+  int dim_, local_offset_, num_local_rows_;
+  mutable std::vector<double> buffer_;
 };
-
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -74,14 +68,12 @@ int main(int argc, char *argv[]) {
   double tol = 1.0e-8;
 
   int L = 3;
-  int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i = 0; i < L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
   rokko::parallel_sparse_solver solver("anasazi");
-
   heisenberg_op  mat(L, lattice);
 
   if (myrank == root)

@@ -17,6 +17,7 @@
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 
+#include <rokko/distributed_vector.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -37,9 +38,10 @@ public:
 			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
   virtual void diagonalize(rokko::distributed_mfree& mat,
 			   int num_evals, int block_size, int max_iters, double tol) = 0;
-  virtual double eigenvalue(int i) const = 0;
-  virtual void eigenvector(int i, std::vector<double>& vec) const = 0;
-  virtual void eigenvector(int i, double* vec) const = 0;
+  virtual double eigenvalue(int k) const = 0;
+  virtual void eigenvector(int k, std::vector<double>& vec) const = 0;
+  virtual void eigenvector(int k, double* vec) const = 0;
+  virtual void eigenvector(int k, distributed_vector& vec) const = 0;
   virtual int num_conv() const = 0;
   virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) = 0;
 };
@@ -52,35 +54,28 @@ public:
   virtual ~ps_solver_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(rokko::distributed_crs_matrix& mat,
-		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
+  void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
+                   int max_iters, double tol, timer& timer) {
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  void diagonalize(rokko::distributed_crs_matrix& mat,
-		   int num_evals, int block_size, int max_iters, double tol) {
+  void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
+                   int max_iters, double tol) {
     timer_dumb timer;
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  void diagonalize(rokko::distributed_mfree& mat,
-		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
+  void diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
+                   double tol, timer& timer) {
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  void diagonalize(rokko::distributed_mfree& mat,
-		   int num_evals, int block_size, int max_iters, double tol) {
+  void diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
+                   double tol) {
     timer_dumb timer;
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
-  double eigenvalue(int i) const {
-    return solver_impl_.eigenvalue(i);
-  }
-
-  void eigenvector(int i, std::vector<double>& vec) const {
-    solver_impl_.eigenvector(i, vec);
-  }
-
-  void eigenvector(int i, double* vec) const {
-    solver_impl_.eigenvector(i, vec);
-  }
+  double eigenvalue(int k) const { return solver_impl_.eigenvalue(k); }
+  void eigenvector(int k, std::vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
+  void eigenvector(int k, double* vec) const { solver_impl_.eigenvector(k, vec); }
+  void eigenvector(int k, distributed_vector& vec) const { solver_impl_.eigenvector(k, vec); }
 
   int num_conv() const {
     return solver_impl_.num_conv();
@@ -129,17 +124,10 @@ public:
     solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
 
-  double eigenvalue(int i) const {
-    return solver_impl_->eigenvalue(i);
-  }
-
-  void eigenvector(int i, std::vector<double>& vec) const {
-    solver_impl_->eigenvector(i, vec);
-  }
-
-  void eigenvector(int i, double* vec) const {
-    solver_impl_->eigenvector(i, vec);
-  }
+  double eigenvalue(int k) const { return solver_impl_->eigenvalue(k); }
+  void eigenvector(int k, std::vector<double>& vec) const { solver_impl_->eigenvector(k, vec); }
+  void eigenvector(int k, double* vec) const { solver_impl_->eigenvector(k, vec); }
+  void eigenvector(int k, distributed_vector& vec) const { solver_impl_->eigenvector(k, vec); }
 
   int num_conv() const {
     return solver_impl_->num_conv();

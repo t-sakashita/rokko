@@ -76,6 +76,8 @@ public:
   void finalize() {}
   void diagonalize(rokko::distributed_crs_matrix& mat,
                    int num_evals, int block_size, int max_iters, double tol, timer& time) {
+    dimension_ = mat.get_dim();
+    offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
     A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
     EPSType        type;
@@ -125,6 +127,8 @@ public:
 
     rokko::distributed_mfree* mat = &mat_in;
     // define matrix-free type operator
+    dimension_ = mat->get_dim();
+    offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
     ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A); //CHKERRQ(ierr);
@@ -171,24 +175,24 @@ public:
     return eval_r;
   }
 
-  void eigenvector(int i, double* vec) const {
+  void eigenvector(int k, double* vec) const {
     Vec evec_r, evec_i;
     MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
     MatGetVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
-
-    EPSGetEigenvector(eps, i, evec_r, evec_i);
-
-    // VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
+    EPSGetEigenvector(eps, k, evec_r, evec_i);
     VecDestroy(&evec_r); //CHKERRQ(ierr);
     VecDestroy(&evec_i); //CHKERRQ(ierr);
   }
 
-  void eigenvector(int i, std::vector<double>& vec) const {
-    if (vec.size() < num_local_rows_) {
-      vec.resize(num_local_rows_);
-    }
-    eigenvector(i, &vec[0]);
+  void eigenvector(int k, std::vector<double>& vec) const {
+    if (vec.size() < num_local_rows_) vec.resize(num_local_rows_);
+    eigenvector(k, &(vec[0]));
+  }
+
+  void eigenvector(int k, distributed_vector& vec) const {
+    vec.initialize(dimension_, offset_local_, offset_local_ + num_local_rows_);
+    eigenvector(k, vec.get_storage());
   }
 
   int num_conv() const {
@@ -200,7 +204,7 @@ public:
   }
 
 private:
-  int num_local_rows_;
+  int dimension_, offset_local_, num_local_rows_;
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
   PetscErrorCode ierr;

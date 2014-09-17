@@ -15,6 +15,7 @@
 
 #include <rokko/solver.hpp>
 #include <rokko/grid_1d.hpp>
+#include <rokko/distributed_vector.hpp>
 
 #else
 

@@ -22,6 +22,7 @@ public:
 
   virtual void multiply(const double* x, double* y) const = 0;
   virtual int get_dim() const = 0;
+  virtual int get_local_offset() const = 0;
   virtual int get_num_local_rows() const = 0;
 };
 
