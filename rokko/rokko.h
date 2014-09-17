@@ -11,11 +11,17 @@
  *
  *****************************************************************************/
 
-#ifndef ROKKO_H
-#define ROKKO_H
+#ifdef __cplusplus
+
+#include <rokko/solver.hpp>
+#include <rokko/grid.hpp>
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/localized_matrix.hpp>
+#include <rokko/localized_vector.hpp>
+
+#else
 
 #include <rokko/rokko_dense.h>
 #include <rokko/rokko_sparse.h>
 
-#endif // ROKKO_H
-
+#endif

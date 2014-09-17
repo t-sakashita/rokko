@@ -12,7 +12,7 @@
  *****************************************************************************/
 
 #include <rokko/solver.hpp>
-#include <rokko/rokko.h>
+#include <rokko/rokko_dense.h>
 
 void rokko_serial_dense_solver_construct(rokko_serial_dense_solver* solver, char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::serial_dense_solver(std::string(solver_name));
