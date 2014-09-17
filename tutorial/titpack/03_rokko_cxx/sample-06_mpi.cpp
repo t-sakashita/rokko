@@ -80,16 +80,16 @@ int main(int argc, char** argv) {
   }
 
   // Ground-state eigenvector
-  std::vector<double> eigvec;
+  rokko::distributed_vector eigvec;
   solver.eigenvector(0, eigvec);
   if (g.get_myrank() == 0) std::cout << "[Eigenvector components (selected)]";
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
   int count = 0;
   for (int i = 12; i < ss.dimension(); i += ss.dimension()/20, ++count) {
-    if (i >= mat.start_row() && i <= mat.end_row()) {
+    if (eigvec.is_gindex(i)) {
       if (count % 4 == 0) std::cout << std::endl;
-      std::cout << '\t' << eigvec[i];
+      std::cout << '\t' << eigvec.get_global(i);
     }
     std::cout << std::flush;
     MPI_Barrier(g.get_comm());
