@@ -9,12 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver.hpp>
-#include <rokko/pblas/pblas.h>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
-
 #include <boost/lexical_cast.hpp>
 #include <boost/random.hpp>
 #define BOOST_TEST_MODULE test_dot_product

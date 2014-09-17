@@ -9,10 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver.hpp>
-#include <rokko/pblas/pblas.h>
+#include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-
 #include <boost/lexical_cast.hpp>
 #define BOOST_TEST_MODULE test_product
 #ifndef BOOST_TEST_DYN_LINK
