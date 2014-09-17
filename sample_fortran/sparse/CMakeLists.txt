@@ -19,7 +19,7 @@ foreach(name ${SAMPLE})
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   target_link_libraries(${target_name} rokko)
   if(NOT ROKKO_USE_Fortran_LINKER)
-    SET_TARGET_PROPERTIES(${target_name} PROPERTIES LINKER_LANGUAGE CXX)
+    SET_TARGET_PROPERTIES(${target_name} PROPERTIES LINKER_LANGUAGE Fortran)
   endif(NOT ROKKO_USE_Fortran_LINKER)
 endforeach(name)
 
