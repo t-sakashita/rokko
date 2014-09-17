@@ -41,6 +41,7 @@ public:
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
     dim_ = row_dim;
     ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
+    --end_row_; // MatGetOwnershipRange returns the next index to the last element
     num_local_rows_ = end_row_ - start_row_ + 1;
   }
   #undef __FUNCT__
