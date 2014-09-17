@@ -2,7 +2,8 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>,
+*                       Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +13,6 @@
 #include <mpi.h>
 #include <iostream>
 
-//#include <rokko/grid_1d.hpp>
 #include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 
@@ -23,8 +23,6 @@ int main(int argc, char *argv[]) {
   rokko::parallel_sparse_solver solver("slepc");
   int dim = 4;
   rokko::distributed_crs_matrix mat(dim, dim, solver);
-
-  int rows[] = {1, 1, 2, 3, 3, 4};
 
   int num_nonzero_cols[] = {2, 1, 2, 1};
   int nonzero_cols[] = {0, 1, 3, 0, 3, 2};
