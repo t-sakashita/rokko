@@ -11,11 +11,9 @@
 *
 *****************************************************************************/
 
-#include <boost/foreach.hpp>
-
-#include <rokko/solver.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-
+#include <boost/foreach.hpp>
 #define BOOST_TEST_MODULE test_solver
 #ifndef BOOST_TEST_DYN_LINK
 #include <boost/test/included/unit_test.hpp>

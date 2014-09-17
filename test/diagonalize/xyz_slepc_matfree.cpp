@@ -2,7 +2,7 @@
 #include <fstream>
 #include <slepceps.h>
 #include <petscblaslapack.h>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 
 struct model {

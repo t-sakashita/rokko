@@ -14,7 +14,7 @@
 #include <rokko/solver.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/collective.hpp>
-#include <rokko/rokko.h>
+#include <rokko/rokko_dense.h>
 
 void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int dim1, int dim2,
                                         rokko_grid grid, rokko_parallel_dense_solver solver, int matrix_major) {

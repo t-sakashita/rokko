@@ -179,7 +179,7 @@ public:
 
     EPSGetEigenvector(eps, i, evec_r, evec_i);
 
-    VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
+    // VecView(evec_r, PETSC_VIEWER_STDOUT_WORLD);
     VecDestroy(&evec_r); //CHKERRQ(ierr);
     VecDestroy(&evec_i); //CHKERRQ(ierr);
   }
