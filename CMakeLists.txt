@@ -83,11 +83,11 @@ if(OPENMP_FOUND)
 endif(OPENMP_FOUND)
 
 # Linker for Fortran Program
-option(USE_Fortran_LINKER "Use Fortran linker for Fortran program" OFF)
-string(REGEX MATCH "ifort" IS_INTEL_FORTRAN "${CMAKE_Fortran_COMPILER}")
-if(USE_Fortran_LINKER OR IS_INTEL_FORTRAN)
-  set(ROKKO_USE_Fortran_LINKER 1)
-endif(USE_Fortran_LINKER OR IS_INTEL_FORTRAN)
+option(USE_CXX_LINKER "Use C++ linker for Fortran program" OFF)
+message(STATUS "Use C++ linker for Fortran program: " ${USE_CXX_LINKER})
+if(USE_CXX_LINKER)
+  set(ROKKO_USE_CXX_LINKER 1)
+endif(USE_CXX_LINKER)
 
 # MPI library
 find_package(MPI)
