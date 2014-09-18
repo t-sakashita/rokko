@@ -15,8 +15,7 @@ hamiltonian::hamiltonian(subspace const& ss, std::vector<int> const& ipair,
                          std::vector<double> const& bondwt, std::vector<double> const& zrtio) :
   ss_(ss), ipair_(ipair), bondwt_(bondwt), zrtio_(zrtio) {}
 
-double hamiltonian::multiply(const double *v1, double *v0) const {
-  double prdct = 0;
+void hamiltonian::multiply(const double *v1, double *v0) const {
   for (int k = 0; k < num_bonds(); ++k) {
     int isite1 = ipair_[k * 2];
     int isite2 = ipair_[k * 2 + 1];
@@ -38,8 +37,7 @@ double hamiltonian::multiply(const double *v1, double *v0) const {
         factor = -1;
         offdg = -temp * v1[j];
       }
-      prdct += - factor * wght * v1[j] * v1[j] + offdg;
     }
   }
-  return prdct;
+  return;
 }

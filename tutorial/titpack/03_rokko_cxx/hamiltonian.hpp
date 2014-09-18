@@ -12,13 +12,14 @@
 #ifndef TITPACK_HAMILTONIAN_HPP
 #define TITPACK_HAMILTONIAN_HPP
 
+#include <rokko/rokko.hpp>
 #include "subspace.hpp"
 
 //
 // hamiltonian
 //
 
-class hamiltonian {
+class hamiltonian : public rokko::distributed_mfree {
 public:
   hamiltonian(subspace const& ss, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio);
@@ -32,7 +33,13 @@ public:
   }
   double bond_weight (int k) const { return bondwt_[k]; }
   double z_ratio (int k) const { return zrtio_[k]; }
-  double multiply(const double *v1, double *v0) const;
+  void multiply(const double *v1, double *v0) const;
+
+  // for rokko distributed_mfree
+  int get_dim() const { return dimension(); }
+  int get_local_offset() const { return 0; }
+  int get_num_local_rows() const { return dimension(); }
+  
 private:
   subspace const& ss_;
   std::vector<int> ipair_;

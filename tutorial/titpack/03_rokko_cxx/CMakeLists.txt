@@ -35,7 +35,7 @@ foreach(name ${SAMPLES})
   add_rokko_test(${name})
 endforeach(name ${SAMPLES})
 
-set(SAMPLES sample-06_mpi sample-11_mpi)
+set(SAMPLES sample-01_mpi sample-06_mpi sample-11_mpi)
 foreach(name ${SAMPLES})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} titpack ${ROKKO_LIBRARIES})
