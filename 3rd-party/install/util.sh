@@ -28,6 +28,13 @@ set_prefix() {
     else
       PREFIX_OPT_DEF="/opt/nano/alps"
     fi
+  elif [ -d /opt/nano/alps ]; then
+    PREFIX_ROKKO_DEF="/opt/nano/alps/rokko"
+    if [ -d /opt/local ]; then
+      PREFIX_OPT_DEF="/opt/local"
+    else
+      PREFIX_OPT_DEF="/opt/nano/alps"
+    fi
   fi
 
   # for Mac OS X
