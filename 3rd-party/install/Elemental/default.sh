@@ -30,4 +30,3 @@ for build_type in $BUILD_TYPES; do
   check make VERBOSE=1 -j4
   $SUDO make install
 done
-
