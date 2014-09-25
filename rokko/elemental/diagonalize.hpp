@@ -26,14 +26,18 @@ template<typename MATRIX_MAJOR, typename TIMER>
 int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
   MPI_Comm comm = mat.get_grid().get_comm();
-  if(mat.get_grid().is_row_major())
-    throw "Elemental doesn't support grid_row_major.  Use Elemental with grid_col_major.";
-  if(mat.is_row_major())
-    throw "Elemental doesn't support matrix_row_major.  Use Elemental with matrix_col_major.";
+  enum elem::GridOrder elemental_grid_order;  //elem::ROW_MAJOR;
+  if (mat.get_grid().is_row_major()) {
+    elemental_grid_order = elem::ROW_MAJOR;
+  } else {
+    elemental_grid_order = elem::COLUMN_MAJOR;
+  }
+  elem::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
 
-  elem::Grid elem_grid(comm, mat.get_grid().get_nprow());
-  elem::DistMatrix<double> elem_mat(mat.get_m_global(), mat.get_n_global(), 0, 0,
-    mat.get_array_pointer(), mat.get_lld(), elem_grid);
+  elem::DistMatrix<double> elem_mat;
+  elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
+		  mat.get_array_pointer(), mat.get_lld());
+
   elem::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
 
   elem::DistMatrix<double, elem::VR, elem::STAR> elem_w(elem_grid);
