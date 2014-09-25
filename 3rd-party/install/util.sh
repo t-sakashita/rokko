@@ -60,7 +60,7 @@ set_prefix() {
   # for kashiwa.issp.u-tokyo.ac.jp
   if [ -d /home/issp/materiapps ]; then
     PREFIX_OPT_DEF="/home/issp/materiapps/opt"
-    PREFIX_ROKKO_DEF="/home/issp/materiapps/alps/rokko"
+    PREFIX_ROKKO_DEF="/home/issp/materiapps/rokko"
   fi
 
   # for maki.issp.u-tokyo.ac.jp
