@@ -13,4 +13,4 @@ else
   check wget -O - http://elemental.googlecode.com/files/Elemental-$ELEMENTAL_VERSION.tgz | tar zxf -
 fi
 cd $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
-patch -p1 < $SCRIPT_DIR/elemental-$ELEMENTAL_VERSION.patch
+# patch -p1 < $SCRIPT_DIR/elemental-$ELEMENTAL_VERSION.patch
