@@ -17,6 +17,6 @@ for build_type in $BUILD_TYPES; do
   cp -rp slepc-$SLEPC_VERSION slepc-$SLEPC_VERSION-build-$build_type
   cd slepc-$SLEPC_VERSION-build-$build_type
   ./configure --prefix=$PREFIX_ROKKO/$build_type
-  make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type PETSC_ARCH=arch-installed-petsc
-  $SUDO make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type PETSC_ARCH=arch-installed-petsc install
+  make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type
+  $SUDO make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type install
 done
