@@ -13,7 +13,7 @@ set_prefix() {
   fi
 
   if [ -d /opt/rokko ]; then
-    SUDO="sudo"
+    SUDO="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
     PREFIX_ROKKO_DEF="/opt/rokko"
     if [ -d /opt/local ]; then
       PREFIX_OPT_DEF="/opt/local"
@@ -21,13 +21,17 @@ set_prefix() {
       PREFIX_OPT_DEF="/opt/alps"
     fi
   elif [ -d /opt/nano/rokko ]; then
-    SUDO="sudo"
+    SUDO="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
     PREFIX_ROKKO_DEF="/opt/nano/rokko"
     if [ -d /opt/local ]; then
       PREFIX_OPT_DEF="/opt/local"
     else
       PREFIX_OPT_DEF="/opt/nano/alps"
     fi
+  elif [ -d /opt/nano/alps/rokko ]; then
+    SUDO=
+    PREFIX_ROKKO_DEF="/opt/nano/alps/rokko"
+    PREFIX_OPT_DEF="/opt/nano/alps"
   fi
 
   # for Mac OS X
