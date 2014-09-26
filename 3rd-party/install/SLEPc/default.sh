@@ -18,5 +18,5 @@ for build_type in $BUILD_TYPES; do
   cd slepc-$SLEPC_VERSION-build-$build_type
   ./configure --prefix=$PREFIX_ROKKO/$build_type
   make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type
-  $SUDO LD_LIBRARY_PATH=$LD_LIBRARY_PATH make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type install
+  $SUDO make SLEPC_DIR=$PWD PETSC_DIR=$PREFIX_ROKKO/$build_type install
 done

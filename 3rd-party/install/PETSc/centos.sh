@@ -29,5 +29,5 @@ for build_type in $BUILD_TYPES; do
       --with-c++-support=1 --with-debugging=1
   fi
   check make
-  $SUDO LD_LIBRARY_PATH=$LD_LIBRARY_PATH make install
+  $SUDO make install
 done
