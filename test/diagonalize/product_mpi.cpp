@@ -42,11 +42,11 @@ BOOST_AUTO_TEST_CASE(test_product) {
   rokko::product(1, matA, false, matB, false, 0, matC);
   matC.print();
   // calculate trace
-  double sum_local;
+  double sum_local = 0;
   for (int i = 0; i < dim; ++i) {
     if (matC.is_gindex(i, i)) sum_local += matC.get_global(i, i);
   }
-  double sum_global;
+  double sum_global = 0;
   MPI_Allreduce(&sum_local, &sum_global, 1, MPI_DOUBLE, MPI_SUM, comm);
   if (rank == 0) std::cout << "trace of distributed matrix = " << sum_global << std::endl;
 
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(test_product) {
   rokko::localized_matrix<rokko::matrix_col_major> lmatC = lmatA * lmatA;
   if (rank == 0) std::cout << lmatC << std::endl;
   // calculate trace
-  double sum;
+  double sum = 0;
   for (int i = 0; i < dim; ++i) {
     sum += lmatC(i, i);
   }
