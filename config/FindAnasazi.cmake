@@ -18,7 +18,7 @@ set(_PATHS "")
 if(ANASAZI_DIR)
   set(_PATHS ${ANASAZI_DIR})
 else(ANASAZI_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE} ${CMAKE_INSTALL_PREFIX} $ENV{HOME}/opt/rokko/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt/rokko $ENV{HOME}/opt/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt /opt/rokko/${CMAKE_BUILD_TYPE} /opt/rokko /opt/${CMAKE_BUILD_TYPE} /opt)
 endif(ANASAZI_DIR)
 
 # Try to figure out ANASAZI_DIR by finding Anasazi_config.h

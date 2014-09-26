@@ -72,7 +72,8 @@ else(DEFINED MKL_INCLUDE_DIR)
   if(SCALAPACK_DIR)
     set(_PATHS ${SCALAPACK_DIR})
   else(SCALAPACK_DIR)
-    list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt" /usr/lib64/openmpi)
+    list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE} ${CMAKE_INSTALL_PREFIX} $ENV{HOME}/opt/rokko/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt/rokko $ENV{HOME}/opt/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt /opt/rokko/${CMAKE_BUILD_TYPE} /opt/rokko /opt/${CMAKE_BUILD_TYPE} /opt)
+    list(APPEND _PATHS /usr/lib64/openmpi) # for CentOS
   endif(SCALAPACK_DIR)
 
   foreach (_PATH ${_PATHS})
