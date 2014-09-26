@@ -8,17 +8,11 @@ set_build_dir
 
 . $PREFIX_OPT/env.sh
 
-cd $BUILD_DIR
-rm -rf elpa_lib-$ELPA_VERSION
-check tar zxf $HOME/source/elpa_lib-$ELPA_VERSION.tar.gz
-cd $BUILD_DIR/elpa_lib-$ELPA_VERSION
-patch -p1 < $SCRIPT_DIR/elpa_lib-201305.patch
+sh $SCRIPT_DIR/setup.sh
 
 BUILD_TYPES="Release Debug"
-
 for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
-  rm -rf elpa_lib-$ELPA_VERSION-build-$build_type
   mkdir -p elpa_lib-$ELPA_VERSION-build-$build_type
   cd elpa_lib-$ELPA_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX_ROKKO/$build_type \
