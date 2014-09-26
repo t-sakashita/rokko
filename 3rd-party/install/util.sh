@@ -53,13 +53,13 @@ set_prefix() {
   # for kashiwa.issp.u-tokyo.ac.jp
   if [ -d /home/issp/materiapps ]; then
     PREFIX_OPT_DEF="/home/issp/materiapps/opt"
-    PREFIX_ROKKO_DEF="/home/issp/materiapps/alps/rokko"
+    PREFIX_ROKKO_DEF="/home/issp/materiapps/rokko"
   fi
 
   # for maki.issp.u-tokyo.ac.jp
   if [[ ! -z `echo "$HOSTNAME" | egrep "^maki.\.fx10hpc$"` ]]; then
     PREFIX_OPT_DEF="/global/app/materiapps/opt"
-    PREFIX_ROKKO_DEF="/global/app/materiapps/alps/rokko"
+    PREFIX_ROKKO_DEF="/global/app/materiapps/rokko"
   fi
 
   # for oakleaf-fx.cc.u-tokyo.ac.jp
