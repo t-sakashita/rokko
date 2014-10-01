@@ -11,7 +11,7 @@ set_build_dir
 sh $SCRIPT_DIR/setup.sh
 
 BUILD_TYPES="Release Debug"
-
+MKL=$(echo $MKLROOT | cut -d: -f1)
 unset PETSC_DIR
 for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
@@ -23,14 +23,15 @@ for build_type in $BUILD_TYPES; do
         --with-cxx=mpicxx --with-cc=mpicc --with-fc=mpif90 \
         --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
         --with-mpiexec="mpiexec" \
-        --with-blas-lapack-dir=$MKLROOT/bin/intel64 \
+        --with-blas-lapack-dir=$MKL/bin/intel64 \
         --with-c++-support=1 --with-debugging=0
     else
       ./configure --prefix=$PREFIX_ROKKO/$build_type \
         --with-cxx=icpc --with-cc=icc --with-fc=ifort \
         --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
-        --with-mpi-lib="-lmpi" \
-        --with-blas-lapack-dir=$MKLROOT/bin/intel64 \
+        --with-mpi-include=/usr/include --with-mpi-lib="-lmpi" \
+        --with-blas-lapack-dir=$MKL/bin/intel64 \
+        --with-make-np=1 \
         --with-c++-support=1 --with-debugging=0
     fi
   else
@@ -39,14 +40,15 @@ for build_type in $BUILD_TYPES; do
         --with-cxx=mpicxx --with-cc=mpicc --with-fc=mpif90 \
         --COPTFLAGS="-O0 -g" --CXXOPTFLAGS="-O0 -g" --FOPTFLAGS="-O0 -g" \
         --with-mpiexec="mpiexec" \
-        --with-blas-lapack-dir=$MKLROOT/bin/intel64 \
+        --with-blas-lapack-dir=$MKL/bin/intel64 \
         --with-c++-support=1 --with-debugging=1
     else
       ./configure --prefix=$PREFIX_ROKKO/$build_type \
         --with-cxx=icpc --with-cc=icc --with-fc=ifort \
         --COPTFLAGS="-O0 -g" --CXXOPTFLAGS="-O0 -g" --FOPTFLAGS="-O0 -g" \
-        --with-mpi-lib="-lmpi" \
-        --with-blas-lapack-dir=$MKLROOT/bin/intel64 \
+        --with-mpi-include=/usr/include --with-mpi-lib="-lmpi" \
+        --with-blas-lapack-dir=$MKL/bin/intel64 \
+        --with-make-np=1 \
         --with-c++-support=1 --with-debugging=1
     fi
   fi
