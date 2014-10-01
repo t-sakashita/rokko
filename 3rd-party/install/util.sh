@@ -61,7 +61,7 @@ set_prefix() {
   fi
 
   # for maki.issp.u-tokyo.ac.jp
-  if [[ ! -z `echo "$HOSTNAME" | egrep "^maki.\.fx10hpc$"` ]]; then
+  if [ -d /global/app/materiapps/opt ]; then
     PREFIX_OPT_DEF="/global/app/materiapps/opt"
     PREFIX_ROKKO_DEF="/global/app/materiapps/rokko"
   fi
