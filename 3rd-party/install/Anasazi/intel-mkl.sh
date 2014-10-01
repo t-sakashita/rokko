@@ -33,7 +33,7 @@ for build_type in $BUILD_TYPES; do
       -DMPI_C_LIBRARIES="-lmpi" -DMPI_CXX_LIBRARIES="-lmpi++;-lmpi" -DMPI_Fortran_LIBRARIES="-lmpi" \
       -DBLAS_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_BLAS_LIBRARIES="-mkl=parallel" \
       -DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
-      -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
+      -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON \
       $BUILD_DIR/trilinos-$TRILINOS_VERSION-Source
   fi
   check make VERBOSE=1 -j4
