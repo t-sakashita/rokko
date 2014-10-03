@@ -16,7 +16,7 @@ for build_type in $BUILD_TYPES; do
   rm -rf Elemental-$ELEMENTAL_VERSION-build-$build_type
   mkdir -p Elemental-$ELEMENTAL_VERSION-build-$build_type && cd Elemental-$ELEMENTAL_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX_ROKKO/$build_type \
-    -DSHARED_LIBRARIES=ON \
+    -DELEM_SHARED_LIBRARIES=ON \
     $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
   check make VERBOSE=1 -j4
   $SUDO make install
