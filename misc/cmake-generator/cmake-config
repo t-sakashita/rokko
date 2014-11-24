@@ -54,7 +54,7 @@ def generate_config(module, source):
 ## main routine
 if __name__ == "__main__":
     if os.path.exists("CMakeLists.txt"):
-        print "Error: " + script + " should be run in build directory."
+        print "Error: " + sys.argv[0] + " should be run in build directory."
         sys.exit(255)
     if len(sys.argv) < 2:
         print "Error:", sys.argv[0], "module_name [source_directory]"
