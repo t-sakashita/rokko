@@ -42,7 +42,7 @@ public:
   int get_mycol() const { return mycol; }
 
   bool is_row_major() const { return is_row; }
-  bool is_col_major() const { return !is_row_major(); }
+  bool is_col_major() const { return !is_row; }
 
   int calculate_grid_row(int proc_rank) const { 
     return is_row ? proc_rank / npcol : proc_rank % nprow;

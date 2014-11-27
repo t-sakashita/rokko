@@ -44,11 +44,17 @@ class distributed_matrix {
 public:
   template<typename SOLVER>
   distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
-  :g(g_in)
+    : g(g_in)
   {
     initialize(m_global_in, n_global_in, g_in, solver_in);
   }
 
+  distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, mapping_bc const& mapping_bc_in)
+    : g(g_in)
+  {
+    initialize(m_global_in, n_global_in, g_in, mapping_bc_in);
+  }
+  
   template<typename SOLVER>
   void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
   {
@@ -298,20 +304,18 @@ public:
   void print(std::ostream& os = std::cout) const;
 
 private:
-
   int m_global, n_global;
   double* array;
   int mb, nb;
   int m_local, n_local;
-  // variables of class Grid
-  int myrank, nprocs;
-  int myrow, mycol;
-  int nprow, npcol;
   int lld;
   int length_array;
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
-
   grid g;
+  // variables of class grid
+  int myrank, nprocs;
+  int myrow, mycol;
+  int nprow, npcol;
   ///int info;
 };
 
