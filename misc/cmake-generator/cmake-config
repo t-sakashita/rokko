@@ -83,5 +83,3 @@ if __name__ == "__main__":
     if len(sys.argv) > 3:
         compiler = sys.argv[3]        
     ret = generate_config(module, source, compiler)
-    if ret != 0:
-        sys.exit(255)
