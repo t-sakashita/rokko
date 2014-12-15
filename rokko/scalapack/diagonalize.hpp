@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
+* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,15 +16,17 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/blacs/blacs.h>
 #include <rokko/scalapack/scalapack.h>
+#include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
 
 namespace rokko {
 namespace scalapack {
 
-template<typename MATRIX_MAJOR, typename TIMER>
+template<typename MATRIX_MAJOR>
 int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
+  distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
   int ictxt;
   int info;
 
@@ -37,27 +38,16 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
 
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(),
     mat.get_grid().get_npcol());
-
   int dim = mat.get_m_global();
   int desc[9];
   ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(),
     0, 0, ictxt, mat.get_lld(), &info);
   if (info) {
     std::cerr << "error " << info << " at descinit function of descA " << "mA="
-              << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld="
-              << mat.get_lld() << "." << std::endl;
+              << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld()
+              << "." << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 89);
   }
-
-#ifdef DEBUG
-  for (int proc=0; proc<mat.get_grid().get_nprocs(); ++proc) {
-    if (proc == mat.get_grid().get_myrank()) {
-      std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global="
-                << mat.get_n_global() << std::endl;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
-#endif
 
   double* work = new double[1];
   long lwork = -1;
@@ -69,25 +59,26 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
   lwork = work[0];
   delete[] work;
   work = new double [lwork];
-  if (work == NULL) {
+  if (work == 0) {
     std::cerr << "failed to allocate work. info=" << info << std::endl;
     return info;
   }
-
+  timer.stop(timer_id::diagonalize_initialize);
 
   // 固有値分解
-  timer.start(1);
+  timer.start(timer_id::diagonalize_diagonalize);
   ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
     eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, &info);
-  timer.stop(1);
-
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info  << std::endl;
     exit(1);
   }
+  timer.stop(timer_id::diagonalize_diagonalize);
 
+  timer.start(timer_id::diagonalize_finalize);
   delete[] work;
   ROKKO_blacs_gridexit(&ictxt);
+  timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
 

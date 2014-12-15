@@ -13,8 +13,8 @@
 #ifndef ROKKO_LAPACK_DIAGONALIZE_H
 #define ROKKO_LAPACK_DIAGONALIZE_H
 
-#include "rokko/localized_matrix.hpp"
-#include "rokko/localized_vector.hpp"
+#include <rokko/localized_matrix.hpp>
+#include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 #include <lapacke.h>
 

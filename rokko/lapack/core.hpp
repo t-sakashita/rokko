@@ -29,39 +29,29 @@ class solver {
 public:
   void initialize(int& argc, char**& argv, timer& timer) {}
   void finalize(timer& timer) {}
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
                    localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-		   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
 };
 
 template<>
-template<typename MATRIX_MAJOR>
+template<typename MATRIX_MAJOR, typename VEC>
 void solver<rokko::lapack::dsyev>::diagonalize(localized_matrix<MATRIX_MAJOR>& mat,
-  localized_vector& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
-  rokko::lapack::diagonalize(mat, eigvals, eigvecs, timer);
-}
-
-template<>
-template<typename MATRIX_MAJOR>
-void solver<rokko::lapack::dsyev>::diagonalize(localized_matrix<MATRIX_MAJOR>& mat,
-  std::vector<double>& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  VEC& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::lapack::diagonalize(mat, eigvals, eigvecs, timer);
 }
 
 // template<>
-// template<typename MATRIX_MAJOR, typename timer>
+// template<typename MATRIX_MAJOR, typename VEC>
 // void solver<rokko::lapack::dsyevd>::diagonalize(localized_matrix<MATRIX_MAJOR>& mat,
-//   localized_vector& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+//   VEC& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
 //   rokko::lapack::diagonalize_d(mat, eigvals, eigvecs, timer);
 // }
 
 // template<>
-// template<typename MATRIX_MAJOR, typename timer>
+// template<typename MATRIX_MAJOR, typename VEC>
 // void solver<rokko::lapack::dsyevx>::diagonalize(localized_matrix<MATRIX_MAJOR>& mat,
-//   localized_vector& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+//   VEC& eigvals, localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
 //   rokko::lapack::diagonalize_x(mat, eigvals, eigvecs, timer);
 // }
 

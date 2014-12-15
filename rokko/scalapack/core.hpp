@@ -16,7 +16,6 @@
 #include <rokko/scalapack/diagonalize.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevd.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
-#include <iostream>
 
 namespace rokko {
 namespace scalapack {
@@ -30,8 +29,8 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
-  void initialize(int& argc, char**& argv) {}
-  void finalize() {}
+  void initialize(int& argc, char**& argv, timer& timer) {}
+  void finalize(timer& timer) {}
   void optimized_grid_size() {}
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
@@ -49,29 +48,29 @@ public:
     mat.set_default_lld();
     mat.set_default_length_array();
   }
-  template<typename MATRIX_MAJOR, typename TIMER>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer);
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
+                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
 };
 
 template<>
-template<typename MATRIX_MAJOR, typename TIMER>
+template<typename MATRIX_MAJOR, typename VEC>
 void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  localized_vector& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
+  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer);
 }
 
 template<>
-template<typename MATRIX_MAJOR, typename TIMER>
+template<typename MATRIX_MAJOR, typename VEC>
 void solver<rokko::scalapack::pdsyevd>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  localized_vector& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
+  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize_d(mat, eigvals, eigvecs, timer);
 }
 
 template<>
-template<typename MATRIX_MAJOR, typename TIMER>
+template<typename MATRIX_MAJOR, typename VEC>
 void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  localized_vector& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
+  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize_x(mat, eigvals, eigvecs, timer);
 }
 

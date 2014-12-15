@@ -73,19 +73,24 @@ typedef factory<sd_solver_base> sd_solver_factory;
   
 class serial_dense_solver {
 public:
-  serial_dense_solver(std::string const& solver_name, timer& timer) {
+  void construct(std::string const& solver_name, timer& timer) {
     if (!timer.has(rokko::timer_id::solver_construct))
       timer.registrate(rokko::timer_id::solver_construct, "solver::construct");
     timer.start(rokko::timer_id::solver_construct);
     solver_impl_ = detail::sd_solver_factory::instance()->make_product(solver_name);
     timer.stop(rokko::timer_id::solver_construct);
   }
+  serial_dense_solver(std::string const& solver_name, timer& timer) {
+    this->construct(solver_name, timer);
+  }
   serial_dense_solver(std::string const& solver_name) {
-    if (!global_timer::has(rokko::timer_id::solver_construct))
-      global_timer::registrate(rokko::timer_id::solver_construct, "solver::construct");
-    global_timer::start(rokko::timer_id::solver_construct);
-    solver_impl_ = detail::sd_solver_factory::instance()->make_product(solver_name);
-    global_timer::stop(rokko::timer_id::solver_construct);
+    this->construct(solver_name, *global_timer::instance());
+  }
+  serial_dense_solver(timer& timer) {
+    this->construct(this->default_solver(), timer);
+  }
+  serial_dense_solver() {
+    this->construct(this->default_solver(), *global_timer::instance());
   }
   void initialize(int& argc, char**& argv, timer& timer) {
     if (!timer.has(rokko::timer_id::solver_initialize))
