@@ -151,41 +151,38 @@ public:
   }
 
   std::map<std::string, int> vmem_info() const {
-    using std::string;
-    std::map<string,int> vm_info;
-#ifdef __linux
-    vm_info.insert(std::pair<string,int>("VmPeak", 0));
-    vm_info.insert(std::pair<string,int>("VmHWM", 0));
+    std::map<std::string, int> vm_info;
+// #ifdef __linux
+//     vm_info.insert(std::pair<std::string, int>("VmPeak", 0));
+//     vm_info.insert(std::pair<std::string, int>("VmHWM", 0));
 
-    // process file name: /proc/${PID}/status
-    int pid = static_cast<int>(getppid());
-    std::stringstream iss;
-    iss << pid;
-    std::string filename = string("/proc/")
-      + iss.str() + string("/status");
+//     // process file name: /proc/${PID}/status
+//     int pid = static_cast<int>(getpid());
+//     std::string filename = std::string("/proc/") + boost::lexical_cast<std::string>(pid) +
+//       "/status";
 
-    // open file
-    std::ifstream fin(filename.c_str());
-    if (fin.fail()) {
-      std::cerr << "Can't open the file" << std::endl;
-      return std::map<std::string, int>();
-    }
+//     // open file
+//     std::ifstream fin(filename.c_str());
+//     if (fin.fail()) {
+//       std::cerr << "Can't open the file" << std::endl;
+//       return vm_info;
+//     }
 
-    // extract process infomation from procfs
-    do {
-      string source;
-      getline(fin, source);
-      for (std::map<string, int>::iterator ip = vm_info.begin(); ip != vm_info.end(); ++ip) {
-        if (source.substr(0, (ip->first).size()) == ip->first) {
-          string mem_size;
-          for (string::size_type i = 0; i != source.size(); ++i) {
-            if (isdigit(source[i])) mem_size += source[i];
-          }
-          ip->second = boost::lexical_cast<int>(mem_size);
-        }
-      }
-    } while (fin.good());
-#endif
+//     // extract process infomation from procfs
+//     do {
+//       std::string source;
+//       getline(fin, source);
+//       for (std::map<std::string, int>::iterator ip = vm_info.begin(); ip != vm_info.end(); ++ip) {
+//         if (source.substr(0, (ip->first).size()) == ip->first) {
+//           std::string mem_size;
+//           for (std::string::size_type i = 0; i != source.size(); ++i) {
+//             if (isdigit(source[i])) mem_size += source[i];
+//           }
+//           ip->second = boost::lexical_cast<int>(mem_size);
+//         }
+//       }
+//     } while (fin.good());
+// #endif
     return vm_info;
   }
 
@@ -202,10 +199,10 @@ public:
        << "timer: detailed report = disabled"
 #endif
        << std::endl;
-    std::map<std::string, int> vm = vmem_info();
-    for (std::map<std::string, int>::iterator ivm = vm.begin(); ivm != vm.end(); ++ivm) {
-      os << "timer: " << ivm->first << "   " << ivm->second << " [kB]" << std::endl;
-    }
+    // std::map<std::string, int> vm = vmem_info();
+    // for (std::map<std::string, int>::iterator ivm = vm.begin(); ivm != vm.end(); ++ivm) {
+    //   os << "timer: " << ivm->first << "   " << ivm->second << " [kB]" << std::endl;
+    // }
     for (int i = 0; i < labels_.size(); ++i) {
       if (counts_[i] > 0) {
         os << boost::format("timer: %5d %-55s %12.3lf %10ld\n")
