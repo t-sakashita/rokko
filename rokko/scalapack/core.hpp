@@ -28,8 +28,8 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
-  void initialize(int& argc, char**& argv, timer& timer) {}
-  void finalize(timer& timer) {}
+  void initialize(int& argc, char**& argv) {}
+  void finalize() {}
   void optimized_grid_size() {}
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {

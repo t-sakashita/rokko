@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -27,8 +26,8 @@ public:
   virtual ~pd_solver_base() {}
   virtual bool is_available_grid_major(grid_row_major_t const& grid_major) = 0;
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
-  virtual void initialize(int& argc, char**& argv, timer& timer) = 0;
-  virtual void finalize(timer& timer) = 0;
+  virtual void initialize(int& argc, char**& argv) = 0;
+  virtual void finalize() = 0;
   virtual void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
                            distributed_matrix<matrix_row_major>& eigvecs, timer& timer) = 0;
   virtual void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
@@ -49,10 +48,10 @@ public:
   bool is_available_grid_major(grid_col_major_t const& grid_major) {
     return solver_impl_.is_available_grid_major(grid_major);
   }
-  void initialize(int& argc, char**& argv, timer& timer) {
-    solver_impl_.initialize(argc, argv, timer);
+  void initialize(int& argc, char**& argv) {
+    solver_impl_.initialize(argc, argv);
   }
-  void finalize(timer& timer) { solver_impl_.finalize(timer); }
+  void finalize() { solver_impl_.finalize(); }
   void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
                    distributed_matrix<matrix_row_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
@@ -104,7 +103,8 @@ public:
     if (!timer.has(rokko::timer_id::solver_initialize))
       timer.registrate(rokko::timer_id::solver_initialize, "solver::initialize");
     timer.start(rokko::timer_id::solver_initialize);
-    solver_impl_->initialize(argc, argv, timer);
+    solver_impl_->initialize(argc, argv);
+    timer.stop(rokko::timer_id::solver_initialize);
   }
   void initialize(int& argc, char**& argv) {
     this->initialize(argc, argv, *global_timer::instance());
@@ -113,7 +113,7 @@ public:
     if (!timer.has(rokko::timer_id::solver_finalize))
       timer.registrate(rokko::timer_id::solver_finalize, "solver::finalize");
     timer.start(rokko::timer_id::solver_finalize);
-    solver_impl_->finalize(timer);
+    solver_impl_->finalize();
     timer.stop(rokko::timer_id::solver_finalize);
   }
   void finalize() { this->finalize(*global_timer::instance()); }

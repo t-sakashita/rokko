@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Synge Todo <wistaria@comp-phys.org>,
-*                            Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -27,8 +26,8 @@ struct dsyev {};
 template<typename ROUTINE>
 class solver {
 public:
-  void initialize(int& argc, char**& argv, timer& timer) {}
-  void finalize(timer& timer) {}
+  void initialize(int& argc, char**& argv) {}
+  void finalize() {}
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
                    localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
