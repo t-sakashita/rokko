@@ -57,8 +57,7 @@ public:
   void finalize() { solver_impl_.finalize(); }
   void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
                    distributed_matrix<matrix_row_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, *global_timer::instance());
   }
   void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
                    distributed_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
@@ -66,8 +65,7 @@ public:
   }
   void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
                    distributed_matrix<matrix_col_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, *global_timer::instance());
   }
   void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
                    distributed_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
@@ -109,8 +107,7 @@ public:
   template<typename MATRIX_MAJOR>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
     rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs) {
-    timer_dumb timer_in;
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+    solver_impl_->diagonalize(mat, eigvals, eigvecs, *global_timer::instance());
   }
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {

@@ -13,30 +13,27 @@
 #define ROKKO_EIGEN3_CORE_HPP
 
 #include <rokko/eigen3/diagonalize.hpp>
-#include <iostream>
-#include <vector>
 
 namespace rokko {
 namespace eigen3 {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) {}
-  void finalize() {}
-  template<typename MATRIX_MAJOR, typename TIMER>
+  void initialize(int& argc, char**& argv, timer& timer) {}
+  void finalize(timer& timer) {}
+  template<typename MATRIX_MAJOR>
   void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer_in);
+                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer);
   }
-  template<typename MATRIX_MAJOR, typename TIMER>
+  template<typename MATRIX_MAJOR>
   void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer_in);
+                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer);
   }
 };
 
 } // namespace eigen3
 } // namespace rokko
-
 
 #endif // ROKKO_EIGEN3_CORE_HPP

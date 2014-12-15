@@ -2,9 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2010-2013 by Synge Todo <wistaria@comp-phys.org>,
-*                            Haruhiko Matsuo <halm@looper.t.u-tokyo.ac.jp>,
-*                            Hideyuki Shitara <shitara.hide@jp.fujitsu.com>
+* Copyright (C) 2010-2014 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,46 +12,24 @@
 #ifndef ROKKO_UTIL_TIMER_HPP
 #define ROKKO_UTIL_TIMER_HPP
 
-// ROKKO_ENBALE_TIMER
-// ROKKO_ENABLE_TIMER_TRACE
-// ROKKO_ENABLE_TIMER_DETAILED
-
-#include <iostream>
-#include <string>
-#include <boost/config.hpp>
-
-namespace rokko {
-
-class timer_dumb {
-public:
-  BOOST_STATIC_CONSTANT(int, detailed = (1 << 0));
-  timer_dumb() {}
-  void clear() {}
-  void registrate(std::size_t, std::string const&, int = 0) {}
-  void start(std::size_t) {}
-  void stop(std::size_t) {}
-  bool has(std::size_t) { return false; }
-  std::string get_label(std::size_t) const { return std::string(); }
-  double get_count(std::size_t) const { return 0; }
-  double get_measurement(std::size_t) const { return 0; }
-  double get_average(std::size_t) const { return 0; }
-  void summarize(std::ostream& = std::clog) const {}
-  void detailed_report(std::size_t = 1, std::ostream& = std::clog) const {}
-};
-
-} // end namespace rokko
-
-#ifdef ROKKO_ENABLE_TIMER
+// You may define the following macros:
+//   #define ROKKO_DISABLE_TIMER
+//   #define ROKKO_ENABLE_TIMER_TRACE
+//   #define ROKKO_ENABLE_TIMER_DETAILED
 
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/throw_exception.hpp>
+#include <fstream>
+#include <iostream>
+#include <map>
 #include <stdexcept>
+#include <string>
 #include <sys/time.h> /* gettimeofday */
 #include <valarray>
 #include <vector>
-#include <fstream>
-#include <map>
 
 #ifdef __linux
 #include <sys/types.h>
@@ -61,6 +37,16 @@ public:
 #endif
 
 namespace rokko {
+
+struct timer_id {
+  BOOST_STATIC_CONSTANT(int, solver_construct = 1);
+  BOOST_STATIC_CONSTANT(int, solver_initialize = 2);
+  BOOST_STATIC_CONSTANT(int, solver_finalize = 3);
+  BOOST_STATIC_CONSTANT(int, diagonalize_initialize = 4);
+  BOOST_STATIC_CONSTANT(int, diagonalize_diagonalize = 5);
+  BOOST_STATIC_CONSTANT(int, diagonalize_finalize = 6);
+};
+
 namespace detail {
 
 struct clock {
@@ -131,14 +117,14 @@ public:
     #endif
   }
 
-  void start(std::size_t id, bool fjtool = true) { // hwm: hardware monitor
+  void start(std::size_t id) { // hwm: hardware monitor
     #ifdef ROKKO_ENABLE_TIMER_TRACE
     std::clog << "rokko::timer: starting timer with id = " << id << std::endl;
     #endif
     starts_[id] = clock_t::get_time();
   }
 
-  void stop(std::size_t id, bool fjtool = true) {
+  void stop(std::size_t id) {
     double t = clock_t::get_time() - starts_[id];
     counts_[id] += 1;
     sums_[id] += t;
@@ -164,11 +150,10 @@ public:
     return (counts_[id] > 0 ? sums_[id] / counts_[id] : 0.0);
   }
 
-#ifdef __linux
   std::map<std::string, int> vmem_info() const {
     using std::string;
-
     std::map<string,int> vm_info;
+#ifdef __linux
     vm_info.insert(std::pair<string,int>("VmPeak", 0));
     vm_info.insert(std::pair<string,int>("VmHWM", 0));
 
@@ -200,13 +185,9 @@ public:
         }
       }
     } while (fin.good());
+#endif
     return vm_info;
   }
-#else
-  std::map<std::string, int> vmem_info() const {
-    std::map<std::string, int> vmem_info;
-  }
-#endif
 
   void summarize(std::ostream& os = std::clog) const {
     os << "timer: enabled\n"
@@ -221,12 +202,10 @@ public:
        << "timer: detailed report = disabled"
 #endif
        << std::endl;
-#ifdef __linux
     std::map<std::string, int> vm = vmem_info();
     for (std::map<std::string, int>::iterator ivm = vm.begin(); ivm != vm.end(); ++ivm) {
       os << "timer: " << ivm->first << "   " << ivm->second << " [kB]" << std::endl;
     }
-#endif
     for (int i = 0; i < labels_.size(); ++i) {
       if (counts_[i] > 0) {
         os << boost::format("timer: %5d %-55s %12.3lf %10ld\n")
@@ -267,20 +246,56 @@ protected:
   std::map<std::string, int> vm_info_;
 };
 
+class timer_dumb {
+public:
+  BOOST_STATIC_CONSTANT(int, detailed = 0);
+  timer_dumb() {}
+  void clear() {}
+  void registrate(std::size_t, std::string const&, int = 0) {}
+  void start(std::size_t) {}
+  void stop(std::size_t) {}
+  bool has(std::size_t) { return false; }
+  std::string get_label(std::size_t) const { return std::string(); }
+  double get_count(std::size_t) const { return 0; }
+  double get_measurement(std::size_t) const { return 0; }
+  double get_average(std::size_t) const { return 0; }
+  std::map<std::string, int> vmem_info() const { return std::map<std::string, int>(); }
+  void summarize(std::ostream& = std::clog) const {}
+  void detailed_report(std::size_t = 1, std::ostream& = std::clog) const {}
+};
+
 } // namespace detail
 
+#ifndef ROKKO_DISABLE_TIMER
 typedef detail::timer_base<detail::clock> timer;
-
-} // namespace rokko
-
 #else
+typedef detail::timer_dumb timer;
+#endif
 
-namespace rokko {
-
-typedef timer_dumb timer;
+class global_timer : private boost::noncopyable {
+public:
+  BOOST_STATIC_CONSTANT(int, detailed = rokko::timer::detailed);
+  static void clear() { instance()->clear(); }
+  static void registrate(std::size_t id, std::string const& label, int option = 0) {
+    instance()->registrate(id, label, option);
+  }
+  static void start(std::size_t id) { instance()->start(id); }
+  static void stop(std::size_t id) { instance()->stop(id); }
+  static bool has(std::size_t id) { return instance()->has(id); }
+  static std::string get_label(std::size_t id) { return instance()->get_label(id); }
+  static double get_count(std::size_t id) { return instance()->get_count(id); }
+  static double get_measurement(std::size_t id) { return instance()->get_measurement(id); }
+  static double get_average(std::size_t id) { return instance()->get_average(id); }
+  static std::map<std::string, int> vmem_info() { return instance()->vmem_info(); }
+  static void summarize(std::ostream& os = std::clog) { instance()->summarize(os); }
+  static rokko::timer* instance() {
+    if (!instance_) instance_ = new rokko::timer;
+    return instance_;
+  }
+private:
+  static rokko::timer* instance_;
+};
 
 } // namespace rokko
-
-#endif
 
 #endif // ROKKO_UTIL_TIMER_HPP

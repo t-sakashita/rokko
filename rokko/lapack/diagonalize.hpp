@@ -15,6 +15,7 @@
 
 #include "rokko/localized_matrix.hpp"
 #include "rokko/localized_vector.hpp"
+#include <rokko/utility/timer.hpp>
 #include <lapacke.h>
 
 namespace rokko {
@@ -22,37 +23,33 @@ namespace lapack {
 
 template<typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals,
-                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  int info;
+                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.rows();
-  timer_in.start(1);
+  int info;
   if(mat.is_col_major())
     info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', dim, &mat(0,0), dim, eigvals);
   else
     info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, 'V', 'U', dim, &mat(0,0), dim, eigvals);
-  timer_in.stop(1);
+  timer.stop(timer_id::diagonalize_diagonalize);
+  timer.start(timer_id::diagonalize_finalize);
   eigvecs = mat;
   if (info) {
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
     exit(1);
   }
+  timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
 
-template<class MATRIX_MAJOR>
-int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
+template<typename MATRIX_MAJOR, typename VEC>
+int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
+                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
   int dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
-  return diagonalize(mat, &eigvals[0], eigvecs, timer_in);
-}
-
-template<class MATRIX_MAJOR>
-int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-  int dim = mat.rows();
-  if (eigvals.size() < dim) eigvals.resize(dim);
-  return diagonalize(mat, &eigvals[0], eigvecs, timer_in);
+  timer.stop(timer_id::diagonalize_initialize);
+  return diagonalize(mat, &eigvals[0], eigvecs, timer);
 }
 
 } // namespace lapack

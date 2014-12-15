@@ -10,21 +10,27 @@
 *
 *****************************************************************************/
 
-#include <iostream>
-#include <fstream>
 #include <rokko/rokko.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
-#include <boost/foreach.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <iostream>
+#include <fstream>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
+  rokko::global_timer::registrate(10, "main");
+  rokko::global_timer::registrate(11, "generate_matrix");
+  rokko::global_timer::registrate(12, "output_results");
+
+  rokko::global_timer::start(10);
   std::string solver_name(rokko::serial_dense_solver::default_solver());
   std::string lattice_file("xyz.dat");
   if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) lattice_file = argv[2];
+
   std::cout.precision(5);
+
   std::ifstream ifs(lattice_file.c_str());
   if (!ifs) {
     std::cout << "can't open file" << std::endl;
@@ -45,6 +51,9 @@ int main(int argc, char *argv[]) {
     coupling.push_back(boost::make_tuple(jx, jy, jz));
   }
   int dim = 1 << num_sites;
+
+  rokko::serial_dense_solver solver(solver_name);
+  solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
             << "solver = " << solver_name << std::endl
             << "lattice file = " << lattice_file << std::endl
@@ -52,11 +61,10 @@ int main(int argc, char *argv[]) {
             << "number of bonds = " << num_bonds << std::endl
             << "matrix dimension = " << dim << std::endl;
 
-  rokko::serial_dense_solver solver(solver_name);
-  solver.initialize(argc, argv);
-
+  rokko::global_timer::start(11);
   rokko::localized_matrix<matrix_major> mat(dim, dim);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
+  rokko::global_timer::stop(11);
 
   rokko::localized_vector eigval(dim);
   rokko::localized_matrix<matrix_major> eigvec(dim, dim);
@@ -67,14 +75,20 @@ int main(int argc, char *argv[]) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }
+  rokko::global_timer::start(11);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
+  rokko::global_timer::stop(11);
 
+  rokko::global_timer::start(12);
   std::cout << "smallest eigenvalues:";
   for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(i);
   std::cout << std::endl;
   std::cout << "residual of the smallest eigenvalue/vector: |x A x - lambda| = "
             << std::abs(eigvec.col(0).transpose() * mat * eigvec.col(0) - eigval(0))
             << std::endl;
+  rokko::global_timer::stop(12);
 
   solver.finalize();
+  rokko::global_timer::stop(10);
+  rokko::global_timer::summarize();
 }

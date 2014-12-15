@@ -15,10 +15,6 @@
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-
-#define ROKKO_ENABLE_TIMER
-#define ROKKO_ENABLE_TIMER_TRACE
-
 #include <rokko/utility/timer.hpp>
 
 int main(int argc, char **argv) {
@@ -33,15 +29,21 @@ int main(int argc, char **argv) {
   timer.registrate( 1, "generate");
   timer.registrate( 2, "eigenvalue");
 
+  rokko::global_timer::registrate( 1, "generate");
+  rokko::global_timer::registrate( 2, "eigenvalue");
+  
   timer.start(1);
+  rokko::global_timer::start(1);
   rokko::localized_matrix<rokko::matrix_col_major> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   std::cout << "dimension = " << dim << std::endl;
   std::cout << "[elements of frank matrix]" << std::endl;
   std::cout << mat << std::endl;
   timer.stop(1);
+  rokko::global_timer::stop(1);
 
   timer.start(2);
+  rokko::global_timer::start(2);
   std::cout << "[eigenvalues of frank matrix]" << std::endl;
   double sum = 0;
   for (int i = 0; i < dim; ++i) {
@@ -51,10 +53,11 @@ int main(int argc, char **argv) {
   }
   std::cout << std::endl;
   timer.stop(2);
+  rokko::global_timer::stop(2);
 
   std::cout << "[sum of eigenvalues of frank matrix]" << std::endl;
   std::cout << sum << std::endl;
   
   timer.summarize();
-  // std::cout << timer.get_average(1) << std::endl;
+  rokko::global_timer::summarize();
 }
