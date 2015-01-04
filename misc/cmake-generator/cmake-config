@@ -12,7 +12,7 @@ def read_config(config_file, section, options, source):
             for key in config.options(section):
                 options[key] = config.get(section, key)
     
-def generate_config(module, source):
+def generate_config(module, source, compiler):
     print "component:", module
     if source == "":
         home = os.environ["HOME"]
@@ -31,25 +31,41 @@ def generate_config(module, source):
 
     options = {}
     options["CMAKE_INSTALL_PREFIX"] = os.getcwd()
-    read_config("build.conf", "option", options, source)
-    read_config("build-" + module + ".conf", "option", options, source)
+    build_conf = "build"
+    if compiler != "":
+        build_conf += "-" + compiler
+    build_conf += ".conf"
+    if not os.path.exists(build_conf):
+        print "Error:", build_conf, "not found"
+        sys.exit(255)
+    read_config(build_conf, "option", options, source)
+    build_rokko_conf = "build-" + module + ".conf"
+    if not os.path.exists(build_rokko_conf):
+        print "Error:", build_rokko_conf, "not found"
+        sys.exit(255)
+    read_config(build_rokko_conf, "option", options, source)
     for k in sorted(options.keys()):
         cmake_command += " -D" + k + "=" + options[k]
 
     print "source:", source
     print "install prefix:", options["CMAKE_INSTALL_PREFIX"]
-        
-    script = open(os.path.join(os.getcwd(), "cmake-" + module + ".sh"), 'w')
-    script.write("mkdir -p " + module + "\n")
-    script.write("rm -f " + os.path.join(module, "CMakeCache.txt") + '\n')
-    script.write("rm -f " + os.path.join(module, "CPackConfig.cmake") + '\n')
-    script.write("rm -f " + os.path.join(module, "CPackSourceConfig.cmake") + '\n')
-    script.write("rm -rf " + os.path.join(module, "CMakeFiles/2.*") + '\n')
-    script.write("cd " + module + '\n')
+
+    cmake_stem = "cmake-" + module
+    module_dir = module
+    if compiler != "":
+        cmake_stem += "-" + compiler
+        module_dir += "-" + compiler
+    script = open(os.path.join(os.getcwd(), cmake_stem + ".sh"), 'w')
+    script.write("mkdir -p " + module_dir + "\n")
+    script.write("rm -f " + os.path.join(module_dir, "CMakeCache.txt") + '\n')
+    script.write("rm -f " + os.path.join(module_dir, "CPackConfig.cmake") + '\n')
+    script.write("rm -f " + os.path.join(module_dir, "CPackSourceConfig.cmake") + '\n')
+    script.write("rm -rf " + os.path.join(module_dir, "CMakeFiles/2.*") + '\n')
+    script.write("cd " + module_dir + '\n')
     script.write(cmake_command + '\n')
-    script.write("cp -fp CMakeCache.txt " + os.path.join("..", "cmake-" + module + ".cache") + "\n")
+    script.write("cp -fp CMakeCache.txt " + os.path.join("..", cmake_stem + ".cache") + "\n")
     script.close()
-    print "script:", "cmake-" + module + ".sh"
+    print "script:", cmake_stem + ".sh"
 
 ## main routine
 if __name__ == "__main__":
@@ -63,6 +79,7 @@ if __name__ == "__main__":
     source = ""
     if len(sys.argv) > 2:
         source = sys.argv[2]
-    ret = generate_config(module, source)
-    if ret != 0:
-        sys.exit(255)
+    compiler = ""
+    if len(sys.argv) > 3:
+        compiler = sys.argv[3]        
+    ret = generate_config(module, source, compiler)

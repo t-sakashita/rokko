@@ -8,7 +8,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp)
+set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp utility/timer.cpp)
 if(BUILD_PARALLEL_SPARSE_SOLVER)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver.cpp)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)

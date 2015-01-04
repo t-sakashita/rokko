@@ -2,9 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
-*               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -18,15 +16,17 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/blacs/blacs.h>
 #include <rokko/scalapack/scalapack.h>
+#include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
 
 namespace rokko {
 namespace scalapack {
 
-template<typename MATRIX_MAJOR, typename TIMER>
+template<typename MATRIX_MAJOR>
 int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
+  distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
   int ictxt;
   int info;
 
@@ -55,40 +55,36 @@ int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigva
   long liwork = -1;
 
   // work配列のサイズの問い合わせ
-  ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc,
-                work, lwork, iwork, liwork, &info);
-  if (info) {
-    std::cerr << "error at pdsyev function (query for sizes for workarrays." << std::endl;
-    exit(1);
-  }
+  ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+    eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, iwork, liwork, &info);
 
   lwork = work[0];
-  liwork = iwork[0];
   delete[] work;
-  delete[] iwork;
-
   work = new double[lwork];
+  liwork = iwork[0];
+  delete[] iwork;
   iwork = new int[liwork];
-  if (work == 0) {
+  if (work == 0 || iwork == 0) {
     std::cerr << "failed to allocate work. info=" << info << std::endl;
     return info;
   }
+  timer.stop(timer_id::diagonalize_initialize);
 
   // 固有値分解
-  timer.start(1);
-  ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc,
-                work, lwork, iwork, liwork, &info);
-  timer.stop(1);
-
+  timer.start(timer_id::diagonalize_diagonalize);
+  ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+    eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, iwork, liwork, &info);
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info  << std::endl;
     exit(1);
   }
+  timer.stop(timer_id::diagonalize_diagonalize);
 
+  timer.start(timer_id::diagonalize_finalize);
   delete[] work;
   delete[] iwork;
+  ROKKO_blacs_gridexit(&ictxt);
+  timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
 

@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -57,42 +56,23 @@ public:
     int n_local = mat.calculate_col_size();
     mat.set_local_size(m_local, n_local);
   }
-
-  template<typename MATRIX_MAJOR, typename TIMER>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-		   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in);
-
-  template<typename MATRIX_MAJOR, typename TIMER>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-		   TIMER& timer_in);
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
+		   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
 };
 
 template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						    distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-  rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer_in);
+template<typename MATRIX_MAJOR, typename VEC>
+void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer);
 }
 
 template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						    TIMER& timer_in) {
-  rokko::eigen_exa::diagonalize_s(mat, eigvals, timer_in);
-}
-
-template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						     distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-    rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer_in);
-}
-
-template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						    TIMER& timer_in) {
-  rokko::eigen_exa::diagonalize_sx(mat, eigvals, timer_in);
+template<typename MATRIX_MAJOR, typename VEC>
+void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+    rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer);
 }
 
 } // namespace eigen_exa
