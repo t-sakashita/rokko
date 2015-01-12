@@ -32,7 +32,7 @@ public:
   void finalize() {}
   void optimized_grid_size() {}
   template <typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
+  void default_mapping(int dim) {
     // Determine mb, nb, lld, larray
     int mb = mat.get_m_global() / mat.get_nprow();
     if (mb == 0)  mb = 1;
@@ -41,7 +41,9 @@ public:
     // Note: it should be that mb = nb in pdsyev.
     int tmp = std::min(mb, nb);
     mat.set_block_size(tmp, tmp);
-
+  }
+  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
+  
     // Determine m_local, n_local from m_global, n_global, mb, nb
     mat.set_default_local_size();
     mat.set_default_lld();

@@ -49,7 +49,7 @@ public:
     initialize(m_global_in, n_global_in, g_in, solver_in);
   }
 
-  distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, mapping_bc const& mapping_bc_in)
+  distributed_matrix(mapping_bc const& mapping_bc_in)
     : g(g_in)
   {
     initialize(m_global_in, n_global_in, g_in, mapping_bc_in);
@@ -304,6 +304,7 @@ public:
   void print(std::ostream& os = std::cout) const;
 
 private:
+  mapping_bc map;
   int m_global, n_global;
   double* array;
   int mb, nb;
