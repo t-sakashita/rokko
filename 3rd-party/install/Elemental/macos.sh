@@ -13,21 +13,12 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   rm -rf Elemental-$ELEMENTAL_VERSION-build-$build_type
   mkdir -p Elemental-$ELEMENTAL_VERSION-build-$build_type && cd Elemental-$ELEMENTAL_VERSION-build-$build_type
-  if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
-    check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
-      -DELEM_SHARED_LIBRARIES=ON \
-      -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
-      -DMATH_LIBS="-mkl=parallel;-lifcore" \
+  check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    -DCMAKE_C_COMPILER=gcc -DCMAKE_Fortran_COMPILER=gfortran \
+    -DMATH_LIBS="-Wl,-framework -Wl,Accelerate" \
+    -DELEM_SHARED_LIBRARIES=ON \
+    -DCMAKE_INSTALL_RPATH="$PREFIX/lib" -DCMAKE_SKIP_BUILD_RPATH=OFF -DCMAKE_BUILD_WITH_INSTALL_RPATH=OFF -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON -DCMAKE_MACOSX_RPATH=1 \
     $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
-  else
-    check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX_ROKKO \
-      -DELEM_SHARED_LIBRARIES=ON \
-      -DCMAKE_CXX_COMPILER=icpc -DCMAKE_C_COMPILER=icc -DCMAKE_Fortran_COMPILER=ifort \
-      -DMPI_C_INCLUDE_PATH="/usr/include" -DMPI_CXX_INCLUDE_PATH="/usr/include" \
-      -DMPI_C_LIBRARIES="-lmpi" -DMPI_CXX_LIBRARIES="-lmpi++;-lmpi" -DMPI_Fortran_LIBRARIES="-lmpi" \
-      -DMATH_LIBS="-mkl=parallel;-lifcore" \
-    $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
-  fi
   check make VERBOSE=1 -j4
   $SUDO make install
   cat << EOF > $BUILD_DIR/elemenalvars.sh
