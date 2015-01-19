@@ -29,8 +29,13 @@ for build_type in $BUILD_TYPES; do
   check make VERBOSE=1 -j4
   $SUDO make install
   cat << EOF > $BUILD_DIR/eigenexavars.sh
-export EIGENEXA_ROOT=$PREFIX
+export EIGENEXA_ROOT=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION
 export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/eigenexavars.sh $PREFIX
 done
+
+cat << EOF > $BUILD_DIR/eigenexavars.sh
+export EIGENEXA_ROOT=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION
+EOF
+$SUDO cp -f $BUILD_DIR/eigenexavars.sh $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION
