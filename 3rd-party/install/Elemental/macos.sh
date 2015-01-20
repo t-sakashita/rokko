@@ -21,14 +21,14 @@ for build_type in $BUILD_TYPES; do
     $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
   check make VERBOSE=1 -j4
   $SUDO make install
-  cat << EOF > $BUILD_DIR/elemenalvars.sh
-export ELEMENAL_ROOT=$PREFIX_ROKKO/elemenal-$ELEMENAL_VERSION-$ELEMENAL_PATCH_VERSION
+  cat << EOF > $BUILD_DIR/elementalvars.sh
+export ELEMENTAL_ROOT=$PREFIX_ROKKO/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_PATCH_VERSION
 export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 EOF
-  $SUDO cp -f $BUILD_DIR/elemenalvars.sh $PREFIX
+  $SUDO cp -f $BUILD_DIR/elementalvars.sh $PREFIX
 done
 
-cat << EOF > $BUILD_DIR/elemenalvars.sh
-export ELEMENAL_ROOT=$PREFIX_ROKKO/elemenal-$ELEMENAL_VERSION-$ELEMENAL_PATCH_VERSION
+cat << EOF > $BUILD_DIR/elementalvars.sh
+export ELEMENTAL_ROOT=$PREFIX_ROKKO/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_PATCH_VERSION
 EOF
-$SUDO cp -f $BUILD_DIR/elemenalvars.sh $PREFIX_ROKKO/elemenal-$ELEMENAL_VERSION-$ELEMENAL_PATCH_VERSION
+$SUDO cp -f $BUILD_DIR/elementalvars.sh $PREFIX_ROKKO/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_PATCH_VERSION
