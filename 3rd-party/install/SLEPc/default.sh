@@ -10,7 +10,7 @@ sh $SCRIPT_DIR/setup.sh
 source $PREFIX_ROKKO/rokkoenv.d/petscvars.sh
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/slpec-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/$build_type
+  PREFIX=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/$build_type
   cd $BUILD_DIR
   cp -rp slepc-$SLEPC_VERSION slepc-$SLEPC_VERSION-build-$build_type
   cd slepc-$SLEPC_VERSION-build-$build_type
