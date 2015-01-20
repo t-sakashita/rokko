@@ -10,5 +10,6 @@ rm -rf slepc-$SLEPC_VERSION*
 if [ -f $HOME/source/slepc-$SLEPC_VERSION.tar.gz ]; then
   check tar zxf $HOME/source/slepc-$SLEPC_VERSION.tar.gz
 else
-  check wget -O - http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-$SLEPC_VERSION.tar.gz | tar zxf -
+  check wget http://www.grycap.upv.es/slepc/download/download.php?filename=slepc-$SLEPC_VERSION.tar.gz
+  check tar zxf slepc-$SLEPC_VERSION.tar.gz
 fi
