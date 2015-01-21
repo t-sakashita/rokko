@@ -26,7 +26,7 @@ for build_type in $BUILD_TYPES; do
       --with-c++-support=1 --with-debugging=1
   fi
   check make
-  $SUDO make install
+  $SUDO env LD_LIBRARY_PATH=$LD_LIBRARY_PATH make install
   cat << EOF > $BUILD_DIR/petscvars.sh
 export PETSC_ROOT=$PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_PATCH_VERSION
 export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH

@@ -18,7 +18,7 @@ for build_type in $BUILD_TYPES; do
   export PETSC_DIR=$PETSC_ROOT/$build_type
   ./configure --prefix=$PREFIX
   make
-  $SUDO make install SLEPC_DIR=$PWD PETSC_DIR=$PETSC_ROOT/$build_type
+  $SUDO env LD_LIBRARY_PATH=$LD_LIBRARY_PATH make install SLEPC_DIR=$PWD PETSC_DIR=$PETSC_ROOT/$build_type
   cat << EOF > $BUILD_DIR/slepcvars.sh
 export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION
 export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
