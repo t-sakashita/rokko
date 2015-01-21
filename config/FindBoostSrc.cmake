@@ -1,3 +1,8 @@
+set(_ENV_BOOST_ROOT "$ENV{BOOST_ROOT}")
+if(NOT Boost_ROOT_DIR AND _ENV_BOOST_ROOT)
+  set(Boost_ROOT_DIR "$ENV{BOOST_ROOT}")
+endif(NOT Boost_ROOT_DIR AND _ENV_BOOST_ROOT)
+
 if(NOT Boost_ROOT_DIR)
   set(_PATHS "")
   set(_BOOST_PATHS "")
