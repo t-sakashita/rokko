@@ -23,4 +23,14 @@ for build_type in $BUILD_TYPES; do
     $BUILD_DIR/trilinos-$TRILINOS_VERSION-Source
   check make VERBOSE=1 -j4
   $SUDO make install
+  cat << EOF > $BUILD_DIR/trilinosvars.sh
+export TRILINOS_ROOT=$PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_PATCH_VERSION
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+EOF
+  $SUDO cp -f $BUILD_DIR/trilinosvars.sh $PREFIX
 done
+
+cat << EOF > $BUILD_DIR/trilinosvars.sh
+export TRILINOS_ROOT=$PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_PATCH_VERSION
+EOF
+$SUDO cp -f $BUILD_DIR/trilinosvars.sh $PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_PATCH_VERSION
