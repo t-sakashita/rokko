@@ -28,17 +28,6 @@ namespace rokko {
 
 class parallel_dense_solver;
 
-class class_matrix_element {
-public:
-  class_matrix_element(double (*func_in)(int i, int j)) : func(func_in) {}
-  double operator()(int i, int j) {
-    return func(i, j);
-  }
-private:
-  double (*func)(int i, int j);
-};
-
-
 template<typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix {
 public:
@@ -267,25 +256,6 @@ public:
 
   template<class FUNC>
   void generate(FUNC func) {
-    if (m_global != n_global)
-      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
-    for(int local_i = 0; local_i < m_local; ++local_i) {
-      for(int local_j = 0; local_j < n_local; ++local_j) {
-        int global_i = translate_l2g_row(local_i);
-        int global_j = translate_l2g_col(local_j);
-        set_local(local_i, local_j, func(global_i, global_j));
-      }
-    }
-  }
-
-  void generate(double (*func_in)(int i, int j)) {
-    if (m_global != n_global) {
-      std::cout << "m_global=" << m_global << " n_global=" << n_global << std::endl;
-      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
-    }
-
-    class_matrix_element func(func_in);
-
     for(int local_i = 0; local_i < m_local; ++local_i) {
       for(int local_j = 0; local_j < n_local; ++local_j) {
         int global_i = translate_l2g_row(local_i);

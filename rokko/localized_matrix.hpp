@@ -95,13 +95,22 @@ public:
   void update_global(int global_i, int global_j, double value) {
     update_local(global_i, global_j, value);
   }
-  double get_global(int global_i, int global_j, double value) {
-    return get_local(global_i, global_j, value);
+  double get_global(int global_i, int global_j) {
+    return get_local(global_i, global_j);
   }
-  double get_global_checked(int global_i, int global_j, double value) {
-    return get_local(global_i, global_j, value);
+  double get_global_checked(int global_i, int global_j) {
+    return get_local(global_i, global_j);
   }
-  
+
+  template<class FUNC>
+  void generate(FUNC func) {
+    for(int local_i = 0; local_i < get_m_local(); ++local_i) {
+      for(int local_j = 0; local_j < get_n_local(); ++local_j) {
+        set_local(local_i, local_j, func(local_i, local_j));
+      }
+    }
+  }
+
   void set_zeros() { this->setZero(); }
 
   bool is_row_major() const { return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value; }

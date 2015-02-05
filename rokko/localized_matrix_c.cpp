@@ -37,7 +37,7 @@ void rokko_localized_matrix_print(rokko_localized_matrix matrix) {
     static_cast<rokko::localized_matrix<rokko::matrix_row_major>*>(matrix.ptr)->print();
 }
 
-/*
+
 void rokko_localized_matrix_generate_function(struct rokko_localized_matrix* matrix,
 					      double (*func)(int i, int j)) {
   if (matrix->major == rokko_matrix_col_major)
@@ -101,5 +101,4 @@ int rokko_localized_matrix_get_n_global(struct rokko_localized_matrix matrix) {
   else
     return static_cast<rokko::localized_matrix<rokko::matrix_row_major>*>(matrix.ptr)->get_n_global();
 }
-*/
 
