@@ -14,15 +14,13 @@
 #include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/rokko_sparse.h>
 
-void rokko_parallel_sparse_solver_construct(struct rokko_parallel_sparse_solver* solver, char* solver_name, int argc, char** argv) {
+void rokko_parallel_sparse_solver_construct(struct rokko_parallel_sparse_solver* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::parallel_sparse_solver(std::string(solver_name));
   static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->initialize(argc, argv);
 }
 
-void rokko_parallel_sparse_solver_construct_f(rokko_parallel_sparse_solver* solver, char* solver_name) {
-  int argc = 0;
-  char** argv;
-  rokko_parallel_sparse_solver_construct(solver, solver_name, argc, argv);
+void rokko_parallel_sparse_solver_construct_f(rokko_parallel_sparse_solver* solver, const char* solver_name) {
+  rokko_parallel_sparse_solver_construct(solver, solver_name, 0, 0);
 }
 
 void rokko_parallel_sparse_solver_destruct(rokko_parallel_sparse_solver* solver) {

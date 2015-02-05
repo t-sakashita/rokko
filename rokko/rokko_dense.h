@@ -54,8 +54,8 @@ struct rokko_distributed_matrix {
 
 
 /* serial_dense_sover */
-void rokko_serial_dense_solver_construct(struct rokko_serial_dense_solver* solver, char* solver_name, int argc, char** argv);
-void rokko_serial_dense_solver_construct_f(struct rokko_serial_dense_solver* solver, char* solver_name);
+void rokko_serial_dense_solver_construct(struct rokko_serial_dense_solver* solver, const char* solver_name, int argc, char** argv);
+void rokko_serial_dense_solver_construct_f(struct rokko_serial_dense_solver* solver, const char* solver_name);
 void rokko_serial_dense_solver_destruct(struct rokko_serial_dense_solver* solver);
 void rokko_serial_dense_solver_diagonalize_localized_matrix(struct rokko_serial_dense_solver* solver,
 							    struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
@@ -74,9 +74,9 @@ int rokko_grid_get_myrank(struct rokko_grid grid);
 
 int rokko_grid_get_nprocs(struct rokko_grid grid);
  
-void rokko_parallel_dense_solver_construct(struct rokko_parallel_dense_solver* solver, char* solver_name, int argc, char** argv);
+void rokko_parallel_dense_solver_construct(struct rokko_parallel_dense_solver* solver, const char* solver_name, int argc, char** argv);
 
-void rokko_parallel_dense_solver_construct_f(struct rokko_parallel_dense_solver* solver, char* solver_name);
+void rokko_parallel_dense_solver_construct_f(struct rokko_parallel_dense_solver* solver, const char* solver_name);
 
 void rokko_parallel_dense_solver_destruct(struct rokko_parallel_dense_solver* solver);
 

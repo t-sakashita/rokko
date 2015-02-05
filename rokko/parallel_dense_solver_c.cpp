@@ -14,15 +14,13 @@
 #include <rokko/solver.hpp>
 #include <rokko/rokko_dense.h>
 
-void rokko_parallel_dense_solver_construct(rokko_parallel_dense_solver* solver, char* solver_name, int argc, char** argv) {
+void rokko_parallel_dense_solver_construct(rokko_parallel_dense_solver* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::parallel_dense_solver(std::string(solver_name));
   static_cast<rokko::parallel_dense_solver*>(solver->ptr)->initialize(argc, argv);
 }
 
-void rokko_parallel_dense_solver_construct_f(rokko_parallel_dense_solver* solver, char* solver_name) {
-  int argc = 0;
-  char** argv;
-  rokko_parallel_dense_solver_construct(solver, solver_name, argc, argv);
+void rokko_parallel_dense_solver_construct_f(rokko_parallel_dense_solver* solver, const char* solver_name) {
+  rokko_parallel_dense_solver_construct(solver, solver_name, 0,0);
 }
 
 void rokko_parallel_dense_solver_destruct(rokko_parallel_dense_solver* solver) {

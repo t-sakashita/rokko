@@ -14,12 +14,12 @@
 #include <rokko/solver.hpp>
 #include <rokko/rokko_dense.h>
 
-void rokko_serial_dense_solver_construct(rokko_serial_dense_solver* solver, char* solver_name, int argc, char** argv) {
+void rokko_serial_dense_solver_construct(rokko_serial_dense_solver* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::serial_dense_solver(std::string(solver_name));
   static_cast<rokko::serial_dense_solver*>(solver->ptr)->initialize(argc, argv);
 }
 
-void rokko_serial_dense_solver_construct_f(rokko_serial_dense_solver* solver, char* solver_name) {
+void rokko_serial_dense_solver_construct_f(rokko_serial_dense_solver* solver, const char* solver_name) {
   int argc = 0;
   char** argv;
   rokko_serial_dense_solver_construct(solver, solver_name, argc, argv);
