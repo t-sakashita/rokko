@@ -101,6 +101,25 @@ void rokko_localized_matrix_destruct(struct rokko_localized_matrix* matrix);
 
 void rokko_localized_matrix_print(struct rokko_localized_matrix matrix);
 
+void rokko_localized_matrix_generate_function(struct rokko_localized_matrix* matrix,
+                                              double (*func)(int i, int j));
+
+void rokko_localized_matrix_set_local(struct rokko_localized_matrix* matrix, int local_i, int local_j, double value);
+
+double rokko_localized_matrix_get_local(struct rokko_localized_matrix matrix, int local_i, int local_j);
+
+void rokko_localized_matrix_set_global(struct rokko_localized_matrix* matrix, int global_i, int global_j, double value);
+
+double rokko_localized_matrix_get_global(struct rokko_localized_matrix matrix, int global_i, int global_j);
+
+int rokko_localized_matrix_get_m_local(struct rokko_localized_matrix matrix);
+
+int rokko_localized_matrix_get_n_local(struct rokko_localized_matrix matrix);
+
+int rokko_localized_matrix_get_m_global(struct rokko_localized_matrix matrix);
+
+int rokko_localized_matrix_get_n_global(struct rokko_localized_matrix matrix);
+
 /* distributed_matrix */
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
 					struct rokko_grid grid, struct rokko_parallel_dense_solver solver, int matrix_major);
