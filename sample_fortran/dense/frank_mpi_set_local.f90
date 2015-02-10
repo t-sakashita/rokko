@@ -24,7 +24,10 @@ program frank_matrix
   character(len=100) :: solver_name, tmp_str
   integer arg_len, status
   integer :: provided, ierr, myrank, nprocs
+  integer :: m_local, n_local
   integer :: i, j
+  integer :: local_i, local_j
+  integer :: global_i, global_j
   double precision value
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
@@ -52,10 +55,17 @@ program frank_matrix
   call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
-  call rokko_frank_matrix_generate_distributed_matrix(mat)
-  !do 10 i = 1, n
-  value = 10.0;
-  rokko_distributed_matrix_set_local(mat, 1, 1, value);
+!  call rokko_frank_matrix_generate_distributed_matrix(mat)
+  m_local = rokko_distributed_matrix_get_m_local(mat)
+  n_local = rokko_distributed_matrix_get_m_local(mat)
+  do  local_i = 0, m_local-1
+     do local_j = 0, n_local-1
+      global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
+      global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
+      value = dim - max(global_i, global_j)
+      call rokko_distributed_matrix_set_local(mat, local_i, local_j, value);
+   enddo
+  enddo
  
   call rokko_distributed_matrix_print(mat)
 

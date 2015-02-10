@@ -52,7 +52,6 @@ program frank_matrix
   call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
-!  call rokko_frank_matrix_generate_distributed_matrix(mat)
   do  i = 0, dim-1
      do j = 0, dim-1
       value = dim - max(i,j)
