@@ -14,7 +14,6 @@
 program frank_matrix
   use MPI
   use rokko
-  use rokko_frank_matrix
   implicit none
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
@@ -31,13 +30,14 @@ program frank_matrix
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
-  if (command_argument_count().eq.2) then
+  if (command_argument_count().eq.1) then
      call get_command_argument(1, tmp_str, arg_len, status)
      solver_name = trim(tmp_str)
-     call get_command_argument(2, tmp_str, arg_len, status)
-     read(tmp_str, *) dim
+     !call get_command_argument(2, tmp_str, arg_len, status)
+     !read(tmp_str, *) dim
+     dim = 4
   else
-     write(*,'(A)') "Error: frank_mpi solver_name dimension"
+     write(*,'(A)') "Error: Rokko solver_name"
      stop
   endif
 
@@ -52,14 +52,25 @@ program frank_matrix
   call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
-  call rokko_frank_matrix_generate_distributed_matrix(mat)
-  !do 10 i = 1, n
-  value = 10.0;
-  rokko_distributed_matrix_set_local(mat, 1, 1, value);
- 
+!  call rokko_frank_matrix_generate_distributed_matrix(mat)
+  do  i = 0, dim-1
+     do j = 0, dim-1
+      value = dim - max(i,j)
+         call rokko_distributed_matrix_set_global(mat, i, j, value)
+     enddo
+  enddo
+
+  
+  if (myrank.eq.0) then
+     write(*,'(A)') "Frank matrix = "
+  endif
   call rokko_distributed_matrix_print(mat)
 
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+
   call rokko_parallel_dense_solver_diagonalize_distributed_matrix(solver, mat, w, Z)
+  
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
@@ -67,6 +78,14 @@ program frank_matrix
         write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
      enddo
   endif
+
+  if (myrank.eq.0) then
+     write(*,'(A)') "Eigenstates = "
+  endif
+
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+
+  call rokko_distributed_matrix_print(Z)
 
   call rokko_distributed_matrix_destruct(mat)
   call rokko_distributed_matrix_destruct(Z)
