@@ -25,7 +25,7 @@ program frank_matrix
   integer arg_len, status
   integer :: provided, ierr, myrank, nprocs
   integer :: i, j
-  real value
+  double precision value
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
