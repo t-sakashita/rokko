@@ -12,7 +12,7 @@ include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 include_directories(${MPI_Fortran_INCLUDE_PATH})
 
-set(SAMPLE frank frank_mpi frank_mpi_set_local)
+set(SAMPLE frank frank_mpi frank_mpi_set_global)
 foreach(name ${SAMPLE})
   set(target_name sample_fortran_${name})
   add_executable(${target_name} ${name}.f90)
