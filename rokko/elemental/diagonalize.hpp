@@ -14,7 +14,7 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <elemental.hpp>
+#include <El.hpp>
 #include <rokko/utility/timer.hpp>
 
 namespace rokko {
@@ -25,22 +25,22 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   MPI_Comm comm = mat.get_grid().get_comm();
-  enum elem::GridOrder elemental_grid_order;  //elem::ROW_MAJOR;
+  enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
   if (mat.get_grid().is_row_major()) {
-    elemental_grid_order = elem::ROW_MAJOR;
+    elemental_grid_order = El::ROW_MAJOR;
   } else {
-    elemental_grid_order = elem::COLUMN_MAJOR;
+    elemental_grid_order = El::COLUMN_MAJOR;
   }
-  elem::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
-  elem::DistMatrix<double> elem_mat;
+  El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
+  El::DistMatrix<double> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
 		  mat.get_array_pointer(), mat.get_lld());
-  elem::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
-  elem::DistMatrix<double, elem::VR, elem::STAR> elem_w(elem_grid);
+  El::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
+  El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
   timer.stop(timer_id::diagonalize_initialize);
 
   timer.start(timer_id::diagonalize_diagonalize);
-  elem::HermitianEig(elem::LOWER, elem_mat, elem_w, elem_eigvecs); // only access lower half of H
+  El::HermitianEig(El::LOWER, elem_mat, elem_w, elem_eigvecs); // only access lower half of H
   timer.stop(timer_id::diagonalize_diagonalize);
 
   timer.start(timer_id::diagonalize_finalize);

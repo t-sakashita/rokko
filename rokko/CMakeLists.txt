@@ -19,8 +19,7 @@ if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_c.cpp)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_dense.f90)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_f.f90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.f90)
 endif(BUILD_Fortran_BINDING)
 
 # Eigen3
@@ -94,11 +93,6 @@ if(BUILD_C_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver_c.cpp distributed_crs_matrix_c.cpp)
   endif(BUILD_ANASAZI OR BUILD_SLEPC)
 endif(BUILD_C_BINDING)
-if(BUILD_Fortran_BINDING)
-  if(BUILD_ANASAZI OR BUILD_SLEPC)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_sparse.f90)    
-  endif(BUILD_ANASAZI OR BUILD_SLEPC)
-endif(BUILD_Fortran_BINDING)
 
 add_library(rokko ${ROKKO_SOURCES})
 if (BUILD_SHARED_LIBS)
@@ -142,3 +136,6 @@ install(TARGETS rokko COMPONENT libraries
 install(DIRECTORY . COMPONENT headers DESTINATION include/rokko
         FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.ipp"
         PATTERN ".svn" EXCLUDE PATTERN "CVS" EXCLUDE)
+if(BUILD_Fortran_BINDING)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rokko.mod DESTINATION include)
+endif(BUILD_Fortran_BINDING)

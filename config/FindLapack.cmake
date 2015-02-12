@@ -34,6 +34,7 @@
 # Includes
 include(CheckFunctionExists)
 
+message(STATUS "Checking for BLAS and LAPACK libraries")
 
 ###################################################
 # BLAS_LIBRARY, LAPACK_LIBRARY manually defined.
@@ -433,41 +434,41 @@ ENDIF(NOT BLAS_LIBRARY_INIT AND NOT LAPACK_LIBRARY_INIT)
 # Looking for SCALAPACK.
 ###################################################
 
-IF(USE_SCALAPACK)
-  SET(PNPATHS 
-    ${MKL_PATHS}
-    ${BLACS_HOME}/lib
-    ${SCALAPACK_HOME}/lib
-    /usr/lib
-    /opt/lib
-    /usr/local/lib
-    /sw/lib
-    )
+# IF(USE_SCALAPACK)
+#   SET(PNPATHS 
+#     ${MKL_PATHS}
+#     ${BLACS_HOME}/lib
+#     ${SCALAPACK_HOME}/lib
+#     /usr/lib
+#     /opt/lib
+#     /usr/local/lib
+#     /sw/lib
+#     )
 
-  IF(INTEL_MKL)
-    FIND_LIBRARY(BLACSLIB mkl_blacs_${PLAT}_lp${QMC_BITS} PATHS  ${PNPATHS})
-    FIND_LIBRARY(SCALAPACKLIB mkl_scalapack PATHS  ${PNPATHS})
-  ENDIF(INTEL_MKL)
+#   IF(INTEL_MKL)
+#     FIND_LIBRARY(BLACSLIB mkl_blacs_${PLAT}_lp${QMC_BITS} PATHS  ${PNPATHS})
+#     FIND_LIBRARY(SCALAPACKLIB mkl_scalapack PATHS  ${PNPATHS})
+#   ENDIF(INTEL_MKL)
 
-  IF(NOT SCALAPACKLIB)
-    FIND_LIBRARY(BLACSLIB blacs_MPI-${PLAT}-{BLACSDBGLVL} PATHS  ${PNPATHS})
-    FIND_LIBRARY(BLACSCINIT blacsCinit_MPI-${PLAT}-{BLACSDBGLVL} PATHS  ${PNPATHS})
-    FIND_LIBRARY(SCALAPACKLIB scalapack PATHS  ${PNPATHS})
-  ENDIF(NOT SCALAPACKLIB)
+#   IF(NOT SCALAPACKLIB)
+#     FIND_LIBRARY(BLACSLIB blacs_MPI-${PLAT}-{BLACSDBGLVL} PATHS  ${PNPATHS})
+#     FIND_LIBRARY(BLACSCINIT blacsCinit_MPI-${PLAT}-{BLACSDBGLVL} PATHS  ${PNPATHS})
+#     FIND_LIBRARY(SCALAPACKLIB scalapack PATHS  ${PNPATHS})
+#   ENDIF(NOT SCALAPACKLIB)
 
-  IF(BLACSLIB AND SCALAPACKLIB)
-    SET(FOUND_SCALAPACK 1 CACHE BOOL "Found scalapack library")
-  ELSE(BLACSLIB AND SCALAPACKLIB)
-    SET(FOUND_SCALAPACK 0 CACHE BOOL "Mising scalapack library")
-  ENDIF(BLACSLIB AND SCALAPACKLIB)
+#   IF(BLACSLIB AND SCALAPACKLIB)
+#     SET(FOUND_SCALAPACK 1 CACHE BOOL "Found scalapack library")
+#   ELSE(BLACSLIB AND SCALAPACKLIB)
+#     SET(FOUND_SCALAPACK 0 CACHE BOOL "Mising scalapack library")
+#   ENDIF(BLACSLIB AND SCALAPACKLIB)
 
-  MARK_AS_ADVANCED(
-    BLACSCINIT
-    BLACSLIB
-    SCALAPACKLIB
-    FOUND_SCALAPACK
-    )
-ENDIF(USE_SCALAPACK)
+#   MARK_AS_ADVANCED(
+#     BLACSCINIT
+#     BLACSLIB
+#     SCALAPACKLIB
+#     FOUND_SCALAPACK
+#     )
+# ENDIF(USE_SCALAPACK)
 
 
 
@@ -475,7 +476,9 @@ ENDIF(USE_SCALAPACK)
 # Finalize (setting some variables).
 ###################################################
 
-message(STATUS "LAPACK DEBUG::LAPACK_LIBRARY = ${LAPACK_LIBRARY}")
+if(NOT MAC_VECLIB)
+  message(STATUS "BLAS and LAPACK libraries: ${LAPACK_LIBRARY}")
+endif(NOT MAC_VECLIB)
 
 if(BLAS_LIBRARY)
   SET(BLAS_LIBRARIES ${BLAS_LIBRARY})

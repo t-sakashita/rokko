@@ -12,7 +12,7 @@
 #ifndef ROKKO_ELEMENTAL_CORE_HPP
 #define ROKKO_ELEMENTAL_CORE_HPP
 
-#include <elemental.hpp>
+#include <El.hpp>
 #include <rokko/elemental/diagonalize.hpp>
 #include <boost/type_traits/is_same.hpp>
 
@@ -25,8 +25,8 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) {
     return boost::is_same<GRID_MAJOR, grid_col_major_t>::value;
   }
-  void initialize(int& argc, char**& argv) { elem::Initialize(argc, argv); }
-  void finalize() { elem::Finalize(); }
+  void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
+  void finalize() { El::Finalize(); }
   void optimized_grid_size() {}
   template <typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {

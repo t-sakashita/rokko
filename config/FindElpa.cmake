@@ -16,7 +16,25 @@ set(_PATHS "")
 if(ELPA_DIR)
   set(_PATHS ${ELPA_DIR})
 else(ELPA_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE} ${CMAKE_INSTALL_PREFIX} $ENV{HOME}/opt/rokko/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt/rokko $ENV{HOME}/opt/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt /opt/rokko/${CMAKE_BUILD_TYPE} /opt/rokko /opt/${CMAKE_BUILD_TYPE} /opt)
+  list(APPEND _PATHS
+  	      ${ELPA_ROOT}/${CMAKE_BUILD_TYPE}
+	      ${ELPA_ROOT}
+  	      $ENV{ELPA_ROOT}/${CMAKE_BUILD_TYPE}
+	      $ENV{ELPA_ROOT}
+  	      ${ROKKO_SOLVER_ROOT}/elpa/${CMAKE_BUILD_TYPE}
+	      ${ROKKO_SOLVER_ROOT}/elpa
+  	      $ENV{ROKKO_SOLVER_ROOT}/elpa/${CMAKE_BUILD_TYPE}
+	      $ENV{ROKKO_SOLVER_ROOT}/elpa
+	      ${CMAKE_INSTALL_PREFIX}/elpa/${CMAKE_BUILD_TYPE}
+	      ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/elpa/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/elpa
+	      /opt/rokko/elpa/${CMAKE_BUILD_TYPE}
+	      /opt/rokko/elpa
+	      /opt/rokko/${CMAKE_BUILD_TYPE}
+	      /opt/rokko
+	      /opt/local /opt
+	      )
 endif(ELPA_DIR)
 
 foreach (_PATH ${_PATHS})

@@ -3,7 +3,7 @@
 SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/../util.sh
 . $SCRIPT_DIR/version.sh
-set_build_dir
+set_prefix
 
 cd $BUILD_DIR
 rm -rf trilinos-$TRILINOS_VERSION-Source*
