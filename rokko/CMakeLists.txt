@@ -137,5 +137,5 @@ install(DIRECTORY . COMPONENT headers DESTINATION include/rokko
         FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.ipp"
         PATTERN ".svn" EXCLUDE PATTERN "CVS" EXCLUDE)
 if(BUILD_Fortran_BINDING)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rokko.mod DESTINATION include/rokko)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rokko.mod DESTINATION include)
 endif(BUILD_Fortran_BINDING)
