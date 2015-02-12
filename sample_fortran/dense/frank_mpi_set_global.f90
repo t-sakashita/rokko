@@ -14,7 +14,6 @@
 program frank_matrix
   use MPI
   use rokko
-  use rokko_frank_matrix
   implicit none
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
