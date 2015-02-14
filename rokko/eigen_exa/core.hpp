@@ -28,47 +28,21 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  int get_lld(int NPROW, int NPCOL,  {
 
-    }
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     int nx, ny;
-    int dim = mat.get_mapping().get_dim();
-    int NPROW = mat.get_mapping().get_nprow();
-    int NPCOL = mat.get_mapping().get_npcol();  
-    n1 = ((n-1)/NPROW+1);  
-    int i1 = 6, i2 = 16*4, i3 = 16*4*2; // input for cstab_get_optdim
-    int nm; // output for cstab_get_optdim
-    ROKKO_cstab_get_optdim(n1, i1, i2, i3, &nm);
-
-    NB  = eigen_NB;
-
-    nmz = ((n-1)/NPROW+1);
-    nmz = ((nmz-1)/NB+1)*NB+1;
-                 nn  = nmz
-    nmz = (n-1)/NB+1
-    nmz = ((nmz-1)/NPROW+1)*NB
-    nmz = MAX(nn, nmz)
-
-    nmw = ((n-1)/NPCOL+1)
-    nmw = ((nmw-1)/NB+1)*NB+1
-                 nn  = nmw
-    nmw = (n-1)/NB+1
-    nmw = ((nmw-1)/NPCOL+1)*NB
-    nmw = MAX(nn, nmw)
-
-    int larray = MAX(nmz, nm)*nmw
-
-    int nx = nm;
-    int ny = (larray-1)/nm+1;
-    //ROKKO_eigen_get_matdims( dim, &nx, &ny );
+    int nprow = mat.get_mapping().get_grid().get_nprow();
+    int npcol = mat.get_mapping().get_grid().get_npcol();
+    int n = mat.get_mapping().get_dim();
+    ROKKO_eigen_get_matdims( nprow, npcol, n, &nx, &ny );
 
     std::cout << "nx=" << nx << std::endl;
-    std::cout << "larray=" << larray << std::endl;
+    //std::cout << "larray=" << larray << std::endl;
     mat.set_lld(nx);
-    mat.set_length_array(larray);
+    mat.set_length_array(nx * ny);
   }
+
   mapping_bc optimized_mapping(grid const& g, int dim) const {
     return mapping_bc(g, dim, 1);  // block_size = 1
   }

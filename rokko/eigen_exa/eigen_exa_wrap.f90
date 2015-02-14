@@ -27,13 +27,45 @@ subroutine eigen_free_wrap(flag)
   return
 end subroutine eigen_free_wrap
 
-subroutine eigen_get_matdims_wrap(n, nx, ny)
-  use eigen_libs !, only : eigen_get_matdims
+subroutine eigen_get_matdims_wrap(NPROW, NPCOL, n, nx, ny)
+  use eigen_libs, only : eigen_NB
   use eigen_devel, only : x_nnod
   implicit none
-  integer, intent(in) :: n
+  integer, intent(in) :: NPROW, NPCOL, n
   integer, intent(out) :: nx, ny
-  print *,"x_nnod=", x_nnod
-  call eigen_get_matdims(n, nx, ny)
+
+  integer :: NB
+  integer :: n1, nm, nmz, nmw, nn, larray
+
+  n1 = ((n-1)/NPROW+1)
+  call CSTAB_get_optdim( n1, 6, 16*4, 16*4*2, nm )
+
+  NB  = eigen_NB
+
+  nmz = ((n-1)/NPROW+1)
+  nmz = ((nmz-1)/NB+1)*NB+1
+  nn  = nmz
+  nmz = (n-1)/NB+1
+  nmz = ((nmz-1)/NPROW+1)*NB
+  ! Fix on version 2.2b
+  ! to avoid unexpected SIGSEGV,
+  ! use the maximum of nn and nmz.
+  nmz = MAX(nn, nmz)
+  
+  nmw = ((n-1)/NPCOL+1)
+  nmw = ((nmw-1)/NB+1)*NB+1
+  nn  = nmw
+  nmw = (n-1)/NB+1
+  nmw = ((nmw-1)/NPCOL+1)*NB
+  ! Fix on version 2.2b
+  ! to avoid unexpected SIGSEGV,
+  ! use the maximum of nn and nmz.
+  nmw = MAX(nn, nmw)
+  
+  larray = MAX(nmz, nm)*nmw
+  
+  nx = nm
+  ny = (larray-1)/nm+1
+
   return
 end subroutine eigen_get_matdims_wrap
