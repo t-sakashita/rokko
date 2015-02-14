@@ -12,6 +12,6 @@
 
 #include <rokko/eigen_exa/eigen_exa.h>
 
-void ROKKO_cstab_get_optdim(int n, int *nx, int *ny) {
-  eigen_get_matdims_(&n, nx, ny);
+void ROKKO_eigen_get_matdims(int n, int *nx, int *ny) {
+  eigen_get_matdims_wrap_(&n, nx, ny);
 }

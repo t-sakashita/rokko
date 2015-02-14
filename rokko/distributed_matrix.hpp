@@ -127,7 +127,7 @@ public:
   const double* get_array_pointer() const { return array; }
 
   int get_length_array() const { return length_array; }
-
+  const mapping_bc& get_mapping() { return map_; }
   void set_mapping(mapping_bc const& map) { map_ = map; }
   void set_length_array(int value) { length_array = value; }
   void set_block_size(int mb_in, int nb_in) {
@@ -135,7 +135,7 @@ public:
     nb = nb_in;
   }
 
-  const grid& get_grid() const {return g;}
+  const grid& get_grid() const { return g; }
 
   int get_mb() const { return mb; }
   int get_nb() const { return nb; }

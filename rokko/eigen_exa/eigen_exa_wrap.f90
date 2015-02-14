@@ -26,3 +26,14 @@ subroutine eigen_free_wrap(flag)
   call eigen_free(flag)
   return
 end subroutine eigen_free_wrap
+
+subroutine eigen_get_matdims_wrap(n, nx, ny)
+  use eigen_libs !, only : eigen_get_matdims
+  use eigen_devel, only : x_nnod
+  implicit none
+  integer, intent(in) :: n
+  integer, intent(out) :: nx, ny
+  print *,"x_nnod=", x_nnod
+  call eigen_get_matdims(n, nx, ny)
+  return
+end subroutine eigen_get_matdims_wrap
