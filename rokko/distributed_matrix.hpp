@@ -71,15 +71,24 @@ public:
   }
   
   template<typename SOLVER>
-  void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
-    m_global = m_global_in; n_global = n_global_in;
-    myrank = g_in.get_myrank(); nprocs = g_in.get_nprocs();
-    myrow = g_in.get_myrow(); mycol = g_in.get_mycol();
-    nprow = g_in.get_nprow(); npcol = g_in.get_npcol();
-    g = map_.get_grid();
+  //void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
+  void initialize(int m_global, int n_global, const grid& g_in, SOLVER const& solver_in) {
+    initialize(m_global, g_in, solver_in);
+  }
 
-    // Determine mb, nb, lld, larray
-    map_ = solver_in.optimized_mapping(g, m_global);
+  template<typename SOLVER>
+  void initialize(int dim, const grid& g_in, SOLVER const& solver_in) {
+    // Determine map_
+    map_ = solver_in.optimized_mapping(g_in, dim);
+    // substitute sizes from map_
+    g = map_.get_grid();
+    myrank = g.get_myrank();  nprocs = g.get_nprocs();
+    myrow = g.get_myrow();  mycol = g.get_mycol();
+    nprow = g.get_nprow();  npcol = g.get_npcol();
+    m_global = map_.get_dim();  n_global = dim;
+    m_local = map_.get_dim_local();  n_local = m_local;
+    mb = map_.get_block_size();  nb = mb;
+    
     solver_in.optimized_matrix_size(*this);
 
     stride_myrow = myrow * mb;

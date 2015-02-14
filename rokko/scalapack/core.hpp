@@ -45,7 +45,7 @@ public:
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     //mat.set_mapping( optimized_mapping(mat.get_grid(), mat.get_m_global()) );
     // Determine m_local, n_local from m_global, n_global, mb, nb
-    mat.set_default_local_size();
+    //mat.set_default_local_size();
     mat.set_default_lld();
     mat.set_default_length_array();
   }
