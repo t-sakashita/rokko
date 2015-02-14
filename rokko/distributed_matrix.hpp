@@ -44,19 +44,19 @@ public:
     initialize(map);
   }
 
-  void initialize(mapping_bc const& map_in) {
-    m_global = map_in.get_dim();
-    n_global = map_in.get_dim();
-    g = map_in.get_grid();
+  void initialize(mapping_bc const& map) {
+    m_global = map.get_dim();
+    n_global = map.get_dim();
+    g = map.get_grid();
 
     myrank = g.get_myrank(); nprocs = g.get_nprocs();
     myrow = g.get_myrow(); mycol = g.get_mycol();
     nprow = g.get_nprow(); npcol = g.get_npcol();
 
-    // Determine mb, nb, lld, larray
-    m_local = map_in.get_dim_local();
-    n_local = map_in.get_dim_local();
-    lld = map_in.get_lld();
+    // Get mb, nb, lld, larray
+    m_local = map.get_dim_local();
+    n_local = map.get_dim_local();
+    //lld = map.get_lld();
       
     stride_myrow = myrow * mb;
     stride_nprow = mb * (nprow - 1);
@@ -76,9 +76,10 @@ public:
     myrank = g_in.get_myrank(); nprocs = g_in.get_nprocs();
     myrow = g_in.get_myrow(); mycol = g_in.get_mycol();
     nprow = g_in.get_nprow(); npcol = g_in.get_npcol();
-    g = g_in;
+    g = map_.get_grid();
 
     // Determine mb, nb, lld, larray
+    map_ = solver_in.optimized_mapping(g, m_global);
     solver_in.optimized_matrix_size(*this);
 
     stride_myrow = myrow * mb;
@@ -118,6 +119,7 @@ public:
 
   int get_length_array() const { return length_array; }
 
+  void set_mapping(mapping_bc const& map) { map_ = map; }
   void set_length_array(int value) { length_array = value; }
   void set_block_size(int mb_in, int nb_in) {
     mb = mb_in;
@@ -299,7 +301,7 @@ public:
   void print(std::ostream& os = std::cout) const;
 
 private:
-  mapping_bc map;
+  mapping_bc map_;
   int m_global, n_global;
   double* array;
   int mb, nb;
