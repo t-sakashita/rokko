@@ -31,17 +31,17 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
   void optimized_grid_size() {}
-  template <typename MATRIX_MAJOR>
-  void default_mapping(int dim) {
+  mapping_bc optimized_mapping(grid const& g, int dim)  const {
     // Determine mb, nb, lld, larray
-    int mb = mat.get_m_global() / mat.get_nprow();
+    int mb = dim / g.get_nprow();
     if (mb == 0)  mb = 1;
-    int nb = mat.get_n_global() / mat.get_npcol();
+    int nb = dim / g.get_npcol();
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
-    int tmp = std::min(mb, nb);
-    mat.set_block_size(tmp, tmp);
+    int b = std::min(mb, nb);
+    return mapping_bc(g, dim, b);
   }
+  template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
   
     // Determine m_local, n_local from m_global, n_global, mb, nb

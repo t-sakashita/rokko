@@ -35,7 +35,7 @@ public:
                            distributed_matrix<matrix_col_major>& eigvecs, timer& timer) = 0;
   virtual void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) = 0;
   virtual void optimized_matrix_size(distributed_matrix<matrix_col_major>& mat) = 0;
-  virtual mapping_bc optimized_mapping() = 0;
+  virtual mapping_bc optimized_mapping(grid const& g, int dim) const = 0;
 };
   
 template<typename SOLVER>
@@ -62,14 +62,15 @@ public:
                    distributed_matrix<matrix_col_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
-  void optimized_matrix_size(distributed_matrix<matrix_row_major>& mapping_bc) {
-    solver_impl_.optimized_matrix_size(map);
+  void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) {
+    solver_impl_.optimized_matrix_size(mat);
   }
-  void optimized_matrix_size(distributed_matrix<matrix_col_major>& mapping_bc) {
-    solver_impl_.optimized_matrix_size(mapping_bc);
+  void optimized_matrix_size(distributed_matrix<matrix_col_major>& mat) {
+    solver_impl_.optimized_matrix_size(mat);
   }
-  mapping_bc optimized_matrix_size() {
-    return solver_impl_.optimized_matrix_size();
+  // optimized_mapping
+  mapping_bc optimized_mapping(grid const& g, int dim) const {
+    return solver_impl_.optimized_mapping(g, dim);
   }
 private:
   solver_type solver_impl_;
@@ -134,13 +135,12 @@ public:
       timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer);
   }
-  // template <typename MATRIX_MAJOR>
-  // void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {
-  //   solver_impl_->optimized_matrix_size(mat);
-  // }
   template <typename MATRIX_MAJOR>
-  mapping_bc optimized_mapping() const {
-    return solver_impl_->optimized_matrix_size();
+  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {
+    solver_impl_->optimized_matrix_size(mat);
+  }
+  mapping_bc optimized_mapping(grid const& g, int dim) const {
+    return solver_impl_->optimized_mapping(g, dim);
   }
   static std::vector<std::string> solvers() {
     return detail::pd_solver_factory::product_names();

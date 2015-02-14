@@ -28,6 +28,14 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
+  void optimized_lld() {
+    int n1 = ((n-1)/NPROW+1);
+    int i1 = 6, i2 = 16*4, i3 = 16*4*2;
+    int nm;
+    ROKKO_cstab_get_optdim(n1, i1, i2, i3, &nm);
+    return nm;
+  }
+
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     int n = mat.get_m_global();
@@ -54,6 +62,37 @@ public:
     mat.set_block_size(1, 1);
     int m_local = mat.calculate_row_size();
     int n_local = mat.calculate_col_size();
+    mat.set_local_size(m_local, n_local);
+    int lld = m_local;
+  }
+  void optimized_mapping(grid const& g, int dim) {
+    int n = mat.get_m_global();
+
+    // calculate sizes of my proc's local part of distributed matrix
+    int NPROW = mat.get_grid().get_nprow();
+    int NPCOL = mat.get_grid().get_npcol();
+
+    int n1 = ((n-1)/NPROW+1);
+    int nm;
+    int i1 = 6, i2 = 16*4, i3 = 16*4*2;
+    ROKKO_cstab_get_optdim(n1, i1, i2, i3, &nm);
+
+    int NB  = 64;
+    int nmz = ((n-1)/NPROW+1);
+    nmz = ((nmz-1)/NB+1)*NB+1;
+    int nmw = ((n-1)/NPCOL+1);
+    nmw = ((nmw-1)/NB+1)*NB+1;
+
+    int larray = std::max(nmz, nm)*nmw;
+    
+    mat.set_lld(nm);
+    mat.set_length_array(larray);
+    //mat.set_block_size(1, 1);
+    //int m_local = mat.calculate_row_size();
+    //int n_local = mat.calculate_col_size();
+    mapping_bc map(g, m_global, 1);  // block_size = 1
+    int m_local = map.dim_local();
+    int n_local = m_local;
     mat.set_local_size(m_local, n_local);
   }
   template<typename MATRIX_MAJOR, typename VEC>

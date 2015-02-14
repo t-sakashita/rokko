@@ -15,6 +15,7 @@
 
 #include "grid.hpp"
 #include "matrix_major.hpp"
+#include "mapping_bc.hpp"
 #include <rokko/blacs/blacs.h>
 #include <rokko/pblas/pblas.h>
 
@@ -38,15 +39,39 @@ public:
     initialize(m_global_in, n_global_in, g_in, solver_in);
   }
 
-  distributed_matrix(mapping_bc const& mapping_bc_in)
-    : g(g_in)
+  distributed_matrix(mapping_bc const& map)
   {
-    initialize(m_global_in, n_global_in, g_in, mapping_bc_in);
+    initialize(map);
+  }
+
+  void initialize(mapping_bc const& map_in) {
+    m_global = map_in.get_dim();
+    n_global = map_in.get_dim();
+    g = map_in.get_grid();
+
+    myrank = g.get_myrank(); nprocs = g.get_nprocs();
+    myrow = g.get_myrow(); mycol = g.get_mycol();
+    nprow = g.get_nprow(); npcol = g.get_npcol();
+
+    // Determine mb, nb, lld, larray
+    m_local = map_in.get_dim_local();
+    n_local = map_in.get_dim_local();
+    lld = map_in.get_lld();
+      
+    stride_myrow = myrow * mb;
+    stride_nprow = mb * (nprow - 1);
+    stride_mycol = mycol * nb;
+    stride_npcol = nb * (npcol - 1);
+
+    array = new double[length_array];
+    if (array == 0) {
+      std::cerr << "failed to allocate array." << std::endl;
+      MPI_Abort(g.get_comm(), 3);
+    }
   }
   
   template<typename SOLVER>
-  void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
-  {
+  void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
     m_global = m_global_in; n_global = n_global_in;
     myrank = g_in.get_myrank(); nprocs = g_in.get_nprocs();
     myrow = g_in.get_myrow(); mycol = g_in.get_mycol();
