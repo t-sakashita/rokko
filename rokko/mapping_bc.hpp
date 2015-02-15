@@ -24,6 +24,13 @@ public:
     g_(g), dim_(dim), block_size_(block_size) {
     dim_local_ = dim / block_size;
   }
+
+  template<typename SOLVER>
+  explicit mapping_bc(grid const& g, int dim, SOLVER const& solver_in) :
+    g_(g), dim_(dim)  {
+    *this = solver_in.optimized_mapping(g, dim);
+  }
+
   int get_dim() const { return dim_; }
   int get_dim_local() const { return dim_local_; }
   int get_block_size() const { return block_size_; }

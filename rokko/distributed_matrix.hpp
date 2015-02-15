@@ -39,9 +39,10 @@ public:
     initialize(m_global_in, n_global_in, g_in, solver_in);
   }
 
-  distributed_matrix(mapping_bc const& map)
+  template<typename SOLVER>
+  distributed_matrix(mapping_bc const& map, SOLVER const& solver_in)
   {
-    initialize(map);
+    initialize(map, solver_in);
   }
 
   void initialize(mapping_bc const& map) {
@@ -55,15 +56,18 @@ public:
   }
   
   template<typename SOLVER>
-  //void initialize(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
   void initialize(int m_global, int n_global, const grid& g_in, SOLVER const& solver_in) {
     initialize(m_global, g_in, solver_in);
   }
 
   template<typename SOLVER>
   void initialize(int dim, const grid& g_in, SOLVER const& solver_in) {
-    // Determine map_
-    set_mapping(solver_in.optimized_mapping(g_in, dim));    
+    initialize(solver_in.optimized_mapping(g_in, dim), solver_in);
+  }
+
+  template<typename SOLVER>
+  void initialize(mapping_bc const& map, SOLVER const& solver_in) {
+    set_mapping(map);
     set_local_size(calculate_row_size(), calculate_col_size());
     solver_in.optimized_matrix_size(*this);
 
