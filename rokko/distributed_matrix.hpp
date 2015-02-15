@@ -45,23 +45,7 @@ public:
   }
 
   void initialize(mapping_bc const& map) {
-    map_ = map;
-    m_global = map_.get_dim();
-    n_global = map_.get_dim();
-    g = map_.get_grid();
-
-    myrank = g.get_myrank(); nprocs = g.get_nprocs();
-    myrow = g.get_myrow(); mycol = g.get_mycol();
-    nprow = g.get_nprow(); npcol = g.get_npcol();
-
-    // Get local dimensions from map_
-    m_local = map_.get_dim_local();
-    n_local = map_.get_dim_local();
-      
-    stride_myrow = myrow * mb;
-    stride_nprow = mb * (nprow - 1);
-    stride_mycol = mycol * nb;
-    stride_npcol = nb * (npcol - 1);
+    set_mapping(map);
 
     array = new double[length_array];
     if (array == 0) {
@@ -79,37 +63,24 @@ public:
   template<typename SOLVER>
   void initialize(int dim, const grid& g_in, SOLVER const& solver_in) {
     // Determine map_
-    map_ = solver_in.optimized_mapping(g_in, dim);
-    // substitute sizes from map_
-    g = map_.get_grid();
-    myrank = g.get_myrank();  nprocs = g.get_nprocs();
-    myrow = g.get_myrow();  mycol = g.get_mycol();
-    nprow = g.get_nprow();  npcol = g.get_npcol();
-    m_global = map_.get_dim();  n_global = dim;
-    m_local = map_.get_dim_local();  n_local = m_local;
-    mb = map_.get_block_size();  nb = mb;
-    
+    set_mapping(solver_in.optimized_mapping(g_in, dim));    
+    set_local_size(calculate_row_size(), calculate_col_size());
     solver_in.optimized_matrix_size(*this);
 
-    stride_myrow = myrow * mb;
-    stride_nprow = mb * (nprow - 1);
-    stride_mycol = mycol * nb;
-    stride_npcol = nb * (npcol - 1);
-
-// #ifndef NDEBUG
-//     for (int proc=0; proc<nprocs; ++proc) {
-//       if (proc == myrank) {
-//         std::cout << "proc=" << proc << std::endl;
-//         std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-//         std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
-//         std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
-//         std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
-//         std::cout << "  lld=" << lld << std::endl;
-//         std::cout << "  length_array=" << length_array << std::endl;
-//       }
-//       MPI_Barrier(g.get_comm());
-//     }
-// #endif
+#ifndef NDEBUG
+    for (int proc=0; proc<nprocs; ++proc) {
+      if (proc == myrank) {
+        std::cout << "proc=" << proc << std::endl;
+        std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
+        std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
+        std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
+        std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
+        std::cout << "  lld=" << lld << std::endl;
+        std::cout << "  length_array=" << length_array << std::endl;
+      }
+      MPI_Barrier(g.get_comm());
+    }
+#endif
 
     array = new double[length_array];
     if (array == 0) {
@@ -128,7 +99,21 @@ public:
 
   int get_length_array() const { return length_array; }
   const mapping_bc& get_mapping() { return map_; }
-  void set_mapping(mapping_bc const& map) { map_ = map; }
+  void set_mapping(mapping_bc const& map) {
+    map_ = map;
+    // substitute sizes from map_
+    g = map_.get_grid();
+    myrank = g.get_myrank(); nprocs = g.get_nprocs();
+    myrow = g.get_myrow(); mycol = g.get_mycol();
+    nprow = g.get_nprow(); npcol = g.get_npcol();
+    m_global = map_.get_dim();  n_global = m_global;
+    mb = map_.get_block_size();  nb = mb;
+    // set strides
+    stride_myrow = myrow * mb;
+    stride_nprow = mb * (nprow - 1);
+    stride_mycol = mycol * nb;
+    stride_npcol = nb * (npcol - 1);
+  }
   void set_length_array(int value) { length_array = value; }
   void set_block_size(int mb_in, int nb_in) {
     mb = mb_in;
