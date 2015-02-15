@@ -13,9 +13,9 @@
 #ifndef ROKKO_DISTRIBUTED_MATRIX_HPP
 #define ROKKO_DISTRIBUTED_MATRIX_HPP
 
-#include "grid.hpp"
-#include "matrix_major.hpp"
-#include "mapping_bc.hpp"
+#include <rokko/grid.hpp>
+#include <rokko/matrix_major.hpp>
+#include <rokko/mapping_bc.hpp>
 #include <rokko/blacs/blacs.h>
 #include <rokko/pblas/pblas.h>
 
@@ -45,18 +45,18 @@ public:
   }
 
   void initialize(mapping_bc const& map) {
-    m_global = map.get_dim();
-    n_global = map.get_dim();
-    g = map.get_grid();
+    map_ = map;
+    m_global = map_.get_dim();
+    n_global = map_.get_dim();
+    g = map_.get_grid();
 
     myrank = g.get_myrank(); nprocs = g.get_nprocs();
     myrow = g.get_myrow(); mycol = g.get_mycol();
     nprow = g.get_nprow(); npcol = g.get_npcol();
 
-    // Get mb, nb, lld, larray
-    m_local = map.get_dim_local();
-    n_local = map.get_dim_local();
-    //lld = map.get_lld();
+    // Get local dimensions from map_
+    m_local = map_.get_dim_local();
+    n_local = map_.get_dim_local();
       
     stride_myrow = myrow * mb;
     stride_nprow = mb * (nprow - 1);

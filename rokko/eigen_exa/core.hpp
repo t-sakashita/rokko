@@ -29,6 +29,10 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
+  mapping_bc optimized_mapping(grid const& g, int dim) const {
+    return mapping_bc(g, dim, 1);  // block_size = 1
+  }
+
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
     int nx, ny;
@@ -37,15 +41,11 @@ public:
     int n = mat.get_mapping().get_dim();
     ROKKO_eigen_get_matdims( nprow, npcol, n, &nx, &ny );
 
-    std::cout << "nx=" << nx << std::endl;
-    //std::cout << "larray=" << larray << std::endl;
+    //std::cout << "nx=" << nx << std::endl;
     mat.set_lld(nx);
     mat.set_length_array(nx * ny);
   }
 
-  mapping_bc optimized_mapping(grid const& g, int dim) const {
-    return mapping_bc(g, dim, 1);  // block_size = 1
-  }
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
 		   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);

@@ -30,7 +30,7 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  void optimized_grid_size() {}
+  //void optimized_grid_size() {}
   mapping_bc optimized_mapping(grid const& g, int dim)  const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();
@@ -43,9 +43,6 @@ public:
   }
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
-    //mat.set_mapping( optimized_mapping(mat.get_grid(), mat.get_m_global()) );
-    // Determine m_local, n_local from m_global, n_global, mb, nb
-    //mat.set_default_local_size();
     mat.set_default_lld();
     mat.set_default_length_array();
   }
