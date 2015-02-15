@@ -146,14 +146,13 @@ public:
   }
 
   void set_default_local_size() {
-    MPI_Barrier(g.get_comm());
     set_local_size(calculate_row_size(), calculate_col_size());
   }
 
   int calculate_row_size(int proc_row) const {
     int tmp = m_global / mb;
     int local_num_block_rows = (tmp - proc_row -1) / nprow + 1;
-    int rest_block_row = tmp % nprow; // mbに満たないサイズのブロックを持つプロセス
+    int rest_block_row = tmp % nprow; // size of a residue block (< mb)
     int local_rest_block_rows;
     if (proc_row == rest_block_row)
       local_rest_block_rows = m_global % mb;
@@ -170,7 +169,7 @@ public:
   int calculate_col_size(int proc_col) const {
     int tmp = n_global / nb;
     int local_num_block_cols = (tmp - proc_col -1) / npcol + 1;
-    int rest_block_col = tmp % npcol; // nbに満たないサイズのブロックを持つプロセス
+    int rest_block_col = tmp % npcol; // size of a residue block (< nb)
     int local_rest_block_cols;
     if (proc_col == rest_block_col) {
       local_rest_block_cols = n_global % nb;
