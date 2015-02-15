@@ -28,7 +28,7 @@ foreach(name ${SAMPLE})
   add_rokko_test(${name})
 endforeach(name)
 
-set(SAMPLE frank_mpi heisenberg_mpi xyz_mpi all_gather_mpi gather_mpi)
+set(SAMPLE frank_mpi frank_mpi_mapping heisenberg_mpi xyz_mpi all_gather_mpi gather_mpi)
 foreach(name ${SAMPLE})
   set(target_name sample_dense_${name})
   add_executable(${target_name} ${name}.cpp)
