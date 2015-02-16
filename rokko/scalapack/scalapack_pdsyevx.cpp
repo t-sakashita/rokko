@@ -13,4 +13,4 @@
 #include <rokko/scalapack/core.hpp>
 
 ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::scalapack::solver<rokko::scalapack::pdsyevx>,
-  "scalapack_pdsyevx", 20)
+  "scalapack:pdsyevx", 20)
