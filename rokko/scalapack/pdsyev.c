@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,10 +11,12 @@
 
 #include <rokko/scalapack/scalapack.h>
 
-void ROKKO_pdsyev(char jobz, char uplo, int n,
-                  double* A, int ia, int ja, const int* descA,
-                  double* w, double* Z, int iz, int jz, const int* descZ,
-                  double* work, int lwork, int* info) {
-  pdsyev_(&jobz, &uplo, &n, A, &ia, &ja, descA, w, Z, &iz, &jz, descZ,
-          work, &lwork, info);
+lapack_int ROKKO_pdsyev(char jobz, char uplo, int n,
+                        double* A, int ia, int ja, const int* descA,
+                        double* w, double* Z, int iz, int jz, const int* descZ,
+                        double* work, int lwork) {
+  lapack_int info;
+  SCALAPACK_pdsyev(&jobz, &uplo, &n, A, &ia, &ja, descA, w, Z, &iz, &jz, descZ,
+                   work, &lwork, &info);
+  return info;
 }
