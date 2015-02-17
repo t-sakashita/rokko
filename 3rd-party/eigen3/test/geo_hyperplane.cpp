@@ -22,7 +22,6 @@ template<typename HyperplaneType> void hyperplane(const HyperplaneType& _plane)
   const Index dim = _plane.dim();
   enum { Options = HyperplaneType::Options };
   typedef typename HyperplaneType::Scalar Scalar;
-  typedef typename NumTraits<Scalar>::Real RealScalar;
   typedef Matrix<Scalar, HyperplaneType::AmbientDimAtCompileTime, 1> VectorType;
   typedef Matrix<Scalar, HyperplaneType::AmbientDimAtCompileTime,
                          HyperplaneType::AmbientDimAtCompileTime> MatrixType;
@@ -79,6 +78,7 @@ template<typename HyperplaneType> void hyperplane(const HyperplaneType& _plane)
 
 template<typename Scalar> void lines()
 {
+  using std::abs;
   typedef Hyperplane<Scalar, 2> HLine;
   typedef ParametrizedLine<Scalar, 2> PLine;
   typedef Matrix<Scalar,2,1> Vector;
@@ -90,7 +90,7 @@ template<typename Scalar> void lines()
     Vector u = Vector::Random();
     Vector v = Vector::Random();
     Scalar a = internal::random<Scalar>();
-    while (internal::abs(a-1) < 1e-4) a = internal::random<Scalar>();
+    while (abs(a-1) < 1e-4) a = internal::random<Scalar>();
     while (u.norm() < 1e-4) u = Vector::Random();
     while (v.norm() < 1e-4) v = Vector::Random();
 
@@ -111,6 +111,32 @@ template<typename Scalar> void lines()
     CoeffsType converted_coeffs = HLine(pl).coeffs();
     converted_coeffs *= (line_u.coeffs()[0])/(converted_coeffs[0]);
     VERIFY(line_u.coeffs().isApprox(converted_coeffs));
+  }
+}
+
+template<typename Scalar> void planes()
+{
+  using std::abs;
+  typedef Hyperplane<Scalar, 3> Plane;
+  typedef Matrix<Scalar,3,1> Vector;
+
+  for(int i = 0; i < 10; i++)
+  {
+    Vector v0 = Vector::Random();
+    Vector v1(v0), v2(v0);
+    if(internal::random<double>(0,1)>0.25)
+      v1 += Vector::Random();
+    if(internal::random<double>(0,1)>0.25)
+      v2 += v1 * std::pow(internal::random<Scalar>(0,1),internal::random<int>(1,16));
+    if(internal::random<double>(0,1)>0.25)
+      v2 += Vector::Random() * std::pow(internal::random<Scalar>(0,1),internal::random<int>(1,16));
+
+    Plane p0 = Plane::Through(v0, v1, v2);
+
+    VERIFY_IS_APPROX(p0.normal().norm(), Scalar(1));
+    VERIFY_IS_MUCH_SMALLER_THAN(p0.absDistance(v0), Scalar(1));
+    VERIFY_IS_MUCH_SMALLER_THAN(p0.absDistance(v1), Scalar(1));
+    VERIFY_IS_MUCH_SMALLER_THAN(p0.absDistance(v2), Scalar(1));
   }
 }
 
@@ -153,5 +179,7 @@ void test_geo_hyperplane()
     CALL_SUBTEST_4( hyperplane(Hyperplane<std::complex<double>,5>()) );
     CALL_SUBTEST_1( lines<float>() );
     CALL_SUBTEST_3( lines<double>() );
+    CALL_SUBTEST_2( planes<float>() );
+    CALL_SUBTEST_5( planes<double>() );
   }
 }
