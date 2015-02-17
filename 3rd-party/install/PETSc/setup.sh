@@ -14,4 +14,3 @@ else
   check tar zxf petsc-$PETSC_VERSION.tar.gz
 fi
 cd petsc-$PETSC_VERSION
-patch -p1 < $SCRIPT_DIR/petsc-3.5.2.patch

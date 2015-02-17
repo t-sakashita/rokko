@@ -6,6 +6,8 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 set_prefix
 
 sh $SCRIPT_DIR/setup.sh
+cd $BUILD_DIR/petsc-$PETSC_VERSION
+patch -p1 < $SCRIPT_DIR/petsc-3.5.2-fx10.patch
 
 unset PETSC_DIR
 BUILD_TYPES="Release Debug"
