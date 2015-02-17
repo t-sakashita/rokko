@@ -13,7 +13,6 @@
 
 program frank_matrix
   use rokko
-  use rokko_frank_matrix
   implicit none
   integer :: dim
   type(rokko_serial_dense_solver) :: solver

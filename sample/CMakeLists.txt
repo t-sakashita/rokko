@@ -8,4 +8,6 @@
 #
 
 add_subdirectory(dense)
-add_subdirectory(sparse)
+if(BUILD_PARALLEL_SPARSE_SOLVER)
+  add_subdirectory(sparse)
+endif(BUILD_PARALLEL_SPARSE_SOLVER)

@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2014  Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,22 +27,13 @@ public:
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
   virtual void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
+                           localized_matrix<matrix_row_major>& eigvecs, timer& timer) = 0;
   virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
-
+                           localized_matrix<matrix_col_major>& eigvecs, timer& timer) = 0;
   virtual void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
+                           localized_matrix<matrix_row_major>& eigvecs, timer& timer) = 0;
   virtual void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
+                           localized_matrix<matrix_col_major>& eigvecs, timer& timer) = 0;
 };
   
 template<typename SOLVER>
@@ -52,44 +42,25 @@ class sd_solver_wrapper : public sd_solver_base {
 public:
   sd_solver_wrapper() : solver_impl_() {}
   virtual ~sd_solver_wrapper() {}
-  void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
+  void initialize(int& argc, char**& argv) {
+    solver_impl_.initialize(argc, argv);
+  }
   void finalize() { solver_impl_.finalize(); }
   void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
-  }
-  void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
-  }
-  void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs) {
-    timer_dumb timer;
+                   localized_matrix<matrix_row_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
   void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
-  }
-
-  void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs) {
-    timer_dumb timer;
+                   localized_matrix<matrix_col_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
   void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
-  }
-  void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs) {
-    timer_dumb timer;
+                   localized_matrix<matrix_row_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
   void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+                   localized_matrix<matrix_col_major>& eigvecs, timer& timer) {
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
 private:
   solver_type solver_impl_;
@@ -101,32 +72,54 @@ typedef factory<sd_solver_base> sd_solver_factory;
   
 class serial_dense_solver {
 public:
-  serial_dense_solver(std::string const& solver_name) {
+  void construct(std::string const& solver_name, timer& timer) {
+    if (!timer.has(rokko::timer_id::solver_construct))
+      timer.registrate(rokko::timer_id::solver_construct, "solver::construct");
+    timer.start(rokko::timer_id::solver_construct);
     solver_impl_ = detail::sd_solver_factory::instance()->make_product(solver_name);
+    timer.stop(rokko::timer_id::solver_construct);
   }
-  void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
-  void finalize() { solver_impl_->finalize(); }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  serial_dense_solver(std::string const& solver_name, timer& timer) {
+    this->construct(solver_name, timer);
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs) {
-    timer_dumb timer_in;
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  serial_dense_solver(std::string const& solver_name) {
+    this->construct(solver_name, *global_timer::instance());
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  serial_dense_solver(timer& timer) {
+    this->construct(this->default_solver(), timer);
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs) {
-    timer_dumb timer_in;
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  serial_dense_solver() {
+    this->construct(this->default_solver(), *global_timer::instance());
+  }
+  void initialize(int& argc, char**& argv, timer& timer) {
+    if (!timer.has(rokko::timer_id::solver_initialize))
+      timer.registrate(rokko::timer_id::solver_initialize, "solver::initialize");
+    timer.start(rokko::timer_id::solver_initialize);
+    solver_impl_->initialize(argc, argv);
+    timer.stop(rokko::timer_id::solver_initialize);
+  }
+  void initialize(int& argc, char**& argv) {
+    this->initialize(argc, argv, *global_timer::instance());
+  }
+  void finalize(timer& timer) {
+    if (!timer.has(rokko::timer_id::solver_finalize))
+      timer.registrate(rokko::timer_id::solver_finalize, "solver::finalize");
+    timer.start(rokko::timer_id::solver_finalize);
+    solver_impl_->finalize();
+    timer.stop(rokko::timer_id::solver_finalize);
+  }
+  void finalize() { this->finalize(*global_timer::instance()); }
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
+                   localized_matrix<MATRIX_MAJOR>& eigvecs,
+                   timer& timer = *global_timer::instance()) {
+    if (!timer.has(rokko::timer_id::diagonalize_initialize))
+      timer.registrate(rokko::timer_id::diagonalize_initialize, "diagonalize::initialize");
+    if (!timer.has(rokko::timer_id::diagonalize_diagonalize))
+      timer.registrate(rokko::timer_id::diagonalize_diagonalize, "diagonalize::diagonalize");
+    if (!timer.has(rokko::timer_id::diagonalize_finalize))
+      timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
+    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer);
   }
   static std::vector<std::string> solvers() {
     return detail::sd_solver_factory::product_names();
@@ -139,7 +132,6 @@ private:
 };
 
 } // end namespace rokko
-
 
 #define ROKKO_REGISTER_SERIAL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \

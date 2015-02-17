@@ -18,10 +18,28 @@ set(_PATHS "")
 if(ELEMENTAL_DIR)
   set(_PATHS ${ELEMENTAL_DIR})
 else(ELEMENTAL_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE} ${CMAKE_INSTALL_PREFIX} $ENV{HOME}/opt/rokko/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt/rokko $ENV{HOME}/opt/${CMAKE_BUILD_TYPE} $ENV{HOME}/opt /opt/rokko/${CMAKE_BUILD_TYPE} /opt/rokko /opt/${CMAKE_BUILD_TYPE} /opt)
+  list(APPEND _PATHS
+  	      ${ELEMENTAL_ROOT}/${CMAKE_BUILD_TYPE}
+	      ${ELEMENTAL_ROOT}
+  	      $ENV{ELEMENTAL_ROOT}/${CMAKE_BUILD_TYPE}
+	      $ENV{ELEMENTAL_ROOT}
+  	      ${ROKKO_SOLVER_ROOT}/elemental/${CMAKE_BUILD_TYPE}
+	      ${ROKKO_SOLVER_ROOT}/elemental
+  	      $ENV{ROKKO_SOLVER_ROOT}/elemental/${CMAKE_BUILD_TYPE}
+	      $ENV{ROKKO_SOLVER_ROOT}/elemental
+	      ${CMAKE_INSTALL_PREFIX}/elemental/${CMAKE_BUILD_TYPE}
+	      ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/elemental/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/elemental
+	      /opt/rokko/elemental/${CMAKE_BUILD_TYPE}
+	      /opt/rokko/elemental
+	      /opt/rokko/${CMAKE_BUILD_TYPE}
+	      /opt/rokko
+	      /opt/local /opt
+	      )
 endif(ELEMENTAL_DIR)
 
-find_path(ELEMENTAL_DIR include/elemental.hpp PATHS ${_PATHS} DOC "Elemental directory")
+find_path(ELEMENTAL_DIR include/El.h include/elemental.hpp PATHS ${_PATHS} DOC "Elemental directory")
 
 if(ELEMENTAL_DIR)
   set(ELEMENTAL_INCLUDE_DIR "${ELEMENTAL_DIR}/include")
@@ -32,7 +50,7 @@ else(ELEMENTAL_DIR)
 endif(ELEMENTAL_DIR)
 
 find_library(_ELEMENTAL_LIBRARY
-  NAMES elemental
+  NAMES El elemental
   PATHS ${ELEMENTAL_DIR}/lib
   DOC "The Elemetnal library")
 if(_ELEMENTAL_LIBRARY)
@@ -50,21 +68,21 @@ if(_ELEMENTAL_PMRRR_LIBRARY)
   list(APPEND ELEMENTAL_LIBRARIES ${_ELEMENTAL_PMRRR_LIBRARY})
 endif(_ELEMENTAL_PMRRR_LIBRARY)
 
-find_library(_ELEMENTAL_LAPACK_ADDONS_LIBRARY
-  NAMES lapack-addons
+find_library(_ELEMENTAL_KISS_FFT_LIBRARY
+  NAMES kiss_fft
   PATHS ${ELEMENTAL_DIR}/lib
-  DOC "The Elemetnal lapack_addons library")
-if(_ELEMENTAL_LAPACK_ADDONS_LIBRARY)
-  list(APPEND ELEMENTAL_LIBRARIES ${_ELEMENTAL_LAPACK_ADDONS_LIBRARY})
-endif(_ELEMENTAL_LAPACK_ADDONS_LIBRARY)
+  DOC "The Elemetnal kiss_fft library")
+if(_ELEMENTAL_KISS_FFT_LIBRARY)
+  list(APPEND ELEMENTAL_LIBRARIES ${_ELEMENTAL_KISS_FFT_LIBRARY})
+endif(_ELEMENTAL_KISS_FFT_LIBRARY)
 
-find_library(_ELEMENTAL_ELEM_DUMMY_LIB_LIBRARY
-  NAMES elem-dummy-lib
+find_library(_ELEMENTAL_METIS_LIBRARY
+  NAMES metis
   PATHS ${ELEMENTAL_DIR}/lib
-  DOC "The Elemetnal elem_dummy_lib library")
-if(_ELEMENTAL_ELEM_DUMMY_LIB_LIBRARY)
-  list(APPEND ELEMENTAL_LIBRARIES ${_ELEMENTAL_ELEM_DUMMY_LIB_LIBRARY})
-endif(_ELEMENTAL_ELEM_DUMMY_LIB_LIBRARY)
+  DOC "The Elemetnal metis library")
+if(_ELEMENTAL_METIS_LIBRARY)
+  list(APPEND ELEMENTAL_LIBRARIES ${_ELEMENTAL_METIS_LIBRARY})
+endif(_ELEMENTAL_METIS_LIBRARY)
 
 set(ELEMENTAL_FOUND TRUE)
 message(STATUS "Elemental include directory: ${ELEMENTAL_INCLUDE_DIR}")

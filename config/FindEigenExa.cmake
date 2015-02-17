@@ -18,7 +18,25 @@ set(_PATHS "")
 if(EIGENEXA_DIR)
   set(_PATHS ${EIGENEXA_DIR})
 else(EIGENEXA_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+  list(APPEND _PATHS
+  	      ${EIGENEXA_ROOT}/${CMAKE_BUILD_TYPE}
+	      ${EIGENEXA_ROOT}
+  	      $ENV{EIGENEXA_ROOT}/${CMAKE_BUILD_TYPE}
+	      $ENV{EIGENEXA_ROOT}
+  	      ${ROKKO_SOLVER_ROOT}/eigenexa/${CMAKE_BUILD_TYPE}
+	      ${ROKKO_SOLVER_ROOT}/eigenexa
+  	      $ENV{ROKKO_SOLVER_ROOT}/eigenexa/${CMAKE_BUILD_TYPE}
+	      $ENV{ROKKO_SOLVER_ROOT}/eigenexa
+	      ${CMAKE_INSTALL_PREFIX}/eigenexa/${CMAKE_BUILD_TYPE}
+	      ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/eigenexa/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/eigenexa
+	      /opt/rokko/eigenexa/${CMAKE_BUILD_TYPE}
+	      /opt/rokko/eigenexa
+	      /opt/rokko/${CMAKE_BUILD_TYPE}
+	      /opt/rokko
+	      /opt/local /opt
+	      )
 endif(EIGENEXA_DIR)
 
 find_path(EIGENEXA_DIR include/eigen_libs.mod PATHS ${_PATHS} DOC "EigenExa directory")

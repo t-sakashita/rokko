@@ -30,4 +30,7 @@
 // Define if you have Anasazi Library
 #cmakedefine ROKKO_HAVE_ANASAZI
 
+// Define if you have parallel sparse solver
+#cmakedefine ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
+
 #endif // ROKKO_CONFIG_HPP

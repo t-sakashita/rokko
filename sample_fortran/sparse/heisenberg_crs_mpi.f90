@@ -14,7 +14,6 @@
 program frank_matrix
   use MPI
   use rokko
-  use rokko_sparse
   implicit none
   integer :: provided, ierr, myrank, nprocs
 
