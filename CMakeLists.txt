@@ -55,8 +55,6 @@ endif(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
 # C++, C, and Fortran compilers
 enable_language(CXX)
 enable_language(C)
-if(BUILD_C_BINDING)
-endif(BUILD_C_BINDING)
 set(ROKKO_HAVE_C_BINDING ${BUILD_C_BINDING})
 enable_language(Fortran)
 if(BUILD_Fortran_BINDING)
