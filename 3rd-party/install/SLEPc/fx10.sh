@@ -7,26 +7,26 @@ set_prefix
 
 sh $SCRIPT_DIR/setup.sh
 
-source $PREFIX_ROKKO/rokkoenv.d/petscvars.sh
+source $PREFIX_ROKKO/rokkoenv-Linux-s64fx.d/petscvars.sh
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/$build_type
+  PREFIX=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/Linux-s64fx/$build_type
   cd $BUILD_DIR
-  cp -rp slepc-$SLEPC_VERSION slepc-$SLEPC_VERSION-build-$build_type
-  cd slepc-$SLEPC_VERSION-build-$build_type
+  cp -rp slepc-$SLEPC_VERSION slepc-$SLEPC_VERSION-build-Linux-s64fx-$build_type
+  cd slepc-$SLEPC_VERSION-build-Linux-s64fx-$build_type
   export SLEPC_DIR=$PWD
   export PETSC_DIR=$PETSC_ROOT/$build_type
   ./configure --prefix=$PREFIX
   make
   $SUDO env LD_LIBRARY_PATH=$LD_LIBRARY_PATH make install SLEPC_DIR=$PWD PETSC_DIR=$PETSC_ROOT/$build_type
   cat << EOF > $BUILD_DIR/slepcvars.sh
-export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION
+export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/Linux-s64fx
 export LD_LIBRARY_PATH=$PREFIX/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/slepcvars.sh $PREFIX
 done
 
 cat << EOF > $BUILD_DIR/slepcvars.sh
-export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION
+export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/Linux-s64fx
 EOF
-$SUDO cp -f $BUILD_DIR/slepcvars.sh $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION
+$SUDO cp -f $BUILD_DIR/slepcvars.sh $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION/Linux-s64fx

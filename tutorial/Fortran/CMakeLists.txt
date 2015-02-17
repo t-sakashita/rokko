@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(wakate-handson NONE)
-enable_language(CXX)
+enable_language(CXX Fortran)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)

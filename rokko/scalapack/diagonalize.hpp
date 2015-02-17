@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -53,8 +53,8 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
   long lwork = -1;
 
   // work配列のサイズの問い合わせ
-  ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
-    eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, &info);
+  info = ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+    eigvecs.get_array_pointer(), 1, 1, desc, work, lwork);
 
   lwork = work[0];
   delete[] work;
@@ -67,8 +67,8 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
 
   // 固有値分解
   timer.start(timer_id::diagonalize_diagonalize);
-  ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
-    eigvecs.get_array_pointer(), 1, 1, desc, work, lwork, &info);
+  info = ROKKO_pdsyev('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+    eigvecs.get_array_pointer(), 1, 1, desc, work, lwork);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info  << std::endl;
     exit(1);

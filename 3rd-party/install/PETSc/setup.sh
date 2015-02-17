@@ -13,3 +13,4 @@ else
   check wget http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-$PETSC_VERSION.tar.gz
   check tar zxf petsc-$PETSC_VERSION.tar.gz
 fi
+cd petsc-$PETSC_VERSION

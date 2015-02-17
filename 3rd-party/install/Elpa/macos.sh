@@ -25,7 +25,7 @@ for build_type in $BUILD_TYPES; do
   $SUDO make install
   cat << EOF > $BUILD_DIR/elpavars.sh
 export ELPA_ROOT=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION
-export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/elpavars.sh $PREFIX
 done
