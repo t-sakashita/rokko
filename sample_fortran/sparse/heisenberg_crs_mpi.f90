@@ -20,7 +20,7 @@ program frank_matrix
   integer :: L, k
   integer :: dim
   integer, allocatable, dimension(:) :: lattice_first, lattice_second
-  real(8) :: diag
+  double precision :: diag
   integer :: i, j, m1, m2, m3, count
   integer :: row, start_row, end_row
   integer(c_int), allocatable, dimension(:) :: cols

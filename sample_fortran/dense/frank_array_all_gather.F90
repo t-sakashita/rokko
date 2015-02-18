@@ -22,7 +22,7 @@ program frank_matrix
   type(rokko_localized_vector) :: w
   character(len=100) :: solver_name, tmp_str
   integer arg_len, status
-  real(8), allocatable, dimension(:,:) :: array, array_tmp
+  double precision, allocatable, dimension(:,:) :: array, array_tmp
 
   integer :: provided,ierr, myrank, nprocs
   integer :: i, j, proc
