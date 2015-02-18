@@ -17,7 +17,7 @@ module mod_frank
   implicit none
   integer(c_int) dim_frank
 contains
-  real(c_double) function frank_matrix_element(i, j) bind(c)
+  double precision function frank_matrix_element(i, j) bind(c)
     integer(c_int), value, intent(in) :: i, j
     frank_matrix_element = dble(dim_frank - max(i, j))
   end function frank_matrix_element

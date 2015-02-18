@@ -14,9 +14,9 @@
 module mod_frank
   use iso_c_binding
   integer(c_int) :: dim_frank
-  real(c_double), allocatable, target :: localized_array(:, :)
+  double precision, allocatable, target :: localized_array(:, :)
   contains
-  real(c_double) function func(i, j) bind(c)
+  double precision function func(i, j) bind(c)
 !    common /mydata/n
 !    common /mydata/localized_array
     integer(c_int), value, intent(in) :: i, j
