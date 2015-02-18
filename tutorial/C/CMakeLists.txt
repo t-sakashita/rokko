@@ -22,5 +22,8 @@ enable_language(C)
 add_executable(Rokko Rokko.c)
 target_link_libraries(Rokko ${ROKKO_LIBRARIES} ${ROKKO_LIBRARIES_C} )
 
+add_executable(ScaLAPACK ScaLAPACK.c)
+target_link_libraries(ScaLAPACK ${ROKKO_LIBRARIES} )
+
 add_executable(LAPACK LAPACK.c)
 target_link_libraries(LAPACK ${ROKKO_LIBRARIES} )
