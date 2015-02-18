@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,7 +10,6 @@
 *****************************************************************************/
 
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 
@@ -19,75 +17,37 @@
 #include <rokko/grid.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/utility/xyz_hamiltonian_mpi.hpp>
-
 #include <rokko/collective.hpp>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
-
-  std::string solver_name("scalapack");
-  rokko::parallel_dense_solver solver(solver_name);
+  rokko::parallel_dense_solver solver;
   solver.initialize(argc, argv);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
-  const int root = 0;
+  rokko::grid g(MPI_COMM_WORLD);
 
-  /*
-  if (argc <= 1) {
-    std::cerr << "error: " << argv[0] << " path_to_xyz.ip" << std::endl;
-    exit(1);
-  }
-
-  std::ifstream ifs(argv[1]);
-  if (!ifs) {
-    std::cout << "can't open file" << std::endl;
-    exit(2);
-  }
-  */
-
-  int L, num_bonds;
+  int L = 4;
+  int num_bonds = L - 1;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;
-
-  L = 4;
-  num_bonds = L - 1;
-  /*
-  ifs >> L >> num_bonds;
-  for (int i=0; i<num_bonds; ++i) {
-    int j, k;
-    ifs >> j >> k;
-    lattice.push_back(std::make_pair(j, k));
-  }
-  
-  for (int i=0; i<num_bonds; ++i) {
-    double jx, jy, jz;
-    ifs >> jx >> jy >> jz;
-    coupling.push_back(boost::make_tuple(jx, jy, jz));
-  }
-  */
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    //coupling.push_back(boost::make_tuple(1, 1, 1));
     coupling.push_back(boost::make_tuple(1, 0.3, 0.2));
-    //coupling.push_back(boost::make_tuple(0, 1, 0));
-    //coupling.push_back(boost::make_tuple(0, 0.3, 0.5));
   }
 
   int myrank, nprocs;
-  MPI_Status status;
-  int ierr;
-
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  MPI_Status status;
+  const int root = 0;
+  int ierr;
 
   if (myrank == root) {
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
     for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>()
+                << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
     }
   }
   MPI_Barrier(MPI_COMM_WORLD);
@@ -99,7 +59,6 @@ int main(int argc, char *argv[])
     ++p;
   } while (n > 0);
 
-  //std::cerr << "nproc=" << nproc << " p=" << p << std::endl;
   if (nprocs != (1 << p)) {    
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
@@ -203,5 +162,3 @@ int main(int argc, char *argv[])
   MPI_Finalize();
   return 0;
 }
-
-
