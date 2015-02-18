@@ -23,7 +23,7 @@ program frank_matrix
   character(len=100) :: solver_name, tmp_str
   integer args_cnt, arg_len, status
  
-  real(8), allocatable, dimension(:,:) :: array
+  double precision, allocatable, dimension(:,:) :: array
 
   integer :: provided,ierr, myrank, nprocs
   integer :: i, j
