@@ -27,17 +27,18 @@ public:
   }
   void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
   void finalize() { El::Finalize(); }
-  void optimized_grid_size() {}
-  template <typename MATRIX_MAJOR>
+  // void optimized_grid_size() {}
+
+  mapping_bc optimized_mapping(grid const& g, int dim) const {
+    return mapping_bc(g, dim, 1);  // block_size = 1
+  }
+
+  template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
-    mat.set_block_size(1, 1); // set mb = nb = 1
-    // Determine m_local, n_local from m_global, n_global, mb, nb
-    int m_local = mat.calculate_row_size();
-    int n_local = mat.calculate_col_size();
-    mat.set_local_size(m_local, n_local);
     mat.set_default_lld();
     mat.set_default_length_array();
   }
+
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
                    distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
