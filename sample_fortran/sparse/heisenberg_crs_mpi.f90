@@ -24,13 +24,13 @@ program frank_matrix
   integer :: i, j, m1, m2, m3, count
   integer :: row, start_row, end_row
   integer(c_int), allocatable, dimension(:) :: cols
-  real(c_double), allocatable, dimension(:) :: values
+  double precision, allocatable, dimension(:) :: values
 
-  real(c_double) :: eig_val
-  real(c_double), allocatable, dimension(:) :: eig_vec
+  double precision :: eig_val
+  double precision, allocatable, dimension(:) :: eig_vec
 
 !  integer(4), allocatable, dimension(:) :: cols
-!  real(8), allocatable, dimension(:) :: values
+!  double precision, allocatable, dimension(:) :: values
 
   type(rokko_parallel_sparse_solver) :: solver
   type(rokko_distributed_crs_matrix) :: mat
@@ -38,7 +38,7 @@ program frank_matrix
   integer :: arg_len, status
   integer :: num_evals, block_size, max_iters
   integer :: num_local_rows, num_conv
-  real(8) :: tol
+  double precision :: tol
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
