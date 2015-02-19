@@ -2,19 +2,18 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_DIAGONALIZE_H
-#define ROKKO_ELPA_DIAGONALIZE_H
+#ifndef ROKKO_ELPA_DIAGONALIZE_HPP
+#define ROKKO_ELPA_DIAGONALIZE_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/blacs/blacs.h>
 #include <rokko/elpa/elpa.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -48,4 +47,4 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
 } // namespace elpa
 } // namespace rokko
 
-#endif // ROKKO_ELPA_DIAGONALIZE_H
+#endif // ROKKO_ELPA_DIAGONALIZE_HPP
