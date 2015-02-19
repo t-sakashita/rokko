@@ -14,7 +14,7 @@
 
 #include <mpi.h>
 #include <rokko/blacs/blacs_wrap.h>
-#include <rokko/pblas/pblas.h>
+#include <rokko/pblas/pblas_wrap.h>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
 

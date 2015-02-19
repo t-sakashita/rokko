@@ -16,7 +16,7 @@
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_bc.hpp>
 #include <rokko/blacs/blacs_wrap.h>
-#include <rokko/pblas/pblas.h>
+#include <rokko/pblas/pblas_wrap.h>
 
 #include <iostream>
 #include <cstdlib>
@@ -447,9 +447,8 @@ double dot_product(const distributed_matrix<MATRIX_MAJOR>& vecX, bool transX, in
   int iy = (transY ? yindex + 1: 1);
   int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  double dot;
-  ROKKO_pddot(n, &dot, vecX.get_array_pointer(), ix, jx, descX, incx,
-              vecY.get_array_pointer(), iy, jy, descY, incy);
+  double dot = ROKKO_pddot(n, vecX.get_array_pointer(), ix, jx, descX, incx,
+                           vecY.get_array_pointer(), iy, jy, descY, incy);
 
   ROKKO_blacs_gridexit(&ictxt);
   return dot;

@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -43,23 +42,6 @@ void PBLAS_pdgemm(const char* TRANSA, const char* TRANSB,
                   const double* A, const int* IA, const int* JA, int* DESCA,
                   const double* B, const int* IB, const int* JB, int* DESCB,
                   const double* BETA, double* C, const int* IC, const int* JC, int* DESCC);
-
-void ROKKO_pdcopy(int N, const double* X, int IX, int JX, int* DESCX, int INCX,
-                  double* Y, int IY, int JY, int *DESCY, int INCY);
-
-void ROKKO_pddot(int N, double* DOT,
-                 const double* X, int IX, int JX, int* DESCX, int INCX,
-                 const double* Y, int IY, int JY, int* DESCY, int INCY);
-
-void ROKKO_pdgemv(char TRANS, int M, int N, double ALPHA,
-                  const double* A, int IA, int JA, int* DESCA,
-                  const double* X, int IX, int JX, int* DESCX, int INCX, double BETA,
-                  double* Y, int IY, int JY, int* DESCY, int INCY);
-
-void ROKKO_pdgemm(char TRANSA, char TRANSB, int M, int N, int K, double ALPHA,
-                  const double* A, int IA, int JA, int* DESCA,
-                  const double* B, int IB, int JB, int* DESCB,
-                  double BETA, double* C, int IC, int JC, int* DESCC);
   
 #ifdef __cplusplus
 }

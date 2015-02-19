@@ -17,12 +17,19 @@ extern "C" {
 #endif
   
 void ROKKO_blacs_barrier(int ictxt, char score);
+
 void ROKKO_blacs_exit(int conti);
+
 int ROKKO_blacs_get(int context, int request);
+
 void ROKKO_blacs_gridexit(int* ictxt);
+
 void ROKKO_blacs_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol);
+
 void ROKKO_blacs_gridinit(int* ictxt, char order, int nprow, int npcol);
+
 void ROKKO_blacs_pinfo(int* mypnum, int* nprocs);
+
 int ROKKO_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
                    int ictxt, int lld);
 
