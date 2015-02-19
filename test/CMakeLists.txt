@@ -1,9 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-#                            Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>,
-#               2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+# Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -56,7 +54,7 @@ endforeach(name)
 unset(TESTS)
 
 # add_rokko_test tests
-set(TESTS timer)
+set(TESTS parameters timer)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES})
