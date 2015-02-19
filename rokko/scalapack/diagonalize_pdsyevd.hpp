@@ -15,7 +15,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/blacs/blacs.h>
-#include <rokko/scalapack/scalapack.h>
+#include <rokko/scalapack/scalapack_wrap.h>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
