@@ -1,8 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-#                            Synge Todo <wistaria@comp-phys.org>
+# Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -57,7 +56,7 @@ endif(BUILD_SCALAPACK)
 
 if(BUILD_EIGENEXA)
   include_directories(${EIGENEXA_INCLUDE_DIR})
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_init.c eigen_exa/eigen_free.c eigen_exa/cstab_get_optdim.c eigen_exa/eigen_get_matdims.c eigen_exa/eigen_s.c eigen_exa/eigen_sx.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_exa_init.c eigen_exa/eigen_exa_free.c eigen_exa/eigen_exa_get_optdim.c eigen_exa/eigen_exa_get_matdims.c eigen_exa/eigen_exa_s.c eigen_exa/eigen_exa_sx.c)
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa.cpp)
   endif(BUILD_SHARED_LIBS)

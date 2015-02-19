@@ -14,8 +14,8 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/blacs/blacs.h>
-#include <rokko/scalapack/scalapack.h>
+#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/scalapack/scalapack_wrap.h>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
@@ -27,10 +27,8 @@ template<typename MATRIX_MAJOR>
 int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
-  int ictxt;
-  int info;
 
-  ROKKO_blacs_get(-1, 0, &ictxt);
+  int ictxt = ROKKO_blacs_get(-1, 0);
 
   char char_grid_major;
   if(mat.get_grid().is_row_major())  char_grid_major = 'R';
@@ -40,8 +38,8 @@ int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals
     mat.get_grid().get_npcol());
   int dim = mat.get_m_global();
   int desc[9];
-  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(),
-    0, 0, ictxt, mat.get_lld(), &info);
+  int info = ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(),
+                            mat.get_nb(), 0, 0, ictxt, mat.get_lld());
   if (info) {
     std::cerr << "error " << info << " at descinit function of descA " << "mA="
               << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld()

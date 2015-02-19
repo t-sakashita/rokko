@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +12,6 @@
 #ifndef ROKKO_EIGEN_EXA_CORE_HPP
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
-#include <rokko/eigen_exa/eigen_exa.h>
 #include <rokko/eigen_exa/diagonalize.hpp>
 
 namespace rokko {
@@ -39,7 +38,7 @@ public:
     int nprow = mat.get_mapping().get_grid().get_nprow();
     int npcol = mat.get_mapping().get_grid().get_npcol();
     int n = mat.get_mapping().get_dim();
-    ROKKO_eigen_get_matdims( nprow, npcol, n, &nx, &ny );
+    ROKKO_eigen_exa_get_matdims(nprow, npcol, n, &nx, &ny);
 
     //std::cout << "nx=" << nx << std::endl;
     mat.set_lld(nx);

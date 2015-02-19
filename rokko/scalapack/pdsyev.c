@@ -10,12 +10,13 @@
 *****************************************************************************/
 
 #include <rokko/scalapack/scalapack.h>
+#include <rokko/scalapack/scalapack_wrap.h>
 
-lapack_int ROKKO_pdsyev(char jobz, char uplo, int n,
-                        double* A, int ia, int ja, const int* descA,
-                        double* w, double* Z, int iz, int jz, const int* descZ,
-                        double* work, int lwork) {
-  lapack_int info;
+int ROKKO_pdsyev(char jobz, char uplo, int n,
+                 double* A, int ia, int ja, const int* descA,
+                 double* w, double* Z, int iz, int jz, const int* descZ,
+                 double* work, int lwork) {
+  int info;
   SCALAPACK_pdsyev(&jobz, &uplo, &n, A, &ia, &ja, descA, w, Z, &iz, &jz, descZ,
                    work, &lwork, &info);
   return info;

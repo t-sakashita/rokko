@@ -10,15 +10,16 @@
 *****************************************************************************/
 
 #include <rokko/scalapack/scalapack.h>
+#include <rokko/scalapack/scalapack_wrap.h>
 
-lapack_int ROKKO_pdsyevx(char jobz, char range, char uplo, int n,
-                         double* A, int iA, int jA, const int* descA,
-                         double vl, double vu, int il, int iu,
-                         double abstol, int* m, int* nZ, double* w, double orfac,
-                         double* Z, int iZ, int jZ, const int* descZ,
-                         double* work, int lwork, int* iwork, int liwork,
-                         int* ifail, int* iclustr, double* gap) {
-  lapack_int info;
+int ROKKO_pdsyevx(char jobz, char range, char uplo, int n,
+                  double* A, int iA, int jA, const int* descA,
+                  double vl, double vu, int il, int iu,
+                  double abstol, int* m, int* nZ, double* w, double orfac,
+                  double* Z, int iZ, int jZ, const int* descZ,
+                  double* work, int lwork, int* iwork, int liwork,
+                  int* ifail, int* iclustr, double* gap) {
+  int info;
   SCALAPACK_pdsyevx(&jobz, &range, &uplo, &n, A, &iA, &jA, descA, &vl, &vu, &il, &iu,
                     &abstol, m, nZ, w, &orfac, Z, &iZ, &jZ, descZ, work, &lwork, iwork, &liwork,
                     ifail, iclustr, gap, &info);
