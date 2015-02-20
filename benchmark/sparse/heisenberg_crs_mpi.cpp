@@ -1,198 +1,99 @@
-#include "AnasaziConfigDefs.hpp"
-#include "AnasaziBasicEigenproblem.hpp"
-//#include "AnasaziSimpleLOBPCGSolMgr.hpp"
-#include "AnasaziBlockKrylovSchurSolMgr.hpp"
-#include "AnasaziBasicOutputManager.hpp"
-#include "AnasaziEpetraAdapter.hpp"
-#include "Epetra_CrsMatrix.h"
-#include "Teuchos_CommandLineProcessor.hpp"
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
 
-#ifdef HAVE_MPI
-#include "Epetra_MpiComm.h"
 #include <mpi.h>
-#else
-#include "Epetra_SerialComm.h"
-#endif
-#include "Epetra_Map.h"
+#include <iostream>
 
-using namespace Anasazi;
+#include <rokko/grid_1d.hpp>
+#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 
 int main(int argc, char *argv[]) {
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  MPI_Comm comm = MPI_COMM_WORLD;
 
-  using std::endl;
+  rokko::grid_1d g(comm);
+  int myrank = g.get_myrank();
+  int root = 0;
 
-#ifdef HAVE_MPI
-  // Initialize MPI
-  MPI_Init(&argc,&argv);
-#endif
+  std::cout.precision(5);
+  int nev = 10;
+  int blockSize = 5;
+  int maxIters = 500;
+  double tol = 1.0e-8;
 
-  // Create an Epetra communicator
-#ifdef HAVE_MPI
-  Epetra_MpiComm Comm(MPI_COMM_WORLD);
-#else
-  Epetra_SerialComm Comm;
-#endif
-
-  // Create an Anasazi output manager
-  BasicOutputManager<double> printer;
-  printer.stream(Errors) << Anasazi_Version() << endl << endl;
-
-  // Get the sorting string from the command line
-  std::string which("LM");
-  Teuchos::CommandLineProcessor cmdp(false,true);
-  cmdp.setOption("sort",&which,"Targetted eigenvalues (SM or LM).");
-  if (cmdp.parse(argc,argv) != Teuchos::CommandLineProcessor::PARSE_SUCCESSFUL) {
-#ifdef HAVE_MPI
-    MPI_Finalize();
-#endif
-    return -1;
-  }
-
-  int L = 10;
-  cmdp.setOption("L", &L ,"Lattice size.");
-  int N = 1 << L;
+  int L = 2;
+  int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  for (int i=0; i<L-1; ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
+  for (int i = 0; i < L; ++i) {
+    lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  // Construct a Map that puts approximately the same number of
-  // equations on each processor.
-  Epetra_Map Map(N, 0, Comm);
+  rokko::parallel_sparse_solver solver("anasazi");
+  if (myrank == root)
+    std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
+              << "solver = LOBPCG" << std::endl
+              << "L = " << L << std::endl
+              << "dimension = " << dim << std::endl;
 
-  // Get update list and number of local equations from newly created Map.
-  int NumMyElements = Map.NumMyElements();
-  std::vector<int> MyGlobalElements(NumMyElements);
-  Map.MyGlobalElements(&MyGlobalElements[0]);
-
-  // Create an Epetra_Matrix
-  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow
-
-  // Compute coefficients for hamiltonian matrix of quantum Heisenberg model
+  rokko::distributed_crs_matrix mat(dim, dim, solver);
   std::vector<double> values;
   std::vector<int> cols;
-
-  for (int l=0; l<lattice.size(); ++l) {
-    for (int row=0; row<NumMyElements; ++row) {
-      cols.clear();
-      values.clear();
-      int k = MyGlobalElements[row];
+  for (int row = mat.start_row(); row <= mat.end_row(); ++row) {
+    cols.clear();
+    values.clear();
+    double diag = 0;
+    for (int l = 0;  l < lattice.size(); ++l) {
       int i = lattice[l].first;
       int j = lattice[l].second;
       int m1 = 1 << i;
       int m2 = 1 << j;
       int m3 = m1 + m2;
-      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-        cols.push_back(k^m3);
+      if (((row & m3) == m1) || ((row & m3) == m2)) {
+        cols.push_back(row^m3);
         values.push_back(0.5);
-        cols.push_back(k);
-        values.push_back(-0.25);
+        diag += -0.25;
       } else {
-        cols.push_back(k);
-        values.push_back(0.25);
+        diag += 0.25;
       }
-      int info = A->InsertGlobalValues(k, cols.size(), &values[0], &cols[0]);
-      //cout << "info=" << info << endl;
-      assert( info==0 );
     }
+    cols.push_back(row);
+    values.push_back(diag);
+    mat.insert(row, cols, values);
+  }
+  mat.complete();
+  mat.print();
+
+  solver.diagonalize(mat, nev, blockSize, maxIters, tol);
+
+  std::vector<double> eigvec;
+  if (myrank == root) {
+    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
+    std::cout << "smallest eigenvalues:";
+    for (int i = 0; i < solver.num_conv(); ++i)
+      std::cout << ' ' << solver.eigenvalue(i);
+    std::cout << std::endl;
+    std::cout << "corresponding eigenvectors:";
   }
 
-  // Finish up
-  int info = A->FillComplete();
-  assert( info==0 );
-  A->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
+  //for (int i = 0; i < solver.num_conv(); ++i) {
+  solver.eigenvector(0, eigvec);
 
-  //************************************
-  // Call the LOBPCG solver manager
-  //***********************************
-  //  Variables used for the LOBPCG Method
-  const int    nev       = 10;
-  const int    blockSize = 5;
-  const int    maxIters  = 500;
-  const double tol       = 1.0e-8;
-
-  typedef Epetra_MultiVector MV;
-  typedef Epetra_Operator OP;
-  typedef MultiVecTraits<double, Epetra_MultiVector> MVT;
-
-  // Create an Epetra_MultiVector for an initial vector to start the solver.
-  // Note:  This needs to have the same number of columns as the blocksize.
-  Teuchos::RCP<Epetra_MultiVector> ivec = Teuchos::rcp( new Epetra_MultiVector(Map, blockSize) );
-  ivec->Random();
-
-  // Create the eigenproblem.
-  Teuchos::RCP<BasicEigenproblem<double, MV, OP> > MyProblem =
-    Teuchos::rcp( new BasicEigenproblem<double, MV, OP>(A, ivec) );
-
-  // Inform the eigenproblem that the operator A is symmetric
-  MyProblem->setHermitian(true);
-
-  // Set the number of eigenvalues requested
-  MyProblem->setNEV( nev );
-
-  // Inform the eigenproblem that you are finishing passing it information
-  bool boolret = MyProblem->setProblem();
-  if (boolret != true) {
-    printer.print(Errors,"Anasazi::BasicEigenproblem::setProblem() returned an error.\n");
-#ifdef HAVE_MPI
-    MPI_Finalize();
-#endif
-    return -1;
+  if (myrank == root) {
+    for (int j=0; j<eigvec.size(); ++j)
+      std::cout << ' ' << eigvec[j];
+    std::cout << std::endl;
   }
+  //}
 
-  // Create parameter list to pass into the solver manager
-  Teuchos::ParameterList MyPL;
-  MyPL.set( "Which", which );
-  MyPL.set( "Block Size", blockSize );
-  MyPL.set( "Maximum Iterations", maxIters );
-  MyPL.set( "Convergence Tolerance", tol );
-
-  // Create the solver manager
-  BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
-
-  // Solve the problem
-  ReturnType returnCode = MySolverMan.solve();
-
-  // Get the eigenvalues and eigenvectors from the eigenproblem
-  Eigensolution<double,MV> sol = MyProblem->getSolution();
-  std::vector<Value<double> > evals = sol.Evals;
-  Teuchos::RCP<MV> evecs = sol.Evecs;
-
-  // Compute residuals.
-  std::vector<double> normR(sol.numVecs);
-  if (sol.numVecs > 0) {
-    Teuchos::SerialDenseMatrix<int,double> T(sol.numVecs, sol.numVecs);
-    Epetra_MultiVector tempAevec( Map, sol.numVecs );
-    T.putScalar(0.0); 
-    for (int i=0; i<sol.numVecs; i++) {
-      T(i,i) = evals[i].realpart;
-    }
-    A->Apply( *evecs, tempAevec );
-    MVT::MvTimesMatAddMv( -1.0, *evecs, T, 1.0, tempAevec );
-    MVT::MvNorm( tempAevec, normR );
-  }
-
-  // Print the results
-  std::ostringstream os;
-  os.setf(std::ios_base::right, std::ios_base::adjustfield);
-  os<<"Solver manager returned " << (returnCode == Converged ? "converged." : "unconverged.") << endl;
-  os<<endl;
-  os<<"------------------------------------------------------"<<endl;
-  os<<std::setw(16)<<"Eigenvalue"
-    <<std::setw(18)<<"Direct Residual"
-    <<endl;
-  os<<"------------------------------------------------------"<<endl;
-  for (int i=0; i<sol.numVecs; i++) {
-    os<<std::setw(16)<<evals[i].realpart
-      <<std::setw(18)<<normR[i]/evals[i].realpart
-      <<endl;
-  }
-  os<<"------------------------------------------------------"<<endl;
-  printer.print(Errors,os.str());
-
-#ifdef HAVE_MPI
   MPI_Finalize();
-#endif
-  return 0;
 }
-
