@@ -8,7 +8,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-if(BUILD_ANASAZI OR BUILD_SLEPC)
+if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
   include_directories(${ANASAZI_INCLUDE_DIR})
   set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi)
   foreach(name ${SAMPLE})
@@ -17,5 +17,5 @@ if(BUILD_ANASAZI OR BUILD_SLEPC)
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
     target_link_libraries(${target_name} rokko)
   endforeach(name)
-endif(BUILD_ANASAZI OR BUILD_SLEPC)
+endif(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 
