@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_FACTORY_H
-#define ROKKO_FACTORY_H
+#ifndef ROKKO_FACTORY_HPP
+#define ROKKO_FACTORY_HPP
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
@@ -116,4 +116,4 @@ private:
 #define ROKKO_REGISTER_PRODUCT(base, product, name, priority) \
   namespace { namespace BOOST_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance()->register_creator<product>(name, priority); } } caller; } }
 
-#endif // ROKKO_FACTORY_H
+#endif // ROKKO_FACTORY_HPP
