@@ -82,12 +82,10 @@ int main(int argc, char *argv[]) {
               << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
                           - eigval(dim - 1))
               << std::endl;
-    std::cout << "time = " << rokko::global_timer::get_average(rokko::timer_id::diagonalize_diagonalize) << std::endl;
     std::time_t now = std::time(0);
-    std::cout << "date = " << ctime(&now)<< std::endl;
     std::cout << "rokko_version = " << ROKKO_VERSION << std::endl;
     std::cout << "hostname = " << boost::asio::ip::host_name() << std::endl;
-
+    std::cout << "date = " << ctime(&now);    
   }
   rokko::global_timer::stop(12);
 
