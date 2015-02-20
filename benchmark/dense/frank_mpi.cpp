@@ -13,7 +13,9 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/asio.hpp>
 #include <iostream>
+#include <ctime>
 
 typedef rokko::matrix_col_major matrix_major;
 
@@ -58,8 +60,7 @@ int main(int argc, char *argv[]) {
   rokko::localized_vector eigval(dim);
   rokko::distributed_matrix<matrix_major> eigvec(dim, dim, g, solver);
   try {
-    rokko::timer* ti = rokko::global_timer.instance();
-    solver.diagonalize(mat, eigval, eigvec, ti);
+    solver.diagonalize(mat, eigval, eigvec);
   }
   catch (const char *e) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
@@ -81,6 +82,8 @@ int main(int argc, char *argv[]) {
               << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
                           - eigval(dim - 1))
               << std::endl;
+    std::cout << "time = " << rokko::global_timer::get_average(rokko::timer_id::diagonalize_diagonalize) << std::endl;
+    std::time_t now = std::time(0);
     std::cout << "date = " << ctime(&now)<< std::endl;
     std::cout << "rokko_version = " << ROKKO_VERSION << std::endl;
     std::cout << "hostname = " << boost::asio::ip::host_name() << std::endl;
