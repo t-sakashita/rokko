@@ -7,30 +7,44 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(ROKKO_SOURCES grid.cpp serial_dense_solver.cpp parallel_dense_solver.cpp utility/timer.cpp)
-if(BUILD_PARALLEL_SPARSE_SOLVER)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver.cpp)
-endif(BUILD_PARALLEL_SPARSE_SOLVER)
-
+set(ROKKO_SOURCES serial_dense_solver.cpp utility/timer.cpp)
 if(BUILD_C_BINDING)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} localized_vector_c.cpp localized_matrix_c.cpp)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} serial_dense_solver_c.cpp grid_c.cpp parallel_dense_solver_c.cpp distributed_matrix_c.cpp)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/frank_matrix_c.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} localized_vector_c.cpp localized_matrix_c.cpp
+      serial_dense_solver_c.cpp utility/frank_matrix_c.cpp)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.f90)
 endif(BUILD_Fortran_BINDING)
 
-# Eigen3
-set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
+if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp)
+  if(BUILD_C_BINDING)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp distributed_matrix_c.cpp)
+  endif(BUILD_C_BINDING)
+  if(BUILD_Fortran_BINDING)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} distributed_matrix.f90 collective.f90)
+  endif(BUILD_Fortran_BINDING)
+  if(BUILD_PARALLEL_DENSE_SOLVER)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_solver.cpp)
+    if(BUILD_C_BINDING)
+      set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_solver_c.cpp)
+    endif(BUILD_C_BINDING)
+    if(BUILD_Fortran_BINDING)
+      set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_solver.f90)
+    endif(BUILD_Fortran_BINDING)
+  endif(BUILD_PARALLEL_DENSE_SOLVER)
+  if(BUILD_PARALLEL_SPARSE_SOLVER)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver.cpp)
+    if(BUILD_C_BINDING)
+      set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver_c.cpp distributed_crs_matrix_c.cpp)
+    endif(BUILD_C_BINDING)
+    if(BUILD_Fortran_BINDING)
+      set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver.f90)
+    endif(BUILD_Fortran_BINDING)
+  endif(BUILD_PARALLEL_SPARSE_SOLVER)
+endif(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
 
-# LAPACK
-set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp)
-
-# BLACS
-set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c blacs/descinit.c)
-set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdcopy.c pblas/pddot.c pblas/pdgemv.c pblas/pdgemm.c)
-
+# Boost
 if(Boost_SOURCE_DIR)
   set(SOURCES error_code.cpp)
   foreach (D ${Boost_SOURCE_DIR}/libs/system/src)
@@ -42,8 +56,20 @@ if(Boost_SOURCE_DIR)
   endforeach(D)
 endif(Boost_SOURCE_DIR)
 
+# Eigen3
+set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
+
+# LAPACK
+set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp)
+
+# BLACS, PBLAS, ScaLAPACK
 if(BUILD_SCALAPACK)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c scalapack/pdlaprnt.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevx.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c
+      blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c
+      blacs/descinit.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdcopy.c pblas/pddot.c pblas/pdgemv.c pblas/pdgemm.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c
+      scalapack/pdlaprnt.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevx.c)
   if(USE_PDSYEVR)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdsyevr.c)
   endif(USE_PDSYEVR)
@@ -54,14 +80,18 @@ if(BUILD_SCALAPACK)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_SCALAPACK)
 
+# EigenExa
 if(BUILD_EIGENEXA)
   include_directories(${EIGENEXA_INCLUDE_DIR})
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_exa_init.c eigen_exa/eigen_exa_free.c eigen_exa/eigen_exa_get_optdim.c eigen_exa/eigen_exa_get_matdims.c eigen_exa/eigen_exa_s.c eigen_exa/eigen_exa_sx.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_exa_init.c
+      eigen_exa/eigen_exa_free.c eigen_exa/eigen_exa_get_optdim.c eigen_exa/eigen_exa_get_matdims.c
+      eigen_exa/eigen_exa_s.c eigen_exa/eigen_exa_sx.c)
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa.cpp)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_EIGENEXA)
 
+# Elemental
 if(BUILD_ELEMENTAL)
   include_directories(${ELEMENTAL_INCLUDE_DIR})
   if(BUILD_SHARED_LIBS)
@@ -69,29 +99,26 @@ if(BUILD_ELEMENTAL)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_ELEMENTAL)
 
+# Elpa
 if(BUILD_ELPA)
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} elpa/elpa.cpp)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_ELPA)
 
-if(BUILD_ANASAZI)
-  if(BUILD_SHARED_LIBS)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} anasazi/anasazi.cpp)
-  endif(BUILD_SHARED_LIBS)
-endif(BUILD_ANASAZI)
-
+# SLEPc
 if(BUILD_SLEPC)
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} slepc/slepc.cpp)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_SLEPC)
 
-if(BUILD_C_BINDING)
-  if(BUILD_ANASAZI OR BUILD_SLEPC)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_solver_c.cpp distributed_crs_matrix_c.cpp)
-  endif(BUILD_ANASAZI OR BUILD_SLEPC)
-endif(BUILD_C_BINDING)
+# Anasazi
+if(BUILD_ANASAZI)
+  if(BUILD_SHARED_LIBS)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} anasazi/anasazi.cpp)
+  endif(BUILD_SHARED_LIBS)
+endif(BUILD_ANASAZI)
 
 add_library(rokko ${ROKKO_SOURCES})
 if (BUILD_SHARED_LIBS)
@@ -99,7 +126,7 @@ if (BUILD_SHARED_LIBS)
 endif (BUILD_SHARED_LIBS)
 target_link_libraries(rokko lapacke)
 
-if (MPI_CXX_FOUND)
+if(MPI_CXX_FOUND)
   target_link_libraries(rokko ${MPI_CXX_LIBRARIES})
 endif(MPI_CXX_FOUND)
 if(BUILD_SCALAPACK)

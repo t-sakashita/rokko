@@ -274,6 +274,13 @@ module rokko
        type(rokko_distributed_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_matrix_destruct
      
+     subroutine rokko_distributed_matrix_generate_array(matrix, array)
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), intent(out) :: matrix
+       real(8), intent(in) :: array(:,:)
+     end subroutine rokko_distributed_matrix_generate_array
+
      subroutine rokko_distributed_matrix_generate_function(matrix, func) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
@@ -479,6 +486,13 @@ module rokko
        integer(c_int), value ::root
      end function rokko_gather
 
+     subroutine rokko_all_gather(matrix, array)
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), intent(out) :: matrix
+       real(8), intent(in), target :: array(:,:)
+     end subroutine rokko_all_gather
+
      integer(c_int) function rokko_scatter(array, matrix, root) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
@@ -527,69 +541,5 @@ contains
     character(*), intent(in) :: solver_name
     call rokko_serial_dense_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
   end subroutine rokko_serial_dense_solver_construct
-
-  subroutine rokko_parallel_dense_solver_construct(solver, solver_name)
-    use iso_c_binding
-    implicit none
-    interface
-       subroutine rokko_parallel_dense_solver_construct_f(solver, solver_name) bind(c)
-         use iso_c_binding
-         import rokko_parallel_dense_solver
-         implicit none
-         type(rokko_parallel_dense_solver), intent(out) :: solver
-         character(kind=c_char), intent(in) :: solver_name(*)
-       end subroutine rokko_parallel_dense_solver_construct_f
-    end interface
-    type(rokko_parallel_dense_solver), intent(inout) :: solver
-    character(*), intent(in) :: solver_name
-    call rokko_parallel_dense_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
-  end subroutine rokko_parallel_dense_solver_construct
-
-  subroutine rokko_parallel_sparse_solver_construct(solver, solver_name)
-    use iso_c_binding
-    implicit none
-    interface
-       subroutine rokko_parallel_sparse_solver_construct_f(solver, solver_name) bind(c)
-         use iso_c_binding
-         import rokko_parallel_sparse_solver
-         implicit none
-         type(rokko_parallel_sparse_solver), intent(out) :: solver
-         character(kind=c_char), intent(in) :: solver_name(*)
-       end subroutine rokko_parallel_sparse_solver_construct_f
-    end interface
-    type(rokko_parallel_sparse_solver), intent(inout) :: solver
-    character(*), intent(in) :: solver_name
-    call rokko_parallel_sparse_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
-  end subroutine rokko_parallel_sparse_solver_construct
-
-  subroutine rokko_distributed_matrix_generate_array(matrix, array)
-    implicit none
-    type(rokko_distributed_matrix), intent(out) :: matrix
-    real(8), intent(in) :: array(:,:)
-    integer :: m_local, n_local, local_i, local_j, global_i, global_j
-    m_local = rokko_distributed_matrix_get_m_local(matrix)
-    n_local = rokko_distributed_matrix_get_n_local(matrix)
-    do local_i = 0, m_local - 1 
-      do local_j = 0, n_local - 1
-        global_i = rokko_distributed_matrix_translate_l2g_row(matrix, local_i)
-        global_j = rokko_distributed_matrix_translate_l2g_col(matrix, local_j)
-        call rokko_distributed_matrix_set_local(matrix, local_i, local_j, &
-             array(global_i + 1, global_j + 1))
-      enddo
-    enddo
-  end subroutine rokko_distributed_matrix_generate_array
-
-  subroutine rokko_all_gather(matrix, array)
-    implicit none
-    type(rokko_distributed_matrix), intent(out) :: matrix
-    real(8), intent(in), target :: array(:,:)
-    integer(c_int) :: root, nprocs, ierr
-    real(8), pointer :: parray
-    nprocs = rokko_distributed_matrix_get_nprocs(matrix)
-    parray => array(1, 1)
-    do root = 0, nprocs - 1
-      ierr = rokko_gather(matrix, c_loc(parray), root)
-    end do
-  end subroutine rokko_all_gather
 
 end module rokko
