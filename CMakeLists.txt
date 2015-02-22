@@ -281,8 +281,7 @@ if(BUILD_EXAMPLES)
 endif(BUILD_EXAMPLES)
 
 if(BUILD_BENCHMARKS)
-  add_subdirectory(benchmark_dense)
-  add_subdirectory(benchmark_anasazi)
+  add_subdirectory(benchmark)
 endif(BUILD_BENCHMARKS)
 
 if(BUILD_TUTORIALS)

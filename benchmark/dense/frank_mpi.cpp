@@ -13,12 +13,18 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/asio.hpp>
 #include <iostream>
+#include <ctime>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
+  rokko::global_timer::registrate(10, "main");
+  rokko::global_timer::registrate(11, "generate_matrix");
+  rokko::global_timer::registrate(12, "output_results");
 
+  rokko::global_timer::start(10);
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
@@ -41,12 +47,15 @@ int main(int argc, char *argv[]) {
               << "num_threads per process = " << omp_get_max_threads() << std::endl
               #endif
               << "solver = " << solver_name << std::endl
-              << "dimension = " << dim << std::endl;
+              << "dimension = " << dim << std::endl
+	      << "matrix = frank" << std::endl;
 
+  rokko::global_timer::start(11);
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);
   rokko::localized_matrix<matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
+  rokko::global_timer::stop(11);
 
   rokko::localized_vector eigval(dim);
   rokko::distributed_matrix<matrix_major> eigvec(dim, dim, g, solver);
@@ -58,9 +67,14 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
+  rokko::global_timer::start(12);
   rokko::localized_matrix<matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
+    bool sorted = true;
+    for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+    if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
+
     std::cout << "largest eigenvalues:";
     for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
     std::cout << std::endl;
@@ -68,8 +82,15 @@ int main(int argc, char *argv[]) {
               << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
                           - eigval(dim - 1))
               << std::endl;
+    std::time_t now = std::time(0);
+    std::cout << "rokko_version = " << ROKKO_VERSION << std::endl;
+    std::cout << "hostname = " << boost::asio::ip::host_name() << std::endl;
+    std::cout << "date = " << ctime(&now);    
   }
+  rokko::global_timer::stop(12);
 
   solver.finalize();
   MPI_Finalize();
+  rokko::global_timer::stop(10);
+  if (myrank == 0) rokko::global_timer::summarize();
 }

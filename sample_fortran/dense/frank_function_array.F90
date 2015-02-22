@@ -43,7 +43,6 @@ program frank_matrix
   character(len=100)::solver_name
   character(len=100)::tmp_str
   integer args_cnt, arg_len, status
-!  real(c_double), allocatable, target :: localized_array(:,:)
 !  integer(c_int) :: n
 !  common /mydata/n
 !  common /mydata/localized_array
