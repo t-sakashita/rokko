@@ -19,43 +19,49 @@ class laplacian_op : public rokko::distributed_mfree {
 public:
   laplacian_op(int dim) : dim_(dim) {
     comm_ = MPI_COMM_WORLD;
-    int nprocs, myrank;
     MPI_Comm_size(comm_, &nprocs);
     MPI_Comm_rank(comm_, &myrank);
-    //int n = size;
 
-    num_local_rows_ = dim_ / nprocs;
-    int rem = dim % nprocs;
-    int rest_size = rem / (myrank+1);  // 0 or 1
-    num_local_rows_ += rest_size;
-    start_row_ = dim / nprocs * myrank + std::min(rem, myrank);
-    end_row_ = start_row_ + num_local_rows_;
-    //local_offset_ = num_local_rows_ * myrank;
-    start_k_ = start_row_;
-    if (start_k_ == 0) {
-      ++start_k_;
-    }
-    end_k_ = end_row_;
-    if (end_row_ == dim) {
-      --end_k_;
-    }
-    std::cout << "myrank=" << myrank << " start_row=" << start_row_ << std::endl;
-    //std::cout << "num_local_rows=" << num_local_rows_ << std::endl;
-    //std::cout << "rest_size=" << rest_size << std::endl;
-    //std::cout << "end_row=" << end_row_ << std::endl;
     int tmp = dim_ / nprocs;
-    int cal = (tmp + nprocs - myrank - 1) / nprocs;
-    std::cout << "myrank=" << myrank << " cal=" << cal << std::endl;
+    int rem = dim % nprocs;
+    num_local_rows_ = (dim + nprocs - myrank - 1) / nprocs;
+    start_row_ = tmp * myrank + std::min(rem, myrank);
+    end_row_ = start_row_ + num_local_rows_ - 1;
+
+    if (start_row_ == 0)  is_first_proc = true;
+    else is_first_proc = false;
+    
+    if (end_row_ == (dim-1))  is_last_proc = true;
+    else is_last_proc = false;
+
+    start_k_ = 1;
+    end_k_ = num_local_rows_ - 1;
+    
+    std::cout << "myrank=" << myrank << " start_row=" << start_row_ << " end_row=" << end_row_ << std::endl;
+    std::cout << "myrank=" << myrank << " num_local_rows_=" << num_local_rows_ << std::endl;
   }
   ~laplacian_op() {}
 
   void multiply(const double* x, double* y) const {
-    y[0] += x[0] - x[1];
-    for (int k=start_k_; k<end_k_; ++k) {
-      y[k] += - x[k-1] + 2 * x[k] -x[k+1];
-      //y[k] -= x[k-1];
+    MPI_Status *status;
+    if (!is_first_proc) {
+      MPI_Recv(&recv_buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, status);
+      y[0] = - recv_buf + 2 * x[0] - x[1];
     }
-    //y[end_row_ - 1] += 2 * x[end_row_ - 1] - x[end_row_ - 2];
+    else { // for the first process 0
+      y[0] = x[0] - x[1];
+    }
+    if (!is_last_proc) {
+      send_buf = x[end_k_];
+      MPI_Send(&send_buf, 1, MPI_DOUBLE, myrank+1, 0, comm_);
+    }
+    else { // for the last process
+      y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
+    }
+ 
+    for (int k=start_k_; k<end_k_; ++k) {
+      y[k] += - x[k-1] + 2 * x[k] - x[k+1];
+    }
   }
   int get_dim() const { return dim_; }
   int get_local_offset() const { return local_offset_; }
@@ -65,9 +71,12 @@ public:
 
 private:
   MPI_Comm comm_;
+  int nprocs, myrank;
   int dim_, local_offset_, num_local_rows_;
   int start_row_, end_row_;
   int start_k_, end_k_;
+  mutable double send_buf, recv_buf;
+  bool is_first_proc, is_last_proc;
 };
 
 int main(int argc, char *argv[]) {
