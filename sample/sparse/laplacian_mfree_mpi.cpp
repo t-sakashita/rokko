@@ -14,6 +14,7 @@
 #include <iostream>
 #include <vector>
 #include <rokko/rokko.hpp>
+#include <rokko/utility/laplacian_matrix.hpp>
 
 class laplacian_op : public rokko::distributed_mfree {
 public:
@@ -93,14 +94,15 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   std::cout.precision(5);
-  int nev = 5;
-  int blockSize = 2;
+  int nev = 2;
+  int blockSize = 3;
   int maxIters = 500;
-  double tol = 1.0e-2;  //6;
+  double tol = 1.0e-4;  //6;
 
 
   rokko::parallel_sparse_solver solver("anasazi");
-  laplacian_op  mat(20);
+  int dim = 20;
+  laplacian_op  mat(dim);
 
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
@@ -132,6 +134,14 @@ int main(int argc, char *argv[]) {
 	std::cout << ' ' << eigvec[j];
       std::cout << std::endl;
     }
+  }
+
+  if (myrank == root) {
+    std::cout << "theoretical eigenvalues:" << std::endl;
+    for(int k=0; k<dim; ++k) {
+      std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << " ";
+    }
+    std::cout << std::endl;
   }
 
   MPI_Finalize();
