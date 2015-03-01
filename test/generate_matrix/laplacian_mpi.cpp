@@ -20,7 +20,7 @@
 #include <rokko/collective.hpp>
 
 #include <rokko/rokko.hpp>
-//#include <rokko/utility/laplacian_mfree_mpi.hpp>
+#include <rokko/utility/laplacian_matrix.hpp>
 
 class laplacian_op : public rokko::distributed_mfree {
 public:
@@ -104,27 +104,27 @@ int main(int argc, char *argv[]) {
   int ierr;
 
   // creating column vectors which forms a heisenberg hamiltonian.
-  int N_seq = 10;
-  int N = 5;
+  int N_seq = 20;
+  int N = N_seq / nprocs;
   double* recv_buffer = new double[N_seq];
   double* send_buffer = new double[N];
   std::vector<double> buffer(N);
   laplacian_op op(N_seq);
   for (int i=0; i<N_seq; ++i) {
-    // // sequential version
-     std::vector<double> v_seq, w_seq;
-     v_seq.assign(N_seq, 0);
-     v_seq[i] = 1;
-     w_seq.assign(N_seq, 0);
-    // if (myrank == root) {
-    //   op.multiply(N, v_seq, w_seq);
-    //   std::cout << "sequential version:" << std::endl;
-    //   for (int j=0; j<N_seq; ++j) {
-    //     std::cout << w_seq[j] << " ";
-    //   }
-    //   std::cout << std::endl;
-    // }
-    // MPI_Barrier(MPI_COMM_WORLD);
+    // sequential version
+    std::vector<double> v_seq, w_seq;
+    v_seq.assign(N_seq, 0);
+    v_seq[i] = 1;
+    w_seq.assign(N_seq, 0);
+    if (myrank == root) {
+      rokko::laplacian_matrix::multiply(N_seq, v_seq, w_seq);
+      std::cout << "sequential version:" << std::endl;
+      for (int j=0; j<N_seq; ++j) {
+	std::cout << w_seq[j] << " ";
+      }
+      std::cout << std::endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
     std::vector<double> v, w;
@@ -147,6 +147,7 @@ int main(int argc, char *argv[]) {
     MPI_Gather(&w[0], N, MPI_DOUBLE, recv_buffer, N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == 0) {
+      std::cout << "i=" << i << std::endl;
       std::cout << "recv=";
       for (int j=0; j<N_seq; ++j) {
 	std::cout << recv_buffer[j] << " ";

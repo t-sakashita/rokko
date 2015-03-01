@@ -34,7 +34,6 @@ public:
     if (end_row_ == (dim-1))  is_last_proc = true;
     else is_last_proc = false;
 
-    start_k_ = 1;
     end_k_ = num_local_rows_ - 1;
     
     std::cout << "myrank=" << myrank << " start_row=" << start_row_ << " end_row=" << end_row_ << std::endl;
@@ -45,22 +44,26 @@ public:
   void multiply(const double* x, double* y) const {
     MPI_Status *status;
     if (!is_first_proc) {
-      MPI_Recv(&recv_buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, status);
-      y[0] = - recv_buf + 2 * x[0] - x[1];
+      //std::cout << "recv myrank=" << myrank << std::endl;
+      MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
+      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, status);
+      y[0] = - buf + 2 * x[0] - x[1];
     }
     else { // for the first process 0
       y[0] = x[0] - x[1];
     }
     if (!is_last_proc) {
-      send_buf = x[end_k_];
-      MPI_Send(&send_buf, 1, MPI_DOUBLE, myrank+1, 0, comm_);
+      //std::cout << "send myrank=" << myrank << std::endl;
+      MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
+      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank+1, 0, comm_, status);
+      y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf;      
     }
     else { // for the last process
       y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
     }
  
-    for (int k=start_k_; k<end_k_; ++k) {
-      y[k] += - x[k-1] + 2 * x[k] - x[k+1];
+    for (int k=1; k<end_k_; ++k) {  //  from 1 to end-1
+      y[k] = - x[k-1] + 2 * x[k] - x[k+1];
     }
   }
   int get_dim() const { return dim_; }
@@ -75,9 +78,10 @@ private:
   int dim_, local_offset_, num_local_rows_;
   int start_row_, end_row_;
   int start_k_, end_k_;
-  mutable double send_buf, recv_buf;
+  mutable double buf;
   bool is_first_proc, is_last_proc;
 };
+
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -89,14 +93,14 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   std::cout.precision(5);
-  int nev = 1;
-  int blockSize = 1;
+  int nev = 5;
+  int blockSize = 2;
   int maxIters = 500;
-  double tol = 1.0e-8;
+  double tol = 1.0e-2;  //6;
 
 
   rokko::parallel_sparse_solver solver("anasazi");
-  laplacian_op  mat(10);
+  laplacian_op  mat(20);
 
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
@@ -117,19 +121,18 @@ int main(int argc, char *argv[]) {
 
   std::vector<double> eigvec;
 
-  //for (int i = 0; i < solver.num_conv(); ++i) {
-  solver.eigenvector(0, eigvec);
+  for (int i = 0; i < solver.num_conv(); ++i) {
+    solver.eigenvector(0, eigvec);
 
-  MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
 
-  //if (myrank == root) {
-  if (myrank == 1) {
-  std::cout << "corresponding eigenvectors:";
-    for (int j=0; j<eigvec.size(); ++j)
-      std::cout << ' ' << eigvec[j];
-    std::cout << std::endl;
+    if (myrank == root) {
+      std::cout << "corresponding eigenvectors:";
+      for (int j=0; j<eigvec.size(); ++j)
+	std::cout << ' ' << eigvec[j];
+      std::cout << std::endl;
+    }
   }
-  //}
 
   MPI_Finalize();
 }

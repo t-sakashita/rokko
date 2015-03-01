@@ -41,6 +41,9 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::distributed_crs_matrix mat(dim, dim, solver);
+
+
+  
   std::vector<double> values;
   std::vector<int> cols;
 
@@ -89,11 +92,10 @@ int main(int argc, char *argv[]) {
     std::cout << std::endl;
   }
 
-  rokko::laplacian_matrix laplacian;
   if (myrank == root) {
     std::cout << "theoretical eigenvalues=";
     for (int k = 0; k < dim; ++k) {
-      std::cout << laplacian.eigenvalue(dim, k) << " ";
+      std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << " ";
     }
     std::cout << std::endl;
   }

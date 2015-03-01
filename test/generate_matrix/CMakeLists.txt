@@ -27,7 +27,7 @@ foreach(name ${TESTS})
   add_test(${target_name} ${name} ${CMAKE_SOURCE_DIR}/test/input_data/xyz_1triangle.ip)
 endforeach(name)
 
-set(TESTS heisenberg_mpi)
+set(TESTS heisenberg_mpi laplacian_mpi)
 foreach(name ${TESTS})
   set(target_name generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
