@@ -55,9 +55,6 @@ class LaplacianOp : public Epetra_Operator {
   //@}
 
   void multiply(const double* x, double* y) const {
-    double buf_m, buf_p;
-    MPI_Status status_m, status_p;
-
     if (num_local_rows_ == 0) return;
 
     if ((!is_first_proc) && (nprocs != 1)) {
@@ -198,6 +195,9 @@ class LaplacianOp : public Epetra_Operator {
   int start_row_, end_row_;
   int start_k_, end_k_;
   bool is_first_proc, is_last_proc;
+  mutable double buf_m, buf_p;
+  mutable MPI_Status status_m, status_p;
+
 };
 
 int main(int argc, char *argv[]) {
