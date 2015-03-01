@@ -38,7 +38,7 @@ class LaplacianOp : public Epetra_Operator {
     if (start_row_ == 0)  is_first_proc = true;
     else is_first_proc = false;
     
-    if (end_row_ == (dim-1))  is_last_proc = true;
+    if ((end_row_ == (dim-1)) == (num_local_rows_ != 0))  is_last_proc = true;
     else is_last_proc = false;
 
     end_k_ = num_local_rows_ - 1;
@@ -55,30 +55,55 @@ class LaplacianOp : public Epetra_Operator {
   //@}
 
   void multiply(const double* x, double* y) const {
-    double buf;
-    MPI_Status status;
-    if (!is_first_proc) {
+    double buf_m, buf_p;
+    MPI_Status status_m, status_p;
+
+    if (num_local_rows_ == 0) return;
+
+    if ((!is_first_proc) && (nprocs != 1)) {
       //std::cout << "recv myrank=" << myrank << std::endl;
       MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
-      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status);
+      MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status_m);
       //std::cout << "buffff=" << buf << std::endl;
-      y[0] = - buf + 2 * x[0] - x[1];
     }
-    else { // for the first process 0
-      y[0] = x[0] - x[1];
-    }
-    if (!is_last_proc) {
+
+    if ((!is_last_proc) && (nprocs != 1)) {
       //std::cout << "send myrank=" << myrank << std::endl;
-      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status);
+      MPI_Recv(&buf_p, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status_p);
       MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
       //std::cout << "buffff=" << buf2 << std::endl;
-      y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf;
     }
-    else { // for the last process
-      y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
+
+    if (is_first_proc) {
+      if (num_local_rows_ != 1) {
+	y[0] = x[0] - x[1];
+	if (nprocs != 1) y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
+      }
+      else {
+	y[0] = x[0] - buf_p;
+      }
     }
-    
-    for (int k=1; k<end_k_; ++k) {  //  from 1 to end-1
+
+    if (is_last_proc) {
+      if (num_local_rows_ != 1) {
+	if (nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
+	y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
+      }
+      else {
+	y[end_k_] = 2 * x[end_k_] - buf_m;
+      }
+    }
+    if (!(is_first_proc || is_last_proc)) { // neither first or last process
+      if (num_local_rows_ != 1) {
+	y[0] = - buf_m + 2 * x[0] - x[1];
+	y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
+      }
+      else {
+	y[0] = - buf_m + 2 * x[0] - buf_p;	
+      }
+    }
+    // from 1 to end-1
+    for (int k=1; k<end_k_; ++k) {
       y[k] = - x[k-1] + 2 * x[k] - x[k+1];
     }
   }
@@ -223,6 +248,20 @@ int main(int argc, char *argv[]) {
   // Create an Epetra_Matrix
   Teuchos::RCP<LaplacianOp> A = Teuchos::rcp( new LaplacianOp(dim, MPI_COMM_WORLD) );
 
+  std::ostringstream os;
+  os << "Apply_test" << std::endl;
+  printer.print(Anasazi::Debug, os.str());
+  Epetra_MultiVector X( Map, 2 ), Y( Map, 2 );
+  X.PutScalar(0.);
+  Y.PutScalar(0.);
+  //Y.Print(std::cout);
+  MPI_Barrier(MPI_COMM_WORLD);
+  X.ReplaceGlobalValue(19, 1, 1.);
+  //X.Print(std::cout);
+  //Y.Print(std::cout);
+  A->Apply( X, Y );
+  Y.Print(std::cout);
+
   //************************************
   // Call the LOBPCG solver manager
   //***********************************
@@ -295,7 +334,6 @@ int main(int argc, char *argv[]) {
   }
 
   // Print the results
-  std::ostringstream os;
   os.setf(std::ios_base::right, std::ios_base::adjustfield);
   os<<"Solver manager returned " << (returnCode == Anasazi::Converged ? "converged." : "unconverged.") << endl;
   os<<endl;
@@ -317,19 +355,6 @@ int main(int argc, char *argv[]) {
   }
   os << std::endl;
   printer.print(Anasazi::Errors,os.str());
-
-  os << "Apply_test" << std::endl;
-  printer.print(Anasazi::Debug, os.str());
-  Epetra_MultiVector X( Map, 2 ), Y( Map, 2 );
-  X.PutScalar(0.);
-  Y.PutScalar(0.);
-  Y.Print(std::cout);
-  MPI_Barrier(MPI_COMM_WORLD);
-  X.ReplaceGlobalValue(10, 0, 1.);
-  //X.Print(std::cout);
-  //Y.Print(std::cout);
-  A->Apply( X, Y );
-  Y.Print(std::cout);
 
 #ifdef HAVE_MPI
   MPI_Finalize();
