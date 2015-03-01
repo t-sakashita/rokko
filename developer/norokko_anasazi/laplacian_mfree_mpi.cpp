@@ -55,21 +55,24 @@ class LaplacianOp : public Epetra_Operator {
   //@}
 
   void multiply(const double* x, double* y) const {
-    MPI_Status *status;
+    double buf;
+    MPI_Status status;
     if (!is_first_proc) {
       //std::cout << "recv myrank=" << myrank << std::endl;
       MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
-      MPI_Recv(&buf1, 1, MPI_DOUBLE, myrank-1, 0, comm_, status);
-      y[0] = - buf1 + 2 * x[0] - x[1];
+      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status);
+      //std::cout << "buffff=" << buf << std::endl;
+      y[0] = - buf + 2 * x[0] - x[1];
     }
     else { // for the first process 0
       y[0] = x[0] - x[1];
     }
     if (!is_last_proc) {
       //std::cout << "send myrank=" << myrank << std::endl;
+      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status);
       MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
-      MPI_Recv(&buf2, 1, MPI_DOUBLE, myrank+1, 0, comm_, status);
-      y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf2;
+      //std::cout << "buffff=" << buf2 << std::endl;
+      y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf;
     }
     else { // for the last process
       y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
@@ -169,7 +172,6 @@ class LaplacianOp : public Epetra_Operator {
   int dim_, local_offset_, num_local_rows_;
   int start_row_, end_row_;
   int start_k_, end_k_;
-  mutable double buf1, buf2;
   bool is_first_proc, is_last_proc;
 };
 
@@ -317,13 +319,17 @@ int main(int argc, char *argv[]) {
   printer.print(Anasazi::Errors,os.str());
 
   os << "Apply_test" << std::endl;
+  printer.print(Anasazi::Debug, os.str());
   Epetra_MultiVector X( Map, 2 ), Y( Map, 2 );
   X.PutScalar(0.);
-  X.ReplaceGlobalValue(4, 1, 1.);
-  X.Print(std::cout);
+  Y.PutScalar(0.);
+  Y.Print(std::cout);
+  MPI_Barrier(MPI_COMM_WORLD);
+  X.ReplaceGlobalValue(10, 0, 1.);
+  //X.Print(std::cout);
+  //Y.Print(std::cout);
   A->Apply( X, Y );
   Y.Print(std::cout);
-  printer.print(Anasazi::Debug, os.str());
 
 #ifdef HAVE_MPI
   MPI_Finalize();
