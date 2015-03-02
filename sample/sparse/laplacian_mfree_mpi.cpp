@@ -43,30 +43,56 @@ public:
   ~laplacian_op() {}
 
   void multiply(const double* x, double* y) const {
-    MPI_Status *status;
-    if (!is_first_proc) {
+    if (num_local_rows_ == 0) return;
+    
+    if ((!is_first_proc) && (nprocs != 1)) {
       //std::cout << "recv myrank=" << myrank << std::endl;
       MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
-      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, status);
-      y[0] = - buf + 2 * x[0] - x[1];
+      MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status_m);
+      //std::cout << "buffff=" << buf << std::endl;
     }
-    else { // for the first process 0
-      y[0] = x[0] - x[1];
-    }
-    if (!is_last_proc) {
+
+    if ((!is_last_proc) && (nprocs != 1)) {
       //std::cout << "send myrank=" << myrank << std::endl;
+      MPI_Recv(&buf_p, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status_p);
       MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
-      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank+1, 0, comm_, status);
-      y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf;      
+      //std::cout << "buffff=" << buf2 << std::endl;
     }
-    else { // for the last process
-      y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
+
+    if (is_first_proc) {
+      if (num_local_rows_ != 1) {
+	y[0] = x[0] - x[1];
+	if (nprocs != 1) y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
+      }
+      else {
+	y[0] = x[0] - buf_p;
+      }
     }
- 
-    for (int k=1; k<end_k_; ++k) {  //  from 1 to end-1
+
+    if (is_last_proc) {
+      if (num_local_rows_ != 1) {
+	if (nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
+	y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
+      }
+      else {
+	y[end_k_] = 2 * x[end_k_] - buf_m;
+      }
+    }
+    if (!(is_first_proc || is_last_proc)) { // neither first or last process
+      if (num_local_rows_ != 1) {
+	y[0] = - buf_m + 2 * x[0] - x[1];
+	y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
+      }
+      else {
+	y[0] = - buf_m + 2 * x[0] - buf_p;
+      }
+    }
+    // from 1 to end-1
+    for (int k=1; k<end_k_; ++k) {
       y[k] = - x[k-1] + 2 * x[k] - x[k+1];
     }
   }
+
   int get_dim() const { return dim_; }
   int get_local_offset() const { return local_offset_; }
   int get_num_local_rows() const { return num_local_rows_; }
@@ -79,8 +105,9 @@ private:
   int dim_, local_offset_, num_local_rows_;
   int start_row_, end_row_;
   int start_k_, end_k_;
-  mutable double buf;
   bool is_first_proc, is_last_proc;
+  mutable double buf_m, buf_p;
+  mutable MPI_Status status_m, status_p;
 };
 
 
@@ -94,10 +121,10 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   std::cout.precision(5);
-  int nev = 2;
-  int blockSize = 3;
+  int nev = 10;
+  int blockSize = 5;
   int maxIters = 500;
-  double tol = 1.0e-4;  //6;
+  double tol = 1.0e-8;  //6;
 
 
   rokko::parallel_sparse_solver solver("anasazi");
