@@ -58,9 +58,6 @@ public:
 private:
   distributed_mfree* op_;
   MPI_Comm comm_;
-  mutable std::vector<double> buffer_;
-  int L_;
-  std::vector<std::pair<int, int> > lattice_;
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };
