@@ -140,9 +140,14 @@ int main(int argc, char *argv[]) {
 
   if (myrank == root) {
     std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
-    std::cout << "smallest eigenvalues:";
+    std::cout << "largest eigenvalues:";
     for (int i = 0; i < solver.num_conv(); ++i)
       std::cout << ' ' << solver.eigenvalue(i);
+    std::cout << std::endl;
+    std::cout << "theoretical eigenvalues:" << std::endl;
+    for(int k=dim-1; k>=0; --k) {
+      std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << " ";
+    }
     std::cout << std::endl;
   }
 
@@ -151,7 +156,7 @@ int main(int argc, char *argv[]) {
   std::vector<double> eigvec;
 
   for (int i = 0; i < solver.num_conv(); ++i) {
-    solver.eigenvector(0, eigvec);
+    solver.eigenvector(i, eigvec);
 
     MPI_Barrier(MPI_COMM_WORLD);
 
@@ -161,14 +166,6 @@ int main(int argc, char *argv[]) {
 	std::cout << ' ' << eigvec[j];
       std::cout << std::endl;
     }
-  }
-
-  if (myrank == root) {
-    std::cout << "theoretical eigenvalues:" << std::endl;
-    for(int k=0; k<dim; ++k) {
-      std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << " ";
-    }
-    std::cout << std::endl;
   }
 
   MPI_Finalize();
