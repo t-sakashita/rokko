@@ -24,7 +24,7 @@
 #include <Epetra_Map.h>
 
 #include <AnasaziBasicEigenproblem.hpp>
-#include <AnasaziBlockKrylovSchurSolMgr.hpp>
+#include <AnasaziSimpleLOBPCGSolMgr.hpp>
 #include <Teuchos_RCPDecl.hpp>
 
 namespace rokko {
@@ -58,9 +58,6 @@ public:
 private:
   distributed_mfree* op_;
   MPI_Comm comm_;
-  mutable std::vector<double> buffer_;
-  int L_;
-  std::vector<std::pair<int, int> > lattice_;
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };
@@ -68,7 +65,7 @@ private:
 class solver {
 public:
   typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> eigenproblem_t;
-  typedef Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>
+  typedef Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>
     solvermanager_t;
   solver() {}
   ~solver() {}
@@ -86,7 +83,7 @@ public:
     problem_->setNEV(num_evals);
     problem_->setProblem();
     Teuchos::ParameterList pl;
-    pl.set("Which", "SR");
+    pl.set("Which", "LM");
     pl.set("Block Size", block_size);
     pl.set("Maximum Iterations", max_iters);
     pl.set("Convergence Tolerance", tol);
@@ -121,7 +118,7 @@ public:
     problem_->setNEV(num_evals);
     problem_->setProblem();
     Teuchos::ParameterList pl;
-    pl.set("Which", "SR");
+    pl.set("Which", "LM");
     pl.set("Block Size", block_size);
     pl.set("Maximum Iterations", max_iters);
     pl.set("Convergence Tolerance", tol);

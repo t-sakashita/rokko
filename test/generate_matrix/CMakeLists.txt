@@ -26,7 +26,7 @@ foreach(name ${TESTS})
 endforeach(name)
 
 if(BUILD_ROKKO_PARALLEL_DENSE_SOLVER)
-  set(TESTS heisenberg_mpi)
+  set(TESTS heisenberg_mpi laplacian_mpi)
   foreach(name ${TESTS})
     set(target_name generate_matrix_${name})
     add_executable(${target_name} ${name}.cpp)

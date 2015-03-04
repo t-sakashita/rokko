@@ -8,9 +8,11 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
+#include(/Users/sakashitatatsuya/rokko/trilinos-11.12.1-1/Debug/lib/cmake/Anasazi/AnasaziConfig.cmake)
+
 if(BUILD_ANASAZI)
   include_directories(${ANASAZI_INCLUDE_DIR})
-  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi)
+  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi laplacian_mfree_mpi TraceMinDavidsonUserOpEx)
   foreach(name ${SAMPLE})
     set(target_name norokko_anasazi_${name})
     add_executable(${target_name} ${name}.cpp)
