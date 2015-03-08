@@ -18,6 +18,8 @@
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
 #include <rokko/utility/timer.hpp>
 
+#include <rokko/parameters.hpp>
+
 #include <AnasaziEpetraAdapter.hpp>
 #include <Epetra_CrsMatrix.h>
 #include <Epetra_MpiComm.h>
@@ -25,6 +27,8 @@
 
 #include <AnasaziBasicEigenproblem.hpp>
 #include <AnasaziSimpleLOBPCGSolMgr.hpp>
+#include <AnasaziBlockKrylovSchurSolMgr.hpp>
+#include <AnasaziBlockDavidsonSolMgr.hpp>
 #include <Teuchos_RCPDecl.hpp>
 
 namespace rokko {
@@ -65,12 +69,66 @@ private:
 class solver {
 public:
   typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> eigenproblem_t;
-  typedef Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>
-    solvermanager_t;
+  typedef Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_lobpcg_t;
+  typedef Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
+
   solver() {}
   ~solver() {}
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
+
+  void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
+    timer.start(timer_id::diagonalize_initialize);
+    map_ = new mapping_1d(mat.get_dim());
+
+    Teuchos::ParameterList pl;
+    int block_size;
+    if (params.defined("Block Size"))  {
+      block_size = params.get<int>("Block Size");
+    }
+    else {
+      block_size = 1;
+    }
+    pl.set( "Block Size", block_size );
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
+    multivector_->Random();
+    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(
+												  mat.get_matrix())->get_matrix(), multivector_));
+    problem_->setHermitian(true);
+    if (params.defined("num_eigenvalues"))   problem_->setNEV(params.get<int>("num_eigenvalues"));
+    problem_->setProblem();
+
+    if (params.defined("Which"))   pl.set( "Which", params.get<std::string>("Which") );
+    if (params.defined("Maximum Iterations"))   pl.set( "Maximum Iterations", params.get<int>("Maximum Iterations") );
+    if (params.defined("Convergence Tolerance"))   pl.set( "Convergence Tolerance", params.get<double>("Convergence Tolerance") );
+
+    std::string routine;
+    if (params.defined("routine"))   routine = params.get<std::string>("routine");
+    solvermanager_t *solvermanager;
+    if (routine == "SimpleLOBPCG")
+      solvermanager = new Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+    if (routine == "BlockKrylovSchur")
+      solvermanager = new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+    if (routine == "BlockDavidson")
+      solvermanager = new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+  
+    
+    bool boolret = problem_->setProblem();
+    if (boolret != true) {
+      std::cout << "setProblem()_error" << std::endl;
+    }
+    timer.stop(timer_id::diagonalize_initialize);
+    timer.start(timer_id::diagonalize_diagonalize);
+    Anasazi::ReturnType returnCode = solvermanager->solve();
+    if (returnCode == Anasazi::Unconverged) {
+      std::cout << "solvermanager.solve()_error" << std::endl;
+    }
+    timer.stop(timer_id::diagonalize_diagonalize);
+    timer.start(timer_id::diagonalize_finalize);
+    num_conv_ = problem_->getSolution().numVecs;
+    timer.stop(timer_id::diagonalize_finalize);
+  }
+
   void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
     int max_iters, double tol, timer& timer) {
     timer.start(timer_id::diagonalize_initialize);
@@ -87,7 +145,7 @@ public:
     pl.set("Block Size", block_size);
     pl.set("Maximum Iterations", max_iters);
     pl.set("Convergence Tolerance", tol);
-    solvermanager_t solvermanager(problem_, pl);
+    solvermanager_lobpcg_t solvermanager(problem_, pl);
     bool boolret = problem_->setProblem();
     if (boolret != true) {
       std::cout << "setProblem()_error" << std::endl;
@@ -122,7 +180,7 @@ public:
     pl.set("Block Size", block_size);
     pl.set("Maximum Iterations", max_iters);
     pl.set("Convergence Tolerance", tol);
-    solvermanager_t solvermanager(problem_, pl);
+    solvermanager_lobpcg_t solvermanager(problem_, pl);
     bool boolret = problem_->setProblem();
     if (boolret != true) {
       std::cout << "setProblem()_error" << std::endl;

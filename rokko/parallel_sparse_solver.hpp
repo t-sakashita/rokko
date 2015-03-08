@@ -18,6 +18,7 @@
 #include <rokko/distributed_vector.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
+#include <rokko/parameters.hpp>
 
 namespace rokko {
 
@@ -32,6 +33,7 @@ public:
     int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
   virtual void diagonalize(rokko::distributed_mfree& mat,
     int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
+  virtual void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) = 0;
   virtual double eigenvalue(int k) const = 0;
   virtual void eigenvector(int k, std::vector<double>& vec) const = 0;
   virtual void eigenvector(int k, double* vec) const = 0;
@@ -56,6 +58,9 @@ public:
   void diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
     double tol, timer& timer) {
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  }
+  void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
+    solver_impl_.diagonalize(mat, params, timer);
   }
   double eigenvalue(int k) const { return solver_impl_.eigenvalue(k); }
   void eigenvector(int k, std::vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
@@ -119,6 +124,16 @@ public:
     if (!timer.has(rokko::timer_id::diagonalize_finalize))
       timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
     solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  }
+  template<typename MAT>
+  void diagonalize(MAT& mat, rokko::parameters const& params, timer& timer = *global_timer::instance()) {
+    if (!timer.has(rokko::timer_id::diagonalize_initialize))
+      timer.registrate(rokko::timer_id::diagonalize_initialize, "diagonalize::initialize");
+    if (!timer.has(rokko::timer_id::diagonalize_diagonalize))
+      timer.registrate(rokko::timer_id::diagonalize_diagonalize, "diagonalize::diagonalize");
+    if (!timer.has(rokko::timer_id::diagonalize_finalize))
+      timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
+    solver_impl_->diagonalize(mat, params, timer);
   }
   double eigenvalue(int k) const { return solver_impl_->eigenvalue(k); }
   void eigenvector(int k, std::vector<double>& vec) const { solver_impl_->eigenvector(k, vec); }
