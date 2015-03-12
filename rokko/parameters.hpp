@@ -47,6 +47,14 @@ public:
   template<typename T>
   T get(key_type const& key) const { return boost::any_cast<T>(map_.find(key)->second); }
   const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
+  std::string get_string(key_type const& key) const {
+    if (type(key) == typeid(std::string)) {
+      return get<std::string>(key);
+    }
+    if (type(key) == typeid(const char*)) {
+      return std::string(get<const char*>(key));
+    }
+  }
 private:
   std::map<std::string, boost::any> map_;
 };

@@ -77,63 +77,60 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
+  solvermanager_t* create_solver_manager(std::string const& routine) {
+    if (routine == "SimpleLOBPCG")
+      return new Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+    if (routine == "BlockKrylovSchur")
+      return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+    if (routine == "BlockDavidson")
+      return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+  }
+
+  void set_anasazi_parameters(rokko::parameters const& params) {
+    BOOST_FOREACH(std::string const& key, keys) {
+      if (params.defined(key)) {
+	if (params.type(key) == typeid(int)) {
+	  pl_.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
+	}
+	if (params.type(key) == typeid(double)) {
+	  pl_.set(key, params.get<double>(key)); std::cout << "double: " << key << std::endl;
+	}
+	if (params.type(key) == typeid(std::string)) {
+	  pl_.set(key, params.get<std::string>(key)); std::cout << "string: " << key << std::endl;
+	}
+	if (params.type(key) == typeid(const char*)) {
+	  pl_.set(key, params.get<const char*>(key)); std::cout << "const char*: " << key << std::endl;
+	}
+      }
+    }
+  }
+
   void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
     timer.start(timer_id::diagonalize_initialize);
     map_ = new mapping_1d(mat.get_dim());
 
-    Teuchos::ParameterList pl;
-
-    std::list<std::string> keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
-    //std::list<std::string> keys = params.keys();
-    BOOST_FOREACH(std::string const& key, keys) {
-      if (params.defined(key)) {
-	if (params.type(key) == typeid(int)) {
-	  pl.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
-	}
-	if (params.type(key) == typeid(double)) {
-	  pl.set(key, params.get<double>(key)); std::cout << "double: " << key << std::endl;
-	}
-	if (params.type(key) == typeid(std::string)) {
-	  pl.set(key, params.get<std::string>(key)); std::cout << "string: " << key << std::endl;
-	}
-	if (params.type(key) == typeid(const char*)) {
-	  pl.set(key, params.get<const char*>(key)); std::cout << "const char*: " << key << std::endl;
-	}
-      }
-    }
-    
-    int block_size;
+    set_anasazi_parameters(params);
     if (params.defined("Block Size"))  {
-      block_size = params.get<int>("Block Size");
+      block_size_ = params.get<int>("Block Size");
     }
     else {
-      block_size = 1;
+      block_size_ = 1;
     }
-    pl.set( "Block Size", block_size );
+    pl_.set( "Block Size", block_size_ );
 
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
     problem_->setHermitian(true);
     if (params.defined("num_eigenvalues"))   problem_->setNEV(params.get<int>("num_eigenvalues"));
     problem_->setProblem();
 
-    std::string routine;
     if (params.defined("routine")) {
-      if (params.type("routine") == typeid(std::string)) {
-	routine = params.get<std::string>("routine");
-      }
-      if (params.type("routine") == typeid(const char*)) {
-	routine = std::string(params.get<const char*>("routine"));
-      }
+      if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
+	throw "error: routine is not charatcters or string";
+      routine_ = params.get_string("routine");
     }
-    solvermanager_t *solvermanager;
-    if (routine == "SimpleLOBPCG")
-      solvermanager = new Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
-    if (routine == "BlockKrylovSchur")
-      solvermanager = new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
-    if (routine == "BlockDavidson")
-      solvermanager = new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+    solvermanager_t* solvermanager = create_solver_manager(routine_);
     
     bool boolret = problem_->setProblem();
     if (boolret != true) {
@@ -243,10 +240,14 @@ public:
   int num_conv() const { return num_conv_; }
 
 private:
+  std::list<std::string> keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<double> > evals_;
+  Teuchos::ParameterList pl_;
+  int block_size_;
+  std::string routine_;
   int num_conv_;
 };
 
