@@ -308,17 +308,33 @@ int main(int argc, char *argv[]) {
   params.set( "Maximum Iterations", maxIters );
   params.set( "Convergence Tolerance", tol );
 
-  // set sum parameters
   Teuchos::ParameterList MyPL;
-  if (params.defined("Which"))   MyPL.set( "Which", params.get<std::string>("Which") );
-  if (params.defined("Block Size"))   MyPL.set( "Block Size", params.get<int>("Block Size") );
-  if (params.defined("Maximum Iterations"))   MyPL.set( "Maximum Iterations", params.get<int>("Maximum Iterations") );
-  if (params.defined("Convergence Tolerance"))   MyPL.set( "Convergence Tolerance", params.get<double>("Convergence Tolerance") );
-  MyPL.set("Block Size", "10");
-
-  // MyPL.set( "Block Size", blockSize );
-  // MyPL.set( "Maximum Iterations", maxIters );
-  // MyPL.set( "Convergence Tolerance", tol );
+  
+  std::list<std::string> keys = params.keys();
+  BOOST_FOREACH(std::string const& key, keys) {
+    //const Teuchos::any& entry = MyPL.getEntry(key).getAny();
+    //if (params.type(key) != entry.type()) {
+    //  throw "key type for Rokko doesn't match key key type for Anasazi";
+    //}
+    if (params.type(key) == typeid(int)) {
+      MyPL.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
+    }
+    if (params.type(key) == typeid(double)) {
+      MyPL.set(key, params.get<double>(key)); std::cout << "double: " << key << std::endl;
+    }
+    if (params.type(key) == typeid(std::string)) {
+      MyPL.set(key, params.get<std::string>(key)); std::cout << "string: " << key << std::endl;
+    }
+    /*if (params.type(key) == typeid(const int)) {
+      MyPL.set(key, params.get<const int>(key)); std::cout << "const int: " << key << std::endl;
+    }
+    if (params.type(key) == typeid(const double)) {
+      MyPL.set(key, params.get<const double>(key)); std::cout << "const double: " << key << std::endl;
+    }*/
+    if (params.type(key) == typeid(const char*)) {
+      MyPL.set(key, params.get<const char*>(key)); std::cout << "const char*: " << key << std::endl;
+    }
+  }
 
   // Create the solver manager
   std::string routine = "SimpleLOBPCG"; //BlockKrylovSchur";

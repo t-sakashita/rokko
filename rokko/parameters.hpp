@@ -17,12 +17,13 @@
 #include <string>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/any.hpp>
 
 namespace rokko {
 
 class parameters {
 private:
-  typedef std::map<std::string, std::string> map_type;
+  typedef std::map<std::string, boost::any> map_type;
   typedef map_type::value_type value_type;
   typedef map_type::mapped_type mapped_type;
 public:
@@ -32,7 +33,7 @@ public:
   // set "value" for "key"
   template<typename T>
   void set(key_type const& key, T const& value) {
-    map_[key] = boost::lexical_cast<mapped_type>(value);
+    map_[key] = value;
   }
   // returns if parameter with "key" is defined or not
   bool defined(key_type const& key) const {return (map_.find(key) != map_.end()); }
@@ -44,9 +45,10 @@ public:
   }
   // returns value of parameter in type T
   template<typename T>
-  T get(key_type const& key) const { return boost::lexical_cast<T>(map_.find(key)->second); }
+  T get(key_type const& key) const { return boost::any_cast<T>(map_.find(key)->second); }
+  const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
 private:
-  std::map<std::string, std::string> map_;
+  std::map<std::string, boost::any> map_;
 };
 
 } // namespace rokko

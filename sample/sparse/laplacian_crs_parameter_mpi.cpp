@@ -83,13 +83,13 @@ int main(int argc, char *argv[]) {
   mat.print();
 
   rokko::parameters params;
-  // set sum parameters
   params.set("Which", "LM");
   params.set("Block Size", block_size);
   params.set("Maximum Iterations", max_iters);
   params.set("Convergence Tolerance", tol);
   params.set("num_eigenvalues", nev);
   params.set("routine", "SimpleLOBPCG");
+  //params.set("routine", "BlockDavidson");
 
   solver.diagonalize(mat, params);
 
