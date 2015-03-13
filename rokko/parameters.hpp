@@ -45,7 +45,12 @@ public:
   }
   // returns value of parameter in type T
   template<typename T>
-  T get(key_type const& key) const { return boost::any_cast<T>(map_.find(key)->second); }
+  T get(key_type const& key) const {
+    if (type(key) != typeid(T)) {
+      throw "error: type";
+    }
+    return boost::any_cast<T>(map_.find(key)->second);
+  }
   const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
   std::string get_string(key_type const& key) const {
     if (type(key) == typeid(std::string)) {
@@ -53,6 +58,18 @@ public:
     }
     if (type(key) == typeid(const char*)) {
       return std::string(get<const char*>(key));
+    }
+    if (type(key) == typeid(int)) {
+      return boost::lexical_cast<std::string>(get<int>(key));
+    }
+    if (type(key) == typeid(double)) {
+      return boost::lexical_cast<std::string>(get<double>(key));
+    }
+    if (type(key) == typeid(bool)) {
+      return boost::lexical_cast<std::string>(get<bool>(key));
+    }
+    else {
+      throw "error: key is not charatcters, string, int, double";      
     }
   }
 private:

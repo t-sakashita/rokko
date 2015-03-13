@@ -84,6 +84,8 @@ public:
       return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     if (routine == "BlockDavidson")
       return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+    else
+      throw "error: routine is not defined in Anasazi";
   }
 
   void set_anasazi_parameters(rokko::parameters const& params) {
@@ -121,6 +123,52 @@ public:
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
+    problem_->setHermitian(true);
+    if (params.defined("num_eigenvalues"))   problem_->setNEV(params.get<int>("num_eigenvalues"));
+    problem_->setProblem();
+
+    if (params.defined("routine")) {
+      if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
+	throw "error: routine is not charatcters or string";
+      routine_ = params.get_string("routine");
+    }
+    solvermanager_t* solvermanager = create_solver_manager(routine_);
+    
+    bool boolret = problem_->setProblem();
+    if (boolret != true) {
+      std::cout << "setProblem()_error" << std::endl;
+    }
+    timer.stop(timer_id::diagonalize_initialize);
+    timer.start(timer_id::diagonalize_diagonalize);
+    Anasazi::ReturnType returnCode = solvermanager->solve();
+    if (returnCode == Anasazi::Unconverged) {
+      std::cout << "solvermanager.solve()_error" << std::endl;
+    }
+    timer.stop(timer_id::diagonalize_diagonalize);
+    timer.start(timer_id::diagonalize_finalize);
+    num_conv_ = problem_->getSolution().numVecs;
+    timer.stop(timer_id::diagonalize_finalize);
+  }
+
+    void diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params, timer& timer) {
+    timer.start(timer_id::diagonalize_initialize);
+    rokko::distributed_mfree* mat = &mat_in;
+    map_ = new mapping_1d(mat->get_dim());
+
+    set_anasazi_parameters(params);
+    if (params.defined("Block Size"))  {
+      block_size_ = params.get<int>("Block Size");
+    }
+    else {
+      block_size_ = 1;
+    }
+    pl_.set( "Block Size", block_size_ );
+
+    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ =
+      Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
+    multivector_->Random();
+    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
     problem_->setHermitian(true);
     if (params.defined("num_eigenvalues"))   problem_->setNEV(params.get<int>("num_eigenvalues"));
     problem_->setProblem();

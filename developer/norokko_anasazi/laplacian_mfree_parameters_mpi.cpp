@@ -312,10 +312,6 @@ int main(int argc, char *argv[]) {
   
   std::list<std::string> keys = params.keys();
   BOOST_FOREACH(std::string const& key, keys) {
-    //const Teuchos::any& entry = MyPL.getEntry(key).getAny();
-    //if (params.type(key) != entry.type()) {
-    //  throw "key type for Rokko doesn't match key key type for Anasazi";
-    //}
     if (params.type(key) == typeid(int)) {
       MyPL.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
     }

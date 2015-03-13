@@ -34,6 +34,7 @@ public:
   virtual void diagonalize(rokko::distributed_mfree& mat,
     int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
   virtual void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) = 0;
+  virtual void diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params, timer& timer) = 0;
   virtual double eigenvalue(int k) const = 0;
   virtual void eigenvector(int k, std::vector<double>& vec) const = 0;
   virtual void eigenvector(int k, double* vec) const = 0;
@@ -60,6 +61,9 @@ public:
     solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
   }
   void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
+    solver_impl_.diagonalize(mat, params, timer);
+  }
+  void diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params, timer& timer) {
     solver_impl_.diagonalize(mat, params, timer);
   }
   double eigenvalue(int k) const { return solver_impl_.eigenvalue(k); }
