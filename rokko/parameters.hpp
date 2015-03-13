@@ -68,8 +68,11 @@ public:
     if (type(key) == typeid(bool)) {
       return boost::lexical_cast<std::string>(get<bool>(key));
     }
+    if (type(key) == typeid(char)) {
+      return boost::lexical_cast<std::string>(get<char>(key));
+    }
     else {
-      throw "error: key is not charatcters, string, int, double";      
+      throw "error: set_string only accepts charatcters, string, int or double as an argument";      
     }
   }
 private:

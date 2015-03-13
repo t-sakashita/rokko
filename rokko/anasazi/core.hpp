@@ -19,6 +19,7 @@
 #include <rokko/utility/timer.hpp>
 
 #include <rokko/parameters.hpp>
+#include <rokko/solver_parameters.hpp>
 
 #include <AnasaziEpetraAdapter.hpp>
 #include <Epetra_CrsMatrix.h>
@@ -66,6 +67,8 @@ private:
   Epetra_Map ep_map;
 };
 
+static const char* const anasazi_solvers[] = { "SimpleLOBPCG", "BlockKrylovSchur", "BlockDavidson" };
+
 class solver {
 public:
   typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> eigenproblem_t;
@@ -84,13 +87,20 @@ public:
       return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     if (routine == "BlockDavidson")
       return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
-    else
-      throw "error: routine is not defined in Anasazi";
+    else {
+      std::cerr << routine << " is not a solver in Anasazi" << std::endl;
+      std::cerr << "The list of Anasazi solvers:" << std::endl;
+      for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
+	std::cerr << anasazi_solvers[i] << " " << std::endl;
+      }
+      throw;
+    }
   }
 
   void set_anasazi_parameters(rokko::parameters const& params) {
+    std::list<std::string> keys = params.keys();
     BOOST_FOREACH(std::string const& key, keys) {
-      if (params.defined(key)) {
+      if (!is_rokko_solver_key(key)) {
 	if (params.type(key) == typeid(int)) {
 	  pl_.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
 	}
@@ -128,10 +138,10 @@ public:
     problem_->setProblem();
 
     if (params.defined("routine")) {
-      if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
-	throw "error: routine is not charatcters or string";
-      routine_ = params.get_string("routine");
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+	throw "error: routine must be charatcters or string.";
     }
+    routine_ = params.get_string("routine");
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
     bool boolret = problem_->setProblem();
@@ -288,7 +298,7 @@ public:
   int num_conv() const { return num_conv_; }
 
 private:
-  std::list<std::string> keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
+  //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;

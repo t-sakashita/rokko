@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
   params.set("Pi", 3.14);
   params.set("A", "test");
   params.set("question", true);
+  params.set("char", 'c');
 
   // get double
   int t = params.get<int>("T");
