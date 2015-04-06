@@ -39,11 +39,16 @@ def generate_config(module, source, compiler):
         print "Error:", build_conf, "not found"
         sys.exit(255)
     read_config(build_conf, "option", options, source)
-    build_rokko_conf = "build-" + module + ".conf"
-    if not os.path.exists(build_rokko_conf):
-        print "Error:", build_rokko_conf, "not found"
+    read_config(build_conf, "default", options, source)
+    build_app_conf = "build-" + module + ".conf"
+    if not os.path.exists(build_app_conf):
+        print "Error:", build_app_conf, "not found"
         sys.exit(255)
-    read_config(build_rokko_conf, "option", options, source)
+    read_config(build_app_conf, "option", options, source)
+    if compiler == "":
+        read_config(build_app_conf, "default", options, source)
+    else:
+        read_config(build_app_conf, compiler, options, source)
     for k in sorted(options.keys()):
         cmake_command += " -D" + k + "=" + options[k]
 
