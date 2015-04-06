@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 
   int dim = 20;
 
-  rokko::parallel_sparse_solver solver("anasazi");
+  rokko::parallel_sparse_solver solver("slepc");
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of tridiagonal Laplacian matrix" << std::endl
               << "solver = LOBPCG" << std::endl
@@ -88,7 +88,8 @@ int main(int argc, char *argv[]) {
   params.set("Maximum Iterations", max_iters);
   params.set("Convergence Tolerance", tol);
   params.set("num_eigenvalues", nev);
-  params.set("routine", "SimpleLOBPCG");
+  params.set("routine", "lanczos");
+  //params.set("routine", "SimpleLOBPCG");
   //params.set("routine", "BlockDavidson");
 
   solver.diagonalize(mat, params);
