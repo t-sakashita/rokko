@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   int max_iters = 500;
   double tol = 1.0e-6;
 
-  int dim = 20;
+  int dim = 10;
 
   rokko::parallel_sparse_solver solver("slepc");
   if (myrank == root)

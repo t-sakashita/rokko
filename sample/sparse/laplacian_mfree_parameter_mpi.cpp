@@ -122,7 +122,8 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
-  rokko::parallel_sparse_solver solver("anasazi");
+  rokko::parallel_sparse_solver solver("slepc");
+  //  rokko::parallel_sparse_solver solver("anasazi");
   int dim = 20;
   laplacian_op  mat(dim);
 
@@ -132,7 +133,8 @@ int main(int argc, char *argv[]) {
   params.set("Maximum Iterations", 500);
   params.set("Convergence Tolerance", 1.0e-8);
   params.set("num_eigenvalues", 10);
-  params.set("routine", "SimpleLOBPCG");
+  params.set("routine", "lanczos");
+  //params.set("routine", "SimpleLOBPCG");
   //params.set("routine", "BlockDavidson");
   
   if (myrank == root)
