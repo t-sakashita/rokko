@@ -17,12 +17,13 @@
 #include <string>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/any.hpp>
 
 namespace rokko {
 
 class parameters {
 private:
-  typedef std::map<std::string, std::string> map_type;
+  typedef std::map<std::string, boost::any> map_type;
   typedef map_type::value_type value_type;
   typedef map_type::mapped_type mapped_type;
 public:
@@ -32,7 +33,7 @@ public:
   // set "value" for "key"
   template<typename T>
   void set(key_type const& key, T const& value) {
-    map_[key] = boost::lexical_cast<mapped_type>(value);
+    map_[key] = value;
   }
   // returns if parameter with "key" is defined or not
   bool defined(key_type const& key) const {return (map_.find(key) != map_.end()); }
@@ -44,9 +45,38 @@ public:
   }
   // returns value of parameter in type T
   template<typename T>
-  T get(key_type const& key) const { return boost::lexical_cast<T>(map_.find(key)->second); }
+  T get(key_type const& key) const {
+    if (type(key) != typeid(T)) {
+      throw "error: type";
+    }
+    return boost::any_cast<T>(map_.find(key)->second);
+  }
+  const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
+  std::string get_string(key_type const& key) const {
+    if (type(key) == typeid(std::string)) {
+      return get<std::string>(key);
+    }
+    if (type(key) == typeid(const char*)) {
+      return std::string(get<const char*>(key));
+    }
+    if (type(key) == typeid(int)) {
+      return boost::lexical_cast<std::string>(get<int>(key));
+    }
+    if (type(key) == typeid(double)) {
+      return boost::lexical_cast<std::string>(get<double>(key));
+    }
+    if (type(key) == typeid(bool)) {
+      return boost::lexical_cast<std::string>(get<bool>(key));
+    }
+    if (type(key) == typeid(char)) {
+      return boost::lexical_cast<std::string>(get<char>(key));
+    }
+    else {
+      throw "error: set_string only accepts charatcters, string, int or double as an argument";      
+    }
+  }
 private:
-  std::map<std::string, std::string> map_;
+  std::map<std::string, boost::any> map_;
 };
 
 } // namespace rokko

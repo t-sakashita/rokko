@@ -12,7 +12,7 @@
 
 if(BUILD_ANASAZI)
   include_directories(${ANASAZI_INCLUDE_DIR})
-  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi laplacian_mfree_mpi TraceMinDavidsonUserOpEx)
+  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi laplacian_mfree_mpi TraceMinDavidsonUserOpEx laplacian_mfree_parameters_mpi)
   foreach(name ${SAMPLE})
     set(target_name norokko_anasazi_${name})
     add_executable(${target_name} ${name}.cpp)

@@ -125,8 +125,7 @@ public:
     offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(),
-      mat->get_dim(), mat->get_dim(), mat, A);
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A);
     ierr = MatSetFromOptions(*A);
 
     ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
@@ -160,6 +159,136 @@ public:
     }
     timer.stop(timer_id::diagonalize_finalize);
   }
+
+  void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
+    timer.start(timer_id::diagonalize_initialize);
+    dimension_ = mat.get_dim();
+    offset_local_ = mat.start_row();
+    num_local_rows_ = mat.num_local_rows();
+    int block_size_;
+    if (params.defined("Block Size"))  {
+      block_size_ = params.get<int>("Block Size");
+    }
+    else {
+      block_size_ = 1;
+    }
+    double tol;
+    if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
+    int max_iters;
+    if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
+
+    A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
+    EPSType        type;
+    PetscMPIInt    size;
+    PetscInt       num_evals;
+    if (params.defined("num_eigenvalues"))   num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    else  num_evals = 1;
+
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
+
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetOperators(eps, *A, NULL);
+    ierr = EPSSetProblemType(eps, EPS_HEP);
+    if (params.defined("routine")) {
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+	throw "error: routine must be charatcters or string.";
+    }
+    routine_ = params.get_string("routine");
+    ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
+    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    /* Set solver parameters at runtime */
+    ierr = EPSSetFromOptions(eps);
+    timer.stop(timer_id::diagonalize_initialize);
+
+    /* Solve the eigensystem */       
+    timer.start(timer_id::diagonalize_diagonalize);
+    ierr = EPSSolve(eps);
+    timer.stop(timer_id::diagonalize_diagonalize);
+    
+    /* Get some information from the solver and display it */
+    timer.start(timer_id::diagonalize_finalize);
+    ierr = EPSGetType(eps, &type);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
+    EPSGetConverged(eps, &num_conv_);
+    if (num_conv_ == 0) {
+      std::cout << "doesn't converge" << std::endl;
+    }
+    timer.stop(timer_id::diagonalize_finalize);
+  }
+
+  void diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params, timer& timer) {
+    timer.start(timer_id::diagonalize_initialize);
+    
+    rokko::distributed_mfree* mat = &mat_in;
+    // define matrix-free type operator
+    dimension_ = mat->get_dim();
+    offset_local_ = mat->get_local_offset();
+    num_local_rows_ = mat->get_num_local_rows();
+    A = new Mat();
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A);
+    ierr = MatSetFromOptions(*A);
+    ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
+    ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
+    ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
+
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetOperators(eps, *A, NULL);
+
+    int block_size_;
+    if (params.defined("Block Size"))  {
+      block_size_ = params.get<int>("Block Size");
+    }
+    else {
+      block_size_ = 1;
+    }
+    double tol;
+    if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
+    int max_iters;
+    if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
+    if (params.defined("routine")) {
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+	throw "error: routine must be charatcters or string.";
+    }
+    routine_ = params.get_string("routine");
+    
+    EPSType        type;
+    //PetscMPIInt    size;
+    PetscInt       num_evals;
+    if (params.defined("num_eigenvalues"))   num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    else  num_evals = 1;
+
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetProblemType(eps, EPS_HEP);
+    routine_ = params.get_string("routine");
+    ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
+    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    /* Set solver parameters at runtime */
+    ierr = EPSSetFromOptions(eps);
+    timer.stop(timer_id::diagonalize_initialize);
+
+    /* Solve the eigensystem */       
+    timer.start(timer_id::diagonalize_diagonalize);
+    ierr = EPSSolve(eps);
+    timer.stop(timer_id::diagonalize_diagonalize);
+    
+    /* Get some information from the solver and display it */
+    timer.start(timer_id::diagonalize_finalize);
+    ierr = EPSGetType(eps, &type);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
+    EPSGetConverged(eps, &num_conv_);
+    if (num_conv_ == 0) {
+      std::cout << "doesn't converge" << std::endl;
+    }
+    timer.stop(timer_id::diagonalize_finalize);
+    }
 
   double eigenvalue(int i) const {
     PetscScalar eval_r, eval_i;
@@ -201,6 +330,8 @@ private:
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
   PetscErrorCode ierr;
+  std::string routine_;
+  EPSType routine_type;
   int num_conv_;
 };
 
