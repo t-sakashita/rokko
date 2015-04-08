@@ -18,14 +18,14 @@ for build_type in $BUILD_TYPES; do
     ./configure --prefix=$PREFIX \
       --with-cc=mpicc --COPTFLAGS="-O3" --with-cxx=mpicxx --CXXOPTFLAGS="-O3" --with-fc=mpif77 --FOPTFLAGS="-O3" --with-mpiexec=mpiexec \
     --with-blas-lapack-lib="-framework Accelerate" \
-    --with-blacs-dir=$PREFIX_ROKKO/scalapack-2.0.2-0/$build_type --with-scalapack-dir=$PREFIX_ROKKO/scalapack-2.0.2-0/$build_type --with-c++-support=1 --with-debugging=0
+    --with-blacs-dir=$PREFIX_ROKKO/scalapack/$build_type --with-scalapack-dir=$PREFIX_ROKKO/scalapack/$build_type --with-c++-support=1 --with-debugging=0
     check make PETSC_DIR=$BUILD_DIR/petsc-$PETSC_VERSION-build-$build_type PETSC_ARCH=arch-darwin-c-debug
     $SUDO make install PETSC_DIR=$BUILD_DIR/petsc-$PETSC_VERSION-build-$build_type PETSC_ARCH=arch-darwin-c-debug
   else
     ./configure --prefix=$PREFIX \
       --with-cc=mpicc --COPTFLAGS="-g -O0" --with-cxx=mpicxx --CXXOPTFLAGS="-g -O0" --with-fc=mpif77 --FOPTFLAGS="-g -O0" --with-mpiexec=mpiexec \
     --with-blas-lapack-lib="-framework Accelerate" \
-    --with-blacs-dir=$PREFIX_ROKKO/scalapack-2.0.2-0/$build_type --with-scalapack-dir=$PREFIX_ROKKO/scalapack-2.0.2-0/$build_type --with-c++-support=1 --with-debugging=1
+    --with-blacs-dir=$PREFIX_ROKKO/scalapack/$build_type --with-scalapack-dir=$PREFIX_ROKKO/scalapack/$build_type --with-c++-support=1 --with-debugging=1
     check make PETSC_DIR=$BUILD_DIR/petsc-$PETSC_VERSION-build-$build_type PETSC_ARCH=arch-darwin-c-debug
     $SUDO make install PETSC_DIR=$BUILD_DIR/petsc-$PETSC_VERSION-build-$build_type PETSC_ARCH=arch-darwin-c-debug
   fi
