@@ -1,0 +1,48 @@
+diff -urN trilinos-11.14.2-Source.orig/packages/ifpack/src/Ifpack_OverlappingPartitioner.cpp trilinos-11.14.2-Source/packages/ifpack/src/Ifpack_OverlappingPartitioner.cpp
+--- trilinos-11.14.2-Source.orig/packages/ifpack/src/Ifpack_OverlappingPartitioner.cpp	2015-03-31 04:25:02.000000000 +0900
++++ trilinos-11.14.2-Source/packages/ifpack/src/Ifpack_OverlappingPartitioner.cpp	2015-04-16 18:54:25.694887851 +0900
+@@ -224,7 +224,7 @@
+ 
+ 	  // has this column already been inserted?
+ 	  std::vector<int>::iterator
+-	    where = find(tmp[part].begin(), tmp[part].end(), col);
++	    where = std::find(tmp[part].begin(), tmp[part].end(), col);
+ 
+ 	  if (where == tmp[part].end()) {
+ 	    tmp[part].push_back(col);
+diff -urN trilinos-11.14.2-Source.orig/packages/ifpack/src/Ifpack_OverlappingRowMatrix.cpp trilinos-11.14.2-Source/packages/ifpack/src/Ifpack_OverlappingRowMatrix.cpp
+--- trilinos-11.14.2-Source.orig/packages/ifpack/src/Ifpack_OverlappingRowMatrix.cpp	2015-03-31 04:25:02.000000000 +0900
++++ trilinos-11.14.2-Source/packages/ifpack/src/Ifpack_OverlappingRowMatrix.cpp	2015-04-16 18:54:25.695887845 +0900
+@@ -106,7 +106,7 @@
+       int_type GID = (int_type) ColMap->GID64(i); 
+       if (A().RowMatrixRowMap().LID(GID) == -1) { 
+         typename std::vector<int_type>::iterator pos 
+-          = find(ExtElements.begin(),ExtElements.end(),GID); 
++          = std::find(ExtElements.begin(),ExtElements.end(),GID); 
+         if (pos == ExtElements.end()) { 
+           ExtElements.push_back(GID);
+           list[count] = GID; 
+diff -urN trilinos-11.14.2-Source.orig/packages/ml/src/MatrixFree/ml_MatrixFreePreconditioner.cpp trilinos-11.14.2-Source/packages/ml/src/MatrixFree/ml_MatrixFreePreconditioner.cpp
+--- trilinos-11.14.2-Source.orig/packages/ml/src/MatrixFree/ml_MatrixFreePreconditioner.cpp	2015-03-31 04:25:03.000000000 +0900
++++ trilinos-11.14.2-Source/packages/ml/src/MatrixFree/ml_MatrixFreePreconditioner.cpp	2015-04-16 18:54:25.707887739 +0900
+@@ -550,7 +550,7 @@
+       // FIXME: use hash??
+       const int& GCID = Graph.ColMap().GID(Indices[k]);
+ 
+-      iter = find(aggregates[AID].begin(), aggregates[AID].end(), GCID);
++      iter = std::find(aggregates[AID].begin(), aggregates[AID].end(), GCID);
+       if (iter == aggregates[AID].end())
+         aggregates[AID].push_back(GCID);
+     }
+diff -urN trilinos-11.14.2-Source.orig/packages/ThreadPool/src/TPI.c trilinos-11.14.2-Source/packages/ThreadPool/src/TPI.c
+--- trilinos-11.14.2-Source.orig/packages/ThreadPool/src/TPI.c	2015-03-31 04:25:01.000000000 +0900
++++ trilinos-11.14.2-Source/packages/ThreadPool/src/TPI.c	2015-04-16 18:54:25.717887897 +0900
+@@ -68,7 +68,7 @@
+ #define THREADPOOL_CONFIG "PTHREAD SCHED_YIELD"
+ 
+ #elif	defined( __linux__ ) && \
+-	defined( __GNUC__ ) && ( 4 <= __GNUC__ )
++	defined( __GNUC__ ) && ( 4 <= __GNUC__ ) && !defined(__fcc_version)
+ 
+ #define THREADPOOL_CONFIG "PTHREAD SCHED_YIELD ATOMIC_SYNC"
+ 
