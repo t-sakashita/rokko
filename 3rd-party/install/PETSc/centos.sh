@@ -17,12 +17,12 @@ for build_type in $BUILD_TYPES; do
   if [ $build_type == "Release" ]; then
     ./configure --prefix=$PREFIX \
       --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
-      --with-scalapack-lib="/usr/lib64/openmpi/lib/libscalapack.so /usr/lib64/openmpi/lib/libmpiblacs.so /usr/lib64/openmpi/lib/libmpiblacsF77init.so" \
+      --with-scalapack-lib="/usr/lib64/openmpi/lib/libscalapack.so /usr/lib64/openmpi/lib/libmpiblacs.so" \
       --with-c++-support=1 --with-debugging=0
   else
     ./configure --prefix=$PREFIX \
       --COPTFLAGS="-g -O0" --CXXOPTFLAGS="-g -O0" --FOPTFLAGS="-g -O0" \
-      --with-scalapack-lib="/usr/lib64/openmpi/lib/libscalapack.so /usr/lib64/openmpi/lib/libmpiblacs.so /usr/lib64/openmpi/lib/libmpiblacsF77init.so" \
+      --with-scalapack-lib="/usr/lib64/openmpi/lib/libscalapack.so /usr/lib64/openmpi/lib/libmpiblacs.so" \
       --with-c++-support=1 --with-debugging=1
   fi
   check make

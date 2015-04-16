@@ -15,7 +15,7 @@ for build_type in $BUILD_TYPES; do
   cd EigenExa-$EIGENEXA_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
-    -DSCALAPACK_LIB="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -lmpiblacsF77init -llapack -lblas" \
+    -DSCALAPACK_LIB="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -llapack -lblas" \
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
   check make VERBOSE=1 -j4
   $SUDO make install

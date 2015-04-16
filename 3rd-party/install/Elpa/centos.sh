@@ -17,7 +17,7 @@ for build_type in $BUILD_TYPES; do
     -DCMAKE_C_COMPILER=gcc -DCMAKE_Fortran_COMPILER=gfortran \
     -DCMAKE_Fortran_FLAGS_RELEASE="-O3 -ffree-line-length-none" \
     -DCMAKE_Fortran_FLAGS_DEBUG="-g -ffree-line-length-none" \
-    -DSCALAPACK_LIB="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -lmpiblacsF77init -llapack -lblas" \
+    -DSCALAPACK_LIB="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -llapack -lblas" \
     $BUILD_DIR/elpa_lib-$ELPA_VERSION
   check make VERBOSE=1 -j4
   $SUDO make install
