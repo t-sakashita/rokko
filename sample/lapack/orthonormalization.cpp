@@ -9,30 +9,28 @@
 *
 *****************************************************************************/
 
-#include <boost/random.hpp>
 #include <rokko/rokko.hpp>
 #include <lapacke.h>
 
+typedef rokko::localized_vector vector_t;
+typedef rokko::localized_matrix<rokko::matrix_col_major> matrix_t;
+
 int main(int argc, char *argv[]) {
   int info;
-  const int dim = 6;
+  int dim = 6;
 
   // generate random martix
-  rokko::localized_matrix<> mat(dim, dim);
-  boost::mt19937 eng(1234ul);
-  boost::variate_generator<boost::mt19937&, boost::normal_distribution<> >
-    rng(eng, boost::normal_distribution<>());
-  for (int j = 0; j < dim; ++j)
-    for (int i = 0; i < dim; ++i)
-      mat(i, j) = rng();
-  std::cout << "Input random column vectors:\n" << mat << std::endl;
+  matrix_t a = matrix_t::Random(dim, dim);
+  std::cout << "Input random column vectors A:\n" << a << std::endl;
 
-  // orthogonalization
-  rokko::localized_vector tau(dim);
-  info = LAPACKE_dgeqrf(LAPACK_COL_MAJOR, dim, dim, &mat(0, 0), dim, &tau(0));
-  info = LAPACKE_dorgqr(LAPACK_COL_MAJOR, dim, dim, dim, &mat(0, 0), dim, &tau(0));
-  std::cout << "Orthonormalized column vectors:\n" << mat << std::endl;
+  // orthonormalization
+  vector_t tau(dim);
+  info = LAPACKE_dgeqrf(LAPACK_COL_MAJOR, dim, dim, &a(0, 0), dim, &tau(0));
+  info = LAPACKE_dorgqr(LAPACK_COL_MAJOR, dim, dim, dim, &a(0, 0), dim, &tau(0));
+  std::cout << "Orthonormalized column vectors V:\n" << a << std::endl;
 
-  // check orthogonality
-  std::cout << "Check orthogonality:\n" << mat.transpose() * mat << std::endl;
+  // check orthonormality
+  matrix_t check = a.transpose() * a;
+  std::cout << "Check orthogonality:\n" << check << std::endl;
+  std::cout << "| I - Vt V | = " <<  (matrix_t::Identity(dim, dim) - check).norm() << std::endl;
 }
