@@ -137,7 +137,7 @@ include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd-party/eigen3)
 
 # Boost Library
-find_package(Boost)
+find_package(Boost COMPONENTS system)
 if(NOT Boost_FOUND)
   find_package(BoostSrc)
 endif(NOT Boost_FOUND)
