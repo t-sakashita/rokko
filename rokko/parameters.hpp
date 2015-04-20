@@ -47,11 +47,12 @@ public:
   template<typename T>
   T get(key_type const& key) const {
     if (type(key) != typeid(T)) {
-      throw "error: type";
+      throw "error: type given as template parameter is not correct";
     }
     return boost::any_cast<T>(map_.find(key)->second);
   }
   const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
+  // return parameter as string
   std::string get_string(key_type const& key) const {
     if (type(key) == typeid(std::string)) {
       return get<std::string>(key);
@@ -72,7 +73,7 @@ public:
       return boost::lexical_cast<std::string>(get<char>(key));
     }
     else {
-      throw "error: set_string only accepts charatcters, string, int or double as an argument";      
+      throw "error: get_string only accepts char*, string, int or double as an argument";      
     }
   }
 private:

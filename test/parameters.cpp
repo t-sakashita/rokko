@@ -15,7 +15,7 @@
 int main(int argc, char **argv) {
   rokko::parameters params;
 
-  // set sum parameters
+  // set some parameters
   params.set("T", 0.95);
   params.set("Pi", 3.14);
   params.set("A", "test");
@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
   double t = params.get<double>("T");
 
   // get string
-  std::string a = params.get<std::string>("A");
+  std::string a = params.get<const char*>("A");
 
   // is "T" defined?
   bool t_defined = params.defined("T");
@@ -35,11 +35,11 @@ int main(int argc, char **argv) {
   // clear paramter "Pi"
   params.clear("Pi");
   
-  // output list of parameters
+  // output list of parameters as string
   std::list<std::string> keys = params.keys();
   std::cout << "number of parameters = " << keys.size() << std::endl;
   std::cout << "key-value pairs:\n";
   BOOST_FOREACH(std::string const& key, keys) {
-    std::cout << "  " << key << " = " << params.get<std::string>(key) << std::endl;
+    std::cout << "  " << key << " = " << params.get_string(key) << std::endl;
   }
 }
