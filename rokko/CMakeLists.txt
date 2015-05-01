@@ -54,6 +54,24 @@ if(Boost_SOURCE_DIR)
       endif(EXISTS ${D}/${S})
     endforeach(S)
   endforeach(D)
+  if(BUILD_Python_BINDING)
+    set(SOURCES dict.cpp errors.cpp exec.cpp import.cpp list.cpp long.cpp
+        module.cpp numeric.cpp object_operators.cpp object_protocol.cpp slice.cpp
+        str.cpp tuple.cpp wrapper.cpp converter/arg_to_python_base.cpp
+        converter/builtin_converters.cpp converter/from_python.cpp
+        converter/registry.cpp converter/type_id.cpp object/class.cpp
+        object/enum.cpp object/function.cpp object/function_doc_signature.cpp
+        object/inheritance.cpp object/iterator.cpp object/life_support.cpp
+        object/pickle_support.cpp object/stl_iterator.cpp)
+    foreach(D ${Boost_SOURCE_DIR}/libs/python/src)
+      foreach(S ${SOURCES})
+        if(EXISTS ${D}/${S})
+          set(ROKKO_SOURCES ${ROKKO_SOURCES} ${D}/${S})
+        endif(EXISTS ${D}/${S})
+      endforeach(S)
+    endforeach(D)
+    add_definitions(-DBOOST_PYTHON_SOURCE)
+  endif(BUILD_Python_BINDING)
 endif(Boost_SOURCE_DIR)
 
 # Eigen3
@@ -82,7 +100,6 @@ endif(BUILD_SCALAPACK)
 
 # EigenExa
 if(BUILD_EIGENEXA)
-  include_directories(${EIGENEXA_INCLUDE_DIR})
   set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_exa_init.c
       eigen_exa/eigen_exa_free.c eigen_exa/eigen_exa_get_optdim.c eigen_exa/eigen_exa_get_matdims.c
       eigen_exa/eigen_exa_s.c eigen_exa/eigen_exa_sx.c)
@@ -93,7 +110,6 @@ endif(BUILD_EIGENEXA)
 
 # Elemental
 if(BUILD_ELEMENTAL)
-  include_directories(${ELEMENTAL_INCLUDE_DIR})
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} elemental/elemental.cpp)
   endif(BUILD_SHARED_LIBS)
@@ -155,6 +171,14 @@ if(Boost_FOUND)
   target_link_libraries(rokko ${Boost_LIBRARIES})
 endif(Boost_FOUND)
 
+if(BUILD_Python_BINDING)
+  target_link_libraries(rokko ${PYTHON_LIBRARIES})
+  python_add_module(rokko_ext rokko_ext.cpp)
+  target_link_libraries(rokko_ext rokko)
+endif(BUILD_Python_BINDING)
+
+# install
+
 install(TARGETS rokko COMPONENT libraries
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
@@ -165,3 +189,12 @@ install(DIRECTORY . COMPONENT headers DESTINATION include/rokko
 if(BUILD_Fortran_BINDING)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rokko.mod DESTINATION include)
 endif(BUILD_Fortran_BINDING)
+if(BUILD_Python_BINDING)
+  install(TARGETS rokko_ext
+          ARCHIVE DESTINATION lib
+          LIBRARY DESTINATION lib
+          RUNTIME DESTINATION bin)
+  install(DIRECTORY . DESTINATION lib
+          FILES_MATCHING PATTERN "*.py"
+	  PATTERN ".svn" EXCLUDE PATTERN "CVS" EXCLUDE)
+endif(BUILD_Python_BINDING)

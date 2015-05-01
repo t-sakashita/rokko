@@ -9,7 +9,6 @@
 #
 
 if(BUILD_SLEPC)
-  include_directories(${SLEPC_INCLUDE_DIR} ${PETSC_INCLUDE_DIR})
   set(TESTS frank_matfree_1proc heisenberg_crs_mpi heisenberg_matfree_1proc heisenberg_matfree_mpi xyz_crs_mpi xyz_matfree_mpi frank_matfree heisenberg_matfree_mpi_allvec)
   # set(TESTS heisenberg_matfree_mpi_try2 heisenberg_matfree_1proc_try ${TESTS})
 

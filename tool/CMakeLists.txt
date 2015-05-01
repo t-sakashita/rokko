@@ -9,10 +9,6 @@
 #
 
 set(PROG rokko_solvers)
-if(BUILD_ANASAZI)
-  include_directories(${ANASAZI_INCLUDE_DIR})
-endif(BUILD_ANASAZI)
-
 foreach(name ${PROG})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko)
