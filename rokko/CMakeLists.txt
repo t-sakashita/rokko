@@ -172,8 +172,9 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 if(BUILD_Python_BINDING)
+  target_link_libraries(rokko ${PYTHON_LIBRARIES})
   python_add_module(rokko_ext rokko_ext.cpp)
-  target_link_libraries(rokko_ext rokko ${PYTHON_LIBRARIES})
+  target_link_libraries(rokko_ext rokko)
 endif(BUILD_Python_BINDING)
 
 # install
