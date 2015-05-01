@@ -35,6 +35,9 @@ public:
   void set(key_type const& key, T const& value) {
     map_[key] = value;
   }
+  void set(key_type const& key, const char *value) {
+    map_[key] = std::string(value);
+  }
   // returns if parameter with "key" is defined or not
   bool defined(key_type const& key) const {return (map_.find(key) != map_.end()); }
   // returns list of keys
