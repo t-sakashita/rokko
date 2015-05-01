@@ -9,7 +9,6 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  include_directories(${ANASAZI_INCLUDE_DIR})
   set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi distributed_crs_matrix laplacian_crs_mpi laplacian_mfree_mpi laplacian_crs_parameter_mpi laplacian_mfree_parameter_mpi)
   foreach(name ${SAMPLE})
     set(target_name sample_sparse_${name})

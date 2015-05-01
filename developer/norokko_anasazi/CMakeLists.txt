@@ -11,7 +11,6 @@
 #include(/Users/sakashitatatsuya/rokko/trilinos-11.12.1-1/Debug/lib/cmake/Anasazi/AnasaziConfig.cmake)
 
 if(BUILD_ANASAZI)
-  include_directories(${ANASAZI_INCLUDE_DIR})
   set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi laplacian_mfree_mpi TraceMinDavidsonUserOpEx laplacian_mfree_parameters_mpi)
   foreach(name ${SAMPLE})
     set(target_name norokko_anasazi_${name})
@@ -24,7 +23,6 @@ if(BUILD_ANASAZI)
 endif(BUILD_ANASAZI)
 
 if(BUILD_ANASAZI)
-  include_directories(${ANASAZI_INCLUDE_DIR})
   set(TESTS xyz_crs_mpi xyz_matfree_mpi mvtest)
   foreach(name ${TESTS})
     set(target_name norokko_anasazi_${name})
