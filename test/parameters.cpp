@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
   double t = params.get<double>("T");
 
   // get string
-  std::string a = params.get<const char*>("A");
+  std::string a = params.get<std::string>("A");
 
   // is "T" defined?
   bool t_defined = params.defined("T");
