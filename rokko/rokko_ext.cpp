@@ -268,7 +268,7 @@ public:
 	}
 
 	int num_conv(void) {
-		rokko_parallel_sparse_solver_num_conv(raw);
+		return rokko_parallel_sparse_solver_num_conv(raw);
 	}
 
 	~wrap_rokko_parallel_sparse_solver(void) {
@@ -309,15 +309,15 @@ public:
 	}
 
 	int num_local_rows(void) {
-		rokko_distributed_crs_matrix_num_local_rows(raw);
+		return rokko_distributed_crs_matrix_num_local_rows(raw);
 	}
 
 	int start_row(void) {
-		rokko_distributed_crs_matrix_start_row(raw);
+		return rokko_distributed_crs_matrix_start_row(raw);
 	}	
 
 	int end_row(void) {
-		rokko_distributed_crs_matrix_end_row(raw);
+		return rokko_distributed_crs_matrix_end_row(raw);
 	}
 
 	void print(void) {
