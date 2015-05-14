@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(PROG diagonalization orthonormalization svd)
+set(PROG diagonalization diagonalization_c orthonormalization orthonormalization_c svd svd_c)
 foreach(name ${PROG})
   set(target_name sample_lapack_${name})
   add_executable(${target_name} ${name}.cpp)

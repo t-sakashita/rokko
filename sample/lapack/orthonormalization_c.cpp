@@ -9,11 +9,13 @@
 *
 *****************************************************************************/
 
+#define lapack_complex_double std::complex<double>
+
 #include <rokko/rokko.hpp>
 #include <lapacke.h>
 
-typedef rokko::localized_vector vector_t;
-typedef rokko::localized_matrix<rokko::matrix_col_major> matrix_t;
+typedef Eigen::VectorXcd vector_t;
+typedef Eigen::MatrixXcd matrix_t;
 
 int main(int argc, char *argv[]) {
   int info;
@@ -27,8 +29,8 @@ int main(int argc, char *argv[]) {
 
   // orthonormalization
   vector_t tau(k);
-  info = LAPACKE_dgeqrf(LAPACK_COL_MAJOR, m, n, &a(0, 0), m, &tau(0));
-  info = LAPACKE_dorgqr(LAPACK_COL_MAJOR, m, n, n, &a(0, 0), m, &tau(0));
+  info = LAPACKE_zgeqrf(LAPACK_COL_MAJOR, m, n, &a(0, 0), m, &tau(0));
+  info = LAPACKE_zungqr(LAPACK_COL_MAJOR, m, n, n, &a(0, 0), m, &tau(0));
   std::cout << "Orthonormalized column vectors V:\n" << a << std::endl;
 
   // check orthonormality
