@@ -9,10 +9,8 @@
 *
 *****************************************************************************/
 
-#define lapack_complex_double std::complex<double>
-
 #include <rokko/rokko.hpp>
-#include <lapacke.h>
+#include <rokko/lapacke.hpp>
 
 typedef Eigen::VectorXcd vector_t;
 typedef Eigen::MatrixXcd matrix_t;
