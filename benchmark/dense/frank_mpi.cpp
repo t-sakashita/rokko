@@ -51,14 +51,14 @@ int main(int argc, char *argv[]) {
 	      << "matrix = frank" << std::endl;
 
   rokko::global_timer::start(11);
-  rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
   rokko::global_timer::stop(11);
 
   rokko::localized_vector<double> eigval(dim);
-  rokko::distributed_matrix<matrix_major> eigvec(dim, dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> eigvec(dim, dim, g, solver);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

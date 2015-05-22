@@ -29,12 +29,12 @@ public:
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector<double>& eigvals,
-                           distributed_matrix<matrix_row_major>& eigvecs, timer& timer) = 0;
-  virtual void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector<double>& eigvals,
-                           distributed_matrix<matrix_col_major>& eigvecs, timer& timer) = 0;
-  virtual void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) = 0;
-  virtual void optimized_matrix_size(distributed_matrix<matrix_col_major>& mat) = 0;
+  virtual void diagonalize(distributed_matrix<double, matrix_row_major>& mat, localized_vector<double>& eigvals,
+                           distributed_matrix<double, matrix_row_major>& eigvecs, timer& timer) = 0;
+  virtual void diagonalize(distributed_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
+                           distributed_matrix<double, matrix_col_major>& eigvecs, timer& timer) = 0;
+  virtual void optimized_matrix_size(distributed_matrix<double, matrix_row_major>& mat) = 0;
+  virtual void optimized_matrix_size(distributed_matrix<double, matrix_col_major>& mat) = 0;
   virtual mapping_bc optimized_mapping(grid const& g, int dim) const = 0;
 };
   
@@ -54,18 +54,18 @@ public:
     solver_impl_.initialize(argc, argv);
   }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector<double>& eigvals,
-                   distributed_matrix<matrix_row_major>& eigvecs, timer& timer) {
+  void diagonalize(distributed_matrix<double, matrix_row_major>& mat, localized_vector<double>& eigvals,
+                   distributed_matrix<double, matrix_row_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
-  void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector<double>& eigvals,
-                   distributed_matrix<matrix_col_major>& eigvecs, timer& timer) {
+  void diagonalize(distributed_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
+                   distributed_matrix<double, matrix_col_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
-  void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) {
+  void optimized_matrix_size(distributed_matrix<double, matrix_row_major>& mat) {
     solver_impl_.optimized_matrix_size(mat);
   }
-  void optimized_matrix_size(distributed_matrix<matrix_col_major>& mat) {
+  void optimized_matrix_size(distributed_matrix<double, matrix_col_major>& mat) {
     solver_impl_.optimized_matrix_size(mat);
   }
   // optimized_mapping
@@ -124,8 +124,8 @@ public:
   }
   void finalize() { this->finalize(*global_timer::instance()); }
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
-    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs,
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+    rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
     timer& timer = *global_timer::instance()) {
     if (!timer.has(rokko::timer_id::diagonalize_initialize))
       timer.registrate(rokko::timer_id::diagonalize_initialize, "diagonalize::initialize");
@@ -136,7 +136,7 @@ public:
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer);
   }
   template <typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) const {
+  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) const {
     solver_impl_->optimized_matrix_size(mat);
   }
   mapping_bc optimized_mapping(grid const& g, int dim) const {

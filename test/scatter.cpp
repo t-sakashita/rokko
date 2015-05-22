@@ -46,7 +46,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   rokko::parallel_dense_solver solver(rokko::parallel_dense_solver::default_solver());
   rokko::grid g(comm, grid_major);
   for (int r = 0; r < size; ++r) {
-    rokko::distributed_matrix<DIST_MAT_MAJOR> mat(dim, dim, g, solver);
+    rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(dim, dim, g, solver);
     rokko::scatter(lmat, mat, r);
 #ifndef NDEBUG
     mat.print();

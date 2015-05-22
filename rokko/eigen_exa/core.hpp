@@ -33,7 +33,7 @@ public:
   }
 
   template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
+  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
     int nx, ny;
     int nprow = mat.get_mapping().get_grid().get_nprow();
     int npcol = mat.get_mapping().get_grid().get_npcol();
@@ -46,21 +46,21 @@ public:
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
-		   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+		   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer);
 };
 
 template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer);
 }
 
 template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
     rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer);
 }
 

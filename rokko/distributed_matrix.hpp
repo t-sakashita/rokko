@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,77 +28,55 @@ namespace rokko {
 
 class parallel_dense_solver;
 
-template<typename MATRIX_MAJOR = rokko::matrix_row_major>
+template<typename T, typename MATRIX_MAJOR = rokko::matrix_row_major>
 class distributed_matrix {
 public:
-  template<typename SOLVER>
-  distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
-    : g(g_in)
-  {
-    initialize(m_global_in, n_global_in, g_in, solver_in);
-  }
-
-  template<typename SOLVER>
-  distributed_matrix(mapping_bc const& map, SOLVER const& solver_in)
-  {
-    initialize(map, solver_in);
-  }
-
-  void initialize(mapping_bc const& map) {
-    set_mapping(map);
-
-    array = new double[length_array];
-    if (array == 0) {
-      std::cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(g.get_comm(), 3);
-    }
-  }
+  typedef T value_type;
   
   template<typename SOLVER>
-  void initialize(int m_global, int n_global, const grid& g_in, SOLVER const& solver_in) {
-    initialize(m_global, g_in, solver_in);
+  distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) :
+    g(g_in) {
+    initialize(m_global_in, n_global_in, g_in, solver_in);
   }
-
   template<typename SOLVER>
-  void initialize(int dim, const grid& g_in, SOLVER const& solver_in) {
-    initialize(solver_in.optimized_mapping(g_in, dim), solver_in);
+  distributed_matrix(mapping_bc const& map, SOLVER const& solver_in) {
+    initialize(map, solver_in);
   }
-
-  template<typename SOLVER>
-  void initialize(mapping_bc const& map, SOLVER const& solver_in) {
-    set_mapping(map);
-    set_local_size(calculate_row_size(), calculate_col_size());
-    solver_in.optimized_matrix_size(*this);
-
-#ifndef NDEBUG
-    for (int proc=0; proc<nprocs; ++proc) {
-      if (proc == myrank) {
-        std::cout << "proc=" << proc << std::endl;
-        std::cout << "  mb=" << mb << "  nb=" << nb << std::endl;
-        std::cout << "  nprow=" << nprow << "  npcol=" << npcol << std::endl;
-        std::cout << "  m_local=" << m_local << " n_local=" << n_local << std::endl;
-        std::cout << "  myrow=" << myrow << " mycol=" << mycol << std::endl;
-        std::cout << "  lld=" << lld << std::endl;
-        std::cout << "  length_array=" << length_array << std::endl;
-      }
-      MPI_Barrier(g.get_comm());
-    }
-#endif
-
-    array = new double[length_array];
-    if (array == 0) {
-      std::cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(g.get_comm(), 3);
-    }
-  }
-
   ~distributed_matrix() {
     delete[] array;
     array = 0;
   }
 
-  double* get_array_pointer() { return array; }
-  const double* get_array_pointer() const { return array; }
+  void initialize(mapping_bc const& map) {
+    set_mapping(map);
+    array = new value_type[length_array];
+    if (array == 0) {
+      std::cerr << "failed to allocate array." << std::endl;
+      MPI_Abort(g.get_comm(), 3);
+    }
+  }
+  template<typename SOLVER>
+  void initialize(int m_global, int n_global, const grid& g_in, SOLVER const& solver_in) {
+    initialize(m_global, g_in, solver_in);
+  }
+  template<typename SOLVER>
+  void initialize(int dim, const grid& g_in, SOLVER const& solver_in) {
+    initialize(solver_in.optimized_mapping(g_in, dim), solver_in);
+  }
+  template<typename SOLVER>
+  void initialize(mapping_bc const& map, SOLVER const& solver_in) {
+    set_mapping(map);
+    set_local_size(calculate_row_size(), calculate_col_size());
+    solver_in.optimized_matrix_size(*this);
+    array = new value_type[length_array];
+    if (array == 0) {
+      std::cerr << "failed to allocate array." << std::endl;
+      MPI_Abort(g.get_comm(), 3);
+    }
+  }
+
+  value_type* get_array_pointer() { return array; }
+  const value_type* get_array_pointer() const { return array; }
 
   int get_length_array() const { return length_array; }
   const mapping_bc& get_mapping() { return map_; }
@@ -176,11 +154,10 @@ public:
     int local_rest_block_cols;
     if (proc_col == rest_block_col) {
       local_rest_block_cols = n_global % nb;
-    }
-    else
+    } else {
       local_rest_block_cols = 0;
-
-    return  local_num_block_cols * nb + local_rest_block_cols;
+    }
+    return local_num_block_cols * nb + local_rest_block_cols;
   }
 
   int calculate_col_size() const {
@@ -192,26 +169,30 @@ public:
   void set_lld(int value) { lld = value; };
   void set_default_lld() { set_lld(get_default_lld()); }
 
-  int get_default_lld() const;
-
-  int get_default_length_array() const;
+  int get_default_lld() const {
+    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value ? n_local : m_local;
+  }
+  int get_default_length_array() const {
+    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value ?
+      (m_local * lld) : (lld * n_local);
+  }
   void set_default_length_array() { set_length_array(get_default_length_array()); }
 
-
-  int get_array_index(int local_i, int local_j) const;
-
+  int get_array_index(int local_i, int local_j) const {
+    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value ?
+      (local_i * lld + local_j) : (local_i + local_j * lld);
+  }
+  
   int translate_l2g_row(const int& local_i) const {
     return stride_myrow + local_i + (local_i / mb) * stride_nprow;
-    //return (myrow * mb) + local_i + (local_i / mb) * mb * (nprow - 1);
   }
 
   int translate_l2g_col(const int& local_j) const {
     return stride_mycol + local_j + (local_j / nb) * stride_npcol;
-    //return (mycol * nb) + local_j + (local_j / nb) * nb * (npcol - 1);
   }
 
   int translate_g2l_row(const int& global_i) const {
-    const int local_offset_block = global_i / mb;
+    int local_offset_block = global_i / mb;
     return (local_offset_block - myrow) / nprow * mb + global_i % mb;
   }
 
@@ -234,33 +215,33 @@ public:
     return is_gindex_myrow(global_i) && is_gindex_mycol(global_j);
   }
 
-  void set_local(int local_i, int local_j, double value) {
+  void set_local(int local_i, int local_j, value_type value) {
     array[get_array_index(local_i, local_j)] = value;
   }
 
-  void update_local(int local_i, int local_j, double value) {
+  void update_local(int local_i, int local_j, value_type value) {
     array[get_array_index(local_i, local_j)] += value;
   }
 
-  double get_local(int local_i, int local_j) const {
+  value_type get_local(int local_i, int local_j) const {
     return array[get_array_index(local_i, local_j)];
   }
 
-  void set_global(int global_i, int global_j, double value) {
+  void set_global(int global_i, int global_j, value_type value) {
     if ((is_gindex(global_i, global_j)))
       set_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
   }
 
-  void update_global(int global_i, int global_j, double value) {
+  void update_global(int global_i, int global_j, value_type value) {
     if ((is_gindex(global_i, global_j)))
       update_local(translate_g2l_row(global_i), translate_g2l_col(global_j), value);
   }
 
-  double get_global(int global_i, int global_j) const {
+  value_type get_global(int global_i, int global_j) const {
     return get_local(translate_g2l_row(global_i), translate_g2l_col(global_j));
   }
 
-  double get_global_checked(int global_i, int global_j) const {
+  value_type get_global_checked(int global_i, int global_j) const {
     if ((is_gindex(global_i, global_j))) {
       return get_local(translate_g2l_row(global_i), translate_g2l_col(global_j));
     } else {
@@ -299,7 +280,7 @@ public:
 private:
   mapping_bc map_;
   int m_global, n_global;
-  double* array;
+  value_type* array;
   int mb, nb;
   int m_local, n_local;
   int lld;
@@ -310,42 +291,10 @@ private:
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
-  ///int info;
 };
 
-
-template<>
-inline int distributed_matrix<rokko::matrix_row_major>::get_default_lld() const {
-  return n_local;
-}
-
-template<>
-inline int distributed_matrix<rokko::matrix_col_major>::get_default_lld() const {
-  return m_local;
-}
-
-template<>
-inline int distributed_matrix<rokko::matrix_row_major>::get_default_length_array() const {
-  return m_local * lld;
-}
-
-template<>
-inline int distributed_matrix<rokko::matrix_col_major>::get_default_length_array() const {
-  return lld * n_local;
-}
-
-template<>
-inline int distributed_matrix<rokko::matrix_row_major>::get_array_index(int local_i, int local_j) const {
-  return local_i * lld + local_j;
-}
-
-template<>
-inline int distributed_matrix<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const {
-  return  local_i + local_j * lld;
-}
-
-template<typename MATRIX_MAJOR>
-void distributed_matrix<MATRIX_MAJOR>::print(std::ostream& os) const {
+template<typename T, typename MATRIX_MAJOR>
+void distributed_matrix<T, MATRIX_MAJOR>::print(std::ostream& os) const {
   for (int proc = 0; proc < nprocs; ++proc) {
     if (proc == myrank) {
       os << "Rank = " << myrank << ", myrow = " << myrow << ", mycol = " << mycol << std::endl;
@@ -360,20 +309,20 @@ void distributed_matrix<MATRIX_MAJOR>::print(std::ostream& os) const {
   }
 }
 
-template<typename MATRIX_MAJOR>
-void print_matrix(const rokko::distributed_matrix<MATRIX_MAJOR>& mat) { mat.print(); }
+template<typename T, typename MATRIX_MAJOR>
+void print_matrix(const rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) { mat.print(); }
 
-template<typename MATRIX_MAJOR>
-std::ostream& operator<<(std::ostream& os, rokko::distributed_matrix<MATRIX_MAJOR> const& mat) {
+template<typename T, typename MATRIX_MAJOR>
+std::ostream& operator<<(std::ostream& os, rokko::distributed_matrix<T, MATRIX_MAJOR> const& mat) {
   mat.print(os);
   return os;
 }
 
 // C = alpha A * B + beta C
 template<typename MATRIX_MAJOR>
-void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool transA,
-             const distributed_matrix<MATRIX_MAJOR>& matB, bool transB,
-             double beta, distributed_matrix<MATRIX_MAJOR>& matC) {
+void product(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& matA, bool transA,
+             const distributed_matrix<double, MATRIX_MAJOR>& matB, bool transB,
+             double beta, distributed_matrix<double, MATRIX_MAJOR>& matC) {
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
@@ -397,9 +346,9 @@ void product(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool tr
 
 // Y = alpha A * X + beta Y
 template<typename MATRIX_MAJOR>
-void product_v(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool transA,
-               const distributed_matrix<MATRIX_MAJOR>& vecX, bool transX, int xindex,
-               double beta, distributed_matrix<MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+void product_v(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& matA, bool transA,
+               const distributed_matrix<double, MATRIX_MAJOR>& vecX, bool transX, int xindex,
+               double beta, distributed_matrix<double, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
@@ -428,8 +377,8 @@ void product_v(double alpha, const distributed_matrix<MATRIX_MAJOR>& matA, bool 
 
 // dot = X * Y
 template<typename MATRIX_MAJOR>
-double dot_product(const distributed_matrix<MATRIX_MAJOR>& vecX, bool transX, int xindex,
-                   const distributed_matrix<MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+double dot_product(const distributed_matrix<double, MATRIX_MAJOR>& vecX, bool transX, int xindex,
+                   const distributed_matrix<double, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = (vecX.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, vecX.get_nprow(), vecX.get_npcol());

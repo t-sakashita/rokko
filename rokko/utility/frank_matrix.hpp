@@ -38,8 +38,8 @@ public:
   }
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  template<typename MATRIX_MAJOR>
-  static void generate(rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+  template<typename T, typename MATRIX_MAJOR>
+  static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
       BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
     for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
@@ -52,7 +52,7 @@ public:
   }
   
   // another (slower) implementation using set_global function
-  template<typename MATRIX_MAJOR>
+  template<typename T, typename MATRIX_MAJOR>
   static void generate_global(rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
     if (mat.m_global != mat.n_global)
       BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
@@ -68,7 +68,6 @@ public:
   static double eigenvalue(int dim, int k) {
     return 1 / (2 * (1 - std::cos(M_PI * (2 * k + 1) / (2 * dim + 1))));
   }
-
 };
     
 } // namespace rokko

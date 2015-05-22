@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 
   rokko::parallel_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
-  rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);
   mat.print();
 

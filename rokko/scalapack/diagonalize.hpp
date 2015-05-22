@@ -24,8 +24,8 @@ namespace rokko {
 namespace scalapack {
 
 template<typename MATRIX_MAJOR>
-int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
+  distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
 
   int ictxt = ROKKO_blacs_get(-1, 0);

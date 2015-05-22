@@ -2,22 +2,19 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_SPIN_HAMILTONIANPARALLEL_HPP
-#define ROKKO_UTILITY_SPIN_HAMILTONIANPARALLEL_HPP
+#ifndef ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_HPP
+#define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_HPP
 
 #include "mpi.h"
 #include <vector>
 #include <iostream>
-
-//#include <rokko/localized_matrix.hpp>
 #include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
@@ -220,8 +217,9 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
   fill_diagonal(comm, L, lattice, &w[0]);
 }
 
-template <typename MATRIX_MAJOR>
-void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+template<typename T, typename MATRIX_MAJOR>
+void generate(int L, std::vector<std::pair<int, int> >& lattice,
+  rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
@@ -229,10 +227,11 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distribu
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k=0; k<mat.get_n_global(); ++k) {
+    for (int k = 0; k < mat.get_n_global(); ++k) {
       if (mat.is_gindex_mycol(k)) {
         int local_k = mat.translate_g2l_col(k);
-        if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        if (((k & m3) == m1) || ((k & m3) == m2)) {
+          // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (mat.is_gindex_myrow(k^m3)) {
             mat.update_local(mat.translate_g2l_row(k^m3), local_k, 0.5);
           }
@@ -251,4 +250,4 @@ void generate(int L, std::vector<std::pair<int, int> >& lattice, rokko::distribu
 
 } // namespace rokko
 
-#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIANPARALLEL_HPP
+#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_HPP

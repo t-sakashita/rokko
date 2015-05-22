@@ -21,7 +21,7 @@
 namespace rokko {
 
 template<typename MATRIX_MAJOR>
-void gather(rokko::distributed_matrix<MATRIX_MAJOR> const& from, double* to, int root) {
+void gather(rokko::distributed_matrix<double, MATRIX_MAJOR> const& from, double* to, int root) {
   if (!from.is_col_major()) {
     std::cerr << "Error (gather): matrix_row_major is not supported\n";
     MPI_Abort(MPI_COMM_WORLD,67);
@@ -48,13 +48,13 @@ void gather(rokko::distributed_matrix<MATRIX_MAJOR> const& from, double* to, int
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void gather(rokko::distributed_matrix<MATRIX_MAJOR> const& from, localized_matrix<T, MATRIX_MAJOR>& to,
-           int root) {
+void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from,
+  localized_matrix<T, MATRIX_MAJOR>& to, int root) {
   gather(from, &to(0,0), root);
 }
 
 template<typename MATRIX_MAJOR>
-void scatter(const double* from, distributed_matrix<MATRIX_MAJOR>& to, int root) {
+void scatter(const double* from, distributed_matrix<double, MATRIX_MAJOR>& to, int root) {
   if (!to.is_col_major()) {
     std::cerr << "Error (scatter): matrix_row_major is not supported\n";
     MPI_Abort(MPI_COMM_WORLD,67);
@@ -79,8 +79,8 @@ void scatter(const double* from, distributed_matrix<MATRIX_MAJOR>& to, int root)
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void scatter(localized_matrix<T, MATRIX_MAJOR> const& from, distributed_matrix<MATRIX_MAJOR>& to,
-            int root) {
+void scatter(localized_matrix<T, MATRIX_MAJOR> const& from,
+  distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   scatter(&from(0,0), to, root);
 }
 

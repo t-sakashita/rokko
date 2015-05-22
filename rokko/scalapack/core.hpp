@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -42,33 +42,33 @@ public:
     return mapping_bc(g, dim, b);
   }
   template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
+  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
     mat.set_default_lld();
     mat.set_default_length_array();
   }
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer);
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+                   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer);
 };
 
 template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer);
 }
 
 template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::scalapack::pdsyevd>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+void solver<rokko::scalapack::pdsyevd>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize_d(mat, eigvals, eigvecs, timer);
 }
 
 template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize_x(mat, eigvals, eigvecs, timer);
 }
 

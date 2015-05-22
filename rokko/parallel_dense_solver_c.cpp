@@ -34,12 +34,12 @@ void rokko_parallel_dense_solver_diagonalize_distributed_matrix(struct rokko_par
   struct rokko_distributed_matrix* eigvecs) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_solver*>(solver->ptr)->diagonalize(
-      *static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(mat->ptr),
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-      *static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(eigvecs->ptr));
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr));
   else
     static_cast<rokko::parallel_dense_solver*>(solver->ptr)->diagonalize(
-      *static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(mat->ptr),
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-      *static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(eigvecs->ptr));
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs->ptr));
 }

@@ -65,12 +65,12 @@ int main(int argc, char *argv[]) {
 
   const int root = 0;
 
-  rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> mat(dim, dim, g, solver);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   std::cout << "finished generate" << std::endl;
 
   rokko::localized_vector<double> w(dim);
-  rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> Z(dim, dim, g, solver);
 
   for (int count=0; count<1; ++count) {
     try {

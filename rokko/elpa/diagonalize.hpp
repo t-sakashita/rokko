@@ -21,8 +21,8 @@ namespace rokko {
 namespace elpa {
 
 template<typename MATRIX_MAJOR>
-int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
+  distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int dim = mat.get_m_global();
   MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());

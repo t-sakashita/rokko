@@ -21,8 +21,8 @@ namespace rokko {
 namespace elemental {
 
 template<typename MATRIX_MAJOR>
-int diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
+  distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   MPI_Comm comm = mat.get_grid().get_comm();
   enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;

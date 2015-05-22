@@ -34,9 +34,9 @@ BOOST_AUTO_TEST_CASE(test_product) {
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_solver solver(rokko::parallel_dense_solver::default_solver());
   rokko::grid g(comm);
-  rokko::distributed_matrix<rokko::matrix_col_major> matA(dim, dim, g, solver);
-  rokko::distributed_matrix<rokko::matrix_col_major> matB(dim, dim, g, solver);
-  rokko::distributed_matrix<rokko::matrix_col_major> matC(dim, dim, g, solver);
+  rokko::distributed_matrix<double, rokko::matrix_col_major> matA(dim, dim, g, solver);
+  rokko::distributed_matrix<double, rokko::matrix_col_major> matB(dim, dim, g, solver);
+  rokko::distributed_matrix<double, rokko::matrix_col_major> matC(dim, dim, g, solver);
   rokko::frank_matrix::generate(matA);
   rokko::frank_matrix::generate(matB);
   rokko::product(1, matA, false, matB, false, 0, matC);
