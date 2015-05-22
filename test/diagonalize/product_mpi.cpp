@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -50,9 +50,9 @@ BOOST_AUTO_TEST_CASE(test_product) {
   MPI_Allreduce(&sum_local, &sum_global, 1, MPI_DOUBLE, MPI_SUM, comm);
   if (rank == 0) std::cout << "trace of distributed matrix = " << sum_global << std::endl;
 
-  rokko::localized_matrix<rokko::matrix_col_major> lmatA(dim, dim);
+  rokko::localized_matrix<double, rokko::matrix_col_major> lmatA(dim, dim);
   rokko::frank_matrix::generate(lmatA);
-  rokko::localized_matrix<rokko::matrix_col_major> lmatC = lmatA * lmatA;
+  rokko::localized_matrix<double, rokko::matrix_col_major> lmatC = lmatA * lmatA;
   if (rank == 0) std::cout << lmatC << std::endl;
   // calculate trace
   double sum = 0;

@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -25,8 +25,8 @@ namespace rokko {
 
 class frank_matrix {
 public:
-  template<typename MATRIX_MAJOR>
-  static void generate(rokko::localized_matrix<MATRIX_MAJOR>& mat) {
+  template<typename T, typename MATRIX_MAJOR>
+  static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
     int n = mat.rows();

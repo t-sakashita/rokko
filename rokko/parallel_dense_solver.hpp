@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -29,9 +29,9 @@ public:
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
+  virtual void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector<double>& eigvals,
                            distributed_matrix<matrix_row_major>& eigvecs, timer& timer) = 0;
-  virtual void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
+  virtual void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector<double>& eigvals,
                            distributed_matrix<matrix_col_major>& eigvecs, timer& timer) = 0;
   virtual void optimized_matrix_size(distributed_matrix<matrix_row_major>& mat) = 0;
   virtual void optimized_matrix_size(distributed_matrix<matrix_col_major>& mat) = 0;
@@ -54,11 +54,11 @@ public:
     solver_impl_.initialize(argc, argv);
   }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector& eigvals,
+  void diagonalize(distributed_matrix<matrix_row_major>& mat, localized_vector<double>& eigvals,
                    distributed_matrix<matrix_row_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }
-  void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector& eigvals,
+  void diagonalize(distributed_matrix<matrix_col_major>& mat, localized_vector<double>& eigvals,
                    distributed_matrix<matrix_col_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
   }

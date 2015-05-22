@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>,
-*               2014-2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -27,8 +26,8 @@
 #include <boost/test/unit_test.hpp>
 #endif
 
-template<typename MATRIX_MAJOR>
-void localized_2_distributed(const rokko::localized_matrix<MATRIX_MAJOR>& lmat, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+template<typename T, typename MATRIX_MAJOR>
+void localized_2_distributed(const rokko::localized_matrix<T, MATRIX_MAJOR>& lmat, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
   if (mat.get_m_global() != mat.get_n_global())
     BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
   for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
@@ -52,7 +51,7 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
     rokko::parallel_dense_solver solver(name);
     solver.initialize(argc, argv);
     rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
-    rokko::localized_matrix<rokko::matrix_col_major> lmat(dim, dim);
+    rokko::localized_matrix<double, rokko::matrix_col_major> lmat(dim, dim);
     rokko::frank_matrix::generate(lmat);
     localized_2_distributed(lmat, mat);
     rokko::frank_matrix::generate(mat);

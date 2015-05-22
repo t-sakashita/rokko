@@ -2,9 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>,
-*                            Tatsuya Sakashita <t-sakashit@issp.u-tokyo.ac.jp>,
-*               2014-2014 by Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -26,10 +24,10 @@ void test(int dim, std::string const& name) {
   rokko::serial_dense_solver solver(name);
   solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                     boost::unit_test::framework::master_test_suite().argv);
-  rokko::localized_matrix<MATRIX_MAJOR> mat(dim, dim);
+  rokko::localized_matrix<double, MATRIX_MAJOR> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
-  rokko::localized_vector eigval(dim);
-  rokko::localized_matrix<MATRIX_MAJOR> eigvec(dim, dim);
+  rokko::localized_vector<double> eigval(dim);
+  rokko::localized_matrix<double, MATRIX_MAJOR> eigvec(dim, dim);
 
   solver.diagonalize(mat, eigval, eigvec);
   

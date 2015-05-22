@@ -2,9 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
-*                            Tatsuya Sakashita <t-sakashit@issp.u-tokyo.ac.jp>
-*               2014-2014    Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -66,10 +64,10 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     rokko::serial_dense_solver solver(name);
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                       boost::unit_test::framework::master_test_suite().argv);
-    rokko::localized_matrix<rokko::matrix_col_major> mat(dim, dim);
+    rokko::localized_matrix<double, rokko::matrix_col_major> mat(dim, dim);
     rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
-    rokko::localized_vector w(dim);
-    rokko::localized_matrix<rokko::matrix_col_major> Z(dim, dim);
+    rokko::localized_vector<double> w(dim);
+    rokko::localized_matrix<double, rokko::matrix_col_major> Z(dim, dim);
     std::cout << "mat=" << mat << std::endl;
     solver.diagonalize(mat, w, Z);
     

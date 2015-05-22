@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -45,10 +45,10 @@ int main(int argc, char *argv[]) {
 
   rokko::distributed_matrix<matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);
-  rokko::localized_matrix<matrix_major> mat_loc(dim, dim);
+  rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
 
-  rokko::localized_vector eigval(dim);
+  rokko::localized_vector<double> eigval(dim);
   rokko::distributed_matrix<matrix_major> eigvec(dim, dim, g, solver);
   try {
     solver.diagonalize(mat, eigval, eigvec);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
-  rokko::localized_matrix<matrix_major> eigvec_loc(dim, dim);
+  rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
     std::cout << "largest eigenvalues:";

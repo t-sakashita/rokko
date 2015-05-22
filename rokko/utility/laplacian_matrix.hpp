@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -23,7 +22,8 @@ namespace rokko {
 
 namespace laplacian_matrix {
 
-static void multiply(int dim, const double* x, double* y) {
+template<typename T>
+static void multiply(int dim, const T* x, T* y) {
   y[0] = x[0] - x[1];
   y[dim-1] = 2 * x[dim-1] - x[dim - 2];
   
@@ -32,12 +32,13 @@ static void multiply(int dim, const double* x, double* y) {
   }
 }
 
-void multiply(int dim, const std::vector<double>& v, std::vector<double>& w) {
+template<typename T>
+void multiply(int dim, const std::vector<T>& v, std::vector<T>& w) {
   multiply(dim, &v[0], &w[0]);
 }
 
-template<typename MATRIX_MAJOR>
-static void generate(rokko::localized_matrix<MATRIX_MAJOR>& mat) {
+template<typename T, typename MATRIX_MAJOR>
+static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
   if (mat.rows() != mat.cols())
     BOOST_THROW_EXCEPTION(std::invalid_argument("laplacian_matrix::generate() : non-square matrix"));
   mat.setZero();

@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -20,10 +20,11 @@ namespace rokko {
 
 namespace xyz_hamiltonian {
 
+template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, const double* v, double* w) {
+  const std::vector<boost::tuple<double, double, double> >& coupling, const T* v, T* w) {
   int N = 1 << L;
-  for (int l=0; l<lattice.size(); ++l) {
+  for (int l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
@@ -49,14 +50,16 @@ void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
   }
 }
 
+template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, const std::vector<double>& v,
-  std::vector<double>& w) {
+  const std::vector<boost::tuple<double, double, double> >& coupling, const std::vector<T>& v,
+  std::vector<T>& w) {
   multiply(L, lattice, coupling, &v[0], &w[0]);
 }
 
+template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, double* w) {
+  const std::vector<boost::tuple<double, double, double> >& coupling, T* w) {
   int N = 1 << L;
   for (int k=0; k<N; ++k) {
     w[k] = 0;
@@ -87,15 +90,16 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
   }
 }
 
+template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, std::vector<double>& w) {
+  const std::vector<boost::tuple<double, double, double> >& coupling, std::vector<T>& w) {
   fill_diagonal(L, lattice, coupling, &w[0]);
 }
 
-template <typename MATRIX_MAJOR>
+template<typename T, typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int> >& lattice,
   const std::vector<boost::tuple<double, double, double> >& coupling,
-  rokko::localized_matrix<MATRIX_MAJOR>& mat) {
+  rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {

@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -22,8 +21,8 @@ namespace rokko {
 namespace lapack {
 
 template<typename MATRIX_MAJOR>
-int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals,
-                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+                localized_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.rows();
   int info;
@@ -43,8 +42,8 @@ int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, double* eigvals,
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
-int diagonalize(localized_matrix<MATRIX_MAJOR>& mat, VEC& eigvals,
-                localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+                localized_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);

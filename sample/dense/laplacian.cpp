@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -36,13 +36,13 @@ int main(int argc, char *argv[]) {
             << "dimension = " << dim << std::endl;
 
   rokko::global_timer::start(11);
-  rokko::localized_matrix<matrix_major> mat(dim, dim);
+  rokko::localized_matrix<double, matrix_major> mat(dim, dim);
   rokko::laplacian_matrix::generate(mat);
   std::cout << "Laplacian matrix:\n" << mat << std::endl;
   rokko::global_timer::stop(11);
 
-  rokko::localized_vector eigval(dim);
-  rokko::localized_matrix<matrix_major> eigvec(dim, dim);
+  rokko::localized_vector<double> eigval(dim);
+  rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

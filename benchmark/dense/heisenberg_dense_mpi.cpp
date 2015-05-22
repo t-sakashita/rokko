@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   std::cout << "finished generate" << std::endl;
 
-  rokko::localized_vector w(dim);
+  rokko::localized_vector<double> w(dim);
   rokko::distributed_matrix<matrix_major> Z(dim, dim, g, solver);
 
   for (int count=0; count<1; ++count) {
@@ -86,9 +86,9 @@ int main(int argc, char *argv[]) {
 
   /*
   // gather of eigenvectors
-  rokko::localized_matrix<matrix_major> eigvec_global;
-  rokko::localized_matrix<matrix_major> eigvec_sorted(dim, dim);
-  rokko::localized_vector eigval_sorted(dim);
+  rokko::localized_matrix<double, matrix_major> eigvec_global;
+  rokko::localized_matrix<double, matrix_major> eigvec_sorted(dim, dim);
+  rokko::localized_vector<double> eigval_sorted(dim);
   rokko::gather(Z, eigvec_global, root);
   Z.print();
   //if (myrank == root) {

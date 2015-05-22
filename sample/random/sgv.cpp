@@ -12,7 +12,7 @@
 #include <rokko/rokko.hpp>
 #include <boost/random.hpp>
 
-typedef rokko::localized_vector vector_t;
+typedef rokko::localized_vector<double> vector_t;
 
 int main(int argc, char *argv[]) {
   int n = 6;

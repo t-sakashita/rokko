@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,7 +37,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  rokko::localized_matrix<rokko::matrix_col_major> mat1(N, N);
+  rokko::localized_matrix<double, rokko::matrix_col_major> mat1(N, N);
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
     std::vector<double> v, w;
@@ -54,7 +53,7 @@ int main(int argc, char *argv[]) {
   }
 
   std::cout << "fill_diagonal:" << std::endl;
-  rokko::localized_vector diagonal(N);
+  rokko::localized_vector<double> diagonal(N);
   std::vector<double> v(N);
   rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, v);
   for (int j=0; j<N; ++j) {
@@ -64,7 +63,7 @@ int main(int argc, char *argv[]) {
   std::cout << std::endl;
 
   std::cout << "fill_matrix:" << std::endl;
-  rokko::localized_matrix<rokko::matrix_col_major> mat2(N, N);
+  rokko::localized_matrix<double, rokko::matrix_col_major> mat2(N, N);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat2);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {

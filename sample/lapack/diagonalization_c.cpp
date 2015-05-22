@@ -12,8 +12,8 @@
 #include <rokko/rokko.hpp>
 #include <rokko/lapacke.hpp>
 
-typedef rokko::localized_vector vector_t;
-typedef Eigen::MatrixXcd matrix_t;
+typedef rokko::localized_vector<double> vector_t;
+typedef rokko::localized_matrix<std::complex<double> > matrix_t;
 
 int main(int argc, char *argv[]) {
   int info;

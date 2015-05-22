@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,7 +21,7 @@ namespace rokko {
 namespace eigen_exa {
 
 template <typename MATRIX_MAJOR>
-void diagonalize_s(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+void diagonalize_s(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
   rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   if(mat.is_row_major())
@@ -55,7 +55,7 @@ void diagonalize_s(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vecto
 // }
 
 template <typename MATRIX_MAJOR>
-void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
 		    rokko::distributed_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   if(mat.is_row_major())
@@ -74,7 +74,7 @@ void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vect
 }
 
 template <typename MATRIX_MAJOR>
-void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
+void diagonalize_sx(rokko::distributed_matrix<MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
 		    timer& timer_in) {
   if(mat.is_row_major())
     throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";

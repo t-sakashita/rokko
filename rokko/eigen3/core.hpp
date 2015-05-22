@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,14 +21,14 @@ class solver {
 public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  template<typename T, typename MATRIX_MAJOR>
+  void diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
+                   localized_matrix<T, MATRIX_MAJOR>& eigvecs, timer& timer) {
     rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer);
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer) {
+  template<typename T, typename MATRIX_MAJOR>
+  void diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals,
+                   localized_matrix<T, MATRIX_MAJOR>& eigvecs, timer& timer) {
     rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer);
   }
 };

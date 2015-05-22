@@ -2,9 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
-*                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,11 +35,11 @@ void rokko_parallel_dense_solver_diagonalize_distributed_matrix(struct rokko_par
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_solver*>(solver->ptr)->diagonalize(
       *static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(mat->ptr),
-      *static_cast<rokko::localized_vector*>(eigvals->ptr),
+      *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
       *static_cast<rokko::distributed_matrix<rokko::matrix_col_major>*>(eigvecs->ptr));
   else
     static_cast<rokko::parallel_dense_solver*>(solver->ptr)->diagonalize(
       *static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(mat->ptr),
-      *static_cast<rokko::localized_vector*>(eigvals->ptr),
+      *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
       *static_cast<rokko::distributed_matrix<rokko::matrix_row_major>*>(eigvecs->ptr));
 }

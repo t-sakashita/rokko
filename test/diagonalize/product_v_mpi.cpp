@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2014-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -42,9 +42,9 @@ BOOST_AUTO_TEST_CASE(test_product_v) {
   rokko::distributed_matrix<rokko::matrix_col_major> matA(dim, dim, g, solver);
   rokko::distributed_matrix<rokko::matrix_col_major> vecX(dim, 1, g, solver);
   rokko::distributed_matrix<rokko::matrix_col_major> vecY(dim, 1, g, solver);
-  rokko::localized_matrix<rokko::matrix_col_major> locA(dim, dim);
-  rokko::localized_matrix<rokko::matrix_col_major> locX(dim, 1);
-  rokko::localized_matrix<rokko::matrix_col_major> locY(dim, 1);
+  rokko::localized_matrix<double, rokko::matrix_col_major> locA(dim, dim);
+  rokko::localized_matrix<double, rokko::matrix_col_major> locX(dim, 1);
+  rokko::localized_matrix<double, rokko::matrix_col_major> locY(dim, 1);
   for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = rng();
   for (int i = 0; i < dim; ++i) locX(i, 0) = rng();
   for (int i = 0; i < dim; ++i) locY(i, 0) = rng();
