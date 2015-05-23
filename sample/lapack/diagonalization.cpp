@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/lapacke.hpp>
+#include <rokko/lapack.h>
 
 typedef rokko::localized_vector<double> vector_t;
 typedef rokko::localized_matrix<double, rokko::matrix_col_major> matrix_t;

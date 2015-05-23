@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(test_product_v) {
       locY(i, 0) += locA(i, j) * locX(j, 0);
 
   // global calculation
-  rokko::product_v(1, matA, false, vecX, false, 0, 1, vecY, false, 0);
+  rokko::product_v(1.0, matA, false, vecX, false, 0, 1, vecY, false, 0);
 
   int success_local = 1;
   for (int i = 0; i < dim; ++i) {

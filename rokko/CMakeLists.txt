@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -85,7 +85,7 @@ if(BUILD_SCALAPACK)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c
       blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c
       blacs/descinit.c)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pdcopy.c pblas/pddot.c pblas/pdgemv.c pblas/pdgemm.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pcopy.cpp pblas/pdot.cpp pblas/pgemv.cpp pblas/pgemm.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c
       scalapack/pdlaprnt.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevx.c)
   if(USE_PDSYEVR)

@@ -16,7 +16,7 @@
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_bc.hpp>
 #include <rokko/blacs/blacs_wrap.h>
-#include <rokko/pblas/pblas_wrap.h>
+#include <rokko/pblas.h>
 
 #include <iostream>
 #include <cstdlib>
@@ -319,10 +319,12 @@ std::ostream& operator<<(std::ostream& os, rokko::distributed_matrix<T, MATRIX_M
 }
 
 // C = alpha A * B + beta C
-template<typename MATRIX_MAJOR>
-void product(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& matA, bool transA,
-             const distributed_matrix<double, MATRIX_MAJOR>& matB, bool transB,
-             double beta, distributed_matrix<double, MATRIX_MAJOR>& matC) {
+template<typename T, typename MATRIX_MAJOR>
+void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
+             const distributed_matrix<T, MATRIX_MAJOR>& matA, bool transA,
+             const distributed_matrix<T, MATRIX_MAJOR>& matB, bool transB,
+             typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
+             distributed_matrix<T, MATRIX_MAJOR>& matC) {
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
@@ -337,7 +339,7 @@ void product(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& matA,
 
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
-  ROKKO_pdgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
+  PBLASE_pgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
                matA.get_n_global(), alpha, matA.get_array_pointer(), 1, 1, descA,
                matB.get_array_pointer(), 1, 1, descB, beta,
                matC.get_array_pointer(), 1, 1, descC);
@@ -345,10 +347,12 @@ void product(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& matA,
 }
 
 // Y = alpha A * X + beta Y
-template<typename MATRIX_MAJOR>
-void product_v(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& matA, bool transA,
-               const distributed_matrix<double, MATRIX_MAJOR>& vecX, bool transX, int xindex,
-               double beta, distributed_matrix<double, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+template<typename T, typename MATRIX_MAJOR>
+void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
+               const distributed_matrix<T, MATRIX_MAJOR>& matA, bool transA,
+               const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
+               typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
+               distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
@@ -368,7 +372,7 @@ void product_v(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& mat
   int iy = (transY ? yindex + 1: 1);
   int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  ROKKO_pdgemv(char_transA, matA.get_m_global(), matA.get_n_global(), alpha,
+  PBLASE_pgemv(char_transA, matA.get_m_global(), matA.get_n_global(), alpha,
                matA.get_array_pointer(), 1, 1, descA,
                vecX.get_array_pointer(), ix, jx, descX, incx, beta,
                vecY.get_array_pointer(), iy, jy, descY, incy);
@@ -376,9 +380,9 @@ void product_v(double alpha, const distributed_matrix<double, MATRIX_MAJOR>& mat
 }
 
 // dot = X * Y
-template<typename MATRIX_MAJOR>
-double dot_product(const distributed_matrix<double, MATRIX_MAJOR>& vecX, bool transX, int xindex,
-                   const distributed_matrix<double, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+template<typename T, typename MATRIX_MAJOR> 
+T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
+              const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = (vecX.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, vecX.get_nprow(), vecX.get_npcol());
@@ -396,9 +400,9 @@ double dot_product(const distributed_matrix<double, MATRIX_MAJOR>& vecX, bool tr
   int iy = (transY ? yindex + 1: 1);
   int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  double dot = ROKKO_pddot(n, vecX.get_array_pointer(), ix, jx, descX, incx,
-                           vecY.get_array_pointer(), iy, jy, descY, incy);
-
+  T dot;
+  PBLASE_pdot(n, &dot, vecX.get_array_pointer(), ix, jx, descX, incx,
+              vecY.get_array_pointer(), iy, jy, descY, incy);
   ROKKO_blacs_gridexit(&ictxt);
   return dot;
 }

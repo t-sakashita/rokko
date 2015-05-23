@@ -14,14 +14,14 @@
 
 #include <mpi.h>
 #include <rokko/blacs/blacs_wrap.h>
-#include <rokko/pblas/pblas_wrap.h>
+#include <rokko/pblas.h>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
 
 namespace rokko {
 
-template<typename MATRIX_MAJOR>
-void gather(rokko::distributed_matrix<double, MATRIX_MAJOR> const& from, double* to, int root) {
+template<typename T, typename MATRIX_MAJOR>
+void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int root) {
   if (!from.is_col_major()) {
     std::cerr << "Error (gather): matrix_row_major is not supported\n";
     MPI_Abort(MPI_COMM_WORLD,67);
@@ -42,7 +42,7 @@ void gather(rokko::distributed_matrix<double, MATRIX_MAJOR> const& from, double*
                             from.get_lld());
   info = ROKKO_descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
-    ROKKO_pdcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
+    PBLASE_pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
 
   ROKKO_blacs_gridexit(&ictxt);
 }
@@ -53,8 +53,8 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from,
   gather(from, &to(0,0), root);
 }
 
-template<typename MATRIX_MAJOR>
-void scatter(const double* from, distributed_matrix<double, MATRIX_MAJOR>& to, int root) {
+template<typename T, typename MATRIX_MAJOR>
+void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   if (!to.is_col_major()) {
     std::cerr << "Error (scatter): matrix_row_major is not supported\n";
     MPI_Abort(MPI_COMM_WORLD,67);
@@ -73,7 +73,7 @@ void scatter(const double* from, distributed_matrix<double, MATRIX_MAJOR>& to, i
   info = ROKKO_descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
 
   for (int j = 0; j < n; ++j)
-    ROKKO_pdcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
+    PBLASE_pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
 
   ROKKO_blacs_gridexit(&ictxt);
 }
