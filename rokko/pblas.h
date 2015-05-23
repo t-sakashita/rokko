@@ -13,30 +13,33 @@
 #define ROKKO_PBLAS_H
 
 #include <rokko/mangling.h>
+#ifdef __cplusplus
+# include <boost/numeric/ublas/traits.hpp>
+#endif
 
 /* PvCOPY */
 
 #ifdef __cplusplus
 
-#define PBLAS_PCOPY_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
+#define PBLAS_PCOPY_DECL(NAMES, NAMEL, TYPE) \
 extern "C" { \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, const TYPEC * X, const int* IX, const int* JX, int* DESCX, const int* INCX, TYPEC * Y, const int* IY, const int* JY, int *DESCY, const int* INCY); \
-void PBLASE_ ## NAMES (int N, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, TYPEC * Y, int IY, int JY, int *DESCY, int INCY); \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, TYPE * Y, const int* IY, const int* JY, int *DESCY, const int* INCY); \
+void PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE * Y, int IY, int JY, int *DESCY, int INCY); \
 } \
-void PBLASE_pcopy(int N, const TYPEX * X, int IX, int JX, int* DESCX, int INCX, TYPEX * Y, int IY, int JY, int *DESCY, int INCY);
+void PBLASE_pcopy(int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE * Y, int IY, int JY, int *DESCY, int INCY);
 
 #else
 
-#define PBLAS_PCOPY_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, const TYPEC * X, const int* IX, const int* JX, int* DESCX, const int* INCX, TYPEC * Y, const int* IY, const int* JY, int *DESCY, const int* INCY); \
-void PBLASE_ ## NAMES (int N, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, TYPEC * Y, int IY, int JY, int *DESCY, int INCY); \
+#define PBLAS_PCOPY_DECL(NAMES, NAMEL, TYPE) \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, TYPE * Y, const int* IY, const int* JY, int *DESCY, const int* INCY); \
+void PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE * Y, int IY, int JY, int *DESCY, int INCY); \
 
 #endif
 
-PBLAS_PCOPY_DECL(pscopy, PSCOPY, float, float);
-PBLAS_PCOPY_DECL(pdcopy, PDCOPY, double, double);
-PBLAS_PCOPY_DECL(pccopy, PCCOPY, lapack_complex_float, std::complex<float>);
-PBLAS_PCOPY_DECL(pzcopy, PZCOPY, lapack_complex_double, std::complex<double>);
+PBLAS_PCOPY_DECL(pscopy, PSCOPY, float);
+PBLAS_PCOPY_DECL(pdcopy, PDCOPY, double);
+PBLAS_PCOPY_DECL(pccopy, PCCOPY, lapack_complex_float);
+PBLAS_PCOPY_DECL(pzcopy, PZCOPY, lapack_complex_double);
 
 #undef PBLAS_PCOPY_DECL
 
@@ -44,75 +47,99 @@ PBLAS_PCOPY_DECL(pzcopy, PZCOPY, lapack_complex_double, std::complex<double>);
 
 #ifdef __cplusplus
 
-#define PBLAS_PDOT_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
+#define PBLAS_PDOT_DECL(NAMES, NAMEL, TYPE) \
 extern "C" { \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, TYPEC * DOT, const TYPEC * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPEC * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
-void PBLASE_ ## NAMES (int N, TYPEC * DOT, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, const TYPEC * Y, int IY, int JY, int* DESCY, int INCY); \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, TYPE * DOT, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
+TYPE PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
 } \
-void PBLASE_pdot(int N, TYPEC * DOT, const TYPEX * X, int IX, int JX, int* DESCX, int INCX, const TYPEX * Y, int IY, int JY, int* DESCY, int INCY);
+TYPE PBLASE_pdot(int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
+TYPE PBLASE_pdotc(int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY);
 
 #else
 
-#define PBLAS_PDOT_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, TYPEC * DOT, const TYPEC * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPEC * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
-void PBLASE_ ## NAMES (int N, TYPEC * DOT, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, const TYPEC * Y, int IY, int JY, int* DESCY, int INCY); \
+#define PBLAS_PDOT_DECL(NAMES, NAMEL, TYPE) \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, TYPE * DOT, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
+TYPE PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
 
 #endif
 
-PBLAS_PDOT_DECL(psdot, PSDOT, float, float);
-PBLAS_PDOT_DECL(pddot, PDDOT, double, double);
+PBLAS_PDOT_DECL(psdot, PSDOT, float);
+PBLAS_PDOT_DECL(pddot, PDDOT, double);
 
-#undef PBLAS_PVDOT
+/* PvDOTC */
+
+#ifdef __cplusplus
+
+#undef PBLAS_PDOT_DECL
+
+#define PBLAS_PDOTC_DECL(NAMES, NAMEL, TYPE) \
+extern "C" { \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, boost::numeric::ublas::type_traits<TYPE>::real_type * DOTC, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
+boost::numeric::ublas::type_traits<TYPE>::real_type PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
+} \
+boost::numeric::ublas::type_traits<TYPE>::real_type PBLASE_pdotc(int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY);
+
+#else
+
+void LAPACK_GLOBAL(NAMES, NAMEL) (const int* N, boost::numeric::ublas::type_traits<TYPE>::real_type * DOTC, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
+boost::numeric::ublas::type_traits<TYPE>::real_type PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
+
+#endif
+
+PBLAS_PDOTC_DECL(pcdotc, PCDOTC, lapack_complex_float);
+PBLAS_PDOTC_DECL(pzdotc, PZDOTC, lapack_complex_double);
+
+#undef PBLAS_PDOTC_DECL
 
 /* PvGEMV */
 
 #ifdef __cplusplus
 
-#define PBLAS_PGEMV_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
+#define PBLAS_PGEMV_DECL(NAMES, NAMEL, TYPE) \
 extern "C" { \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANS, const int* M, const int* N, const TYPEC * ALPHA, const TYPEC * A, const int* IA, const int* JA, int* DESCA, const TYPEC * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPEC * BETA, TYPEC * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
-void PBLASE_ ## NAMES (char TRANS, int M, int N, TYPEC ALPHA, const TYPEC * A, int IA, int JA, int* DESCA, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, TYPEC BETA, TYPEC * Y, int IY, int JY, int* DESCY, int INCY); \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANS, const int* M, const int* N, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, int* DESCA, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * BETA, TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
+void PBLASE_ ## NAMES (char TRANS, int M, int N, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE BETA, TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
 } \
-void PBLASE_pgemv(char TRANS, int M, int N, TYPEX ALPHA, const TYPEX * A, int IA, int JA, int* DESCA, const TYPEX * X, int IX, int JX, int* DESCX, int INCX, TYPEX BETA, TYPEX * Y, int IY, int JY, int* DESCY, int INCY);
+void PBLASE_pgemv(char TRANS, int M, int N, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE BETA, TYPE * Y, int IY, int JY, int* DESCY, int INCY);
 
 #else
 
-#define PBLAS_PGEMV_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANS, const int* M, const int* N, const TYPEC * ALPHA, const TYPEC * A, const int* IA, const int* JA, int* DESCA, const TYPEC * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPEC * BETA, TYPEC * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
-void PBLASE_ ## NAMES (char TRANS, int M, int N, TYPEC ALPHA, const TYPEC * A, int IA, int JA, int* DESCA, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, TYPEC BETA, TYPEC * Y, int IY, int JY, int* DESCY, int INCY);
+#define PBLAS_PGEMV_DECL(NAMES, NAMEL, TYPE) \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANS, const int* M, const int* N, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, int* DESCA, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * BETA, TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
+void PBLASE_ ## NAMES (char TRANS, int M, int N, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE BETA, TYPE * Y, int IY, int JY, int* DESCY, int INCY);
 
 #endif
 
-PBLAS_PGEMV_DECL(psgemv, PSGEMV, float, float);
-PBLAS_PGEMV_DECL(pdgemv, PDGEMV, double, double);
-PBLAS_PGEMV_DECL(pcgemv, PCGEMV, lapack_complex_float, std::complex<float>);
-PBLAS_PGEMV_DECL(pzgemv, PZGEMV, lapack_complex_double, std::complex<double>);
+PBLAS_PGEMV_DECL(psgemv, PSGEMV, float);
+PBLAS_PGEMV_DECL(pdgemv, PDGEMV, double);
+PBLAS_PGEMV_DECL(pcgemv, PCGEMV, lapack_complex_float);
+PBLAS_PGEMV_DECL(pzgemv, PZGEMV, lapack_complex_double);
 
-#undef PBLAS_PVGEMV
+#undef PBLAS_PGEMV_DECL
 
 /* PvGEMM */
 
 #ifdef __cplusplus
 
-#define PBLAS_PGEMM_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
+#define PBLAS_PGEMM_DECL(NAMES, NAMEL, TYPE) \
 extern "C" { \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANSA, const char* TRANSB, const int* M, const int* N, const int* K, const TYPEC * ALPHA, const TYPEC * A, const int* IA, const int* JA, int* DESCA, const TYPEC * B, const int* IB, const int* JB, int* DESCB, const TYPEC * BETA, TYPEC * C, const int* IC, const int* JC, int* DESCC); \
-void PBLASE_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPEC ALPHA, const TYPEC * A, int IA, int JA, int* DESCA, const TYPEC * B, int IB, int JB, int* DESCB, TYPEC BETA, TYPEC * C, int IC, int JC, int* DESCC); \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANSA, const char* TRANSB, const int* M, const int* N, const int* K, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, int* DESCA, const TYPE * B, const int* IB, const int* JB, int* DESCB, const TYPE * BETA, TYPE * C, const int* IC, const int* JC, int* DESCC); \
+void PBLASE_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * B, int IB, int JB, int* DESCB, TYPE BETA, TYPE * C, int IC, int JC, int* DESCC); \
 } \
-void PBLASE_pgemm(char TRANSA, char TRANSB, int M, int N, int K, TYPEX ALPHA, const TYPEX * A, int IA, int JA, int* DESCA, const TYPEX * B, int IB, int JB, int* DESCB, TYPEX BETA, TYPEX * C, int IC, int JC, int* DESCC);
+void PBLASE_pgemm(char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * B, int IB, int JB, int* DESCB, TYPE BETA, TYPE * C, int IC, int JC, int* DESCC);
 
 #else
 
-#define PBLAS_PGEMM_DECL(NAMES, NAMEL, TYPEC, TYPEX) \
-void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANSA, const char* TRANSB, const int* M, const int* N, const int* K, const TYPEC * ALPHA, const TYPEC * A, const int* IA, const int* JA, int* DESCA, const TYPEC * B, const int* IB, const int* JB, int* DESCB, const TYPEC * BETA, TYPEC * C, const int* IC, const int* JC, int* DESCC); \
-void PBLASE_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPEC ALPHA, const TYPEC * A, int IA, int JA, int* DESCA, const TYPEC * B, int IB, int JB, int* DESCB, TYPEC BETA, TYPEC * C, int IC, int JC, int* DESCC);
+#define PBLAS_PGEMM_DECL(NAMES, NAMEL, TYPE) \
+void LAPACK_GLOBAL(NAMES, NAMEL) (const char* TRANSA, const char* TRANSB, const int* M, const int* N, const int* K, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, int* DESCA, const TYPE * B, const int* IB, const int* JB, int* DESCB, const TYPE * BETA, TYPE * C, const int* IC, const int* JC, int* DESCC); \
+void PBLASE_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * B, int IB, int JB, int* DESCB, TYPE BETA, TYPE * C, int IC, int JC, int* DESCC);
 
 #endif
 
-PBLAS_PGEMM_DECL(psgemm, PSGEMM, float, float);
-PBLAS_PGEMM_DECL(pdgemm, PDGEMM, double, double);
-PBLAS_PGEMM_DECL(pcgemm, PCGEMM, lapack_complex_float, std::complex<float>);
-PBLAS_PGEMM_DECL(pzgemm, PZGEMM, lapack_complex_double, std::complex<double>);
+PBLAS_PGEMM_DECL(psgemm, PSGEMM, float);
+PBLAS_PGEMM_DECL(pdgemm, PDGEMM, double);
+PBLAS_PGEMM_DECL(pcgemm, PCGEMM, lapack_complex_float);
+PBLAS_PGEMM_DECL(pzgemm, PZGEMM, lapack_complex_double);
 
 #undef PBLAS_PGEMM_DECL
 

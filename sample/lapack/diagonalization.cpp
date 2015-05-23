@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
   // diagonalization
   vector_t w(n);
   matrix_t v = mat; // v will be overwritten by eigenvectors
-  info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', n, &v(0, 0), n, &w(0));
+  info = LAPACKE_heev(LAPACK_COL_MAJOR, 'V', 'U', n, &v(0, 0), n, &w(0));
   std::cout << "Eigenvalues:\n" << w << std::endl;
   std::cout << "Eigenvectors:\n" << v << std::endl;
 

@@ -27,8 +27,8 @@ int main(int argc, char *argv[]) {
 
   // orthonormalization
   vector_t tau(k);
-  info = LAPACKE_zgeqrf(LAPACK_COL_MAJOR, m, n, &a(0, 0), m, &tau(0));
-  info = LAPACKE_zungqr(LAPACK_COL_MAJOR, m, n, n, &a(0, 0), m, &tau(0));
+  info = LAPACKE_geqrf(LAPACK_COL_MAJOR, m, n, &a(0, 0), m, &tau(0));
+  info = LAPACKE_ungqr(LAPACK_COL_MAJOR, m, n, n, &a(0, 0), m, &tau(0));
   std::cout << "Orthonormalized column vectors V:\n" << a << std::endl;
 
   // check orthonormality

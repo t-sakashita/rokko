@@ -29,8 +29,8 @@ int main(int argc, char *argv[]) {
   matrix_t a = mat; // 'a' will be destroyed by dgesvd
   vector_t s(k), superb(k);
   matrix_t u(m, k), vt(k, n);
-  info = LAPACKE_dgesvd(LAPACK_COL_MAJOR, 'S', 'S', m, n, &a(0, 0), m, &s(0),
-                        &u(0, 0), m, &vt(0, 0), k, &superb(0));
+  info = LAPACKE_gesvd(LAPACK_COL_MAJOR, 'S', 'S', m, n, &a(0, 0), m, &s(0),
+                       &u(0, 0), m, &vt(0, 0), k, &superb(0));
   std::cout << "U:\n" << u << std::endl;
   std::cout << "S:\n" << s << std::endl;
   std::cout << "Vt:\n" << vt << std::endl;

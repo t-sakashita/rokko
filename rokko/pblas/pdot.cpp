@@ -11,15 +11,15 @@
 
 #include <rokko/pblas.h>
 
-#define PBLAS_PDOT_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
-extern "C" { \
-void PBLASE_ ## NAMES (int N, TYPEC * DOT, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, const TYPEC * Y, int IY, int JY, int* DESCY, int INCY) { \
-  LAPACK_GLOBAL(NAMES, NAMEL) (&N, DOT, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); } \
+#define PBLAS_PDOT_IMPL(NAMES, NAMEL, TYPE) \
+extern "C" {                                                          \
+TYPE PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY) { \
+  TYPE DOT; LAPACK_GLOBAL(NAMES, NAMEL) (&N, &DOT, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); return DOT; } \
 } \
-void PBLASE_pdot(int N, TYPEC * DOT, const TYPEX * X, int IX, int JX, int* DESCX, int INCX, const TYPEX * Y, int IY, int JY, int* DESCY, int INCY) { \
-  PBLASE_ ## NAMES (N, DOT, X, IX, JX, DESCX, INCX, Y, IY, JY, DESCY, INCY); }
+TYPE PBLASE_pdot(int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY) { \
+  return PBLASE_ ## NAMES (N, X, IX, JX, DESCX, INCX, Y, IY, JY, DESCY, INCY); }
 
-PBLAS_PDOT_IMPL(psdot, PSDOT, float, float);
-PBLAS_PDOT_IMPL(pddot, PDDOT, double, double);
+PBLAS_PDOT_IMPL(psdot, PSDOT, float);
+PBLAS_PDOT_IMPL(pddot, PDDOT, double);
 
 #undef PBLAS_PDOT_IMPL

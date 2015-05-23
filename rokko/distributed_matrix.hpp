@@ -400,9 +400,8 @@ T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int 
   int iy = (transY ? yindex + 1: 1);
   int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  T dot;
-  PBLASE_pdot(n, &dot, vecX.get_array_pointer(), ix, jx, descX, incx,
-              vecY.get_array_pointer(), iy, jy, descY, incy);
+  T dot = PBLASE_pdotc(n, vecX.get_array_pointer(), ix, jx, descX, incx,
+                       vecY.get_array_pointer(), iy, jy, descY, incy);
   ROKKO_blacs_gridexit(&ictxt);
   return dot;
 }
