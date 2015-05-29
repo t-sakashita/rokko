@@ -8,7 +8,7 @@
 #
 
 # single process tests
-set(TESTS localized_matrix matrix_major serial_dense_solvers solver)
+set(TESTS localized_matrix localized_matrix_fixed_size matrix_major serial_dense_solvers solver)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko ${ELEMENTAL_LIBRARIES} ${SCALAPACK_LIB} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})

@@ -16,11 +16,11 @@
 
 namespace rokko {
 
-template<typename T>
-class localized_vector : public Eigen::Matrix<T, Eigen::Dynamic, 1> {
+template<typename T, int ROWS = Eigen::Dynamic>
+class localized_vector : public Eigen::Matrix<T, ROWS, 1> {
 public:
   typedef T value_type;
-  typedef Eigen::Matrix<value_type, Eigen::Dynamic, 1> super_type;
+  typedef Eigen::Matrix<value_type, ROWS, 1> super_type;
   typedef localized_vector<value_type> vector_type;
 
   localized_vector() : super_type() {}
