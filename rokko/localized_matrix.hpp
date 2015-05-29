@@ -36,7 +36,7 @@ struct eigen3_matrix_major<rokko::matrix_col_major> {
 
 } // end namespace detail
   
-template<typename T, typename MATRIX_MAJOR = rokko::matrix_row_major, int ROWS = Eigen::Dynamic, int COLS = Eigen::Dynamic>
+template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major, int ROWS = Eigen::Dynamic, int COLS = Eigen::Dynamic>
 class localized_matrix : public Eigen::Matrix<T, ROWS, COLS, detail::eigen3_matrix_major<MATRIX_MAJOR>::value> {
 public:
   typedef T value_type;
