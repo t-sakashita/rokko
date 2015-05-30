@@ -83,6 +83,8 @@ private:
   std::map<std::string, boost::any> map_;
 };
 
+parameters null_parameters;
+
 } // namespace rokko
 
 #endif // ROKKO_PARAMETERS_HPP
