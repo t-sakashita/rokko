@@ -41,6 +41,21 @@ public:
   virtual void diagonalize(localized_matrix<double, matrix_col_major>& mat, std::vector<double>& eigvals,
                            localized_matrix<double, matrix_col_major>& eigvecs,
 			   rokko::parameters const& params, timer& timer) = 0;
+  // no parameters
+  virtual void diagonalize(localized_matrix<double, matrix_row_major>& mat,
+                           localized_vector<double>& eigvals,
+                           localized_matrix<double, matrix_row_major>& eigvecs,
+			   timer& timer) = 0;
+  virtual void diagonalize(localized_matrix<double, matrix_col_major>& mat,
+                           localized_vector<double>& eigvals,
+                           localized_matrix<double, matrix_col_major>& eigvecs,
+			   timer& timer) = 0;
+  virtual void diagonalize(localized_matrix<double, matrix_row_major>& mat, std::vector<double>& eigvals,
+                           localized_matrix<double, matrix_row_major>& eigvecs,
+			   timer& timer) = 0;
+  virtual void diagonalize(localized_matrix<double, matrix_col_major>& mat, std::vector<double>& eigvals,
+                           localized_matrix<double, matrix_col_major>& eigvecs,
+			   timer& timer) = 0;
 };
   
 template<typename SOLVER>
@@ -56,22 +71,22 @@ public:
   void diagonalize(localized_matrix<double, matrix_row_major>& mat, localized_vector<double>& eigvals,
                    localized_matrix<double, matrix_row_major>& eigvecs,
 		   rokko::parameters const& params, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, params, timer);
   }
   void diagonalize(localized_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
                    localized_matrix<double, matrix_col_major>& eigvecs,
 		   rokko::parameters const& params, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, paramas, timer);
   }
   void diagonalize(localized_matrix<double, matrix_row_major>& mat, std::vector<double>& eigvals,
                    localized_matrix<double, matrix_row_major>& eigvecs,
 		   rokko::parameters const& params, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, params, timer);
   }
   void diagonalize(localized_matrix<double, matrix_col_major>& mat, std::vector<double>& eigvals,
                    localized_matrix<double, matrix_col_major>& eigvecs,
 		   rokko::parameters const& params, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_.diagonalize(mat, eigvals, eigvecs, params, timer);
   }
 private:
   solver_type solver_impl_;
