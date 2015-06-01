@@ -17,8 +17,6 @@ if(BUILD_ANASAZI)
     add_executable(${target_name} ${name}.cpp)
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
     target_link_libraries(${target_name} rokko)
-    add_test(${target_name}-2 ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 2 ${CMAKE_CURRENT_BINARY_DIR}/${name})
-    add_test(${target_name}-4 ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/${name})
   endforeach(name)
 endif(BUILD_ANASAZI)
 
