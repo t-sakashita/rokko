@@ -35,7 +35,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
   unset(TESTS)
 
   if(BUILD_PARALLEL_DENSE_SOLVER)
-    set(TESTS frank_mpi)
+    set(TESTS frank_mpi helmert_mpi)
     foreach(name ${TESTS})
       add_executable(${name} ${name}.cpp)
       target_link_libraries(${name} rokko ${SLEPC_LIBRARIES} ${PETSC_LIBRARIES} ${MPI_CXX_LIBRARIES} ${Boost_LIBRARIES})
