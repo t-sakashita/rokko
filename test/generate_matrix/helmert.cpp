@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/helmert_matrix.hpp>
 #include <boost/foreach.hpp>
 #define BOOST_TEST_MODULE test_generator
 #ifndef BOOST_TEST_DYN_LINK
@@ -22,8 +22,10 @@
 template<typename T, typename MATRIX_MAJOR>
 void test(int dim) {
   rokko::localized_matrix<T, MATRIX_MAJOR> mat(dim, dim);
-  rokko::frank_matrix::generate(mat);  
-  BOOST_CHECK_CLOSE(mat.trace(), dim * (dim+1) * 0.5, 10e-5);
+  rokko::localized_vector<T> diag(dim);
+  diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
+  rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);  
+  BOOST_CHECK_CLOSE(mat.trace(), diag.sum(), 10e-5);
 }
 
 BOOST_AUTO_TEST_CASE(test_generator) {
