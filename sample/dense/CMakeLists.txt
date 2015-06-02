@@ -20,7 +20,7 @@ foreach(name ${SAMPLE})
 endforeach(name)
 unset(SAMPLE)
 
-set(SAMPLE frank helmert heisenberg xyz laplacian)
+set(SAMPLE frank helmert heisenberg xyz xyz_file laplacian)
 foreach(name ${SAMPLE})
   set(target_name sample_dense_${name})
   add_executable(${target_name} ${name}.cpp)
