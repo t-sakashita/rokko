@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS heisenberg)
+set(TESTS frank helmert heisenberg)
 foreach(name ${TESTS})
   set(target_name generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
