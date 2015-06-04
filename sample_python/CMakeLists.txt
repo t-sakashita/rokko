@@ -9,7 +9,14 @@
 
 enable_testing()
 if(BUILD_Python_BINDING)
-  foreach(name rokko_test rokko_test_sparse rokko_test_mpi)
+  set(TESTS rokko_test)
+  if(BUILD_PARALLEL_DENSE_SOLVER)
+    set(TESTS ${TESTS} rokko_test_mpi)
+  endif(BUILD_PARALLEL_DENSE_SOLVER)
+  if(BUILD_PARALLEL_SPARSE_SOLVER)
+    set(TESTS ${TESTS} rokko_test_sparse)
+  endif(BUILD_PARALLEL_SPARSE_SOLVER)
+  foreach(name ${TESTS})
     add_test(python_${name}
              ${CMAKE_COMMAND}
              -Dpython_interpreter=${PYTHON_EXECUTABLE}
