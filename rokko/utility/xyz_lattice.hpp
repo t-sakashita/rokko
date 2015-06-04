@@ -98,7 +98,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
 }
 
 void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<boost::tuple<double, double, double> >& coupling) {
-  std::ifstream ifs(filename);
+  std::ifstream ifs(filename.c_str());
   if (!ifs) {
     std::cerr << "can't open file" << std::endl;
     throw 1;
