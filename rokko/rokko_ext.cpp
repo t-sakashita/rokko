@@ -88,6 +88,8 @@ static void wrap_rokko_frank_matrix_generate_localized_matrix(wrap_rokko_localiz
 	rokko_frank_matrix_generate_localized_matrix(mat->get_raw());
 }
 
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+
 class wrap_rokko_grid {
 	rokko_grid* raw;
 public:
@@ -335,64 +337,76 @@ void wrap_rokko_parallel_sparse_solver::diagonalize_distributed_crs_matrix(wrap_
 	rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(raw, mat->get_raw(), num_evals, block_size, max_iters, tol);
 }
 
-BOOST_PYTHON_MODULE(rokko_ext)
-{
-	using namespace boost::python;
+#endif
 
-	class_<wrap_rokko_serial_dense_solver>("rokko_serial_dense_solver", init<char*, int, char**>())
-		.def("diagonalize_localized_matrix", &wrap_rokko_serial_dense_solver::diagonalize_localized_matrix);
-	class_<wrap_rokko_grid>("rokko_grid", init<boost::python::object, int>())
-		.def("get_myrank", &wrap_rokko_grid::get_myrank)
-		.def("get_nprocs", &wrap_rokko_grid::get_nprocs);
-	class_<wrap_rokko_parallel_dense_solver>("rokko_parallel_dense_solver", init<char*, int, char**>())
-		.def("diagonalize_distributed_matrix", &wrap_rokko_parallel_dense_solver::diagonalize_distributed_matrix);
-	class_<wrap_rokko_localized_vector>("rokko_localized_vector", init<int>())
-		.def("get", &wrap_rokko_localized_vector::get);
-	class_<wrap_rokko_localized_matrix>("rokko_localized_matrix", init<int, int, int>())
-		.def("show", &wrap_rokko_localized_matrix::print);
-	class_<wrap_rokko_distributed_matrix>("rokko_distributed_matrix", init<int, int, wrap_rokko_grid*, wrap_rokko_parallel_dense_solver*, int>())
-		.def("show", &wrap_rokko_distributed_matrix::print)
-		.def("set_local", &wrap_rokko_distributed_matrix::set_local)
-		.def("get_local", &wrap_rokko_distributed_matrix::get_local)
-		.def("set_global", &wrap_rokko_distributed_matrix::set_global)
-		.def("get_global", &wrap_rokko_distributed_matrix::get_global)
-		.def("get_m_local", &wrap_rokko_distributed_matrix::get_m_local)
-		.def("get_n_local", &wrap_rokko_distributed_matrix::get_n_local)
-		.def("get_m_global", &wrap_rokko_distributed_matrix::get_m_global)
-		.def("get_n_global", &wrap_rokko_distributed_matrix::get_n_global)
-		.def("get_nprocs", &wrap_rokko_distributed_matrix::get_nprocs)
-		.def("get_myrank", &wrap_rokko_distributed_matrix::get_myrank)
-		.def("translate_l2g_row", &wrap_rokko_distributed_matrix::translate_l2g_row)
-		.def("translate_l2g_col", &wrap_rokko_distributed_matrix::translate_l2g_col)
-		.def("translate_g2l_row", &wrap_rokko_distributed_matrix::translate_g2l_row)
-		.def("translate_g2l_col", &wrap_rokko_distributed_matrix::translate_g2l_col);
-	class_<wrap_rokko_parallel_sparse_solver>("rokko_parallel_sparse_solver", init<char*, int, char**>())
-		.def("diagonalize_distributed_crs_matrix", &wrap_rokko_parallel_sparse_solver::diagonalize_distributed_crs_matrix)
-		.def("eigenvalue", &wrap_rokko_parallel_sparse_solver::eigenvalue)
-		.def("eigenvector", &wrap_rokko_parallel_sparse_solver::eigenvector)
-		.def("num_conv", &wrap_rokko_parallel_sparse_solver::num_conv);
-	class_<wrap_rokko_distributed_crs_matrix>("rokko_distributed_crs_matrix", init<int, int, wrap_rokko_parallel_sparse_solver*>())
-		.def("insert", &wrap_rokko_distributed_crs_matrix::insert)
-		.def("complete", &wrap_rokko_distributed_crs_matrix::complete)
-		.def("num_local_rows", &wrap_rokko_distributed_crs_matrix::num_local_rows)
-		.def("start_row", &wrap_rokko_distributed_crs_matrix::start_row)
-		.def("end_row", &wrap_rokko_distributed_crs_matrix::end_row)
-		.def("show", &wrap_rokko_distributed_crs_matrix::print);
+BOOST_PYTHON_MODULE(rokko_ext) {
+  using namespace boost::python;
 
-	enum_<rokko>("rokko")
-		.value("grid_col_major", grid_col_major)
-		.value("grid_row_major", grid_row_major)
-		.value("matrix_col_major", matrix_col_major)
-		.value("matrix_row_major", matrix_row_major);
+  enum_<rokko>("rokko")
+    .value("grid_col_major", grid_col_major)
+    .value("grid_row_major", grid_row_major)
+    .value("matrix_col_major", matrix_col_major)
+    .value("matrix_row_major", matrix_row_major);
+  
+  class_<wrap_rokko_serial_dense_solver>("rokko_serial_dense_solver", init<char*, int, char**>())
+    .def("diagonalize_localized_matrix",
+         &wrap_rokko_serial_dense_solver::diagonalize_localized_matrix);
+  class_<wrap_rokko_localized_vector>("rokko_localized_vector", init<int>())
+    .def("get", &wrap_rokko_localized_vector::get);
+  class_<wrap_rokko_localized_matrix>("rokko_localized_matrix", init<int, int, int>())
+    .def("show", &wrap_rokko_localized_matrix::print);
+  def("rokko_frank_matrix_generate_localized_matrix",
+      &wrap_rokko_frank_matrix_generate_localized_matrix);
 
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+  class_<wrap_rokko_grid>("rokko_grid", init<boost::python::object, int>())
+    .def("get_myrank", &wrap_rokko_grid::get_myrank)
+    .def("get_nprocs", &wrap_rokko_grid::get_nprocs);
+  class_<wrap_rokko_parallel_dense_solver>("rokko_parallel_dense_solver",
+                                           init<char*, int, char**>())
+    .def("diagonalize_distributed_matrix",
+         &wrap_rokko_parallel_dense_solver::diagonalize_distributed_matrix);
+  class_<wrap_rokko_distributed_matrix>("rokko_distributed_matrix",
+    init<int, int, wrap_rokko_grid*, wrap_rokko_parallel_dense_solver*, int>())
+    .def("show", &wrap_rokko_distributed_matrix::print)
+    .def("set_local", &wrap_rokko_distributed_matrix::set_local)
+    .def("get_local", &wrap_rokko_distributed_matrix::get_local)
+    .def("set_global", &wrap_rokko_distributed_matrix::set_global)
+    .def("get_global", &wrap_rokko_distributed_matrix::get_global)
+    .def("get_m_local", &wrap_rokko_distributed_matrix::get_m_local)
+    .def("get_n_local", &wrap_rokko_distributed_matrix::get_n_local)
+    .def("get_m_global", &wrap_rokko_distributed_matrix::get_m_global)
+    .def("get_n_global", &wrap_rokko_distributed_matrix::get_n_global)
+    .def("get_nprocs", &wrap_rokko_distributed_matrix::get_nprocs)
+    .def("get_myrank", &wrap_rokko_distributed_matrix::get_myrank)
+    .def("translate_l2g_row", &wrap_rokko_distributed_matrix::translate_l2g_row)
+    .def("translate_l2g_col", &wrap_rokko_distributed_matrix::translate_l2g_col)
+    .def("translate_g2l_row", &wrap_rokko_distributed_matrix::translate_g2l_row)
+    .def("translate_g2l_col", &wrap_rokko_distributed_matrix::translate_g2l_col);
+  class_<wrap_rokko_parallel_sparse_solver>("rokko_parallel_sparse_solver",
+                                            init<char*, int, char**>())
+    .def("diagonalize_distributed_crs_matrix",
+         &wrap_rokko_parallel_sparse_solver::diagonalize_distributed_crs_matrix)
+    .def("eigenvalue", &wrap_rokko_parallel_sparse_solver::eigenvalue)
+    .def("eigenvector", &wrap_rokko_parallel_sparse_solver::eigenvector)
+    .def("num_conv", &wrap_rokko_parallel_sparse_solver::num_conv);
+  class_<wrap_rokko_distributed_crs_matrix>("rokko_distributed_crs_matrix",
+                                            init<int, int, wrap_rokko_parallel_sparse_solver*>())
+    .def("insert", &wrap_rokko_distributed_crs_matrix::insert)
+    .def("complete", &wrap_rokko_distributed_crs_matrix::complete)
+    .def("num_local_rows", &wrap_rokko_distributed_crs_matrix::num_local_rows)
+    .def("start_row", &wrap_rokko_distributed_crs_matrix::start_row)
+    .def("end_row", &wrap_rokko_distributed_crs_matrix::end_row)
+    .def("show", &wrap_rokko_distributed_crs_matrix::print);
 /*
-	With a callback:
-	def("rokko_distributed_matrix_generate_function", &rokko_distributed_matrix_generate_function);
+  With a callback:
+  def("rokko_distributed_matrix_generate_function", &rokko_distributed_matrix_generate_function);
 */
-	def("rokko_gather", &wrap_rokko_gather);
-	def("rokko_scatter", &wrap_rokko_scatter);
-	def("rokko_all_gather", &wrap_rokko_all_gather);
+  def("rokko_gather", &wrap_rokko_gather);
+  def("rokko_scatter", &wrap_rokko_scatter);
+  def("rokko_all_gather", &wrap_rokko_all_gather);
 
-	def("rokko_frank_matrix_generate_distributed_matrix", &wrap_rokko_frank_matrix_generate_distributed_matrix);
-	def("rokko_frank_matrix_generate_localized_matrix", &wrap_rokko_frank_matrix_generate_localized_matrix);
+  def("rokko_frank_matrix_generate_distributed_matrix",
+      &wrap_rokko_frank_matrix_generate_distributed_matrix);
+#endif
 }

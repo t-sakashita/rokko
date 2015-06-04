@@ -16,7 +16,6 @@
 #include <stdexcept>
 #include <boost/throw_exception.hpp>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
 
