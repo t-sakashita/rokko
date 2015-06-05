@@ -12,6 +12,7 @@
 #ifndef ROKKO_SERIAL_DENSE_SOLVER_HPP
 #define ROKKO_SERIAL_DENSE_SOLVER_HPP
 
+#include <string>
 #include <rokko/factory.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
@@ -27,18 +28,18 @@ public:
   virtual ~sd_solver_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(localized_matrix<double, matrix_row_major>& mat,
+  virtual void diagonalize(std::string routine, localized_matrix<double, matrix_row_major>& mat,
                            localized_vector<double>& eigvals,
                            localized_matrix<double, matrix_row_major>& eigvecs,
 			   rokko::parameters const& params, timer& timer) = 0;
-  virtual void diagonalize(localized_matrix<double, matrix_col_major>& mat,
+  virtual void diagonalize(std::string routine, localized_matrix<double, matrix_col_major>& mat,
                            localized_vector<double>& eigvals,
                            localized_matrix<double, matrix_col_major>& eigvecs,
 			   rokko::parameters const& params, timer& timer) = 0;
-  virtual void diagonalize(localized_matrix<double, matrix_row_major>& mat, std::vector<double>& eigvals,
+  virtual void diagonalize(std::string routine, localized_matrix<double, matrix_row_major>& mat, std::vector<double>& eigvals,
                            localized_matrix<double, matrix_row_major>& eigvecs,
 			   rokko::parameters const& params, timer& timer) = 0;
-  virtual void diagonalize(localized_matrix<double, matrix_col_major>& mat, std::vector<double>& eigvals,
+  virtual void diagonalize(std::string routine, localized_matrix<double, matrix_col_major>& mat, std::vector<double>& eigvals,
                            localized_matrix<double, matrix_col_major>& eigvecs,
 			   rokko::parameters const& params, timer& timer) = 0;
   // no parameters
