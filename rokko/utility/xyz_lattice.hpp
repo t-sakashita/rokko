@@ -58,7 +58,8 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   do {
     file_pos = ifs.tellg();
     getline(ifs, str_line);
-  } while (!str_line.empty());
+    std::cout << "str_line=" << str_line << std::endl;
+  } while (str_line.empty());
 
   if (str_line.find("offset = 1") == 0) {
     offset1 = true;
@@ -67,7 +68,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
     offset1 = false;
     std::cout << "offset = 0" << std::endl;
   } else {
-    //std::cout << "else file_pos" << std::endl;
+    std::cout << "else file_pos" << std::endl;
     ifs.seekg(file_pos);
   }
 
@@ -87,6 +88,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
       }
     }
   } while (lattice.size() < num_bonds);
+
   do {
     double jx, jy, jz;
     if (detail::read_line_with_comment(ifs, is)) {
