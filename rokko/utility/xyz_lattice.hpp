@@ -54,18 +54,18 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   }
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
-  bool start_index1 = false;
+  bool offset1 = false;
   do {
     file_pos = ifs.tellg();
     getline(ifs, str_line);
   } while (!str_line.empty());
 
-  if (str_line.find("start_index = 1") == 0) {
-    start_index1 = true;
-    std::cout << "start_index = 1" << std::endl;
-  } else if (str_line.find("start_index = 0") == 0) {
-    start_index1 = false;
-    std::cout << "start_index = 0" << std::endl;
+  if (str_line.find("offset = 1") == 0) {
+    offset1 = true;
+    std::cout << "offset = 1" << std::endl;
+  } else if (str_line.find("offset = 0") == 0) {
+    offset1 = false;
+    std::cout << "offset = 0" << std::endl;
   } else {
     //std::cout << "else file_pos" << std::endl;
     ifs.seekg(file_pos);
@@ -76,7 +76,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
     if (detail::read_line_with_comment(ifs, is)) {
       is >> j >> k;
       std::cout << "j=" << j << " k=" << k << std::endl;
-      if (start_index1)  lattice.push_back(std::make_pair(j-1, k-1));
+      if (offset1)  lattice.push_back(std::make_pair(j-1, k-1));
       else  lattice.push_back(std::make_pair(j, k));
       if (lattice.back().first >= num_sites) {
 	std::cerr << "error: first index of"  << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range" << std::endl;
