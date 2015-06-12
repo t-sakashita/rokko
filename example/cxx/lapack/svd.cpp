@@ -11,6 +11,7 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/lapack.h>
+#include <boost/lexical_cast.hpp>
 
 typedef rokko::localized_vector<double> vector_t;
 typedef rokko::localized_matrix<double, rokko::matrix_col_major> matrix_t;
@@ -19,6 +20,11 @@ int main(int argc, char *argv[]) {
   int info;
   int m = 6;
   int n = 4;
+  if (argc > 2) {
+    m = boost::lexical_cast<int>(argv[1]);
+    n = boost::lexical_cast<int>(argv[2]);
+  }
+  std::cout << "m = " << m << "\nn = " << n << std::endl;
   int k = std::min(m, n);
 
   // generate random martix
