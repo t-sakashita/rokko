@@ -22,11 +22,6 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  rokko::global_timer::registrate(10, "main");
-  rokko::global_timer::registrate(11, "generate_matrix");
-  rokko::global_timer::registrate(12, "output_results");
-
-  rokko::global_timer::start(10);
   std::string solver_name(rokko::serial_dense_solver::default_solver());
   std::string lattice_file("xyz.dat");
   if (argc >= 2) solver_name = argv[1];
@@ -49,10 +44,8 @@ int main(int argc, char *argv[]) {
             << "number of bonds = " << lattice.size() << std::endl
             << "matrix dimension = " << dim << std::endl;
 
-  rokko::global_timer::start(11);
   rokko::localized_matrix<double, matrix_major> mat(dim, dim);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
-  rokko::global_timer::stop(11);
 
   rokko::localized_vector<double> eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
@@ -63,20 +56,14 @@ int main(int argc, char *argv[]) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }
-  rokko::global_timer::start(11);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
-  rokko::global_timer::stop(11);
 
-  rokko::global_timer::start(12);
   std::cout << "smallest eigenvalues:";
   for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(i);
   std::cout << std::endl;
   std::cout << "residual of the smallest eigenvalue/vector: |x A x - lambda| = "
             << std::abs(eigvec.col(0).transpose() * mat * eigvec.col(0) - eigval(0))
             << std::endl;
-  rokko::global_timer::stop(12);
 
   solver.finalize();
-  rokko::global_timer::stop(10);
-  rokko::global_timer::summarize();
 }

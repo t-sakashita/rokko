@@ -2,9 +2,7 @@
 !*
 !* Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !*
-!* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-!*                            Synge Todo <wistaria@comp-phys.org>,
-!*                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
+!* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 !*
 !* Distributed under the Boost Software License, Version 1.0. (See accompanying
 !* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,8 +15,6 @@ module mod_frank
   double precision, allocatable, target :: localized_array(:, :)
   contains
   double precision function func(i, j) bind(c)
-!    common /mydata/n
-!    common /mydata/localized_array
     integer(c_int), value, intent(in) :: i, j
     print*, "i=", i
     func = localized_array(i+1,j+1)
@@ -37,15 +33,11 @@ program frank_matrix
   type(rokko_distributed_matrix)::mat,Z !defined in rokko
   type(rokko_grid)::grid !defined in rokko
   type(rokko_parallel_dense_solver)::solver !defined in rokko
-!  type(timer)::timer_
 
   type(rokko_localized_vector)::w !localized_vector
   character(len=100)::solver_name
   character(len=100)::tmp_str
   integer args_cnt, arg_len, status
-!  integer(c_int) :: n
-!  common /mydata/n
-!  common /mydata/localized_array
 
   !---MPI variables---
   integer::provided,ierr,myrank,nprocs,comm,myrank_g,nprocs_g
@@ -56,7 +48,6 @@ program frank_matrix
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
-!  comm = MPI_COMM_WORLD
 
   if (command_argument_count().eq.2) then
      call get_command_argument(1, tmp_str, arg_len, status)
@@ -67,9 +58,6 @@ program frank_matrix
      write(*,'(A)') "Error: frank solver_name dimension"
      stop
   endif
-
-!  call set_timer(timer_)
-!  call registrate_timer(timer_, 1, "diagonalize")
 
   write(*,*) "solver_name=", solver_name
   write(*,*) "dim=",dim
