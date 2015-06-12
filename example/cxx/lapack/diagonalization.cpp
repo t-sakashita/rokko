@@ -24,20 +24,20 @@ int main(int argc, char *argv[]) {
 
   // generate symmmetric random martix
   matrix_t mat = matrix_t::Random(n, n);
-  mat += mat.adjoint().eval(); // eval() is required to avoid aliasing issue
+  mat += mat.transpose().eval(); // eval() is required to avoid aliasing issue
   std::cout << "Input random matrix A:\n" << mat << std::endl;
 
   // diagonalization
   vector_t w(n);
   matrix_t v = mat; // v will be overwritten by eigenvectors
-  info = LAPACKE_heev(LAPACK_COL_MAJOR, 'V', 'U', n, &v(0, 0), n, &w(0));
+  info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', n, &v(0, 0), n, &w(0));
   std::cout << "Eigenvalues:\n" << w << std::endl;
   std::cout << "Eigenvectors:\n" << v << std::endl;
 
   // check correctness of diagonalization
   matrix_t wmat = matrix_t::Zero(n, n);
   for (int i = 0; i < n; ++i) wmat(i, i) = w(i);
-  matrix_t check = v.adjoint() * mat * v;
+  matrix_t check = v.transpose() * mat * v;
   std::cout << "Vt * A * V:\n" << check << std::endl;
   std::cout << "| W - Vt * A * V | = " << (wmat - check).norm() << std::endl;
 }

@@ -34,13 +34,13 @@ int main(int argc, char *argv[]) {
   // orthonormalization
   matrix_t mat = a;
   vector_t tau(k);
-  info = LAPACKE_geqrf(LAPACK_COL_MAJOR, m, n, &mat(0, 0), m, &tau(0));
+  info = LAPACKE_dgeqrf(LAPACK_COL_MAJOR, m, n, &mat(0, 0), m, &tau(0));
   matrix_t r = mat;
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < i; ++j)
       r(i, j) = 0;
   std::cout << "Upper triangle matrix R:\n" << r << std::endl;
-  info = LAPACKE_ungqr(LAPACK_COL_MAJOR, m, k, k, &mat(0, 0), m, &tau(0));
+  info = LAPACKE_dorgqr(LAPACK_COL_MAJOR, m, k, k, &mat(0, 0), m, &tau(0));
   matrix_t q(m, k);
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < k; ++j)
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   std::cout << "Orthonormalized column vectors Q:\n" << q << std::endl;
 
   // check orthonormality
-  matrix_t check = q.adjoint() * q;
+  matrix_t check = q.transpose() * q;
   std::cout << "Check orthogonality:\n" << check << std::endl;
   std::cout << "Error: | I - Qt Q | = " <<  (matrix_t::Identity(n, n) - check).norm() << std::endl;
 
