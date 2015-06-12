@@ -11,6 +11,7 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/lapack.h>
+#include <boost/lexical_cast.hpp>
 
 typedef rokko::localized_vector<double> vector_t;
 typedef rokko::localized_matrix<std::complex<double> > matrix_t;
@@ -18,6 +19,8 @@ typedef rokko::localized_matrix<std::complex<double> > matrix_t;
 int main(int argc, char *argv[]) {
   int info;
   int n = 6;
+  if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
+  std::cout << "n = " << n << std::endl;
 
   // generate symmmetric random martix
   matrix_t mat = matrix_t::Random(n, n);
