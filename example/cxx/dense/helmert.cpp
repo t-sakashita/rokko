@@ -17,11 +17,6 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  rokko::global_timer::registrate(10, "main");
-  rokko::global_timer::registrate(11, "generate_matrix");
-  rokko::global_timer::registrate(12, "output_results");
-
-  rokko::global_timer::start(10);
   std::string solver_name(rokko::serial_dense_solver::default_solver());
   unsigned int dim = 10;
   if (argc >= 2) solver_name = argv[1];
@@ -35,11 +30,9 @@ int main(int argc, char *argv[]) {
             << "solver = " << solver_name << std::endl
             << "dimension = " << dim << std::endl;
 
-  rokko::global_timer::start(11);
   rokko::localized_matrix<double, matrix_major> mat(dim, dim);
   rokko::helmert_matrix::generate(mat);
   std::cout << "Helmert matrix:\n" << mat << std::endl;
-  rokko::global_timer::stop(11);
 
   rokko::localized_vector<double> eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
@@ -50,24 +43,18 @@ int main(int argc, char *argv[]) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }
-  rokko::global_timer::start(11);
   rokko::helmert_matrix::generate(mat);
-  rokko::global_timer::stop(11);
 
   bool sorted = true;
   for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
   if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
 
-  rokko::global_timer::start(12);
   std::cout << "eigenvalues:\n" << eigval.transpose() << std::endl
             << "eigvectors:\n" << eigvec << std::endl;
   std::cout << "orthogonality of eigenvectors:" << std::endl
             << eigvec.transpose() * eigvec << std::endl;
   std::cout << "residual of the smallest eigenvalue/vector (A x - lambda x):" << std::endl
             << (mat * eigvec.col(0) - eigval(0) * eigvec.col(0)).transpose() << std::endl;
-  rokko::global_timer::stop(12);
 
   solver.finalize();
-  rokko::global_timer::stop(10);
-  rokko::global_timer::summarize();
 }

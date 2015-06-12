@@ -18,11 +18,6 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  rokko::global_timer::registrate(10, "main");
-  rokko::global_timer::registrate(11, "generate_matrix");
-  rokko::global_timer::registrate(12, "output_results");
-
-  rokko::global_timer::start(10);
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
@@ -54,12 +49,10 @@ int main(int argc, char *argv[]) {
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::global_timer::start(11);
   rokko::distributed_matrix<double, matrix_major> mat(dim, dim, g, solver);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
-  rokko::global_timer::stop(11);
 
   rokko::localized_vector<double> eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(dim, dim, g, solver);
@@ -71,7 +64,6 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
-  rokko::global_timer::start(12);
   rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
@@ -82,10 +74,7 @@ int main(int argc, char *argv[]) {
               << std::abs(eigvec_loc.col(0).transpose() * mat_loc * eigvec_loc.col(0) - eigval(0))
               << std::endl;
   }
-  rokko::global_timer::stop(12);
 
   solver.finalize();
   MPI_Finalize();
-  rokko::global_timer::stop(10);
-  if (myrank == 0) rokko::global_timer::summarize();
 }
