@@ -19,6 +19,7 @@
 #include <fstream>
 #include <boost/tuple/tuple.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace rokko {
 
@@ -42,35 +43,57 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   }
 }
 
+
+bool detect_offset_info(std::string const& str_line, bool& offset1) {
+  boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
+  boost::tokenizer<boost::char_separator<char> >  tokens0(str_line, sep);
+  std::vector<std::string> tokens;
+  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string> >(tokens));
+  if (tokens.size() < 3) {
+    return false;
+  }
+
+  if (tokens[0]=="offset" && tokens[1]=="=") {
+    if (tokens[2]=="1") {
+      offset1 = true;
+      std::cout << "offset = 1" << std::endl;
+    } else if (tokens[2]=="0") {
+      offset1 = false;
+      std::cout << "offset = 0" << std::endl;
+    } else
+      throw "give 0 or 1 after 'offset='";
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+void read_offset_info(std::ifstream& ifs, bool& offset1) {
+  std::string str_line;
+  std::ifstream::pos_type file_pos;
+  do {
+    file_pos = ifs.tellg();
+    getline(ifs, str_line);
+    if (detect_offset_info(str_line, offset1)) {
+      return;
+    }
+   } while (str_line.empty());
+  ifs.seekg(file_pos);  // resotre file position
+}
+
 } // namespace detail
 
 void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<boost::tuple<double, double, double> >& coupling) {
-  std::string str_line;
   int num_bonds;
   std::istringstream is;
-  std::ifstream::pos_type file_pos;
   if (detail::read_line_with_comment(ifs, is)) {
     is >> num_sites >> num_bonds;
   }
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
   bool offset1 = false;
-  do {
-    file_pos = ifs.tellg();
-    getline(ifs, str_line);
-    std::cout << "str_line=" << str_line << std::endl;
-  } while (str_line.empty());
-
-  if (str_line.find("offset = 1") == 0) {
-    offset1 = true;
-    std::cout << "offset = 1" << std::endl;
-  } else if (str_line.find("offset = 0") == 0) {
-    offset1 = false;
-    std::cout << "offset = 0" << std::endl;
-  } else {
-    std::cout << "else file_pos" << std::endl;
-    ifs.seekg(file_pos);
-  }
+  detail::read_offset_info(ifs, offset1);
 
   do {
     int j, k;
@@ -79,10 +102,11 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
       std::cout << "j=" << j << " k=" << k << std::endl;
       if (offset1)  lattice.push_back(std::make_pair(j-1, k-1));
       else  lattice.push_back(std::make_pair(j, k));
-      if (lattice.back().first >= num_sites) {
-	std::cerr << "error: first index of"  << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range" << std::endl;
+      //std::cout << "back()=" << lattice.back().first << ", " << lattice.back().second << std::endl;
+      if ((lattice.back().first < 0) || (lattice.back().first >= num_sites)) {
+	std::cerr << "error: first index of "  << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range" << std::endl;
 	throw 1;
-      } else if (lattice.back().second >= num_sites) {
+      } else if ((lattice.back().second < 0) || (lattice.back().second >= num_sites)) {
 	std::cerr << "error: second index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().second << "\" is out of range" << std::endl;
 	throw 2;
       }
