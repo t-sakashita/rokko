@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_DIAGONALIZE_H
-#define ROKKO_EIGEN3_DIAGONALIZE_H
+#ifndef ROKKO_EIGEN3_DIAGONALIZE_HPP
+#define ROKKO_EIGEN3_DIAGONALIZE_HPP
 
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
@@ -20,9 +20,44 @@
 namespace rokko {
 namespace eigen3 {
 
+// only eigenvalues
 template<typename T, typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
-                localized_matrix<T, MATRIX_MAJOR>& eigvecs, timer& timer) {
+                rokko::parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
+  int info = 0;
+  timer.stop(timer_id::diagonalize_initialize);
+  timer.start(timer_id::diagonalize_diagonalize);
+  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  timer.stop(timer_id::diagonalize_diagonalize);
+  timer.start(timer_id::diagonalize_finalize);
+  eigvals = ES.eigenvalues();
+  timer.stop(timer_id::diagonalize_finalize);
+  return info;
+}
+
+template<typename T, typename MATRIX_MAJOR>
+int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
+                rokko::parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
+  int info = 0;
+  int dim = mat.rows();
+  if (eigvals_in.size() < dim) eigvals_in.resize(dim);
+  timer.stop(timer_id::diagonalize_initialize);
+  Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> > eigvals(&eigvals_in[0], eigvals_in.size());
+  timer.start(timer_id::diagonalize_diagonalize);
+  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  timer.stop(timer_id::diagonalize_diagonalize);
+  timer.start(timer_id::diagonalize_finalize);
+  eigvals = ES.eigenvalues();
+  timer.stop(timer_id::diagonalize_finalize);
+  return info;
+}
+
+// eigenvalues/eigenvectors
+template<typename T, typename MATRIX_MAJOR>
+int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
+                localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int info = 0;
   timer.stop(timer_id::diagonalize_initialize);
@@ -38,7 +73,7 @@ int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eig
 
 template<typename T, typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
-		localized_matrix<T, MATRIX_MAJOR>& eigvecs, timer& timer) {
+                localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int info = 0;
   int dim = mat.rows();
@@ -55,7 +90,8 @@ int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_
   return info;
 }
 
+
 } // namespace eigen3
 } // namespace rokko
 
-#endif // ROKKO_EIGEN3_DIAGONALIZE_H
+#endif // ROKKO_EIGEN3_DIAGONALIZE_HPP
