@@ -5,9 +5,9 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
-if [ -d $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION ]; then
+if [ -d $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION ]; then
   $SUDO rm -f $PREFIX_ROKKO/eigenexa
-  $SUDO ln -s $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION $PREFIX_ROKKO/eigenexa
+  $SUDO ln -s $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION $PREFIX_ROKKO/eigenexa
 fi
 
 BUILD_TYPES="Release Debug"

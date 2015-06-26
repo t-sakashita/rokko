@@ -5,9 +5,9 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
-if [ -d $PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_PATCH_VERSION ]; then
+if [ -d $PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION ]; then
   $SUDO rm -f $PREFIX_ROKKO/petsc
-  $SUDO ln -s $PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_PATCH_VERSION $PREFIX_ROKKO/petsc
+  $SUDO ln -s $PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION $PREFIX_ROKKO/petsc
 fi
 
 BUILD_TYPES="Release Debug"

@@ -8,7 +8,7 @@ set_prefix
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   $SUDO rm -f $PREFIX_ROKKO/elemental
-  $SUDO ln -s $PREFIX_ROKKO/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_PATCH_VERSION $PREFIX_ROKKO/elemental
+  $SUDO ln -s $PREFIX_ROKKO/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION $PREFIX_ROKKO/elemental
   $SUDO rm -f $PREFIX_ROKKO/rokkoenv-$build_type.d/elementalvars.sh
   $SUDO ln -s $PREFIX_ROKKO/elemental/$build_type/elementalvars.sh $PREFIX_ROKKO/rokkoenv-$build_type.d/elementalvars.sh
 done

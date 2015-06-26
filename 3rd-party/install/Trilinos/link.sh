@@ -5,9 +5,9 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
-if [ -d $PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_PATCH_VERSION ]; then
+if [ -d $PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION ]; then
   $SUDO rm -f $PREFIX_ROKKO/trilinos
-  $SUDO ln -s $PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_PATCH_VERSION $PREFIX_ROKKO/trilinos
+  $SUDO ln -s $PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION $PREFIX_ROKKO/trilinos
 fi
 
 BUILD_TYPES="Release Debug"

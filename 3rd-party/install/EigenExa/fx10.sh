@@ -9,7 +9,7 @@ sh $SCRIPT_DIR/setup.sh
 
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX_BACKEND=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION/Linux-s64fx/$build_type
+  PREFIX_BACKEND=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx/$build_type
   cd $BUILD_DIR
   mkdir -p EigenExa-$EIGENEXA_VERSION-build-Linux-s64fx-$build_type
   cd EigenExa-$EIGENEXA_VERSION-build-Linux-s64fx-$build_type
@@ -21,14 +21,22 @@ for build_type in $BUILD_TYPES; do
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
   check make VERBOSE=1 -j4
   $SUDO make install
+done
+
+DATE=$(date +%Y%m%d-%H%M%S)
+for build_type in $BUILD_TYPES; do
+  PREFIX_BACKEND=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx/$build_type
+  $SUDO make install
   cat << EOF > $BUILD_DIR/eigenexavars.sh
-export EIGENEXA_ROOT=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION/Linux-s64fx
+# eigenexa $(basename $0 .sh) $EIGENEXA_VERSION $EIGENEXA_RK_REVISION $DATE
+export EIGENEXA_ROOT=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx
 export LD_LIBRARY_PATH=$PREFIX_BACKEND/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/eigenexavars.sh $PREFIX_BACKEND
 done
 
 cat << EOF > $BUILD_DIR/eigenexavars.sh
-export EIGENEXA_ROOT=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION/Linux-s64fx
+# eigenexa $(basename $0 .sh) $EIGENEXA_VERSION $EIGENEXA_RK_REVISION $DATE
+export EIGENEXA_ROOT=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx
 EOF
-$SUDO cp -f $BUILD_DIR/eigenexavars.sh $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_PATCH_VERSION/Linux-s64fx
+$SUDO cp -f $BUILD_DIR/eigenexavars.sh $PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx

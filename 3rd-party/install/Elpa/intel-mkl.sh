@@ -9,9 +9,8 @@ sh $SCRIPT_DIR/setup.sh
 
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION/$build_type
+  PREFIX=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION/$build_type
   cd $BUILD_DIR
-  rm -rf elpa_lib-$ELPA_VERSION-build-$build_type
   mkdir -p elpa_lib-$ELPA_VERSION-build-$build_type
   cd elpa_lib-$ELPA_VERSION-build-$build_type
   if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
@@ -29,14 +28,21 @@ for build_type in $BUILD_TYPES; do
   fi
   check make VERBOSE=1 -j4
   $SUDO make install
+done
+
+DATE=$(date +%Y%m%d-%H%M%S)
+for build_type in $BUILD_TYPES; do
+  PREFIX=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION/$build_type
   cat << EOF > $BUILD_DIR/elpavars.sh
-export ELPA_ROOT=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION
+# elpa $(basename $0 .sh) $ELPA_VERSION $ELPA_RK_REVISION $DATE
+export ELPA_ROOT=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION
 export LD_LIBRARY_PATH=$PREFIX/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/elpavars.sh $PREFIX
 done
 
 cat << EOF > $BUILD_DIR/elpavars.sh
-export ELPA_ROOT=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION
+# elpa $(basename $0 .sh) $ELPA_VERSION $ELPA_RK_REVISION $DATE
+export ELPA_ROOT=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION
 EOF
-$SUDO cp -f $BUILD_DIR/elpavars.sh $PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION
+$SUDO cp -f $BUILD_DIR/elpavars.sh $PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION

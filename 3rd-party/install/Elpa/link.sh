@@ -5,9 +5,9 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
-if [ -d $PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION ]; then
+if [ -d $PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION ]; then
   $SUDO rm -f $PREFIX_ROKKO/elpa
-  $SUDO ln -s $PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_PATCH_VERSION $PREFIX_ROKKO/elpa
+  $SUDO ln -s $PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION $PREFIX_ROKKO/elpa
 fi
 
 BUILD_TYPES="Release Debug"

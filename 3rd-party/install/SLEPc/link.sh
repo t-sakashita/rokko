@@ -5,9 +5,9 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
-if [ -d $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION ]; then
+if [ -d $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION ]; then
   $SUDO rm -f $PREFIX_ROKKO/slepc
-  $SUDO ln -s $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_PATCH_VERSION $PREFIX_ROKKO/slepc
+  $SUDO ln -s $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION $PREFIX_ROKKO/slepc
 fi
 
 BUILD_TYPES="Release Debug"
