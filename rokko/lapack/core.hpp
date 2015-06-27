@@ -19,10 +19,6 @@
 namespace rokko {
 namespace lapack {
 
-struct dsyev {};
-// struct dsyevd {};
-// struct dsyevx {};
-
 class solver {
 public:
   void initialize(int& argc, char**& argv) {}
@@ -52,12 +48,12 @@ template<typename MATRIX_MAJOR>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 double* eigvals,
 			 rokko::parameters const& params, timer& timer) {
-  if (routine=="lapack:dsyev") {
+  if ((routine=="") || (routine=="dsyev") || (routine=="qr")) {
     std::cout << "lapack:dyev" << std::endl;
     rokko::lapack::diagonalize(mat, eigvals, params, timer);
-  } else if (routine=="lapack:dsyevr") {
+  } else if ((routine=="dsyevr") || (routine=="mr3")) {
     rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
-  } else if (routine=="lapack:dsyevd") {
+  } else if ((routine=="dsyevd") || (routine=="dc")) {
     rokko::lapack::diagonalize_d(mat, eigvals, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
@@ -81,12 +77,12 @@ template<typename MATRIX_MAJOR>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, timer& timer) {
-  if (routine=="lapack:dsyev") {
-    std::cout << "lapack:dyev" << std::endl;
+  if ((routine=="") || (routine=="dsyev") || (routine=="qr")) {
+    std::cout << "selected dsyev" << std::endl;
     rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
-  } else if (routine=="lapack:dsyevr") {
+  } else if ((routine=="dsyevr") || (routine=="mr3")) {
     rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
-  } else if (routine=="lapack:dsyevd") {
+  } else if ((routine=="dsyevd") || (routine=="dc")) {
     rokko::lapack::diagonalize_d(mat, eigvals, eigvecs, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;

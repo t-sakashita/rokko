@@ -18,20 +18,20 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  std::string library_routine(rokko::serial_dense_solver::default_solver());
   unsigned int dim = 10;
-  if (argc >= 2) solver_name = argv[1];
+  if (argc >= 2) library_routine = argv[1];
   if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
   std::vector<std::string> v;
-  boost::algorithm::split(v, solver_name, boost::is_any_of(":"));
+  boost::algorithm::split(v, library_routine, boost::is_any_of(":"));
   std::string library = v[0];
   std::string routine = v[1];
 
   std::cout.precision(5);
   std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
-            << "solver = " << solver_name << std::endl
-	    << "library = " << library << std::endl
-	    << "routine = " << routine << std::endl
+            << "library:routine = " << library_routine << std::endl
+	    << "library = " << library << "@" << std::endl
+	    << "routine = " << routine << "@" << std::endl
 	    << "dimension = " << dim << std::endl;
 
   rokko::serial_dense_solver solver(library);
@@ -44,15 +44,15 @@ int main(int argc, char *argv[]) {
   rokko::localized_vector<double> eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   rokko::parameters params;
-  //params.set("upper_limit", 1.2);
-  //params.set("lower_limit", 0.1);
-  params.set("upper_limit", 5);
-  params.set("lower_limit", 3);
+  params.set("upper_limit", 1.2);
+  params.set("lower_limit", 0.1);
+  //params.set("upper_limit", 5);
+  //params.set("lower_limit", 3);
+  params.set("uplow", 'L');
   params.set("verbose", true);
   try {
-    //solver.diagonalize(mat, eigval, params);
-    //solver.diagonalize("lapack:dsyev", mat, eigval, eigvec, params);
-    solver.diagonalize(solver_name, mat, eigval, params);
+    //solver.diagonalize(routine, mat, eigval, eigvec, params);
+    solver.diagonalize(routine, mat, eigval, params);
   }
   catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;
