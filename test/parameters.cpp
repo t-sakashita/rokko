@@ -14,17 +14,22 @@
 
 int main(int argc, char **argv) {
   rokko::parameters params;
-
+  char p = 'V';
   // set some parameters
   params.set("T", 0.95);
   params.set("Pi", 3.14);
   params.set("A", "test");
+  //params.set("C", 'A');
+  params.set("C", p);
 
   // get double
   double t = params.get<double>("T");
 
   // get string
   std::string a = params.get<std::string>("A");
+
+  // get char
+  char c = params.get<char>("C");
 
   // is "T" defined?
   bool t_defined = params.defined("T");

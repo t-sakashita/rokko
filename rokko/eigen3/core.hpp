@@ -21,15 +21,20 @@ class solver {
 public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  template<typename T, typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
-                   localized_matrix<T, MATRIX_MAJOR>& eigvecs, timer& timer) {
-    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer);
+  // eigenvalues/eigenvectors
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, localized_matrix<T, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+		   localized_matrix<T, MATRIX_MAJOR>& eigvecs,
+		   rokko::parameters const& params, timer& timer) {
+    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params, timer);
   }
-  template<typename T, typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals,
-                   localized_matrix<T, MATRIX_MAJOR>& eigvecs, timer& timer) {
-    rokko::eigen3::diagonalize(mat, eigvals, eigvecs, timer);
+  // only eigenvalues
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, localized_matrix<T, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+		   rokko::parameters const& params, timer& timer) {
+    rokko::eigen3::diagonalize(mat, eigvals, params, timer);
   }
 };
 

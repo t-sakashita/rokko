@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_HPP
+#ifndef ROKKO_LAPACK_DIAGONALIZE_D_HPP
+#define ROKKO_LAPACK_DIAGONALIZE_D_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/localized_matrix.hpp>
@@ -21,23 +21,21 @@
 namespace rokko {
 namespace lapack {
 
-// dsyev only eigenvalues
+// dsyevd only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		rokko::parameters const& params, timer& timer) {
-  char jobz = 'N';  // only eigenvalues
-
+int diagonalize_d(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+		  rokko::parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_diagonalize);
   //std::string matrix_part = "upper";
   char uplow = 'U';
   get_key(params, "uplow", uplow);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.outerSize();
   int info;
   if(mat.is_col_major())
-    info = LAPACKE_dsyev(LAPACK_COL_MAJOR, jobz, uplow, dim, &mat(0,0), dim, eigvals);
+    info = LAPACKE_dsyevd(LAPACK_COL_MAJOR, 'N', 'U', dim, &mat(0,0), dim, eigvals);
   else
-    info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), dim, eigvals);
+    info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, 'N', 'U', dim, &mat(0,0), dim, eigvals);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
@@ -48,24 +46,22 @@ int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   return info;
 }
 
-// dsyev eigenvalues / eigenvectors
+// dsyevd eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-                localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		rokko::parameters const& params, timer& timer) {
-  char jobz = 'V';  // eigenvalues / eigenvectors
-
+int diagonalize_d(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+		  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+		  rokko::parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_diagonalize);
   //std::string matrix_part = "upper";
   char uplow = 'U';
   get_key(params, "uplow", uplow);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.outerSize();
   int info;
   if(mat.is_col_major())
-    info = LAPACKE_dsyev(LAPACK_COL_MAJOR, jobz, uplow, dim, &mat(0,0), dim, eigvals);
+    info = LAPACKE_dsyevd(LAPACK_COL_MAJOR, 'V', 'U', dim, &mat(0,0), dim, eigvals);
   else
-    info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), dim, eigvals);
+    info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, 'V', 'U', dim, &mat(0,0), dim, eigvals);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   eigvecs = mat;
@@ -77,7 +73,8 @@ int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   return info;
 }
 
+
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_HPP
+#endif // ROKKO_LAPACK_DIAGONALIZE_D_HPP

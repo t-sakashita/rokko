@@ -12,6 +12,7 @@
 #ifndef ROKKO_PARAMETERS_HPP
 #define ROKKO_PARAMETERS_HPP
 
+#include <iostream>
 #include <list>
 #include <map>
 #include <string>
@@ -79,9 +80,42 @@ public:
       throw "error: get_string only accepts char*, string, int or double as an argument";      
     }
   }
+  bool get_bool(std::string const& key) const {
+    if (defined(key)) {
+      if (type(key) == typeid(bool)) {
+	return get<bool>(key);
+      }
+      else {
+	std::cerr << "error: get_bool";
+	throw;
+      }
+    }
+    return false;
+  }
 private:
   std::map<std::string, boost::any> map_;
 };
+
+
+//void get_2string(rokko::parameters const& params, std::string const& key, char keyword_char, std::string const& keyword_str) {
+//  if (params.type(key) == typeid(const char*)) {
+//    letter = *(params.get<const char*>(key));
+//  } else if (params.type(key) == typeid(const char*)) {
+//    letter = params.get<char>(key);    
+//  }
+//}
+
+template <typename T>
+bool get_key(rokko::parameters const& params, std::string const& key, T& value) {
+  if (params.defined(key)) {
+    if (params.type(key) == typeid(T)) {
+      value = params.get<T>(key);
+      return true;
+    }
+  }
+  return false;
+}
+
 
 } // namespace rokko
 
