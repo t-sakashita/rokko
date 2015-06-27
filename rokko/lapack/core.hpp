@@ -15,6 +15,7 @@
 #include <rokko/lapack/diagonalize.hpp>
 #include <rokko/lapack/diagonalize_d.hpp>
 #include <rokko/lapack/diagonalize_r.hpp>
+#include <rokko/lapack/diagonalize_x.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -55,6 +56,8 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
     rokko::lapack::diagonalize_d(mat, eigvals, params, timer);
+  } else if (routine=="dsyevx") {
+    rokko::lapack::diagonalize_x(mat, eigvals, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
@@ -84,6 +87,8 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
     rokko::lapack::diagonalize_d(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="dsyevx") {
+    rokko::lapack::diagonalize_x(mat, eigvals, eigvecs, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
