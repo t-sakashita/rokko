@@ -69,6 +69,10 @@ int diagonalize_x(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
     std::cerr << "error at dsyevx function. info=" << info << std::endl;
+    if (info < 0) {
+      std::cerr << "This means that ";
+      std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+    }
     exit(1);
   }
   params_out.set("m", m);
@@ -141,7 +145,21 @@ int diagonalize_x(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
-    std::cerr << "error at dsyevx function. info=" << info << std::endl;
+    std::cerr << "Error at dsyevx function. info=" << info << std::endl;
+    if (params.get_bool("verbose")) {
+      std::cerr << "This means that ";
+      if (info < 0) {
+	std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+      } else {
+	std::cerr << "This means that "	<< info << " eigenvectors failed to converge." << std::endl;
+	std::cerr << "The indices of the eigenvectors that failed to converge:" << std::endl;
+	for (int i=0; i<ifail.size(); ++i) {
+	  if (ifail[i] == 0) break;
+	  std::cerr << ifail[i] << " ";
+	}
+	std::cerr << std::endl;
+      }
+    }
     exit(1);
   }
   params_out.set("m", m);
