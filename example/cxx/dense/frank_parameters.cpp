@@ -30,8 +30,8 @@ int main(int argc, char *argv[]) {
   std::cout.precision(5);
   std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
             << "library:routine = " << library_routine << std::endl
-	    << "library = " << library << "@" << std::endl
-	    << "routine = " << routine << "@" << std::endl
+	    << "library = " << library << std::endl
+	    << "routine = " << routine << std::endl
 	    << "dimension = " << dim << std::endl;
 
   rokko::serial_dense_solver solver(library);

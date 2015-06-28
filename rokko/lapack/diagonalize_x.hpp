@@ -86,7 +86,7 @@ int diagonalize_x(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
     else if (upper_limit_int && lower_limit_int)
       std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
     std::cout << "The number of found eigenvalues are " << m << std::endl;
-    std::cout << "The " << matrix_part << " part of the matrix is used" << std::endl;
+    std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
     std::cout << "abstol=" << abstol << std::endl;
   }
   timer.stop(timer_id::diagonalize_finalize);
@@ -173,7 +173,7 @@ int diagonalize_x(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
     else if (upper_limit_int && lower_limit_int)
       std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
     std::cout << "The number of found eigenvalues are " << m << std::endl;
-    std::cout << "The " << matrix_part << " part of the matrix is used" << std::endl;
+    std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
     std::cout << "abstol=" << abstol << std::endl;
   }
   timer.stop(timer_id::diagonalize_finalize);
