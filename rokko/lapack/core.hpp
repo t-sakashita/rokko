@@ -16,6 +16,7 @@
 #include <rokko/lapack/diagonalize_d.hpp>
 #include <rokko/lapack/diagonalize_r.hpp>
 #include <rokko/lapack/diagonalize_x.hpp>
+#include <rokko/lapack/diagonalize_bisection.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -58,6 +59,8 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_d(mat, eigvals, params, timer);
   } else if (routine=="dsyevx") {
     rokko::lapack::diagonalize_x(mat, eigvals, params, timer);
+  } else if (routine=="bisection") {
+    rokko::lapack::diagonalize_bisection(mat, eigvals, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
@@ -89,6 +92,8 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_d(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="dsyevx") {
     rokko::lapack::diagonalize_x(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="bisection") {
+    rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
