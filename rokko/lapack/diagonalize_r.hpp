@@ -21,6 +21,31 @@
 namespace rokko {
 namespace lapack {
 
+void get_matrix_part(rokko::parameters const& params, std::string& matrix_part, char& uplow) {
+  if (params.defined("uplow"))
+    matrix_part = params.get_string("uplow");
+  if (params.defined("matrix_part"))
+    matrix_part = params.get_string("matrix_part");
+  if ((matrix_part[0] == 'u') || (matrix_part[0] == 'U'))
+    matrix_part = "upper";  uplow = 'U';
+  if ((matrix_part[0] == 'l') || (matrix_part[0] == 'L'))
+    matrix_part = "lower";  uplow = 'L';
+}
+
+
+void get_matrix_part(rokko::parameters const& params, std::string& matrix_part, char& range, double vu, double vl, int iu, int il, bool& is_upper_value, bool& is_lower_value, bool& is_upper_index, bool& is_lower_index) {
+  is_upper_value = get_key(params, "upper_value", vu);
+  is_upper_index = get_key(params, "upper_value", iu);
+  is_lower_value = get_key(params, "lower_value", vl);
+  is_lower_index = get_key(params, "lower_value", il);
+  if (is_upper_index && is_lower_index)   range = 'I';
+  if (is_upper_value && is_lower_value)   range = 'V';
+  if (is_upper_index && is_lower_value) {
+    std::cerr << "error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index";
+    throw;
+  }
+}
+
 // dsyevr only eigenvalues
 template<typename MATRIX_MAJOR>
 int diagonalize_r(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
@@ -35,28 +60,13 @@ int diagonalize_r(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 
   std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
-  if (params.defined("uplow"))
-    matrix_part = params.get_string("uplow");
-  if (params.defined("matrix_part"))
-    matrix_part = params.get_string("matrix_part");
-  if ((matrix_part == "upper") || (matrix_part == "U"))
-    matrix_part = "upper";  uplow = 'U';
-  if ((matrix_part == "lower") || (matrix_part == "L"))
-    matrix_part = "lower";  uplow = 'L';
+  get_matrix_part(params, matrix_part, uplow);
 
   char range = 'A';  // default is 'A'
   lapack_int il = 0, iu = 0;
   double vl = 0, vu = 0;
-  bool upper_limit_double = get_key(params, "upper_limit", vu);
-  bool upper_limit_int = get_key(params, "upper_limit", iu);
-  bool lower_limit_double = get_key(params, "lower_limit", vl);
-  bool lower_limit_int = get_key(params, "lower_limit", il);
-  if (upper_limit_int && lower_limit_int)   range = 'I';
-  if (upper_limit_double && lower_limit_double)   range = 'V';
-  if (upper_limit_int && lower_limit_double) {
-    std::cerr << "error: upper_limit and lower_limit must be the same type";
-    throw;
-  }
+  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
+  get_matrix_part(params, matrix_part, range, vu, vl, iu, il, is_upper_value, is_lower_value, is_upper_index, is_lower_index);
 
   std::vector<lapack_int> isuppz(2*dim+1);
   timer.start(timer_id::diagonalize_diagonalize);
@@ -73,14 +83,14 @@ int diagonalize_r(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   }
   params_out.set("m", m);
   params_out.set("isuppz", isuppz);
-  
+
   if (params.get_bool("verbose")) {
     if (range == 'A')
-      std::cout << "All eigenvalues/eigenvectors were requested" << std::endl;
-    else if (upper_limit_double && lower_limit_double)
-      std::cout << "Eigenvalues/eigenvectors contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
-    else if (upper_limit_int && lower_limit_int)
-      std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
+      std::cout << "All eigenvalues were requested" << std::endl;
+    else if (is_upper_value && is_lower_value)
+      std::cout << "Eigenvalues contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
+    else if (is_upper_index && is_lower_index)
+      std::cout << "Eigenvalues from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
     std::cout << "The number of found eigenvalues are " << m << std::endl;
     std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
     std::cout << "abstol=" << abstol << std::endl;
@@ -109,28 +119,13 @@ int diagonalize_r(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 
   std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
-  if (params.defined("uplow"))
-    matrix_part = params.get_string("uplow");
-  if (params.defined("matrix_part"))
-    matrix_part = params.get_string("matrix_part");
-  if ((matrix_part == "upper") || (matrix_part == "U"))
-    matrix_part = "upper";  uplow = 'U';
-  if ((matrix_part == "lower") || (matrix_part == "L"))
-    matrix_part = "lower";  uplow = 'L';
+  get_matrix_part(params, matrix_part, uplow);
 
   char range = 'A';  // default is 'A'
   lapack_int il = 0, iu = 0;
   double vl = 0, vu = 0;
-  bool upper_limit_double = get_key(params, "upper_limit", vu);
-  bool upper_limit_int = get_key(params, "upper_limit", iu);
-  bool lower_limit_double = get_key(params, "lower_limit", vl);
-  bool lower_limit_int = get_key(params, "lower_limit", il);
-  if (upper_limit_int && lower_limit_int)   range = 'I';
-  if (upper_limit_double && lower_limit_double)   range = 'V';
-  if (upper_limit_int && lower_limit_double) {
-    std::cerr << "error: upper_limit and lower_limit must be the same type";
-    throw;
-  }
+  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
+  get_matrix_part(params, matrix_part, range, vu, vl, iu, il, is_upper_value, is_lower_value, is_upper_index, is_lower_index);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int info;
@@ -150,9 +145,9 @@ int diagonalize_r(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   if (params.get_bool("verbose")) {
     if (range == 'A')
       std::cout << "All eigenvalues/eigenvectors were requested" << std::endl;
-    else if (upper_limit_double && lower_limit_double)
+    else if (is_upper_value && is_lower_value)
       std::cout << "Eigenvalues/eigenvectors contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
-    else if (upper_limit_int && lower_limit_int)
+    else if (is_upper_index && is_lower_index)
       std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
     std::cout << "The number of found eigenvalues are " << m << std::endl;
     std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
