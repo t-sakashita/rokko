@@ -20,11 +20,29 @@
 namespace rokko {
 namespace eigen3 {
 
+char get_matrix_part(rokko::parameters const& params) {
+  std::string matrix_part;
+  if (params.defined("uplow"))
+    matrix_part = params.get_string("uplow");
+  if (params.defined("matrix_part"))
+    matrix_part = params.get_string("matrix_part");
+  if ((matrix_part[0] == 'u') || (matrix_part[0] == 'U'))
+    return 'U';
+  if ((matrix_part[0] == 'l') || (matrix_part[0] == 'L'))
+    return 'L';
+  else
+    return '\0';
+}
+
 // only eigenvalues
 template<typename T, typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
                 rokko::parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
+  if (get_matrix_part(params) == 'U') {
+    std::cerr << "Error: eigen3:qr (Eigen::SelfAdjointEigenSolver) does not support upper part of matrix." << std::endl;
+    throw;
+  }
   int info = 0;
   timer.stop(timer_id::diagonalize_initialize);
   timer.start(timer_id::diagonalize_diagonalize);
@@ -40,6 +58,10 @@ template<typename T, typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
                 rokko::parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
+  if (get_matrix_part(params) == 'U') {
+    std::cerr << "Error: eigen3:qr (Eigen::SelfAdjointEigenSolver) does not support upper part of matrix." << std::endl;
+    throw;
+  }
   int info = 0;
   int dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
@@ -59,6 +81,10 @@ template<typename T, typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
                 localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
+  if (get_matrix_part(params) == 'U') {
+    std::cerr << "Error: eigen3:qr (Eigen::SelfAdjointEigenSolver) does not support upper part of matrix." << std::endl;
+    throw;
+  }
   int info = 0;
   timer.stop(timer_id::diagonalize_initialize);
   timer.start(timer_id::diagonalize_diagonalize);
@@ -75,6 +101,10 @@ template<typename T, typename MATRIX_MAJOR>
 int diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
                 localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
+  if (get_matrix_part(params) == 'U') {
+    std::cerr << "Error: eigen3:qr (Eigen::SelfAdjointEigenSolver) does not support upper part of matrix." << std::endl;
+    throw;
+  }
   int info = 0;
   int dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
