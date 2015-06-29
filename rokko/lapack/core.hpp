@@ -12,10 +12,10 @@
 #ifndef ROKKO_LAPACK_CORE_HPP
 #define ROKKO_LAPACK_CORE_HPP
 
-#include <rokko/lapack/diagonalize.hpp>
-#include <rokko/lapack/diagonalize_d.hpp>
-#include <rokko/lapack/diagonalize_r.hpp>
-#include <rokko/lapack/diagonalize_x.hpp>
+#include <rokko/lapack/diagonalize_dsyev.hpp>
+#include <rokko/lapack/diagonalize_dsyevd.hpp>
+#include <rokko/lapack/diagonalize_dsyevr.hpp>
+#include <rokko/lapack/diagonalize_dsyevx.hpp>
 #include <rokko/lapack/diagonalize_bisection.hpp>
 
 namespace rokko {
@@ -51,21 +51,21 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 			 double* eigvals,
 			 rokko::parameters const& params, timer& timer) {
   if ((routine=="dsyev") || (routine=="qr")) {
-    rokko::lapack::diagonalize(mat, eigvals, params, timer);
+    rokko::lapack::diagonalize_dsyev(mat, eigvals, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
-    rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
+    rokko::lapack::diagonalize_dsyevr(mat, eigvals, params, timer);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
-    rokko::lapack::diagonalize_d(mat, eigvals, params, timer);
+    rokko::lapack::diagonalize_dsyevd(mat, eigvals, params, timer);
   } else if (routine=="dsyevx") {
-    rokko::lapack::diagonalize_x(mat, eigvals, params, timer);
+    rokko::lapack::diagonalize_dsyevx(mat, eigvals, params, timer);
   } else if (routine=="bisection") {
     rokko::lapack::diagonalize_bisection(mat, eigvals, params, timer);
   } else if (routine=="") {
     if (params.defined("upper_limit") || params.defined("lower_limit")) {
-      rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
+      rokko::lapack::diagonalize_dsyevr(mat, eigvals, params, timer);
     }
     else {
-      rokko::lapack::diagonalize(mat, eigvals, params, timer);
+      rokko::lapack::diagonalize_dsyev(mat, eigvals, params, timer);
     }
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
@@ -90,21 +90,21 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, timer& timer) {
   if ((routine=="dsyev") || (routine=="qr")) {
-    rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
+    rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
-    rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
+    rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
-    rokko::lapack::diagonalize_d(mat, eigvals, eigvecs, params, timer);
+    rokko::lapack::diagonalize_dsyevd(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="dsyevx") {
-    rokko::lapack::diagonalize_x(mat, eigvals, eigvecs, params, timer);
+    rokko::lapack::diagonalize_dsyevx(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="bisection") {
     rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="") {
     if (params.defined("upper_limit") || params.defined("lower_limit")) {
-      rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
+      rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
     }
     else {
-      rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
+      rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
     }
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;

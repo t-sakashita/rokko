@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_D_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_D_HPP
+#ifndef ROKKO_LAPACK_DIAGONALIZE_DSYEVD_HPP
+#define ROKKO_LAPACK_DIAGONALIZE_DSYEVD_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/localized_matrix.hpp>
@@ -24,7 +24,7 @@ namespace lapack {
 
 // dsyevd only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_d(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 		  rokko::parameters const& params, timer& timer) {
   char jobz = 'N';  // only eigenvalues
   std::string matrix_part = "upper"; // default is "upper"
@@ -53,7 +53,7 @@ int diagonalize_d(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 
 // dsyevd eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_d(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 		  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 		  rokko::parameters const& params, timer& timer) {
   char jobz = 'V';  // only eigenvalues
@@ -86,4 +86,4 @@ int diagonalize_d(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_D_HPP
+#endif // ROKKO_LAPACK_DIAGONALIZE_DSYEVD_HPP
