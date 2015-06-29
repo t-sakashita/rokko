@@ -34,38 +34,23 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   get_key(params, "abstol", abstol);
   if (abstol < 0) {
     std::cerr << "Error in diagonalize_bisection" << std::endl
-	      << "abstol is negative value, which means QR method (if not converged, bisection)." << std::endl
+	      << "abstol is negative value, which means QR method." << std::endl
 	      << "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
     throw;
   }
   if (!params.defined("abstol")) {  // default: optimal value for bisection method
     abstol = 2 * LAPACKE_dlamch('S');
   }
-      
+
   std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
-  if (params.defined("uplow"))
-    matrix_part = params.get_string("uplow");
-  if (params.defined("matrix_part"))
-    matrix_part = params.get_string("matrix_part");
-  if ((matrix_part == "upper") || (matrix_part == "U"))
-    matrix_part = "upper";  uplow = 'U';
-  if ((matrix_part == "lower") || (matrix_part == "L"))
-    matrix_part = "lower";  uplow = 'L';
+  get_matrix_part(params, matrix_part, uplow);
 
   char range = 'A';  // default is 'A'
   lapack_int il = 0, iu = 0;
   double vl = 0, vu = 0;
-  bool upper_limit_double = get_key(params, "upper_limit", vu);
-  bool upper_limit_int = get_key(params, "upper_limit", iu);
-  bool lower_limit_double = get_key(params, "lower_limit", vl);
-  bool lower_limit_int = get_key(params, "lower_limit", il);
-  if (upper_limit_int && lower_limit_int)   range = 'I';
-  if (upper_limit_double && lower_limit_double)   range = 'V';
-  if (upper_limit_int && lower_limit_double) {
-    std::cerr << "error: upper_limit and lower_limit must be the same type";
-    throw;
-  }
+  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
+  get_eigenvalues_range(params, matrix_part, range, vu, vl, iu, il, is_upper_value, is_lower_value, is_upper_index, is_lower_index);
 
   std::vector<lapack_int> ifail(dim);
   timer.start(timer_id::diagonalize_diagonalize);
@@ -89,10 +74,10 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   
   if (params.get_bool("verbose")) {
     if (range == 'A')
-      std::cout << "All eigenvalues/eigenvectors were requested" << std::endl;
-    else if (upper_limit_double && lower_limit_double)
+      std::cout << "All eigenvalues were requested by dsyevx (bisection)" << std::endl;
+    else if (is_upper_value && is_lower_value)	    
       std::cout << "Eigenvalues/eigenvectors contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
-    else if (upper_limit_int && lower_limit_int)
+    else if (is_upper_index && is_lower_index)
       std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
     std::cout << "The number of found eigenvalues are " << m << std::endl;
     std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
@@ -124,7 +109,7 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   get_key(params, "abstol", abstol);
   if (abstol < 0) {
     std::cerr << "Error in diagonalize_bisection" << std::endl
-	      << "abstol is negative value, which means QR method (if not converged, bisection)." << std::endl
+	      << "abstol is negative value, which means QR method." << std::endl
 	      << "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
     throw;
   }
@@ -134,28 +119,13 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
 
   std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
-  if (params.defined("uplow"))
-    matrix_part = params.get_string("uplow");
-  if (params.defined("matrix_part"))
-    matrix_part = params.get_string("matrix_part");
-  if ((matrix_part == "upper") || (matrix_part == "U"))
-    matrix_part = "upper";  uplow = 'U';
-  if ((matrix_part == "lower") || (matrix_part == "L"))
-    matrix_part = "lower";  uplow = 'L';
+  get_matrix_part(params, matrix_part, uplow);
 
   char range = 'A';  // default is 'A'
   lapack_int il = 0, iu = 0;
   double vl = 0, vu = 0;
-  bool upper_limit_double = get_key(params, "upper_limit", vu);
-  bool upper_limit_int = get_key(params, "upper_limit", iu);
-  bool lower_limit_double = get_key(params, "lower_limit", vl);
-  bool lower_limit_int = get_key(params, "lower_limit", il);
-  if (upper_limit_int && lower_limit_int)   range = 'I';
-  if (upper_limit_double && lower_limit_double)   range = 'V';
-  if (upper_limit_int && lower_limit_double) {
-    std::cerr << "error: upper_limit and lower_limit must be the same type";
-    throw;
-  }
+  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
+  get_eigenvalues_range(params, matrix_part, range, vu, vl, iu, il, is_upper_value, is_lower_value, is_upper_index, is_lower_index);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int info;
@@ -188,10 +158,10 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   
   if (params.get_bool("verbose")) {
     if (range == 'A')
-      std::cout << "All eigenvalues/eigenvectors were requested" << std::endl;
-    else if (upper_limit_double && lower_limit_double)
+      std::cout << "All eigenvalues/eigenvectors were requested by dsyevx (bisection)" << std::endl;
+    else if (is_upper_value && is_lower_value)
       std::cout << "Eigenvalues/eigenvectors contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
-    else if (upper_limit_int && lower_limit_int)
+    else if (is_upper_index && is_lower_index)
       std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
     std::cout << "The number of found eigenvalues are " << m << std::endl;
     std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;

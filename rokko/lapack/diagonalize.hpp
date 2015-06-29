@@ -17,6 +17,7 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.h>
+#include <rokko/lapack/diagonalize_get_parameters.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -27,9 +28,9 @@ int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 		rokko::parameters const& params, timer& timer) {
   char jobz = 'N';  // only eigenvalues
 
-  //std::string matrix_part = "upper";
+  std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
-  get_key(params, "uplow", uplow);
+  get_matrix_part(params, matrix_part, uplow);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.outerSize();
@@ -44,6 +45,9 @@ int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
     exit(1);
   }
+  if (params.get_bool("verbose")) {
+    std::cout << "All eigenvalues/eigenvectors were requested by dsyev" << std::endl;
+  }
   timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
@@ -55,9 +59,9 @@ int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 		rokko::parameters const& params, timer& timer) {
   char jobz = 'V';  // eigenvalues / eigenvectors
 
-  //std::string matrix_part = "upper";
+  std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
-  get_key(params, "uplow", uplow);
+  get_matrix_part(params, matrix_part, uplow);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.outerSize();
@@ -72,6 +76,9 @@ int diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
   if (info) {
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
     exit(1);
+  }
+  if (params.get_bool("verbose")) {
+    std::cout << "All eigenvalues/eigenvectors were requested by dsyev" << std::endl;
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;

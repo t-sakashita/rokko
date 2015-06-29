@@ -51,7 +51,6 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 			 double* eigvals,
 			 rokko::parameters const& params, timer& timer) {
   if ((routine=="dsyev") || (routine=="qr")) {
-    std::cout << "lapack:dyev" << std::endl;
     rokko::lapack::diagonalize(mat, eigvals, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
     rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
@@ -63,11 +62,9 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_bisection(mat, eigvals, params, timer);
   } else if (routine=="") {
     if (params.defined("upper_limit") || params.defined("lower_limit")) {
-      std::cout << "lapack:dyevr" << std::endl;
       rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
     }
     else {
-      std::cout << "lapack:dyev" << std::endl;
       rokko::lapack::diagonalize(mat, eigvals, params, timer);
     }
   } else {
@@ -93,7 +90,6 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, timer& timer) {
   if ((routine=="dsyev") || (routine=="qr")) {
-    std::cout << "selected dsyev" << std::endl;
     rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
     rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
@@ -105,11 +101,9 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="") {
     if (params.defined("upper_limit") || params.defined("lower_limit")) {
-      std::cout << "lapack:dyevr" << std::endl;
       rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
     }
     else {
-      std::cout << "lapack:dyev" << std::endl;
       rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
     }
   } else {
