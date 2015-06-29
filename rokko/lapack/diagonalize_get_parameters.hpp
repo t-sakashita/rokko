@@ -29,12 +29,12 @@ void get_matrix_part(rokko::parameters const& params, std::string& matrix_part, 
 
 void get_eigenvalues_range(rokko::parameters const& params, std::string& matrix_part, char& range, double vu, double vl, int iu, int il, bool& is_upper_value, bool& is_lower_value, bool& is_upper_index, bool& is_lower_index) {
   is_upper_value = get_key(params, "upper_value", vu);
-  is_upper_index = get_key(params, "upper_value", iu);
+  is_upper_index = get_key(params, "upper_index", iu);
   is_lower_value = get_key(params, "lower_value", vl);
-  is_lower_index = get_key(params, "lower_value", il);
+  is_lower_index = get_key(params, "lower_index", il);
   if (is_upper_index && is_lower_index)   range = 'I';
   if (is_upper_value && is_lower_value)   range = 'V';
-  if (is_upper_index && is_lower_value) {
+  if ((is_upper_index && is_lower_value) || (is_lower_index && is_upper_value)) {
     std::cerr << "error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index";
     throw;
   }
