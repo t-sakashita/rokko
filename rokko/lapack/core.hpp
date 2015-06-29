@@ -50,7 +50,7 @@ template<typename MATRIX_MAJOR>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 double* eigvals,
 			 rokko::parameters const& params, timer& timer) {
-  if ((routine=="") || (routine=="dsyev") || (routine=="qr")) {
+  if ((routine=="dsyev") || (routine=="qr")) {
     std::cout << "lapack:dyev" << std::endl;
     rokko::lapack::diagonalize(mat, eigvals, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
@@ -61,6 +61,15 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_x(mat, eigvals, params, timer);
   } else if (routine=="bisection") {
     rokko::lapack::diagonalize_bisection(mat, eigvals, params, timer);
+  } else if (routine=="") {
+    if (params.defined("upper_limit") || params.defined("lower_limit")) {
+      std::cout << "lapack:dyevr" << std::endl;
+      rokko::lapack::diagonalize_r(mat, eigvals, params, timer);
+    }
+    else {
+      std::cout << "lapack:dyev" << std::endl;
+      rokko::lapack::diagonalize(mat, eigvals, params, timer);
+    }
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
@@ -83,7 +92,7 @@ template<typename MATRIX_MAJOR>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, timer& timer) {
-  if ((routine=="") || (routine=="dsyev") || (routine=="qr")) {
+  if ((routine=="dsyev") || (routine=="qr")) {
     std::cout << "selected dsyev" << std::endl;
     rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
@@ -94,6 +103,15 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
     rokko::lapack::diagonalize_x(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="bisection") {
     rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="") {
+    if (params.defined("upper_limit") || params.defined("lower_limit")) {
+      std::cout << "lapack:dyevr" << std::endl;
+      rokko::lapack::diagonalize_r(mat, eigvals, eigvecs, params, timer);
+    }
+    else {
+      std::cout << "lapack:dyev" << std::endl;
+      rokko::lapack::diagonalize(mat, eigvals, eigvecs, params, timer);
+    }
   } else {
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
