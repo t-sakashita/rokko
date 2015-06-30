@@ -17,6 +17,27 @@
 
 typedef rokko::matrix_col_major matrix_major;
 
+template<typename MATRIX_MAJOR, typename VEC>
+void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 rokko::parameters const& params, rokko::timer& timer = *rokko::global_timer::instance()) {
+  rokko::serial_dense_solver solver(rokko::serial_dense_solver::default_solver());
+  int argc;
+  char** xargv;
+  solver.initialize(argc, xargv);
+  solver.diagonalize("", mat, eigvals, params);
+}
+
+template<typename MATRIX_MAJOR, typename VEC>
+void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 rokko::localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 rokko::parameters const& params, rokko::timer& timer = *rokko::global_timer::instance()) {
+  rokko::serial_dense_solver solver(rokko::serial_dense_solver::default_solver());
+  int argc;
+  char** xargv;
+  solver.initialize(argc, xargv);
+  solver.diagonalize("", mat, eigvals, eigvecs, params);
+}
+
 int main(int argc, char *argv[]) {
   std::string library_routine(rokko::serial_dense_solver::default_solver());
   unsigned int dim = 10;
@@ -52,8 +73,8 @@ int main(int argc, char *argv[]) {
   //params.set("uplow", 'lower');
   params.set("verbose", true);
   try {
-    //solver.diagonalize(routine, mat, eigval, eigvec, params);
-    solver.diagonalize(routine, mat, eigval, params);
+    default_diagonalize(mat, eigval, eigvec, params);
+    //default_diagonalize(mat, eigval, params);
   }
   catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;
