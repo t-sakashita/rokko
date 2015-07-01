@@ -17,7 +17,7 @@ if(BUILD_Fortran_BINDING)
 endif(BUILD_Fortran_BINDING)
 
 if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp matrix_major.cpp)
   if(BUILD_C_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp distributed_matrix_c.cpp)
   endif(BUILD_C_BINDING)

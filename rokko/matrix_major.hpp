@@ -10,14 +10,14 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MATRIX_MAJOR_H
-#define ROKKO_MATRIX_MAJOR_H
+#ifndef ROKKO_MATRIX_MAJOR_HPP
+#define ROKKO_MATRIX_MAJOR_HPP
 
 namespace rokko {
 
-struct matrix_row_major {};
-struct matrix_col_major {};
+extern struct matrix_row_major {} matrix_row_major_d;
+extern struct matrix_col_major {} matrix_col_major_d;
 
 } // namespace rokko
 
-#endif // ROKKO_MATRIX_MAJOR_H
+#endif // ROKKO_MATRIX_MAJOR_HPP

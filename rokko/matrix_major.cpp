@@ -9,12 +9,12 @@
 *
 *****************************************************************************/
 
-#include <rokko/grid.hpp>
+#include <rokko/matrix_major.hpp>
 
 namespace rokko {
 
-grid_row_major_t grid_row_major;
+matrix_row_major matrix_row_major_d;
 
-grid_col_major_t grid_col_major;
+matrix_col_major matrix_col_major_d;
 
 } // end namespace rokko

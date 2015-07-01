@@ -30,7 +30,6 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  //void optimized_grid_size() {}
   mapping_bc optimized_mapping(grid const& g, int dim)  const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();
@@ -43,8 +42,8 @@ public:
   }
   template<typename MATRIX_MAJOR>
   void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
-    mat.set_default_lld();
-    mat.set_default_length_array();
+    //  mat.get_mapping().set_default_lld();
+    // mat.get_mapping().set_default_length_array();
   }
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,

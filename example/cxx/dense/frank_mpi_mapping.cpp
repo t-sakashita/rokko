@@ -44,13 +44,13 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::mapping_bc map(g, dim, solver);
-  rokko::distributed_matrix<double, matrix_major> mat(map, solver);
+  rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
 
   rokko::localized_vector<double> eigval(dim);
-  rokko::distributed_matrix<double, matrix_major> eigvec(map, solver);
+  rokko::distributed_matrix<double, matrix_major> eigvec(map);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }
