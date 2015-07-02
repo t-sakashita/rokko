@@ -33,8 +33,6 @@ public:
                            distributed_matrix<double, matrix_row_major>& eigvecs, timer& timer) = 0;
   virtual void diagonalize(distributed_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
                            distributed_matrix<double, matrix_col_major>& eigvecs, timer& timer) = 0;
-  virtual void optimized_matrix_size(distributed_matrix<double, matrix_row_major>& mat) = 0;
-  virtual void optimized_matrix_size(distributed_matrix<double, matrix_col_major>& mat) = 0;
   virtual mapping_bc optimized_mapping(grid const& g, int dim) const = 0;
 };
   
@@ -61,12 +59,6 @@ public:
   void diagonalize(distributed_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
                    distributed_matrix<double, matrix_col_major>& eigvecs, timer& timer) {
     solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
-  }
-  void optimized_matrix_size(distributed_matrix<double, matrix_row_major>& mat) {
-    solver_impl_.optimized_matrix_size(mat);
-  }
-  void optimized_matrix_size(distributed_matrix<double, matrix_col_major>& mat) {
-    solver_impl_.optimized_matrix_size(mat);
   }
   // optimized_mapping
   mapping_bc optimized_mapping(grid const& g, int dim) const {
@@ -134,10 +126,6 @@ public:
     if (!timer.has(rokko::timer_id::diagonalize_finalize))
       timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
     solver_impl_->diagonalize(mat, eigvals, eigvecs, timer);
-  }
-  template <typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) const {
-    solver_impl_->optimized_matrix_size(mat);
   }
   mapping_bc optimized_mapping(grid const& g, int dim) const {
     return solver_impl_->optimized_mapping(g, dim);

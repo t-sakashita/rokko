@@ -35,11 +35,6 @@ public:
     int b = std::min(mb, nb);
     return mapping_bc(g, dim, b);
   }
-  template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
-    mat.set_default_lld();
-    mat.set_default_length_array();
-  }
   template <typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
                    distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {

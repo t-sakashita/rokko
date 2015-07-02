@@ -12,9 +12,11 @@
 #ifndef ROKKO_EIGEN_EXA_CORE_HPP
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
+#include <rokko/matrix_major.hpp>
 #include <rokko/eigen_exa/diagonalize.hpp>
 
 namespace rokko {
+
 namespace eigen_exa {
 
 struct eigen_s {};
@@ -28,21 +30,17 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  mapping_bc optimized_mapping(grid const& g, int dim) const {
-    return mapping_bc(g, dim, 1);  // block_size = 1
-  }
-
-  template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
+  mapping_bc optimized_mapping(grid const& g, int dim_global) const {
     int nx, ny;
-    int nprow = mat.get_mapping().get_grid().get_nprow();
-    int npcol = mat.get_mapping().get_grid().get_npcol();
-    int n = mat.get_mapping().get_dim();
+    int nprow = g.get_nprow();
+    int npcol = g.get_npcol();
+    int n = dim_global;
     ROKKO_eigen_exa_get_matdims(nprow, npcol, n, &nx, &ny);
 
     //std::cout << "nx=" << nx << std::endl;
-    mat.set_lld(nx);
-    mat.set_length_array(nx * ny);
+    int lld = nx;
+    int length_array = nx * ny;
+    return mapping_bc(g, dim_global, 1, lld, length_array, matrix_col_major_d);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
