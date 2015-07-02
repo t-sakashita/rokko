@@ -33,7 +33,7 @@ public:
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
     int b = std::min(mb, nb);
-    return mapping_bc(g, dim, b);
+    return mapping_bc(dim, b, g);
   }
   template <typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,

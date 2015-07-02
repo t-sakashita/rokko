@@ -29,7 +29,7 @@ public:
   void finalize() { El::Finalize(); }
 
   mapping_bc optimized_mapping(grid const& g, int dim) const {
-    return mapping_bc(g, dim, 1);  // block_size = 1
+    return mapping_bc(dim, 1, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>

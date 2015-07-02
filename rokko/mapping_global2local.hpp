@@ -20,7 +20,7 @@ namespace rokko {
 class mapping_global2local : virtual public matrix_common_sizes {
 public:
   explicit mapping_global2local() {}
-  explicit mapping_global2local(grid const& g_in, int m_global_in, int n_global_in, int block_size)
+  explicit mapping_global2local(int m_global_in, int n_global_in, int block_size, grid const& g_in)
     : g(g_in), myrank(g_in.get_myrank()), nprocs(g_in.get_nprocs()), myrow(g_in.get_myrow()), mycol(g_in.get_mycol()), nprow(g_in.get_nprow()), npcol(g_in.get_npcol()),
       m_global(m_global_in), n_global(n_global_in), mb(block_size), nb(block_size) {
     set_default_local_size();

@@ -40,7 +40,7 @@ public:
     //std::cout << "nx=" << nx << std::endl;
     int lld = nx;
     int length_array = nx * ny;
-    return mapping_bc(g, dim_global, 1, lld, length_array, matrix_col_major_d);  // block_size = 1
+    return mapping_bc(dim_global, 1, lld, length_array, matrix_col_major_d, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>

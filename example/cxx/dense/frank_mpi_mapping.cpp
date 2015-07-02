@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
               << "solver = " << solver_name << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc map(g, dim, solver);
+  rokko::mapping_bc map(dim, g, solver);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
