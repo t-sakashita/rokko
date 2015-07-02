@@ -205,7 +205,7 @@ if(ELEMENTAL_FOUND)
   message(STATUS "Compiler option: ${CMAKE_CXX_FLAGS}")
 endif(ELEMENTAL_FOUND)
 
-# find Elpa
+# find ELPA
 if(DISABLE_ELPA)
   set(BUILD_ELPA FALSE)
 else(DISABLE_ELPA)

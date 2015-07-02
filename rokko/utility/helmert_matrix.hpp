@@ -17,7 +17,7 @@
 #include <boost/throw_exception.hpp>
 #include <rokko/config.h>
 #include <rokko/localized_matrix.hpp>
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 # include <rokko/distributed_matrix.hpp>
 #endif
 
@@ -53,7 +53,7 @@ public:
     }
   }
   
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   template<typename T, typename MATRIX_MAJOR>
   static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.get_m_global() != mat.get_n_global())

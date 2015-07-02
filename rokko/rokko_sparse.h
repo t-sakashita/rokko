@@ -13,7 +13,7 @@
 #define ROKKO_SPARSE_H
 
 #include <rokko/config.h>
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 # include <mpi.h>
 #endif
 
@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 struct rokko_distributed_crs_matrix {
   void* ptr;
 };
@@ -33,7 +33,7 @@ struct rokko_parallel_sparse_solver {
 };
 #endif
   
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 
 /* rokko_distributed_crs_matrix */
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix,

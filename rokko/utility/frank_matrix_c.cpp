@@ -12,7 +12,7 @@
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/utility/frank_matrix_c.h>
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix* matrix) {
   if (matrix->major == rokko_matrix_col_major)
     rokko::frank_matrix::generate(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix->ptr));

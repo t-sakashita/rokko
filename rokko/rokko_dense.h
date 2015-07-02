@@ -13,7 +13,7 @@
 #define ROKKO_DENSE_H
 
 #include <rokko/config.h>
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 # include <mpi.h>
 #endif
 
@@ -39,7 +39,7 @@ struct rokko_localized_matrix {
   int major;
 };
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 struct rokko_grid {
   void* ptr;
   int major;
@@ -91,7 +91,7 @@ int rokko_localized_matrix_get_n_local(struct rokko_localized_matrix matrix);
 int rokko_localized_matrix_get_m_global(struct rokko_localized_matrix matrix);
 int rokko_localized_matrix_get_n_global(struct rokko_localized_matrix matrix);
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 
 /* grid */
 void rokko_grid_construct(struct rokko_grid* grid, MPI_Comm comm, int grid_major);

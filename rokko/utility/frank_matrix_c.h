@@ -20,7 +20,7 @@ extern "C"{
 
 void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix* matrix);
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix* matrix);
 #endif
 

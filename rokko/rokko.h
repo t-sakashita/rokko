@@ -14,9 +14,9 @@
 #ifdef __cplusplus
 
 #include <rokko/solver.hpp>
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-# include <rokko/grid_1d.hpp>
-# include <rokko/distributed_vector.hpp>
+#if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
+#include <rokko/grid_1d.hpp>
+#include <rokko/distributed_vector.hpp>
 #endif
 
 #else
