@@ -43,10 +43,6 @@ public:
     return mapping_bc(g, dim_global, 1, lld, length_array, matrix_col_major_d);  // block_size = 1
   }
 
-  template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
-  }
-
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 		   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer);

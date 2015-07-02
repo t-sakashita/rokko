@@ -27,16 +27,9 @@ public:
   }
   void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
   void finalize() { El::Finalize(); }
-  // void optimized_grid_size() {}
 
   mapping_bc optimized_mapping(grid const& g, int dim) const {
     return mapping_bc(g, dim, 1);  // block_size = 1
-  }
-
-  template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<double, MATRIX_MAJOR>& mat) {
-    mat.set_default_lld();
-    mat.set_default_length_array();
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
