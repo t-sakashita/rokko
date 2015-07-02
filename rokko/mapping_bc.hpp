@@ -23,6 +23,9 @@ class mapping_bc : public mapping_global2local, public mapping_local2array {
 public:
   explicit mapping_bc() {}
   template<typename MATRIX_MAJOR>
+  explicit mapping_bc(int global_dim, int block_size, MATRIX_MAJOR matrix_major)
+    : mapping_global2local(global_dim, global_dim, block_size, grid()), mapping_local2array(matrix_major) {}
+  template<typename MATRIX_MAJOR>
   explicit mapping_bc(int global_dim, int block_size, MATRIX_MAJOR matrix_major, grid const& g_in)
     : mapping_global2local(global_dim, global_dim, block_size, g_in), mapping_local2array(matrix_major) {}
 
@@ -35,7 +38,7 @@ public:
     : mapping_global2local(m_global_in, n_global_in, block_size, g_in), mapping_local2array(matrix_major) {}
 
   explicit mapping_bc(int global_dim, int block_size, grid const& g_in)
-    : mapping_global2local(global_dim, global_dim, block_size, g_in), mapping_local2array(matrix_col_major_d) {}  // default of matrix major is matrix_col_major
+    : mapping_global2local(global_dim, global_dim, block_size, g_in), mapping_local2array(matrix_col_major_d) {}  // default of matrix major is matrix_col_major. used by eigen_exa
 
   template<typename SOLVER>
   explicit mapping_bc(int global_dim, grid const& g_in, SOLVER const& solver_in) {
