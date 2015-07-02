@@ -18,10 +18,10 @@
 extern "C"{
 #endif
 
-void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix* matrix);
+void rokko_frank_matrix_generate_localized_matrix(struct rokko_localized_matrix* matrix);
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix* matrix);
+void rokko_frank_matrix_generate_distributed_matrix(struct rokko_distributed_matrix* matrix);
 #endif
 
 

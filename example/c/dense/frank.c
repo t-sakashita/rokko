@@ -10,6 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.h>
+#include <rokko/utility/frank_matrix_c.h>
 #include <stdio.h>
 #include <stdlib.h>
 
