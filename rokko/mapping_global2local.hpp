@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014-2014 by Synge Todo <wistaria@comp-phys.org>,
-*                            Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -22,11 +21,8 @@ class mapping_global2local : virtual public matrix_common_sizes {
 public:
   explicit mapping_global2local() {}
   explicit mapping_global2local(grid const& g_in, int m_global_in, int n_global_in, int block_size)
-    : matrix_common_sizes(g_in), m_global(m_global_in), n_global(n_global_in), mb(block_size), nb(block_size) {
-    // get grid information
-    myrank = g.get_myrank(); nprocs = g.get_nprocs();
-    myrow = g.get_myrow(); mycol = g.get_mycol();
-    nprow = g.get_nprow(); npcol = g.get_npcol();
+    : g(g_in), myrank(g_in.get_myrank()), nprocs(g_in.get_nprocs()), myrow(g_in.get_myrow()), mycol(g_in.get_mycol()), nprow(g_in.get_nprow()), npcol(g_in.get_npcol()),
+      m_global(m_global_in), n_global(n_global_in), mb(block_size), nb(block_size) {
     set_default_local_size();
     set_stride();
   }
@@ -136,11 +132,23 @@ public:
     return is_gindex_myrow(global_i) && is_gindex_mycol(global_j);
   }
 
+  int get_nprow() const { return g.get_nprow(); }
+  int get_npcol() const { return g.get_npcol(); }
+  int get_nprocs() const { return g.get_nprocs(); }
+  int get_myrank() const { return g.get_myrank(); }
+  int get_myrow() const { return g.get_myrow(); }
+  int get_mycol() const { return g.get_mycol(); }
+  grid const& get_grid() const { return g; }
+
 protected:
   int m_global, n_global;
   int mb, nb;
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
-
+  grid g;
+  // common variables of class grid
+  int myrank, nprocs;
+  int myrow, mycol;
+  int nprow, npcol;
 private:
   // block_number is also needed?
 };
