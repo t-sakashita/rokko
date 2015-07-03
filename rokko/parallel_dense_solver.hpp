@@ -17,6 +17,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
+#include <rokko/parameters.hpp>
 
 namespace rokko {
 
@@ -29,10 +30,20 @@ public:
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(distributed_matrix<double, matrix_row_major>& mat, localized_vector<double>& eigvals,
-                           distributed_matrix<double, matrix_row_major>& eigvecs, timer& timer) = 0;
-  virtual void diagonalize(distributed_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
-                           distributed_matrix<double, matrix_col_major>& eigvecs, timer& timer) = 0;
+  // eigenvalues/eigenvectors
+  virtual void diagonalize(std::string const& routine, distributed_matrix<double, matrix_row_major>& mat,
+			   localized_vector<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
+			   rokko::parameters const& params, timer& timer) = 0;
+  virtual void diagonalize(std::string const& routine, distributed_matrix<double, matrix_col_major>& mat,
+			   localized_vector<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
+			   rokko::parameters const& params, timer& timer) = 0;
+  // only eigenvalues
+  virtual void diagonalize(std::string const& routine, distributed_matrix<double, matrix_row_major>& mat,
+			   localized_vector<double>& eigvals,
+			   rokko::parameters const& params, timer& timer) = 0;
+  virtual void diagonalize(std::string const& routine, distributed_matrix<double, matrix_col_major>& mat,
+			   localized_vector<double>& eigvals,
+			   rokko::parameters const& params, timer& timer) = 0;
   virtual mapping_bc optimized_mapping(grid const& g, int dim) const = 0;
 };
   
@@ -52,13 +63,27 @@ public:
     solver_impl_.initialize(argc, argv);
   }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(distributed_matrix<double, matrix_row_major>& mat, localized_vector<double>& eigvals,
-                   distributed_matrix<double, matrix_row_major>& eigvecs, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  // eigenvalues/eigenvectors
+  void diagonalize(std::string const& routine, distributed_matrix<double, matrix_row_major>& mat,
+		   localized_vector<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
+		   rokko::parameters const& params, timer& timer) {
+    solver_impl_.diagonalize(routine, mat, eigvals, eigvecs, params, timer);
   }
-  void diagonalize(distributed_matrix<double, matrix_col_major>& mat, localized_vector<double>& eigvals,
-                   distributed_matrix<double, matrix_col_major>& eigvecs, timer& timer) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  void diagonalize(std::string const& routine, distributed_matrix<double, matrix_col_major>& mat,
+		   localized_vector<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
+		   rokko::parameters const& params, timer& timer) {
+    solver_impl_.diagonalize(routine, mat, eigvals, eigvecs, params, timer);
+  }
+  // only eigenvalues
+  void diagonalize(std::string const& routine, distributed_matrix<double, matrix_row_major>& mat,
+		   localized_vector<double>& eigvals,
+		   rokko::parameters const& params, timer& timer) {
+    solver_impl_.diagonalize(routine, mat, eigvals, params, timer);
+  }
+  void diagonalize(std::string const& routine, distributed_matrix<double, matrix_col_major>& mat,
+		   localized_vector<double>& eigvals,
+		   rokko::parameters const& params, timer& timer) {
+    solver_impl_.diagonalize(routine, mat, eigvals, params, timer);
   }
   // optimized_mapping
   mapping_bc optimized_mapping(grid const& g, int dim) const {
@@ -115,17 +140,77 @@ public:
     timer.stop(rokko::timer_id::solver_finalize);
   }
   void finalize() { this->finalize(*global_timer::instance()); }
+  // with routine, with parameters, eigenvalues/eigenvectors
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-    rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-    timer& timer = *global_timer::instance()) {
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   rokko::parameters const& params, timer& timer = *global_timer::instance()) {
     if (!timer.has(rokko::timer_id::diagonalize_initialize))
       timer.registrate(rokko::timer_id::diagonalize_initialize, "diagonalize::initialize");
     if (!timer.has(rokko::timer_id::diagonalize_diagonalize))
       timer.registrate(rokko::timer_id::diagonalize_diagonalize, "diagonalize::diagonalize");
     if (!timer.has(rokko::timer_id::diagonalize_finalize))
       timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer);
+    solver_impl_->diagonalize(routine, mat, eigvals, eigvecs, params, timer);
+  }
+  // with routine, with parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+		   rokko::parameters const& params, timer& timer = *global_timer::instance()) {
+    if (!timer.has(rokko::timer_id::diagonalize_initialize))
+      timer.registrate(rokko::timer_id::diagonalize_initialize, "diagonalize::initialize");
+    if (!timer.has(rokko::timer_id::diagonalize_diagonalize))
+      timer.registrate(rokko::timer_id::diagonalize_diagonalize, "diagonalize::diagonalize");
+    if (!timer.has(rokko::timer_id::diagonalize_finalize))
+      timer.registrate(rokko::timer_id::diagonalize_finalize, "diagonalize::finalize");
+    solver_impl_->diagonalize(routine, mat, eigvals, params, timer);
+  }
+  // with routine, no parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   timer& timer = *global_timer::instance()) {
+    diagonalize(routine, mat, eigvals, eigvecs, null_params, timer);
+  }
+  // with routine, no parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+		   timer& timer = *global_timer::instance()) {
+    diagonalize(routine, mat, eigvals, null_params, timer);
+  }
+  // no routine, with parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   rokko::parameters const& params, timer& timer = *global_timer::instance()) {
+    if (params.defined("routine")) {
+      routine_ = params.get_string("routine");
+    }
+    solver_impl_->diagonalize(routine_, mat, eigvals, eigvecs, params, timer);
+  }
+  // no routine, with parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+		   rokko::parameters const& params, timer& timer = *global_timer::instance()) {
+    if (params.defined("routine")) {
+      routine_ = params.get_string("routine");
+    }
+    solver_impl_->diagonalize(routine_, mat, eigvals, params, timer);
+  }
+  // no routine, no parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   timer& timer = *global_timer::instance()) {
+    diagonalize(mat, eigvals, eigvecs, null_params, timer);
+  }
+  // no routine, no parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+		   timer& timer = *global_timer::instance()) {
+    diagonalize(mat, eigvals, null_params, timer);
   }
   mapping_bc optimized_mapping(grid const& g, int dim) const {
     return solver_impl_->optimized_mapping(g, dim);
@@ -138,6 +223,8 @@ public:
   }
 private:
   detail::pd_solver_factory::product_pointer_type solver_impl_;
+  rokko::parameters null_params;
+  std::string routine_;
 };
 
 } // end namespace rokko

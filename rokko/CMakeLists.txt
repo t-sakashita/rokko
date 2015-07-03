@@ -93,8 +93,6 @@ if(BUILD_SCALAPACK)
   endif(USE_PDSYEVR)
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack.cpp)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevd.cpp)
-    # set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/scalapack_pdsyevx.cpp)
   endif(BUILD_SHARED_LIBS)
 endif(BUILD_SCALAPACK)
 

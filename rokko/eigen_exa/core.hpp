@@ -22,7 +22,6 @@ namespace eigen_exa {
 struct eigen_s {};
 struct eigen_sx {};
 
-template<typename ROUTINE>
 class solver {
 public:
   template <typename GRID_MAJOR>
@@ -44,22 +43,41 @@ public:
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-		   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer);
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   rokko::parameters const& params, timer& timer);
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+		   rokko::parameters const& params, timer& timer);
 };
 
-template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-  rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer);
+void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 rokko::parameters const& params, timer& timer) {
+  if ((routine=="tri") || (routine=="eigen_s")) {
+    rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer);
+  } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
+    rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer);
+  } else {
+    std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
+    throw;
+  }
 }
 
-template<>
 template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-    rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer);
+void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 rokko::parameters const& params, timer& timer) {
+  if ((routine=="tri") || (routine=="eigen_s")) {
+    rokko::eigen_exa::diagonalize_s(mat, eigvals, timer);
+  } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
+    rokko::eigen_exa::diagonalize_sx(mat, eigvals, timer);
+  } else {
+    std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
+    throw;
+  }
 }
 
 } // namespace eigen_exa

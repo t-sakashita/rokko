@@ -32,7 +32,6 @@ template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major>
 class distributed_matrix {
 public:
   typedef T value_type;
-
   distributed_matrix(mapping_bc const& map_in) : map(map_in) {
     allocate_array();
   }

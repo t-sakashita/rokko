@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
-#define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
+#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_HPP
+#define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
@@ -89,4 +89,4 @@ int diagonalize_d(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vecto
 } // namespace scalapack
 } // namespace rokko
 
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_H
+#endif // ROKKO_SCALAPACK_DIAGONALIZE_HPP

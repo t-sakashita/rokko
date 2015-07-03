@@ -19,11 +19,6 @@
 namespace rokko {
 namespace scalapack {
 
-struct pdsyev {};
-struct pdsyevd {};
-struct pdsyevx {};
-
-template<typename ROUTINE>
 class solver {
 public:
   template <typename GRID_MAJOR>
@@ -42,10 +37,49 @@ public:
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-                   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer);
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   rokko::parameters const& params, timer& timer);
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+		   rokko::parameters const& params, timer& timer);
 };
 
+template<typename MATRIX_MAJOR, typename VEC>
+void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 rokko::parameters const& params, timer& timer) {
+  /*if ((routine=="dsyev") || (routine=="qr")) {
+    rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
+  } else if ((routine=="dsyevr") || (routine=="mr3")) {
+    rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
+  } else if ((routine=="dsyevd") || (routine=="dc")) {
+    rokko::lapack::diagonalize_dsyevd(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="dsyevx") {
+    rokko::lapack::diagonalize_dsyevx(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="bisection") {
+    rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="") {
+    if (params.defined("upper_limit") || params.defined("lower_limit")) {
+      rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
+    }
+    else {
+      rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
+    }
+  } else {
+    std::cerr << "error: " << routine << " is not scalapack routine" << std::endl;
+    throw;
+  }*/
+}
+
+template<typename MATRIX_MAJOR, typename VEC>
+void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 rokko::parameters const& params, timer& timer) {
+}
+
+/*
 template<>
 template<typename MATRIX_MAJOR, typename VEC>
 void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
@@ -66,6 +100,7 @@ void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<double, M
   VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
   rokko::scalapack::diagonalize_x(mat, eigvals, eigvecs, timer);
 }
+*/
 
 } // namespace sclapack
 } // namespace rokko
