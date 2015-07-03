@@ -12,7 +12,8 @@
 #ifndef ROKKO_SCALAPACK_CORE_HPP
 #define ROKKO_SCALAPACK_CORE_HPP
 
-#include <rokko/scalapack/diagonalize.hpp>
+#include <rokko/parameters.hpp>
+#include <rokko/scalapack/diagonalize_pdsyev.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevd.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
 
@@ -50,27 +51,26 @@ template<typename MATRIX_MAJOR, typename VEC>
 void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, timer& timer) {
-  /*if ((routine=="dsyev") || (routine=="qr")) {
-    rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
-  } else if ((routine=="dsyevr") || (routine=="mr3")) {
-    rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
-  } else if ((routine=="dsyevd") || (routine=="dc")) {
-    rokko::lapack::diagonalize_dsyevd(mat, eigvals, eigvecs, params, timer);
-  } else if (routine=="dsyevx") {
-    rokko::lapack::diagonalize_dsyevx(mat, eigvals, eigvecs, params, timer);
-  } else if (routine=="bisection") {
-    rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
-  } else if (routine=="") {
-    if (params.defined("upper_limit") || params.defined("lower_limit")) {
-      rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
-    }
-    else {
-      rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
-    }
+  if ((routine=="pdsyev") || (routine=="qr")) {
+    rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params, timer);
+    //  } else if ((routine=="pdsyevr") || (routine=="mr3")) {
+    //    rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params, timer);
+  } else if ((routine=="pdsyevd") || (routine=="dc")) {
+    rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, eigvecs, params, timer);
+  } else if (routine=="pdsyevx") {
+    rokko::scalapack::diagonalize_pdsyevx(mat, eigvals, eigvecs, params, timer);
+    //} else if (routine=="bisection") {
+    //    rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
+    //} else if (routine=="") {
+    //    if (params.defined("upper_limit") || params.defined("lower_limit")) {
+    //      rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params, timer);
+    //} else {
+    //      rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params, timer);
+    //    }
   } else {
     std::cerr << "error: " << routine << " is not scalapack routine" << std::endl;
     throw;
-  }*/
+  }
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -78,29 +78,6 @@ void solver::diagonalize(std::string const& routine, distributed_matrix<double, 
 			 VEC& eigvals,
 			 rokko::parameters const& params, timer& timer) {
 }
-
-/*
-template<>
-template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::scalapack::pdsyev>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-  rokko::scalapack::diagonalize(mat, eigvals, eigvecs, timer);
-}
-
-template<>
-template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::scalapack::pdsyevd>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-  rokko::scalapack::diagonalize_d(mat, eigvals, eigvecs, timer);
-}
-
-template<>
-template<typename MATRIX_MAJOR, typename VEC>
-void solver<rokko::scalapack::pdsyevx>::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-  VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-  rokko::scalapack::diagonalize_x(mat, eigvals, eigvecs, timer);
-}
-*/
 
 } // namespace sclapack
 } // namespace rokko

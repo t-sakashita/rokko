@@ -9,11 +9,12 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_H
-#define ROKKO_SCALAPACK_DIAGONALIZE_H
+#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEV_HPP
+#define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEV_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
+#include <rokko/parameters.hpp>
 #include <rokko/blacs/blacs_wrap.h>
 #include <rokko/scalapack/scalapack_wrap.h>
 #include <rokko/utility/timer.hpp>
@@ -24,8 +25,9 @@ namespace rokko {
 namespace scalapack {
 
 template<typename MATRIX_MAJOR>
-int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
-  distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
+int diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		       parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
 
   int ictxt = ROKKO_blacs_get(-1, 0);
@@ -83,4 +85,4 @@ int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<
 } // namespace scalapack
 } // namespace rokko
 
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_H
+#endif // ROKKO_SCALAPACK_DIAGONALIZE_PDSYEV_HPP

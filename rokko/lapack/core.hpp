@@ -12,6 +12,7 @@
 #ifndef ROKKO_LAPACK_CORE_HPP
 #define ROKKO_LAPACK_CORE_HPP
 
+#include <rokko/parameters.hpp>
 #include <rokko/lapack/diagonalize_dsyev.hpp>
 #include <rokko/lapack/diagonalize_dsyevd.hpp>
 #include <rokko/lapack/diagonalize_dsyevr.hpp>
