@@ -20,6 +20,7 @@
 namespace rokko {
 namespace eigen_exa {
 
+// eigen_s eigenvalues / eigenvectors
 template <typename MATRIX_MAJOR>
 void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   localized_vector<double>& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
@@ -40,6 +41,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   timer.stop(timer_id::diagonalize_finalize);
 }
 
+// eigen_s only eigenvalues
 template <typename MATRIX_MAJOR>
 void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   localized_vector<double>& eigvals,
@@ -56,6 +58,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   ROKKO_eigen_exa_free(1);
 }
 
+// eigen_sx eigenvalues / eigenvectors
 template <typename MATRIX_MAJOR>
 void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		    localized_vector<double>& eigvals,
@@ -77,6 +80,7 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   timer.stop(timer_id::diagonalize_finalize);
 }
 
+// eigen_sx only eigenvalues
 template <typename MATRIX_MAJOR>
 void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		    localized_vector<double>& eigvals,
