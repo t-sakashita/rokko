@@ -56,7 +56,7 @@ template<typename MATRIX_MAJOR>
 int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
 		  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 		  rokko::parameters const& params, timer& timer) {
-  char jobz = 'V';  // only eigenvalues
+  char jobz = 'V';  // eigenvalues / eigenvectors
   std::string matrix_part = "upper"; // default is "upper"
   char uplow = 'U';
   get_matrix_part(params, matrix_part, uplow);

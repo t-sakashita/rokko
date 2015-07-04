@@ -26,15 +26,23 @@ double ROKKO_pdlamch(int icnt, char cmch);
 void ROKKO_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA, int irprnt,
                     int icprnt, const char* cmatnm, int nout, double* work);
 
+int ROKKO_pdsyev_work(char jobz, char uplo, int n,
+		      double* A, int ia, int ja, const int* descA,
+		      double* w, double* Z, int iz, int jz, const int* descZ,
+		      double* work, int lwork);
+
+int ROKKO_pdsyevd_work(char jobz, char uplo, int n,
+		       double* A, int ia, int ja, const int* descA,
+		       double* w, double* Z, int iz, int jz, const int* descZ,
+		       double* work, int lwork, int* iwork, int liwork);
+
 int ROKKO_pdsyev(char jobz, char uplo, int n,
-                 double* A, int ia, int ja, const int* descA,
-                 double* w, double* Z, int iz, int jz, const int* descZ,
-                 double* work, int lwork);
+		 double* A, int ia, int ja, const int* descA,
+		 double* w, double* Z, int iz, int jz, const int* descZ);
 
 int ROKKO_pdsyevd(char jobz, char uplo, int n,
                   double* A, int ia, int ja, const int* descA,
-                  double* w, double* Z, int iz, int jz, const int* descZ,
-                  double* work, int lwork, int* iwork, int liwork);
+                  double* w, double* Z, int iz, int jz, const int* descZ);
 
 int ROKKO_pdsyevr(char jobz, char uplo, int n,
                   double* A, int ia, int ja, const int* descA,

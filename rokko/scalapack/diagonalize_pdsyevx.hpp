@@ -17,6 +17,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/blacs/blacs_wrap.h>
 #include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/lapack/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>

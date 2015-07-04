@@ -9,18 +9,23 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_GET_PARAMETERS_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_GET_PARAMETERS_HPP
+#ifndef ROKKO_BLACS_UTILITY_ROUTINES_HPP
+#define ROKKO_BLACS_UTILITY_ROUTINES_HPP
+
+#include <rokko/distributed_matrix.hpp>
+#include <rokko/blacs/blacs_wrap.h>
 
 namespace rokko {
-namespace lapack {
+namespace blacs {
 
-void get_matrix_part(parameters const& params, std::string& matrix_part, char& uplow);
+template<typename MATRIX_MAJOR>
+char set_grid_blacs(int ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat);
 
-void get_eigenvalues_range(parameters const& params, std::string& matrix_part, char& range, double vu, double vl, int iu, int il, bool& is_upper_value, bool& is_lower_value, bool& is_upper_index, bool& is_lower_index);
+template<typename MATRIX_MAJOR>
+void set_desc(int ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat, int desc[9]);
 
-} // namespace lapack
+} // namespace blacs
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_GET_PARAMETERS_HPP
+#endif // ROKKO_BLACS_UTILITY_ROUTINES_HPP
 

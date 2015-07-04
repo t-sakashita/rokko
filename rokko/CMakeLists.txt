@@ -78,16 +78,17 @@ endif(Boost_SOURCE_DIR)
 set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
 
 # LAPACK
-set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/geqrf.cpp lapack/gesvd.cpp lapack/heev.cpp lapack/orgqr.cpp lapack/syev.cpp lapack/ungqr.cpp)
+set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/geqrf.cpp lapack/gesvd.cpp lapack/heev.cpp lapack/orgqr.cpp lapack/syev.cpp lapack/ungqr.cpp lapack/diagonalize_get_parameters.cpp)
 
 # BLACS, PBLAS, ScaLAPACK
 if(BUILD_SCALAPACK)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c
       blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c
       blacs/descinit.c)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/utility_routines.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pcopy.cpp pblas/pdot.cpp pblas/pdotc.cpp pblas/pgemv.cpp pblas/pgemm.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c
-      scalapack/pdlaprnt.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevx.c)
+      scalapack/pdlaprnt.c scalapack/pdsyev_work.c scalapack/pdsyev.cpp scalapack/pdsyevd.cpp scalapack/pdsyevd_work.c scalapack/pdsyevx.c)
   if(USE_PDSYEVR)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdsyevr.c)
   endif(USE_PDSYEVR)
