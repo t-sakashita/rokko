@@ -57,29 +57,30 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 
   int num_eigval_found, num_eigvec_found;
   int orfac = -1;  // default value 10^{-3} is used.
-  int* ifail = new int[dim];
-  int* iclustr = new int[2 * mat.get_nprow() * mat.get_npcol()];
-  double* gap = new double[mat.get_nprow() * mat.get_npcol()];
-  if (ifail == 0) {
-    std::cerr << "failed to allocate ifail." << std::endl;
+  int* ifail = (int*)malloc( sizeof(int) * dim );
+  int* iclustr = (int*)malloc( sizeof(int) * 2 * mat.get_nprow() * mat.get_npcol() );
+  double* gap = (double*)malloc( sizeof(double) * mat.get_nprow() * mat.get_npcol() );
+  if (ifail == NULL) {
+    std::cerr << "failed to allocate ifail at pdsyevx." << std::endl;
     exit(1);
   }
-  if (iclustr == 0) {
-    std::cerr << "failed to allocate iclustr." << std::endl;
+  if (iclustr == NULL) {
+    std::cerr << "failed to allocate iclustr at pdsyevx." << std::endl;
     exit(1);
   }
-  if (gap == 0) {
-    std::cerr << "failed to allocate gap." << std::endl;
+  if (gap == NULL) {
+    std::cerr << "failed to allocate gap at pdsyevx." << std::endl;
     exit(1);
   }
   timer.stop(timer_id::diagonalize_initialize);
 
   timer.start(timer_id::diagonalize_diagonalize);
   info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
-		       abstol, &num_eigval_found, &num_eigvec_found, &eigvals[0], orfac,
+		       abstol, &m, &nz, &eigvals[0], orfac,
 		       eigvecs.get_array_pointer(), 1, 1, desc,
 		       ifail, iclustr, gap);
   timer.stop(timer_id::diagonalize_diagonalize);
+  printf("zzzzzzzz\n");
 
   timer.start(timer_id::diagonalize_finalize);
   delete[] ifail;

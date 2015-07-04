@@ -54,6 +54,8 @@ int ROKKO_pdsyevx(char jobz, char range, char uplo, int n,
 			    Z, iz, jz, descZ,
 			    work, lwork, iwork, liwork,
 			    ifail, iclustr, gap);
+  printf("reeeeeached info=%d\n", info);
+
   if (info) {
     printf("error at pdsyevx function. info=%d\n", info);
     exit(1);
@@ -61,5 +63,6 @@ int ROKKO_pdsyevx(char jobz, char range, char uplo, int n,
     
   free(work);
   free(iwork);
+  printf("qqqqqqqqqqq\n");
   return info;
 }
