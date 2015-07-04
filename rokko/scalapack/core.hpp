@@ -14,8 +14,9 @@
 
 #include <rokko/parameters.hpp>
 #include <rokko/scalapack/diagonalize_pdsyev.hpp>
-#include <rokko/scalapack/diagonalize_pdsyevd.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
+#include <rokko/scalapack/diagonalize_pdsyevd.hpp>
+#include <rokko/scalapack/diagonalize_pdsyevr.hpp>
 
 namespace rokko {
 namespace scalapack {
@@ -53,8 +54,8 @@ void solver::diagonalize(std::string const& routine, distributed_matrix<double, 
 			 rokko::parameters const& params, timer& timer) {
   if ((routine=="pdsyev") || (routine=="qr")) {
     rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params, timer);
-    //  } else if ((routine=="pdsyevr") || (routine=="mr3")) {
-    //    rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params, timer);
+  } else if ((routine=="pdsyevr") || (routine=="mr3")) {
+    rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="pdsyevd") || (routine=="dc")) {
     rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="pdsyevx") {

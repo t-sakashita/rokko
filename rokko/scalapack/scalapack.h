@@ -48,7 +48,7 @@ void SCALAPACK_pdsyevd(const char* jobz, const char* uplo, const int* n,
                        double* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
 #define SCALAPACK_pdsyevr LAPACK_GLOBAL(pdsyevr,PDSYEVR)
-void SCALAPACK_pdsyevr(const char* jobz, const char* uplo, const int* n,
+void SCALAPACK_pdsyevr(const char* jobz, const char* range, const char* uplo, const int* n,
                        double* A, const int* ia, const int* ja, const int* descA,
                        const double* vl, const double* vu, const int* il, const int* iu,
                        int* m, int* nz, double* w,

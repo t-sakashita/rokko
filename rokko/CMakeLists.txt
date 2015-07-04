@@ -88,7 +88,7 @@ if(BUILD_SCALAPACK)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/utility_routines.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pcopy.cpp pblas/pdot.cpp pblas/pdotc.cpp pblas/pgemv.cpp pblas/pgemm.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c
-      scalapack/pdlaprnt.c scalapack/pdsyev_work.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevd_work.c scalapack/pdsyevx.c)
+      scalapack/pdlaprnt.c scalapack/pdsyev_work.c scalapack/pdsyev.c scalapack/pdsyevd.c scalapack/pdsyevd_work.c scalapack/pdsyevr.c scalapack/pdsyevr_work.c scalapack/pdsyevx.c)
   if(USE_PDSYEVR)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdsyevr.c)
   endif(USE_PDSYEVR)
