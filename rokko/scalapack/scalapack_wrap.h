@@ -43,6 +43,14 @@ int ROKKO_pdsyevr_work(char jobz, char range, char uplo, int n,
 		       double* Z, int iz, int jz, const int* descZ,
 		       double* work, int lwork, int* iwork, int liwork);
 
+int ROKKO_pdsyevx_work(char jobz, char range, char uplo, int n,
+		       double* A, int iA, int jA, const int* descA,
+		       double vl, double vu, int il, int iu,
+		       double abstol, int* m, int* nZ, double* w, double orfac,
+		       double* Z, int iZ, int jZ, const int* descZ,
+		       double* work, int lwork, int* iwork, int liwork,
+		       int* ifail, int* iclustr, double* gap);
+
 int ROKKO_pdsyev(char jobz, char uplo, int n,
 		 double* A, int ia, int ja, const int* descA,
 		 double* w, double* Z, int iz, int jz, const int* descZ);
@@ -62,7 +70,6 @@ int ROKKO_pdsyevx(char jobz, char range, char uplo, int n,
                   double vl, double vu, int il, int iu,
                   double abstol, int* m, int* nZ, double* w, double orfac,
                   double* Z, int iZ, int jZ, const int* descZ,
-                  double* work, int lwork, int* iwork, int liwork,
                   int* ifail, int* iclustr, double* gap);
 
 #ifdef __cplusplus

@@ -18,12 +18,6 @@
 namespace rokko {
 namespace blacs {
 
-//template<typename MATRIX_MAJOR>
-//char set_grid_blacs(int ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat);
-
-//template<typename MATRIX_MAJOR>
-//void set_desc(int ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat, int desc[9]);
-
 template<typename MATRIX_MAJOR>
 char set_grid_blacs(int ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat) {
   char char_grid_major;
