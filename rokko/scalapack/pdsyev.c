@@ -9,7 +9,8 @@
 *
 *****************************************************************************/
 
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <rokko/scalapack/scalapack.h>
 #include <rokko/scalapack/scalapack_wrap.h>
 
@@ -18,34 +19,32 @@ int ROKKO_pdsyev(char jobz, char uplo, int n,
 		 double* w, double* Z, int iz, int jz, const int* descZ) {
 
   // call for querying optimal size of work array
-  double* work = new double[1];
-  long lwork = -1;
+  int lwork = -1;
+  double work_query[1]; 
   int info;
   info = ROKKO_pdsyev_work(jobz, uplo, n, A, ia, ja, descA, w, Z, iz, jz, descZ,
-			   work, lwork);
+			   work_query, lwork);
   if (info) {
-    std::cerr << "error at querying size. info=" << info  << std::endl;
+    printf("error at querying size at pdsyev. info=%d\n", info);
     exit(1);
   }
 
   // allocate work array
-  lwork = work[0];
-  delete[] work;
-  work = new double[lwork];
-  if (work == 0) {
-    std::cerr << "failed to allocate work. info=" << info << std::endl;
+  lwork = (int)work_query[0];
+  double* work = (double*)malloc( sizeof(double) * lwork );
+  if (work == NULL) {
+    printf("failed to allocate work. info=%d\n", info);
     return info;
   }
-
+  
   // call for computation
   info = ROKKO_pdsyev_work(jobz, uplo, n, A, ia, ja, descA, w, Z, iz, jz, descZ,
 			   work, lwork);
   if (info) {
-    std::cerr << "error at pdsyevd function. info=" << info  << std::endl;
+    printf("error at pdsyev function. info=%d\n", info);
     exit(1);
   }
     
-  delete[] work;
-
+  free(work);
   return info;
 }

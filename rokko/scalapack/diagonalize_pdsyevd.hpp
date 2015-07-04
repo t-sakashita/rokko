@@ -39,10 +39,10 @@ int diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
   lapack::get_matrix_part(params, matrix_part, uplow);
 
   int ictxt = ROKKO_blacs_get(-1, 0);
-  char char_grid_major = blacs::set_grid_blacs(ictxt, mat);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
-  blacs::set_desc(ictxt, mat, desc);
+  rokko::blacs::set_desc(ictxt, mat, desc);
   int info;
   timer.stop(timer_id::diagonalize_initialize);
 
