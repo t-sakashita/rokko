@@ -55,7 +55,6 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   //double abstol = 0.;  // defalut value = 0
   //get_key(params, "abstol", abstol);
 
-  int num_eigval_found, num_eigvec_found;
   int orfac = -1;  // default value 10^{-3} is used.
   int* ifail = (int*)malloc( sizeof(int) * dim );
   int* iclustr = (int*)malloc( sizeof(int) * 2 * mat.get_nprow() * mat.get_npcol() );
@@ -80,7 +79,6 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       eigvecs.get_array_pointer(), 1, 1, desc,
 		       ifail, iclustr, gap);
   timer.stop(timer_id::diagonalize_diagonalize);
-  printf("zzzzzzzz\n");
 
   timer.start(timer_id::diagonalize_finalize);
   delete[] ifail;
