@@ -13,14 +13,12 @@
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
 #include <rokko/matrix_major.hpp>
-#include <rokko/eigen_exa/diagonalize.hpp>
+#include <rokko/eigen_exa/diagonalize_eigen_s.hpp>
+#include <rokko/eigen_exa/diagonalize_eigen_sx.hpp>
 
 namespace rokko {
 
 namespace eigen_exa {
-
-struct eigen_s {};
-struct eigen_sx {};
 
 class solver {
 public:
@@ -49,7 +47,7 @@ public:
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   VEC& eigvals,
-		   rokko::parameters const& params, timer& timer);
+		   parameters const& params, timer& timer);
 };
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -57,9 +55,9 @@ void solver::diagonalize(std::string const& routine, distributed_matrix<double, 
 			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, timer& timer) {
   if ((routine=="tri") || (routine=="eigen_s")) {
-    rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer);
+    rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
-    rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer);
+    rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, eigvecs, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
     throw;
@@ -69,11 +67,11 @@ void solver::diagonalize(std::string const& routine, distributed_matrix<double, 
 template<typename MATRIX_MAJOR, typename VEC>
 void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
-			 rokko::parameters const& params, timer& timer) {
+			 parameters const& params, timer& timer) {
   if ((routine=="tri") || (routine=="eigen_s")) {
-    rokko::eigen_exa::diagonalize_s(mat, eigvals, timer);
+    rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, params, timer);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
-    rokko::eigen_exa::diagonalize_sx(mat, eigvals, timer);
+    rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, params, timer);
   } else {
     std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
     throw;
