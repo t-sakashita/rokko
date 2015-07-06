@@ -12,10 +12,11 @@
 #include <rokko/rokko.hpp>
 #include <rokko/mapping_bc.hpp>
 #include <rokko/collective.hpp>
+#include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
 #include <iostream>
+
 
 typedef rokko::matrix_col_major matrix_major;
 
@@ -24,13 +25,11 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_solver::default_solver());
+  std::string library, routine;
   int dim = 10;
   if (argc >= 2) library_routine = argv[1];
   if (argc >= 3) dim = boost::lexical_cast<int>(argv[2]);
-  std::vector<std::string> v;
-  boost::algorithm::split(v, library_routine, boost::is_any_of(":"));
-  std::string library = v[0];
-  std::string routine = v[1];
+  rokko::split_solver_name(library_routine, library, routine);
 
   rokko::grid g(comm);
   int myrank = g.get_myrank();

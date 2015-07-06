@@ -10,6 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
+#include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
@@ -19,13 +20,11 @@ typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
   std::string library_routine(rokko::serial_dense_solver::default_solver());
+  std::string library, routine;
   unsigned int dim = 10;
   if (argc >= 2) library_routine = argv[1];
   if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
-  std::vector<std::string> v;
-  boost::algorithm::split(v, library_routine, boost::is_any_of(":"));
-  std::string library = v[0];
-  std::string routine = v[1];
+  rokko::split_solver_name(library_routine, library, routine);
 
   std::cout.precision(5);
   std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
