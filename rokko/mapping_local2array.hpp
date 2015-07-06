@@ -14,14 +14,14 @@
 
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
-#include <rokko/matrix_common.hpp>
+#include <rokko/mapping_common_sizes.hpp>
 
 #include <rokko/grid.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 
-class mapping_local2array : virtual public matrix_common_sizes {
+class mapping_local2array : virtual public mapping_common_sizes {
 public:
   explicit mapping_local2array() {}
   template<typename MATRIX_MAJOR>
@@ -50,10 +50,10 @@ public:
   void set_default_lld() { set_lld(get_default_lld()); }
 
   int get_default_lld() const {
-    return is_row ? n_local : m_local;
+    return is_row ? get_n_local() : get_m_local();
   }
   int get_default_length_array() const {
-    return is_row ? (m_local * lld) : (lld * n_local);
+    return is_row ? (get_m_local() * lld) : (lld * get_n_local());
   }
   void set_default_length_array() { set_length_array(get_default_length_array()); }
 
@@ -67,11 +67,11 @@ public:
   bool is_col_major() const {
     return !is_row;
   }
-protected:
+
+private:
   bool is_row;
   int length_array;
   int lld;
-private:
 };
 
 } // namespace rokko

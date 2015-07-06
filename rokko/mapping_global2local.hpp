@@ -13,11 +13,11 @@
 #define ROKKO_MAPPING_GLOBAL2LOCAL_HPP
 
 #include <rokko/grid.hpp>
-#include <rokko/matrix_common.hpp>
+#include <rokko/mapping_common_sizes.hpp>
 
 namespace rokko {
 
-class mapping_global2local : virtual public matrix_common_sizes {
+class mapping_global2local : virtual protected mapping_common_sizes {
 public:
   explicit mapping_global2local() {}
   explicit mapping_global2local(int m_global_in, int n_global_in, int block_size, grid const& g_in)
@@ -27,16 +27,16 @@ public:
     set_stride();
   }
 
-  /*explicit mapping_global2local(grid const& g_in, int m_global_in, int n_global_in, int m_local_in, int n_local_in) : matrix_common_sizes(g_in), m_global(m_global_in), n_global(n_global_in), m_local(m_local_in), n_local(n_local_in) {
-    // get grid information
-    myrank = g.get_myrank(); nprocs = g.get_nprocs();
-    myrow = g.get_myrow(); mycol = g.get_mycol();
-    nprow = g.get_nprow(); npcol = g.get_npcol();
-    mb = m_global / m_local;
-    nb = n_global / n_local;
-    set_stride();
-    }*/
-    
+  /*explicit mapping_global2local(int m_global_in, int n_global_in, int m_local_in, int n_local_in, grid const& g_in) : mapping_common_sizes(g_in), m_global(m_global_in), n_global(n_global_in), m_local(m_local_in), n_local(n_local_in) {
+  // get grid information
+  myrank = g.get_myrank(); nprocs = g.get_nprocs();
+  myrow = g.get_myrow(); mycol = g.get_mycol();
+  nprow = g.get_nprow(); npcol = g.get_npcol();
+  mb = m_global / m_local;
+  nb = n_global / n_local;
+  set_stride();
+  }*/
+
   int get_stride_myrow() const { return stride_myrow; }
   int get_stride_mycol() const { return stride_mycol; }
 
@@ -59,7 +59,7 @@ public:
 
   void set_local_size(int m_local_in, int n_local_in) {
     set_m_local(m_local_in);
-    set_n_local(n_local = n_local_in);
+    set_n_local(n_local_in);
   }
 
   void set_default_local_size() {
@@ -140,7 +140,7 @@ public:
   int get_mycol() const { return g.get_mycol(); }
   grid const& get_grid() const { return g; }
 
-protected:
+private:
   int m_global, n_global;
   int mb, nb;
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
@@ -149,7 +149,6 @@ protected:
   int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
-private:
   // block_number is also needed?
 };
 

@@ -10,12 +10,12 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MATRIX_COMMON_HPP
-#define ROKKO_MATRIX_COMMON_HPP
+#ifndef ROKKO_MAPPING_COMMON_SIZES_HPP
+#define ROKKO_MAPPING_COMMON_SIZES_HPP
 
 namespace rokko {
 
-class matrix_common_sizes {
+class mapping_common_sizes {
 public:
   int get_m_local() const { return m_local; }
   int get_n_local() const { return n_local; }
@@ -23,11 +23,12 @@ public:
   void set_n_local(int n_local_in) { n_local = n_local_in; }
 
 protected:
-  explicit matrix_common_sizes() {}
+  explicit mapping_common_sizes() {}
 
+private:
   int m_local, n_local;
 };
 
 } // namespace rokko
 
-#endif // ROKKO_MATRIX_COMMON_HPP
+#endif // ROKKO_MAPPING_COMMON_SIZES_HPP
