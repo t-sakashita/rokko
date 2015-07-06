@@ -62,7 +62,7 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
   } else if (routine=="bisection") {
     rokko::lapack::diagonalize_bisection(mat, eigvals, params, timer);
   } else if (routine=="") {
-    if (params.defined("upper_limit") || params.defined("lower_limit")) {
+    if (lapack::is_interval(params)) {
       rokko::lapack::diagonalize_dsyevr(mat, eigvals, params, timer);
     }
     else {
