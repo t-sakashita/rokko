@@ -15,9 +15,25 @@
 namespace rokko {
 namespace lapack {
 
-void get_matrix_part(parameters const& params, std::string& matrix_part, char& uplow);
+char get_matrix_part(parameters const& params);
 
-void get_eigenvalues_range(parameters const& params, std::string& matrix_part, char& range, double vu, double vl, int iu, int il, bool& is_upper_value, bool& is_lower_value, bool& is_upper_index, bool& is_lower_index);
+std::string get_matrix_part(char const& uplow);
+
+template<typename T>
+char get_eigenvalues_range(parameters const& params, T& vl, T& vu, int& il, int& iu);
+
+void print_verbose(std::string const& routine, char const& jobz, char const& uplow);
+
+template<typename T>
+void print_verbose(std::string const& routine, char const& jobz, char const& range, char const& uplow,
+		   T vl, T vu, int il, int iu);
+
+template<typename T>
+void print_verbose(std::string const& routine, char const& jobz, char const& range, char const& uplow,
+		   T vl, T vu, int il, int iu,
+		   parameters const& params);
+
+bool is_interval(parameters const& params);
 
 } // namespace lapack
 } // namespace rokko

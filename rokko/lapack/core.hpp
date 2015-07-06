@@ -29,19 +29,19 @@ public:
   template<typename MATRIX_MAJOR>
   void diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 		   double* eigvals,
-                   rokko::parameters const& params, timer& timer);
+                   parameters const& params, timer& timer);
   template<typename MATRIX_MAJOR>  
   void diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 		   double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		   rokko::parameters const& params, timer& timer);
+		   parameters const& params, timer& timer);
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 		   VEC& eigvals,
-                   rokko::parameters const& params, timer& timer);
+                   parameters const& params, timer& timer);
   template<typename MATRIX_MAJOR, typename VEC>  
   void diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 		   VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		   rokko::parameters const& params, timer& timer);
+		   parameters const& params, timer& timer);
 private:
   //std::string routine_;  // record routine_;
 };
@@ -50,7 +50,7 @@ private:
 template<typename MATRIX_MAJOR>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 double* eigvals,
-			 rokko::parameters const& params, timer& timer) {
+			 parameters const& params, timer& timer) {
   if ((routine=="dsyev") || (routine=="qr")) {
     rokko::lapack::diagonalize_dsyev(mat, eigvals, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
@@ -77,7 +77,7 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 template<typename MATRIX_MAJOR, typename VEC>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
-			 rokko::parameters const& params, timer& timer) {
+			 parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
@@ -89,7 +89,7 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 template<typename MATRIX_MAJOR>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			 rokko::parameters const& params, timer& timer) {
+			 parameters const& params, timer& timer) {
   if ((routine=="dsyev") || (routine=="qr")) {
     rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
@@ -101,7 +101,7 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
   } else if (routine=="bisection") {
     rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params, timer);
   } else if (routine=="") {
-    if (params.defined("upper_limit") || params.defined("lower_limit")) {
+    if (is_interval(params)) {
       rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params, timer);
     }
     else {
@@ -116,7 +116,7 @@ void solver::diagonalize(std::string const& routine, localized_matrix<double, MA
 template<typename MATRIX_MAJOR, typename VEC>
 void solver::diagonalize(std::string const& routine, localized_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			 rokko::parameters const& params, timer& timer) {
+			 parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);

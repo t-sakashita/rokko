@@ -25,11 +25,9 @@ namespace lapack {
 // dsyevd only eigenvalues
 template<typename MATRIX_MAJOR>
 int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		  rokko::parameters const& params, timer& timer) {
+		       parameters const& params, timer& timer) {
   char jobz = 'N';  // only eigenvalues
-  std::string matrix_part = "upper"; // default is "upper"
-  char uplow = 'U';
-  get_matrix_part(params, matrix_part, uplow);
+  char uplow = lapack::get_matrix_part(params);
 
   int dim = mat.outerSize();
   int info;
@@ -45,7 +43,7 @@ int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
     exit(1);
   }
   if (params.get_bool("verbose")) {
-    std::cout << "All eigenvalues were requested by dsyevd" << std::endl;
+    print_verbose("dsyevd", jobz, uplow);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;
@@ -54,12 +52,10 @@ int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
 // dsyevd eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
 int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		  rokko::parameters const& params, timer& timer) {
+		       localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+		       parameters const& params, timer& timer) {
   char jobz = 'V';  // eigenvalues / eigenvectors
-  std::string matrix_part = "upper"; // default is "upper"
-  char uplow = 'U';
-  get_matrix_part(params, matrix_part, uplow);
+  char uplow = get_matrix_part(params);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int dim = mat.outerSize();
@@ -69,6 +65,7 @@ int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   else
     info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), dim, eigvals);
   timer.stop(timer_id::diagonalize_diagonalize);
+
   timer.start(timer_id::diagonalize_finalize);
   eigvecs = mat;
   if (info) {
@@ -76,7 +73,7 @@ int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
     exit(1);
   }
   if (params.get_bool("verbose")) {
-    std::cout << "All eigenvalues/eigenvectors were requested by dsyevd" << std::endl;
+    print_verbose("dsyevd", jobz, uplow);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;

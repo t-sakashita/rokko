@@ -25,24 +25,20 @@ namespace lapack {
 // dsyevx only eigenvalues
 template<typename MATRIX_MAJOR>
 int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		  rokko::parameters const& params, timer& timer) {
+		       parameters const& params, timer& timer) {
   char jobz = 'N';  // only eigenvalues
-  rokko::parameters params_out;
+  parameters params_out;
   int dim = mat.outerSize();
   int ldim_mat = mat.innerSize();
   lapack_int m;  // output: found eigenvalues
   double abstol = 0.;  // defalut value = 0
   get_key(params, "abstol", abstol);
+  params_out.set("abstol", abstol);
 
-  std::string matrix_part = "upper"; // default is "upper"
-  char uplow = 'U';
-  get_matrix_part(params, matrix_part, uplow);
-
-  char range = 'A';  // default is 'A'
-  lapack_int il = 0, iu = 0;
-  double vl = 0, vu = 0;
-  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
-  get_eigenvalues_range(params, matrix_part, range, vu, vl, iu, il, is_upper_value, is_lower_value, is_upper_index, is_lower_index);
+  lapack_int il, iu;
+  double vl, vu;
+  char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  char uplow = get_matrix_part(params);
 
   std::vector<lapack_int> ifail(dim);
   timer.start(timer_id::diagonalize_diagonalize);
@@ -65,15 +61,7 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    if (range == 'A')
-      std::cout << "All eigenvalues were requested by dsyevx" << std::endl;
-    else if (is_upper_value && is_lower_value)
-      std::cout << "Eigenvalues contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
-    else if (is_upper_index && is_lower_index)
-      std::cout << "Eigenvalues from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
-    std::cout << "The number of found eigenvalues are " << m << std::endl;
-    std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
-    std::cout << "abstol=" << abstol << std::endl;
+    print_verbose("dsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;
@@ -83,8 +71,8 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
 // dsyevx eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
 int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		  rokko::parameters const& params, timer& timer) {
+		       localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+		       parameters const& params, timer& timer) {
   char jobz = 'V';  // eigenvalues / eigenvectors
 
   rokko::parameters params_out;
@@ -96,16 +84,12 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   lapack_int m;  // output: found eigenvalues
   double abstol = 0.;  // defalut value = 0
   get_key(params, "abstol", abstol);
+  params_out.set("abstol", abstol);
 
-  std::string matrix_part = "upper"; // default is "upper"
-  char uplow = 'U';
-  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
-  get_matrix_part(params, matrix_part, uplow);
-
-  char range = 'A';  // default is 'A'
-  lapack_int il = 0, iu = 0;
-  double vl = 0, vu = 0;
-  get_matrix_part(params, matrix_part, uplow);
+  lapack_int il, iu;
+  double vl, vu;
+  char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  char uplow = get_matrix_part(params);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int info;
@@ -137,15 +121,7 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    if (range == 'A')
-      std::cout << "All eigenvalues/eigenvectors were requested by dsyevx" << std::endl;
-    else if (is_upper_value && is_lower_value)
-      std::cout << "Eigenvalues/eigenvectors contained in the interval [" << vl << ", " << vu << "]" << " were requested" << std::endl;
-    else if (is_upper_index && is_lower_index)
-      std::cout << "Eigenvalues/eigenvectors from " << il << "th" << " to " << iu << "th" << " were requested" << std::endl;
-    std::cout << "The number of found eigenvalues are " << m << std::endl;
-    std::cout << "The " << matrix_part << " part of the matrix was used" << std::endl;
-    std::cout << "abstol=" << abstol << std::endl;
+    print_verbose("dsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;

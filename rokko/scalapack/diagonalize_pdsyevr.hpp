@@ -33,17 +33,12 @@ int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
+  parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
-  std::string matrix_part = "upper"; // default is "upper"
-  char uplow = 'U';
-  lapack::get_matrix_part(params, matrix_part, uplow);
-  char range = 'A';  // default is 'A'
+  char uplow = lapack::get_matrix_part(params);
   double vl = 0, vu = 0;
   int il = 0, iu = 0;
-  bool is_upper_value, is_upper_index, is_lower_value, is_lower_index;
-  lapack::get_eigenvalues_range(params, matrix_part, range,
-				vu, vl, iu, il,
-				is_upper_value, is_lower_value, is_upper_index, is_lower_index);
+  char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
 
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
@@ -60,7 +55,61 @@ int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc);
   timer.stop(timer_id::diagonalize_diagonalize);
 
+  timer.start(timer_id::diagonalize_finalize);
+  if (info) {
+    std::cerr << "error at pdsyevr function. info=" << info << std::endl;
+    exit(1);
+  }
+  params_out.set("m", m);
+  params_out.set("nz", nz);
+  if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
+  }
   ROKKO_blacs_gridexit(&ictxt);
+  timer.stop(timer_id::diagonalize_finalize);
+  return info;
+}
+
+// pdsyevd only eigenvalues
+template<typename MATRIX_MAJOR>
+int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			localized_vector<double>& eigvals,
+			parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
+  parameters params_out;
+  char jobz = 'N';  // only eigenvalues
+  char uplow = lapack::get_matrix_part(params);
+  double vl = 0, vu = 0;
+  int il = 0, iu = 0;
+  char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
+
+  int ictxt = ROKKO_blacs_get(-1, 0);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
+  int dim = mat.get_m_global();
+  int desc[9];
+  rokko::blacs::set_desc(ictxt, mat, desc);
+  int m, nz;
+  int info;
+  timer.stop(timer_id::diagonalize_initialize);
+
+  timer.start(timer_id::diagonalize_diagonalize);
+  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc,
+		       vl, vu, il, iu, m, nz,
+		       &eigvals[0], NULL, 1, 1, desc);
+  timer.stop(timer_id::diagonalize_diagonalize);
+
+  timer.start(timer_id::diagonalize_finalize);
+  if (info) {
+    std::cerr << "error at pdsyevr function. info=" << info << std::endl;
+    exit(1);
+  }
+  params_out.set("m", m);
+  params_out.set("nz", nz);
+  if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
+  }
+  ROKKO_blacs_gridexit(&ictxt);
+  timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
 

@@ -34,9 +34,7 @@ int diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   char jobz = 'V';  // eigenvalues / eigenvectors
-  std::string matrix_part = "upper"; // default is "upper"
-  char uplow = 'U';
-  lapack::get_matrix_part(params, matrix_part, uplow);
+  char uplow = lapack::get_matrix_part(params);
 
   int ictxt = ROKKO_blacs_get(-1, 0);
   char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
@@ -51,7 +49,51 @@ int diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       eigvecs.get_array_pointer(), 1, 1, desc);
   timer.stop(timer_id::diagonalize_diagonalize);
 
+  timer.start(timer_id::diagonalize_finalize);
+  if (info) {
+    std::cerr << "error at pdsyevd function. info=" << info << std::endl;
+    exit(1);
+  }
+  if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevd", jobz, uplow);
+  }
   ROKKO_blacs_gridexit(&ictxt);
+  timer.stop(timer_id::diagonalize_finalize);
+  return info;
+}
+
+// pdsyevd only eigenvalues
+template<typename MATRIX_MAJOR>
+int diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			localized_vector<double>& eigvals,
+			parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
+  char jobz = 'N';  // only eigenvalues
+  char uplow = lapack::get_matrix_part(params);
+
+  int ictxt = ROKKO_blacs_get(-1, 0);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
+  int dim = mat.get_m_global();
+  int desc[9];
+  rokko::blacs::set_desc(ictxt, mat, desc);
+  int info;
+  timer.stop(timer_id::diagonalize_initialize);
+
+  timer.start(timer_id::diagonalize_diagonalize);
+  info = ROKKO_pdsyevd(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+		       NULL, 1, 1, desc);
+  timer.stop(timer_id::diagonalize_diagonalize);
+
+  timer.start(timer_id::diagonalize_finalize);
+  if (info) {
+    std::cerr << "error at pdsyevd function. info=" << info << std::endl;
+    exit(1);
+  }
+  if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevd", jobz, uplow);
+  }
+  ROKKO_blacs_gridexit(&ictxt);
+  timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
 
