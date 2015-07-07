@@ -28,8 +28,8 @@ public:
   void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
   void finalize() { El::Finalize(); }
 
-  mapping_bc optimized_mapping(grid const& g, int dim) const {
-    return mapping_bc(dim, 1, g);  // block_size = 1
+  mapping_bc optimized_mapping(int dim, grid const& g) const {
+    return mapping_bc(dim, 1, matrix_col_major_d, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>

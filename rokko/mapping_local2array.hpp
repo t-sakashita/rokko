@@ -31,15 +31,14 @@ public:
     set_default_length_array();
   }
   template<typename MATRIX_MAJOR>
-  explicit mapping_local2array(int lld_in, int length_array_in, MATRIX_MAJOR) : lld(lld_in), length_array(length_array_in) {
-    is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
-  }
-
-  template<typename MATRIX_MAJOR>
   explicit mapping_local2array(int lld_in, MATRIX_MAJOR) : lld(lld_in) {
     is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
     set_default_length_array();
   }
+  //template<typename MATRIX_MAJOR>
+  //explicit mapping_local2array(int lld_in, int length_array_in, MATRIX_MAJOR) : lld(lld_in), length_array(length_array_in) {
+  //  is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+  //}
 
   void set_length_array(int value) { length_array = value; }
   int get_length_array() const { return length_array; }

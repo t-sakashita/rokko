@@ -25,7 +25,7 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
   //void optimized_grid_size() {}
-  mapping_bc optimized_mapping(grid const& g, int dim)  const {
+  mapping_bc optimized_mapping(int dim, grid const& g)  const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();
     if (mb == 0)  mb = 1;
@@ -33,7 +33,7 @@ public:
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
     int b = std::min(mb, nb);
-    return mapping_bc(dim, b, g);
+    return mapping_bc(dim, b, matrix_col_major_d, g);
   }
   template <typename MATRIX_MAJOR, typename VEC>
   void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,

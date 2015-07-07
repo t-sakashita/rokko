@@ -37,12 +37,12 @@ public:
   }
   template<typename SOLVER>
   distributed_matrix(int m_global_in, const grid& g_in, SOLVER const& solver_in)// need fix
-    : map(solver_in.optimized_mapping(g_in, m_global_in)) {
+    : map(solver_in.optimized_mapping(m_global_in, g_in)) {
     allocate_array();
   }
   template<typename SOLVER>
   distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
-    : map(solver_in.optimized_mapping(g_in, m_global_in)) {
+    : map(solver_in.optimized_mapping(m_global_in, g_in)) {
     allocate_array();
   }
   ~distributed_matrix() {

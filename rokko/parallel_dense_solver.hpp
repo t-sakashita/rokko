@@ -44,7 +44,7 @@ public:
   virtual void diagonalize(std::string const& routine, distributed_matrix<double, matrix_col_major>& mat,
 			   localized_vector<double>& eigvals,
 			   rokko::parameters const& params, timer& timer) = 0;
-  virtual mapping_bc optimized_mapping(grid const& g, int dim) const = 0;
+  virtual mapping_bc optimized_mapping(int dim, grid const& g) const = 0;
 };
   
 template<typename SOLVER>
@@ -86,8 +86,8 @@ public:
     solver_impl_.diagonalize(routine, mat, eigvals, params, timer);
   }
   // optimized_mapping
-  mapping_bc optimized_mapping(grid const& g, int dim) const {
-    return solver_impl_.optimized_mapping(g, dim);
+  mapping_bc optimized_mapping(int dim, grid const& g) const {
+    return solver_impl_.optimized_mapping(dim, g);
   }
 private:
   solver_type solver_impl_;
@@ -212,8 +212,8 @@ public:
 		   timer& timer = *global_timer::instance()) {
     diagonalize(mat, eigvals, null_params, timer);
   }
-  mapping_bc optimized_mapping(grid const& g, int dim) const {
-    return solver_impl_->optimized_mapping(g, dim);
+  mapping_bc optimized_mapping(int dim, grid const& g) const {
+    return solver_impl_->optimized_mapping(dim, g);
   }
   static std::vector<std::string> solvers() {
     return detail::pd_solver_factory::product_names();

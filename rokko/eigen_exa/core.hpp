@@ -27,17 +27,15 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  mapping_bc optimized_mapping(grid const& g, int dim_global) const {
+  mapping_bc optimized_mapping(int global_dim, grid const& g) const {
     int nx, ny;
     int nprow = g.get_nprow();
     int npcol = g.get_npcol();
-    int n = dim_global;
+    int n = global_dim;
     ROKKO_eigen_exa_get_matdims(nprow, npcol, n, &nx, &ny);
-
     //std::cout << "nx=" << nx << std::endl;
     int lld = nx;
-    int length_array = nx * ny;
-    return mapping_bc(dim_global, 1, lld, length_array, matrix_col_major_d, g);  // block_size = 1
+    return mapping_bc(global_dim, 1, lld, matrix_col_major_d, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
