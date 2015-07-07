@@ -21,6 +21,7 @@ class solver {
 public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
+  // -------------------------standard eigenvalue problem-----------------------------
   // eigenvalues/eigenvectors
   template<typename T, typename MATRIX_MAJOR, typename VEC>
   void diagonalize(std::string const& routine, localized_matrix<T, MATRIX_MAJOR>& mat,
@@ -45,6 +46,26 @@ public:
       std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
       throw;
     }
+  }
+  // -------------------------generalized eigenvalue problem-----------------------------
+  // eigenvalues/eigenvectors
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine,
+		   localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
+		   VEC& eigvals,
+		   localized_matrix<T, MATRIX_MAJOR>& eigvecs,
+		   rokko::parameters const& params, timer& timer) {  
+    std::cerr << "error: " << "eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
+    throw;
+  }
+  // only eigenvalues
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine,
+		   localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
+		   VEC& eigvals,
+		   rokko::parameters const& params, timer& timer) {
+    std::cerr << "error: " << "eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
+    throw;
   }
 };
 

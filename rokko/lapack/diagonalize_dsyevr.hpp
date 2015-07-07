@@ -29,7 +29,7 @@ int diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   parameters params_out;
   char jobz = 'N';  // only eigenvalues
   int dim = mat.outerSize();
-  int ldim_mat = mat.innerSize();
+  int ld_mat = mat.innerSize();
   double abstol = 0.;  // defalut value = 0
   get_key(params, "abstol", abstol);
   params_out.set("abstol", abstol);
@@ -44,9 +44,13 @@ int diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   timer.start(timer_id::diagonalize_diagonalize);
   int info;
   if(mat.is_col_major())
-    info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &isuppz[0]);
+    info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
+			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
   else
-    info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &isuppz[0]);
+    info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
+			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
@@ -73,8 +77,8 @@ int diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   char jobz = 'V';  // eigenvalues / eigenvectors
 
   int dim = mat.outerSize();
-  int ldim_mat = mat.innerSize();
-  int ldim_eigvec = eigvecs.innerSize();
+  int ld_mat = mat.innerSize();
+  int ld_eigvecs = eigvecs.innerSize();
 
   double abstol = 0.;  // defalut value = 0
   get_key(params, "abstol", abstol);
@@ -91,9 +95,13 @@ int diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   timer.start(timer_id::diagonalize_diagonalize);
   int info;
   if(mat.is_col_major())
-    info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &isuppz[0]);
+    info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
+			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);
   else
-    info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &isuppz[0]);
+    info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
+			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {

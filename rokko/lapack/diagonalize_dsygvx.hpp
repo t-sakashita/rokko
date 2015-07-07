@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_DSYEVX_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_DSYEVX_HPP
+#ifndef ROKKO_LAPACK_DIAGONALIZE_DSYGVX_HPP
+#define ROKKO_LAPACK_DIAGONALIZE_DSYGVX_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/localized_matrix.hpp>
@@ -22,14 +22,16 @@
 namespace rokko {
 namespace lapack {
 
-// dsyevx only eigenvalues
+// dsygvx only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+int diagonalize_dsygvx(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+		       double* eigvals,
 		       parameters const& params, timer& timer) {
   parameters params_out;
   char jobz = 'N';  // only eigenvalues
-  int dim = mat.outerSize();
-  int ld_mat = mat.innerSize();
+  int dim = mata.innerSize();
+  int lda = mata.outerSize();
+  int ldb = matb.outerSize();
   lapack_int m;  // output: found eigenvalues
   double abstol = 0.;  // defalut value = 0
   get_key(params, "abstol", abstol);
@@ -41,20 +43,20 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   char uplow = get_matrix_part(params);
 
   std::vector<lapack_int> ifail(dim);
-  int info;
   timer.start(timer_id::diagonalize_diagonalize);
-  if(mat.is_col_major())
-    info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, &ifail[0]);
+  int info;
+  if(mata.is_col_major())
+    info = LAPACKE_dsygvx(LAPACK_COL_MAJOR, 1, jobz, range, uplow, dim,
+			  &mata(0,0), lda, &matb(0,0), ldb, vl, vu, il, iu,
+			  abstol, &m, eigvals, NULL, lda, &ifail[0]);
   else
-    info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, &ifail[0]);
+    info = LAPACKE_dsygvx(LAPACK_ROW_MAJOR, 1, jobz, range, uplow, dim,
+			  &mata(0,0), lda, &matb(0,0), ldb, vl, vu, il, iu,
+			  abstol, &m, eigvals, NULL, lda, &ifail[0]);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
-    std::cerr << "error at dsyevx function. info=" << info << std::endl;
+    std::cerr << "error at dsygvx function. info=" << info << std::endl;
     if (info < 0) {
       std::cerr << "This means that ";
       std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
@@ -65,23 +67,25 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("dsygvx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;
 }
 
 
-// dsyevx eigenvalues / eigenvectors
+// dsygvx eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+int diagonalize_dsygvx(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+		       double* eigvals,
 		       localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 		       parameters const& params, timer& timer) {
   rokko::parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
-  int dim = mat.outerSize();
-  int ld_mat = mat.innerSize();
-  int ld_eigvecs = eigvecs.innerSize();
+  int dim = mata.innerSize();
+  int lda = mata.outerSize();
+  int ldb = matb.outerSize();
+  int ldim_eigvec = eigvecs.innerSize();
   std::vector<lapack_int> ifail(dim);
 
   lapack_int m;  // output: found eigenvalues
@@ -94,20 +98,20 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   char range = get_eigenvalues_range(params, vl, vu, il, iu);
   char uplow = get_matrix_part(params);
 
-  int info;
   timer.start(timer_id::diagonalize_diagonalize);
-  if(mat.is_col_major())
-    info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &ifail[0]);
+  int info;
+  if(mata.is_col_major())
+    info = LAPACKE_dsygvx(LAPACK_COL_MAJOR, 1, jobz, range, uplow, dim,
+			  &mata(0,0), lda, &matb(0,0), ldb, vl, vu, il, iu,
+			  abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);
   else
-    info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &ifail[0]);
+    info = LAPACKE_dsygvx(LAPACK_ROW_MAJOR, 1, jobz, range, uplow, dim,
+			  &mata(0,0), lda, &matb(0,0), ldb, vl, vu, il, iu,
+			  abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
-    std::cerr << "Error at dsyevx function. info=" << info << std::endl;
+    std::cerr << "Error at dsygvx function. info=" << info << std::endl;
     if (params.get_bool("verbose")) {
       std::cerr << "This means that ";
       if (info < 0) {
@@ -128,7 +132,7 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("dsygvx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;
@@ -138,4 +142,4 @@ int diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_DSYEVX_HPP
+#endif // ROKKO_LAPACK_DIAGONALIZE_DSYGVX_HPP

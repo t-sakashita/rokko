@@ -61,6 +61,13 @@ LAPACKE_UNGQR_DECL(cungqr, lapack_complex_float);
 LAPACKE_UNGQR_DECL(zungqr, lapack_complex_double);
 #undef LAPACKE_UNGQR_DECL
 
+#define LAPACKE_SYGV_DECL(NAME, TYPE) \
+lapack_int LAPACKE_sygv(int matrix_order, lapack_int itype, char jobz, char uplo, lapack_int n, TYPE * a, lapack_int lda, TYPE * b, lapack_int ldb, TYPE * w ); \
+lapack_int LAPACKE_heev(int matrix_order, lapack_int itype, char jobz, char uplo, lapack_int n, TYPE * a, lapack_int lda, TYPE * b, lapack_int ldb, TYPE * w );
+LAPACKE_SYGV_DECL(ssygv, float);
+LAPACKE_SYGV_DECL(dsygv, double);
+#undef LAPACKE_SYGV_DECL
+
 #endif // __cplusplus
 
 #endif // ROKKO_LAPACK_H

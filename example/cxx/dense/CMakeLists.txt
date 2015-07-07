@@ -20,7 +20,7 @@ foreach(name ${SAMPLE})
 endforeach(name)
 unset(SAMPLE)
 
-set(SAMPLE frank frank_parameters frank_default_solver_routine helmert heisenberg xyz xyz_file laplacian)
+set(SAMPLE frank frank_parameters generalev_parameters frank_default_solver_routine helmert heisenberg xyz xyz_file laplacian)
 foreach(name ${SAMPLE})
   set(target_name example_dense_cxx_${name})
   add_executable(${target_name} ${name}.cpp)

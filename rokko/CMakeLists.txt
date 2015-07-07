@@ -78,7 +78,7 @@ endif(Boost_SOURCE_DIR)
 set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
 
 # LAPACK
-set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/geqrf.cpp lapack/gesvd.cpp lapack/heev.cpp lapack/orgqr.cpp lapack/syev.cpp lapack/ungqr.cpp lapack/diagonalize_get_parameters.cpp)
+set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/geqrf.cpp lapack/gesvd.cpp lapack/heev.cpp lapack/orgqr.cpp lapack/syev.cpp lapack/sygv.cpp lapack/ungqr.cpp lapack/diagonalize_get_parameters.cpp)
 
 # BLACS, PBLAS, ScaLAPACK
 if(BUILD_SCALAPACK)
