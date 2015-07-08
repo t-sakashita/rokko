@@ -57,6 +57,10 @@ module rokko
      type(c_ptr) ptr
   end type rokko_distributed_crs_matrix
 
+  type, bind(c) :: rokko_distributed_mfree
+     type(c_ptr) ptr
+  end type rokko_distributed_mfree
+
   !
   ! rokko_grid
   !
@@ -166,6 +170,17 @@ module rokko
        integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
        real(8), value, intent(in) :: tol
      end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix
+
+     subroutine rokko_parallel_sparse_solver_diagonalize_distributed_mfree(solver, mat, &
+          num_evals, block_size, max_iters, tol) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_mfree
+       implicit none
+       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       type(rokko_distributed_mfree), intent(inout) :: mat
+       integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
+       real(8), value, intent(in) :: tol
+     end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_mfree
 
      function rokko_parallel_sparse_solver_num_conv(solver) bind(c)
        use iso_c_binding
@@ -490,6 +505,28 @@ module rokko
        implicit none
        type(rokko_distributed_crs_matrix), intent(out) :: matrix
      end subroutine rokko_distributed_crs_matrix_print
+  end interface
+
+  !
+  ! rokko_distributed_mfree
+  !
+
+  interface
+     subroutine rokko_distributed_mfree_construct(matrix, vars, dim, num_local_rows) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_mfree
+       implicit none
+       type(rokko_distributed_mfree), intent(out) :: matrix
+       type(c_ptr), intent(inout) :: vars
+       integer(c_int), value, intent(in) :: dim, num_local_rows
+     end subroutine rokko_distributed_mfree_construct
+     
+     subroutine rokko_distributed_mfree_destruct(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_mfree
+       implicit none
+       type(rokko_distributed_mfree), intent(inout) :: matrix
+     end subroutine rokko_distributed_mfree_destruct     
   end interface
 
   !

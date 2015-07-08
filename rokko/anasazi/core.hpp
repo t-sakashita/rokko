@@ -160,7 +160,7 @@ public:
     timer.stop(timer_id::diagonalize_finalize);
   }
 
-    void diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params, timer& timer) {
+  void diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params, timer& timer) {
     timer.start(timer_id::diagonalize_initialize);
     rokko::distributed_mfree* mat = &mat_in;
     map_ = new mapping_1d(mat->get_dim());
@@ -207,7 +207,7 @@ public:
   }
 
   void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-    int max_iters, double tol, timer& timer) {
+		   int max_iters, double tol, timer& timer) {
     timer.start(timer_id::diagonalize_initialize);
     map_ = new mapping_1d(mat.get_dim());
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
@@ -240,12 +240,11 @@ public:
   }
 
   void diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
-    double tol, timer& timer) {
+		   double tol, timer& timer) {
     timer.start(timer_id::diagonalize_initialize);
     rokko::distributed_mfree* mat = &mat_in;
     map_ = new mapping_1d(mat->get_dim());
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ =
-      Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
+    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));

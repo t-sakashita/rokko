@@ -41,8 +41,6 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::distributed_crs_matrix mat(dim, dim, solver);
-
-
   
   std::vector<double> values;
   std::vector<int> cols;

@@ -32,9 +32,16 @@ void rokko_parallel_sparse_solver_destruct(rokko_parallel_sparse_solver* solver)
 }
 
 void rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(struct rokko_parallel_sparse_solver* solver,
-								 struct rokko_distributed_crs_matrix* mat,
-								 int num_evals, int block_size, int max_iters, double tol) {
+								     struct rokko_distributed_crs_matrix* mat,
+								     int num_evals, int block_size, int max_iters, double tol) {
   static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->ptr),
+									num_evals, block_size, max_iters, tol);
+}
+
+void rokko_parallel_sparse_solver_diagonalize_distributed_mfree(struct rokko_parallel_sparse_solver* solver,
+								struct rokko_distributed_mfree* mat,
+								int num_evals, int block_size, int max_iters, double tol) {
+  static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat->ptr),
 									num_evals, block_size, max_iters, tol);
 }
 

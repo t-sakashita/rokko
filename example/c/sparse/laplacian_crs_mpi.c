@@ -2,10 +2,8 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
-*                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
-*    
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+*
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
@@ -30,20 +28,16 @@ int main(int argc, char *argv[]) {
   } else {
     solver_name = default_solver_name;
   }
-
-  int L = 8;
-  int dim = 1 << L;
-  int lattice_first[L], lattice_second[L];
-  int l;
-  for (l = 0; l < L; ++l) {
-    lattice_first[l] = l;
-    lattice_second[l] = (l+1) % L;
+  int dim;
+  if (argc == 3) {
+    dim = atoi(argv[2]);
+  } else {
+    dim = 10;
   }
 
   if (myrank == root) {
-    printf("Eigenvalue decomposition of antiferromagnetic Heisenberg chain\n");
+    printf("Eigenvalue decomposition of Laplacian matrix\n");
     printf("solver = %s\n", solver_name);
-    printf("L = %d\n", L);
     printf("dimension = %d\n", dim);
   }
 
@@ -59,35 +53,32 @@ int main(int argc, char *argv[]) {
   int row;
   int row_start = rokko_distributed_crs_matrix_start_row(&mat);
   int row_end = rokko_distributed_crs_matrix_end_row(&mat);
-  int cols[dim];
-  double values[dim];
+  int cols[3];
+  double values[3];
  
-  int count;
-  double diag;
-  int i, j, m1, m2, m3;
-  for (row = row_start; row < row_end; ++row) {
-    count = 0;
-    diag = 0;
-    for (l = 0;  l < L; ++l) {
-      i = lattice_first[l];
-      j = lattice_second[l];
-      m1 = 1 << i;
-      m2 = 1 << j;
-      m3 = m1 + m2;
-      if (((row & m3) == m1) || ((row & m3) == m2)) {
-        cols[count] = row^m3;
-        values[count] = 0.5;
-	++count;
-        diag += -0.25;
-      } else {
-        diag += 0.25;
-      }
-    }
-    cols[count] = row;
-    values[count] = diag;
-    ++count;
-    rokko_distributed_crs_matrix_insert(&mat, row, count, cols, values);
+  if (row_start == 0) {
+    values[0] = 1.;  values[1] = -1.;
+    cols[0] = 0;   cols[1] = 1;
+    ++row_start;
   }
+  rokko_distributed_crs_matrix_insert(&mat, 0, 2, cols, values);
+
+  if (row_end == (dim-1)) {
+    --row_end;
+  }
+  
+  values[0] = -1.;  values[1] = 2.;  values[2] = -1.;
+  for (row = row_start; row < row_end; ++row) {
+    cols[0] = row-1;   cols[1] = row;   cols[2] = row+1;
+    rokko_distributed_crs_matrix_insert(&mat, row, 3, cols, values);
+  }
+
+  if (row_end == (dim-1)) {
+    values[0] = -1.;  values[1] = 2.;
+    cols[0] = dim-2;   cols[1] = dim-1;
+  }
+  rokko_distributed_crs_matrix_insert(&mat, dim-1, 2, cols, values);
+
   rokko_distributed_crs_matrix_complete(&mat);
 
   int nev = 10;
@@ -100,6 +91,7 @@ int main(int argc, char *argv[]) {
   double eig_val = rokko_parallel_sparse_solver_eigenvalue(&solver, 0);
   int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
   double eig_vec[num_local_rows];
+  int i = 0;
   rokko_parallel_sparse_solver_eigenvector(&solver, i, eig_vec);
 
   if (myrank == root) {
@@ -107,7 +99,7 @@ int main(int argc, char *argv[]) {
     printf("Computed Eigenvalue =\n");
     printf("%30.20f\n", eig_val);
     printf("Computed Eigenvector =\n");
-    for (j = 0; j < num_local_rows; ++j)
+    for (int j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
     printf("\n");    
   }
