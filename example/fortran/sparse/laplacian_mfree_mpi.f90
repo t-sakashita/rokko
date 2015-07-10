@@ -18,17 +18,20 @@ CONTAINS
     USE, INTRINSIC :: ISO_C_BINDING
   END SUBROUTINE simple2
   ! Wrapper for C function.
-  SUBROUTINE rokko_distributed_mfree_construct_f(mat, simple_in, dim, num_local_rows)
+  SUBROUTINE rokko_distributed_mfree_construct_f(mat, multiply_in, dim, num_local_rows)
     USE, INTRINSIC :: ISO_C_BINDING
     type(rokko_distributed_mfree), intent(inout) :: mat
     INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
     INTERFACE
-       SUBROUTINE simple_in()
+       SUBROUTINE multiply_in (n, x, y) BIND(C)
          USE, INTRINSIC :: ISO_C_BINDING
-       END SUBROUTINE simple_in
+         INTEGER(C_INT), INTENT(IN), VALUE :: n
+         REAL(C_DOUBLE), INTENT(IN) :: x(n)
+         REAL(C_DOUBLE), INTENT(OUT) :: y(n)
+       END SUBROUTINE multiply_in
     END INTERFACE
     ! Get C procedure pointer.
-    cproc = C_FUNLOC(simple2)
+    cproc = C_FUNLOC(multiply_in)
     ! call wrapper in C.
     call rokko_distributed_mfree_construct2(mat, cproc, dim, num_local_rows)
   END SUBROUTINE rokko_distributed_mfree_construct_f
@@ -85,7 +88,7 @@ CONTAINS
     vars%end_k = vars%num_local_rows - 1;
     print*, "myrank=", vars%myrank, "start_row=", vars%start_row, "end_row=", vars%end_row
     print*, "myrank=", vars%myrank, "num_local_rows=", vars%num_local_rows
-    call rokko_distributed_mfree_construct_f(mat, simple, vars%dim, vars%num_local_rows)
+    call rokko_distributed_mfree_construct_f(mat, multiply, vars%dim, vars%num_local_rows)
   END SUBROUTINE initialize
   ! subroutine passed to C function.
   ! It must be interoperable!

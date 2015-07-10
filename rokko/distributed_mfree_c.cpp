@@ -20,20 +20,17 @@ public:
   mfree_c(void (*multiply)(const double*, double*, void*), void* vars, int dim, int num_local_rows)
     : multiply_(multiply), vars_(vars), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
   }
-  mfree_c(void (*simple)(), int dim, int num_local_rows)
-    : simple_(simple), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
+  mfree_c(void (*multiply2)(int, const double*, double*), int dim, int num_local_rows)
+    : multiply2_(multiply2), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
     printf("construct2\n");
     //    double x[5], y[5];
     //    multiply2_(&x[0], &y[0]);
     //printf("efefefe\n");
-    //std::cout << "fun_pointer=" << simple << std::endl;
-    printf ("func_address= %p\n", simple);
+    //printf ("func_address= %p\n", simple);
   }
   ~mfree_c() {}
 
   void multiply(const double* x, double* y) const {
-    simple_();
-    printf("oooooooooo\n");
     int n = num_local_rows_;
     multiply2_(n, x, y);
   }
@@ -62,9 +59,9 @@ void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 }
 
 void rokko_distributed_mfree_construct2(struct rokko_distributed_mfree* matrix,
-					void (*simple)(),
+					void (*multiply2)(int, const double*, double*),
 					int dim, int num_local_rows) {
-  matrix->ptr = new mfree_c(simple, dim, num_local_rows);
+  matrix->ptr = new mfree_c(multiply2, dim, num_local_rows);
 }
 
 void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {
