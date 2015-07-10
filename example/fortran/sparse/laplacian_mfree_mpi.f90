@@ -21,16 +21,11 @@ CONTAINS
     INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
     TYPE(C_FUNPTR) :: cproc
     INTERFACE
-       SUBROUTINE func_in(x_in, y_in)
+       SUBROUTINE func_in(n, x, y)
          USE, INTRINSIC :: ISO_C_BINDING
-         TYPE(C_PTR), INTENT(IN) :: x_in(:)
-         TYPE(C_PTR), INTENT(OUT) :: y_in(:)
-    !         REAL(KIND=C_DOUBLE), INTENT(IN) :: x(*)
-!         REAL(KIND=C_DOUBLE), INTENT(OUT) :: y(*)
-!         DOUBLE PRECISION, INTENT(IN), POINTER :: x(:)
-!         DOUBLE PRECISION, INTENT(OUT), POINTER :: y(:)
-         !REAL(KIND=C_DOUBLE), INTENT(IN), dimension(:) :: x
-         !REAL(KIND=C_DOUBLE), INTENT(INOUT), dimension(:) :: y
+         INTEGER(C_INT), INTENT(IN), VALUE :: n
+         REAL(C_DOUBLE), INTENT(IN) :: x(n)
+         REAL(C_DOUBLE), INTENT(OUT) :: y(n)
        END SUBROUTINE func_in
     END INTERFACE
     ! Get C procedure pointer.
@@ -96,20 +91,13 @@ CONTAINS
   END SUBROUTINE initialize
   ! subroutine passed to C function.
   ! It must be interoperable!
-  SUBROUTINE multiply (x_in, y_in) BIND(C)
-    TYPE(C_PTR), INTENT(IN) :: x_in(:)
-    TYPE(C_PTR), INTENT(OUT)  :: y_in(:)
-    REAL(C_DOUBLE), POINTER :: x(:)
-    REAL(C_DOUBLE), POINTER :: y(:)
-!    REAL(KIND=C_DOUBLE), INTENT(IN)  :: x(*)
-!    REAL(KIND=C_DOUBLE), INTENT(OUT) :: y(*)
-!    REAL(KIND=C_DOUBLE), INTENT(IN), dimension(:) :: x
-!    REAL(KIND=C_DOUBLE), INTENT(INOUT), dimension(:) :: y
+  SUBROUTINE multiply (n, x, y) BIND(C)
+    INTEGER(C_INT), INTENT(IN), VALUE :: n
+    REAL(C_DOUBLE), INTENT(IN) :: x(n)
+    REAL(C_DOUBLE), INTENT(OUT) :: y(n)
     integer :: ierr
     integer :: k
     print*, "calleddddddd"
-    call c_f_pointer(x_in, x, (/vars%num_local_rows/) )
-    call c_f_pointer(y_in, y, (/vars%num_local_rows/) )
     
     if (vars%num_local_rows == 0) then
        return
