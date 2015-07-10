@@ -517,6 +517,7 @@ module rokko
        import rokko_parallel_sparse_solver, rokko_distributed_mfree
        implicit none
        type(rokko_distributed_mfree), intent(out) :: matrix
+       type(c_funptr) :: multiply
        type(c_ptr), intent(inout) :: vars
        integer(c_int), value, intent(in) :: dim, num_local_rows
      end subroutine rokko_distributed_mfree_construct
