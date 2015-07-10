@@ -2,7 +2,7 @@ MODULE mfree
   USE, INTRINSIC :: ISO_C_BINDING
   use rokko!, only : type(rokko_distributed_mfree)
   IMPLICIT NONE
-  integer,parameter :: n = 10
+  TYPE(C_FUNPTR) :: cproc
 
   ! interface for C function.
 !  INTERFACE
@@ -14,23 +14,21 @@ MODULE mfree
 !  END INTERFACE
   
 CONTAINS
+  SUBROUTINE simple2() bind(c)
+    USE, INTRINSIC :: ISO_C_BINDING
+  END SUBROUTINE simple2
   ! Wrapper for C function.
-  SUBROUTINE rokko_distributed_mfree_construct_f(mat, func_in, dim, num_local_rows)
+  SUBROUTINE rokko_distributed_mfree_construct_f(mat, simple_in, dim, num_local_rows)
     USE, INTRINSIC :: ISO_C_BINDING
     type(rokko_distributed_mfree), intent(inout) :: mat
     INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
-    TYPE(C_FUNPTR) :: cproc
     INTERFACE
-       SUBROUTINE func_in(n, x, y)
+       SUBROUTINE simple_in()
          USE, INTRINSIC :: ISO_C_BINDING
-         INTEGER(C_INT), INTENT(IN), VALUE :: n
-         REAL(C_DOUBLE), INTENT(IN) :: x(n)
-         REAL(C_DOUBLE), INTENT(OUT) :: y(n)
-       END SUBROUTINE func_in
+       END SUBROUTINE simple_in
     END INTERFACE
     ! Get C procedure pointer.
-    cproc = C_FUNLOC (func_in)
-
+    cproc = C_FUNLOC(simple2)
     ! call wrapper in C.
     call rokko_distributed_mfree_construct2(mat, cproc, dim, num_local_rows)
   END SUBROUTINE rokko_distributed_mfree_construct_f
@@ -87,7 +85,7 @@ CONTAINS
     vars%end_k = vars%num_local_rows - 1;
     print*, "myrank=", vars%myrank, "start_row=", vars%start_row, "end_row=", vars%end_row
     print*, "myrank=", vars%myrank, "num_local_rows=", vars%num_local_rows
-    call rokko_distributed_mfree_construct_f(mat, multiply, vars%dim, vars%num_local_rows)
+    call rokko_distributed_mfree_construct_f(mat, simple, vars%dim, vars%num_local_rows)
   END SUBROUTINE initialize
   ! subroutine passed to C function.
   ! It must be interoperable!
@@ -152,6 +150,8 @@ CONTAINS
        y(k) = - x(k-1) + 2 * x(k) - x(k+1)
     enddo
   END SUBROUTINE multiply
+  SUBROUTINE simple () BIND(C)
+  END SUBROUTINE simple
 END MODULE laplacian
 
 program main
