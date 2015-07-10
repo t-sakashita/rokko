@@ -516,11 +516,20 @@ module rokko
        use iso_c_binding
        import rokko_parallel_sparse_solver, rokko_distributed_mfree
        implicit none
-       type(rokko_distributed_mfree), intent(out) :: matrix
+       type(rokko_distributed_mfree), intent(inout) :: matrix
        type(c_funptr) :: multiply
        type(c_ptr), intent(inout) :: vars
        integer(c_int), value, intent(in) :: dim, num_local_rows
      end subroutine rokko_distributed_mfree_construct
+
+     subroutine rokko_distributed_mfree_construct2(matrix, func, dim, num_local_rows) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_mfree
+       implicit none
+       type(rokko_distributed_mfree), intent(out) :: matrix
+       type(c_funptr), intent(in) :: func
+       integer(c_int), value, intent(in) :: dim, num_local_rows
+     end subroutine rokko_distributed_mfree_construct2
      
      subroutine rokko_distributed_mfree_destruct(matrix) bind(c)
        use iso_c_binding

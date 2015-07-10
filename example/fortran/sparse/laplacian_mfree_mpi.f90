@@ -1,41 +1,44 @@
 MODULE mfree
   USE, INTRINSIC :: ISO_C_BINDING
+  use rokko!, only : type(rokko_distributed_mfree)
   IMPLICIT NONE
   
   ! interface for C function.
-  INTERFACE
-     SUBROUTINE construct_c(func_multiply, vars) BIND(C)
-       USE, INTRINSIC :: ISO_C_BINDING
-       TYPE(C_FUNPTR), INTENT(IN), VALUE :: func_multiply
-       TYPE(C_PTR), INTENT(INOUT) :: vars
-     END SUBROUTINE construct_c
-  END INTERFACE
+!  INTERFACE
+!     SUBROUTINE rokko_distributed_mfree_construct2(mat, func_multiply, dim, num_local_rows)
+!       type(rokko_distributed_mfree), intent(in) :: mat
+!       TYPE(C_FUNPTR), INTENT(IN), VALUE :: func_multiply
+!       INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
+!     END SUBROUTINE rokko_distributed_mfree_construct2
+!  END INTERFACE
   
-CONTAINS 
+CONTAINS
   ! Wrapper for C function.
-  SUBROUTINE construct(func_in, vars)
-!    USE, INTRINSIC :: ISO_C_BINDING
+  SUBROUTINE rokko_distributed_mfree_construct_f(mat, func_in, dim, num_local_rows)
+    USE, INTRINSIC :: ISO_C_BINDING
+    type(rokko_distributed_mfree), intent(inout) :: mat
+    INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
     TYPE(C_FUNPTR) :: cproc
-    TYPE(C_PTR), INTENT(inout) :: vars
     INTERFACE
-       SUBROUTINE func_in(x, y, vars)
+       SUBROUTINE func_in(x, y)
          USE, INTRINSIC :: ISO_C_BINDING
          REAL(KIND=C_DOUBLE), INTENT(IN), dimension(5) :: x
          REAL(KIND=C_DOUBLE), INTENT(OUT), dimension(5) :: y
-         TYPE(C_PTR), INTENT(INOUT) :: vars
        END SUBROUTINE func_in
     END INTERFACE
     ! Get C procedure pointer.
     cproc = C_FUNLOC (func_in)
 
     ! call wrapper in C.
-    call construct_c(cproc, vars)
-  END SUBROUTINE construct
+    call rokko_distributed_mfree_construct2(mat, cproc, dim, num_local_rows)
+  END SUBROUTINE rokko_distributed_mfree_construct_f
   
 END MODULE mfree
  
 MODULE laplacian
   use MPI
+  use rokko
+  use mfree!, only : rokko_distributed_mfree_construct_f
   USE, INTRINSIC :: ISO_C_BINDING
   IMPLICIT NONE
   INTEGER(C_INT) myrank, nprocs
@@ -50,9 +53,10 @@ MODULE laplacian
      double precision :: buf_m, buf_p
      INTEGER :: status_m(MPI_STATUS_SIZE), status_p(MPI_STATUS_SIZE)
   END TYPE type_vars
-  TYPE(type_vars) vars
+  TYPE(type_vars) :: vars
 CONTAINS
-  SUBROUTINE initialize (dim_in)
+  SUBROUTINE initialize (mat, dim_in)
+    type(rokko_distributed_mfree), intent(inout) :: mat
     integer(c_int), intent(in) :: dim_in
     integer :: ierr
     integer :: tmp, rem
@@ -80,19 +84,17 @@ CONTAINS
 
     vars%end_k = vars%num_local_rows - 1;
     print*, "myrank=", vars%myrank, "start_row=", vars%start_row, "end_row=", vars%end_row
-    print*, "myrank=", vars%myrank, "num_local_rows=%d\n", vars%num_local_rows
+    print*, "myrank=", vars%myrank, "num_local_rows=", vars%num_local_rows
+    call rokko_distributed_mfree_construct_f(mat, multiply, vars%dim, vars%num_local_rows)
   END SUBROUTINE initialize
   ! subroutine passed to C function.
   ! It must be interoperable!
-  SUBROUTINE multiply (x, y, vars_in) BIND(C)
+  SUBROUTINE multiply (x, y) BIND(C)
     REAL(KIND=C_DOUBLE), INTENT(IN), dimension(5) :: x
     REAL(KIND=C_DOUBLE), INTENT(OUT), dimension(5) :: y
-    TYPE(C_PTR), INTENT(INOUT) :: vars_in
-    TYPE(type_vars), pointer :: vars
     integer :: ierr
     integer :: k
 
-    call C_F_POINTER(vars_in, vars)
     if (vars%num_local_rows == 0) then
        return
     endif
@@ -150,15 +152,15 @@ END MODULE laplacian
 
 program main
   use MPI
+  use rokko
   use mfree
   use laplacian
   implicit none
   integer :: provided, ierr
-  TYPE(C_PTR) :: vars_main
+  type(rokko_distributed_mfree) :: mat
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
-  call initialize(10)
-  call construct(multiply, vars_main)
+  call initialize(mat, 10)
 
   call MPI_finalize(ierr)
 end program main
