@@ -25,10 +25,10 @@ public:
   }
   ~mfree_c() {}
 
-  void multiply(const double* x, double* y) const {
+  /*void multiply(const double* x, double* y) const {
     multiply_(x, y, vars_);
-  }
-  void multiply2(const double* x, double* y) const {
+    }*/
+  void multiply(const double* x, double* y) const {
     multiply2_(x, y);
   }
   int get_dim() const { return dim_; }
@@ -56,9 +56,6 @@ void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 void rokko_distributed_mfree_construct2(struct rokko_distributed_mfree* matrix,
 					void (*multiply2)(const double*, double*),
 					int dim, int num_local_rows) {
-  int aa = num_local_rows;
-  void (*multiply5)(const double*, double*);
-  multiply5 = multiply2;
   matrix->ptr = new mfree_c(multiply2, dim, num_local_rows);
 }
 

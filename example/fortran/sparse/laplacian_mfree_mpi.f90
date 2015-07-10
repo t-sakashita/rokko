@@ -22,8 +22,8 @@ CONTAINS
     INTERFACE
        SUBROUTINE func_in(x, y)
          USE, INTRINSIC :: ISO_C_BINDING
-         REAL(KIND=C_DOUBLE), INTENT(IN), dimension(5) :: x
-         REAL(KIND=C_DOUBLE), INTENT(OUT), dimension(5) :: y
+         REAL(KIND=C_DOUBLE), INTENT(IN), dimension(:) :: x
+         REAL(KIND=C_DOUBLE), INTENT(INOUT), dimension(:) :: y
        END SUBROUTINE func_in
     END INTERFACE
     ! Get C procedure pointer.
@@ -90,8 +90,8 @@ CONTAINS
   ! subroutine passed to C function.
   ! It must be interoperable!
   SUBROUTINE multiply (x, y) BIND(C)
-    REAL(KIND=C_DOUBLE), INTENT(IN), dimension(5) :: x
-    REAL(KIND=C_DOUBLE), INTENT(OUT), dimension(5) :: y
+    REAL(KIND=C_DOUBLE), INTENT(IN), dimension(:) :: x
+    REAL(KIND=C_DOUBLE), INTENT(INOUT), dimension(:) :: y
     integer :: ierr
     integer :: k
 
@@ -157,10 +157,45 @@ program main
   use laplacian
   implicit none
   integer :: provided, ierr
+  
+  double precision :: eig_val
+  double precision, allocatable, dimension(:) :: eig_vec
+
+  type(rokko_parallel_sparse_solver) :: solver
+  character(len=100) :: solver_name, tmp_str
   type(rokko_distributed_mfree) :: mat
+  integer :: dim
+  integer :: num_evals, block_size, max_iters
+  integer :: num_local_rows, num_conv
+  double precision :: tol
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
-  call initialize(mat, 10)
+  call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
+  call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
+
+  solver_name = "anasazi"
+  dim = 10
+
+  if (myrank == 0) then
+     write(*,*) "solver name = ", trim(solver_name)
+     write(*,*) "matrix dimension = ", dim
+  endif
+
+  call rokko_parallel_sparse_solver_construct(solver, solver_name)
+  call initialize(mat, dim)
+
+  num_evals = 10
+  block_size = 5
+  max_iters = 500
+  tol = 1.0e-8
+  call rokko_parallel_sparse_solver_diagonalize_distributed_mfree(solver, mat, num_evals, block_size, max_iters, tol)
+
+  !num_conv = rokko_parallel_sparse_solver_num_conv(solver);
+  !eig_val = rokko_parallel_sparse_solver_eigenvalue(solver, 0);
+  !num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
+
+  call rokko_distributed_mfree_destruct(mat)
+  call rokko_parallel_sparse_solver_destruct(solver)
 
   call MPI_finalize(ierr)
 end program main
