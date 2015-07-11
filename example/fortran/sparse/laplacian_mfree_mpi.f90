@@ -42,7 +42,7 @@ CONTAINS
     end_k = num_local_rows - 1
     print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row
     print*, "myrank=", myrank, "num_local_rows=", num_local_rows
-    call rokko_distributed_mfree_construct_f(mat, multiply, dim, num_local_rows)
+    call rokko_distributed_mfree_f_construct(mat, multiply, dim, num_local_rows)
   END SUBROUTINE initialize
   ! subroutine passed to C function.
   ! It must be interoperable!
@@ -161,7 +161,7 @@ program main
   eig_val = rokko_parallel_sparse_solver_eigenvalue(solver, 0)
   num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
   print*, "eigval=", eig_val
-  call rokko_distributed_mfree_destruct(mat)
+  call rokko_distributed_mfree_f_destruct(mat)
   call rokko_parallel_sparse_solver_destruct(solver)
 
   call MPI_finalize(ierr)

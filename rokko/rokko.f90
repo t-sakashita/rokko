@@ -512,24 +512,14 @@ module rokko
   !
 
   interface
-     subroutine rokko_distributed_mfree_construct(matrix, vars, dim, num_local_rows) bind(c)
-       use iso_c_binding
-       import rokko_distributed_mfree
-       implicit none
-       type(rokko_distributed_mfree), intent(inout) :: matrix
-       type(c_funptr) :: multiply
-       type(c_ptr), intent(inout) :: vars
-       integer(c_int), value, intent(in) :: dim, num_local_rows
-     end subroutine rokko_distributed_mfree_construct
-
-     subroutine rokko_distributed_mfree_construct2(matrix, func, dim, num_local_rows) bind(c)
+     subroutine rokko_distributed_mfree_f_construct(matrix, func, dim, num_local_rows) bind(c)
        use iso_c_binding
        import rokko_distributed_mfree
        implicit none
        type(rokko_distributed_mfree), intent(out) :: matrix
        type(c_funptr), intent(in), value :: func
        integer(c_int), value, intent(in) :: dim, num_local_rows
-     end subroutine rokko_distributed_mfree_construct2
+     end subroutine rokko_distributed_mfree_f_construct
     
      integer(c_int) function rokko_distributed_mfree_num_local_rows(matrix) bind(c)
        use iso_c_binding
@@ -625,7 +615,7 @@ contains
     call rokko_serial_dense_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
   end subroutine rokko_serial_dense_solver_construct
 
-  SUBROUTINE rokko_distributed_mfree_construct_f(mat, multiply_in, dim, num_local_rows)
+  SUBROUTINE rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
     USE, INTRINSIC :: ISO_C_BINDING
     type(rokko_distributed_mfree), intent(inout) :: mat
     INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
@@ -641,7 +631,7 @@ contains
     ! Get C procedure pointer.
     cproc = C_FUNLOC(multiply_in)
     ! call wrapper written in C.
-    call rokko_distributed_mfree_construct2(mat, cproc, dim, num_local_rows)
-  END SUBROUTINE rokko_distributed_mfree_construct_f
+    call rokko_distributed_mfree_f_construct(mat, cproc, dim, num_local_rows)
+  END SUBROUTINE rokko_distributed_mfree_construct
 
 end module rokko
