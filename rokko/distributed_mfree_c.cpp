@@ -22,11 +22,6 @@ public:
   }
   mfree_c(void (*multiply2)(int, const double*, double*), int dim, int num_local_rows)
     : multiply2_(multiply2), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
-    printf("construct2\n");
-    //    double x[5], y[5];
-    //    multiply2_(&x[0], &y[0]);
-    //printf("efefefe\n");
-    //printf ("func_address= %p\n", simple);
   }
   ~mfree_c() {}
 

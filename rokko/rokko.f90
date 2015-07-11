@@ -530,7 +530,21 @@ module rokko
        type(c_funptr), intent(in), value :: func
        integer(c_int), value, intent(in) :: dim, num_local_rows
      end subroutine rokko_distributed_mfree_construct2
-     
+
+     integer(c_int) function rokko_distributed_mfree_num_local_rows(matrix) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_mfree
+       implicit none
+       type(rokko_distributed_mfree), intent(in) :: matrix
+     end function rokko_distributed_mfree_num_local_rows
+
+     integer(c_int) function rokko_distributed_mfree_dim(matrix) bind(c)
+       use iso_c_binding
+       import rokko_parallel_sparse_solver, rokko_distributed_mfree
+       implicit none
+       type(rokko_distributed_mfree), intent(in) :: matrix
+     end function rokko_distributed_mfree_dim
+
      subroutine rokko_distributed_mfree_destruct(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_mfree
