@@ -139,7 +139,7 @@ public:
   int get_length_array() const { return map.get_length_array(); }
   int get_lld() const { return map.get_lld(); };
   int get_default_length_array() const { return map.get_default_length_array(); }
-  int get_array_index(int local_i, int local_j) const { return map.get_array_index(); }
+  int get_array_index(int local_i, int local_j) const { return map.get_array_index(local_i, local_j); }
   bool is_row_major() const { return map.is_row_major(); }
   bool is_col_major() const { return map.is_col_major(); }
   grid const& get_grid() const { return map.get_grid(); }
