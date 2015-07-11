@@ -9,7 +9,8 @@ MODULE laplacian
   integer(c_int), private :: start_row, end_row
   integer(c_int), private :: start_k, end_k
   logical, private :: is_first_proc, is_last_proc
-  double precision, private :: buf_m, buf_p
+  double precision, private :: array_m(1), array_p(1)
+  double precision, private :: buf_p, buf_m
   INTEGER, private :: status_m(MPI_STATUS_SIZE), status_p(MPI_STATUS_SIZE)
 CONTAINS
   SUBROUTINE initialize (mat, dim_in)
@@ -24,8 +25,8 @@ CONTAINS
     tmp = dim / nprocs
     rem = mod(dim, nprocs)
     num_local_rows = (dim + nprocs - myrank - 1) / nprocs
-    start_row = tmp * myrank + min(rem, myrank)
-    end_row = start_row + num_local_rows - 1
+    start_row = tmp * myrank + min(rem, myrank) + 1  ! extra plus 1
+    end_row = start_row + num_local_rows - 1 ! extra plus 1
     
     if (start_row == 1) then
        is_first_proc = .true.
@@ -33,14 +34,15 @@ CONTAINS
        is_first_proc = .false.
     endif
  
-    if (end_row == (dim-1)) then
+    if (end_row == dim) then
        is_last_proc = .true.
     else
        is_last_proc = .false.
     endif
 
-    end_k = num_local_rows - 1
-    print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row
+    end_k = num_local_rows
+    print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row,&
+         "is_first_proc", is_first_proc, " is_last_proc", is_last_proc
     print*, "myrank=", myrank, "num_local_rows=", num_local_rows
     call rokko_distributed_mfree_construct(mat, multiply, dim, num_local_rows)
   END SUBROUTINE initialize
@@ -48,27 +50,29 @@ CONTAINS
   ! It must be interoperable!
   SUBROUTINE multiply (n, x, y) BIND(C)
     INTEGER(C_INT), INTENT(IN), VALUE :: n
-    REAL(C_DOUBLE), INTENT(IN) :: x(n)
-    REAL(C_DOUBLE), INTENT(OUT) :: y(n)
+    DOUBLE PRECISION, INTENT(IN) :: x(n)
+    DOUBLE PRECISION, INTENT(OUT) :: y(n)
     integer :: ierr
     integer :: k
-    
+
     if (num_local_rows == 0) then
        return
     endif
     
     if (.not.(is_first_proc) .and. (nprocs /= 1)) then
-       !std::cout << "recv myrank=" << myrank << std::endl
-       call MPI_Send(x(1), 1, MPI_DOUBLE, myrank-1, 0, comm)
-       call MPI_Recv(buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm, status_m, ierr)
+       print*, "recv myrank=", myrank
+       call MPI_Send(x(1), 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, ierr)
+       call MPI_Recv(array_m, 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, status_m, ierr)
        !std::cout << "buffff=" << buf << std::endl
+       buf_m = array_m(1)
     endif
     
     if (.not.(is_last_proc) .and. (nprocs /= 1)) then
-       !std::cout << "send myrank=" << myrank << std::endl
-       call MPI_Recv(buf_p, 1, MPI_DOUBLE, myrank+1, 0, comm, status_p)
-       call MPI_Send(x(end_k), 1, MPI_DOUBLE, myrank+1, 0, comm)
+       print*, "send myrank=", myrank
+       call MPI_Recv(array_p, 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, status_p, ierr)
+       call MPI_Send(x(end_k), 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, ierr)
        !std::cout << "buffff=" << buf2 << std::endl
+       buf_p = array_p(1)
     endif
     
     if (is_first_proc) then
