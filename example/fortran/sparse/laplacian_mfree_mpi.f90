@@ -9,8 +9,7 @@ MODULE laplacian
   integer(c_int), private :: start_row, end_row
   integer(c_int), private :: start_k, end_k
   logical, private :: is_first_proc, is_last_proc
-  double precision, private :: array_m(1), array_p(1)
-  double precision, private :: buf_p, buf_m
+  double precision, private :: buf_p = 0, buf_m = 0
   INTEGER, private :: status_m(MPI_STATUS_SIZE), status_p(MPI_STATUS_SIZE)
 CONTAINS
   SUBROUTINE initialize (mat, dim_in)
@@ -62,17 +61,15 @@ CONTAINS
     if (.not.(is_first_proc) .and. (nprocs /= 1)) then
        print*, "recv myrank=", myrank
        call MPI_Send(x(1), 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, ierr)
-       call MPI_Recv(array_m, 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, status_m, ierr)
+       call MPI_Recv(buf_m, 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, status_m, ierr)
        !std::cout << "buffff=" << buf << std::endl
-       buf_m = array_m(1)
     endif
     
     if (.not.(is_last_proc) .and. (nprocs /= 1)) then
        print*, "send myrank=", myrank
-       call MPI_Recv(array_p, 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, status_p, ierr)
+       call MPI_Recv(buf_p, 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, status_p, ierr)
        call MPI_Send(x(end_k), 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, ierr)
        !std::cout << "buffff=" << buf2 << std::endl
-       buf_p = array_p(1)
     endif
     
     if (is_first_proc) then
