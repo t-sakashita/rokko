@@ -120,6 +120,7 @@ program main
 
   type(rokko_parallel_sparse_solver) :: solver
   character(len=100) :: solver_name, tmp_str
+  integer arg_len, status
   type(rokko_distributed_mfree) :: mat
   integer :: dim
   integer :: num_evals, block_size, max_iters
@@ -130,8 +131,17 @@ program main
   call MPI_comm_rank(comm, myrank, ierr)
   call MPI_comm_size(comm, nprocs, ierr)
 
-  solver_name = "slepc"!"anasazi"
+  solver_name = "anasazi"  ! default
   dim = 10
+  if (command_argument_count().ge.1) then
+     call get_command_argument(1, tmp_str, arg_len, status)
+     solver_name = trim(tmp_str)
+  endif
+
+  if (command_argument_count().eq.2) then
+     call get_command_argument(2, tmp_str, arg_len, status)
+     read(tmp_str, *) dim
+  endif
 
   if (myrank == 0) then
      write(*,*) "solver name = ", trim(solver_name)
@@ -150,8 +160,7 @@ program main
   num_conv = rokko_parallel_sparse_solver_num_conv(solver)
   eig_val = rokko_parallel_sparse_solver_eigenvalue(solver, 0)
   num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
-  dim = rokko_distributed_mfree_dim(mat)
-
+  print*, "eigval=", eig_val
   call rokko_distributed_mfree_destruct(mat)
   call rokko_parallel_sparse_solver_destruct(solver)
 
