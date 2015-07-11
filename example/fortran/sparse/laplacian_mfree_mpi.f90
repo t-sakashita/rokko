@@ -1,38 +1,9 @@
-MODULE mfree
-  USE, INTRINSIC :: ISO_C_BINDING
-  use rokko!, only : type(rokko_distributed_mfree)
-  IMPLICIT NONE
-  TYPE(C_FUNPTR) :: cproc
-
-CONTAINS
-  ! Wrapper for C function.
-  SUBROUTINE rokko_distributed_mfree_construct_f(mat, multiply_in, dim, num_local_rows)
-    USE, INTRINSIC :: ISO_C_BINDING
-    type(rokko_distributed_mfree), intent(inout) :: mat
-    INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
-    INTERFACE
-       SUBROUTINE multiply_in (n, x, y) BIND(C)
-         USE, INTRINSIC :: ISO_C_BINDING
-         INTEGER(C_INT), INTENT(IN), VALUE :: n
-         REAL(C_DOUBLE), INTENT(IN) :: x(n)
-         REAL(C_DOUBLE), INTENT(OUT) :: y(n)
-       END SUBROUTINE multiply_in
-    END INTERFACE
-    ! Get C procedure pointer.
-    cproc = C_FUNLOC(multiply_in)
-    ! call wrapper written in C.
-    call rokko_distributed_mfree_construct2(mat, cproc, dim, num_local_rows)
-  END SUBROUTINE rokko_distributed_mfree_construct_f
-  
-END MODULE mfree
- 
 MODULE laplacian
   use MPI
   use rokko
-  use mfree! only : rokko_distributed_mfree_construct_f
   USE, INTRINSIC :: ISO_C_BINDING
   IMPLICIT NONE
-  integer, private :: comm
+  integer :: comm
   integer :: nprocs, myrank
   integer(c_int), private :: dim, local_offset, num_local_rows
   integer(c_int), private :: start_row, end_row
@@ -47,8 +18,8 @@ CONTAINS
     integer :: ierr
     integer :: tmp, rem
     comm = MPI_COMM_WORLD
-    call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
-    call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
+    call MPI_comm_rank(comm, myrank, ierr)
+    call MPI_comm_size(comm, nprocs, ierr)
     dim = dim_in
     tmp = dim / nprocs
     rem = mod(dim, nprocs)
@@ -140,7 +111,6 @@ END MODULE laplacian
 program main
   use MPI
   use rokko
-  use mfree
   use laplacian
   implicit none
   integer :: provided, ierr
@@ -157,8 +127,8 @@ program main
   double precision :: tol
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
-  call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
-  call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
+  call MPI_comm_rank(comm, myrank, ierr)
+  call MPI_comm_size(comm, nprocs, ierr)
 
   solver_name = "slepc"!"anasazi"
   dim = 10
