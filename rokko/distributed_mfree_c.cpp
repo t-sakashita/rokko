@@ -15,12 +15,12 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/rokko_sparse.h>
 
-class mfree_c : public rokko::distributed_mfree {
+class distributed_mfree_c : public rokko::distributed_mfree {
 public:
-  mfree_c(void (*multiply)(const double*, double*, void*), void* vars, int dim, int num_local_rows)
+  distributed_mfree_c(void (*multiply)(const double*, double*, void*), void* vars, int dim, int num_local_rows)
     : multiply_(multiply), vars_(vars), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
   }
-  ~mfree_c() {}
+  ~distributed_mfree_c() {}
 
   void multiply(const double* x, double* y) const {
     multiply_(x, y, vars_);
@@ -44,11 +44,11 @@ void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 				       void (*multiply)(const double*, double*, void*),
 				       void* vars,
 				       int dim, int num_local_rows) {
-  matrix->ptr = new mfree_c(multiply, vars, dim, num_local_rows);
+  matrix->ptr = new distributed_mfree_c(multiply, vars, dim, num_local_rows);
 }
 
 void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {
-  delete static_cast<mfree_c*>(matrix->ptr);
+  delete static_cast<distributed_mfree_c*>(matrix->ptr);
 }
 
 int rokko_distributed_mfree_dim(struct rokko_distributed_mfree* matrix) {
