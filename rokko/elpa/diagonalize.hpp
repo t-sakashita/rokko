@@ -14,6 +14,7 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
+#include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -21,8 +22,9 @@ namespace rokko {
 namespace elpa {
 
 template<typename MATRIX_MAJOR>
-int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
-  distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
+void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   int dim = mat.get_m_global();
   MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
@@ -42,6 +44,14 @@ int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   timer.stop(timer_id::diagonalize_finalize);
+}
+
+template<typename MATRIX_MAJOR>
+void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		localized_vector<double>& eigvals,
+		parameters const& params, timer& timer) {
+  std::cerr << "not yet implemented" << std::endl;
+  throw;
 }
 
 } // namespace elpa

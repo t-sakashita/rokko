@@ -12,6 +12,7 @@
 #ifndef ROKKO_ELPA_CORE_HPP
 #define ROKKO_ELPA_CORE_HPP
 
+#include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.hpp>
 #include <rokko/elpa/diagonalize.hpp>
 
@@ -36,9 +37,15 @@ public:
     return mapping_bc(dim, b, matrix_col_major_d, g);
   }
   template <typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-                   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-    rokko::elpa::diagonalize(mat, eigvals, eigvecs, timer);
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+                   distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   parameters const& params, timer& timer) {
+    rokko::elpa::diagonalize(mat, eigvals, eigvecs, params, timer);
+  }
+  template <typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+                   parameters const& params, timer& timer) {
+    rokko::elpa::diagonalize(mat, eigvals, params, timer);
   }
 };
 
