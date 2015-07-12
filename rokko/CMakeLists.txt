@@ -13,7 +13,7 @@ if(BUILD_C_BINDING)
       serial_dense_solver_c.cpp utility/frank_matrix_c.cpp)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.f90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.F90)
 endif(BUILD_Fortran_BINDING)
 
 if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
