@@ -11,11 +11,11 @@
 
 subroutine rokko_parallel_sparse_solver_construct(solver, solver_name)
   use iso_c_binding
-  use rokko, only: rokko_parallel_sparse_solver
+  use rokko_sparse, only: rokko_parallel_sparse_solver
   implicit none
   interface
      subroutine rokko_parallel_sparse_solver_construct_f(solver, solver_name) bind(c)
-       use rokko
+       use rokko_sparse
        implicit none
        type(rokko_parallel_sparse_solver), intent(out) :: solver
        character(kind=c_char), intent(in) :: solver_name(*)
