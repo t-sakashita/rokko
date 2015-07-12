@@ -7,26 +7,26 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
+# For serial solvers
 set(ROKKO_SOURCES serial_dense_solver.cpp utility/timer.cpp)
 if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} localized_vector_c.cpp localized_matrix_c.cpp
-      serial_dense_solver_c.cpp utility/frank_matrix_c.cpp)
+    serial_dense_solver_c.cpp utility/frank_matrix_c.cpp)
 endif(BUILD_C_BINDING)
+if(BUILD_Fortran_BINDING)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_serial_dense.F90)
+endif(BUILD_Fortran_BINDING)
 
 if(BUILD_PARALLEL_DENSE_SOLVER)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp matrix_major.cpp)
-  if(BUILD_C_BINDING)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp distributed_matrix_c.cpp)
-  endif(BUILD_C_BINDING)
-  if(BUILD_Fortran_BINDING)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} distributed_matrix.f90 collective.f90)
-  endif(BUILD_Fortran_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_solver.cpp)
   if(BUILD_C_BINDING)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} grid_c.cpp distributed_matrix_c.cpp)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_solver_c.cpp)
   endif(BUILD_C_BINDING)
   if(BUILD_Fortran_BINDING)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_solver.f90 rokko_dense.F90)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} distributed_matrix.f90 collective.f90)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_parallel_dense.F90 parallel_dense_solver.f90)
   endif(BUILD_Fortran_BINDING)
 endif(BUILD_PARALLEL_DENSE_SOLVER)
 
@@ -39,9 +39,9 @@ if(BUILD_PARALLEL_SPARSE_SOLVER)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_sparse.F90 parallel_sparse_solver.f90 distributed_mfree_f.cpp)
   endif(BUILD_Fortran_BINDING)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)
-
+# For all solvers
 if(BUILD_Fortran_BINDING)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko.F90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_dense.F90 rokko.F90)
 endif(BUILD_Fortran_BINDING)
 
 # Boost

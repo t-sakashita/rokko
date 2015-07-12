@@ -16,7 +16,6 @@ module rokko
   use rokko_dense
 !#ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
   use rokko_sparse
-!#endif
+!#endif ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
   implicit none
-
 end module rokko
