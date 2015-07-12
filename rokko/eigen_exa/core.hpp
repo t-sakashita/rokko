@@ -13,6 +13,7 @@
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
 #include <rokko/matrix_major.hpp>
+#include <rokko/parameters.hpp>
 #include <rokko/eigen_exa/diagonalize_eigen_s.hpp>
 #include <rokko/eigen_exa/diagonalize_eigen_sx.hpp>
 
@@ -41,7 +42,7 @@ public:
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-		   rokko::parameters const& params, timer& timer);
+		   parameters const& params, timer& timer);
   template<typename MATRIX_MAJOR, typename VEC>
   void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   VEC& eigvals,
@@ -51,7 +52,7 @@ public:
 template<typename MATRIX_MAJOR, typename VEC>
 void solver::diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-			 rokko::parameters const& params, timer& timer) {
+			 parameters const& params, timer& timer) {
   if ((routine=="tri") || (routine=="eigen_s")) {
     rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, eigvecs, params, timer);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
