@@ -224,7 +224,7 @@ IF(HAVE_MKL)
     message(STATUS "Found intel/mkl library")
     set(LAPACK_LIBRARY_INIT 1)
     set(BLAS_LIBRARY_INIT 1)
-    set(MKL_INC_PATHS $ENV{mkl_home}/include ${MKL_PATHS}) 
+    set(MKL_INC_PATHS $ENV{mkl_home}/include ${MKL_PATHS} $ENV{MKLROOT}/include) 
     find_path(MKL_INCLUDE_DIR mkl.h ${MKL_INC_PATHS})
     include_directories(${MKL_INCLUDE_DIR})
     set(ALPS_HAVE_MKL 1) # MKL flag set in alps/config.h
