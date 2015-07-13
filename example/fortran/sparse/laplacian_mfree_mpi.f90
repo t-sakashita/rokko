@@ -1,8 +1,8 @@
-MODULE laplacian
-  use MPI
+module laplacian
+  use mpi
   use rokko
-  USE, INTRINSIC :: ISO_C_BINDING
-  IMPLICIT NONE
+  use, intrinsic :: iso_c_binding
+  implicit none
   integer :: comm
   integer :: nprocs, myrank
   integer(c_int), private :: dim, local_offset, num_local_rows
@@ -10,16 +10,16 @@ MODULE laplacian
   integer(c_int), private :: start_k, end_k
   logical, private :: is_first_proc, is_last_proc
   double precision, private :: buf_p = 0, buf_m = 0
-  INTEGER, private :: status_m(MPI_STATUS_SIZE), status_p(MPI_STATUS_SIZE)
-CONTAINS
-  SUBROUTINE initialize (mat, dim_in)
+  integer, private :: status_m(mpi_status_size), status_p(mpi_status_size)
+contains
+  subroutine initialize (mat, dim_in)
     type(rokko_distributed_mfree), intent(inout) :: mat
     integer(c_int), intent(in) :: dim_in
     integer :: ierr
     integer :: tmp, rem
-    comm = MPI_COMM_WORLD
-    call MPI_comm_rank(comm, myrank, ierr)
-    call MPI_comm_size(comm, nprocs, ierr)
+    comm = mpi_comm_world
+    call mpi_comm_rank(comm, myrank, ierr)
+    call mpi_comm_size(comm, nprocs, ierr)
     dim = dim_in
     tmp = dim / nprocs
     rem = mod(dim, nprocs)
@@ -44,13 +44,13 @@ CONTAINS
          "is_first_proc", is_first_proc, " is_last_proc", is_last_proc
     print*, "myrank=", myrank, "num_local_rows=", num_local_rows
     call rokko_distributed_mfree_construct(mat, multiply, dim, num_local_rows)
-  END SUBROUTINE initialize
-  ! subroutine passed to C function.
-  ! It must be interoperable!
-  SUBROUTINE multiply (n, x, y) BIND(C)
-    INTEGER(C_INT), INTENT(IN), VALUE :: n
-    DOUBLE PRECISION, INTENT(IN) :: x(n)
-    DOUBLE PRECISION, INTENT(OUT) :: y(n)
+  end subroutine initialize
+  ! subroutine passed to c function.
+  ! it must be interoperable!
+  subroutine multiply (n, x, y) bind(c)
+    integer(c_int), intent(in), value :: n
+    double precision, intent(in) :: x(n)
+    double precision, intent(out) :: y(n)
     integer :: ierr
     integer :: k
 
@@ -60,15 +60,15 @@ CONTAINS
     
     if (.not.(is_first_proc) .and. (nprocs /= 1)) then
        print*, "recv myrank=", myrank
-       call MPI_Send(x(1), 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, ierr)
-       call MPI_Recv(buf_m, 1, MPI_DOUBLE_PRECISION, myrank-1, 0, comm, status_m, ierr)
+       call mpi_send(x(1), 1, mpi_double_precision, myrank-1, 0, comm, ierr)
+       call mpi_recv(buf_m, 1, mpi_double_precision, myrank-1, 0, comm, status_m, ierr)
        !std::cout << "buffff=" << buf << std::endl
     endif
     
     if (.not.(is_last_proc) .and. (nprocs /= 1)) then
        print*, "send myrank=", myrank
-       call MPI_Recv(buf_p, 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, status_p, ierr)
-       call MPI_Send(x(end_k), 1, MPI_DOUBLE_PRECISION, myrank+1, 0, comm, ierr)
+       call mpi_recv(buf_p, 1, mpi_double_precision, myrank+1, 0, comm, status_p, ierr)
+       call mpi_send(x(end_k), 1, mpi_double_precision, myrank+1, 0, comm, ierr)
        !std::cout << "buffff=" << buf2 << std::endl
     endif
     
@@ -106,11 +106,11 @@ CONTAINS
     do k=2, end_k-1
        y(k) = - x(k-1) + 2 * x(k) - x(k+1)
     enddo
-  END SUBROUTINE multiply
-END MODULE laplacian
+  end subroutine multiply
+end module laplacian
 
 program main
-  use MPI
+  use mpi
   use rokko
   use laplacian
   implicit none
@@ -128,9 +128,9 @@ program main
   integer :: num_local_rows, num_conv
   double precision :: tol
 
-  call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
-  call MPI_comm_rank(comm, myrank, ierr)
-  call MPI_comm_size(comm, nprocs, ierr)
+  call mpi_init_thread(mpi_thread_multiple, provided, ierr)
+  call mpi_comm_rank(comm, myrank, ierr)
+  call mpi_comm_size(comm, nprocs, ierr)
 
   solver_name = "anasazi"  ! default
   dim = 10
@@ -165,5 +165,5 @@ program main
   call rokko_distributed_mfree_destruct(mat)
   call rokko_parallel_sparse_solver_destruct(solver)
 
-  call MPI_finalize(ierr)
+  call mpi_finalize(ierr)
 end program main

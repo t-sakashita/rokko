@@ -40,7 +40,7 @@ void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int mat_mb = mat.get_mb();
   int eigvecs_lld = eigvecs.get_lld();
   solve_evp_real_wrap_(&dim, &dim, mat.get_array_pointer(), &mat_lld, &eigvals[0],
-    eigvecs.get_array_pointer(), &eigvecs_lld, &mat_mb, &comm_rows_f, &comm_cols_f);
+		       eigvecs.get_array_pointer(), &eigvecs_lld, &mat_mb, &comm_rows_f, &comm_cols_f);
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   timer.stop(timer_id::diagonalize_finalize);

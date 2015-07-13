@@ -25,7 +25,6 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  //void optimized_grid_size() {}
   mapping_bc optimized_mapping(int dim, grid const& g)  const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();
