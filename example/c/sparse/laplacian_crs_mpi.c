@@ -99,7 +99,8 @@ int main(int argc, char *argv[]) {
     printf("Computed Eigenvalue =\n");
     printf("%30.20f\n", eig_val);
     printf("Computed Eigenvector =\n");
-    for (int j = 0; j < num_local_rows; ++j)
+    int j;
+    for (j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
     printf("\n");    
   }
