@@ -25,10 +25,11 @@ namespace rokko {
 class parameters {
 private:
   typedef std::map<std::string, boost::any> map_type;
-  typedef map_type::value_type value_type;
   typedef map_type::mapped_type mapped_type;
 public:
   typedef map_type::key_type key_type;
+  typedef map_type::value_type value_type;
+
   void clear() { map_.clear(); }
   void clear(key_type const& key) { map_.erase(map_.find(key)); }
   // set "value" for "key"
@@ -80,18 +81,20 @@ public:
       throw "error: get_string only accepts char*, string, int or double as an argument";      
     }
   }
-  bool get_bool(std::string const& key) const {
+  bool get_bool(key_type const& key) const {
     if (defined(key)) {
       if (type(key) == typeid(bool)) {
 	return get<bool>(key);
       }
       else {
-	std::cerr << "error: get_bool";
+	std::cerr << "error in get_bool: '" << key << "' is not bool type" << std::endl;
 	throw;
       }
     }
     return false;
   }
+  std::map<std::string, boost::any>& get_map() { return map_; }
+  
 private:
   std::map<std::string, boost::any> map_;
 };
