@@ -100,7 +100,8 @@ void laplacian_multiply(const double* x, double* y, void* vars) {
       }
   }
   // from 1 to end-1
-  for (int k=1; k<p->end_k; ++k) {
+  int k;
+  for (k=1; k<p->end_k; ++k) {
     y[k] = - x[k-1] + 2 * x[k] - x[k+1];
   }
 }
@@ -162,7 +163,8 @@ int main(int argc, char *argv[]) {
     printf("Computed Eigenvalue =\n");
     printf("%30.20f\n", eig_val);
     printf("Computed Eigenvector =\n");
-    for (int j = 0; j < num_local_rows; ++j)
+    int j;
+    for (j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
     printf("\n");    
   }
