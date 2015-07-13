@@ -20,9 +20,11 @@
 namespace rokko {
 namespace elemental {
 
+// eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<double>& eigvals,
-  distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
+void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		parameters const& params, timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   MPI_Comm comm = mat.get_grid().get_comm();
   enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
@@ -52,6 +54,32 @@ int diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, localized_vector<
     }
   }
   timer.stop(timer_id::diagonalize_finalize);
+}
+
+// only eigenvalues
+template<typename MATRIX_MAJOR>
+void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+		localized_vector<double>& eigvals,
+		parameters const& params, timer& timer) {
+  timer.start(timer_id::diagonalize_initialize);
+  MPI_Comm comm = mat.get_grid().get_comm();
+  enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
+  if (mat.get_grid().is_row_major()) {
+    elemental_grid_order = El::ROW_MAJOR;
+  } else {
+    elemental_grid_order = El::COLUMN_MAJOR;
+  }
+  El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
+  El::DistMatrix<double> elem_mat;
+  elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
+		  mat.get_array_pointer(), mat.get_lld());
+  El::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
+  El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
+  timer.stop(timer_id::diagonalize_initialize);
+
+  timer.start(timer_id::diagonalize_diagonalize);
+  El::HermitianEig(El::LOWER, elem_mat, elem_w); // only access lower half of H
+  timer.stop(timer_id::diagonalize_diagonalize);
 }
 
 } // namespace elemental

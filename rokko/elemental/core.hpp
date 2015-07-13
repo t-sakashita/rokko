@@ -13,6 +13,7 @@
 #define ROKKO_ELEMENTAL_CORE_HPP
 
 #include <El.hpp>
+#include <rokko/parameters.hpp>
 #include <rokko/elemental/diagonalize.hpp>
 #include <boost/type_traits/is_same.hpp>
 
@@ -33,9 +34,16 @@ public:
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-                   distributed_matrix<double, MATRIX_MAJOR>& eigvecs, timer& timer) {
-    rokko::elemental::diagonalize(mat, eigvals, eigvecs, timer);
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   parameters const& params, timer& timer) {
+    rokko::elemental::diagonalize(mat, eigvals, eigvecs, params, timer);
+  }
+  template<typename MATRIX_MAJOR, typename VEC>
+  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat,
+		   VEC& eigvals,
+                   parameters const& params, timer& timer) {
+    rokko::elemental::diagonalize(mat, eigvals, params, timer);
   }
 };
 
