@@ -43,6 +43,7 @@ void rokko_parameters_set_char(rokko_parameters* params, const char* key, char v
 }
 
 void rokko_parameters_set_string(struct rokko_parameters* params, const char* key, const char* value) {
+  std::cout << "c++string=" << value << std::endl;
   static_cast<rokko::parameters*>(params->ptr)->set<const char*>(key, value);
 }
 
@@ -69,6 +70,7 @@ char* copy_string(std::string const& str) {
 char* rokko_parameters_get_string(struct rokko_parameters* params, const char* key) {
   std::string tmp = static_cast<rokko::parameters*>(params->ptr)->get_string(key);
   char* p = copy_string(tmp);
+  std::cout << "get_c++string=" << p << std::endl;
   return p;
 }
 

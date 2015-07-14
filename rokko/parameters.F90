@@ -170,7 +170,7 @@ contains
     type(rokko_parameters), intent(in) :: params
     character(*), intent(in) :: key
     character(*), intent(out) :: val
-    val =  rokko_parameters_get_string_c (params, trim(key)//c_null_char)
+    val =  rokko_parameters_get_string_c (params, trim(key)//c_null_char, val)
   end subroutine rokko_parameters_get_string
      
   subroutine rokko_parameters_set_int (params, key, val)
@@ -209,7 +209,7 @@ contains
     type(rokko_parameters), intent(in) :: params
     character(*), intent(in) :: key
     character(*), intent(in) :: val
-    call rokko_parameters_set_string_c (params, trim(key)//c_null_char, val)
+    call rokko_parameters_set_string_c (params, trim(key)//c_null_char, val//c_null_char)
   end subroutine rokko_parameters_set_string
 
 end module parameters

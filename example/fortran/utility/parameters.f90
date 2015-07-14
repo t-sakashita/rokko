@@ -40,8 +40,8 @@ program frank_matrix
   call rokko_parameters_get_char(params, "cyara", c)
   print*, "cyara=", c
 
-  call rokko_parameters_set_char(params, "suto", "ureshi")
-  call rokko_parameters_get_char(params, "suto", str)
+  call rokko_parameters_set_string(params, "suto", "ureshi")
+  call rokko_parameters_get_string(params, "suto", str)
   print*, "ureshi=", str
   
   call rokko_parameters_destruct(params)
