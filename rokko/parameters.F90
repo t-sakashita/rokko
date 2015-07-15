@@ -36,7 +36,6 @@ module parameters
      ! interface for C function "void free(void *ptr)"
      subroutine free_c(ptr) bind(C,name="free")
        use iso_c_binding
-!       import C_void_ptr
        type(c_ptr), value, intent(in) :: ptr
      end subroutine free_c
   
