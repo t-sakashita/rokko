@@ -56,6 +56,25 @@ module parameters
        character(c_char) :: key(*)
        integer(c_int), value, intent(in) :: val
      end subroutine rokko_parameters_set_int_c
+
+     integer(c_int) function rokko_parameters_get_size_c(params, key) result(n) &
+          bind(c,name='rokko_parameters_get_size')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+       character(c_char) :: key(*)
+     end function rokko_parameters_get_size_c
+
+     integer(c_int) function rokko_parameters_get_string_with_size_c(params, key, ptr) result(n) &
+          bind(c,name='rokko_parameters_get_string_with_size')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+       character(c_char) :: key(*)
+       character(c_char), intent(out) :: ptr(:)
+     end function rokko_parameters_get_string_with_size_c
      
      subroutine rokko_parameters_set_double_c(params, key, val) &
           bind(c,name='rokko_parameters_set_double')
@@ -115,7 +134,7 @@ module parameters
        character(c_char) :: key(*)
      end function rokko_parameters_get_char_c
 
-     character(c_char) function rokko_parameters_get_string_c (params, key) &
+     type(c_ptr) function rokko_parameters_get_string_c (params, key) &
           bind(c,name='rokko_parameters_get_string')
        use iso_c_binding
        import rokko_parameters
@@ -169,8 +188,20 @@ contains
     implicit none
     type(rokko_parameters), intent(in) :: params
     character(*), intent(in) :: key
-    character(*), intent(out) :: val
-    val =  rokko_parameters_get_string_c (params, trim(key)//c_null_char, val)
+    character(len=:), allocatable, intent(out) :: val
+    type(c_ptr) :: ptr!(*)
+    CHARACTER, POINTER, DIMENSION(:) :: tmp_array
+    CHARACTER*255 :: tmp
+    integer :: i
+    integer(c_int) :: n
+    n = rokko_parameters_get_size_c (params, trim(key)//c_null_char)
+    ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
+    call c_f_pointer(ptr, tmp_array, (/n/) )
+    DO i=1, n
+       tmp(i:i+1) = tmp_array(i)
+    ENDDO
+    val = trim(tmp(1:n))  ! automatically allocating suitable size
+    !print*, "val=", val
   end subroutine rokko_parameters_get_string
      
   subroutine rokko_parameters_set_int (params, key, val)

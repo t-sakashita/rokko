@@ -74,13 +74,33 @@ char* rokko_parameters_get_string(struct rokko_parameters* params, const char* k
   return p;
 }
 
+/*
+const char* rokko_parameters_get_string_with_size(struct rokko_parameters* params, const char* key, int* n) {
+  std::string tmp = static_cast<rokko::parameters*>(params->ptr)->get_string(key);
+  char* p = copy_string(tmp);
+  std::cout << "get_c++string=" << p << std::endl;
+  return p;
+}
+*/
+
+/*
+int rokko_parameters_get_string_with_size(struct rokko_parameters* params, const char* key, char* p) {
+  std::string tmp = static_cast<rokko::parameters*>(params->ptr)->get_string(key);
+  p = copy_string(tmp);
+  std::cout << "key_c++string=" << key << "@@" << std::endl;
+  std::cout << "get_with_c++string=" << p << std::endl;
+  std::cout << "get_with_c++size=" << tmp.size() << std::endl;
+  //std::cout << "get_with_c++dir=" << static_cast<rokko::parameters*>(params->ptr)->get_string("suto") << std::endl;
+  return tmp.size();
+}
+*/
+
 int rokko_parameters_defined(struct rokko_parameters* params, const char* key) {
   return static_cast<int>(static_cast<rokko::parameters*>(params->ptr)->defined(key));
 }
 
-int rokko_parameters_size(struct rokko_parameters* params) {
-  rokko::parameters* ptr = static_cast<rokko::parameters*>(params->ptr);
-  return ptr->get_map().size();
+int rokko_parameters_get_size(struct rokko_parameters* params, const char* key) {
+  return static_cast<rokko::parameters*>(params->ptr)->get_string(key).size();
 }
 
 char** rokko_parameters_keys(struct rokko_parameters* params) {

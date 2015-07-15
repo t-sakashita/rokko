@@ -22,7 +22,9 @@ program frank_matrix
   double precision :: d
   !real(c_double) :: d
   character :: c
-  character(10) :: str
+!  character(:) :: str
+!  character(44) :: str(:)
+  character(len=:), allocatable :: val
 
   character(10) :: key
 
@@ -40,9 +42,9 @@ program frank_matrix
   call rokko_parameters_get_char(params, "cyara", c)
   print*, "cyara=", c
 
-  call rokko_parameters_set_string(params, "suto", "ureshi")
-  call rokko_parameters_get_string(params, "suto", str)
-  print*, "ureshi=", str
+  call rokko_parameters_set_string(params, "solver", "ansazi")
+  call rokko_parameters_get_string(params, "solver", val)
+  print*, "solver=", val
   
   call rokko_parameters_destruct(params)
 
