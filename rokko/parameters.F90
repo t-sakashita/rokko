@@ -33,6 +33,13 @@ module parameters
 
   interface
 
+     ! interface for C function "void free(void *ptr)"
+     subroutine free_c(ptr) bind(C,name="free")
+       use iso_c_binding
+!       import C_void_ptr
+       type(c_ptr), value, intent(in) :: ptr
+     end subroutine free_c
+  
      subroutine rokko_parameters_construct(params) bind(c)
        use iso_c_binding
        import rokko_parameters
@@ -65,17 +72,7 @@ module parameters
        type(rokko_parameters), intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_size_c
-
-     integer(c_int) function rokko_parameters_get_string_with_size_c(params, key, ptr) result(n) &
-          bind(c,name='rokko_parameters_get_string_with_size')
-       use iso_c_binding
-       import rokko_parameters
-       implicit none
-       type(rokko_parameters), intent(in) :: params
-       character(c_char) :: key(*)
-       character(c_char), intent(out) :: ptr(:)
-     end function rokko_parameters_get_string_with_size_c
-     
+    
      subroutine rokko_parameters_set_double_c(params, key, val) &
           bind(c,name='rokko_parameters_set_double')
        use iso_c_binding
@@ -156,6 +153,15 @@ module parameters
 
 contains
 
+  subroutine string_free_c(str)
+    use iso_c_binding
+    type(c_ptr), intent(inout) :: str
+    if (c_associated(str)) then
+       call free_c(str)
+       str = C_NULL_ptr
+    end if
+  end subroutine string_free_c
+   
   subroutine rokko_parameters_get_int (params, key, val)
     use iso_c_binding
     implicit none
@@ -200,6 +206,7 @@ contains
     do i=1, n
        tmp(i:i) = tmp_array(i)
     enddo
+    call free_c(ptr)
     val = trim(tmp(1:n))  ! automatically allocating suitable size
     !print*, "val=", val
   end subroutine rokko_parameters_get_string
@@ -221,6 +228,7 @@ contains
     do i=1, n
        tmp(i:i) = tmp_array(i)
     enddo
+    call free_c(ptr)
     val = trim(tmp(1:n))  ! the rest of letters of val is not changed.
     !print*, "val=", val
   end function rokko_parameters_get_string_fixed
