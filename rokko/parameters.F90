@@ -5,7 +5,7 @@
 ! Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
-! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
 !
 !*****************************************************************************
 
@@ -190,20 +190,41 @@ contains
     character(*), intent(in) :: key
     character(len=:), allocatable, intent(out) :: val
     type(c_ptr) :: ptr!(*)
-    CHARACTER, POINTER, DIMENSION(:) :: tmp_array
-    CHARACTER*255 :: tmp
+    character, pointer, dimension(:) :: tmp_array
+    character*255 :: tmp
     integer :: i
     integer(c_int) :: n
     n = rokko_parameters_get_size_c (params, trim(key)//c_null_char)
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
     call c_f_pointer(ptr, tmp_array, (/n/) )
-    DO i=1, n
-       tmp(i:i+1) = tmp_array(i)
-    ENDDO
+    do i=1, n
+       tmp(i:i) = tmp_array(i)
+    enddo
     val = trim(tmp(1:n))  ! automatically allocating suitable size
     !print*, "val=", val
   end subroutine rokko_parameters_get_string
-     
+
+  function rokko_parameters_get_string_fixed (params, key) result(val)
+    use iso_c_binding
+    implicit none
+    type(rokko_parameters), intent(in) :: params
+    character(*), intent(in) :: key
+    character*255 :: val
+    type(c_ptr) :: ptr!(*)
+    character, pointer, dimension(:) :: tmp_array
+    character*255 :: tmp
+    integer :: i
+    integer(c_int) :: n
+    n = rokko_parameters_get_size_c (params, trim(key)//c_null_char)
+    ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
+    call c_f_pointer(ptr, tmp_array, (/n/) )
+    do i=1, n
+       tmp(i:i) = tmp_array(i)
+    enddo
+    val = trim(tmp(1:n))  ! the rest of letters of val is not changed.
+    !print*, "val=", val
+  end function rokko_parameters_get_string_fixed
+  
   subroutine rokko_parameters_set_int (params, key, val)
     use iso_c_binding
     implicit none

@@ -17,13 +17,10 @@ program frank_matrix
   implicit none
 
   type(rokko_parameters) :: params
-!  integer(c_int) :: i
   integer :: i
   double precision :: d
-  !real(c_double) :: d
   character :: c
-!  character(:) :: str
-!  character(44) :: str(:)
+  character(255) :: val_fixed
   character(len=:), allocatable :: val
 
   character(10) :: key
@@ -45,7 +42,9 @@ program frank_matrix
   call rokko_parameters_set_string(params, "solver", "ansazi")
   call rokko_parameters_get_string(params, "solver", val)
   print*, "solver=", val
-  
+  val_fixed = rokko_parameters_get_string_fixed(params, "solver")
+  print*, "solver=", trim(val_fixed)
+
   call rokko_parameters_destruct(params)
 
 end program frank_matrix
