@@ -64,14 +64,14 @@ module parameters
        integer(c_int), value, intent(in) :: val
      end subroutine rokko_parameters_set_int_c
 
-     integer(c_int) function rokko_parameters_get_size_c(params, key) result(n) &
-          bind(c,name='rokko_parameters_get_size')
+     integer(c_int) function rokko_parameters_get_key_size_c(params, key) result(n) &
+          bind(c,name='rokko_parameters_get_key_size')
        use iso_c_binding
        import rokko_parameters
        implicit none
        type(rokko_parameters), intent(in) :: params
        character(c_char) :: key(*)
-     end function rokko_parameters_get_size_c
+     end function rokko_parameters_get_key_size_c
     
      subroutine rokko_parameters_set_double_c(params, key, val) &
           bind(c,name='rokko_parameters_set_double')
@@ -200,7 +200,7 @@ contains
     character*255 :: tmp
     integer :: i
     integer(c_int) :: n
-    n = rokko_parameters_get_size_c (params, trim(key)//c_null_char)
+    n = rokko_parameters_get_key_size_c (params, trim(key)//c_null_char)
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
     call c_f_pointer(ptr, tmp_array, (/n/) )
     do i=1, n
@@ -222,7 +222,7 @@ contains
     character*255 :: tmp
     integer :: i
     integer(c_int) :: n
-    n = rokko_parameters_get_size_c (params, trim(key)//c_null_char)
+    n = rokko_parameters_get_key_size_c (params, trim(key)//c_null_char)
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
     call c_f_pointer(ptr, tmp_array, (/n/) )
     do i=1, n

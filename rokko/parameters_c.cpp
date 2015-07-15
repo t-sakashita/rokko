@@ -76,8 +76,12 @@ int rokko_parameters_defined(struct rokko_parameters* params, const char* key) {
   return static_cast<int>(static_cast<rokko::parameters*>(params->ptr)->defined(key));
 }
 
-int rokko_parameters_get_size(struct rokko_parameters* params, const char* key) {
+int rokko_parameters_get_key_size(struct rokko_parameters* params, const char* key) {
   return static_cast<rokko::parameters*>(params->ptr)->get_string(key).size();
+}
+
+int rokko_parameters_size(struct rokko_parameters* params) {
+  return static_cast<rokko::parameters*>(params->ptr)->get_map().size();
 }
 
 char** rokko_parameters_keys(struct rokko_parameters* params) {

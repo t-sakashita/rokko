@@ -48,7 +48,9 @@ int rokko_parameters_get_string_with_size(struct rokko_parameters* params, const
 
 int rokko_parameters_defined(struct rokko_parameters* params, const char* key);
 
-int rokko_parameters_get_size(struct rokko_parameters* params, const char* key);
+int rokko_parameters_get_key_size(struct rokko_parameters* params, const char* key);
+
+int rokko_parameters_size(struct rokko_parameters* params);
 
 char** rokko_parameters_keys(struct rokko_parameters* params);
 
