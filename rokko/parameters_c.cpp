@@ -38,6 +38,14 @@ void rokko_parameters_set_double(rokko_parameters* params, const char* key, doub
   static_cast<rokko::parameters*>(params->ptr)->set<double>(key, value);
 }
 
+void rokko_parameters_set_true(rokko_parameters* params, const char* key) {
+  static_cast<rokko::parameters*>(params->ptr)->set<bool>(key, true);
+}
+
+void rokko_parameters_set_false(rokko_parameters* params, const char* key) {
+  static_cast<rokko::parameters*>(params->ptr)->set<bool>(key, false);
+}
+
 void rokko_parameters_set_char(rokko_parameters* params, const char* key, char value) { 
   static_cast<rokko::parameters*>(params->ptr)->set<char>(key, value);
 }
@@ -48,6 +56,10 @@ void rokko_parameters_set_string(struct rokko_parameters* params, const char* ke
 
 int rokko_parameters_get_int(rokko_parameters* params, const char* key) { 
   return static_cast<rokko::parameters*>(params->ptr)->get<int>(key);
+}
+
+int rokko_parameters_get_logicalint(rokko_parameters* params, const char* key) { 
+  return static_cast<rokko::parameters*>(params->ptr)->get<bool>(key);  // automatically cast bool to int
 }
 
 double rokko_parameters_get_double(rokko_parameters* params, const char* key) {

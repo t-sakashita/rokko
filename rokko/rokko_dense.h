@@ -69,6 +69,13 @@ void rokko_serial_dense_solver_diagonalize_localized_matrix(
 void rokko_serial_dense_solver_diagonalize_eigvals(
   struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
   struct rokko_localized_vector* eigval);
+void rokko_serial_dense_solver_diagonalize_eigvals_params(
+  struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
+  struct rokko_localized_vector* eigvals, struct rokko_parameters* params);
+void rokko_serial_dense_solver_diagonalize_params(
+  struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
+  struct rokko_localized_vector* eigvals, struct rokko_localized_matrix* eigvecs,
+  struct rokko_parameters* params);
 
 /* localized_matrix */
 void rokko_localized_vector_construct(struct rokko_localized_vector* vec, int dim1);

@@ -32,11 +32,16 @@ void rokko_parameters_set_int(struct rokko_parameters* params, const char* key, 
 
 void rokko_parameters_set_double(struct rokko_parameters* params, const char* key, double value);
 
+void rokko_parameters_set_true(struct rokko_parameters* params, const char* key);
+void rokko_parameters_set_false(struct rokko_parameters* params, const char* key);
+
 void rokko_parameters_set_char(struct rokko_parameters* params, const char* key, char value);
 
 void rokko_parameters_set_string(struct rokko_parameters* params, const char* key, const char* value);
 
 int rokko_parameters_get_int(struct rokko_parameters* params, const char* key);
+
+int rokko_parameters_get_logicalint(struct rokko_parameters* params, const char* key);
 
 double rokko_parameters_get_double(struct rokko_parameters* params, const char* key);
 

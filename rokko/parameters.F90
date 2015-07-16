@@ -28,8 +28,17 @@ module parameters
      module procedure rokko_parameters_get_int
      module procedure rokko_parameters_get_double
      module procedure rokko_parameters_get_char
+     module procedure rokko_parameters_get_logical
      !module procedure rokko_parameters_get_string
   end interface rokko_parameters_get
+
+  interface rokko_parameters_set
+     module procedure rokko_parameters_set_int
+     module procedure rokko_parameters_set_double
+     module procedure rokko_parameters_set_char
+     module procedure rokko_parameters_set_logical
+     !module procedure rokko_parameters_get_string
+  end interface rokko_parameters_set
 
   interface
 
@@ -62,6 +71,24 @@ module parameters
        character(c_char) :: key(*)
        integer(c_int), value, intent(in) :: val
      end subroutine rokko_parameters_set_int_c
+
+     subroutine rokko_parameters_set_true_c(params, key) &
+          bind(c,name='rokko_parameters_set_true')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+       character(c_char) :: key(*)
+     end subroutine rokko_parameters_set_true_c
+
+     subroutine rokko_parameters_set_false_c(params, key) &
+          bind(c,name='rokko_parameters_set_false')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+       character(c_char) :: key(*)
+     end subroutine rokko_parameters_set_false_c
 
      integer(c_int) function rokko_parameters_get_key_size_c(params, key) result(n) &
           bind(c,name='rokko_parameters_get_key_size')
@@ -111,6 +138,15 @@ module parameters
        type(rokko_parameters), intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_int_c
+
+     integer(c_int) function rokko_parameters_get_logical_c (params, key) &
+          bind(c,name='rokko_parameters_get_logicalint')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+       character(c_char) :: key(*)
+     end function rokko_parameters_get_logical_c
 
      real(c_double) function rokko_parameters_get_double_c (params, key) &
           bind(c,name='rokko_parameters_get_double')
@@ -179,6 +215,21 @@ contains
     val = rokko_parameters_get_double_c (params, trim(key)//c_null_char)
   end subroutine rokko_parameters_get_double
 
+  subroutine rokko_parameters_get_logical (params, key, val)
+    use iso_c_binding
+    implicit none
+    type(rokko_parameters), intent(in) :: params
+    character(*), intent(in) :: key
+    logical, intent(out) :: val
+    integer(c_int) :: tmp
+    tmp = rokko_parameters_get_logical_c (params, trim(key)//c_null_char)
+    if (tmp == 0) then
+       val = .false.
+    else
+       val = .true.
+    endif
+  end subroutine rokko_parameters_get_logical
+  
   subroutine rokko_parameters_get_char (params, key, val)
     use iso_c_binding
     implicit none
@@ -238,9 +289,6 @@ contains
     type(rokko_parameters), intent(in) :: params
     character(*), intent(in) :: key
     integer, value, intent(in) :: val
-    integer(c_int) :: v
-    v = 1
-    print*, "v=", v
     call rokko_parameters_set_int_c (params, trim(key)//c_null_char, val)
   end subroutine rokko_parameters_set_int
   
@@ -253,6 +301,19 @@ contains
     call rokko_parameters_set_double_c (params, trim(key)//c_null_char, val)
   end subroutine rokko_parameters_set_double
 
+  subroutine rokko_parameters_set_logical (params, key, val)
+    use iso_c_binding
+    implicit none
+    type(rokko_parameters), intent(in) :: params
+    character(*), intent(in) :: key
+    logical, value, intent(in) :: val
+    if (val .eqv. .true.) then
+       call rokko_parameters_set_true_c (params, trim(key)//c_null_char)
+    else
+       call rokko_parameters_set_false_c (params, trim(key)//c_null_char)
+    endif
+  end subroutine rokko_parameters_set_logical
+  
   subroutine rokko_parameters_set_char (params, key, val)
     use iso_c_binding
     implicit none
