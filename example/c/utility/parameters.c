@@ -44,7 +44,8 @@ int main(int argc, char **argv) {
   // output list of parameters as string
   int num_keys = rokko_parameters_size(&params);
   char** keys = rokko_parameters_keys(&params);
-  for (int i=0; i<num_keys; ++i) {
+  int i;
+  for (i = 0; i < num_keys; ++i) {
     printf("%s = %s\n", keys[i], rokko_parameters_get_string(&params, keys[i]));
   }
 
