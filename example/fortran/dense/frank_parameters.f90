@@ -54,6 +54,8 @@ program frank_matrix
   call rokko_localized_matrix_print(mat)
 
   call rokko_serial_dense_solver_diagonalize_localized_matrix(solver, mat, w, Z)
+!  call rokko_serial_dense_solver_diagonalize(solver, mat, w, Z)
+!  call rokko_serial_dense_solver_diagonalize(solver, mat, w)
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
