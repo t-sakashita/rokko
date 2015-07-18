@@ -14,7 +14,7 @@ if(BUILD_C_BINDING)
     serial_dense_solver_c.cpp utility/frank_matrix_c.cpp parameters_c.cpp solver_name_c.cpp)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} parameters.F90 solver_name.F90 rokko_serial_dense.F90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} string.F90 parameters.F90 solver_name.F90 rokko_serial_dense.F90)
 endif(BUILD_Fortran_BINDING)
 
 if(BUILD_PARALLEL_DENSE_SOLVER)

@@ -13,6 +13,8 @@
 #define ROKKO_DENSE_H
 
 #include <rokko/config.h>
+#include <rokko/parameters.h>
+
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 # include <mpi.h>
 #endif

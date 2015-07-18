@@ -22,6 +22,7 @@ program frank_matrix
   character :: c
   character(255) :: val_fixed
   character(len=:), allocatable :: val
+  character(len=:), allocatable, dimension(:) :: strs
 
   character(10) :: key
 
@@ -45,6 +46,20 @@ program frank_matrix
   val_fixed = rokko_parameters_get_string_fixed(params, "solver")
   print*, "solver=", trim(val_fixed)
 
+  call rokko_parameters_keys(params)
+!  allocate(character :: strs(3))
+  
+!  strs(3) = "auto"
+!  strs(2) = "auto"
+!  print*, "strs(3) = ", trim(strs(3))
+!  print*, "end"
+
+!  strs=(/'1. This is the first element','uoiuoi'/)
+  !allocate(strs, source=["1. This is the first element", &
+  !     "2. This is the second element."])
+
+!  strs = (/ character(len=len(strs)):: 'jonas', 'sssssssssssssss','q' /)
+  
   call rokko_parameters_destruct(params)
 
 end program frank_matrix

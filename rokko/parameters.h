@@ -59,6 +59,7 @@ int rokko_parameters_size(struct rokko_parameters* params);
 
 char** rokko_parameters_keys(struct rokko_parameters* params);
 
+char* rokko_string_i(char** strings, int i);
 
 #ifdef __cplusplus
 }

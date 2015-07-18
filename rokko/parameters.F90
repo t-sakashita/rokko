@@ -13,8 +13,13 @@
 
 module parameters
   use iso_c_binding
+  use rokko_string
   implicit none
 
+  type string
+     character(len=:), allocatable :: str
+  end type string
+ 
   !
   ! classes
   !
@@ -41,12 +46,6 @@ module parameters
   end interface rokko_parameters_set
 
   interface
-
-     ! interface for C function "void free(void *ptr)"
-     subroutine free_c(ptr) bind(C,name="free")
-       use iso_c_binding
-       type(c_ptr), value, intent(in) :: ptr
-     end subroutine free_c
   
      subroutine rokko_parameters_construct(params) bind(c)
        use iso_c_binding
@@ -184,18 +183,34 @@ module parameters
        character(c_char) :: key(*)
      end function rokko_parameters_defined_c
 
+     type(c_ptr) function rokko_parameters_keys_c (params) &
+          bind(c,name='rokko_parameters_keys')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+     end function rokko_parameters_keys_c
+
+     integer(c_int) function rokko_parameters_size_c (params) &
+          bind(c,name='rokko_parameters_size')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(rokko_parameters), intent(in) :: params
+     end function rokko_parameters_size_c
+
+     type(c_ptr) function rokko_string_i_c (ptr, i) &
+          bind(c,name='rokko_string_i')
+       use iso_c_binding
+       import rokko_parameters
+       implicit none
+       type(c_ptr), value, intent(in) :: ptr
+       integer(c_int), value, intent(in) :: i
+     end function rokko_string_i_c
+     
   end interface
 
 contains
-
-  subroutine string_free_c(str)
-    use iso_c_binding
-    type(c_ptr), intent(inout) :: str
-    if (c_associated(str)) then
-       call free_c(str)
-       str = C_NULL_ptr
-    end if
-  end subroutine string_free_c
    
   subroutine rokko_parameters_get_int (params, key, val)
     use iso_c_binding
@@ -245,7 +260,7 @@ contains
     type(rokko_parameters), intent(in) :: params
     character(*), intent(in) :: key
     character(len=:), allocatable, intent(out) :: val
-    type(c_ptr) :: ptr!(*)
+    type(c_ptr) :: ptr
     character, pointer, dimension(:) :: tmp_array
     character*255 :: tmp
     integer :: i
@@ -261,6 +276,28 @@ contains
     !print*, "val=", val
   end subroutine rokko_parameters_get_string
 
+  subroutine rokko_parameters_keys (params)
+    use iso_c_binding
+    implicit none
+    type(rokko_parameters), intent(in) :: params
+    type(c_ptr) :: ptr, ptr_i
+    character, pointer, dimension(:) :: tmp_array
+    character*255 :: tmp
+    integer :: i, size
+    ptr = rokko_parameters_keys_c (params)
+    size = rokko_parameters_size_c (params)
+    do i = 1, size
+       ptr_i = rokko_string_i_c (ptr, i)
+enddo
+       !    call c_f_pointer(ptr, tmp_array, (/n/) )
+!    do i=1, n
+!       tmp(i:i) = tmp_array(i)
+!    enddo
+!    call free_c(ptr)
+!    val = trim(tmp(1:n))  ! automatically allocating suitable size
+!    !print*, "val=", val
+  end subroutine rokko_parameters_keys
+  
   function rokko_parameters_get_string_fixed (params, key) result(val)
     use iso_c_binding
     implicit none

@@ -106,3 +106,10 @@ char** rokko_parameters_keys(struct rokko_parameters* params) {
   }
   return keys;
 }
+
+char* rokko_string_i(char** strings, int i) {
+  //  std::cout << "i=" << i << " string" << strings[i] << std::endl;
+  return strings[i];
+}
+
+
