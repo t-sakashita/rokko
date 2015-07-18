@@ -28,7 +28,6 @@ program frank_matrix
 
   if (command_argument_count() >= 1) then
      call get_command_argument(1, solver_name, arg_len, status)
-     print*, "in_solver_name=", solver_name
   else
      solver_name = "lapack"
   endif
@@ -41,7 +40,8 @@ program frank_matrix
      dim = 10
   endif
 
-  write(*,*) "solver name = ", trim(library)
+  write(*,*) "split solver name = ", library
+  write(*,*) "split solver name = ", routine
   write(*,*) "matrix dimension = ", dim
 
   call rokko_serial_dense_solver_construct(solver, library)
@@ -56,8 +56,12 @@ program frank_matrix
 
   call rokko_parameters_construct(params)
 
-  call rokko_parameters_set_string(params, "routine", "dsyevd")
+  call rokko_parameters_set_string(params, "routine", routine)
   call rokko_parameters_set(params, "verbose", .true.)
+!  call rokko_parameters_set(params, "upper_index", 4)
+!  call rokko_parameters_set(params, "lower_index", 2)
+!  call rokko_parameters_set(params, "upper_value", 3.2d0)
+!  call rokko_parameters_set(params, "lower_value", 1.11d0)
 
 !  call rokko_serial_dense_solver_diagonalize_localized_matrix(solver, mat, w, Z)
   call rokko_serial_dense_solver_diagonalize(solver, mat, w, Z, params)

@@ -30,7 +30,6 @@ void rokko_parameters_clear(struct rokko_parameters* params, const char* key) {
 }
 
 void rokko_parameters_set_int(rokko_parameters* params, const char* key, int value) {
-  std::cout << "inte_value=" << value << std::endl;
   static_cast<rokko::parameters*>(params->ptr)->set<int>(key, value);
 }
 
@@ -51,7 +50,7 @@ void rokko_parameters_set_char(rokko_parameters* params, const char* key, char v
 }
 
 void rokko_parameters_set_string(struct rokko_parameters* params, const char* key, const char* value) {
-  static_cast<rokko::parameters*>(params->ptr)->set<const char*>(key, value);
+  static_cast<rokko::parameters*>(params->ptr)->set<std::string>(key, std::string(value));
 }
 
 int rokko_parameters_get_int(rokko_parameters* params, const char* key) { 
