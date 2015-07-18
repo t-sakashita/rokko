@@ -16,10 +16,6 @@ module parameters
   use rokko_string
   implicit none
 
-  type string
-     character(len=:), allocatable :: str
-  end type string
- 
   !
   ! classes
   !
@@ -273,29 +269,24 @@ contains
     enddo
     call free_c(ptr)
     val = trim(tmp(1:n))  ! automatically allocating suitable size
-    !print*, "val=", val
   end subroutine rokko_parameters_get_string
 
-  subroutine rokko_parameters_keys (params)
+  subroutine rokko_parameters_keys (params, keys)
     use iso_c_binding
     implicit none
     type(rokko_parameters), intent(in) :: params
+    type(string), allocatable, intent(out) :: keys(:)
     type(c_ptr) :: ptr, ptr_i
-    character, pointer, dimension(:) :: tmp_array
-    character*255 :: tmp
     integer :: i, size
+    character(len=:), allocatable :: str
     ptr = rokko_parameters_keys_c (params)
     size = rokko_parameters_size_c (params)
+    allocate(keys(size))
     do i = 1, size
-       ptr_i = rokko_string_i_c (ptr, i)
-enddo
-       !    call c_f_pointer(ptr, tmp_array, (/n/) )
-!    do i=1, n
-!       tmp(i:i) = tmp_array(i)
-!    enddo
-!    call free_c(ptr)
-!    val = trim(tmp(1:n))  ! automatically allocating suitable size
-!    !print*, "val=", val
+       ptr_i = rokko_string_i_c (ptr, i-1)
+       call rokko_get_string(ptr_i, str)
+       keys(i)%str = str
+    enddo
   end subroutine rokko_parameters_keys
   
   function rokko_parameters_get_string_fixed (params, key) result(val)

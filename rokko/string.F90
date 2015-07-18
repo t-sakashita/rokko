@@ -2,6 +2,15 @@ module rokko_string
   use iso_c_binding
   implicit none
 
+  type string
+     character(len=:), allocatable :: str
+  end type string
+
+  type array_strings
+     type(string), allocatable :: string(:)
+     integer :: size
+  end type array_strings
+  
   interface
 
      ! interface for C function "void free(void *ptr)"
