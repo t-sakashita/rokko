@@ -1,11 +1,11 @@
 !*****************************************************************************
 !
-! Rokko: Integrated Interface for libraries of eigenvalue decomposition
+! rokko: integrated interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+! copyright (c) 2012-2015 by rokko developers https://github.com/t-sakashita/rokko
 !
-! Distributed under the Boost Software License, Version 1.0. (See accompanying
-! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+! distributed under the boost software license, version 1.0. (see accompanying
+! file license_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
 !
 !*****************************************************************************
 
@@ -197,24 +197,24 @@ module rokko_sparse
   end interface
 
 contains
-  SUBROUTINE rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
-    USE, INTRINSIC :: ISO_C_BINDING
+  subroutine rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
+    use, intrinsic :: iso_c_binding
     type(rokko_distributed_mfree), intent(inout) :: mat
-    INTEGER(C_INT), INTENT(IN) :: dim, num_local_rows
-    TYPE(C_FUNPTR) :: cproc
-    INTERFACE
-       SUBROUTINE multiply_in (n, x, y) BIND(C)
-         USE, INTRINSIC :: ISO_C_BINDING
-         INTEGER(C_INT), INTENT(IN), VALUE :: n
-         REAL(C_DOUBLE), INTENT(IN) :: x(n)
-         REAL(C_DOUBLE), INTENT(OUT) :: y(n)
-       END SUBROUTINE multiply_in
-    END INTERFACE
-    ! Get C procedure pointer.
-    cproc = C_FUNLOC(multiply_in)
-    ! call wrapper written in C.
+    integer(c_int), intent(in) :: dim, num_local_rows
+    type(c_funptr) :: cproc
+    interface
+       subroutine multiply_in (n, x, y) bind(c)
+         use, intrinsic :: iso_c_binding
+         integer(c_int), intent(in), value :: n
+         real(c_double), intent(in) :: x(n)
+         real(c_double), intent(out) :: y(n)
+       end subroutine multiply_in
+    end interface
+    ! get c procedure pointer.
+    cproc = c_funloc(multiply_in)
+    ! call wrapper written in c.
     call rokko_distributed_mfree_f_construct(mat, cproc, dim, num_local_rows)
-  END SUBROUTINE rokko_distributed_mfree_construct
+  end subroutine rokko_distributed_mfree_construct
 
 end module rokko_sparse
 

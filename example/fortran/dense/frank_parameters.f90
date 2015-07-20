@@ -56,7 +56,7 @@ program frank_matrix
 
   call rokko_parameters_construct(params)
 
-  call rokko_parameters_set_string(params, "routine", routine)
+  call rokko_parameters_set(params, "routine", routine)
   call rokko_parameters_set(params, "verbose", .true.)
 !  call rokko_parameters_set(params, "upper_index", 4)
 !  call rokko_parameters_set(params, "lower_index", 2)

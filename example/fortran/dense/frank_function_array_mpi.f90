@@ -12,7 +12,7 @@
 module mod_frank
   use iso_c_binding
   integer(c_int) :: dim_frank
-  double precision, allocatable, target :: localized_array(:, :)
+  double precision, allocatable :: localized_array(:, :)
   contains
   double precision function func(i, j) bind(c)
     integer(c_int), value, intent(in) :: i, j
@@ -30,20 +30,20 @@ program frank_matrix
   implicit none
 
   integer::dim
-  type(rokko_distributed_matrix)::mat,Z !defined in rokko
-  type(rokko_grid)::grid !defined in rokko
-  type(rokko_parallel_dense_solver)::solver !defined in rokko
+  type(rokko_distributed_matrix) :: mat,Z !defined in rokko
+  type(rokko_grid) :: grid !defined in rokko
+  type(rokko_parallel_dense_solver) :: solver !defined in rokko
 
-  type(rokko_localized_vector)::w !localized_vector
-  character(len=100)::solver_name
-  character(len=100)::tmp_str
+  type(rokko_localized_vector) :: w !localized_vector
+  character(len=100) :: solver_name
+  character(len=100) :: tmp_str
   integer args_cnt, arg_len, status
 
   !---MPI variables---
-  integer::provided,ierr,myrank,nprocs,comm,myrank_g,nprocs_g
+  integer :: provided,ierr,myrank,nprocs,comm,myrank_g,nprocs_g
 
   !---loop variables---
-  integer::i,j, count
+  integer :: i,j, count
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -76,7 +76,7 @@ program frank_matrix
         localized_array(j, i) = dim + 1 - max(i, j);
      end do
   end do
-  call rokko_distributed_matrix_generate_function(mat, c_funloc(func))
+  call rokko_distributed_matrix_generate_function_f(mat, func)
 
   call rokko_distributed_matrix_print(mat)
   call rokko_parallel_dense_solver_diagonalize_distributed_matrix(solver, mat, w, Z)

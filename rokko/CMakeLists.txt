@@ -26,7 +26,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
   endif(BUILD_C_BINDING)
   if(BUILD_Fortran_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} distributed_matrix.f90 collective.f90)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_parallel_dense.F90 parallel_dense_solver.f90)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_parallel_dense_classes.F90 rokko_parallel_dense.F90 parallel_dense_solver.f90)
   endif(BUILD_Fortran_BINDING)
 endif(BUILD_PARALLEL_DENSE_SOLVER)
 

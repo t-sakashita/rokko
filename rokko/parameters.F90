@@ -28,17 +28,17 @@ module parameters
   interface rokko_parameters_get
      module procedure rokko_parameters_get_int
      module procedure rokko_parameters_get_double
-     module procedure rokko_parameters_get_char
+     !module procedure rokko_parameters_get_char
      module procedure rokko_parameters_get_logical
-     !module procedure rokko_parameters_get_string
+     module procedure rokko_parameters_get_string
   end interface rokko_parameters_get
 
   interface rokko_parameters_set
      module procedure rokko_parameters_set_int
      module procedure rokko_parameters_set_double
-     module procedure rokko_parameters_set_char
+     !module procedure rokko_parameters_set_char
      module procedure rokko_parameters_set_logical
-     !module procedure rokko_parameters_get_string
+     module procedure rokko_parameters_get_string
   end interface rokko_parameters_set
 
   interface
