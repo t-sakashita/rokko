@@ -12,26 +12,27 @@
 !*****************************************************************************/
 
 
-module mod_frank
+module frank_mod
   use iso_c_binding
   implicit none
-  integer(c_int) dim_frank
+  public frank_matrix_element
+  integer(c_int), private :: dim
 contains
   double precision function frank_matrix_element(i, j) bind(c)
     integer(c_int), value, intent(in) :: i, j
-    frank_matrix_element = dble(dim_frank - max(i, j))
+    frank_matrix_element = dble(dim - max(i, j))
   end function frank_matrix_element
   
   subroutine frank_matrix_set_dimension(dim_in)
-    integer(c_int), intent(in) :: dim_in
-    dim_frank = dim_in
+    integer(c_int), value, intent(in) :: dim_in
+    dim = dim_in
   end subroutine frank_matrix_set_dimension
-end module mod_frank
+end module frank_mod
 
 program frank_matrix
   use MPI
   use rokko
-  use mod_frank
+  use frank_mod
   implicit none
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
@@ -43,6 +44,7 @@ program frank_matrix
 
   integer :: provided,ierr, myrank, nprocs
   integer :: i
+  integer :: m_local, n_local
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)

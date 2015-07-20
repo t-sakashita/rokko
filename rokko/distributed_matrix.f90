@@ -44,7 +44,7 @@ module rokko_distributed_matrix_mod
        import rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), intent(out) :: matrix
-       type(c_funptr), intent(in) :: cproc
+       type(c_funptr), value, intent(in) :: cproc
      end subroutine rokko_distributed_matrix_generate_function_c
      
      subroutine rokko_distributed_matrix_print(matrix) bind(c)
@@ -195,7 +195,6 @@ contains
 
   subroutine rokko_distributed_matrix_generate_function_f(matrix, func_in) bind(c)
     use iso_c_binding
-!    use rokko_dense
     type(rokko_distributed_matrix), intent(out) :: matrix
     type(c_funptr) :: cproc
     interface
