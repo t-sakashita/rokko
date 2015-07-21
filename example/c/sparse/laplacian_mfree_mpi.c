@@ -53,7 +53,6 @@ void laplacian_initialize(int dim, struct laplacian_vars* vars) {
 
 void laplacian_multiply(const double* x, double* y, void* vars) {
   struct laplacian_vars* p = (struct laplacian_vars*)vars;
-  int oo = p->dim;
   
   if (p->num_local_rows == 0) return;
     
@@ -87,7 +86,7 @@ void laplacian_multiply(const double* x, double* y, void* vars) {
       y[p->end_k] = 2 * x[p->end_k] - x[p->end_k - 1];
       }
     else {
-	y[p->end_k] = 2 * x[p->end_k] - p->buf_m;
+      y[p->end_k] = 2 * x[p->end_k] - p->buf_m;
     }
   }
   if (!(p->is_first_proc || p->is_last_proc)) { // neither first or last process
@@ -97,7 +96,7 @@ void laplacian_multiply(const double* x, double* y, void* vars) {
     }
     else {
       y[0] = - p->buf_m + 2 * x[0] - p->buf_p;
-      }
+    }
   }
   // from 1 to end-1
   int k;
