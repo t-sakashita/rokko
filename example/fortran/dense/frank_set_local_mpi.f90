@@ -27,7 +27,7 @@ program frank_matrix
   integer :: i, j
   integer :: local_i, local_j
   integer :: global_i, global_j
-  double precision value
+  double precision :: value
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -61,7 +61,7 @@ program frank_matrix
      do local_j = 0, n_local-1
       global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
       global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
-      value = dim - max(global_i, global_j)
+      value = dble(dim - max(global_i, global_j))
       call rokko_distributed_matrix_set_local(mat, local_i, local_j, value);
    enddo
   enddo

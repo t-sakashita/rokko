@@ -15,7 +15,6 @@ module rokko_parallel_dense
   use iso_c_binding
   use rokko_parallel_dense_classes
   use rokko_distributed_matrix_mod
-
   implicit none
   
   !
@@ -116,7 +115,7 @@ module rokko_parallel_dense
   end interface
 
   !
-  ! rokko_frank_matrix for parallel solvers
+  ! rokko_frank_matrix for parallel dense solvers
   !
 
   interface
