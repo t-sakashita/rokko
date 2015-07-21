@@ -18,6 +18,10 @@ module rokko_distributed_matrix_mod
   ! rokko_distributed_matrix
   !
 
+  interface  rokko_distributed_matrix_generate
+     module procedure rokko_distributed_matrix_generate_function_f
+  end interface rokko_distributed_matrix_generate
+
   interface
      subroutine rokko_distributed_matrix_construct(matrix, dim1, dim2, grid, solver, matrix_major) &
           bind(c)
