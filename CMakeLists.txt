@@ -71,10 +71,10 @@ else(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
 endif(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
 
 # C++, C, and Fortran compilers
-enable_language(CXX C)
+enable_language(CXX C Fortran)
 set(ROKKO_HAVE_C_BINDING ${BUILD_C_BINDING})
 if(BUILD_Fortran_BINDING)
-  enable_language(Fortran)
+#  enable_language(Fortran)
   # ancient gfortran does not support iso_c_bindings
   try_compile(CMake_Fortran_SUPPORTS_ISO_C_BINDING
     ${CMAKE_CURRENT_BINARY_DIR}
