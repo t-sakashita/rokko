@@ -21,22 +21,32 @@
 
 namespace rokko {
 
-class mapping_local2array : virtual public mapping_common_sizes {
+class mapping_local2array_base {
 public:
-  explicit mapping_local2array() {}
-  template<typename MATRIX_MAJOR>
-  explicit mapping_local2array(MATRIX_MAJOR) {
-    is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+  virtual void set_length_array(int value) = 0;
+  virtual int get_length_array() const = 0;
+  virtual int get_lld() const = 0;
+  virtual void set_lld(int value) = 0;
+  virtual void set_default_lld() = 0;
+  virtual int get_default_lld() const = 0;
+  virtual int get_default_length_array() const = 0;
+  virtual void set_default_length_array() = 0;
+  virtual int get_array_index(int local_i, int local_j) const = 0;
+  virtual bool is_row_major() const = 0;
+  virtual bool is_col_major() const = 0;
+};
+
+template <typename MATRIX_MAJOR>
+class mapping_local2array : virtual public mapping_common_sizes, virtual public mapping_local2array_base {
+public:
+  explicit mapping_local2array() {
     set_default_lld();
     set_default_length_array();
   }
-  template<typename MATRIX_MAJOR>
-  explicit mapping_local2array(int lld_in, MATRIX_MAJOR) : lld(lld_in) {
-    is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+  explicit mapping_local2array(int lld_in) : lld(lld_in) {
     set_default_length_array();
   }
-  //template<typename MATRIX_MAJOR>
-  //explicit mapping_local2array(int lld_in, int length_array_in, MATRIX_MAJOR) : lld(lld_in), length_array(length_array_in) {
+  //explicit mapping_local2array(int lld_in, int length_array_in) : lld(lld_in), length_array(length_array_in) {
   //  is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   //}
 
@@ -48,30 +58,57 @@ public:
   void set_lld(int value) { lld = value; };
   void set_default_lld() { set_lld(get_default_lld()); }
 
-  int get_default_lld() const {
-    return is_row ? get_n_local() : get_m_local();
-  }
-  int get_default_length_array() const {
-    return is_row ? (get_m_local() * lld) : (lld * get_n_local());
-  }
+  int get_default_lld() const;
+
+  int get_default_length_array() const;
+
   void set_default_length_array() { set_length_array(get_default_length_array()); }
 
-  int get_array_index(int local_i, int local_j) const {
-    return is_row ? (local_i * lld + local_j) : (local_i + local_j * lld);
-  }
+  int get_array_index(int local_i, int local_j) const;
 
   bool is_row_major() const {
-    return is_row;
+    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }
   bool is_col_major() const {
-    return !is_row;
+    return !boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }
 
 private:
-  bool is_row;
+  //bool is_row;
   int length_array;
   int lld;
 };
+
+
+template<>
+inline int mapping_local2array<rokko::matrix_row_major>::get_default_lld() const {
+  return get_n_local();
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_col_major>::get_default_lld() const {
+  return get_m_local();
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_row_major>::get_default_length_array() const {
+  return get_m_local() * lld;
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_col_major>::get_default_length_array() const {
+  return lld * get_n_local();
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_row_major>::get_array_index(int local_i, int local_j) const {
+  return local_i * lld + local_j;
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const {
+  return  local_i + local_j * lld;
+}
 
 } // namespace rokko
 

@@ -13,6 +13,7 @@
 #define ROKKO_PARALLEL_DENSE_SOLVER_HPP
 
 #include <rokko/factory.hpp>
+#include <rokko/matrix_major.hpp>
 #include <rokko/mapping_bc.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
@@ -44,7 +45,7 @@ public:
   virtual void diagonalize(std::string const& routine, distributed_matrix<double, matrix_col_major>& mat,
 			   localized_vector<double>& eigvals,
 			   rokko::parameters const& params, timer& timer) = 0;
-  virtual mapping_bc optimized_mapping(int dim, grid const& g) const = 0;
+  virtual mapping_bc_base* optimized_mapping(int dim, grid const& g) const = 0;
 };
   
 template<typename SOLVER>
@@ -86,8 +87,8 @@ public:
     solver_impl_.diagonalize(routine, mat, eigvals, params, timer);
   }
   // optimized_mapping
-  mapping_bc optimized_mapping(int dim, grid const& g) const {
-    return solver_impl_.optimized_mapping(dim, g);
+  mapping_bc_base* optimized_mapping(int dim, grid const& g) const {
+    return reinterpret_cast<mapping_bc_base*>(solver_impl_.optimized_mapping(dim, g));
   }
 private:
   solver_type solver_impl_;
@@ -212,7 +213,7 @@ public:
 		   timer& timer = *global_timer::instance()) {
     diagonalize(mat, eigvals, null_params, timer);
   }
-  mapping_bc optimized_mapping(int dim, grid const& g) const {
+  mapping_bc_base* optimized_mapping(int dim, grid const& g) const {
     return solver_impl_->optimized_mapping(dim, g);
   }
   static std::vector<std::string> solvers() {

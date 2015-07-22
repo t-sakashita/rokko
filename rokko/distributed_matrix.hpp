@@ -28,11 +28,12 @@ namespace rokko {
 
 class parallel_dense_solver;
 
-template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major>
+template<typename T, typename MATRIX_MAJOR_DUMMY = rokko::matrix_col_major>
 class distributed_matrix {
 public:
   typedef T value_type;
-  distributed_matrix(mapping_bc const& map_in) : map(map_in) {
+  template<typename MATRIX_MAJOR>
+  distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(&map_in) {
     allocate_array();
   }
   template<typename SOLVER>
@@ -43,6 +44,7 @@ public:
   template<typename SOLVER>
   distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in)
     : map(solver_in.optimized_mapping(m_global_in, g_in)) {
+    int m_global = reinterpret_cast<mapping_bc<matrix_col_major>*>(map)->get_m_global();
     allocate_array();
   }
   ~distributed_matrix() {
@@ -51,7 +53,7 @@ public:
   }
 
   void allocate_array() {
-    array = new value_type[map.get_length_array()];
+    array = new value_type[map->get_length_array()];
     if (array == 0) {
       std::cerr << "failed to allocate array." << std::endl;
       MPI_Abort(g.get_comm(), 3);
@@ -61,47 +63,49 @@ public:
   value_type* get_array_pointer() { return array; }
   const value_type* get_array_pointer() const { return array; }
 
-  void set_mapping(mapping_bc const& map_in) { map = map_in; }
+  template<typename MATRIX_MAJOR>
+  void set_mapping(mapping_bc<MATRIX_MAJOR> const& map_in) { map = &map_in; }
 
-  mapping_bc& get_mapping() { return map; }
+  template<typename MATRIX_MAJOR>
+  mapping_bc<MATRIX_MAJOR>& get_mapping() { return map; }
 
   void set_local(int local_i, int local_j, value_type value) {
-    array[map.get_array_index(local_i, local_j)] = value;
+    array[map->get_array_index(local_i, local_j)] = value;
   }
 
   void update_local(int local_i, int local_j, value_type value) {
-    array[map.get_array_index(local_i, local_j)] += value;
+    array[map->get_array_index(local_i, local_j)] += value;
   }
 
   value_type get_local(int local_i, int local_j) const {
-    return array[map.get_array_index(local_i, local_j)];
+    return array[map->get_array_index(local_i, local_j)];
   }
 
   void set_global(int global_i, int global_j, value_type value) {
-    if ((map.is_gindex(global_i, global_j)))
-      set_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j), value);
+    if ((map->is_gindex(global_i, global_j)))
+      set_local(map->translate_g2l_row(global_i), map->translate_g2l_col(global_j), value);
   }
 
   void update_global(int global_i, int global_j, value_type value) {
-    if ((map.is_gindex(global_i, global_j)))
-      update_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j), value);
+    if ((map->is_gindex(global_i, global_j)))
+      update_local(map->translate_g2l_row(global_i), map->translate_g2l_col(global_j), value);
   }
 
   value_type get_global(int global_i, int global_j) const {
-    return get_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j));
+    return get_local(map->translate_g2l_row(global_i), map->translate_g2l_col(global_j));
   }
 
   value_type get_global_checked(int global_i, int global_j) const {
-    if ((map.is_gindex(global_i, global_j))) {
-      return get_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j));
+    if ((map->is_gindex(global_i, global_j))) {
+      return get_local(map->translate_g2l_row(global_i), map->translate_g2l_col(global_j));
     } else {
       throw std::out_of_range("element not on this process.");
     }
   }
 
   void set_zeros() {
-    for (int local_i=0; local_i<map.get_m_local(); ++local_i) {
-      for (int local_j=0; local_j<map.get_n_local(); ++local_j) {
+    for (int local_i=0; local_i<map->get_m_local(); ++local_i) {
+      for (int local_j=0; local_j<map->get_n_local(); ++local_j) {
         set_local(local_i, local_j, 0);
       }
     }
@@ -109,10 +113,10 @@ public:
 
   template<class FUNC>
   void generate(FUNC func) {
-    for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-      for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-        int global_i = map.translate_l2g_row(local_i);
-        int global_j = map.translate_l2g_col(local_j);
+    for(int local_i = 0; local_i < map->get_m_local(); ++local_i) {
+      for(int local_j = 0; local_j < map->get_n_local(); ++local_j) {
+        int global_i = map->translate_l2g_row(local_i);
+        int global_j = map->translate_l2g_col(local_j);
         set_local(local_i, local_j, func(global_i, global_j));
       }
     }
@@ -121,41 +125,42 @@ public:
   void print(std::ostream& os = std::cout) const;
 
   // map member function
-  int get_mb() const { return map.get_mb(); }
-  int get_nb() const { return map.get_nb(); }
+  int get_mb() const { return map->get_mb(); }
+  int get_nb() const { return map->get_nb(); }
 
-  int get_m_global() const { return map.get_m_global(); }
-  int get_n_global() const { return map.get_n_global(); }
-  int get_m_local() const { return map.get_m_local(); }
-  int get_n_local() const { return map.get_n_local(); }
-  int translate_l2g_row(const int& local_i) const { return map.translate_l2g_row(local_i); }
-  int translate_l2g_col(const int& local_j) const { return map.translate_l2g_col(local_j); }
-  int translate_g2l_row(const int& global_i) const { return map.translate_g2l_row(global_i); }
-  int translate_g2l_col(const int& global_j) const { return map.translate_g2l_col(global_j); }
-  bool is_gindex_myrow(const int& global_i) const { return map.is_gindex_myrow(global_i); }
-  bool is_gindex_mycol(const int& global_j) const { return map.is_gindex_mycol(global_j); }
-  bool is_gindex(const int& global_i, const int& global_j) const { return map.is_gindex(global_i, global_j); }
+  int get_m_global() const { return map->get_m_global(); }
+  int get_n_global() const { return map->get_n_global(); }
+  int get_m_local() const { return map->get_m_local(); }
+  int get_n_local() const { return map->get_n_local(); }
+  int translate_l2g_row(const int& local_i) const { return map->translate_l2g_row(local_i); }
+  int translate_l2g_col(const int& local_j) const { return map->translate_l2g_col(local_j); }
+  int translate_g2l_row(const int& global_i) const { return map->translate_g2l_row(global_i); }
+  int translate_g2l_col(const int& global_j) const { return map->translate_g2l_col(global_j); }
+  bool is_gindex_myrow(const int& global_i) const { return map->is_gindex_myrow(global_i); }
+  bool is_gindex_mycol(const int& global_j) const { return map->is_gindex_mycol(global_j); }
+  bool is_gindex(const int& global_i, const int& global_j) const { return map->is_gindex(global_i, global_j); }
 
-  int get_length_array() const { return map.get_length_array(); }
-  int get_lld() const { return map.get_lld(); };
-  int get_default_length_array() const { return map.get_default_length_array(); }
-  int get_array_index(int local_i, int local_j) const { return map.get_array_index(local_i, local_j); }
-  bool is_row_major() const { return map.is_row_major(); }
-  bool is_col_major() const { return map.is_col_major(); }
-  grid const& get_grid() const { return map.get_grid(); }
-  int get_nprow() const { return map.get_nprow(); }
-  int get_npcol() const { return map.get_npcol(); }
-  int get_nprocs() const { return map.get_nprocs(); }
-  int get_myrank() const { return map.get_myrank(); }
-  int get_myrow() const { return map.get_myrow(); }
-  int get_mycol() const { return map.get_mycol(); }
+  int get_length_array() const { return map->get_length_array(); }
+  int get_lld() const { return map->get_lld(); };
+  int get_default_length_array() const { return map->get_default_length_array(); }
+  int get_array_index(int local_i, int local_j) const { return map->get_array_index(local_i, local_j); }
+  bool is_row_major() const { return map->is_row_major(); }
+  bool is_col_major() const { return map->is_col_major(); }
+  grid const& get_grid() const { return map->get_grid(); }
+  int get_nprow() const { return map->get_nprow(); }
+  int get_npcol() const { return map->get_npcol(); }
+  int get_nprocs() const { return map->get_nprocs(); }
+  int get_myrank() const { return map->get_myrank(); }
+  int get_myrow() const { return map->get_myrow(); }
+  int get_mycol() const { return map->get_mycol(); }
 
   // temporary
-  void set_default_lld() { map.set_default_lld(); }
-  void set_default_length_array() { map.set_default_length_array(); }
+  void set_default_lld() { map->set_default_lld(); }
+  void set_default_length_array() { map->set_default_length_array(); }
 
 private:
-  mapping_bc map;
+  //mapping_common_sizes* map;
+  mapping_bc_base* map;
   value_type* array;
   grid g;
   // variables of class grid
@@ -169,8 +174,8 @@ void distributed_matrix<T, MATRIX_MAJOR>::print(std::ostream& os) const {
   for (int proc = 0; proc < nprocs; ++proc) {
     if (proc == myrank) {
       os << "Rank = " << myrank << ", myrow = " << myrow << ", mycol = " << mycol << std::endl;
-      for (int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-        for (int local_j = 0; local_j < map.get_n_local(); ++local_j)
+      for (int local_i = 0; local_i < map->get_m_local(); ++local_i) {
+        for (int local_j = 0; local_j < map->get_n_local(); ++local_j)
           os << "  " << get_local(local_i, local_j);
         os << std::endl;
       }

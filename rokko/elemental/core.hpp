@@ -29,8 +29,8 @@ public:
   void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
   void finalize() { El::Finalize(); }
 
-  mapping_bc optimized_mapping(int dim, grid const& g) const {
-    return mapping_bc(dim, 1, matrix_col_major_d, g);  // block_size = 1
+  mapping_bc<matrix_col_major>* optimized_mapping(int dim, grid const& g) const {
+    return new mapping_bc<matrix_col_major>(dim, 1, matrix_col_major_d, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
