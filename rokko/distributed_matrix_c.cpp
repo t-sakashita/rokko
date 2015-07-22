@@ -20,10 +20,10 @@ void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int di
     matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(dim1, dim2,
       *static_cast<rokko::grid*>(grid.ptr),
       *static_cast<rokko::parallel_dense_solver*>(solver.ptr));
-  else
+  /*else
     matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_row_major>(dim1, dim2,
       *static_cast<rokko::grid*>(grid.ptr),
-      *static_cast<rokko::parallel_dense_solver*>(solver.ptr));
+      *static_cast<rokko::parallel_dense_solver*>(solver.ptr));*/
   matrix->major = matrix_major;
 }
 

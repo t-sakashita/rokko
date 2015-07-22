@@ -19,12 +19,10 @@
 
 namespace rokko {
 
-class mapping_bc_base : virtual public mapping_global2local_base, virtual public mapping_local2array_base, virtual public mapping_common_sizes {
-};
-
 template <typename MATRIX_MAJOR>
-class mapping_bc : public mapping_local2array<MATRIX_MAJOR>, public mapping_global2local {
+class mapping_bc : public mapping_global2local, public mapping_local2array<MATRIX_MAJOR> {
 public:
+  typedef MATRIX_MAJOR matrix_major;
   explicit mapping_bc() {}
   explicit mapping_bc(int global_dim, int block_size)
     : mapping_global2local(global_dim, block_size, grid()), mapping_local2array<MATRIX_MAJOR>() {}
@@ -46,7 +44,7 @@ public:
   template<typename SOLVER>
   explicit mapping_bc(int global_dim, grid const& g_in, SOLVER const& solver_in) {
     //std::cout << "constructor: m_local=" << solver_in.optimized_mapping(g_in, global_dim).get_m_local() << " n_local=" << solver_in.optimized_mapping(g_in, global_dim).get_n_local() << std::endl;
-    this = solver_in.optimized_mapping(global_dim, g_in);
+    *this = solver_in.optimized_mapping(global_dim, g_in);
   }
 
 };

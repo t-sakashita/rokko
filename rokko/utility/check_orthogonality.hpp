@@ -17,13 +17,12 @@
 namespace rokko {
 
 template<typename T, typename MATRIX_MAJOR>
-int check_orthogonality(rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvecs) {
+int check_orthogonality(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
 
-  rokko::distributed_matrix<T, MATRIX_MAJOR> mat2(mat.get_m_global(), mat.get_n_global(), mat.g);
-  product(mat, false, mat, true, 1, 0, mat2);
-  std::cout << "check_orthogonality";
-  mat2.print();
-
+  rokko::distributed_matrix<T, MATRIX_MAJOR> mat2(mat.get_mapping());
+  product(1, mat, false, mat, true, 0, mat2);
+  std::cout << "check_orthogonality:" << std::endl;
+  mat2.print(std::cout);
   return 0;
 }
 

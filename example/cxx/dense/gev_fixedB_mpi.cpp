@@ -14,6 +14,7 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/check_orthogonality.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
@@ -57,9 +58,10 @@ int main(int argc, char *argv[]) {
   rokko::gather(mat, mat_loc, 0);
 
   rokko::localized_vector<double> eigval(dim);
+  rokko::localized_vector<double> eigval_inv(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
+  rokko::distributed_matrix<double, matrix_major> tmp(map);
   try {
-    //solver.diagonalize(mat, eigval, eigvec);
     solver.diagonalize(routine, mat, eigval, eigvec);
   }
   catch (const char *e) {
@@ -67,6 +69,25 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
+  for(int i=0; i<dim; ++i) {
+    eigval_inv(i) = 1;// / eigval(i);
+  }
+  for (int local_j=0; local_j<eigvec.get_n_local(); ++local_j) {
+    int global_j = eigvec.translate_l2g_col(local_j);
+    double coeff = eigval_inv(global_j);  //1 / eigval(global_j);
+    for (int local_i=0; local_i<eigvec.get_m_local(); ++local_i) {
+      double value = eigvec.get_local(local_i, local_j);
+      tmp.set_local(local_i, local_j, coeff * value); 
+    }
+  }
+  rokko::distributed_matrix<double, matrix_major> Binv(mat.get_mapping());
+  product(1, tmp, false, eigvec, true, 0, Binv);
+  std::cout << "inverseB:" << std::endl;
+  Binv.print();
+
+  std::cout << "tmp:" << std::endl;
+  tmp.print();
+  
   rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
@@ -82,6 +103,8 @@ int main(int argc, char *argv[]) {
                           - eigval(dim - 1))
               << std::endl;
   }
+
+  //check_orthogonality(eigvec);
 
   solver.finalize();
   MPI_Finalize();

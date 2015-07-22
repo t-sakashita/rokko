@@ -21,23 +21,8 @@
 
 namespace rokko {
 
-class mapping_local2array_base {
-public:
-  virtual void set_length_array(int value) = 0;
-  virtual int get_length_array() const = 0;
-  virtual int get_lld() const = 0;
-  virtual void set_lld(int value) = 0;
-  virtual void set_default_lld() = 0;
-  virtual int get_default_lld() const = 0;
-  virtual int get_default_length_array() const = 0;
-  virtual void set_default_length_array() = 0;
-  virtual int get_array_index(int local_i, int local_j) const = 0;
-  virtual bool is_row_major() const = 0;
-  virtual bool is_col_major() const = 0;
-};
-
 template <typename MATRIX_MAJOR>
-class mapping_local2array : virtual public mapping_common_sizes, virtual public mapping_local2array_base {
+class mapping_local2array : virtual public mapping_common_sizes {
 public:
   explicit mapping_local2array() {
     set_default_lld();

@@ -53,7 +53,7 @@ public:
   
   // another (slower) implementation using set_global function
   template<typename T, typename MATRIX_MAJOR>
-  static void generate_global(rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+  static void generate_global(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.m_global != mat.n_global)
       BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
     for(int global_i=0; global_i<mat.m_global; ++global_i) {
