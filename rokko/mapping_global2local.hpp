@@ -17,39 +17,7 @@
 
 namespace rokko {
 
-class mapping_global2local_base {
-public:
-  virtual int get_stride_myrow() const = 0;
-  virtual int get_stride_mycol() const = 0;
-  virtual void set_stride() = 0;
-  virtual void set_block_size(int mb_in, int nb_in) = 0;
-  virtual int get_mb() const = 0;
-  virtual int get_nb() const = 0;
-  virtual int get_m_global() const = 0;
-  virtual int get_n_global() const = 0;
-  virtual void set_local_size(int m_local_in, int n_local_in) = 0;
-  virtual void set_default_local_size() = 0;
-  virtual int calculate_row_size(int proc_row) const = 0;
-  virtual int calculate_row_size() const = 0;
-  virtual int calculate_col_size(int proc_col) const = 0;
-  virtual int calculate_col_size() const = 0;
-  virtual int translate_l2g_row(const int& local_i) const = 0;
-  virtual int translate_l2g_col(const int& local_j) const = 0;
-  virtual int translate_g2l_row(const int& global_i) const = 0;
-  virtual int translate_g2l_col(const int& global_j) const = 0;
-  virtual bool is_gindex_myrow(const int& global_i) const = 0;
-  virtual bool is_gindex_mycol(const int& global_j) const = 0;
-  virtual bool is_gindex(const int& global_i, const int& global_j) const = 0;
-  virtual int get_nprow() const = 0;
-  virtual int get_npcol() const = 0;
-  virtual int get_nprocs() const = 0;
-  virtual int get_myrank() const = 0;
-  virtual int get_myrow() const = 0;
-  virtual int get_mycol() const = 0;
-  virtual grid const& get_grid() const = 0;
-};
-
-class mapping_global2local : virtual public mapping_common_sizes, virtual public mapping_global2local_base {
+class mapping_global2local : virtual public mapping_common_sizes {
 public:
   explicit mapping_global2local() {}
   explicit mapping_global2local(int global_dim, int block_size, grid const& g_in)

@@ -25,7 +25,7 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  mapping_bc<matrix_col_major>* optimized_mapping(int dim, grid const& g) const {
+  mapping_bc<matrix_col_major> optimized_mapping(int dim, grid const& g) const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();
     if (mb == 0)  mb = 1;
@@ -33,7 +33,7 @@ public:
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
     int b = std::min(mb, nb);
-    return new mapping_bc<matrix_col_major>(dim, b, g);
+    return mapping_bc<matrix_col_major>(dim, b, g);
   }
   template <typename MATRIX_MAJOR, typename VEC>
   void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
