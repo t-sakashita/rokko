@@ -145,7 +145,7 @@ public:
   int get_myrank() const { return g.get_myrank(); }
   int get_myrow() const { return g.get_myrow(); }
   int get_mycol() const { return g.get_mycol(); }
-  grid const& get_grid() const { return g; }
+  grid get_grid() const { return g; }
 
 private:
   int m_global, n_global;

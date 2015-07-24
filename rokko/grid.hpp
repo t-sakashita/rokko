@@ -29,7 +29,7 @@ public:
     initialize(grid_row_major);
   }
   template <typename GRID_MAJOR>
-  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major) : comm(comm_in) {
+  grid(MPI_Comm& comm_in, GRID_MAJOR const& grid_major = grid_row_major) : comm(comm_in) {
     initialize(grid_major);
   }
 

@@ -32,7 +32,13 @@ template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major>
 class distributed_matrix {
 public:
   typedef T value_type;
-  distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(map_in) {
+  distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) {
+    bool is_col_major = boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    if (is_col_major != map.is_col_major()) {
+      std::cerr << "error: matrix major of tamplate parameter and one of given mapping are different." << std::endl;
+      throw;
+    }
+    map = map_in;
     allocate_array();
   }
   template<typename SOLVER>
@@ -44,7 +50,7 @@ public:
   distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
     bool is_col_major = boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
     if (is_col_major != map.is_col_major()) {
-      std::cerr << "error: matrix_major" << std::endl;
+      std::cerr << "error: matrix major of tamplate parameter and one of given mapping are different." << std::endl;
       throw;
     }
     map = solver_in.optimized_mapping(m_global_in, g_in);
@@ -66,7 +72,7 @@ public:
   value_type* get_array_pointer() { return array; }
   const value_type* get_array_pointer() const { return array; }
 
-  void set_mapping(mapping_bc<MATRIX_MAJOR> const& map_in) { map = &map_in; }
+  void set_mapping(mapping_bc<MATRIX_MAJOR> const& map_in) { map = map_in; }
 
   mapping_bc<MATRIX_MAJOR>& get_mapping() { return map; }
 
@@ -147,7 +153,7 @@ public:
   int get_array_index(int local_i, int local_j) const { return map.get_array_index(local_i, local_j); }
   bool is_row_major() const { return map.is_row_major(); }
   bool is_col_major() const { return map.is_col_major(); }
-  grid const& get_grid() const { return map.get_grid(); }
+  grid get_grid() const { return map.get_grid(); }
   int get_nprow() const { return map.get_nprow(); }
   int get_npcol() const { return map.get_npcol(); }
   int get_nprocs() const { return map.get_nprocs(); }
