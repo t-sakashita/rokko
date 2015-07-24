@@ -59,7 +59,7 @@ public:
     array = new value_type[map.get_length_array()];
     if (array == 0) {
       std::cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(g.get_comm(), 3);
+      MPI_Abort(map.get_comm(), 3);
     }
   }
 
@@ -162,18 +162,13 @@ public:
 private:
   mapping_bc<MATRIX_MAJOR> map;
   value_type* array;
-  grid g;
-  // variables of class grid
-  int myrank, nprocs;
-  int myrow, mycol;
-  int nprow, npcol;
 };
 
 template<typename T, typename MATRIX_MAJOR>
 void distributed_matrix<T, MATRIX_MAJOR>::print(std::ostream& os) const {
-  for (int proc = 0; proc < nprocs; ++proc) {
-    if (proc == myrank) {
-      os << "Rank = " << myrank << ", myrow = " << myrow << ", mycol = " << mycol << std::endl;
+  for (int proc = 0; proc < map.get_nprocs(); ++proc) {
+    if (proc == map.get_myrank()) {
+      os << "Rank = " << map.get_myrank() << ", myrow = " << map.get_myrow() << ", mycol = " << map.get_mycol() << std::endl;
       for (int local_i = 0; local_i < map.get_m_local(); ++local_i) {
         for (int local_j = 0; local_j < map.get_n_local(); ++local_j)
           os << "  " << get_local(local_i, local_j);
@@ -181,7 +176,7 @@ void distributed_matrix<T, MATRIX_MAJOR>::print(std::ostream& os) const {
       }
       os.flush();
     }
-    MPI_Barrier(g.get_comm());
+    MPI_Barrier(map.get_comm());
   }
 }
 

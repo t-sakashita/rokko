@@ -138,6 +138,7 @@ public:
     return is_gindex_myrow(global_i) && is_gindex_mycol(global_j);
   }
 
+  MPI_Comm get_comm() const { return g.get_comm(); }
   int get_nprow() const { return g.get_nprow(); }
   int get_npcol() const { return g.get_npcol(); }
   int get_nprocs() const { return g.get_nprocs(); }
