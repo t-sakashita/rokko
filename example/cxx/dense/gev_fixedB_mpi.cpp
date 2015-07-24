@@ -36,46 +36,8 @@ void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::d
 
 template<typename T, typename MATRIX_MAJOR>
 void diagonalize_fixedB(rokko::parallel_dense_solver& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec) {
-  rokko::localized_vector<double> eigval_tmp(eigval.size());
-  rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Broot(A.get_mapping()), mat(A.get_mapping());
+  
 
-  int myrank = A.get_myrank();
-  std::string routine = "";
-  // diagonalization of B
-  try {
-    solver.diagonalize(B, eigval, eigvec);
-  }
-  catch (const char *e) {
-    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
-  std::cout << "eigvec:" << std::endl << eigvec << std::endl;
-
-  // computation of B^{-1/2}
-  for(int i=0; i<eigval.size(); ++i) {
-    eigval_tmp(i) = sqrt(1/eigval(i));
-  }
-  function_matrix(eigval_tmp, eigvec, Broot, tmp);
-  std::cout << "root_inverseB:" << std::endl << Broot << std::endl;
-  for(int i=0; i<eigval.size(); ++i) {
-    eigval_tmp(i) = sqrt(eigval(i));
-  }
-
-  // computation of B^{-1/2} A B^{-1/2}
-  product(1, Broot, false, A, false, 0, tmp);
-  product(1, tmp, false, Broot, false, 0, mat);
-  // diagonalization of B^{-1/2} A B^{-1/2}
-  try {
-    solver.diagonalize(mat, eigval, tmp);
-  }
-  catch (const char *e) {
-    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
-  // computation of B^{1/2}
-  function_matrix(eigval_tmp, tmp, Broot, mat);
-  // computation of {eigvec of Ax=lambda Bx} = B^{1/2} {eigvec of B^{-1/2} A B^{-1/2}}
-  product(1, Broot, false, tmp, false, 0, eigvec);
 }
 
 int main(int argc, char *argv[]) {
@@ -114,26 +76,49 @@ int main(int argc, char *argv[]) {
   rokko::frank_matrix::generate(B);
   rokko::localized_vector<double> eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
-  diagonalize_fixedB(solver, A, B, eigval, eigvec);
-  
-  /*
-  rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
-  rokko::gather(eigvec, eigvec_loc, 0);
-  if (myrank == 0) {
-    bool sorted = true;
-    for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
-    if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
+  //diagonalize_fixedB(solver, A, B, eigval, eigvec);
 
-    std::cout << "largest eigenvalues:";
-    for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
-    std::cout << std::endl;
-    std::cout << "residual of the largest eigenvalue/vector: |x A x - lambda| = "
-              << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
-                          - eigval(dim - 1))
-              << std::endl;
+  //int myrank = A.get_myrank();
+  //std::string routine = "";
+  // diagonalization of B
+  try {
+    solver.diagonalize("", B, eigval, eigvec);
   }
-  */
+  catch (const char *e) {
+    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
+    MPI_Abort(MPI_COMM_WORLD, 22);
+  }
+  std::cout << "eigvec:" << std::endl << eigvec << std::endl;
 
+  rokko::localized_vector<double> eigval_tmp(eigval.size());
+  rokko::distributed_matrix<double, matrix_major> tmp(map), Broot(map), mat(map);
+
+  // computation of B^{-1/2}
+  for(int i=0; i<eigval.size(); ++i) {
+    eigval_tmp(i) = sqrt(1/eigval(i));
+  }
+  function_matrix(eigval_tmp, eigvec, Broot, tmp);
+  std::cout << "root_inverseB:" << std::endl << Broot << std::endl;
+  for(int i=0; i<eigval.size(); ++i) {
+    eigval_tmp(i) = sqrt(eigval(i));
+  }
+
+  // computation of B^{-1/2} A B^{-1/2}
+  product(1, Broot, false, A, false, 0, tmp);
+  product(1, tmp, false, Broot, false, 0, mat);
+  // diagonalization of B^{-1/2} A B^{-1/2}
+  //try {
+  //  solver.diagonalize(mat, eigval, tmp);
+  //}
+  //catch (const char *e) {
+  //  if (myrank == 0) std::cout << "Exception : " << e << std::endl;
+  //  MPI_Abort(MPI_COMM_WORLD, 22);
+  //}
+  // computation of B^{1/2}
+  function_matrix(eigval_tmp, tmp, Broot, mat);
+  // computation of {eigvec of Ax=lambda Bx} = B^{1/2} {eigvec of B^{-1/2} A B^{-1/2}}
+  product(1, Broot, false, tmp, false, 0, eigvec);
+ 
   solver.finalize();
   MPI_Finalize();
 }
