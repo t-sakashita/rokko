@@ -41,7 +41,7 @@ void BLACS_pinfo(int* mypnum, int* nprocs);
 
 #define BLACS_descinit LAPACK_GLOBAL(descinit,DESCINIT)
 void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
-                    const int* irsrc, const int* icsrc, const int* ixtxt, const int* lld,
+                    const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
                     int* info);
 
 #ifdef __cplusplus
