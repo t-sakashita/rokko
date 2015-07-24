@@ -21,6 +21,50 @@
 
 typedef rokko::matrix_col_major matrix_major;
 
+template<typename T, typename MATRIX_MAJOR>
+void diagonalize_fixedB(rokko::parallel_dense_solver& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec) {
+  rokko::localized_vector<double> eigval_inv(eigval.size());
+  rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binv(B.get_mapping());
+
+  int myrank = A.get_myrank();
+  // diagonalization of B
+  std::string routine = "";
+  try {
+    solver.diagonalize(A, eigval, eigvec);
+  }
+  catch (const char *e) {
+    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
+    MPI_Abort(MPI_COMM_WORLD, 22);
+  }
+
+  // computation of B^{-1}
+  for(int i=0; i<eigval.size(); ++i) {
+    eigval_inv(i) = 1;// / eigval(i);
+  }
+  for (int local_j=0; local_j<eigvec.get_n_local(); ++local_j) {
+    int global_j = eigvec.translate_l2g_col(local_j);
+    double coeff = eigval_inv(global_j);  //1 / eigval(global_j);
+    for (int local_i=0; local_i<eigvec.get_m_local(); ++local_i) {
+      double value = eigvec.get_local(local_i, local_j);
+      tmp.set_local(local_i, local_j, coeff * value); 
+    }
+  }
+  product(1, tmp, false, eigvec, true, 0, Binv);
+  std::cout << "inverseB:" << std::endl << Binv << std::endl;
+  //Binv.print();
+
+  // computation of inverse B^{-1} A
+  product(1, Binv, false, A, false, 0, tmp);
+  // diagonalization of B^{-1} A
+  try {
+    solver.diagonalize(tmp, eigval, eigvec);
+  }
+  catch (const char *e) {
+    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
+    MPI_Abort(MPI_COMM_WORLD, 22);
+  }
+}
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -50,44 +94,15 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   rokko::mapping_bc<matrix_major> map(dim, g, solver);
-  //rokko::mapping_bc<matrix_major> map = solver.optimized_mapping(dim, g);
 
-  rokko::distributed_matrix<double, matrix_major> mat(map);
-  rokko::frank_matrix::generate(mat);
-  rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
-  rokko::gather(mat, mat_loc, 0);
-
+  rokko::distributed_matrix<double, matrix_major> A(map);
+  rokko::distributed_matrix<double, matrix_major> B(map);
+  rokko::frank_matrix::generate(A);
   rokko::localized_vector<double> eigval(dim);
-  rokko::localized_vector<double> eigval_inv(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
-  rokko::distributed_matrix<double, matrix_major> tmp(map);
-  try {
-    solver.diagonalize(routine, mat, eigval, eigvec);
-  }
-  catch (const char *e) {
-    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
-
-  for(int i=0; i<dim; ++i) {
-    eigval_inv(i) = 1;// / eigval(i);
-  }
-  for (int local_j=0; local_j<eigvec.get_n_local(); ++local_j) {
-    int global_j = eigvec.translate_l2g_col(local_j);
-    double coeff = eigval_inv(global_j);  //1 / eigval(global_j);
-    for (int local_i=0; local_i<eigvec.get_m_local(); ++local_i) {
-      double value = eigvec.get_local(local_i, local_j);
-      tmp.set_local(local_i, local_j, coeff * value); 
-    }
-  }
-  rokko::distributed_matrix<double, matrix_major> Binv(mat.get_mapping());
-  product(1, tmp, false, eigvec, true, 0, Binv);
-  std::cout << "inverseB:" << std::endl;
-  Binv.print();
-
-  std::cout << "tmp:" << std::endl;
-  tmp.print();
+  diagonalize_fixedB(solver, A, B, eigval, eigvec);
   
+  /*
   rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
@@ -103,8 +118,7 @@ int main(int argc, char *argv[]) {
                           - eigval(dim - 1))
               << std::endl;
   }
-
-  //check_orthogonality(eigvec);
+  */
 
   solver.finalize();
   MPI_Finalize();
