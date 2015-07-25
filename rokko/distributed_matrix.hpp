@@ -153,7 +153,7 @@ public:
   int get_array_index(int local_i, int local_j) const { return map.get_array_index(local_i, local_j); }
   bool is_row_major() const { return map.is_row_major(); }
   bool is_col_major() const { return map.is_col_major(); }
-  grid get_grid() const { return map.get_grid(); }
+  grid const& get_grid() const { return map.get_grid(); }
   int get_nprow() const { return map.get_nprow(); }
   int get_npcol() const { return map.get_npcol(); }
   int get_nprocs() const { return map.get_nprocs(); }
