@@ -187,8 +187,10 @@ public:
 		   rokko::parameters const& params, timer& timer = *global_timer::instance()) {
     if (params.defined("routine")) {
       routine_ = params.get_string("routine");
+    } else {
+      routine_ = "";
     }
-    solver_impl_->diagonalize(routine_, mat, eigvals, eigvecs, params, timer);
+    solver_impl_->diagonalize("", mat, eigvals, eigvecs, params, timer);
   }
   // no routine, with parameters, only eigenvalues
   template<typename MATRIX_MAJOR, typename VEC>
@@ -196,6 +198,8 @@ public:
 		   rokko::parameters const& params, timer& timer = *global_timer::instance()) {
     if (params.defined("routine")) {
       routine_ = params.get_string("routine");
+    } else {
+      routine_ = "";
     }
     solver_impl_->diagonalize(routine_, mat, eigvals, params, timer);
   }
@@ -204,7 +208,8 @@ public:
   void diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		   timer& timer = *global_timer::instance()) {
-    diagonalize(mat, eigvals, eigvecs, null_params, timer);
+    routine_ = std::string("");
+    solver_impl_->diagonalize(routine_, mat, eigvals, eigvecs, null_params, timer);
   }
   // no routine, no parameters, only eigenvalues
   template<typename MATRIX_MAJOR, typename VEC>
