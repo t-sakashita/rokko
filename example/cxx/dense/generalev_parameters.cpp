@@ -23,7 +23,6 @@ int main(int argc, char *argv[]) {
   std::string library, routine;
   unsigned int dim = 4;
   if (argc >= 2) library_routine = argv[1];
-  if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
   rokko::split_solver_name(library_routine, library, routine);
 
   std::cout.precision(5);
@@ -47,7 +46,8 @@ int main(int argc, char *argv[]) {
           0.56, -0.83, 0.76, 0.34,
          -0.10, 1.09, 0.34, 1.18;
     
-  //std::cout << "Frank matrix:\n" << mat << std::endl;
+  //std::cout << "mata:\n" << mata << std::endl;
+  //std::cout << "matb:\n" << matb << std::endl;
 
   rokko::localized_vector<double> eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
@@ -60,14 +60,21 @@ int main(int argc, char *argv[]) {
   //params.set("uplow", 'lower');
   params.set("verbose", true);
   try {
-    //solver.diagonalize(routine, mata, matb, eigval, eigvec, params);
-    solver.diagonalize(routine, mata, matb, eigval, params);
+    solver.diagonalize(routine, mata, matb, eigval, eigvec, params);
+    //solver.diagonalize(routine, mata, matb, eigval, params);
   }
   catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }
-  rokko::frank_matrix::generate(mata);
+  mata << 0.24, 0.39, 0.42, -0.16,
+          0.39, -0.11, 0.79, 0.63,
+          0.42, 0.79, -0.25, 0.48,
+         -0.16, 0.63, 0.48, -0.03;
+  matb << 4.16, -3.12, 0.56, -0.10,
+         -3.12, 5.03, -0.83, 1.09,
+          0.56, -0.83, 0.76, 0.34,
+         -0.10, 1.09, 0.34, 1.18;
 
   bool sorted = true;
   for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
@@ -76,9 +83,9 @@ int main(int argc, char *argv[]) {
   std::cout << "eigenvalues:\n" << eigval.transpose() << std::endl
             << "eigvectors:\n" << eigvec << std::endl;
   std::cout << "orthogonality of eigenvectors:" << std::endl
-            << eigvec.transpose() * eigvec << std::endl;
-  std::cout << "residual of the smallest eigenvalue/vector (A x - lambda x):" << std::endl
-            << (mata * eigvec.col(0) - eigval(0) * eigvec.col(0)).transpose() << std::endl;
+            << eigvec.transpose() * matb * eigvec << std::endl;
+  std::cout << "residual of the smallest eigenvalue/vector (A x - lambda B x):" << std::endl
+            << (mata * eigvec.col(0) - eigval(0) * matb * eigvec.col(0)).transpose() << std::endl;
 
   solver.finalize();
 }

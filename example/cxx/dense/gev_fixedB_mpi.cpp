@@ -37,7 +37,7 @@ void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::d
 template<typename T, typename MATRIX_MAJOR>
 void diagonalize_fixedB(rokko::parallel_dense_solver& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec) {
   rokko::localized_vector<double> eigval_tmp(eigval.size());
-  rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Broot(A.get_mapping()), mat(A.get_mapping());
+  rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binvroot(A.get_mapping()), mat(A.get_mapping());
 
   int myrank = A.get_myrank();
   std::string routine = "";
@@ -49,21 +49,16 @@ void diagonalize_fixedB(rokko::parallel_dense_solver& solver, rokko::distributed
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
-  std::cout << "eigvec:" << std::endl << eigvec << std::endl;
 
   // computation of B^{-1/2}
   for(int i=0; i<eigval.size(); ++i) {
     eigval_tmp(i) = sqrt(1/eigval(i));
   }
-  function_matrix(eigval_tmp, eigvec, Broot, tmp);
-  std::cout << "root_inverseB:" << std::endl << Broot << std::endl;
-  for(int i=0; i<eigval.size(); ++i) {
-    eigval_tmp(i) = sqrt(eigval(i));
-  }
-
+  function_matrix(eigval_tmp, eigvec, Binvroot, tmp);
+  
   // computation of B^{-1/2} A B^{-1/2}
-  product(1, Broot, false, A, false, 0, tmp);
-  product(1, tmp, false, Broot, false, 0, mat);
+  product(1, Binvroot, false, A, false, 0, tmp);
+  product(1, tmp, false, Binvroot, false, 0, mat);
   // diagonalization of B^{-1/2} A B^{-1/2}
   try {
     solver.diagonalize(routine, mat, eigval, tmp);
@@ -72,21 +67,36 @@ void diagonalize_fixedB(rokko::parallel_dense_solver& solver, rokko::distributed
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
-  // computation of B^{1/2}
-  function_matrix(eigval_tmp, tmp, Broot, mat);
-  // computation of {eigvec of Ax=lambda Bx} = B^{1/2} {eigvec of B^{-1/2} A B^{-1/2}}
-  product(1, Broot, false, tmp, false, 0, eigvec);
+  // computation of {eigvec of Ax=lambda Bx} = B^{-1/2} {eigvec of B^{-1/2} A B^{-1/2}}
+  product(1, Binvroot, false, tmp, false, 0, eigvec);
 }
 
+template<typename T, typename MATRIX_MAJOR>
+void set_A_B(rokko::localized_matrix<T, MATRIX_MAJOR>& locA, rokko::localized_matrix<T, MATRIX_MAJOR>& locB) {
+  if ((locA.rows() != 4) || (locA.cols() != 4) || (locB.rows() != 4) || (locB.cols() != 4)) {
+    std::cerr << "error: size must be 4!" << std::endl;
+    throw;
+  }
+  locA << 0.24, 0.39, 0.42, -0.16,
+          0.39, -0.11, 0.79, 0.63,
+          0.42, 0.79, -0.25, 0.48,
+         -0.16, 0.63, 0.48, -0.03;
+
+  locB << 4.16, -3.12, 0.56, -0.10,
+         -3.12, 5.03, -0.83, 1.09,
+          0.56, -0.83, 0.76, 0.34,
+         -0.10, 1.09, 0.34, 1.18;
+}
+
+  
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_solver::default_solver());
   std::string library, routine;
-  int dim = 10;
+  int dim = 4;
   if (argc >= 2) library_routine = argv[1];
-  if (argc >= 3) dim = boost::lexical_cast<int>(argv[2]);
   rokko::split_solver_name(library_routine, library, routine);
 
   rokko::grid g(comm);
@@ -106,33 +116,41 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map(dim, g, solver);
+  rokko::localized_matrix<double, matrix_major> locA(dim, dim), locB(dim, dim);
+  set_A_B(locA, locB);
+  if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;  
 
-  rokko::distributed_matrix<double, matrix_major> A(map);
-  rokko::distributed_matrix<double, matrix_major> B(map);
-  rokko::frank_matrix::generate(A);
-  rokko::frank_matrix::generate(B);
+  rokko::mapping_bc<matrix_major> map(dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> A(map), B(map), eigvec(map);
   rokko::localized_vector<double> eigval(dim);
-  rokko::distributed_matrix<double, matrix_major> eigvec(map);
+  rokko::scatter(locA, A, 0);
+  rokko::scatter(locB, B, 0);
+  MPI_Barrier(comm);
+  if (myrank == 0) std::cout << "A:" << std::endl;
+  std::cout << A << std::endl;
+
   diagonalize_fixedB(solver, A, B, eigval, eigvec);
-  
-  /*
+
   rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
+
+  set_A_B(locA, locB);
+
   if (myrank == 0) {
     bool sorted = true;
     for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
     if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
-
     std::cout << "largest eigenvalues:";
     for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
     std::cout << std::endl;
-    std::cout << "residual of the largest eigenvalue/vector: |x A x - lambda| = "
-              << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
-                          - eigval(dim - 1))
-              << std::endl;
+
+    std::cout << "eigenvalues:\n" << eigval.transpose() << std::endl
+	      << "eigvectors:\n" << eigvec_loc << std::endl;
+    std::cout << "orthogonality of eigenvectors:" << std::endl
+	      << eigvec_loc.transpose() * locB * eigvec_loc << std::endl;
+    std::cout << "residual of the smallest eigenvalue/vector (A x - lambda B x):" << std::endl
+	      << (locA * eigvec_loc.col(0) - eigval(0) * locB * eigvec_loc.col(0)).transpose() << std::endl;
   }
-  */
 
   solver.finalize();
   MPI_Finalize();
