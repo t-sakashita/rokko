@@ -36,39 +36,28 @@ void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::d
 
 template<typename T, typename MATRIX_MAJOR>
 void diagonalize_fixedB(rokko::parallel_dense_solver& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
-  rokko::localized_vector<double> eigval_tmp(eigval.size());
   rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binvroot(A.get_mapping()), mat(A.get_mapping());
 
   int myrank = A.get_myrank();
-  std::string routine = "";
-  // diagonalization of B
-  try {
-    solver.diagonalize(routine, B, eigval, eigvec);
-  }
-  catch (const char *e) {
-    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
-
+  //std::string routine = "";
+  solver.diagonalize(routine, B, eigval, eigvec);
   // computation of B^{-1/2}
   for(int i=0; i<eigval.size(); ++i) {
-    if (eigval(i) > tol)  eigval_tmp(i) = sqrt(1/eigval(i));
-    else eigval_tmp(i) = 0;
-  }
+    eigval(i) = (eigval(i) > tol) ? sqrt(1/eigval(i)) : 0;
   function_matrix(eigval_tmp, eigvec, Binvroot, tmp);
   
   // computation of B^{-1/2} A B^{-1/2}
   product(1, Binvroot, false, A, false, 0, tmp);
   product(1, tmp, false, Binvroot, false, 0, mat);
   // diagonalization of B^{-1/2} A B^{-1/2}
-  try {
-    solver.diagonalize(routine, mat, eigval, tmp);
-  }
-  catch (const char *e) {
-    if (myrank == 0) std::cout << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
+  solver.diagonalize(routine, mat, eigval, tmp);
+
   // computation of {eigvec of Ax=lambda Bx} = B^{-1/2} {eigvec of B^{-1/2} A B^{-1/2}}
+  product(1, Binvroot, false, tmp, false, 0, eigvec);
+}
+
+void B_inner_product
+{
   product(1, Binvroot, false, tmp, false, 0, eigvec);
 }
 
