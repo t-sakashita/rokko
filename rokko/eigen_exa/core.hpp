@@ -53,7 +53,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  std::string routine = "";
+  std::string routine = "eigen_exa";
   if(params.defined("routine")) {
     routine = params.get_string("routine");
   }
@@ -71,7 +71,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  std::string routine = "";
+  std::string routine = "eigen_exa";
   if(params.defined("routine")) {
     routine = params.get_string("routine");
   }

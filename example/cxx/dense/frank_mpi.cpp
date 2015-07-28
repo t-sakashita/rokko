@@ -50,6 +50,8 @@ int main(int argc, char *argv[]) {
 
   rokko::localized_vector<double> eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(dim, dim, g, solver);
+  //rokko::parameters params;
+  //params.set("routine", "aa");
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

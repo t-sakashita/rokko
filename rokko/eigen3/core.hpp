@@ -33,7 +33,7 @@ public:
       routine = params.get_string("routine");
     }
     if ((routine == "") || (routine == "qr")) {
-      rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params);
+      return rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params);
     } else {
       std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
       throw;
@@ -49,7 +49,7 @@ public:
       routine = params.get_string("routine");
     }
     if ((routine == "") || (routine == "qr")) {
-	rokko::eigen3::diagonalize(mat, eigvals, params);
+      return rokko::eigen3::diagonalize(mat, eigvals, params);
     } else {
       std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
       throw;

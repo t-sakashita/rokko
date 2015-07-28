@@ -103,10 +103,10 @@ public:
   void construct(std::string const& solver_name) {
     solver_impl_ = detail::pd_solver_factory::instance()->make_product(solver_name);
   }
-  parallel_dense_solver(std::string const& solver_name) {
+  parallel_dense_solver(std::string const& solver_name) : null_params() {
     this->construct(solver_name);
   }
-  parallel_dense_solver() {
+  parallel_dense_solver() : null_params() {
     this->construct(this->default_solver());
   }
   template <typename GRID_MAJOR>

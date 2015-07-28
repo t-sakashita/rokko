@@ -198,6 +198,7 @@ typedef factory<sd_solver_base> sd_solver_factory;
 class serial_dense_solver {
 public:
   void construct(std::string const& solver_name) {
+    solver_impl_ = detail::sd_solver_factory::instance()->make_product(solver_name);
   }
   serial_dense_solver(std::string const& solver_name) {
     this->construct(solver_name);
@@ -217,24 +218,24 @@ public:
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    return diagonalize(mat, eigvals, eigvecs, params);
+    return solver_impl_->diagonalize(mat, eigvals, eigvecs, params);
   }
   // with parameters, only eigenvalues
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    return diagonalize(mat, eigvals, params);
+    return solver_impl_->diagonalize(mat, eigvals, params);
   }
   // no parameters, eigenvalues/eigenvectors
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 localized_matrix<double, MATRIX_MAJOR>& eigvecs) {
-    return diagonalize(mat, eigvals, eigvecs, null_params);
+    return solver_impl_->diagonalize(mat, eigvals, eigvecs, null_params);
   }
   // no parameters, only eigenvalues
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals) {
-    return diagonalize(mat, eigvals, null_params);
+    return solver_impl_->diagonalize(mat, eigvals, null_params);
   }
   // -------------- generalized eigenvalue probelm ---------------
   // no routine, with parameters, eigenvalues/eigenvectors
@@ -243,27 +244,27 @@ public:
 			 VEC& eigvals,
 			 localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    return diagonalize(mata, matb, eigvals, eigvecs, params);
+    return solver_impl_->diagonalize(mata, matb, eigvals, eigvecs, params);
   }
   // no routine, with parameters, only eigenvalues
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
 			 VEC& eigvals,
 			 parameters const& params) {
-    return diagonalize(routine_, mata, matb, eigvals, params);
+    return solver_impl_->diagonalize(mata, matb, eigvals, params);
   }
   // no routine, no parameters, eigenvalues/eigenvectors
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
 			 VEC& eigvals,
 			 localized_matrix<double, MATRIX_MAJOR>& eigvecs) {
-    return diagonalize(mata, matb, eigvals, eigvecs, null_params);
+    return solver_impl_->diagonalize(mata, matb, eigvals, eigvecs, null_params);
   }
   // no routine, no parameters, only eigenvalues
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
 			 VEC& eigvals) {
-    return diagonalize(mata, matb, eigvals, null_params);
+    return solver_impl_->diagonalize(mata, matb, eigvals, null_params);
   }
   static std::vector<std::string> solvers() {
     return detail::sd_solver_factory::product_names();
@@ -274,7 +275,7 @@ public:
 private:
   detail::sd_solver_factory::product_pointer_type solver_impl_;
   parameters null_params;
-  std::string routine_;
+  //std::string routine_;
 };
 
 } // end namespace rokko

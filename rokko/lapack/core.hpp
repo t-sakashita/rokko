@@ -80,6 +80,7 @@ template<typename MATRIX_MAJOR>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 			       double* eigvals,
 			       parameters const& params) {
+  parameters params_out;
   std::string routine = "";
   if(params.defined("routine")) {
     routine = params.get_string("routine");
@@ -104,6 +105,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
   }
+  return params_out;
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -120,6 +122,7 @@ template<typename MATRIX_MAJOR>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 			       double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
+  parameters params_out;
   std::string routine = "";
   if(params.defined("routine")) {
     routine = params.get_string("routine");
@@ -144,6 +147,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
   }
+  return params_out;
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -162,6 +166,7 @@ template<typename MATRIX_MAJOR>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
 			       double* eigvals,
 			       parameters const& params) {
+  parameters params_out;
   std::string routine = "";
   if(params.defined("routine")) {
     routine = params.get_string("routine");
@@ -182,6 +187,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, loc
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
   }
+  return params_out;
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -198,6 +204,7 @@ template<typename MATRIX_MAJOR>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
 			       double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
+  parameters params_out;
   std::string routine = "";
   if(params.defined("routine")) {
     routine = params.get_string("routine");
@@ -218,6 +225,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, loc
     std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
     throw;
   }
+  return params_out;
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
