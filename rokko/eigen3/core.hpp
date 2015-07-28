@@ -24,12 +24,16 @@ public:
   // -------------------------standard eigenvalue problem-----------------------------
   // eigenvalues/eigenvectors
   template<typename T, typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(std::string const& routine, localized_matrix<T, MATRIX_MAJOR>& mat,
-		   VEC& eigvals,
-		   localized_matrix<T, MATRIX_MAJOR>& eigvecs,
-		   rokko::parameters const& params, timer& timer) {
+  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 localized_matrix<T, MATRIX_MAJOR>& eigvecs,
+			 rokko::parameters const& params) {
+    std::string routine = "";
+    if(params.defined("routine")) {
+      routine = params.get_string("routine");
+    }
     if ((routine == "") || (routine == "qr")) {
-      rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params, timer);
+      rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params);
     } else {
       std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
       throw;
@@ -37,11 +41,15 @@ public:
   }
   // only eigenvalues
   template<typename T, typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(std::string const& routine, localized_matrix<T, MATRIX_MAJOR>& mat,
-		   VEC& eigvals,
-		   rokko::parameters const& params, timer& timer) {
+  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 rokko::parameters const& params) {
+    std::string routine = "";
+    if(params.defined("routine")) {
+      routine = params.get_string("routine");
+    }
     if ((routine == "") || (routine == "qr")) {
-      rokko::eigen3::diagonalize(mat, eigvals, params, timer);
+	rokko::eigen3::diagonalize(mat, eigvals, params);
     } else {
       std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
       throw;
@@ -50,20 +58,18 @@ public:
   // -------------------------generalized eigenvalue problem-----------------------------
   // eigenvalues/eigenvectors
   template<typename T, typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(std::string const& routine,
-		   localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
-		   VEC& eigvals,
-		   localized_matrix<T, MATRIX_MAJOR>& eigvecs,
-		   rokko::parameters const& params, timer& timer) {  
+  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
+			 VEC& eigvals,
+			 localized_matrix<T, MATRIX_MAJOR>& eigvecs,
+			 rokko::parameters const& params) {  
     std::cerr << "error: " << "eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
     throw;
   }
   // only eigenvalues
   template<typename T, typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(std::string const& routine,
-		   localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
-		   VEC& eigvals,
-		   rokko::parameters const& params, timer& timer) {
+  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
+			 VEC& eigvals,
+			 rokko::parameters const& params) {
     std::cerr << "error: " << "eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
     throw;
   }

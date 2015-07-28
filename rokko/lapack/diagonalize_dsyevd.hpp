@@ -24,21 +24,21 @@ namespace lapack {
 
 // dsyevd only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		       parameters const& params, timer& timer) {
+parameters diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+			      parameters const& params) {
+  rokko::parameters params_out;
   char jobz = 'N';  // only eigenvalues
   char uplow = lapack::get_matrix_part(params);
 
   int dim = mat.outerSize();
   int ldim = mat.innerSize();
   int info;
-  timer.start(timer_id::diagonalize_diagonalize);
+
   if(mat.is_col_major())
     info = LAPACKE_dsyevd(LAPACK_COL_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
   else
     info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
-  timer.stop(timer_id::diagonalize_diagonalize);
-  timer.start(timer_id::diagonalize_finalize);
+
   if (info) {
     std::cerr << "error at dsyevd function. info=" << info  << std::endl;
     exit(1);
@@ -46,28 +46,27 @@ int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   if (params.get_bool("verbose")) {
     print_verbose("dsyevd", jobz, uplow);
   }
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 // dsyevd eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-		       localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		       parameters const& params, timer& timer) {
+parameters diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+			      localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			      parameters const& params) {
+  rokko::parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = get_matrix_part(params);
   int dim = mat.outerSize();
   int ldim = mat.innerSize();
   int info;
-  timer.start(timer_id::diagonalize_diagonalize);
+
   if(mat.is_col_major())
     info = LAPACKE_dsyevd(LAPACK_COL_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
   else
     info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
-  timer.stop(timer_id::diagonalize_diagonalize);
 
-  timer.start(timer_id::diagonalize_finalize);
   eigvecs = mat;
   if (info) {
     std::cerr << "error at dsyevd function. info=" << info  << std::endl;
@@ -76,8 +75,8 @@ int diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigv
   if (params.get_bool("verbose")) {
     print_verbose("dsyevd", jobz, uplow);
   }
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 

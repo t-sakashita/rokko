@@ -29,10 +29,9 @@ namespace scalapack {
 
 // pdsyevd eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
+parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-			parameters const& params, timer& timer) {
-  timer.start(timer_id::diagonalize_initialize);
+			parameters const& params) {
   parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = lapack::get_matrix_part(params);
@@ -47,15 +46,11 @@ int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   rokko::blacs::set_desc(ictxt, mat, desc);
   int m, nz;
   int info;
-  timer.stop(timer_id::diagonalize_initialize);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc,
 		       vl, vu, il, iu, m, nz,
 		       &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc);
-  timer.stop(timer_id::diagonalize_diagonalize);
 
-  timer.start(timer_id::diagonalize_finalize);
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
     exit(1);
@@ -66,16 +61,15 @@ int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
     lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   ROKKO_blacs_gridexit(&ictxt);
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 // pdsyevd only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			localized_vector<double>& eigvals,
-			parameters const& params, timer& timer) {
-  timer.start(timer_id::diagonalize_initialize);
+parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals,
+			       parameters const& params) {
   parameters params_out;
   char jobz = 'N';  // only eigenvalues
   char uplow = lapack::get_matrix_part(params);
@@ -90,15 +84,11 @@ int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   rokko::blacs::set_desc(ictxt, mat, desc);
   int m, nz;
   int info;
-  timer.stop(timer_id::diagonalize_initialize);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc,
 		       vl, vu, il, iu, m, nz,
 		       &eigvals[0], NULL, 1, 1, desc);
-  timer.stop(timer_id::diagonalize_diagonalize);
 
-  timer.start(timer_id::diagonalize_finalize);
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
     exit(1);
@@ -109,8 +99,8 @@ int diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
     lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   ROKKO_blacs_gridexit(&ictxt);
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 } // namespace scalapack

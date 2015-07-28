@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
   rokko::localized_vector<double> eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(dim, dim, g, solver);
   try {
-    solver.diagonalize("", mat, eigval, eigvec);
+    solver.diagonalize(mat, eigval, eigvec);
   }
   catch (const char *e) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;

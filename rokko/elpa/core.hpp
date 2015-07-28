@@ -36,15 +36,15 @@ public:
     return mapping_bc<matrix_col_major>(dim, b, g);
   }
   template <typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-                   distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-		   parameters const& params, timer& timer) {
-    rokko::elpa::diagonalize(mat, eigvals, eigvecs, params, timer);
+  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params) {
+    rokko::elpa::diagonalize(mat, eigvals, eigvecs, params);
   }
   template <typename MATRIX_MAJOR, typename VEC>
-  void diagonalize(std::string const& routine, distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-                   parameters const& params, timer& timer) {
-    rokko::elpa::diagonalize(mat, eigvals, params, timer);
+  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 parameters const& params) {
+    rokko::elpa::diagonalize(mat, eigvals, params);
   }
 };
 

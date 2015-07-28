@@ -24,22 +24,22 @@ namespace lapack {
 
 // dsygvd only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-		       double* eigvals,
-		       parameters const& params, timer& timer) {
+parameters diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+			      double* eigvals,
+			      parameters const& params) {
+  parameters params_out;
   char jobz = 'N';  // only eigenvalues
   char uplow = lapack::get_matrix_part(params);
   int dim = mata.innerSize();
   int lda = mata.outerSize();
   int ldb = matb.outerSize();
   int info;
-  timer.start(timer_id::diagonalize_diagonalize);
+
   if(mata.is_col_major())
     info = LAPACKE_dsygvd(LAPACK_COL_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
   else
     info = LAPACKE_dsygvd(LAPACK_ROW_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
-  timer.stop(timer_id::diagonalize_diagonalize);
-  timer.start(timer_id::diagonalize_finalize);
+
   if (info) {
     std::cerr << "error at dsygvd function. info=" << info  << std::endl;
     exit(1);
@@ -47,15 +47,16 @@ int diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_m
   if (params.get_bool("verbose")) {
     print_verbose("dsygvd", jobz, uplow);
   }
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 // dsygvd eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-		       double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-		       parameters const& params, timer& timer) {
+parameters diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+			      double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			      parameters const& params) {
+  parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = get_matrix_part(params);
 
@@ -63,14 +64,12 @@ int diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_m
   int lda = mata.outerSize();
   int ldb = matb.outerSize();
   int info;
-  timer.start(timer_id::diagonalize_diagonalize);
+
   if(mata.is_col_major())
     info = LAPACKE_dsygvd(LAPACK_COL_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
   else
     info = LAPACKE_dsygvd(LAPACK_ROW_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
-  timer.stop(timer_id::diagonalize_diagonalize);
 
-  timer.start(timer_id::diagonalize_finalize);
   eigvecs = mata;
   if (info) {
     std::cerr << "error at dsygvd function. info=" << info  << std::endl;
@@ -79,8 +78,8 @@ int diagonalize_dsygvd(localized_matrix<double, MATRIX_MAJOR>& mata, localized_m
   if (params.get_bool("verbose")) {
     print_verbose("dsygvd", jobz, uplow);
   }
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 

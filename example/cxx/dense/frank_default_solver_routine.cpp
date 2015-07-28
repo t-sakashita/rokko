@@ -24,7 +24,7 @@ void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC
   int argc;
   char** xargv;
   solver.initialize(argc, xargv);
-  solver.diagonalize("", mat, eigvals, params);
+  solver.diagonalize(mat, eigvals, params);
 }
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -35,7 +35,7 @@ void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC
   int argc;
   char** xargv;
   solver.initialize(argc, xargv);
-  solver.diagonalize("", mat, eigvals, eigvecs, params);
+  solver.diagonalize(mat, eigvals, eigvecs, params);
 }
 
 int main(int argc, char *argv[]) {

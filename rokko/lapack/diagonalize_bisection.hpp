@@ -23,10 +23,10 @@ namespace lapack {
 
 // dsyevx only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-			  rokko::parameters const& params, timer& timer) {
-  char jobz = 'N';  // only eigenvalues
+parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+				 rokko::parameters const& params) {
   rokko::parameters params_out;
+  char jobz = 'N';  // only eigenvalues
   int dim = mat.outerSize();
   int ldim_mat = mat.innerSize();
   lapack_int m;  // output: found eigenvalues
@@ -49,14 +49,11 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
   std::vector<lapack_int> ifail(dim);
-  timer.start(timer_id::diagonalize_diagonalize);
   int info;
   if(mat.is_col_major())
     info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &ifail[0]);
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &ifail[0]);
-  timer.stop(timer_id::diagonalize_diagonalize);
-  timer.start(timer_id::diagonalize_finalize);
   if (info) {
     std::cerr << "error at dsyevx function. info=" << info << std::endl;
     if (info < 0) {
@@ -71,16 +68,16 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   if (params.get_bool("verbose")) {
     print_verbose("dsyevx (bisection)", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 
 // dsyevx eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-			  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			  parameters const& params, timer& timer) {
+parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+				 localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+				 parameters const& params) {
   rokko::parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   int dim = mat.outerSize();
@@ -107,14 +104,12 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   double vl, vu;
   char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   int info;
   if(mat.is_col_major())
     info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);
-  timer.stop(timer_id::diagonalize_diagonalize);
-  timer.start(timer_id::diagonalize_finalize);
+
   if (info) {
     std::cerr << "Error at dsyevx function. info=" << info << std::endl;
     if (params.get_bool("verbose")) {
@@ -139,8 +134,8 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* e
   if (params.get_bool("verbose")) {
     print_verbose("dsyevx (bisecition)", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 

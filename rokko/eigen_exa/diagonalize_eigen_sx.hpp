@@ -23,11 +23,11 @@ namespace eigen_exa {
 
 // eigen_sx eigenvalues / eigenvectors
 template <typename MATRIX_MAJOR>
-void diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-			  localized_vector<double>& eigvals,
-			  rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-			  parameters const& params, timer& timer) {
-  timer.start(timer_id::diagonalize_initialize);
+parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
+				localized_vector<double>& eigvals,
+				rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+				parameters const& params) {
+  parameters params_out;
   if(mat.is_row_major())
     throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
@@ -36,22 +36,20 @@ void diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   int m_forward = 48, m_backward = 128;
   get_key(params, "m_forward", m_forward);
   get_key(params, "m_backward", m_backward);
-  timer.stop(timer_id::diagonalize_initialize);
-  timer.start(timer_id::diagonalize_diagonalize);
+
   ROKKO_eigen_exa_sx(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
                      eigvecs.get_array_pointer(), lld, m_forward, m_backward, 'A');
-  timer.stop(timer_id::diagonalize_diagonalize);
-  timer.start(timer_id::diagonalize_finalize);
+
   ROKKO_eigen_exa_free(1);
-  timer.stop(timer_id::diagonalize_finalize);
+  return params_out;
 }
 
 // eigen_sx only eigenvalues
 template <typename MATRIX_MAJOR>
-void diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-			  localized_vector<double>& eigvals,
-			  parameters const& params, timer& timer) {
-  timer.start(timer_id::diagonalize_initialize);
+parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
+				localized_vector<double>& eigvals,
+				parameters const& params) {
+  parameters params_out;
   if(mat.is_row_major())
     throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
@@ -60,14 +58,12 @@ void diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   int m_forward = 48, m_backward = 128;
   get_key(params, "m_forward", m_forward);
   get_key(params, "m_backward", m_backward);
-  timer.stop(timer_id::diagonalize_initialize);
-  timer.start(timer_id::diagonalize_diagonalize);
+
   ROKKO_eigen_exa_sx(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
 		     NULL, lld, m_forward, m_backward, 'N');
-  timer.stop(timer_id::diagonalize_diagonalize);
-  timer.start(timer_id::diagonalize_finalize);
+
   ROKKO_eigen_exa_free(1);
-  timer.stop(timer_id::diagonalize_finalize);
+  return params_out;
 }
 
 } // namespace eigen_exa

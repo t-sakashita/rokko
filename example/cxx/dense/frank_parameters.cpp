@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
   rokko::localized_vector<double> eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   rokko::parameters params;
+  params.set("routine", routine);
   params.set("upper_value", 1.2);
   params.set("lower_value", 0.1);
   //params.set("upper_index", 5);
@@ -51,8 +52,8 @@ int main(int argc, char *argv[]) {
   //params.set("uplow", 'lower');
   params.set("verbose", true);
   try {
-    //solver.diagonalize(routine, mat, eigval, eigvec, params);
-    solver.diagonalize(routine, mat, eigval, params);
+    //solver.diagonalize(mat, eigval, eigvec, params);
+    solver.diagonalize(mat, eigval, params);
   }
   catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;

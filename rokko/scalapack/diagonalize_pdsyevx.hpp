@@ -28,11 +28,10 @@ namespace scalapack {
 
 // pdsyevx eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
-int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
-			parameters const& params, timer& timer) {
-  timer.start(timer_id::diagonalize_initialize);
-  rokko::parameters params_out;
+parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			       parameters const& params) {
+  parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = lapack::get_matrix_part(params);
   double vl, vu;
@@ -54,16 +53,12 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   std::vector<int> ifail(dim);
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
-  timer.stop(timer_id::diagonalize_initialize);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
 		       abstol, &m, &nz, &eigvals[0], orfac,
 		       eigvecs.get_array_pointer(), 1, 1, desc,
 		       &ifail[0], &iclustr[0], &gap[0]);
-  timer.stop(timer_id::diagonalize_diagonalize);
 
-  timer.start(timer_id::diagonalize_finalize);
   params_out.set("m", m);
   params_out.set("nz", nz);
   params_out.set("ifail", ifail);
@@ -73,16 +68,15 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
     lapack::print_verbose("pdsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   ROKKO_blacs_gridexit(&ictxt);
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 // pdsyevx only eigenvalues
 template<typename MATRIX_MAJOR>
-int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			localized_vector<double>& eigvals,
-			parameters const& params, timer& timer) {
-  timer.start(timer_id::diagonalize_initialize);
+parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals,
+			       parameters const& params) {
   rokko::parameters params_out;
   char jobz = 'N';  // only eigenvalues
   char uplow = lapack::get_matrix_part(params);
@@ -105,16 +99,12 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   std::vector<int> ifail(dim);
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
-  timer.stop(timer_id::diagonalize_initialize);
 
-  timer.start(timer_id::diagonalize_diagonalize);
   info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
 		       abstol, &m, &nz, &eigvals[0], orfac,
 		       NULL, 1, 1, desc,
 		       &ifail[0], &iclustr[0], &gap[0]);
-  timer.stop(timer_id::diagonalize_diagonalize);
 
-  timer.start(timer_id::diagonalize_finalize);
   params_out.set("m", m);
   params_out.set("nz", nz);
   params_out.set("ifail", ifail);
@@ -124,8 +114,8 @@ int diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
     lapack::print_verbose("pdsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   ROKKO_blacs_gridexit(&ictxt);
-  timer.stop(timer_id::diagonalize_finalize);
-  return info;
+
+  return params_out;
 }
 
 } // namespace scalapack
