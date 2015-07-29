@@ -13,6 +13,8 @@
 #define ROKKO_SPARSE_H
 
 #include <rokko/config.h>
+#include <rokko/parameters.h>
+
 #if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 # include <mpi.h>
 #endif
@@ -75,10 +77,10 @@ void rokko_parallel_sparse_solver_construct(struct rokko_parallel_sparse_solver*
 void rokko_parallel_sparse_solver_construct_f(struct rokko_parallel_sparse_solver* solver,
   const char* solver_name);
 void rokko_parallel_sparse_solver_destruct(struct rokko_parallel_sparse_solver* solver);
-void rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(
+struct rokko_parameters rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(
   struct rokko_parallel_sparse_solver* solver, struct rokko_distributed_crs_matrix* mat,
   int num_evals, int block_size, int max_iters, double tol);
-void rokko_parallel_sparse_solver_diagonalize_distributed_mfree(
+struct rokko_parameters rokko_parallel_sparse_solver_diagonalize_distributed_mfree(
   struct rokko_parallel_sparse_solver* solver, struct rokko_distributed_mfree* mat,
   int num_evals, int block_size, int max_iters, double tol);
 double rokko_parallel_sparse_solver_eigenvalue(struct rokko_parallel_sparse_solver* solver, int i);

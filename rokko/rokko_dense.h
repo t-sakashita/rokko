@@ -65,16 +65,16 @@ void rokko_serial_dense_solver_construct(struct rokko_serial_dense_solver* solve
 void rokko_serial_dense_solver_construct_f(struct rokko_serial_dense_solver* solver,
   const char* solver_name);
 void rokko_serial_dense_solver_destruct(struct rokko_serial_dense_solver* solver);
-void rokko_serial_dense_solver_diagonalize_localized_matrix(
+struct rokko_parameters rokko_serial_dense_solver_diagonalize_localized_matrix(
   struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
   struct rokko_localized_vector* eigval, struct rokko_localized_matrix* eigvecs);
-void rokko_serial_dense_solver_diagonalize_eigvals(
+struct rokko_parameters rokko_serial_dense_solver_diagonalize_eigvals(
   struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
   struct rokko_localized_vector* eigval);
-void rokko_serial_dense_solver_diagonalize_eigvals_params(
+struct rokko_parameters rokko_serial_dense_solver_diagonalize_eigvals_params(
   struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
   struct rokko_localized_vector* eigvals, struct rokko_parameters* params);
-void rokko_serial_dense_solver_diagonalize_params(
+struct rokko_parameters rokko_serial_dense_solver_diagonalize_params(
   struct rokko_serial_dense_solver* solver, struct rokko_localized_matrix* mat,
   struct rokko_localized_vector* eigvals, struct rokko_localized_matrix* eigvecs,
   struct rokko_parameters* params);
@@ -152,7 +152,7 @@ void rokko_parallel_dense_solver_construct(struct rokko_parallel_dense_solver* s
 void rokko_parallel_dense_solver_construct_f(struct rokko_parallel_dense_solver* solver,
   const char* solver_name);
 void rokko_parallel_dense_solver_destruct(struct rokko_parallel_dense_solver* solver);
-void rokko_parallel_dense_solver_diagonalize_distributed_matrix(
+struct rokko_parameters rokko_parallel_dense_solver_diagonalize_distributed_matrix(
   struct rokko_parallel_dense_solver* solver,
   struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
   struct rokko_distributed_matrix* eigvecs);

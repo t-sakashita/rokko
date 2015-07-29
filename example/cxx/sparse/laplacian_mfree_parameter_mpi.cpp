@@ -142,12 +142,13 @@ int main(int argc, char *argv[]) {
               << "solver = " << params.get_string("routine") << std::endl
               << "dimension = " << mat.get_dim() << std::endl;
 
-  solver.diagonalize(mat, params);
-
+  rokko::parameters params_out = solver.diagonalize(mat, params);
+  int num_conv = params_out.get<int>("num_conv");
+  
   if (myrank == root) {
-    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
+    std::cout << "number of converged eigenpairs=" << num_conv << std::endl;
     std::cout << "largest eigenvalues:";
-    for (int i = 0; i < solver.num_conv(); ++i)
+    for (int i = 0; i < num_conv; ++i)
       std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
     std::cout << "theoretical eigenvalues:" << std::endl;
@@ -160,7 +161,6 @@ int main(int argc, char *argv[]) {
   MPI_Barrier(MPI_COMM_WORLD);
 
   std::vector<double> eigvec;
-
   for (int i = 0; i < solver.num_conv(); ++i) {
     solver.eigenvector(i, eigvec);
 
