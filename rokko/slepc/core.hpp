@@ -15,7 +15,6 @@
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include <rokko/utility/timer.hpp>
 
 #include <petscvec.h>
 #include <slepceps.h>
@@ -72,9 +71,9 @@ public:
   ~solver() {}
   void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   void finalize() {}
-  void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-    int max_iters, double tol, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
+			 int max_iters, double tol) {
+    parameters params_out;
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
@@ -92,15 +91,11 @@ public:
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
-    timer.stop(timer_id::diagonalize_initialize);
 
     /* Solve the eigensystem */       
-    timer.start(timer_id::diagonalize_diagonalize);
     ierr = EPSSolve(eps);
-    timer.stop(timer_id::diagonalize_diagonalize);
     
     /* Get some information from the solver and display it */
-    timer.start(timer_id::diagonalize_finalize);
     ierr = EPSGetType(eps, &type);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
@@ -109,23 +104,23 @@ public:
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
-    double tol, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
+			 double tol) {
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
-
+    parameters params_out;
     rokko::distributed_mfree* mat = &mat_in;
     // define matrix-free type operator
     dimension_ = mat->get_dim();
     offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A);
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(),
+			  mat->get_dim(), mat->get_dim(), mat, A);
     ierr = MatSetFromOptions(*A);
 
     ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
@@ -140,15 +135,11 @@ public:
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
-    timer.stop(timer_id::diagonalize_initialize);
     
     /* Solve the eigensystem */       
-    timer.start(timer_id::diagonalize_diagonalize);
     ierr = EPSSolve(eps);
-    timer.stop(timer_id::diagonalize_diagonalize);
     
     /* Get some information from the solver and display it */
-    timer.start(timer_id::diagonalize_finalize);
     ierr = EPSGetType(eps, &type);
     ierr = PetscPrintf(PETSC_COMM_WORLD ," Solution method: %s\n\n", type);
     ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
@@ -157,11 +148,11 @@ public:
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    parameters params_out;
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
@@ -199,15 +190,11 @@ public:
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
-    timer.stop(timer_id::diagonalize_initialize);
 
     /* Solve the eigensystem */       
-    timer.start(timer_id::diagonalize_diagonalize);
     ierr = EPSSolve(eps);
-    timer.stop(timer_id::diagonalize_diagonalize);
     
     /* Get some information from the solver and display it */
-    timer.start(timer_id::diagonalize_finalize);
     ierr = EPSGetType(eps, &type);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
@@ -216,12 +203,11 @@ public:
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
-    
+  parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
+    parameters params_out;
     rokko::distributed_mfree* mat = &mat_in;
     // define matrix-free type operator
     dimension_ = mat->get_dim();
@@ -270,15 +256,11 @@ public:
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
-    timer.stop(timer_id::diagonalize_initialize);
 
     /* Solve the eigensystem */       
-    timer.start(timer_id::diagonalize_diagonalize);
     ierr = EPSSolve(eps);
-    timer.stop(timer_id::diagonalize_diagonalize);
     
     /* Get some information from the solver and display it */
-    timer.start(timer_id::diagonalize_finalize);
     ierr = EPSGetType(eps, &type);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
@@ -287,8 +269,8 @@ public:
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_finalize);
-    }
+    return params_out;
+  }
 
   double eigenvalue(int i) const {
     PetscScalar eval_r, eval_i;

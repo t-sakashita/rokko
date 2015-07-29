@@ -16,8 +16,6 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
-#include <rokko/utility/timer.hpp>
-
 #include <rokko/parameters.hpp>
 #include <rokko/solver_parameters.hpp>
 
@@ -117,8 +115,8 @@ public:
     }
   }
 
-  void diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    parameters params_out;
     map_ = new mapping_1d(mat.get_dim());
 
     set_anasazi_parameters(params);
@@ -148,20 +146,18 @@ public:
     if (boolret != true) {
       std::cout << "setProblem()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_initialize);
-    timer.start(timer_id::diagonalize_diagonalize);
+
     Anasazi::ReturnType returnCode = solvermanager->solve();
     if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_diagonalize);
-    timer.start(timer_id::diagonalize_finalize);
+
     num_conv_ = problem_->getSolution().numVecs;
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
+    parameters params_out;
     rokko::distributed_mfree* mat = &mat_in;
     map_ = new mapping_1d(mat->get_dim());
 
@@ -194,21 +190,18 @@ public:
     if (boolret != true) {
       std::cout << "setProblem()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_initialize);
-    timer.start(timer_id::diagonalize_diagonalize);
+
     Anasazi::ReturnType returnCode = solvermanager->solve();
     if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_diagonalize);
-    timer.start(timer_id::diagonalize_finalize);
     num_conv_ = problem_->getSolution().numVecs;
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-		   int max_iters, double tol, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
+			 int max_iters, double tol) {
+    parameters params_out;
     map_ = new mapping_1d(mat.get_dim());
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
     multivector_->Random();
@@ -227,21 +220,18 @@ public:
     if (boolret != true) {
       std::cout << "setProblem()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_initialize);
-    timer.start(timer_id::diagonalize_diagonalize);
+
     Anasazi::ReturnType returnCode = solvermanager.solve();
     if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_diagonalize);
-    timer.start(timer_id::diagonalize_finalize);
     num_conv_ = problem_->getSolution().numVecs;
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
-		   double tol, timer& timer) {
-    timer.start(timer_id::diagonalize_initialize);
+  parameters diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
+			 double tol) {
+    parameters params_out;
     rokko::distributed_mfree* mat = &mat_in;
     map_ = new mapping_1d(mat->get_dim());
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
@@ -261,16 +251,14 @@ public:
     if (boolret != true) {
       std::cout << "setProblem()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_initialize);
-    timer.start(timer_id::diagonalize_diagonalize);
+
     Anasazi::ReturnType returnCode = solvermanager.solve();
     if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
-    timer.stop(timer_id::diagonalize_diagonalize);
-    timer.start(timer_id::diagonalize_finalize);
+
     num_conv_ = problem_->getSolution().numVecs;
-    timer.stop(timer_id::diagonalize_finalize);
+    return params_out;
   }
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
