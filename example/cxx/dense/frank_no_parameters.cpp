@@ -10,31 +10,25 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
 #include <iostream>
 
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  std::string library_routine(rokko::serial_dense_solver::default_solver());
-  std::string library, routine;
+  std::string solver_name(rokko::serial_dense_solver::default_solver());
   unsigned int dim = 10;
-  if (argc >= 2) library_routine = argv[1];
+  if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
-  rokko::split_solver_name(library_routine, library, routine);
 
   std::cout.precision(5);
-  std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
-            << "library:routine = " << library_routine << std::endl
-	    << "library = " << library << std::endl
-	    << "routine = " << routine << std::endl
-	    << "dimension = " << dim << std::endl;
 
-  rokko::serial_dense_solver solver(library);
+  rokko::serial_dense_solver solver(solver_name);
   solver.initialize(argc, argv);
+  std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
+            << "solver = " << solver_name << std::endl
+            << "dimension = " << dim << std::endl;
 
   rokko::localized_matrix<double, matrix_major> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
@@ -42,18 +36,8 @@ int main(int argc, char *argv[]) {
 
   rokko::localized_vector<double> eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
-  rokko::parameters params;
-  params.set("routine", routine);
-  params.set("upper_value", 1.2);
-  params.set("lower_value", 0.1);
-  //params.set("upper_index", 5);
-  //params.set("lower_index", 3);
-  params.set("uplow", 'L');
-  //params.set("uplow", 'lower');
-  params.set("verbose", true);
   try {
-    solver.diagonalize(mat, eigval, eigvec, params);
-    //solver.diagonalize(mat, eigval, params);
+    solver.diagonalize(mat, eigval, eigvec);
   }
   catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;

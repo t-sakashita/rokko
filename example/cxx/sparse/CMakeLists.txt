@@ -9,7 +9,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi distributed_crs_matrix laplacian_crs_mpi laplacian_mfree_mpi laplacian_crs_parameter_mpi laplacian_mfree_parameter_mpi)
+  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi distributed_crs_matrix  laplacian_crs_mpi laplacian_mfree_mpi laplacian_crs_no_parameters_mpi laplacian_mfree_no_parameters_mpi)
   foreach(name ${SAMPLE})
     set(target_name example_cxx_sparse_${name})
     add_executable(${target_name} ${name}.cpp)

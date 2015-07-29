@@ -16,7 +16,6 @@
 #include <rokko/parallel_sparse_solver.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/utility/laplacian_matrix.hpp>
-#include <rokko/parameters.hpp>
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -29,21 +28,19 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
   int nev = 5;
-  int block_size = 2;
-  int max_iters = 500;
+  int blockSize = 2;
+  int maxIters = 500;
   double tol = 1.0e-6;
 
-  int dim = 10;
+  int dim = 20;
 
-  rokko::parallel_sparse_solver solver("slepc");
+  rokko::parallel_sparse_solver solver("anasazi");
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of tridiagonal Laplacian matrix" << std::endl
               << "solver = LOBPCG" << std::endl
               << "dimension = " << dim << std::endl;
 
   rokko::distributed_crs_matrix mat(dim, dim, solver);
-
-
   
   std::vector<double> values;
   std::vector<int> cols;
@@ -82,17 +79,7 @@ int main(int argc, char *argv[]) {
   mat.complete();
   mat.print();
 
-  rokko::parameters params;
-  params.set("Which", "LM");
-  params.set("Block Size", block_size);
-  params.set("Maximum Iterations", max_iters);
-  params.set("Convergence Tolerance", tol);
-  params.set("num_eigenvalues", nev);
-  params.set("routine", "lanczos");
-  //params.set("routine", "SimpleLOBPCG");
-  //params.set("routine", "BlockDavidson");
-
-  solver.diagonalize(mat, params);
+  solver.diagonalize(mat, nev, blockSize, maxIters, tol);
 
   std::vector<double> eigvec;
   if (myrank == root) {

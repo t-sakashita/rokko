@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
     std::cerr << "error: " << argv[0] << " solver_name" << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 34);
   }
-
   rokko::timer timer;
   timer.registrate( 1, "diagonalize");
   std::string solver_name(argv[1]);
@@ -74,7 +73,7 @@ int main(int argc, char *argv[]) {
 
   for (int count=0; count<1; ++count) {
     try {
-      solver.diagonalize(mat, w, Z, timer);
+      solver.diagonalize(mat, w, Z);
     }
 
     catch (const char *e) {

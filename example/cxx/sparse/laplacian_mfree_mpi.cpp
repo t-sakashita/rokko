@@ -121,27 +121,34 @@ int main(int argc, char *argv[]) {
   int root = 0;
 
   std::cout.precision(5);
-  int nev = 10;
-  int blockSize = 5;
-  int maxIters = 500;
-  double tol = 1.0e-8;  //6;
 
-
-  rokko::parallel_sparse_solver solver("anasazi");
+  rokko::parallel_sparse_solver solver("slepc");
+  //  rokko::parallel_sparse_solver solver("anasazi");
   int dim = 20;
   laplacian_op  mat(dim);
 
+  rokko::parameters params;
+  params.set("Which", "LM");
+  params.set("Block Size", 5);
+  params.set("Maximum Iterations", 500);
+  params.set("Convergence Tolerance", 1.0e-8);
+  params.set("num_eigenvalues", 10);
+  params.set("routine", "lanczos");
+  //params.set("routine", "SimpleLOBPCG");
+  //params.set("routine", "BlockDavidson");
+  
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
-              << "solver = LOBPCG" << std::endl
+              << "solver = " << params.get_string("routine") << std::endl
               << "dimension = " << mat.get_dim() << std::endl;
 
-  solver.diagonalize(mat, nev, blockSize, maxIters, tol);
-
+  rokko::parameters params_out = solver.diagonalize(mat, params);
+  int num_conv = params_out.get<int>("num_conv");
+  
   if (myrank == root) {
-    std::cout << "number of converged eigenpairs=" << solver.num_conv() << std::endl;
+    std::cout << "number of converged eigenpairs=" << num_conv << std::endl;
     std::cout << "largest eigenvalues:";
-    for (int i = 0; i < solver.num_conv(); ++i)
+    for (int i = 0; i < num_conv; ++i)
       std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
     std::cout << "theoretical eigenvalues:" << std::endl;
@@ -154,7 +161,6 @@ int main(int argc, char *argv[]) {
   MPI_Barrier(MPI_COMM_WORLD);
 
   std::vector<double> eigvec;
-
   for (int i = 0; i < solver.num_conv(); ++i) {
     solver.eigenvector(i, eigvec);
 
