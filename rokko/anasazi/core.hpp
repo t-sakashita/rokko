@@ -153,6 +153,7 @@ public:
     }
 
     num_conv_ = problem_->getSolution().numVecs;
+    params_out.set("num_conv", num_conv_);
     return params_out;
   }
 
@@ -196,6 +197,7 @@ public:
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
     num_conv_ = problem_->getSolution().numVecs;
+    params_out.set("num_conv", num_conv_);
     return params_out;
   }
 
@@ -226,6 +228,7 @@ public:
       std::cout << "solvermanager.solve()_error" << std::endl;
     }
     num_conv_ = problem_->getSolution().numVecs;
+    params_out.set("num_conv", num_conv_);
     return params_out;
   }
 
@@ -258,6 +261,7 @@ public:
     }
 
     num_conv_ = problem_->getSolution().numVecs;
+    params_out.set("num_conv", num_conv_);	
     return params_out;
   }
 

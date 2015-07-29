@@ -101,6 +101,7 @@ public:
     ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);
     EPSGetConverged(eps, &num_conv_);
+    params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
@@ -145,6 +146,7 @@ public:
     ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD, " Number of requested eigenvalues: %D\n", nev);
     EPSGetConverged(eps, &num_conv_);
+    params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
@@ -200,6 +202,7 @@ public:
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
     EPSGetConverged(eps, &num_conv_);
+    params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
@@ -266,6 +269,7 @@ public:
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
     EPSGetConverged(eps, &num_conv_);
+    params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
