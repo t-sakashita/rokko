@@ -39,14 +39,17 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int eigvecs_lld = eigvecs.get_lld();
   solve_evp_real_wrap_(&dim, &dim, mat.get_array_pointer(), &mat_lld, &eigvals[0],
 		       eigvecs.get_array_pointer(), &eigvecs_lld, &mat_mb, &comm_rows_f, &comm_cols_f);
+  return params;
 }
 
 template<typename MATRIX_MAJOR>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals,
 		       parameters const& params) {
+  parameters params_out;
   std::cerr << "not yet implemented" << std::endl;
   throw;
+  return params;
 }
 
 } // namespace elpa

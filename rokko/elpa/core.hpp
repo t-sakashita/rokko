@@ -39,12 +39,12 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    rokko::elpa::diagonalize(mat, eigvals, eigvecs, params);
+    return rokko::elpa::diagonalize(mat, eigvals, eigvecs, params);
   }
   template <typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    rokko::elpa::diagonalize(mat, eigvals, params);
+    return rokko::elpa::diagonalize(mat, eigvals, params);
   }
 };
 
