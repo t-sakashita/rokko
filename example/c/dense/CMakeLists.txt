@@ -29,3 +29,16 @@ if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   unset(SAMPLE)
 endif(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 
+
+# gev_fixedB_mpi
+if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
+  set(SAMPLE gev_fixedB_mpi)
+  foreach(name ${SAMPLE})
+    set(target_name example_c_dense_${name})
+    add_executable(${target_name} ${name}.c gev_fixedB_mpi_c.cpp)
+    set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
+    set_target_properties(${target_name} PROPERTIES LINKER_LANGUAGE CXX)
+    target_link_libraries(${target_name} rokko ${ELEMENTAL_LIBRARIES} ${ELPA_LIB} ${SCALAPACK_LIB})
+  endforeach(name)
+  unset(SAMPLE)
+endif(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)

@@ -100,3 +100,9 @@ int rokko_localized_matrix_get_n_global(struct rokko_localized_matrix matrix) {
     return static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_n_global();
 }
 
+double* rokko_localized_matrix_get_pointer(struct rokko_localized_matrix matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return &(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(matrix.ptr))(0,0);
+  else
+    return &(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(matrix.ptr))(0,0);
+}

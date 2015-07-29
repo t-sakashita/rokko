@@ -167,6 +167,30 @@ void rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix
   }
 }
 
+void rokko_gather_localized_matrix(struct rokko_distributed_matrix matrix, struct rokko_localized_matrix lmatrix, int root) {
+  if (matrix.major == rokko_matrix_col_major){
+    rokko::distributed_matrix<double, rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr);
+    rokko::localized_matrix<double, rokko::matrix_col_major>* loc_ptr_ = static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(lmatrix.ptr);
+    rokko::gather(*ptr_, *loc_ptr_, root);
+  } else {
+    rokko::distributed_matrix<double, rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr);
+    rokko::localized_matrix<double, rokko::matrix_row_major>* loc_ptr_ = static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(lmatrix.ptr);
+    rokko::gather(*ptr_, *loc_ptr_, root);
+  }
+}
+
+void rokko_scatter_localized_matrix(struct rokko_localized_matrix lmatrix, struct rokko_distributed_matrix matrix, int root) {
+  if (matrix.major == rokko_matrix_col_major){
+    rokko::distributed_matrix<double, rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr);
+    rokko::localized_matrix<double, rokko::matrix_col_major>* loc_ptr_ = static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(lmatrix.ptr);
+    rokko::scatter(*loc_ptr_, *ptr_, root);
+  } else {
+    rokko::distributed_matrix<double, rokko::matrix_row_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr);
+    rokko::localized_matrix<double, rokko::matrix_row_major>* loc_ptr_ = static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(lmatrix.ptr);
+    rokko::scatter(*loc_ptr_, *ptr_, root);
+  }
+}
+
 void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array) {
   if (matrix->major == rokko_matrix_col_major){
     rokko::distributed_matrix<double, rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix->ptr);

@@ -102,6 +102,7 @@ int rokko_localized_matrix_get_m_local(struct rokko_localized_matrix matrix);
 int rokko_localized_matrix_get_n_local(struct rokko_localized_matrix matrix);
 int rokko_localized_matrix_get_m_global(struct rokko_localized_matrix matrix);
 int rokko_localized_matrix_get_n_global(struct rokko_localized_matrix matrix);
+double* rokko_localized_matrix_get_pointer(struct rokko_localized_matrix matrix);
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 
@@ -161,7 +162,11 @@ void rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int ro
 
 void rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
 
+void rokko_gather_localized_matrix(struct rokko_distributed_matrix matrix, struct rokko_localized_matrix lmatrix, int root);
+void rokko_scatter_localized_matrix(struct rokko_localized_matrix lmatrix, struct rokko_distributed_matrix matrix, int root);
+
 void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array);
+
 
 #endif
 
