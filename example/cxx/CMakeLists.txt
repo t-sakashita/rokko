@@ -13,3 +13,5 @@ add_subdirectory(dense)
 if(BUILD_PARALLEL_SPARSE_SOLVER)
   add_subdirectory(sparse)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)
+
+add_subdirectory(utility)

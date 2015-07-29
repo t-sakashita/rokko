@@ -13,7 +13,7 @@ foreach(name ${SAMPLE})
   add_executable(${target_name} ${name}.c)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   set_target_properties(${target_name} PROPERTIES LINKER_LANGUAGE CXX)
-  target_link_libraries(${target_name} rokko ${ELEMENTAL_LIBRARIES} ${ELPA_LIB} ${SCALAPACK_LIB})
+  target_link_libraries(${target_name} rokko)
 endforeach(name)
 unset(SAMPLE)
 
