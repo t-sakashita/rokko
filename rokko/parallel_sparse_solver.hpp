@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2014  Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,10 +15,10 @@
 #include <rokko/factory.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-
 #include <rokko/distributed_vector.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
+#include <rokko/parameters.hpp>
 
 namespace rokko {
 
@@ -30,20 +29,19 @@ public:
   virtual ~ps_solver_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(rokko::distributed_crs_matrix& mat,
-			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
-  virtual void diagonalize(rokko::distributed_crs_matrix& mat,
-			   int num_evals, int block_size, int max_iters, double tol) = 0;
-  virtual void diagonalize(rokko::distributed_mfree& mat,
-			   int num_evals, int block_size, int max_iters, double tol, timer& timer) = 0;
-  virtual void diagonalize(rokko::distributed_mfree& mat,
-			   int num_evals, int block_size, int max_iters, double tol) = 0;
+  virtual parameters diagonalize(rokko::distributed_crs_matrix& mat,
+				 int num_evals, int block_size, int max_iters, double tol) = 0;
+  virtual parameters diagonalize(rokko::distributed_mfree& mat,
+				 int num_evals, int block_size, int max_iters, double tol) = 0;
+  virtual parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) = 0;
+  virtual parameters diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params) = 0;
   virtual double eigenvalue(int k) const = 0;
   virtual void eigenvector(int k, std::vector<double>& vec) const = 0;
   virtual void eigenvector(int k, double* vec) const = 0;
   virtual void eigenvector(int k, distributed_vector& vec) const = 0;
   virtual int num_conv() const = 0;
-  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) = 0;
+  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+										    int col_dim) = 0;
 };
 
 template<typename SOLVER>
@@ -54,37 +52,29 @@ public:
   virtual ~ps_solver_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-                   int max_iters, double tol, timer& timer) {
-    solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
+			 int max_iters, double tol) {
+    return solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
-  void diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-                   int max_iters, double tol) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  parameters diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
+			 double tol) {
+    return solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
-  void diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
-                   double tol, timer& timer) {
-    solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    return solver_impl_.diagonalize(mat, params);
   }
-  void diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
-                   double tol) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  parameters diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params) {
+    return solver_impl_.diagonalize(mat, params);
   }
   double eigenvalue(int k) const { return solver_impl_.eigenvalue(k); }
   void eigenvector(int k, std::vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
   void eigenvector(int k, double* vec) const { solver_impl_.eigenvector(k, vec); }
   void eigenvector(int k, distributed_vector& vec) const { solver_impl_.eigenvector(k, vec); }
-
-  int num_conv() const {
-    return solver_impl_.num_conv();
-  }
-
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
+  int num_conv() const { return solver_impl_.num_conv(); }
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim) {
     return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim);
   }
-
 private:
   solver_type solver_impl_;
 };
@@ -95,54 +85,40 @@ typedef factory<ps_solver_base> ps_solver_factory;
   
 class parallel_sparse_solver {
 public:
-  parallel_sparse_solver(std::string const& solver_name) {
+  void construct(std::string const& solver_name) {
     solver_impl_ = detail::ps_solver_factory::instance()->make_product(solver_name);
   }
+  parallel_sparse_solver(std::string const& solver_name) {
+    this->construct(solver_name);
+  }
   parallel_sparse_solver() {
-    solver_impl_ = detail::ps_solver_factory::instance()->make_product();
+    this->construct(this->default_solver());
   }
-  void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
-  void finalize() { solver_impl_->finalize(); }
-
-  void diagonalize(rokko::distributed_crs_matrix& mat,
-		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
-    solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  void initialize(int& argc, char**& argv) {
+    solver_impl_->initialize(argc, argv);
   }
-
-  void diagonalize(rokko::distributed_crs_matrix& mat,
-		   int num_evals, int block_size, int max_iters, double tol) {
-    solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
+  void finalize() {
+    solver_impl_->finalize();
   }
-
-  void diagonalize(rokko::distributed_mfree& mat,
-		   int num_evals, int block_size, int max_iters, double tol, timer& timer) {
-    solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol, timer);
+  template<typename MAT>
+  parameters diagonalize(MAT& mat, int num_evals, int block_size, int max_iters, double tol) {
+    return solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
-
-  void diagonalize(rokko::distributed_mfree& mat,
-		   int num_evals, int block_size, int max_iters, double tol) {
-    solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
+  template<typename MAT>
+  parameters diagonalize(MAT& mat, rokko::parameters const& params) {
+    return solver_impl_->diagonalize(mat, params);
   }
-
   double eigenvalue(int k) const { return solver_impl_->eigenvalue(k); }
   void eigenvector(int k, std::vector<double>& vec) const { solver_impl_->eigenvector(k, vec); }
   void eigenvector(int k, double* vec) const { solver_impl_->eigenvector(k, vec); }
   void eigenvector(int k, distributed_vector& vec) const { solver_impl_->eigenvector(k, vec); }
-
-  int num_conv() const {
-    return solver_impl_->num_conv();
-  }
-
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
+  int num_conv() const { return solver_impl_->num_conv(); }
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim) {
     return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim);
   }
-
-  static std::vector<std::string> solvers() {
-    return detail::ps_solver_factory::product_names();
-  }
-  static std::string default_solver() {
-    return detail::ps_solver_factory::default_product_name();
-  }
+  static std::vector<std::string> solvers() { return detail::ps_solver_factory::product_names(); }
+  static std::string default_solver() { return detail::ps_solver_factory::default_product_name(); }
 private:
   detail::ps_solver_factory::product_pointer_type solver_impl_;
 };

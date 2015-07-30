@@ -14,7 +14,6 @@ using namespace std;
 template<typename MatrixType> void lu_non_invertible()
 {
   typedef typename MatrixType::Index Index;
-  typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;
   /* this test covers the following files:
      LU.h
@@ -100,9 +99,10 @@ template<typename MatrixType> void lu_invertible()
   /* this test covers the following files:
      LU.h
   */
-  typedef typename MatrixType::Scalar Scalar;
   typedef typename NumTraits<typename MatrixType::Scalar>::Real RealScalar;
-  int size = internal::random<int>(1,EIGEN_TEST_MAX_SIZE);
+  DenseIndex size = MatrixType::RowsAtCompileTime;
+  if( size==Dynamic)
+    size = internal::random<DenseIndex>(1,EIGEN_TEST_MAX_SIZE);
 
   MatrixType m1(size, size), m2(size, size), m3(size, size);
   FullPivLU<MatrixType> lu;
@@ -124,6 +124,10 @@ template<typename MatrixType> void lu_invertible()
   m2 = lu.solve(m3);
   VERIFY_IS_APPROX(m3, m1*m2);
   VERIFY_IS_APPROX(m2, lu.inverse()*m3);
+
+  // Regression test for Bug 302
+  MatrixType m4 = MatrixType::Random(size,size);
+  VERIFY_IS_APPROX(lu.solve(m3*m4), lu.solve(m3)*m4);
 }
 
 template<typename MatrixType> void lu_partial_piv()
@@ -132,8 +136,6 @@ template<typename MatrixType> void lu_partial_piv()
      PartialPivLU.h
   */
   typedef typename MatrixType::Index Index;
-  typedef typename MatrixType::Scalar Scalar;
-  typedef typename NumTraits<typename MatrixType::Scalar>::Real RealScalar;
   Index rows = internal::random<Index>(1,4);
   Index cols = rows;
 
@@ -175,6 +177,7 @@ void test_lu()
 {
   for(int i = 0; i < g_repeat; i++) {
     CALL_SUBTEST_1( lu_non_invertible<Matrix3f>() );
+    CALL_SUBTEST_1( lu_invertible<Matrix3f>() );
     CALL_SUBTEST_1( lu_verify_assert<Matrix3f>() );
 
     CALL_SUBTEST_2( (lu_non_invertible<Matrix<double, 4, 6> >()) );

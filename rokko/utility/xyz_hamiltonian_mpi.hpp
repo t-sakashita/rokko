@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -211,8 +210,10 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   fill_diagonal(comm, L, lattice, coupling, &w[0]);
 }
 
-template <typename MATRIX_MAJOR>
-void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+template<typename T, typename MATRIX_MAJOR>
+void generate(int L, const std::vector<std::pair<int, int> >& lattice,
+  const std::vector<boost::tuple<double, double, double> >& coupling,
+  rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {

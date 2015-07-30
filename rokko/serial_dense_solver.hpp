@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,10 +12,12 @@
 #ifndef ROKKO_SERIAL_DENSE_SOLVER_HPP
 #define ROKKO_SERIAL_DENSE_SOLVER_HPP
 
+#include <string>
 #include <rokko/factory.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
+#include <rokko/parameters.hpp>
 
 namespace rokko {
 
@@ -27,23 +28,68 @@ public:
   virtual ~sd_solver_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
-  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
-
-  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) = 0;
-  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs) = 0;
-  virtual void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                           localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) = 0;
+  // -------------- standard eigenvalue probelm ---------------
+  // with parameters, eigenvalues/eigenvectors
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+				 localized_vector<double>& eigvals,
+				 localized_matrix<double, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+				 localized_vector<double>& eigvals,
+				 localized_matrix<double, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+				 std::vector<double>& eigvals,
+				 localized_matrix<double, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+				 std::vector<double>& eigvals,
+				 localized_matrix<double, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  // with parameters, only eigenvalues
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+				 localized_vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+				 localized_vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+				 std::vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+				 std::vector<double>& eigvals,
+				 parameters const& params) = 0;
+  // -------------- generalized eigenvalue probelm ---------------
+  // with parameters, eigenvalues/eigenvectors
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+				 localized_vector<double>& eigvals,
+				 localized_matrix<double, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+				 localized_vector<double>& eigvals,
+				 localized_matrix<double, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+				 std::vector<double>& eigvals,
+				 localized_matrix<double, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+				 std::vector<double>& eigvals,
+				 localized_matrix<double, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  // with parameters, only eigenvalues
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+				 localized_vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+				 localized_vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+				 std::vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+				 std::vector<double>& eigvals,
+				 parameters const& params) = 0;
 };
   
 template<typename SOLVER>
@@ -52,44 +98,94 @@ class sd_solver_wrapper : public sd_solver_base {
 public:
   sd_solver_wrapper() : solver_impl_() {}
   virtual ~sd_solver_wrapper() {}
-  void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
+  void initialize(int& argc, char**& argv) {
+    solver_impl_.initialize(argc, argv);
+  }
   void finalize() { solver_impl_.finalize(); }
-  void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  // -------------- standard eigenvalue probelm ---------------
+  // with parameters, eigenvalues/eigenvectors
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+			 localized_vector<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
-  void diagonalize(localized_matrix<matrix_row_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+			 localized_vector<double>& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
-  void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+			 std::vector<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
-  void diagonalize(localized_matrix<matrix_col_major>& mat, localized_vector& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+			 std::vector<double>& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
-
-  void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  // with parameters, only eigenvalues
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+			 localized_vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
   }
-  void diagonalize(localized_matrix<matrix_row_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_row_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+			 localized_vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
   }
-  void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs) {
-    timer_dumb timer;
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer);
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+			 std::vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
   }
-  void diagonalize(localized_matrix<matrix_col_major>& mat, std::vector<double>& eigvals,
-                   localized_matrix<matrix_col_major>& eigvecs, timer& timer_in) {
-    solver_impl_.diagonalize(mat, eigvals, eigvecs, timer_in);
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+			 std::vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  // -------------- generalized eigenvalue probelm ---------------
+  // with parameters, eigenvalues/eigenvectors
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+			 localized_vector<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+			 localized_vector<double>& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+			 std::vector<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+			 std::vector<double>& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, eigvecs, params);
+  }
+  // with parameters, only eigenvalues
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+			 localized_vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+			 localized_vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mata, localized_matrix<double, matrix_row_major>& matb,
+			 std::vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mata, localized_matrix<double, matrix_col_major>& matb,
+			 std::vector<double>& eigvals, parameters const& params) {
+    return solver_impl_.diagonalize(mata, matb, eigvals, params);
   }
 private:
   solver_type solver_impl_;
@@ -101,32 +197,74 @@ typedef factory<sd_solver_base> sd_solver_factory;
   
 class serial_dense_solver {
 public:
-  serial_dense_solver(std::string const& solver_name) {
+  void construct(std::string const& solver_name) {
     solver_impl_ = detail::sd_solver_factory::instance()->make_product(solver_name);
   }
-  void initialize(int& argc, char**& argv) { solver_impl_->initialize(argc, argv); }
-  void finalize() { solver_impl_->finalize(); }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  serial_dense_solver(std::string const& solver_name) {
+    this->construct(solver_name);
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs) {
-    timer_dumb timer_in;
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  serial_dense_solver() {
+    this->construct(this->default_solver());
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs, timer& timer_in) {
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  void initialize(int& argc, char**& argv) {
+    solver_impl_->initialize(argc, argv);
   }
-  template<typename MATRIX_MAJOR>
-  void diagonalize(localized_matrix<MATRIX_MAJOR>& mat, std::vector<double>& eigvals,
-                   localized_matrix<MATRIX_MAJOR>& eigvecs) {
-    timer_dumb timer_in;
-    solver_impl_->diagonalize(mat, eigvals, eigvecs, timer_in);
+  void finalize() {
+    solver_impl_->finalize();
+  }
+  // -------------- standard eigenvalue probelm ---------------
+  // with parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_->diagonalize(mat, eigvals, eigvecs, params);
+  }
+  // with parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 parameters const& params) {
+    return solver_impl_->diagonalize(mat, eigvals, params);
+  }
+  // no parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 localized_matrix<double, MATRIX_MAJOR>& eigvecs) {
+    return solver_impl_->diagonalize(mat, eigvals, eigvecs, null_params);
+  }
+  // no parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals) {
+    return solver_impl_->diagonalize(mat, eigvals, null_params);
+  }
+  // -------------- generalized eigenvalue probelm ---------------
+  // no routine, with parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+			 VEC& eigvals,
+			 localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_->diagonalize(mata, matb, eigvals, eigvecs, params);
+  }
+  // no routine, with parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+			 VEC& eigvals,
+			 parameters const& params) {
+    return solver_impl_->diagonalize(mata, matb, eigvals, params);
+  }
+  // no routine, no parameters, eigenvalues/eigenvectors
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+			 VEC& eigvals,
+			 localized_matrix<double, MATRIX_MAJOR>& eigvecs) {
+    return solver_impl_->diagonalize(mata, matb, eigvals, eigvecs, null_params);
+  }
+  // no routine, no parameters, only eigenvalues
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+			 VEC& eigvals) {
+    return solver_impl_->diagonalize(mata, matb, eigvals, null_params);
   }
   static std::vector<std::string> solvers() {
     return detail::sd_solver_factory::product_names();
@@ -136,10 +274,11 @@ public:
   }
 private:
   detail::sd_solver_factory::product_pointer_type solver_impl_;
+  parameters null_params;
+  //std::string routine_;
 };
 
 } // end namespace rokko
-
 
 #define ROKKO_REGISTER_SERIAL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \

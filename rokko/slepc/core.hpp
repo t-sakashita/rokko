@@ -15,7 +15,6 @@
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include <rokko/utility/timer.hpp>
 
 #include <petscvec.h>
 #include <slepceps.h>
@@ -69,13 +68,12 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
 class solver {
 public: 
   solver() { SlepcInitialize(NULL, NULL, (char*)0, 0); }
-  ~solver() {
-    //ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
-  }
+  ~solver() {}
   void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   void finalize() {}
-  void diagonalize(rokko::distributed_crs_matrix& mat,
-                   int num_evals, int block_size, int max_iters, double tol, timer& time) {
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
+			 int max_iters, double tol) {
+    parameters params_out;
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
@@ -84,89 +82,198 @@ public:
     PetscMPIInt    size;
     PetscInt       nev;
 
-    ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
-    ierr = EPSSetOperators(eps, *A, NULL); //CHKERRQ(ierr);
-    ierr = EPSSetProblemType(eps, EPS_HEP); //CHKERRQ(ierr);
-    //ierr = EPSSetDimensions(eps, num_evals, block_size, PETSC_DECIDE); //CHKERRQ(ierr);
-    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE); //CHKERRQ(ierr);
+    ierr = EPSSetOperators(eps, *A, NULL);
+    ierr = EPSSetProblemType(eps, EPS_HEP);
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
-    ierr = EPSSetFromOptions(eps); //CHKERRQ(ierr);
-    
+    ierr = EPSSetFromOptions(eps);
+
     /* Solve the eigensystem */       
-    ierr = EPSSolve(eps); //CHKERRQ(ierr);
+    ierr = EPSSolve(eps);
     
-    /* Optional: Get some information from the solver and display it */
-    ierr = EPSGetType(eps, &type); //CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type); //CHKERRQ(ierr);
-    ierr = EPSGetDimensions(eps, &nev, NULL, NULL); //CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); //CHKERRQ(ierr);
-
+    /* Get some information from the solver and display it */
+    ierr = EPSGetType(eps, &type);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);
     EPSGetConverged(eps, &num_conv_);
-
+    params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-
-    // Display solution and clean up
-    //ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
-
-    //ierr = EPSDestroy(&eps); //CHKERRQ(ierr);
-    //   ierr = VecDestroy(&evec_r); //CHKERRQ(ierr);
-    //ierr = VecDestroy(&evec_i); //CHKERRQ(ierr);
-    //ierr = MatDestroy(A); //CHKERRQ(ierr);
+    return params_out;
   }
 
-  void diagonalize(rokko::distributed_mfree& mat_in,
-                   int num_evals, int block_size, int max_iters, double tol, timer& time) {
+  parameters diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
+			 double tol) {
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       nev;
-
+    parameters params_out;
     rokko::distributed_mfree* mat = &mat_in;
     // define matrix-free type operator
     dimension_ = mat->get_dim();
     offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A); //CHKERRQ(ierr);
-    ierr = MatSetFromOptions(*A); //CHKERRQ(ierr);
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(),
+			  mat->get_dim(), mat->get_dim(), mat, A);
+    ierr = MatSetFromOptions(*A);
 
-    ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat); //CHKERRQ(ierr);
-    ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat); //CHKERRQ(ierr);
-    ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat); //CHKERRQ(ierr);
+    ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
+    ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
+    ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
 
-    ierr = EPSCreate(PETSC_COMM_WORLD, &eps); //CHKERRQ(ierr);
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
     /* Set operators. In this case, it is a standard eigenvalue problem */
-    ierr = EPSSetOperators(eps, *A, NULL); //CHKERRQ(ierr);
-    ierr = EPSSetProblemType(eps, EPS_HEP); //CHKERRQ(ierr);
-    //ierr = EPSSetDimensions(eps, num_evals, block_size, PETSC_DECIDE); //CHKERRQ(ierr);
-    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE); //CHKERRQ(ierr);
+    ierr = EPSSetOperators(eps, *A, NULL);
+    ierr = EPSSetProblemType(eps, EPS_HEP);
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
-    ierr = EPSSetFromOptions(eps); //CHKERRQ(ierr);
+    ierr = EPSSetFromOptions(eps);
     
     /* Solve the eigensystem */       
-    ierr = EPSSolve(eps); //CHKERRQ(ierr);
+    ierr = EPSSolve(eps);
     
-    /* Optional: Get some information from the solver and display it */
-    ierr = EPSGetType(eps, &type); //CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type); //CHKERRQ(ierr);
-    ierr = EPSGetDimensions(eps, &nev, NULL, NULL); //CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); //CHKERRQ(ierr);
-
+    /* Get some information from the solver and display it */
+    ierr = EPSGetType(eps, &type);
+    ierr = PetscPrintf(PETSC_COMM_WORLD ," Solution method: %s\n\n", type);
+    ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
+    ierr = PetscPrintf(PETSC_COMM_WORLD, " Number of requested eigenvalues: %D\n", nev);
     EPSGetConverged(eps, &num_conv_);
-
+    params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
+    return params_out;
+  }
 
-    // Display solution and clean up
-    //ierr = EPSPrintSolution(eps, NULL); //CHKERRQ(ierr);
+  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    parameters params_out;
+    dimension_ = mat.get_dim();
+    offset_local_ = mat.start_row();
+    num_local_rows_ = mat.num_local_rows();
+    int block_size_;
+    if (params.defined("Block Size"))  {
+      block_size_ = params.get<int>("Block Size");
+    }
+    else {
+      block_size_ = 1;
+    }
+    double tol;
+    if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
+    int max_iters;
+    if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
 
-    //ierr = MatDestroy(A); //CHKERRQ(ierr);
+    A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
+    EPSType        type;
+    PetscMPIInt    size;
+    PetscInt       num_evals;
+    if (params.defined("num_eigenvalues"))   num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    else  num_evals = 1;
+
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
+
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetOperators(eps, *A, NULL);
+    ierr = EPSSetProblemType(eps, EPS_HEP);
+    if (params.defined("routine")) {
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+	throw "error: routine must be charatcters or string.";
+    }
+    routine_ = params.get_string("routine");
+    ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
+    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    /* Set solver parameters at runtime */
+    ierr = EPSSetFromOptions(eps);
+
+    /* Solve the eigensystem */       
+    ierr = EPSSolve(eps);
+    
+    /* Get some information from the solver and display it */
+    ierr = EPSGetType(eps, &type);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
+    EPSGetConverged(eps, &num_conv_);
+    params_out.set("num_conv", num_conv_);
+    if (num_conv_ == 0) {
+      std::cout << "doesn't converge" << std::endl;
+    }
+    return params_out;
+  }
+
+  parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
+    parameters params_out;
+    rokko::distributed_mfree* mat = &mat_in;
+    // define matrix-free type operator
+    dimension_ = mat->get_dim();
+    offset_local_ = mat->get_local_offset();
+    num_local_rows_ = mat->get_num_local_rows();
+    A = new Mat();
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A);
+    ierr = MatSetFromOptions(*A);
+    ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
+    ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
+    ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
+
+    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetOperators(eps, *A, NULL);
+
+    int block_size_;
+    if (params.defined("Block Size"))  {
+      block_size_ = params.get<int>("Block Size");
+    }
+    else {
+      block_size_ = 1;
+    }
+    double tol;
+    if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
+    int max_iters;
+    if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
+    if (params.defined("routine")) {
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+	throw "error: routine must be charatcters or string.";
+    }
+    routine_ = params.get_string("routine");
+    
+    EPSType        type;
+    //PetscMPIInt    size;
+    PetscInt       num_evals;
+    if (params.defined("num_eigenvalues"))   num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    else  num_evals = 1;
+
+    /* Set operators. In this case, it is a standard eigenvalue problem */
+    ierr = EPSSetProblemType(eps, EPS_HEP);
+    routine_ = params.get_string("routine");
+    ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+
+    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
+    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    /* Set solver parameters at runtime */
+    ierr = EPSSetFromOptions(eps);
+
+    /* Solve the eigensystem */       
+    ierr = EPSSolve(eps);
+    
+    /* Get some information from the solver and display it */
+    ierr = EPSGetType(eps, &type);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
+    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
+    EPSGetConverged(eps, &num_conv_);
+    params_out.set("num_conv", num_conv_);
+    if (num_conv_ == 0) {
+      std::cout << "doesn't converge" << std::endl;
+    }
+    return params_out;
   }
 
   double eigenvalue(int i) const {
@@ -177,12 +284,12 @@ public:
 
   void eigenvector(int k, double* vec) const {
     Vec evec_r, evec_i;
-    MatGetVecs(*A, NULL, &evec_r); //CHKERRQ(ierr2);
+    MatGetVecs(*A, NULL, &evec_r);
     MatGetVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
     EPSGetEigenvector(eps, k, evec_r, evec_i);
-    VecDestroy(&evec_r); //CHKERRQ(ierr);
-    VecDestroy(&evec_i); //CHKERRQ(ierr);
+    VecDestroy(&evec_r);
+    VecDestroy(&evec_i);
   }
 
   void eigenvector(int k, std::vector<double>& vec) const {
@@ -199,7 +306,8 @@ public:
     return num_conv_;
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim, int col_dim) {
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim) {
     return new slepc::distributed_crs_matrix(row_dim, col_dim);
   }
 
@@ -208,6 +316,8 @@ private:
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
   PetscErrorCode ierr;
+  std::string routine_;
+  EPSType routine_type;
   int num_conv_;
 };
 

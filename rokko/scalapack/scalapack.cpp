@@ -12,5 +12,4 @@
 #include <rokko/parallel_dense_solver.hpp>
 #include <rokko/scalapack/core.hpp>
 
-ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::scalapack::solver<rokko::scalapack::pdsyev>,
-  "scalapack", 20)
+ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::scalapack::solver, "scalapack", 20)

@@ -18,7 +18,25 @@ set(_PATHS "")
 if(ANASAZI_DIR)
   set(_PATHS ${ANASAZI_DIR})
 else(ANASAZI_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+  list(APPEND _PATHS
+  	      ${TRILINOS_ROOT}/${CMAKE_BUILD_TYPE}
+	      ${TRILINOS_ROOT}
+  	      $ENV{TRILINOS_ROOT}/${CMAKE_BUILD_TYPE}
+	      $ENV{TRILINOS_ROOT}
+  	      ${ROKKO_SOLVER_ROOT}/trilinos/${CMAKE_BUILD_TYPE}
+	      ${ROKKO_SOLVER_ROOT}/trilinos
+  	      $ENV{ROKKO_SOLVER_ROOT}/trilinos/${CMAKE_BUILD_TYPE}
+	      $ENV{ROKKO_SOLVER_ROOT}/trilinos
+	      ${CMAKE_INSTALL_PREFIX}/trilinos/${CMAKE_BUILD_TYPE}
+	      ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/trilinos/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/trilinos
+	      /opt/rokko/trilinos/${CMAKE_BUILD_TYPE}
+	      /opt/rokko/trilinos
+	      /opt/rokko/${CMAKE_BUILD_TYPE}
+	      /opt/rokko
+	      /opt/local /opt
+	      )
 endif(ANASAZI_DIR)
 
 # Try to figure out ANASAZI_DIR by finding Anasazi_config.h
@@ -31,7 +49,8 @@ else(ANASAZI_DIR)
   return()
 endif(ANASAZI_DIR)
 
-set(_LIBS anasazitpetra ModeLaplace anasaziepetra anasazi thyraepetra thyracore tpetraext tpetrainout tpetra epetra kokkosdisttsqr kokkosnodetsqr kokkoslinalg kokkosnodeapi kokkos rtop tpi teuchosremainder teuchosnumerics teuchoscomm teuchosparameterlist teuchoscore)
+set(_LIBS anasazitpetra ModeLaplace anasaziepetra anasazi belostpetra belosepetra belos thyraepetra thyracore tpetraext tpetrainout tpetra kokkostsqr tpetrakernels tpetraclassiclinalg tpetraclassicnodeapi tpetraclassic epetra rtop teuchoskokkoscomm teuchoskokkoscompat teuchosremainder teuchosnumerics teuchoscomm teuchosparameterlist teuchoscore kokkosalgorithms kokkoscontainers kokkoscore tpi)
+
 foreach(name ${_LIBS})
   unset(_LIB CACHE)
   find_library(_LIB NAMES ${name} PATHS ${ANASAZI_DIR}/lib)

@@ -11,6 +11,11 @@ set(ROKKO_ROOT_DIR "@CMAKE_INSTALL_PREFIX@")
 # The location of the UseALPS.cmake file.
 set(ROKKO_USE_FILE "${ROKKO_ROOT_DIR}/share/rokko/UseRokko.cmake")
 
+# Compilers
+set(ROKKO_CMAKE_C_COMPILER "@CMAKE_C_COMPILER@")
+set(ROKKO_CMAKE_CXX_COMPILER "@CMAKE_CXX_COMPILER@")
+set(ROKKO_CMAKE_Fortran_COMPILER "@CMAKE_Fortran_COMPILER@")
+
 # Rokko C/Fortran bindings
 set(ROKKO_C_BINDING "@BUILD_C_BINDING@")
 set(ROKKO_Fortran_BINDING "@BUILD_Fortran_BINDING@")

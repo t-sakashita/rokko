@@ -8,6 +8,22 @@ if(NOT ROKKO_USE_FILE_INCLUDED)
   set(ROKKO_USE_FILE_INCLUDED 1)
   list(APPEND CMAKE_MODULE_PATH ${ROKKO_ROOT_DIR}/share/rokko)
 
+  # compilers and common options
+  if(NOT PREVENT_ROKKO_COMPILERS)
+    set(CMAKE_C_COMPILER ${ROKKO_CMAKE_C_COMPILER} CACHE FILEPATH "C compiler." FORCE)
+    set(CMAKE_C_FLAGS ${ROKKO_CMAKE_C_FLAGS} CACHE STRING "Flags used by the compiler during all build types." FORCE)
+    set(CMAKE_C_FLAGS_DEBUG ${ROKKO_CMAKE_C_FLAGS_DEBUG} CACHE STRING "Flags used by the compiler during debug builds." FORCE)
+    set(CMAKE_C_FLAGS_RELEASE ${ROKKO_CMAKE_C_FLAGS_RELEASE} CACHE STRING "Flags used by the compiler during release builds." FORCE)
+    set(CMAKE_CXX_COMPILER ${ROKKO_CMAKE_CXX_COMPILER} CACHE FILEPATH "CXX compiler." FORCE)
+    set(CMAKE_CXX_FLAGS ${ROKKO_CMAKE_CXX_FLAGS} CACHE STRING "Flags used by the compiler during all build types." FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG ${ROKKO_CMAKE_CXX_FLAGS_DEBUG} CACHE STRING "Flags used by the compiler during debug builds." FORCE)
+    set(CMAKE_CXX_FLAGS_RELEASE ${ROKKO_CMAKE_CXX_FLAGS_RELEASE} CACHE STRING "Flags used by the compiler during release builds." FORCE)
+    set(CMAKE_Fortran_COMPILER ${ROKKO_CMAKE_Fortran_COMPILER} CACHE FILEPATH "Fortran compiler." FORCE)
+    set(CMAKE_Fortran_FLAGS ${ROKKO_CMAKE_Fortran_FLAGS} CACHE STRING "Flags used by the compiler during all build types." FORCE)
+    set(CMAKE_Fortran_FLAGS_DEBUG ${ROKKO_CMAKE_Fortran_FLAGS_DEBUG} CACHE STRING "Flags used by the compiler during debug builds." FORCE)
+    set(CMAKE_Fortran_FLAGS_RELEASE ${ROKKO_CMAKE_Fortran_FLAGS_RELEASE} CACHE STRING "Flags used by the compiler during release builds." FORCE)
+  endif(NOT PREVENT_ROKKO_COMPILERS)
+
   # OpenMP
   find_package(OpenMP)
   if(OPENMP_FOUND)
@@ -22,7 +38,7 @@ if(NOT ROKKO_USE_FILE_INCLUDED)
   set(ROKKO_LIBRARIES ${ROKKO_LIBRARIES} ${MPI_CXX_LIBRARIES})
 
   # Add include directories needed to use ROKKO and dependent libraries
-  include_directories(${MPI_CXX_INCLUDE_PATH} ${ROKKO_INCLUDE_DIR} ${ROKKO_Boost_INCLUDE_DIR} ${ROKKO_EIGENEXA_INCLUDE_DIR} ${ROKKO_ELEMENTAL_INCLUDE_DIR} ${ROKKO_ANASAZI_INCLUDE_DIR} ${ROKKO_PETSC_INCLUDE_DIR} ${ROKKO_SLEPC_INCLUDE_DIR})
+  include_directories(${MPI_CXX_INCLUDE_PATH} ${MPI_Fortran_INCLUDE_PATH} ${ROKKO_INCLUDE_DIR} ${ROKKO_Boost_INCLUDE_DIR} ${ROKKO_EIGENEXA_INCLUDE_DIR} ${ROKKO_ELEMENTAL_INCLUDE_DIR} ${ROKKO_ANASAZI_INCLUDE_DIR} ${ROKKO_PETSC_INCLUDE_DIR} ${ROKKO_SLEPC_INCLUDE_DIR})
 
   # Add link directories needed to use ROKKO and dependent libraries
   link_directories(${ROKKO_ROOT_DIR}/lib)

@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,86 +12,77 @@
 #ifndef ROKKO_EIGEN_EXA_CORE_HPP
 #define ROKKO_EIGEN_EXA_CORE_HPP
 
-#include <rokko/eigen_exa/eigen_exa.h>
-#include <rokko/eigen_exa/diagonalize.hpp>
+#include <rokko/matrix_major.hpp>
+#include <rokko/parameters.hpp>
+#include <rokko/eigen_exa/diagonalize_eigen_s.hpp>
+#include <rokko/eigen_exa/diagonalize_eigen_sx.hpp>
 
 namespace rokko {
+
 namespace eigen_exa {
 
-struct eigen_s {};
-struct eigen_sx {};
-
-template<typename ROUTINE>
 class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  template<typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
-    int n = mat.get_m_global();
 
-    // calculate sizes of my proc's local part of distributed matrix
-    int NPROW = mat.get_grid().get_nprow();
-    int NPCOL = mat.get_grid().get_npcol();
-
-    int n1 = ((n-1)/NPROW+1);
-    int nm;
-    int i1 = 6, i2 = 16*4, i3 = 16*4*2;
-    ROKKO_cstab_get_optdim(n1, i1, i2, i3, &nm);
-
-    int NB  = 64;
-    int nmz = ((n-1)/NPROW+1);
-    nmz = ((nmz-1)/NB+1)*NB+1;
-    int nmw = ((n-1)/NPCOL+1);
-    nmw = ((nmw-1)/NB+1)*NB+1;
-
-    int larray = std::max(nmz, nm)*nmw;
-    
-    mat.set_lld(nm);
-    mat.set_length_array(larray);
-    mat.set_block_size(1, 1);
-    int m_local = mat.calculate_row_size();
-    int n_local = mat.calculate_col_size();
-    mat.set_local_size(m_local, n_local);
+  mapping_bc<matrix_col_major> optimized_mapping(int global_dim, grid const& g) const {
+    int nx, ny;
+    int nprow = g.get_nprow();
+    int npcol = g.get_npcol();
+    int n = global_dim;
+    ROKKO_eigen_exa_get_matdims(nprow, npcol, n, &nx, &ny);
+    //std::cout << "nx=" << nx << std::endl;
+    int lld = nx;
+    return mapping_bc<matrix_col_major>(global_dim, 1, lld, g);  // block_size = 1
   }
 
-  template<typename MATRIX_MAJOR, typename TIMER>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-		   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in);
-
-  template<typename MATRIX_MAJOR, typename TIMER>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-		   TIMER& timer_in);
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params);
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 parameters const& params);
 };
 
-template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						    distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-  rokko::eigen_exa::diagonalize_s(mat, eigvals, eigvecs, timer_in);
+template<typename MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			       parameters const& params) {
+  std::string routine = "";
+  if(params.defined("routine")) {
+    routine = params.get_string("routine");
+  }
+  if ((routine=="tri") || (routine=="eigen_s")) {
+    return rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, eigvecs, params);
+  } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
+    return rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, eigvecs, params);
+  } else {
+    std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
+    throw;
+  }
 }
 
-template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_s>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						    TIMER& timer_in) {
-  rokko::eigen_exa::diagonalize_s(mat, eigvals, timer_in);
-}
-
-template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						     distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-    rokko::eigen_exa::diagonalize_sx(mat, eigvals, eigvecs, timer_in);
-}
-
-template<>
-template<typename MATRIX_MAJOR, typename TIMER>
-void solver<rokko::eigen_exa::eigen_sx>::diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-						    TIMER& timer_in) {
-  rokko::eigen_exa::diagonalize_sx(mat, eigvals, timer_in);
+template<typename MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       VEC& eigvals,
+			       parameters const& params) {
+  std::string routine = "";
+  if(params.defined("routine")) {
+    routine = params.get_string("routine");
+  }
+  if ((routine=="tri") || (routine=="eigen_s")) {
+    return rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, params);
+  } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
+    return rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, params);
+  } else {
+    std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
+    throw;
+  }
 }
 
 } // namespace eigen_exa

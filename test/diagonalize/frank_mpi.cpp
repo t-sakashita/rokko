@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>,
-*               2014-2014    Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -46,10 +45,10 @@ BOOST_AUTO_TEST_CASE(test_solver) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);
       rokko::grid g(comm, rokko::grid_col_major);
-      rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(dim, dim, g, solver);
       rokko::frank_matrix::generate(mat);
-      rokko::localized_vector w(dim);
-      rokko::distributed_matrix<rokko::matrix_col_major> Z(dim, dim, g, solver);
+      rokko::localized_vector<double> w(dim);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(dim, dim, g, solver);
 
       solver.diagonalize(mat, w, Z);
       
@@ -71,10 +70,10 @@ BOOST_AUTO_TEST_CASE(test_solver) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);
       rokko::grid g(comm, rokko::grid_row_major);
-      rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(dim, dim, g, solver);
       rokko::frank_matrix::generate(mat);
-      rokko::localized_vector w(dim);
-      rokko::distributed_matrix<rokko::matrix_col_major> Z(dim, dim, g, solver);
+      rokko::localized_vector<double> w(dim);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(dim, dim, g, solver);
       
       solver.diagonalize(mat, w, Z);
       

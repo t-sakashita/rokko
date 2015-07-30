@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,9 +12,9 @@
 #ifndef ROKKO_ELPA_CORE_HPP
 #define ROKKO_ELPA_CORE_HPP
 
+#include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.hpp>
 #include <rokko/elpa/diagonalize.hpp>
-#include <iostream>
 
 namespace rokko {
 namespace elpa {
@@ -26,32 +25,30 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  void optimized_grid_size() {}
-  template <typename MATRIX_MAJOR>
-  void optimized_matrix_size(distributed_matrix<MATRIX_MAJOR>& mat) {
+  mapping_bc<matrix_col_major> optimized_mapping(int dim, grid const& g) const {
     // Determine mb, nb, lld, larray
-    int mb = mat.get_m_global() / mat.get_nprow();
+    int mb = dim / g.get_nprow();
     if (mb == 0)  mb = 1;
-    int nb = mat.get_n_global() / mat.get_npcol();
+    int nb = dim / g.get_npcol();
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
-    int tmp = std::min(mb, nb);
-    mat.set_block_size(tmp, tmp);
-
-    // Determine m_local, n_local from m_global, n_global, mb, nb
-    mat.set_default_local_size();
-    mat.set_default_lld();
-    mat.set_default_length_array();
+    int b = std::min(mb, nb);
+    return mapping_bc<matrix_col_major>(dim, b, g);
   }
-  template <typename MATRIX_MAJOR, typename TIMER>
-  void diagonalize(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-                   distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer_in) {
-    rokko::elpa::diagonalize(mat, eigvals, eigvecs, timer_in);
+  template <typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params) {
+    return rokko::elpa::diagonalize(mat, eigvals, eigvecs, params);
+  }
+  template <typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 parameters const& params) {
+    return rokko::elpa::diagonalize(mat, eigvals, params);
   }
 };
 
 } // namespace elpa
 } // namespace rokko
-
 
 #endif // ROKKO_ELPA_CORE_HPP

@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,114 +14,108 @@
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/blacs/blacs.h>
-#include <rokko/scalapack/scalapack.h>
+#include <rokko/parameters.hpp>
+#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/blacs/utility_routines.hpp>
+#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/lapack/diagonalize_get_parameters.hpp>
+#include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
 
 namespace rokko {
 namespace scalapack {
 
-template<typename MATRIX_MAJOR, typename TIMER>
-int diagonalize_x(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
-  int ictxt;
-  int info;
+// pdsyevx eigenvalues / eigenvectors
+template<typename MATRIX_MAJOR>
+parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			       parameters const& params) {
+  parameters params_out;
+  char jobz = 'V';  // eigenvalues / eigenvectors
+  char uplow = lapack::get_matrix_part(params);
+  double vl, vu;
+  int il, iu;
+  char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
 
-  ROKKO_blacs_get(-1, 0, &ictxt);
-
-  char char_grid_major;
-  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
-  else  char_grid_major = 'C';
-
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(), mat.get_grid().get_npcol());
-
+  int ictxt = ROKKO_blacs_get(-1, 0);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
-  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(), 0, 0, ictxt, mat.get_lld(), &info);
-  if (info) {
-    std::cerr << "error " << info << " at descinit function of descA " << "mA=" << mat.get_m_local() << "  nA=" << mat.get_n_local() << "." << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 89);
-  }
-
-#ifndef NDEBUG
-  for (int proc=0; proc<mat.get_nprocs(); ++proc) {
-    if (proc == mat.get_myrank()) {
-      std::cout << "pdsyev:proc=" << proc << " m_global=" << mat.get_m_global() << "  n_global=" << mat.get_n_global() << "  mb=" << mat.get_mb() << "  nb=" << mat.get_nb() << std::endl;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
-#endif
-
-  int vl = 0, vu = 0;
-  int il, iu;
+  rokko::blacs::set_desc(ictxt, mat, desc);
+  int m, nz;
+  int info;
+ 
   double abstol = ROKKO_pdlamch(ictxt, 'U');
-  int num_eigval_found, num_eigvec_found;
+  //get_key(params, "abstol", abstol);
+
   int orfac = -1;  // default value 10^{-3} is used.
-  int* ifail = new int[dim];
-  int* iclustr = new int[2 * mat.get_nprow() * mat.get_npcol()];
-  double* gap = new double[mat.get_nprow() * mat.get_npcol()];
-  if (ifail == 0) {
-    std::cerr << "failed to allocate ifail." << std::endl;
-    exit(1);
+  std::vector<int> ifail(dim);
+  std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
+  std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
+
+  info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
+		       abstol, &m, &nz, &eigvals[0], orfac,
+		       eigvecs.get_array_pointer(), 1, 1, desc,
+		       &ifail[0], &iclustr[0], &gap[0]);
+
+  params_out.set("m", m);
+  params_out.set("nz", nz);
+  params_out.set("ifail", ifail);
+  params_out.set("iclustr", iclustr);
+  params_out.set("gap", gap);
+  if (params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
-  if (iclustr == 0) {
-    std::cerr << "failed to allocate iclustr." << std::endl;
-    exit(1);
+  ROKKO_blacs_gridexit(&ictxt);
+
+  return params_out;
+}
+
+// pdsyevx only eigenvalues
+template<typename MATRIX_MAJOR>
+parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals,
+			       parameters const& params) {
+  rokko::parameters params_out;
+  char jobz = 'N';  // only eigenvalues
+  char uplow = lapack::get_matrix_part(params);
+  double vl, vu;
+  int il, iu;
+  char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
+
+  int ictxt = ROKKO_blacs_get(-1, 0);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
+  int dim = mat.get_m_global();
+  int desc[9];
+  rokko::blacs::set_desc(ictxt, mat, desc);
+  int m, nz;
+  int info;
+ 
+  double abstol = ROKKO_pdlamch(ictxt, 'U');
+  //get_key(params, "abstol", abstol);
+
+  int orfac = -1;  // default value 10^{-3} is used.
+  std::vector<int> ifail(dim);
+  std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
+  std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
+
+  info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
+		       abstol, &m, &nz, &eigvals[0], orfac,
+		       NULL, 1, 1, desc,
+		       &ifail[0], &iclustr[0], &gap[0]);
+
+  params_out.set("m", m);
+  params_out.set("nz", nz);
+  params_out.set("ifail", ifail);
+  params_out.set("iclustr", iclustr);
+  params_out.set("gap", gap);
+  if (params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
-  if (gap == 0) {
-    std::cerr << "failed to allocate gap." << std::endl;
-    exit(1);
-  }
+  ROKKO_blacs_gridexit(&ictxt);
 
-  double* work = new double[1];
-  int* iwork = new int[1];
-  long lwork = -1;
-  long liwork = -1;
-
-  // work配列のサイズの問い合わせ
-  timer.start(1);
-  ROKKO_pdsyevx('V', 'A', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                vl, vu, il, iu,
-                abstol, &num_eigval_found, &num_eigvec_found, &eigvals[0], orfac,
-                eigvecs.get_array_pointer(), 1, 1, desc,
-                work, lwork, iwork, liwork, ifail, iclustr, gap, &info);
-  timer.stop(1);
-
-  if (info) {
-    std::cerr << "error at pdsyevx function (query for sizes for workarrays." << std::endl;
-    exit(1);
-  }
-
-  lwork = work[0];
-  liwork = iwork[0];
-  delete[] work;
-  delete[] iwork;
-
-  work = new double[lwork];
-  iwork = new int[liwork];
-  if (work == 0) {
-    std::cerr << "failed to allocate work. info=" << info << std::endl;
-    return info;
-  }
-
-  // 固有値分解
-  ROKKO_pdsyevx('V', 'A', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                vl, vu, il, iu, abstol, &num_eigval_found, &num_eigvec_found, &eigvals[0], orfac,
-                eigvecs.get_array_pointer(), 1, 1, desc,
-                work, lwork, iwork, liwork, ifail, iclustr, gap, &info);
-
-  if (info) {
-    std::cerr << "error at pdsyevx function. info=" << info << std::endl;
-    exit(1);
-  }
-
-  delete[] work;
-  delete[] iwork;
-  delete[] ifail;
-  delete[] iclustr;
-  delete[] gap;
-  return info;
+  return params_out;
 }
 
 } // namespace scalapack

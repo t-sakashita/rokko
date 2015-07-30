@@ -19,7 +19,25 @@ set(_PATHS "")
 if(PETSC_DIR)
   set(_PATHS ${PETSC_DIR})
 else(PETSC_DIR)
-  list(APPEND _PATHS ${ROKKO_SOLVER_DIR} $ENV{ROKKO_SOLVER_DIR} ${CMAKE_INSTALL_PREFIX} "$ENV{HOME}/opt/rokko" "$ENV{HOME}/opt" "/opt/rokko" "/opt")
+  list(APPEND _PATHS
+  	      ${PETSC_ROOT}/${CMAKE_BUILD_TYPE}
+	      ${PETSC_ROOT}
+  	      $ENV{PETSC_ROOT}/${CMAKE_BUILD_TYPE}
+	      $ENV{PETSC_ROOT}
+  	      ${ROKKO_SOLVER_ROOT}/petsc/${CMAKE_BUILD_TYPE}
+	      ${ROKKO_SOLVER_ROOT}/petsc
+  	      $ENV{ROKKO_SOLVER_ROOT}/petsc/${CMAKE_BUILD_TYPE}
+	      $ENV{ROKKO_SOLVER_ROOT}/petsc
+	      ${CMAKE_INSTALL_PREFIX}/petsc/${CMAKE_BUILD_TYPE}
+	      ${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/petsc/${CMAKE_BUILD_TYPE}
+	      $ENV{HOME}/rokko/petsc
+	      /opt/rokko/petsc/${CMAKE_BUILD_TYPE}
+	      /opt/rokko/petsc
+	      /opt/rokko/${CMAKE_BUILD_TYPE}
+	      /opt/rokko
+	      /opt/local /opt
+	      )
   # Standard paths for Debian with version number
   file(GLOB tmp "/usr/lib/petscdir/*")
   list(APPEND _PATHS ${tmp})

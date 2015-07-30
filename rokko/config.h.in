@@ -1,0 +1,56 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
+#ifndef ROKKO_CONFIG_H
+#define ROKKO_CONFIG_H
+
+#define ROKKO_VERSION "0.3"
+
+/* Define if you have C binding */
+#cmakedefine ROKKO_HAVE_C_BINDING
+
+/* Define if you have Fortran binding */
+#cmakedefine ROKKO_HAVE_Fortran_BINDING
+
+/* Define if you have OpenMP */
+#cmakedefine ROKKO_HAVE_OPENMP
+
+/* Define if you have MPI */
+#cmakedefine ROKKO_HAVE_MPI
+
+/* Define if you have Scalapack Library */
+#cmakedefine ROKKO_HAVE_SCALAPACK
+
+/* Define if you have EigenExa Library */
+#cmakedefine ROKKO_HAVE_EIGENEXA
+
+/* Define if you have Elemental Library */
+#cmakedefine ROKKO_HAVE_ELEMENTAL
+
+/* Define if you have Elpa Library */
+#cmakedefine ROKKO_HAVE_ELPA
+
+/* Define if you have parallel dense solver */
+#cmakedefine ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+
+/* Define if you have PETSc Library */
+#cmakedefine ROKKO_HAVE_PETSC
+
+/* Define if you have SLEPc Library */
+#cmakedefine ROKKO_HAVE_SLEPC
+
+/* Define if you have Anasazi Library */
+#cmakedefine ROKKO_HAVE_ANASAZI
+
+/* Define if you have parallel sparse solver */
+#cmakedefine ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
+
+#endif /* ROKKO_CONFIG_H */

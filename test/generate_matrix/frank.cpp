@@ -2,42 +2,36 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#include <iostream>
-#include <boost/lexical_cast.hpp>
-#include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <boost/foreach.hpp>
+#define BOOST_TEST_MODULE test_generator
+#ifndef BOOST_TEST_DYN_LINK
+#include <boost/test/included/unit_test.hpp>
+#else
+#include <boost/test/unit_test.hpp>
+#endif
 
-int main(int argc, char **argv) {
-  int dim;
-  if (argc > 1) {
-    dim = boost::lexical_cast<int>(argv[1]);
-  } else {
-    std::cin >> dim;
-  }
-  rokko::localized_matrix<rokko::matrix_col_major> mat(dim, dim);
-  rokko::frank_matrix::generate(mat);
+template<typename T, typename MATRIX_MAJOR>
+void test(int dim) {
+  rokko::localized_matrix<T, MATRIX_MAJOR> mat(dim, dim);
+  rokko::frank_matrix::generate(mat);  
+  BOOST_CHECK_CLOSE(mat.trace(), dim * (dim+1) * 0.5, 10e-5);
+}
+
+BOOST_AUTO_TEST_CASE(test_generator) {
+  const int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
-  std::cout << "[elements of frank matrix]" << std::endl;
-  std::cout << mat << std::endl;
 
-  std::cout << "[eigenvalues of frank matrix]" << std::endl;
-  double sum = 0;
-  for (int i = 0; i < dim; ++i) {
-    double ev = rokko::frank_matrix::eigenvalue(dim, i);
-    sum += ev;
-    std::cout << ev << "  ";
-  }
-  std::cout << std::endl;
-
-  std::cout << "[sum of eigenvalues of frank matrix]" << std::endl;
-  std::cout << sum << std::endl;
+  std::cout << "  test for row major" << std::endl;
+  test<double, rokko::matrix_row_major>(dim);
+  std::cout << "  test for column major" << std::endl;
+  test<double, rokko::matrix_col_major>(dim);
 }

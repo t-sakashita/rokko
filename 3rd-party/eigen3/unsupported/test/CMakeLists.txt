@@ -1,4 +1,7 @@
 
+set_property(GLOBAL PROPERTY EIGEN_CURRENT_SUBPROJECT "Unsupported")
+add_custom_target(BuildUnsupported)
+
 include_directories(../../test ../../unsupported ../../Eigen 
                     ${CMAKE_CURRENT_BINARY_DIR}/../../test)
 
@@ -22,17 +25,14 @@ endif(ADOLC_FOUND)
 
 # this test seems to never have been successful on x87, so is considered to contain a FP-related bug.
 # see thread: "non-linear optimization test summary"
-#ei_add_test(NonLinearOptimization)
+ei_add_test(NonLinearOptimization)
 
 ei_add_test(NumericalDiff)
 ei_add_test(autodiff)
-
-if (NOT CMAKE_CXX_COMPILER MATCHES "clang\\+\\+$")
 ei_add_test(BVH)
-endif()
-
 ei_add_test(matrix_exponential)
 ei_add_test(matrix_function)
+ei_add_test(matrix_power)
 ei_add_test(matrix_square_root)
 ei_add_test(alignedvector3)
 ei_add_test(FFT)
@@ -69,8 +69,9 @@ if(NOT EIGEN_TEST_NO_OPENGL)
   find_package(GLUT)
   find_package(GLEW)
   if(OPENGL_FOUND AND GLUT_FOUND AND GLEW_FOUND)
+    include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
     ei_add_property(EIGEN_TESTED_BACKENDS "OpenGL, ")
-    set(EIGEN_GL_LIB ${GLUT_LIBRARIES} ${GLEW_LIBRARIES})
+    set(EIGEN_GL_LIB ${GLUT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
     ei_add_test(openglsupport  "" "${EIGEN_GL_LIB}" )
   else()
     ei_add_property(EIGEN_MISSING_BACKENDS "OpenGL, ")
@@ -84,4 +85,6 @@ ei_add_test(polynomialutils)
 ei_add_test(kronecker_product)
 ei_add_test(splines)
 ei_add_test(gmres)
-
+ei_add_test(minres)
+ei_add_test(levenberg_marquardt)
+ei_add_test(bdcsvd)

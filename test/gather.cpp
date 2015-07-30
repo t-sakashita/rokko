@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,7 +34,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   
   rokko::parallel_dense_solver solver(rokko::parallel_dense_solver::default_solver());
   rokko::grid g(comm, grid_major);
-  rokko::distributed_matrix<DIST_MAT_MAJOR> mat(dim, dim, g, solver);
+  rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(dim, dim, g, solver);
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
       double d = rng();
@@ -46,7 +46,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #endif
   
   int success_local = 1;
-  rokko::localized_matrix<LOC_MAT_MAJOR> lmat(dim, dim);
+  rokko::localized_matrix<double, LOC_MAT_MAJOR> lmat(dim, dim);
   for (int r = 0; r < size; ++r) {
     rokko::gather(mat, lmat, r);
 #ifndef NDEBUG

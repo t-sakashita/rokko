@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014-2014 by Yuichi Motoyama <y-motoyama@issp.u-tokyo.ac.jp>
+* Copyright (C) 2014-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,8 +28,8 @@
             boost::counting_iterator<int>(num),\
             back_inserter(index));\
   std::random_shuffle(index.begin(), index.end());\
-  rokko::localized_vector  eigvals(num), eigvals_sorted(num);\
-  rokko::localized_matrix< major > eigvecs(num, num), eigvecs_sorted(num, num);\
+  rokko::localized_vector<double> eigvals(num), eigvals_sorted(num);   \
+  rokko::localized_matrix<double, major > eigvecs(num, num), eigvecs_sorted(num, num); \
   for(int i=0; i<num; ++i){\
     eigvals(i) = 1.0*index[i];\
     for(int j=0; j<num; ++j){\

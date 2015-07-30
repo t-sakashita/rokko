@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Yuichi Motoyama <y-motoyama@issp.u-tokyo.ac.jp>
+* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -40,15 +40,15 @@ BOOST_AUTO_TEST_CASE(test_localized_matrix) {
   //              137
 
   int dim = 3;
-  rokko::localized_matrix<> M(dim,dim);
+  rokko::localized_matrix<double, rokko::matrix_row_major> M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
   double a = 5.0;
-  rokko::localized_vector  u(dim);
+  rokko::localized_vector<double> u(dim);
   u << 1,2,3;
-  rokko::localized_vector v(dim);
+  rokko::localized_vector<double> v(dim);
   v << 4,5,6;
 
-  rokko::localized_vector w = a*u+M*v;
+  rokko::localized_vector<double> w = a*u+M*v;
   BOOST_CHECK_EQUAL(w[0],37.);
   BOOST_CHECK_EQUAL(w[1],87.);
   BOOST_CHECK_EQUAL(w[2],137.);

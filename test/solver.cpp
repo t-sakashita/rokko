@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2014 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.orig>
+* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,6 +27,8 @@ BOOST_AUTO_TEST_CASE(test_solver) {
                       boost::unit_test::framework::master_test_suite().argv);
     solver.finalize();
   }
+
+#ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
     std::cerr << name << std::endl;
     rokko::parallel_dense_solver solver(name);
@@ -35,4 +36,15 @@ BOOST_AUTO_TEST_CASE(test_solver) {
                       boost::unit_test::framework::master_test_suite().argv);
     solver.finalize();
   }
+#endif // ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+
+#ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
+  BOOST_FOREACH(std::string name, rokko::parallel_sparse_solver::solvers()) {
+    std::cerr << name << std::endl;
+    rokko::parallel_sparse_solver solver(name);
+    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
+                      boost::unit_test::framework::master_test_suite().argv);
+    solver.finalize();
+  }
+#endif // ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 }

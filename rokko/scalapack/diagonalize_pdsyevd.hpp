@@ -2,97 +2,94 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>,
-*               2013-2013    Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
-#define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_H
+#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_HPP
+#define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/blacs/blacs.h>
-#include <rokko/scalapack/scalapack.h>
+#include <rokko/parameters.hpp>
+#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/blacs/utility_routines.hpp>
+#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/lapack/diagonalize_get_parameters.hpp>
+#include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
 
 namespace rokko {
+
 namespace scalapack {
 
-template<typename MATRIX_MAJOR, typename TIMER>
-int diagonalize_d(distributed_matrix<MATRIX_MAJOR>& mat, localized_vector& eigvals,
-  distributed_matrix<MATRIX_MAJOR>& eigvecs, TIMER& timer) {
-  int ictxt;
-  int info;
+// pdsyevd eigenvalues / eigenvectors
+template<typename MATRIX_MAJOR>
+parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			       parameters const& params) {
+  parameters params_out;
+  char jobz = 'V';  // eigenvalues / eigenvectors
+  char uplow = lapack::get_matrix_part(params);
 
-  ROKKO_blacs_get(-1, 0, &ictxt);
-
-  char char_grid_major;
-  if(mat.get_grid().is_row_major())  char_grid_major = 'R';
-  else  char_grid_major = 'C';
-
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, mat.get_grid().get_nprow(),
-    mat.get_grid().get_npcol());
+  int ictxt = ROKKO_blacs_get(-1, 0);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
-  ROKKO_descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(), mat.get_nb(),
-    0, 0, ictxt, mat.get_lld(), &info);
-  if (info) {
-    std::cerr << "error " << info << " at descinit function of descA " << "mA="
-              << mat.get_m_local() << "  nA=" << mat.get_n_local() << "  lld=" << mat.get_lld()
-              << "." << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 89);
-  }
+  rokko::blacs::set_desc(ictxt, mat, desc);
+  int info;
 
-  double* work = new double[1];
-  int* iwork = new int[1];
-  long lwork = -1;
-  long liwork = -1;
+  info = ROKKO_pdsyevd(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+		       eigvecs.get_array_pointer(), 1, 1, desc);
 
-  // work配列のサイズの問い合わせ
-  ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc,
-                work, lwork, iwork, liwork, &info);
   if (info) {
-    std::cerr << "error at pdsyev function (query for sizes for workarrays." << std::endl;
+    std::cerr << "error at pdsyevd function. info=" << info << std::endl;
     exit(1);
   }
-
-  lwork = work[0];
-  liwork = iwork[0];
-  delete[] work;
-  delete[] iwork;
-
-  work = new double[lwork];
-  iwork = new int[liwork];
-  if (work == 0) {
-    std::cerr << "failed to allocate work. info=" << info << std::endl;
-    return info;
+  if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevd", jobz, uplow);
   }
+  ROKKO_blacs_gridexit(&ictxt);
 
-  // 固有値分解
-  timer.start(1);
-  ROKKO_pdsyevd('V', 'U', dim, mat.get_array_pointer(), 1, 1, desc,
-                &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc,
-                work, lwork, iwork, liwork, &info);
-  timer.stop(1);
+  return params_out;
+}
+
+// pdsyevd only eigenvalues
+template<typename MATRIX_MAJOR>
+parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
+			       localized_vector<double>& eigvals,
+			       parameters const& params) {
+  parameters params_out;
+  char jobz = 'N';  // only eigenvalues
+  char uplow = lapack::get_matrix_part(params);
+
+  int ictxt = ROKKO_blacs_get(-1, 0);
+  char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
+  int dim = mat.get_m_global();
+  int desc[9];
+  rokko::blacs::set_desc(ictxt, mat, desc);
+  int info;
+
+  info = ROKKO_pdsyevd(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
+		       NULL, 1, 1, desc);
 
   if (info) {
-    std::cerr << "error at pdsyevd function. info=" << info  << std::endl;
+    std::cerr << "error at pdsyevd function. info=" << info << std::endl;
     exit(1);
   }
+  if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
+    lapack::print_verbose("pdsyevd", jobz, uplow);
+  }
+  ROKKO_blacs_gridexit(&ictxt);
 
-  delete[] work;
-  delete[] iwork;
-  return info;
+  return params_out;
 }
 
 } // namespace scalapack
 } // namespace rokko
 
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_H
+#endif // ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVD_HPP

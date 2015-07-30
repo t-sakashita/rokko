@@ -15,6 +15,6 @@
 #include <rokko/serial_dense_solver.hpp>
 #include <rokko/lapack/core.hpp>
 
-ROKKO_REGISTER_SERIAL_DENSE_SOLVER(rokko::lapack::solver<rokko::lapack::dsyev>, "lapack", 20)
+ROKKO_REGISTER_SERIAL_DENSE_SOLVER(rokko::lapack::solver, "lapack", 20)
 
 #endif

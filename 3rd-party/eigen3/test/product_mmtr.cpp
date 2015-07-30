@@ -19,15 +19,13 @@
 
 template<typename Scalar> void mmtr(int size)
 {
-  typedef typename NumTraits<Scalar>::Real RealScalar;
-
   typedef Matrix<Scalar,Dynamic,Dynamic,ColMajor> MatrixColMaj;
   typedef Matrix<Scalar,Dynamic,Dynamic,RowMajor> MatrixRowMaj;
 
   DenseIndex othersize = internal::random<DenseIndex>(1,200);
   
-  MatrixColMaj matc(size, size);
-  MatrixRowMaj matr(size, size);
+  MatrixColMaj matc = MatrixColMaj::Zero(size, size);
+  MatrixRowMaj matr = MatrixRowMaj::Zero(size, size);
   MatrixColMaj ref1(size, size), ref2(size, size);
   
   MatrixColMaj soc(size,othersize); soc.setRandom();
