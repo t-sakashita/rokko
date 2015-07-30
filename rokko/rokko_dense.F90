@@ -14,9 +14,9 @@
 module rokko_dense
   use iso_c_binding
   use rokko_serial_dense
-!#ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+#ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   use rokko_parallel_dense
-!#endif ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+#endif ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   implicit none
 end module rokko_dense
 

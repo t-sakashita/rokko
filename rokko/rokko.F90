@@ -16,8 +16,8 @@ module rokko
   use solver_name_utility
   use parameters
   use rokko_dense
-!#ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
+#ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
   use rokko_sparse
-!#endif ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
+#endif ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
   implicit none
 end module rokko
