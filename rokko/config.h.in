@@ -12,7 +12,7 @@
 #ifndef ROKKO_CONFIG_H
 #define ROKKO_CONFIG_H
 
-#define ROKKO_VERSION "0.2"
+#define ROKKO_VERSION "0.3"
 
 /* Define if you have C binding */
 #cmakedefine ROKKO_HAVE_C_BINDING
