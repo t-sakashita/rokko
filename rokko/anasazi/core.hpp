@@ -100,16 +100,16 @@ public:
     BOOST_FOREACH(std::string const& key, keys) {
       if (!is_rokko_solver_key(key)) {
 	if (params.type(key) == typeid(int)) {
-	  pl_.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
+	  pl_.set(key, params.get<int>(key));
 	}
 	if (params.type(key) == typeid(double)) {
-	  pl_.set(key, params.get<double>(key)); std::cout << "double: " << key << std::endl;
+	  pl_.set(key, params.get<double>(key));
 	}
 	if (params.type(key) == typeid(std::string)) {
-	  pl_.set(key, params.get<std::string>(key)); std::cout << "string: " << key << std::endl;
+	  pl_.set(key, params.get<std::string>(key));
 	}
 	if (params.type(key) == typeid(const char*)) {
-	  pl_.set(key, params.get<const char*>(key)); std::cout << "const char*: " << key << std::endl;
+	  pl_.set(key, params.get<const char*>(key));
 	}
       }
     }
@@ -120,26 +120,29 @@ public:
     map_ = new mapping_1d(mat.get_dim());
 
     set_anasazi_parameters(params);
-    if (params.defined("Block Size"))  {
+    if (!params.defined("Which")) pl_.set("Which", "LM");
+
+    if (params.defined("Block Size")) {
       block_size_ = params.get<int>("Block Size");
-    }
-    else {
+    } else {
       block_size_ = 1;
+      pl_.set("Block Size", block_size_);
     }
-    pl_.set( "Block Size", block_size_ );
 
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
     problem_->setHermitian(true);
-    if (params.defined("num_eigenvalues"))   problem_->setNEV(params.get<int>("num_eigenvalues"));
+    if (params.defined("num_eigenvalues")) problem_->setNEV(params.get<int>("num_eigenvalues"));
     problem_->setProblem();
 
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
 	throw "error: routine must be charatcters or string.";
+      routine_ = params.get_string("routine");
+    } else {
+      routine_ = "SimpleLOBPCG";
     }
-    routine_ = params.get_string("routine");
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
     bool boolret = problem_->setProblem();
@@ -163,16 +166,16 @@ public:
     map_ = new mapping_1d(mat->get_dim());
 
     set_anasazi_parameters(params);
-    if (params.defined("Block Size"))  {
-      block_size_ = params.get<int>("Block Size");
-    }
-    else {
-      block_size_ = 1;
-    }
-    pl_.set( "Block Size", block_size_ );
+    if (!params.defined("Which")) pl_.set("Which", "LM");
 
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ =
-      Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
+    if (params.defined("Block Size")) {
+      block_size_ = params.get<int>("Block Size");
+    } else {
+      block_size_ = 1;
+      pl_.set( "Block Size", block_size_ );
+    }
+
+    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
@@ -184,6 +187,8 @@ public:
       if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
 	throw "error: routine is not charatcters or string";
       routine_ = params.get_string("routine");
+    } else {
+      routine_ = "SimpleLOBPCG";
     }
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
@@ -203,66 +208,22 @@ public:
 
   parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
 			 int max_iters, double tol) {
-    parameters params_out;
-    map_ = new mapping_1d(mat.get_dim());
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
-    multivector_->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(
-      mat.get_matrix())->get_matrix(), multivector_));
-    problem_->setHermitian(true);
-    problem_->setNEV(num_evals);
-    problem_->setProblem();
-    Teuchos::ParameterList pl;
-    pl.set("Which", "LM");
-    pl.set("Block Size", block_size);
-    pl.set("Maximum Iterations", max_iters);
-    pl.set("Convergence Tolerance", tol);
-    solvermanager_lobpcg_t solvermanager(problem_, pl);
-    bool boolret = problem_->setProblem();
-    if (boolret != true) {
-      std::cout << "setProblem()_error" << std::endl;
-    }
-
-    Anasazi::ReturnType returnCode = solvermanager.solve();
-    if (returnCode == Anasazi::Unconverged) {
-      std::cout << "solvermanager.solve()_error" << std::endl;
-    }
-    num_conv_ = problem_->getSolution().numVecs;
-    params_out.set("num_conv", num_conv_);
-    return params_out;
+    parameters params;
+    params.set("num_eigenvalues", num_evals);
+    params.set("Block Size", block_size);
+    params.set("Maximum Iterations", max_iters);
+    params.set("Convergence Tolerance", tol);
+    return diagonalize(mat, params);
   }
 
   parameters diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
 			 double tol) {
-    parameters params_out;
-    rokko::distributed_mfree* mat = &mat_in;
-    map_ = new mapping_1d(mat->get_dim());
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size));
-    multivector_->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
-    problem_->setHermitian(true);
-    problem_->setNEV(num_evals);
-    problem_->setProblem();
-    Teuchos::ParameterList pl;
-    pl.set("Which", "LM");
-    pl.set("Block Size", block_size);
-    pl.set("Maximum Iterations", max_iters);
-    pl.set("Convergence Tolerance", tol);
-    solvermanager_lobpcg_t solvermanager(problem_, pl);
-    bool boolret = problem_->setProblem();
-    if (boolret != true) {
-      std::cout << "setProblem()_error" << std::endl;
-    }
-
-    Anasazi::ReturnType returnCode = solvermanager.solve();
-    if (returnCode == Anasazi::Unconverged) {
-      std::cout << "solvermanager.solve()_error" << std::endl;
-    }
-
-    num_conv_ = problem_->getSolution().numVecs;
-    params_out.set("num_conv", num_conv_);	
-    return params_out;
+    parameters params;
+    params.set("num_eigenvalues", num_evals);
+    params.set("Block Size", block_size);
+    params.set("Maximum Iterations", max_iters);
+    params.set("Convergence Tolerance", tol);
+    return diagonalize(mat_in, params);
   }
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
