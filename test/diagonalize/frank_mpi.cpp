@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
                   MPI_THREAD_MULTIPLE, &provided);
 
   MPI_Comm comm = MPI_COMM_WORLD;
-  const int dim = 100;
+  const int dim = 10;
 
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
