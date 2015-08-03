@@ -67,10 +67,6 @@ int rokko_distributed_mfree_dim(struct rokko_distributed_mfree* matrix);
 int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree* matrix);
 int rokko_distributed_mfree_offset(struct rokko_distributed_mfree* matrix);
 
-#endif
-
-#ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
-
 /* rokko_parallel_sparse_solver */
 void rokko_parallel_sparse_solver_construct(struct rokko_parallel_sparse_solver* solver,
   const char* solver_name, int argc, char** argv);
@@ -87,6 +83,10 @@ double rokko_parallel_sparse_solver_eigenvalue(struct rokko_parallel_sparse_solv
 void rokko_parallel_sparse_solver_eigenvector(struct rokko_parallel_sparse_solver* solver, int i,
   double* vec);
 int rokko_parallel_sparse_solver_num_conv(struct rokko_parallel_sparse_solver* solver);
+
+int rokko_parallel_sparse_solver_num_solvers();
+char** rokko_parallel_sparse_solver_solvers();
+char* rokko_parallel_sparse_solver_default_solver();
 
 #endif
 

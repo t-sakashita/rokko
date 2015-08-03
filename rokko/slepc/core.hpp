@@ -73,84 +73,22 @@ public:
   void finalize() {}
   parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
 			 int max_iters, double tol) {
-    parameters params_out;
-    dimension_ = mat.get_dim();
-    offset_local_ = mat.start_row();
-    num_local_rows_ = mat.num_local_rows();
-    A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
-    EPSType        type;
-    PetscMPIInt    size;
-    PetscInt       nev;
-
-    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
-
-    /* Set operators. In this case, it is a standard eigenvalue problem */
-    ierr = EPSSetOperators(eps, *A, NULL);
-    ierr = EPSSetProblemType(eps, EPS_HEP);
-    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
-    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
-    /* Set solver parameters at runtime */
-    ierr = EPSSetFromOptions(eps);
-
-    /* Solve the eigensystem */       
-    ierr = EPSSolve(eps);
-    
-    /* Get some information from the solver and display it */
-    ierr = EPSGetType(eps, &type);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
-    ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);
-    EPSGetConverged(eps, &num_conv_);
-    params_out.set("num_conv", num_conv_);
-    if (num_conv_ == 0) {
-      std::cout << "doesn't converge" << std::endl;
-    }
-    return params_out;
+    parameters params;
+    params.set("num_eigenvalues", num_evals);
+    params.set("Block Size", block_size);
+    params.set("Maximum Iterations", max_iters);
+    params.set("Convergence Tolerance", tol);
+    return diagonalize(mat, params);
   }
 
-  parameters diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
+  parameters diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
 			 double tol) {
-    EPSType        type;
-    PetscMPIInt    size;
-    PetscInt       nev;
-    parameters params_out;
-    rokko::distributed_mfree* mat = &mat_in;
-    // define matrix-free type operator
-    dimension_ = mat->get_dim();
-    offset_local_ = mat->get_local_offset();
-    num_local_rows_ = mat->get_num_local_rows();
-    A = new Mat();
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(),
-			  mat->get_dim(), mat->get_dim(), mat, A);
-    ierr = MatSetFromOptions(*A);
-
-    ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
-    ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
-    ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
-
-    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
-    /* Set operators. In this case, it is a standard eigenvalue problem */
-    ierr = EPSSetOperators(eps, *A, NULL);
-    ierr = EPSSetProblemType(eps, EPS_HEP);
-    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
-    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
-    /* Set solver parameters at runtime */
-    ierr = EPSSetFromOptions(eps);
-    
-    /* Solve the eigensystem */       
-    ierr = EPSSolve(eps);
-    
-    /* Get some information from the solver and display it */
-    ierr = EPSGetType(eps, &type);
-    ierr = PetscPrintf(PETSC_COMM_WORLD ," Solution method: %s\n\n", type);
-    ierr = EPSGetDimensions(eps, &nev, NULL, NULL);
-    ierr = PetscPrintf(PETSC_COMM_WORLD, " Number of requested eigenvalues: %D\n", nev);
-    EPSGetConverged(eps, &num_conv_);
-    params_out.set("num_conv", num_conv_);
-    if (num_conv_ == 0) {
-      std::cout << "doesn't converge" << std::endl;
-    }
-    return params_out;
+    parameters params;
+    params.set("num_eigenvalues", num_evals);
+    params.set("Block Size", block_size);
+    params.set("Maximum Iterations", max_iters);
+    params.set("Convergence Tolerance", tol);
+    return diagonalize(mat, params);
   }
 
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
@@ -174,9 +112,11 @@ public:
     EPSType        type;
     PetscMPIInt    size;
     PetscInt       num_evals;
-    if (params.defined("num_eigenvalues"))   num_evals = (PetscInt) params.get<int>("num_eigenvalues");
-    else  num_evals = 1;
-
+    if (params.defined("num_eigenvalues")) {
+      num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    } else {
+      num_evals = 1;
+    }
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -185,9 +125,9 @@ public:
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
 	throw "error: routine must be charatcters or string.";
+      routine_ = params.get_string("routine");
+      ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-    routine_ = params.get_string("routine");
-    ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
@@ -238,22 +178,24 @@ public:
     if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
     int max_iters;
     if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
-    if (params.defined("routine")) {
-      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw "error: routine must be charatcters or string.";
-    }
-    routine_ = params.get_string("routine");
     
     EPSType        type;
     //PetscMPIInt    size;
     PetscInt       num_evals;
-    if (params.defined("num_eigenvalues"))   num_evals = (PetscInt) params.get<int>("num_eigenvalues");
-    else  num_evals = 1;
+    if (params.defined("num_eigenvalues")) {
+      num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    } else {
+      num_evals = 1;
+    }
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetProblemType(eps, EPS_HEP);
-    routine_ = params.get_string("routine");
-    ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+    if (params.defined("routine")) {
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+	throw "error: routine must be charatcters or string.";
+      routine_ = params.get_string("routine");
+      ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+    }
 
     ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);

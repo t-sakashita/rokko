@@ -64,3 +64,23 @@ int rokko_parallel_sparse_solver_num_conv(struct rokko_parallel_sparse_solver* s
   return static_cast<rokko::parallel_sparse_solver*>(solver->ptr)->num_conv();
 }
 
+int rokko_parallel_sparse_solver_num_solvers() {
+  return rokko::parallel_sparse_solver::solvers().size();
+}
+
+char** rokko_parallel_sparse_solver_solvers() {
+  std::vector<std::string> solvers = rokko::parallel_sparse_solver::solvers();
+  char **solvers_c = (char**)malloc((size_t)(solvers.size() * sizeof(char*)));
+  for (int i = 0; i < solvers.size(); ++i) {
+    solvers_c[i] = (char*)malloc((size_t)((solvers[i].size() + 1) * sizeof(char)));
+    strcpy(solvers_c[i], solvers[i].c_str());
+  }
+  return solvers_c;
+}
+
+char* rokko_parallel_sparse_solver_default_solver() {
+  std::string solver = rokko::parallel_sparse_solver::default_solver();
+  char *solver_c = (char*)malloc((size_t)((solver.size() + 1) * sizeof(char)));
+  strcpy(solver_c, solver.c_str());
+  return solver_c;
+}

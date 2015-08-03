@@ -2,17 +2,13 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
-*                       Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#include <mpi.h>
-#include <iostream>
-#include <vector>
 #include <rokko/rokko.hpp>
 #include <rokko/utility/laplacian_matrix.hpp>
 
@@ -36,9 +32,6 @@ public:
     else is_last_proc = false;
 
     end_k_ = num_local_rows_ - 1;
-    
-    std::cout << "myrank=" << myrank << " start_row=" << start_row_ << " end_row=" << end_row_ << std::endl;
-    std::cout << "myrank=" << myrank << " num_local_rows_=" << num_local_rows_ << std::endl;
   }
   ~laplacian_op() {}
 
@@ -61,30 +54,30 @@ public:
 
     if (is_first_proc) {
       if (num_local_rows_ != 1) {
-	y[0] = x[0] - x[1];
-	if (nprocs != 1) y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
+        y[0] = x[0] - x[1];
+        if (nprocs != 1) y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
       }
       else {
-	y[0] = x[0] - buf_p;
+        y[0] = x[0] - buf_p;
       }
     }
 
     if (is_last_proc) {
       if (num_local_rows_ != 1) {
-	if (nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
-	y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
+        if (nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
+        y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
       }
       else {
-	y[end_k_] = 2 * x[end_k_] - buf_m;
+        y[end_k_] = 2 * x[end_k_] - buf_m;
       }
     }
     if (!(is_first_proc || is_last_proc)) { // neither first or last process
       if (num_local_rows_ != 1) {
-	y[0] = - buf_m + 2 * x[0] - x[1];
-	y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
+        y[0] = - buf_m + 2 * x[0] - x[1];
+        y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
       }
       else {
-	y[0] = - buf_m + 2 * x[0] - buf_p;
+        y[0] = - buf_m + 2 * x[0] - buf_p;
       }
     }
     // from 1 to end-1
@@ -92,7 +85,6 @@ public:
       y[k] = - x[k-1] + 2 * x[k] - x[k+1];
     }
   }
-
   int get_dim() const { return dim_; }
   int get_local_offset() const { return local_offset_; }
   int get_num_local_rows() const { return num_local_rows_; }
@@ -110,66 +102,51 @@ private:
   mutable MPI_Status status_m, status_p;
 };
 
-
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  rokko::grid_1d g(comm);
-  int myrank = g.get_myrank();
-  int root = 0;
+  std::vector<std::string> solvers;
+  if (argc >= 2) {
+    solvers.push_back(argv[1]);
+  } else {
+    solvers = rokko::parallel_sparse_solver::solvers();
+  }
 
-  std::cout.precision(5);
-
-  rokko::parallel_sparse_solver solver("slepc");
-  //  rokko::parallel_sparse_solver solver("anasazi");
-  int dim = 20;
-  laplacian_op  mat(dim);
+  int dim = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 100;
 
   rokko::parameters params;
-  params.set("Which", "LM");
   params.set("Block Size", 5);
   params.set("Maximum Iterations", 500);
   params.set("Convergence Tolerance", 1.0e-8);
   params.set("num_eigenvalues", 10);
-  params.set("routine", "lanczos");
-  //params.set("routine", "SimpleLOBPCG");
-  //params.set("routine", "BlockDavidson");
-  
-  if (myrank == root)
-    std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
-              << "solver = " << params.get_string("routine") << std::endl
-              << "dimension = " << mat.get_dim() << std::endl;
+  BOOST_FOREACH(std::string const& name, solvers) {
+    rokko::parallel_sparse_solver solver(name);
+    laplacian_op  mat(dim);
+    if (rank == 0)
+      std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
+                << "solver = " << name << std::endl
+                << "dimension = " << mat.get_dim() << std::endl;
+    
+    rokko::parameters info = solver.diagonalize(mat, params);
 
-  rokko::parameters params_out = solver.diagonalize(mat, params);
-  int num_conv = params_out.get<int>("num_conv");
-  
-  if (myrank == root) {
-    std::cout << "number of converged eigenpairs=" << num_conv << std::endl;
-    std::cout << "largest eigenvalues:";
-    for (int i = 0; i < num_conv; ++i)
-      std::cout << ' ' << solver.eigenvalue(i);
-    std::cout << std::endl;
-    std::cout << "theoretical eigenvalues:" << std::endl;
-    for(int k=dim-1; k>=0; --k) {
-      std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << " ";
-    }
-    std::cout << std::endl;
-  }
-
-  MPI_Barrier(MPI_COMM_WORLD);
-
-  std::vector<double> eigvec;
-  for (int i = 0; i < solver.num_conv(); ++i) {
-    solver.eigenvector(i, eigvec);
-
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    if (myrank == root) {
-      std::cout << "corresponding eigenvectors:";
-      for (int j=0; j<eigvec.size(); ++j)
-	std::cout << ' ' << eigvec[j];
+    int num_conv = info.get<int>("num_conv");
+    if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
+    std::vector<double> eigvec;
+    solver.eigenvector(0, eigvec);
+    if (rank == 0) {
+      std::cout << "number of converged eigenpairs = " << num_conv << std::endl;
+      std::cout << "largest eigenvalues:     ";
+      for (int i = 0; i < num_conv; ++i) std::cout << solver.eigenvalue(i) << ' ';
+      std::cout << std::endl;
+      std::cout << "theoretical eigenvalues: ";
+      for (int k = dim - 1; k >= dim - num_conv; --k)
+        std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << ' ';
+      std::cout << std::endl;
+      std::cout << "largest eigenvector: ";
+      for (int j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
       std::cout << std::endl;
     }
   }

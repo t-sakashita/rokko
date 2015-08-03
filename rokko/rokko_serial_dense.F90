@@ -103,7 +103,6 @@ module rokko_serial_dense
   !
 
   interface
-
      subroutine rokko_serial_dense_solver_destruct(solver) bind(c)
        use iso_c_binding
        import rokko_serial_dense_solver
@@ -156,7 +155,6 @@ module rokko_serial_dense
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_parameters), intent(in) :: params
      end subroutine rokko_serial_dense_solver_diagonalize_eigvals_params
-
   end interface rokko_serial_dense_solver_diagonalize
 
   !

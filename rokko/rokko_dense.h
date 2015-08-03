@@ -79,6 +79,10 @@ struct rokko_parameters rokko_serial_dense_solver_diagonalize_params(
   struct rokko_localized_vector* eigvals, struct rokko_localized_matrix* eigvecs,
   struct rokko_parameters* params);
 
+int rokko_serial_dense_solver_num_solvers();
+char** rokko_serial_dense_solver_solvers();
+char* rokko_serial_dense_solver_default_solver();
+
 /* localized_matrix */
 void rokko_localized_vector_construct(struct rokko_localized_vector* vec, int dim1);
 void rokko_localized_vector_destruct(struct rokko_localized_vector* vec);
@@ -158,6 +162,10 @@ struct rokko_parameters rokko_parallel_dense_solver_diagonalize_distributed_matr
   struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
   struct rokko_distributed_matrix* eigvecs);
 
+int rokko_parallel_dense_solver_num_solvers();
+char** rokko_parallel_dense_solver_solvers();
+char* rokko_parallel_dense_solver_default_solver();
+  
 void rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root);
 
 void rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
