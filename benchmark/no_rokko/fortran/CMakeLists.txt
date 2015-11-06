@@ -10,11 +10,11 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE lapack scalapack rokko)
+set(EXAMPLE scalapack)# rokko)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_fortran_${name})
   file(GLOB SOURCE "${name}.f*")
-  add_executable(${target_name} ${SOURCE})
+  add_executable(${target_name} ${name}.f)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   target_link_libraries(${target_name} rokko)
   if(ROKKO_USE_CXX_LINKER)
