@@ -19,6 +19,7 @@
 *     .. Parameters ..
       INTEGER            IERR
       INTEGER            LWORK, MAXN
+      DOUBLE PRECISION   INIT_TICK, GEN_TICK, DIAG_TICK, END_TICK
       DOUBLE PRECISION   ZERO
       PARAMETER          ( LWORK = 264, MAXN = 100, ZERO = 0.0D+0 )
       INTEGER            LDA
@@ -49,10 +50,15 @@
       include 'mpif.h'
 
       call mpi_init(ierr)
-      N = 4
-      NB = 1
-      NPROW = 2
-      NPCOL = 2
+      call MPI_Comm_Size(mpi_comm_world,nprocs,ierror)
+      INIT_TICK = MPI_WTIME()
+      N = 100
+      DO WHILE ( (NPROW .ne. 1) .OR. (MOD(NPROCS,NPROW).ne.0) )
+         NPROW = NPROW - 1
+      ENDDO
+      NPCOL = NPROCS / NPROW
+      MB = M / NPROW
+      NB = N / NPCOL
 *
 *     Initialize the BLACS
 *
@@ -66,29 +72,30 @@
       CALL BLACS_GET( -1, 0, CONTEXT )
       CALL BLACS_GRIDINIT( CONTEXT, 'R', NPROW, NPCOL )
       CALL BLACS_GRIDINFO( CONTEXT, NPROW, NPCOL, MYROW, MYCOL )
-*
+      GEN_TICK = MPI_WTIME()
+*     
 *     These are basic array descriptors
 *
-      CALL DESCINIT( DESCA, N, N, NB, NB, 0, 0, CONTEXT, LDA, INFO )
-      CALL DESCINIT( DESCZ, N, N, NB, NB, 0, 0, CONTEXT, LDA, INFO )
-*
-*     Build a matrix that you can create with
-*     a one line matlab command:  hilb(n) + diag([1:-1/n:1/n])
-*
+      CALL DESCINIT( DESCA, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
+      CALL DESCINIT( DESCZ, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
       CALL PDLAMODHILB( N, A, 1, 1, DESCA, INFO )
 *
 *     Ask PDSYEV to compute the entire eigendecomposition
 *
+      DIAG_TICK = MPI_WTIME()
       CALL PDSYEV( 'V', 'U', N, A, 1, 1, DESCA, W, Z, 1, 1,
      $             DESCZ, WORK, LWORK, INFO )
-*
+      END_TICK = MPI_WTIME()
+*     
 *     Print out the eigenvalues and eigenvectors
 *
       IF( MYROW.EQ.0 .AND. MYCOL.EQ.0 ) THEN
          write(*,'(" Eigenvalues:",5f10.5)') W(1:N)
+         write(*,*) "INIT_TIME = ", GEN_TICK - INIT_TICK
+         write(*,*) "GEN_TIME = ", DIAG_TICK - GEN_TICK
+         write(*,*) "DIAG_TIME = ", END_TICK - DIAG_TICK
       END IF
-*      CALL PDLAPRNT( N, N, Z, 1, 1, DESCZ, 0, 0, 'Z', 6, WORK )
-*
+
       CALL BLACS_GRIDEXIT( CONTEXT )
 *      CALL BLACS_EXIT( 0 )
 *
@@ -133,12 +140,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-*
-*     The matlab code for a real matrix is:
-*         hilb(n) + diag( [ 1:-1/n:1/n ] )
-*     The matlab code for a complex matrix is:
-*         hilb(N) + toeplitz( [ 1 (1:(N-1))*i ] )
-*
+
 *       This is just to keep ftnchek happy
       IF( BLOCK_CYCLIC_2D*CSRC_*CTXT_*DLEN_*DT_*LLD_*MB_*M_*NB_*N_*
      $    RSRC_.LT.0 )RETURN
@@ -154,7 +156,7 @@
          INFO = -4
       END IF
 *
-*     Create 4x4 Frank matrix
+*     Create Frank matrix
       DO 20 J = 1, N
          DO 10 I = 1, N
             CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
