@@ -17,6 +17,7 @@
 *     pasted directly into matlab.
 *
 *     .. Parameters ..
+      INTEGER            IERR
       INTEGER            LWORK, MAXN
       DOUBLE PRECISION   ZERO
       PARAMETER          ( LWORK = 264, MAXN = 100, ZERO = 0.0D+0 )
@@ -45,6 +46,9 @@
 *
 *     Set up the problem
 *
+      include 'mpif.h'
+
+      call mpi_init(ierr)
       N = 4
       NB = 1
       NPROW = 2
@@ -83,11 +87,12 @@
       IF( MYROW.EQ.0 .AND. MYCOL.EQ.0 ) THEN
          write(*,'(" Eigenvalues:",5f10.5)') W(1:N)
       END IF
-      CALL PDLAPRNT( N, N, Z, 1, 1, DESCZ, 0, 0, 'Z', 6, WORK )
+*      CALL PDLAPRNT( N, N, Z, 1, 1, DESCZ, 0, 0, 'Z', 6, WORK )
 *
       CALL BLACS_GRIDEXIT( CONTEXT )
-      CALL BLACS_EXIT( 0 )
+*      CALL BLACS_EXIT( 0 )
 *
+      call mpi_finalize(ierr)
       STOP
       END
 *
@@ -155,7 +160,8 @@
             CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
    10    CONTINUE
    20 CONTINUE
-*
+
+*     
 *
       RETURN
 *
