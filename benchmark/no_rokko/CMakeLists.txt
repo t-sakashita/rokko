@@ -9,4 +9,8 @@
 
 #add_subdirectory(cxx)
 
-add_subdirectory(no_rokko)
+if(BUILD_Fortran_BINDING)
+  add_subdirectory(fortran)
+endif(BUILD_Fortran_BINDING)
+
+
