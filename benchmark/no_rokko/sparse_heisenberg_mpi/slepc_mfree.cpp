@@ -34,29 +34,26 @@ int main(int argc,char **argv)
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
   initend_tick = MPI_Wtime();
 
-  std::string lattice_file("xyz.dat");
-  if (argc >= 2) lattice_file = argv[1];
-  int L;
-  std::vector<std::pair<int, int> > lattice;
-  rokko::read_lattice_file(lattice_file, L, lattice);
-  int dim = 1 << L;
-
-  PetscInt N_global = dim;
-  PetscInt N_local = N_global / nproc;
-
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Compute the operator matrix that defines the eigensystem, Ax=kx
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   model m;
-  m.comm = PETSC_COMM_WORLD;
+  std::string lattice_file("xyz.dat");
+  if (argc >= 2) lattice_file = argv[1];
+  int L;
+  rokko::read_lattice_file(lattice_file, L, m.lattice);
+  
+  gen_tick = MPI_Wtime();
+  int dim = 1 << L;
+  PetscInt N_global = dim;
+  PetscInt N_local = N_global / nproc;
   m.L = L;
+  m.comm = PETSC_COMM_WORLD;
   m.buffer = new double[N_local];
   if (m.buffer == 0) {
     MPI_Abort(MPI_COMM_WORLD, 4);
   }
-
-  gen_tick = MPI_Wtime();
   ierr = MatCreateShell(PETSC_COMM_WORLD, N_local, N_local, N_global, N_global, &m, &A); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
   ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)())MatMult_myMat); CHKERRQ(ierr);
@@ -79,8 +76,8 @@ int main(int argc,char **argv)
   ierr = EPSSetOperators(eps,A,NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps,EPS_HEP); CHKERRQ(ierr);
   //ierr = EPSSetDimensions(eps, 5, 100, 100); CHKERRQ(ierr);
-  ierr = EPSSetDimensions(eps, 5, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
-  ierr = EPSSetTolerances(eps, (PetscScalar) 1., (PetscInt) 200);   CHKERRQ(ierr);
+  ierr = EPSSetDimensions(eps, 10, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
+  //ierr = EPSSetTolerances(eps, (PetscScalar) 1., (PetscInt) 2000);   CHKERRQ(ierr);
   /*  Vec v0;
   MatGetVecs(A, &v0, NULL);
   VecSet(v0,1.0);
