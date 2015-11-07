@@ -12,7 +12,7 @@ include_directories(${PROJECT_BINARY_DIR}/rokko)
 
 set(EXAMPLE scalapack eigen_exa)
 foreach(name ${EXAMPLE})
-  set(target_name benchmark_fortran_${name})
+  set(target_name benchmark_dense_frank_mpi_${name})
   file(GLOB SOURCE "${name}.f*")
   add_executable(${target_name} ${SOURCE})
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})

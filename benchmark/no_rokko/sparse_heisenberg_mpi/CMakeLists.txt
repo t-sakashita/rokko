@@ -9,9 +9,9 @@
 #
 
 if(BUILD_ANASAZI)
-  set(SAMPLE heisenberg_crs_mpi heisenberg_mfree_mpi)
+  set(SAMPLE anasazi_crs anasazi_mfree slepc_crs slepc_mfree)
   foreach(name ${SAMPLE})
-    set(target_name benchmark_norokko_anasazi_${name})
+    set(target_name benchmark_norokko_sparse_heisenberg_mpi_${name})
     add_executable(${target_name} ${name}.cpp)
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
     target_link_libraries(${target_name} rokko)

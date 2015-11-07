@@ -7,10 +7,12 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-add_subdirectory(cxx)
+add_subdirectory(dense_frank_mpi)
 
-if(BUILD_Fortran_BINDING)
-  add_subdirectory(fortran)
-endif(BUILD_Fortran_BINDING)
+if(BUILD_PARALLEL_SPARSE_SOLVER)
+  add_subdirectory(sparse_heisenberg_mpi)
+endif(BUILD_PARALLEL_SPARSE_SOLVER)
+
+
 
 
