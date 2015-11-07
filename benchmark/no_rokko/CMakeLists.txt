@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-#add_subdirectory(cxx)
+add_subdirectory(cxx)
 
 if(BUILD_Fortran_BINDING)
   add_subdirectory(fortran)

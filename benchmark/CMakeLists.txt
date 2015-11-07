@@ -9,4 +9,5 @@
 
 #add_subdirectory(cxx)
 
+add_subdirectory(use_rokko)
 add_subdirectory(no_rokko)

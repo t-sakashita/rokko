@@ -18,7 +18,7 @@
 *
 *     .. Parameters ..
       INTEGER            N
-      PARAMETER          ( N = 1000 )
+      PARAMETER          ( N = 3000 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            IERR
@@ -30,7 +30,7 @@
 *     .. Local Arrays ..
       INTEGER            DESCA( 50 ), DESCZ( 50 )
       DOUBLE PRECISION   A( N, N ), W( N ),
-     $     Z( N, N ), PRNWORK(1000)
+     $     Z( N, N )
       DOUBLE PRECISION   TMPWORK(1)
       DOUBLE PRECISION, allocatable :: WORK(:)
 *     ..

@@ -18,14 +18,13 @@ message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
 include(${ROKKO_USE_FILE})
 message(STATUS ${ROKKO_USE_FILE})
 
-enable_language(Fortran)
 add_executable(LAPACK LAPACK.f)
-target_link_libraries(LAPACK ${ROKKO_LIBRARIES}
-  ${ROKKO_LIBRARIES_Fortran})
+target_link_libraries(LAPACK ${ROKKO_LAPACK_LIBRARIES})
 
 add_executable(ScaLAPACK ScaLAPACK.f)
-target_link_libraries(ScaLAPACK ${ROKKO_LIBRARIES}
-  ${ROKKO_LIBRARIES_Fortran})
+#target_link_libraries(ScaLAPACK ${ROKKO_LIBRARIES})
+target_link_libraries(ScaLAPACK ${ROKKO_SCALAPACK_LIBRARIES})
+
 
 add_executable(Rokko Rokko.f90)
 target_link_libraries(Rokko ${ROKKO_LIBRARIES}
