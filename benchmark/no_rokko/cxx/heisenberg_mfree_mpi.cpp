@@ -137,7 +137,7 @@ class HeisenbergOp : public Epetra_Operator {
 
 int main(int argc, char *argv[]) {
   using std::endl;
-  double init_tick, gen_tick, diag_tick, end_tick;
+  double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
 #ifdef HAVE_MPI
   // Initialize MPI
@@ -152,6 +152,7 @@ int main(int argc, char *argv[]) {
 #else
   Epetra_SerialComm Comm;
 #endif
+  initend_tick = MPI_Wtime();
 
   // Create an Anasazi output manager
   Anasazi::BasicOutputManager<double> printer;
@@ -268,7 +269,8 @@ int main(int argc, char *argv[]) {
       <<endl;
   }
   os<<"------------------------------------------------------"<<endl;
-  os << "gen_time = " << diag_tick - gen_tick << std::endl
+  os << "init_time = " << initend_tick - init_tick << std::endl
+     << "gen_time = " << diag_tick - gen_tick << std::endl
      << "diag_time = " << end_tick - diag_tick << std::endl;
   printer.print(Anasazi::Errors,os.str());
 
