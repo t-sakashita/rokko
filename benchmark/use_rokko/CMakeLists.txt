@@ -8,7 +8,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  set(SAMPLE frank_mpi heisenberg_crs_mpi)
+  set(SAMPLE frank_mpi heisenberg_crs_mpi heisenberg_mfree_mpi)
   foreach(name ${SAMPLE})
     set(target_name use_rokko_dense_mpi_${name})
     add_executable(${target_name} ${name}.cpp)
