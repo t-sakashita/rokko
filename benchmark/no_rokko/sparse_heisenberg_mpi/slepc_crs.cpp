@@ -98,11 +98,19 @@ int main(int argc,char **argv)
      Optional: Get some information from the solver and display it
   */
   ierr = EPSGetType(eps,&type); CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type); CHKERRQ(ierr);
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"solution method: %s\n\n",type); CHKERRQ(ierr);
   ierr = EPSGetDimensions(eps,&nev,NULL,NULL); CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev); CHKERRQ(ierr);
-
+  ierr = PetscPrintf(PETSC_COMM_WORLD,"number of requested eigenvalues: %D\n",nev); CHKERRQ(ierr);
+  int num_conv;
+  EPSGetConverged(eps, &num_conv);
+  PetscScalar eval_r, eval_i;
   if (rank == 0) {
+    std::cout << "number of converged eigenpairs = " << num_conv << std::endl;
+    for (int i=0; i<num_conv; ++i) {
+      EPSGetEigenvalue(eps, i, &eval_r, &eval_i);
+      std::cout << ' ' << eval_r;
+    }
+    std::cout << std::endl;
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
 	      << "gen_time = " << diag_tick - gen_tick << std::endl
 	      << "diag_time = " << end_tick - diag_tick << std::endl;
