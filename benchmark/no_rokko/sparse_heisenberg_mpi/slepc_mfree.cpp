@@ -28,6 +28,8 @@ int main(int argc,char **argv)
   PetscErrorCode ierr;
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);

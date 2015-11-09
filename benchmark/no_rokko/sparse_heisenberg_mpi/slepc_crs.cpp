@@ -15,6 +15,8 @@ int main(int argc,char **argv)
   PetscErrorCode ierr;
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
@@ -75,18 +77,18 @@ int main(int argc,char **argv)
   */
   diag_tick = MPI_Wtime();
   ierr = EPSCreate(PETSC_COMM_WORLD, &eps); CHKERRQ(ierr);
-
   /*
      Set operators. In this case, it is a standard eigenvalue problem
   */
   ierr = EPSSetOperators(eps, A, NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps, EPS_HEP); CHKERRQ(ierr);
   ierr = EPSSetDimensions(eps, 10, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
-
+  //char routine_name[] = "lobpcg";
+  //ierr = EPSSetType(eps,routine_name); CHKERRQ(ierr);
   /*
      Set solver parameters at runtime
   */
-  //ierr = EPSSetFromOptions(eps); CHKERRQ(ierr);
+  ierr = EPSSetFromOptions(eps); CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                       Solve the eigensystem
