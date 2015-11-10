@@ -9,7 +9,7 @@
 #
 
 if(BUILD_ANASAZI)
-  set(SAMPLE anasazi_crs anasazi_mfree slepc_crs slepc_mfree)
+  set(SAMPLE anasazi_crs anasazi_mfree anasazi_crs_krylov anasazi_mfree_krylov slepc_crs slepc_mfree)
   foreach(name ${SAMPLE})
     set(target_name benchmark_norokko_sparse_heisenberg_mpi_${name})
     add_executable(${target_name} ${name}.cpp)

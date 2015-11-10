@@ -9,7 +9,7 @@
 #
 
 if(BUILD_SLEPC)
-  set(TESTS frank_matfree_1proc heisenberg_crs_mpi heisenberg_matfree_1proc heisenberg_matfree_mpi xyz_crs_mpi xyz_matfree_mpi frank_matfree heisenberg_matfree_mpi_allvec)
+  set(TESTS frank_matfree_1proc heisenberg_crs_mpi heisenberg_matfree_1proc heisenberg_matfree_mpi xyz_crs_mpi xyz_matfree_mpi frank_matfree heisenberg_matfree_mpi_allvec ex1)
 
   foreach(name ${TESTS})
     set(target_name norokko_slepc_diagonalize_${name})
