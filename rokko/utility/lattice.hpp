@@ -123,6 +123,12 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
   return read_lattice_stream(ifs, num_sites, lattice);
 }
 
+void print_lattice(std::vector<std::pair<int, int> >& lattice) {
+  for (int i=0; i<lattice.size(); ++i) { 
+    std::cout << "no=" << i << "<" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
+  }
+}
+
 } // namespace rokko
 
 #endif // ROKKO_UTILITY_LATTICE_HPP
