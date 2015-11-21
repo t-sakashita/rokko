@@ -24,7 +24,7 @@ namespace rokko {
 namespace slepc {
 
 #undef __FUNCT__
-#define __FUNCT__ "MatMult_myMat"
+#define __FUNCT__ "rokko::slepc::MatMult_myMat"
 PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
   PetscFunctionBeginUser;
   PetscErrorCode ierr;
@@ -47,7 +47,7 @@ PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "MatGetDiagonal_myMat"
+#define __FUNCT__ "rokko::slepc::MatGetDiagonal_myMat"
 PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
   PetscFunctionBeginUser;
   PetscErrorCode ierr;
