@@ -1,14 +1,14 @@
-# - Try to find Elpa
+# - Try to find ELPA
 # Once done this will define
 #
-#  ELPA_FOUND        - system has Elpa
-#  ELPA_LIBARIES     - libraries for Elpa
+#  ELPA_FOUND        - system has ELPA
+#  ELPA_LIBARIES     - libraries for ELPA
 
 if(DEFINED ELPA_FOUND)
   return()
 endif(DEFINED ELPA_FOUND)
   
-message(STATUS "Checking for Elpa library")
+message(STATUS "Checking for ELPA library")
 set(ELPA_FOUND FALSE)
 
 # Standard search path
@@ -44,14 +44,14 @@ endforeach()
 find_library(_ELPA_LIBRARY
   NAME elpa-2011.12
   PATHS ${_LIBPATHS}
-  DOC "The Elpa library")
+  DOC "The ELPA library")
 if(_ELPA_LIBRARY)
   list(APPEND ELPA_LIBRARIES ${_ELPA_LIBRARY})
 else(_ELPA_LIBRARY)
-  message(STATUS "Elpa library: not found")
+  message(STATUS "ELPA library: not found")
   set(ELPA_FOUND FALSE)
   return()
 endif(_ELPA_LIBRARY)
 
 set(ELPA_FOUND TRUE)
-message(STATUS "Elpa libraries: ${ELPA_LIBRARIES}")
+message(STATUS "ELPA libraries: ${ELPA_LIBRARIES}")

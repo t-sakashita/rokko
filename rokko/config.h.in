@@ -35,7 +35,7 @@
 /* Define if you have Elemental Library */
 #cmakedefine ROKKO_HAVE_ELEMENTAL
 
-/* Define if you have Elpa Library */
+/* Define if you have ELPA Library */
 #cmakedefine ROKKO_HAVE_ELPA
 
 /* Define if you have parallel dense solver */
