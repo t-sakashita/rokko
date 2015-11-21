@@ -29,12 +29,12 @@ int main(int argc,char **argv)
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
   int provided;
-  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  init_tick = MPI_Wtime();
+  //MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  //init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
-  initend_tick = MPI_Wtime();
+  //initend_tick = MPI_Wtime();
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Compute the operator matrix that defines the eigensystem, Ax=kx
@@ -60,7 +60,7 @@ int main(int argc,char **argv)
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
   ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)())MatMult_myMat); CHKERRQ(ierr);
   ierr = MatShellSetOperation(A,MATOP_MULT_TRANSPOSE,(void(*)())MatMult_myMat); CHKERRQ(ierr);
-  ierr = MatShellSetOperation(A,MATOP_GET_DIAGONAL,(void(*)())MatGetDiagonal_myMat); CHKERRQ(ierr);
+  //ierr = MatShellSetOperation(A,MATOP_GET_DIAGONAL,(void(*)())MatGetDiagonal_myMat); CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 Create the eigensolver and set various options
@@ -78,7 +78,7 @@ int main(int argc,char **argv)
   ierr = EPSSetOperators(eps,A,NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps,EPS_HEP); CHKERRQ(ierr);
   //ierr = EPSSetDimensions(eps, 5, 100, 100); CHKERRQ(ierr);
-  ierr = EPSSetDimensions(eps, 10, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
+  //ierr = EPSSetDimensions(eps, 1, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
   //ierr = EPSSetTolerances(eps, (PetscScalar) 1., (PetscInt) 2000);   CHKERRQ(ierr);
   /*  Vec v0;
   MatGetVecs(A, &v0, NULL);

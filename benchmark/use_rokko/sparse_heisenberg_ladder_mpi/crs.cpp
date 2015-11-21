@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     rokko::print_lattice(lattice);
   int dim = 1 << L;
   if (rank == 0)
-    std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg 1D ladderlattice" << std::endl
+    std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg 1D ladder lattice" << std::endl
 	      << "solver = " << name << std::endl
 	      << "L = " << L << std::endl
 	      << "dimension = " << dim << std::endl;

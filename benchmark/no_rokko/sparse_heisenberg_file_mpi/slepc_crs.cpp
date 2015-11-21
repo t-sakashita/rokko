@@ -82,7 +82,7 @@ int main(int argc,char **argv)
   */
   ierr = EPSSetOperators(eps, A, NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps, EPS_HEP); CHKERRQ(ierr);
-  ierr = EPSSetDimensions(eps, 10, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
+  //ierr = EPSSetDimensions(eps, 10, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
   //char routine_name[] = "lobpcg";
   //ierr = EPSSetType(eps,routine_name); CHKERRQ(ierr);
   /*
@@ -124,6 +124,7 @@ int main(int argc,char **argv)
   ierr = EPSDestroy(&eps); CHKERRQ(ierr);
   ierr = MatDestroy(&A); CHKERRQ(ierr);
   ierr = SlepcFinalize();
+  MPI_Finalize();
   return 0;
 }
 

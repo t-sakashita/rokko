@@ -10,7 +10,8 @@
 add_subdirectory(dense_frank_mpi)
 
 if(BUILD_PARALLEL_SPARSE_SOLVER)
-  add_subdirectory(sparse_heisenberg_mpi)
+  add_subdirectory(sparse_heisenberg_ladder_mpi)
+  add_subdirectory(sparse_heisenberg_file_mpi)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)
 
 
