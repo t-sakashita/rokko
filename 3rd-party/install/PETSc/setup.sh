@@ -7,8 +7,8 @@ set_prefix
 
 cd $BUILD_DIR
 rm -rf petsc-$PETSC_VERSION*
-if [ -f $HOME/source/petsc-$PETSC_VERSION.tar.gz ]; then
-  check tar zxf $HOME/source/petsc-$PETSC_VERSION.tar.gz
+if [ -f $SOURCE_DIR/petsc-$PETSC_VERSION.tar.gz ]; then
+  check tar zxf $SOURCE_DIR/source/petsc-$PETSC_VERSION.tar.gz
 else
   check wget http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-$PETSC_VERSION.tar.gz
   check tar zxf petsc-$PETSC_VERSION.tar.gz

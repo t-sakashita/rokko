@@ -8,8 +8,8 @@ set_prefix
 cd $BUILD_DIR
 
 rm -rf trilinos-$TRILINOS_VERSION-Source*
-if [ -f $HOME/source/trilinos-$TRILINOS_VERSION-Source.tar.bz2 ]; then
-  check tar jxf $HOME/source/trilinos-$TRILINOS_VERSION-Source.tar.bz2
+if [ -f $SOURCE_DIR/trilinos-$TRILINOS_VERSION-Source.tar.bz2 ]; then
+  check tar jxf $SOURCE_DIR/trilinos-$TRILINOS_VERSION-Source.tar.bz2
 else
   echo "Error: trilinos-$TRILINOS_VERSION-Source.tar.bz2 not found"
   exit 127
