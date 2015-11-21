@@ -26,7 +26,7 @@
 /* Define if you have MPI */
 #cmakedefine ROKKO_HAVE_MPI
 
-/* Define if you have Scalapack Library */
+/* Define if you have ScaLAPACK Library */
 #cmakedefine ROKKO_HAVE_SCALAPACK
 
 /* Define if you have EigenExa Library */

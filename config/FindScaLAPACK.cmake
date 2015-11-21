@@ -1,4 +1,4 @@
-# - Try to find Scalapack
+# - Try to find ScaLAPACK
 # Once done this will define
 #
 #  SCALAPACK_FOUND        - system has ScaLAPACK

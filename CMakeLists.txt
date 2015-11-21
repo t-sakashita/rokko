@@ -24,7 +24,7 @@ option(BUILD_Fortran_BINDING "Build Fortran binding libraries" ON)
 option(BUILD_Python_BINDING "Build Python binding libraries" ON)
 option(DISABLE_OPENMP "Disable OpenMP Parallelization" OFF)
 option(DISABLE_MPI "Disable MPI Parallelization" OFF)
-option(DISABLE_SCALAPACK "Disable Scalapack Library" OFF)
+option(DISABLE_SCALAPACK "Disable ScaLAPACK Library" OFF)
 option(DISABLE_EIGENEXA "Disable EigenExa Library" OFF)
 option(DISABLE_ELEMENTAL "Disable Elemental Library" OFF)
 option(DISABLE_ELPA "Disable ELPA Library" OFF)
@@ -169,11 +169,11 @@ string(REGEX REPLACE ";" " " LAPACK_LIBS "${LAPACK_LIBRARIES}")
 # parallel dense solvers
 #
 
-# find Scalapack
+# find ScaLAPACK
 if(DISABLE_SCALAPACK)
   set(BUILD_SCALAPACK FALSE)
 else(DISABLE_SCALAPACK)
-  find_package(Scalapack)
+  find_package(ScaLAPACK)
   set(BUILD_SCALAPACK ${SCALAPACK_FOUND})
 endif(DISABLE_SCALAPACK)
 set(ROKKO_HAVE_SCALAPACK ${BUILD_SCALAPACK})
