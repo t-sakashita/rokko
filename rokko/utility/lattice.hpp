@@ -13,6 +13,7 @@
 #define ROKKO_UTILITY_LATTICE_HPP
 
 #include <string>
+#include <sstream>      // for std::istringstream
 #include <list>
 #include <iostream>
 #include <iomanip>
