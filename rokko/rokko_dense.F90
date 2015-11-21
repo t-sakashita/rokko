@@ -16,7 +16,7 @@ module rokko_dense
   use rokko_serial_dense
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   use rokko_parallel_dense
-#endif ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+#endif
   implicit none
 end module rokko_dense
 
