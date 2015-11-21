@@ -69,8 +69,8 @@ class solver {
 public: 
   solver() { SlepcInitialize(NULL, NULL, (char*)0, 0); }
   ~solver() {}
-  void initialize(int& argc, char**& argv) { SlepcInitialize(NULL, NULL, (char*)0, 0); }
-  void finalize() {}
+  void initialize(int& argc, char**& argv) {}
+  void finalize() { SlepcFinalize(); }
   parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
 			 int max_iters, double tol) {
     parameters params;

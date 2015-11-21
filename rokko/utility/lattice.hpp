@@ -125,7 +125,21 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
 
 void print_lattice(std::vector<std::pair<int, int> >& lattice) {
   for (int i=0; i<lattice.size(); ++i) { 
-    std::cout << "no=" << i << "<" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
+    std::cout << "no=" << i << " <" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
+  }
+}
+
+void ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int> >& lattice) {
+  int L = 2 * len_ladder;
+  int dim = 1 << L;
+  for (int i = 0; i < (len_ladder-1); ++i) {
+    lattice.push_back(std::make_pair(i, i+1));
+  }
+  for (int i = len_ladder; i < (L-1); ++i) {
+    lattice.push_back(std::make_pair(i, i+1));
+  }
+  for (int i = 0; i < len_ladder; ++i) {
+    lattice.push_back(std::make_pair(i, i+len_ladder));
   }
 }
 
