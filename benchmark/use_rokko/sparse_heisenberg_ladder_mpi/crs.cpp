@@ -11,6 +11,7 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/lattice.hpp>
+#include <rokko/utility/machine_info.hpp>
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -89,6 +90,7 @@ int main(int argc, char *argv[]) {
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
 	      << "gen_time = " << diag_tick - gen_tick << std::endl
 	      << "diag_time = " << end_tick - diag_tick << std::endl;
+    rokko::machine_info();
   }
 
   solver.finalize();
