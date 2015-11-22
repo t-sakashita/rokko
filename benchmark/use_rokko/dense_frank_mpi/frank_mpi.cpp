@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  std::string library_routine(rokko::parallel_dense_solver::default_solver());
+  std::string library_routine(rokko::parallel_dense_ev::default_solver());
   std::string library, routine;
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   init_tick = MPI_Wtime();  
-  rokko::parallel_dense_solver solver(library);
+  rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   initend_tick = MPI_Wtime();
 

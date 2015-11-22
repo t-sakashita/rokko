@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   std::string solver_name(argv[1]);
   unsigned int dim = boost::lexical_cast<unsigned int>(argv[2]);
 
-  rokko::parallel_dense_solver solver(solver_name);
+  rokko::parallel_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
 
   MPI_Comm comm = MPI_COMM_WORLD;

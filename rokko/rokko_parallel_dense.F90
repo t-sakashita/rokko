@@ -57,28 +57,28 @@ module rokko_parallel_dense
   end interface rokko_grid_construct
 
   !
-  ! rokko_parallel_dense_solver
+  ! rokko_parallel_dense_ev
   !
      
   interface
-     subroutine rokko_parallel_dense_solver_destruct(solver) bind(c)
+     subroutine rokko_parallel_dense_ev_destruct(solver) bind(c)
        use iso_c_binding
-       import rokko_parallel_dense_solver
+       import rokko_parallel_dense_ev
        implicit none
-       type(rokko_parallel_dense_solver), intent(inout) :: solver
-     end subroutine rokko_parallel_dense_solver_destruct
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
+     end subroutine rokko_parallel_dense_ev_destruct
      
-     subroutine rokko_parallel_dense_solver_diagonalize_distributed_matrix(solver, mat, eigvals, &
+     subroutine rokko_parallel_dense_ev_diagonalize_distributed_matrix(solver, mat, eigvals, &
           eigvecs) bind(c)
        use iso_c_binding
        use rokko_serial_dense, only : rokko_localized_vector
-       import rokko_parallel_dense_solver, rokko_distributed_matrix
+       import rokko_parallel_dense_ev, rokko_distributed_matrix
        implicit none
-       type(rokko_parallel_dense_solver), intent(inout) :: solver
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
        type(rokko_distributed_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_distributed_matrix), intent(inout) :: eigvecs
-     end subroutine rokko_parallel_dense_solver_diagonalize_distributed_matrix
+     end subroutine rokko_parallel_dense_ev_diagonalize_distributed_matrix
   end interface
   
   !

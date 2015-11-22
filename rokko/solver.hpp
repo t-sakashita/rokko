@@ -15,7 +15,7 @@
 #include <rokko/config.h>
 #include <rokko/serial_dense_ev.hpp>
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
-# include <rokko/parallel_dense_solver.hpp>
+# include <rokko/parallel_dense_ev.hpp>
 #endif
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 # include <rokko/parallel_sparse_solver.hpp>

@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  std::string library_routine(rokko::parallel_dense_solver::default_solver());
+  std::string library_routine(rokko::parallel_dense_ev::default_solver());
   std::string library, routine;
   int dim = 10;
   if (argc >= 2) library_routine = argv[1];
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
-  rokko::parallel_dense_solver solver(library);
+  rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl

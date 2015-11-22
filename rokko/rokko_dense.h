@@ -54,7 +54,7 @@ struct rokko_distributed_matrix {
 #endif
   
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
-struct rokko_parallel_dense_solver {
+struct rokko_parallel_dense_ev {
   void* ptr;
 };
 #endif
@@ -119,7 +119,7 @@ int rokko_grid_get_nprocs(struct rokko_grid grid);
 
 /* distributed_matrix */
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
-  struct rokko_grid grid, struct rokko_parallel_dense_solver solver, int matrix_major);
+  struct rokko_grid grid, struct rokko_parallel_dense_ev solver, int matrix_major);
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix* matrix,
   double (*func)(int i, int j));
@@ -152,19 +152,19 @@ int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix m
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 
 /* parallel_dense_sover */
-void rokko_parallel_dense_solver_construct(struct rokko_parallel_dense_solver* solver,
+void rokko_parallel_dense_ev_construct(struct rokko_parallel_dense_ev* solver,
   const char* solver_name, int argc, char** argv);
-void rokko_parallel_dense_solver_construct_f(struct rokko_parallel_dense_solver* solver,
+void rokko_parallel_dense_ev_construct_f(struct rokko_parallel_dense_ev* solver,
   const char* solver_name);
-void rokko_parallel_dense_solver_destruct(struct rokko_parallel_dense_solver* solver);
-struct rokko_parameters rokko_parallel_dense_solver_diagonalize_distributed_matrix(
-  struct rokko_parallel_dense_solver* solver,
+void rokko_parallel_dense_ev_destruct(struct rokko_parallel_dense_ev* solver);
+struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(
+  struct rokko_parallel_dense_ev* solver,
   struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
   struct rokko_distributed_matrix* eigvecs);
 
-int rokko_parallel_dense_solver_num_solvers();
-char** rokko_parallel_dense_solver_solvers();
-char* rokko_parallel_dense_solver_default_solver();
+int rokko_parallel_dense_ev_num_solvers();
+char** rokko_parallel_dense_ev_solvers();
+char* rokko_parallel_dense_ev_default_solver();
   
 void rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root);
 

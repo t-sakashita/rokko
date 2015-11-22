@@ -21,9 +21,9 @@ module rokko_parallel_dense_classes
      integer(c_int) major
   end type rokko_grid
 
-  type, bind(c) :: rokko_parallel_dense_solver
+  type, bind(c) :: rokko_parallel_dense_ev
      type(c_ptr) ptr
-  end type rokko_parallel_dense_solver
+  end type rokko_parallel_dense_ev
 
   type, bind(c) :: rokko_distributed_matrix
      type(c_ptr) ptr

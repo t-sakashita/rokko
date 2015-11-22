@@ -29,9 +29,9 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   }
 
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
-  BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
+  BOOST_FOREACH(std::string name, rokko::parallel_dense_ev::solvers()) {
     std::cerr << name << std::endl;
-    rokko::parallel_dense_solver solver(name);
+    rokko::parallel_dense_ev solver(name);
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                       boost::unit_test::framework::master_test_suite().argv);
     solver.finalize();

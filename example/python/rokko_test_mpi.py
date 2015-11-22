@@ -10,7 +10,7 @@
 from mpi4py import MPI
 from rokko import *
 
-solver = rokko_parallel_dense_solver("scalapack:pdsyev", 0, None)
+solver = rokko_parallel_dense_ev("scalapack:pdsyev", 0, None)
 
 dim = 50
 

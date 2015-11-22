@@ -20,7 +20,7 @@
 
 int main(int argc, char *argv[]) {
   int dim;
-  struct rokko_parallel_dense_solver solver;
+  struct rokko_parallel_dense_ev solver;
   struct rokko_distributed_matrix A, B, eigvec;
   struct rokko_localized_matrix locA, locB;
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   printf("solver name = %s\n", solver_name);
   printf("matrix dimension = %d\n", dim);
 
-  rokko_parallel_dense_solver_construct(&solver, solver_name, argc, argv);
+  rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
 
   rokko_localized_matrix_construct(&locA, dim, dim, rokko_matrix_col_major);
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   rokko_distributed_matrix_destruct(&B);
   rokko_distributed_matrix_destruct(&eigvec);
   rokko_localized_vector_destruct(&eigval);
-  rokko_parallel_dense_solver_destruct(&solver);
+  rokko_parallel_dense_ev_destruct(&solver);
   rokko_grid_destruct(&grid);
 
   MPI_Finalize();

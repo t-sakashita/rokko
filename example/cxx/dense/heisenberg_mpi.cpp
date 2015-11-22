@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  std::string solver_name(rokko::parallel_dense_solver::default_solver());
+  std::string solver_name(rokko::parallel_dense_ev::default_solver());
   int L = 8;
   if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) L = boost::lexical_cast<int>(argv[2]);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::parallel_dense_solver solver(solver_name);
+  rokko::parallel_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl

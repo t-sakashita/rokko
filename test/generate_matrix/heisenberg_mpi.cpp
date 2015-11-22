@@ -22,7 +22,7 @@
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
-  rokko::parallel_dense_solver solver;
+  rokko::parallel_dense_ev solver;
   solver.initialize(argc, argv);
   rokko::grid g(MPI_COMM_WORLD);
 

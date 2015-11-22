@@ -23,7 +23,7 @@
 #include "titpack.hpp"
 #include "options.hpp"
 
-typedef rokko::parallel_dense_solver solver_type;
+typedef rokko::parallel_dense_ev solver_type;
 typedef rokko::distributed_matrix<rokko::matrix_col_major> matrix_type;
 
 int main(int argc, char** argv) {

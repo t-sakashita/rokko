@@ -26,12 +26,12 @@ module rokko_distributed_matrix_mod
      subroutine rokko_distributed_matrix_construct(matrix, dim1, dim2, grid, solver, matrix_major) &
           bind(c)
        use iso_c_binding
-       import rokko_grid, rokko_parallel_dense_solver, rokko_distributed_matrix
+       import rokko_grid, rokko_parallel_dense_ev, rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), intent(out) :: matrix
        integer(c_int), value, intent(in) :: dim1, dim2
        type(rokko_grid), value, intent(in) :: grid
-       type(rokko_parallel_dense_solver), value, intent(in) :: solver
+       type(rokko_parallel_dense_ev), value, intent(in) :: solver
        integer(c_int), value, intent(in) :: matrix_major
      end subroutine rokko_distributed_matrix_construct
      

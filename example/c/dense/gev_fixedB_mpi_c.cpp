@@ -23,9 +23,9 @@
 
 typedef rokko::matrix_col_major matrix_major;
 
-void diagonalize_fixedB_c(struct rokko_parallel_dense_solver solver_in, struct rokko_distributed_matrix A_in, struct rokko_distributed_matrix B_in,
+void diagonalize_fixedB_c(struct rokko_parallel_dense_ev solver_in, struct rokko_distributed_matrix A_in, struct rokko_distributed_matrix B_in,
 			  struct rokko_localized_vector eigval_in, struct rokko_distributed_matrix eigvec_in, double tol) {
-  rokko::parallel_dense_solver& solver = *(static_cast<rokko::parallel_dense_solver*>(solver_in.ptr));
+  rokko::parallel_dense_ev& solver = *(static_cast<rokko::parallel_dense_ev*>(solver_in.ptr));
   rokko::distributed_matrix<double, matrix_major>& A = *(static_cast<rokko::distributed_matrix<double,matrix_major>*>(A_in.ptr));
   rokko::distributed_matrix<double, matrix_major>& B = *(static_cast<rokko::distributed_matrix<double,matrix_major>*>(B_in.ptr));
   rokko::distributed_matrix<double, matrix_major>& eigvec = *(static_cast<rokko::distributed_matrix<double,matrix_major>*>(eigvec_in.ptr));

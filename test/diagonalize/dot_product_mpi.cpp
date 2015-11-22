@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(test_dot_product) {
     rng(eng, boost::uniform_real<>());
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
-  rokko::parallel_dense_solver solver(rokko::parallel_dense_solver::default_solver());
+  rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(dim, 1, g, solver);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(dim, 1, g, solver);

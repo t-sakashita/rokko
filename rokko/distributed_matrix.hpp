@@ -26,7 +26,7 @@
 
 namespace rokko {
 
-class parallel_dense_solver;
+class parallel_dense_ev;
 
 template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major>
 class distributed_matrix {

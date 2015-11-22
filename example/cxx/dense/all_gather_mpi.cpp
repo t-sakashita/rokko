@@ -22,7 +22,7 @@ typedef rokko::matrix_col_major matrix_major;
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
   unsigned int dim = 10;
-  std::string solver_name(rokko::parallel_dense_solver::default_solver());
+  std::string solver_name(rokko::parallel_dense_ev::default_solver());
   if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
 
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
 
-  rokko::parallel_dense_solver solver(solver_name);
+  rokko::parallel_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
   rokko::distributed_matrix<double, matrix_major> mat(dim, dim, g, solver);
   rokko::frank_matrix::generate(mat);

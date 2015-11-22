@@ -120,21 +120,21 @@ public:
 
 class wrap_rokko_distributed_matrix;
 
-class wrap_rokko_parallel_dense_solver {
-	rokko_parallel_dense_solver* raw;
+class wrap_rokko_parallel_dense_ev {
+	rokko_parallel_dense_ev* raw;
 public:
-	wrap_rokko_parallel_dense_solver(char* solver_name, int argc, char** argv) {
-		raw = new rokko_parallel_dense_solver();
-		rokko_parallel_dense_solver_construct(raw, solver_name, argc, argv);
+	wrap_rokko_parallel_dense_ev(char* solver_name, int argc, char** argv) {
+		raw = new rokko_parallel_dense_ev();
+		rokko_parallel_dense_ev_construct(raw, solver_name, argc, argv);
 	}
-	rokko_parallel_dense_solver* get_raw(void) {
+	rokko_parallel_dense_ev* get_raw(void) {
 		return raw;
 	}
 
 	void diagonalize_distributed_matrix(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*);
 
-	~wrap_rokko_parallel_dense_solver(void) {
-		rokko_parallel_dense_solver_destruct(raw);
+	~wrap_rokko_parallel_dense_ev(void) {
+		rokko_parallel_dense_ev_destruct(raw);
 		delete raw;
 	}
 };
@@ -142,7 +142,7 @@ public:
 class wrap_rokko_distributed_matrix {
 	rokko_distributed_matrix* raw;
 public:
-	wrap_rokko_distributed_matrix(int dim1, int dim2, wrap_rokko_grid* grid, wrap_rokko_parallel_dense_solver* solver, int matrix_major) {
+	wrap_rokko_distributed_matrix(int dim1, int dim2, wrap_rokko_grid* grid, wrap_rokko_parallel_dense_ev* solver, int matrix_major) {
 		raw = new rokko_distributed_matrix();
 		rokko_distributed_matrix_construct(raw, dim1, dim2, *grid->get_raw(), *solver->get_raw(), matrix_major);
 	}
@@ -216,9 +216,9 @@ public:
 	}
 };
 
-void wrap_rokko_parallel_dense_solver::diagonalize_distributed_matrix(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs)
+void wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs)
 {
-	rokko_parallel_dense_solver_diagonalize_distributed_matrix(raw, mat->get_raw(), eigvals->get_raw(), eigvecs->get_raw());
+	rokko_parallel_dense_ev_diagonalize_distributed_matrix(raw, mat->get_raw(), eigvals->get_raw(), eigvecs->get_raw());
 }
 
 void wrap_rokko_gather(wrap_rokko_distributed_matrix* matrix, double* array, int root)
@@ -362,12 +362,12 @@ BOOST_PYTHON_MODULE(rokko_ext) {
   class_<wrap_rokko_grid>("rokko_grid", init<boost::python::object, int>())
     .def("get_myrank", &wrap_rokko_grid::get_myrank)
     .def("get_nprocs", &wrap_rokko_grid::get_nprocs);
-  class_<wrap_rokko_parallel_dense_solver>("rokko_parallel_dense_solver",
+  class_<wrap_rokko_parallel_dense_ev>("rokko_parallel_dense_ev",
                                            init<char*, int, char**>())
     .def("diagonalize_distributed_matrix",
-         &wrap_rokko_parallel_dense_solver::diagonalize_distributed_matrix);
+         &wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix);
   class_<wrap_rokko_distributed_matrix>("rokko_distributed_matrix",
-    init<int, int, wrap_rokko_grid*, wrap_rokko_parallel_dense_solver*, int>())
+    init<int, int, wrap_rokko_grid*, wrap_rokko_parallel_dense_ev*, int>())
     .def("show", &wrap_rokko_distributed_matrix::print)
     .def("set_local", &wrap_rokko_distributed_matrix::set_local)
     .def("get_local", &wrap_rokko_distributed_matrix::get_local)

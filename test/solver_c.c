@@ -28,13 +28,13 @@ int main(int argc, char** argv) {
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);
 
-  n = rokko_parallel_dense_solver_num_solvers();
-  solver_names = rokko_parallel_dense_solver_solvers();
-  struct rokko_parallel_dense_solver solver_pd;
+  n = rokko_parallel_dense_ev_num_solvers();
+  solver_names = rokko_parallel_dense_ev_solvers();
+  struct rokko_parallel_dense_ev solver_pd;
   for (i = 0; i < n; ++i) {
     printf("%s\n", solver_names[i]);
-    rokko_parallel_dense_solver_construct(&solver_pd, solver_names[i], argc, argv);
-    rokko_parallel_dense_solver_destruct(&solver_pd);
+    rokko_parallel_dense_ev_construct(&solver_pd, solver_names[i], argc, argv);
+    rokko_parallel_dense_ev_destruct(&solver_pd);
   }
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);

@@ -20,7 +20,7 @@ int main() {
 
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   std::cout << "[parallel dense solvers]\n";
-  BOOST_FOREACH(std::string name, rokko::parallel_dense_solver::solvers()) {
+  BOOST_FOREACH(std::string name, rokko::parallel_dense_ev::solvers()) {
     std::cout << "  " << name << std::endl;
   }
 #endif // ROKKO_HAVE_PARALLEL_DENSE_SOLVER

@@ -6,7 +6,7 @@
 
 typedef rokko::matrix_col_major matrix_major;
 
-void diagonalize_fixedB(struct rokko_parallel_dense_solver* solver_in, struct rokko_distributed_matrix* A_in, struct rokko_distributed_matrix* B, struct rokko_localized_vector* eigval_in, struct rokko_distributed_matrix* eigvec_in, double tol) {
+void diagonalize_fixedB(struct rokko_parallel_dense_ev* solver_in, struct rokko_distributed_matrix* A_in, struct rokko_distributed_matrix* B, struct rokko_localized_vector* eigval_in, struct rokko_distributed_matrix* eigvec_in, double tol) {
   rokko::mapping_bc<matrix_major> map = A->ptr->get_mapping();
   rokko::distributed_matrix<double, matrix_major> tmp(map), Binvroot(map), mat(map);
   rokko::parameters params = *(params->ptr);
