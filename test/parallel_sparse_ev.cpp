@@ -16,15 +16,15 @@
 
 #include <rokko/solver.hpp>
 
-#define BOOST_TEST_MODULE test_parallel_sparse_solvers
+#define BOOST_TEST_MODULE test_parallel_sparse_evs
 #ifndef BOOST_TEST_DYN_LINK
 #include <boost/test/included/unit_test.hpp>
 #else
 #include <boost/test/unit_test.hpp>
 #endif
 
-BOOST_AUTO_TEST_CASE(test_parallel_sparse_solvers) {
-  BOOST_FOREACH(std::string name, rokko::parallel_sparse_solver::solvers()) {
+BOOST_AUTO_TEST_CASE(test_parallel_sparse_evs) {
+  BOOST_FOREACH(std::string name, rokko::parallel_sparse_ev::solvers()) {
     std::cerr << name << std::endl;
   }
 }

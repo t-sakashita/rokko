@@ -39,13 +39,13 @@ int main(int argc, char** argv) {
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);
 
-  n = rokko_parallel_sparse_solver_num_solvers();
-  solver_names = rokko_parallel_sparse_solver_solvers();
-  struct rokko_parallel_sparse_solver solver_ps;
+  n = rokko_parallel_sparse_ev_num_solvers();
+  solver_names = rokko_parallel_sparse_ev_solvers();
+  struct rokko_parallel_sparse_ev solver_ps;
   for (i = 0; i < n; ++i) {
     printf("%s\n", solver_names[i]);
-    rokko_parallel_sparse_solver_construct(&solver_ps, solver_names[i], argc, argv);
-    rokko_parallel_sparse_solver_destruct(&solver_ps);
+    rokko_parallel_sparse_ev_construct(&solver_ps, solver_names[i], argc, argv);
+    rokko_parallel_sparse_ev_destruct(&solver_ps);
   }
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);

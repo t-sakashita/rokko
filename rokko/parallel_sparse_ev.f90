@@ -9,19 +9,19 @@
 !
 !*****************************************************************************
 
-subroutine rokko_parallel_sparse_solver_construct(solver, solver_name)
+subroutine rokko_parallel_sparse_ev_construct(solver, solver_name)
   use iso_c_binding
-  use rokko_sparse, only: rokko_parallel_sparse_solver
+  use rokko_sparse, only: rokko_parallel_sparse_ev
   implicit none
   interface
-     subroutine rokko_parallel_sparse_solver_construct_f(solver, solver_name) bind(c)
+     subroutine rokko_parallel_sparse_ev_construct_f(solver, solver_name) bind(c)
        use rokko_sparse
        implicit none
-       type(rokko_parallel_sparse_solver), intent(out) :: solver
+       type(rokko_parallel_sparse_ev), intent(out) :: solver
        character(kind=c_char), intent(in) :: solver_name(*)
-     end subroutine rokko_parallel_sparse_solver_construct_f
+     end subroutine rokko_parallel_sparse_ev_construct_f
   end interface
-  type(rokko_parallel_sparse_solver), intent(inout) :: solver
+  type(rokko_parallel_sparse_ev), intent(inout) :: solver
   character(*), intent(in) :: solver_name
-  call rokko_parallel_sparse_solver_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
-end subroutine rokko_parallel_sparse_solver_construct
+  call rokko_parallel_sparse_ev_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
+end subroutine rokko_parallel_sparse_ev_construct

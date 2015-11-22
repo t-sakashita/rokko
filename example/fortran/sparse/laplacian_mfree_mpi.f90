@@ -124,7 +124,7 @@ program main
   double precision :: eig_val
   double precision, allocatable, dimension(:) :: eig_vec
 
-  type(rokko_parallel_sparse_solver) :: solver
+  type(rokko_parallel_sparse_ev) :: solver
   character(len=100) :: solver_name, tmp_str
   integer arg_len, status
   type(rokko_distributed_mfree) :: mat
@@ -155,7 +155,7 @@ program main
      write(*,*) "matrix dimension = ", dim
   endif
 
-  call rokko_parallel_sparse_solver_construct(solver, solver_name)
+  call rokko_parallel_sparse_ev_construct(solver, solver_name)
   call initialize(mat, dim)
 
   num_evals = 3
@@ -169,16 +169,16 @@ program main
   !   call multiply(num_local_rows, x, y);
   !   print*, "y=", y
   !enddo
-  call rokko_parallel_sparse_solver_diagonalize_distributed_mfree(solver, mat, num_evals, block_size, max_iters, tol)
+  call rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, num_evals, block_size, max_iters, tol)
 
-  num_conv = rokko_parallel_sparse_solver_num_conv(solver)
-  eig_val = rokko_parallel_sparse_solver_eigenvalue(solver, 0)
+  num_conv = rokko_parallel_sparse_ev_num_conv(solver)
+  eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
   num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
   if (myrank == 0) then
      print*, "eigval=", eig_val
   endif
   call rokko_distributed_mfree_destruct(mat)
-  call rokko_parallel_sparse_solver_destruct(solver)
+  call rokko_parallel_sparse_ev_destruct(solver)
 
   call mpi_finalize(ierr)
 end program main

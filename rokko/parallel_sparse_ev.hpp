@@ -83,15 +83,15 @@ typedef factory<ps_solver_base> ps_solver_factory;
   
 } // end namespace detail
   
-class parallel_sparse_solver {
+class parallel_sparse_ev {
 public:
   void construct(std::string const& solver_name) {
     solver_impl_ = detail::ps_solver_factory::instance()->make_product(solver_name);
   }
-  parallel_sparse_solver(std::string const& solver_name) {
+  parallel_sparse_ev(std::string const& solver_name) {
     this->construct(solver_name);
   }
-  parallel_sparse_solver() {
+  parallel_sparse_ev() {
     this->construct(this->default_solver());
   }
   void initialize(int& argc, char**& argv) {

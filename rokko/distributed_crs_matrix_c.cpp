@@ -11,13 +11,13 @@
  *
  *****************************************************************************/
 
-#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/rokko_sparse.h>
 
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix, int dim1, int dim2,
-					    struct rokko_parallel_sparse_solver solver) {
-  matrix->ptr = new rokko::distributed_crs_matrix(dim1, dim2, *static_cast<rokko::parallel_sparse_solver*>(solver.ptr));
+					    struct rokko_parallel_sparse_ev solver) {
+  matrix->ptr = new rokko::distributed_crs_matrix(dim1, dim2, *static_cast<rokko::parallel_sparse_ev*>(solver.ptr));
 }
 
 void rokko_distributed_crs_matrix_destruct(rokko_distributed_crs_matrix* matrix) {

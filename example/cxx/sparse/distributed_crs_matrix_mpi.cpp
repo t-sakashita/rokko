@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) {
     solvers.push_back(argv[1]);
   } else {
-    solvers = rokko::parallel_sparse_solver::solvers();
+    solvers = rokko::parallel_sparse_ev::solvers();
   }
 
   int dim = 4;
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   double values[] = {7.1, 5.2, 6.4, 0.2, 4.3, 0.5};
   BOOST_FOREACH(std::string const& name, solvers) {
     if (rank == 0) std::cout << "[solver = " << name << "]" << std::endl;
-    rokko::parallel_sparse_solver solver(name);
+    rokko::parallel_sparse_ev solver(name);
     rokko::distributed_crs_matrix mat(dim, dim, solver);
     int current = 0;
     for (int row = 0; row < dim; ++row) {

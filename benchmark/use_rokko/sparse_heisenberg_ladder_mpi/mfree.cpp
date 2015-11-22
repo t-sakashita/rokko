@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 	      << "dimension = " << dim << std::endl;
 
   init_tick = MPI_Wtime();
-  rokko::parallel_sparse_solver solver(name);
+  rokko::parallel_sparse_ev solver(name);
   initend_tick = MPI_Wtime();
   
   gen_tick = MPI_Wtime();

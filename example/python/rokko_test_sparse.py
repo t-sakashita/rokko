@@ -23,7 +23,7 @@ if (MPI.COMM_WORLD.Get_rank() == 0):
 	print("L = %d" % L)
 	print("dimension = %d" % dim)
 
-solver = rokko_parallel_sparse_solver(solver_name, 0, None)
+solver = rokko_parallel_sparse_ev(solver_name, 0, None)
 
 mat = rokko_distributed_crs_matrix(dim, dim, solver)
 

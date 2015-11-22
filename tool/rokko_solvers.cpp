@@ -27,7 +27,7 @@ int main() {
 
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
   std::cout << "[parallel sparse solvers]\n";
-  BOOST_FOREACH(std::string name, rokko::parallel_sparse_solver::solvers()) {
+  BOOST_FOREACH(std::string name, rokko::parallel_sparse_ev::solvers()) {
     std::cout << "  " << name << std::endl;
   }
 #endif // ROKKO_HAVE_PARALLEL_SPARSE_SOLVER

@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::parallel_sparse_solver solver("anasazi");
+  rokko::parallel_sparse_ev solver("anasazi");
   heisenberg_op  mat(L, lattice);
 
   if (myrank == root)

@@ -11,7 +11,7 @@
  *
  *****************************************************************************/
 
-#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/rokko_sparse.h>
 

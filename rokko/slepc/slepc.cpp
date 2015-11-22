@@ -10,7 +10,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/slepc/core.hpp>
 
 ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::slepc::solver, "slepc", 10)

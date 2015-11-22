@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/anasazi/core.hpp>
 
 ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::anasazi::solver, "anasazi", 40)

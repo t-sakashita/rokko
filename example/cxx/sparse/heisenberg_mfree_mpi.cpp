@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) {
     solvers.push_back(argv[1]);
   } else {
-    solvers = rokko::parallel_sparse_solver::solvers();
+    solvers = rokko::parallel_sparse_ev::solvers();
   }
 
   int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
   params.set("Convergence Tolerance", 1.0e-8);
   params.set("num_eigenvalues", 10);
   BOOST_FOREACH(std::string const& name, solvers) {
-    rokko::parallel_sparse_solver solver(name);
+    rokko::parallel_sparse_ev solver(name);
     heisenberg_op mat(L, lattice);
     if (rank == 0)
       std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl

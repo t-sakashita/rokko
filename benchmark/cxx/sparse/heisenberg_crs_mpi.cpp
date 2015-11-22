@@ -13,7 +13,7 @@
 #include <iostream>
 
 #include <rokko/grid_1d.hpp>
-#include <rokko/parallel_sparse_solver.hpp>
+#include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 
 int main(int argc, char *argv[]) {
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::parallel_sparse_solver solver("anasazi");
+  rokko::parallel_sparse_ev solver("anasazi");
   if (myrank == root)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
               << "solver = LOBPCG" << std::endl

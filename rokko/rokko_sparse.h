@@ -34,7 +34,7 @@ struct rokko_distributed_mfree {
 #endif
 
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
-struct rokko_parallel_sparse_solver {
+struct rokko_parallel_sparse_ev {
   void* ptr;
 };
 #endif
@@ -43,7 +43,7 @@ struct rokko_parallel_sparse_solver {
 
 /* rokko_distributed_crs_matrix */
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix,
-					    int dim1, int dim2, struct rokko_parallel_sparse_solver solver);
+					    int dim1, int dim2, struct rokko_parallel_sparse_ev solver);
 void rokko_distributed_crs_matrix_destruct(struct rokko_distributed_crs_matrix* matrix);
 void rokko_distributed_crs_matrix_insert(struct rokko_distributed_crs_matrix* matrix, int row,
 					 int col_size, int* cols, double* values);
@@ -67,26 +67,26 @@ int rokko_distributed_mfree_dim(struct rokko_distributed_mfree* matrix);
 int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree* matrix);
 int rokko_distributed_mfree_offset(struct rokko_distributed_mfree* matrix);
 
-/* rokko_parallel_sparse_solver */
-void rokko_parallel_sparse_solver_construct(struct rokko_parallel_sparse_solver* solver,
+/* rokko_parallel_sparse_ev */
+void rokko_parallel_sparse_ev_construct(struct rokko_parallel_sparse_ev* solver,
   const char* solver_name, int argc, char** argv);
-void rokko_parallel_sparse_solver_construct_f(struct rokko_parallel_sparse_solver* solver,
+void rokko_parallel_sparse_ev_construct_f(struct rokko_parallel_sparse_ev* solver,
   const char* solver_name);
-void rokko_parallel_sparse_solver_destruct(struct rokko_parallel_sparse_solver* solver);
-struct rokko_parameters rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(
-  struct rokko_parallel_sparse_solver* solver, struct rokko_distributed_crs_matrix* mat,
+void rokko_parallel_sparse_ev_destruct(struct rokko_parallel_sparse_ev* solver);
+struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(
+  struct rokko_parallel_sparse_ev* solver, struct rokko_distributed_crs_matrix* mat,
   int num_evals, int block_size, int max_iters, double tol);
-struct rokko_parameters rokko_parallel_sparse_solver_diagonalize_distributed_mfree(
-  struct rokko_parallel_sparse_solver* solver, struct rokko_distributed_mfree* mat,
+struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_mfree(
+  struct rokko_parallel_sparse_ev* solver, struct rokko_distributed_mfree* mat,
   int num_evals, int block_size, int max_iters, double tol);
-double rokko_parallel_sparse_solver_eigenvalue(struct rokko_parallel_sparse_solver* solver, int i);
-void rokko_parallel_sparse_solver_eigenvector(struct rokko_parallel_sparse_solver* solver, int i,
+double rokko_parallel_sparse_ev_eigenvalue(struct rokko_parallel_sparse_ev* solver, int i);
+void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev* solver, int i,
   double* vec);
-int rokko_parallel_sparse_solver_num_conv(struct rokko_parallel_sparse_solver* solver);
+int rokko_parallel_sparse_ev_num_conv(struct rokko_parallel_sparse_ev* solver);
 
-int rokko_parallel_sparse_solver_num_solvers();
-char** rokko_parallel_sparse_solver_solvers();
-char* rokko_parallel_sparse_solver_default_solver();
+int rokko_parallel_sparse_ev_num_solvers();
+char** rokko_parallel_sparse_ev_solvers();
+char* rokko_parallel_sparse_ev_default_solver();
 
 #endif
 

@@ -17,9 +17,9 @@ module rokko_sparse
   ! classes
   !
   
-  type, bind(c) :: rokko_parallel_sparse_solver
+  type, bind(c) :: rokko_parallel_sparse_ev
      type(c_ptr) ptr
-  end type rokko_parallel_sparse_solver
+  end type rokko_parallel_sparse_ev
 
   type, bind(c) :: rokko_distributed_crs_matrix
      type(c_ptr) ptr
@@ -30,64 +30,64 @@ module rokko_sparse
   end type rokko_distributed_mfree
 
   !
-  ! rokko_parallel_sparse_solver
+  ! rokko_parallel_sparse_ev
   !
 
   interface
-     subroutine rokko_parallel_sparse_solver_destruct(solver) bind(c)
+     subroutine rokko_parallel_sparse_ev_destruct(solver) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver
+       import rokko_parallel_sparse_ev
        implicit none
-       type(rokko_parallel_sparse_solver), intent(inout) :: solver
-     end subroutine rokko_parallel_sparse_solver_destruct
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
+     end subroutine rokko_parallel_sparse_ev_destruct
 
-     subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix(solver, mat, &
+     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, &
           num_evals, block_size, max_iters, tol) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
        implicit none
-       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
        type(rokko_distributed_crs_matrix), intent(inout) :: mat
        integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
        real(8), value, intent(in) :: tol
-     end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_crs_matrix
+     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix
 
-     subroutine rokko_parallel_sparse_solver_diagonalize_distributed_mfree(solver, mat, &
+     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, &
           num_evals, block_size, max_iters, tol) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_mfree
+       import rokko_parallel_sparse_ev, rokko_distributed_mfree
        implicit none
-       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
        type(rokko_distributed_mfree), intent(inout) :: mat
        integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
        real(8), value, intent(in) :: tol
-     end subroutine rokko_parallel_sparse_solver_diagonalize_distributed_mfree
+     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree
 
-     function rokko_parallel_sparse_solver_num_conv(solver) bind(c)
+     function rokko_parallel_sparse_ev_num_conv(solver) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
        implicit none
-       integer(c_int) :: rokko_parallel_sparse_solver_num_conv
-       type(rokko_parallel_sparse_solver), intent(inout) :: solver
-     end function rokko_parallel_sparse_solver_num_conv
+       integer(c_int) :: rokko_parallel_sparse_ev_num_conv
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
+     end function rokko_parallel_sparse_ev_num_conv
 
-     function rokko_parallel_sparse_solver_eigenvalue(solver, i) bind(c)
+     function rokko_parallel_sparse_ev_eigenvalue(solver, i) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
        implicit none
-       real(c_double) :: rokko_parallel_sparse_solver_eigenvalue
-       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       real(c_double) :: rokko_parallel_sparse_ev_eigenvalue
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
        integer(c_int), value, intent(in) :: i
-     end function rokko_parallel_sparse_solver_eigenvalue
+     end function rokko_parallel_sparse_ev_eigenvalue
 
-     subroutine rokko_parallel_sparse_solver_eigenvector(solver, i, eig_vec) bind(c)
+     subroutine rokko_parallel_sparse_ev_eigenvector(solver, i, eig_vec) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
        implicit none
-       type(rokko_parallel_sparse_solver), intent(inout) :: solver
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
        integer(c_int), value, intent(in) :: i
        real(c_double), dimension(*), intent(inout) :: eig_vec
-     end subroutine rokko_parallel_sparse_solver_eigenvector
+     end subroutine rokko_parallel_sparse_ev_eigenvector
   end interface
 
   !
@@ -97,11 +97,11 @@ module rokko_sparse
   interface
      subroutine rokko_distributed_crs_matrix_construct(matrix, dim1, dim2, solver) bind(c)
        use iso_c_binding
-       import rokko_parallel_sparse_solver, rokko_distributed_crs_matrix
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
        implicit none
        type(rokko_distributed_crs_matrix), intent(out) :: matrix
        integer(c_int), value, intent(in) :: dim1, dim2
-       type(rokko_parallel_sparse_solver), value, intent(in) :: solver
+       type(rokko_parallel_sparse_ev), value, intent(in) :: solver
      end subroutine rokko_distributed_crs_matrix_construct
      
      subroutine rokko_distributed_crs_matrix_destruct(matrix) bind(c)
