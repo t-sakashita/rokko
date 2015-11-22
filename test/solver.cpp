@@ -20,9 +20,9 @@
 #endif
 
 BOOST_AUTO_TEST_CASE(test_solver) {
-  BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers()) {
+  BOOST_FOREACH(std::string name, rokko::serial_dense_ev::solvers()) {
     std::cerr << name << std::endl;
-    rokko::serial_dense_solver solver(name);
+    rokko::serial_dense_ev solver(name);
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                       boost::unit_test::framework::master_test_suite().argv);
     solver.finalize();

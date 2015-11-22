@@ -14,7 +14,7 @@
 
 int main() {
   std::cout << "[serial dense solvers]\n";
-  BOOST_FOREACH(std::string name, rokko::serial_dense_solver::solvers()) {
+  BOOST_FOREACH(std::string name, rokko::serial_dense_ev::solvers()) {
     std::cout << "  " << name << std::endl;
   }
 

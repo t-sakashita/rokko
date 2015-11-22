@@ -22,7 +22,7 @@
 #include "titpack.hpp"
 #include "options.hpp"
 
-typedef rokko::serial_dense_solver solver_type;
+typedef rokko::serial_dense_ev solver_type;
 typedef rokko::localized_matrix<rokko::matrix_col_major> matrix_type;
 
 int main(int argc, char** argv) {

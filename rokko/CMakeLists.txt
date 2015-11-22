@@ -8,10 +8,10 @@
 #
 
 # For serial solvers
-set(ROKKO_SOURCES serial_dense_solver.cpp utility/timer.cpp)
+set(ROKKO_SOURCES serial_dense_ev.cpp utility/timer.cpp)
 if(BUILD_C_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} localized_vector_c.cpp localized_matrix_c.cpp
-    serial_dense_solver_c.cpp utility/frank_matrix_c.cpp parameters_c.cpp solver_name_c.cpp)
+    serial_dense_ev_c.cpp utility/frank_matrix_c.cpp parameters_c.cpp solver_name_c.cpp)
 endif(BUILD_C_BINDING)
 if(BUILD_Fortran_BINDING)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} string.F90 parameters.F90 solver_name.F90 rokko_serial_dense.F90)

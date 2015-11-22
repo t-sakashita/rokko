@@ -22,7 +22,7 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  std::string solver_name(rokko::serial_dense_ev::default_solver());
   std::string lattice_file("xyz.dat");
   if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) lattice_file = argv[2];
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   rokko::read_lattice_file(lattice_file, num_sites, lattice, coupling);
   int dim = 1 << num_sites;
 
-  rokko::serial_dense_solver solver(solver_name);
+  rokko::serial_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
             << "solver = " << solver_name << std::endl

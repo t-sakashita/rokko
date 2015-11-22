@@ -17,14 +17,14 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  std::string solver_name(rokko::serial_dense_ev::default_solver());
   unsigned int dim = 10;
   if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
 
   std::cout.precision(5);
 
-  rokko::serial_dense_solver solver(solver_name);
+  rokko::serial_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
             << "solver = " << solver_name << std::endl

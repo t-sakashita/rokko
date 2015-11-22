@@ -20,7 +20,7 @@ typedef rokko::matrix_col_major matrix_major;
 template<typename MATRIX_MAJOR, typename VEC>
 void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 rokko::parameters const& params, rokko::timer& timer = *rokko::global_timer::instance()) {
-  rokko::serial_dense_solver solver(rokko::serial_dense_solver::default_solver());
+  rokko::serial_dense_ev solver(rokko::serial_dense_ev::default_solver());
   int argc;
   char** xargv;
   solver.initialize(argc, xargv);
@@ -31,7 +31,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 rokko::localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params, rokko::timer& timer = *rokko::global_timer::instance()) {
-  rokko::serial_dense_solver solver(rokko::serial_dense_solver::default_solver());
+  rokko::serial_dense_ev solver(rokko::serial_dense_ev::default_solver());
   int argc;
   char** xargv;
   solver.initialize(argc, xargv);
@@ -39,7 +39,7 @@ void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC
 }
 
 int main(int argc, char *argv[]) {
-  std::string library_routine(rokko::serial_dense_solver::default_solver());
+  std::string library_routine(rokko::serial_dense_ev::default_solver());
   std::string library, routine;
   unsigned int dim = 10;
   if (argc >= 2) library_routine = argv[1];
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 	    << "routine = " << routine << std::endl
 	    << "dimension = " << dim << std::endl;
 
-  rokko::serial_dense_solver solver(library);
+  rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
 
   rokko::localized_matrix<double, matrix_major> mat(dim, dim);

@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = rokko::serial_dense_solver::solvers();
+    names = rokko::serial_dense_ev::solvers();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     }
 
     std::cout << "solver=" << name << std::endl;
-    rokko::serial_dense_solver solver(name);
+    rokko::serial_dense_ev solver(name);
     solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                       boost::unit_test::framework::master_test_suite().argv);
     rokko::localized_matrix<double, rokko::matrix_col_major> mat(dim, dim);

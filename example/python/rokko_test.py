@@ -9,7 +9,7 @@
 
 from rokko import *
 
-solver = rokko_serial_dense_solver("lapack", 0, None)
+solver = rokko_serial_dense_ev("lapack", 0, None)
 
 dim = 10
 rokko_matrix_col_major = rokko.matrix_col_major

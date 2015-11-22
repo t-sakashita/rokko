@@ -19,7 +19,7 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  std::string library_routine(rokko::serial_dense_solver::default_solver());
+  std::string library_routine(rokko::serial_dense_ev::default_solver());
   std::string library, routine;
   unsigned int dim = 4;
   if (argc >= 2) library_routine = argv[1];
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	    << "routine = " << routine << std::endl
 	    << "dimension = " << dim << std::endl;
 
-  rokko::serial_dense_solver solver(library);
+  rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
 
   rokko::localized_matrix<double, matrix_major> mata(dim, dim), matb(dim, dim);

@@ -195,15 +195,15 @@ typedef factory<sd_solver_base> sd_solver_factory;
   
 } // end namespace detail
   
-class serial_dense_solver {
+class serial_dense_ev {
 public:
   void construct(std::string const& solver_name) {
     solver_impl_ = detail::sd_solver_factory::instance()->make_product(solver_name);
   }
-  serial_dense_solver(std::string const& solver_name) {
+  serial_dense_ev(std::string const& solver_name) {
     this->construct(solver_name);
   }
-  serial_dense_solver() {
+  serial_dense_ev() {
     this->construct(this->default_solver());
   }
   void initialize(int& argc, char**& argv) {

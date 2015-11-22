@@ -62,23 +62,23 @@ public:
 	}
 };
 
-class wrap_rokko_serial_dense_solver {
-	rokko_serial_dense_solver* raw;
+class wrap_rokko_serial_dense_ev {
+	rokko_serial_dense_ev* raw;
 public:
-	wrap_rokko_serial_dense_solver(char* solver_name, int argc, char** argv) {
-		raw = new rokko_serial_dense_solver();
-		rokko_serial_dense_solver_construct(raw, solver_name, argc, argv);
+	wrap_rokko_serial_dense_ev(char* solver_name, int argc, char** argv) {
+		raw = new rokko_serial_dense_ev();
+		rokko_serial_dense_ev_construct(raw, solver_name, argc, argv);
 	}
-	rokko_serial_dense_solver* get_raw(void) {
+	rokko_serial_dense_ev* get_raw(void) {
 		return raw;
 	}
 
 	void diagonalize_localized_matrix(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_localized_matrix* eigvecs) {
-		rokko_serial_dense_solver_diagonalize_localized_matrix(raw, mat->get_raw(), eigvals->get_raw(), eigvecs->get_raw());
+		rokko_serial_dense_ev_diagonalize_localized_matrix(raw, mat->get_raw(), eigvals->get_raw(), eigvecs->get_raw());
 	}
 
-	~wrap_rokko_serial_dense_solver(void) {
-		rokko_serial_dense_solver_destruct(raw);
+	~wrap_rokko_serial_dense_ev(void) {
+		rokko_serial_dense_ev_destruct(raw);
 		delete raw;
 	}
 };
@@ -348,9 +348,9 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .value("matrix_col_major", matrix_col_major)
     .value("matrix_row_major", matrix_row_major);
   
-  class_<wrap_rokko_serial_dense_solver>("rokko_serial_dense_solver", init<char*, int, char**>())
+  class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize_localized_matrix",
-         &wrap_rokko_serial_dense_solver::diagonalize_localized_matrix);
+         &wrap_rokko_serial_dense_ev::diagonalize_localized_matrix);
   class_<wrap_rokko_localized_vector>("rokko_localized_vector", init<int>())
     .def("get", &wrap_rokko_localized_vector::get);
   class_<wrap_rokko_localized_matrix>("rokko_localized_matrix", init<int, int, int>())

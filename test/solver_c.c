@@ -17,13 +17,13 @@ int main(int argc, char** argv) {
   int i, n;
   char** solver_names;
 
-  n = rokko_serial_dense_solver_num_solvers();
-  solver_names = rokko_serial_dense_solver_solvers();
-  struct rokko_serial_dense_solver solver_sd;
+  n = rokko_serial_dense_ev_num_solvers();
+  solver_names = rokko_serial_dense_ev_solvers();
+  struct rokko_serial_dense_ev solver_sd;
   for (i = 0; i < n; ++i) {
     printf("%s\n", solver_names[i]);
-    rokko_serial_dense_solver_construct(&solver_sd, solver_names[i], argc, argv);
-    rokko_serial_dense_solver_destruct(&solver_sd);
+    rokko_serial_dense_ev_construct(&solver_sd, solver_names[i], argc, argv);
+    rokko_serial_dense_ev_destruct(&solver_sd);
   }
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);

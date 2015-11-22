@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
-#include "serial_dense_solver.hpp"
+#include "serial_dense_ev.hpp"
 
 template<>
 rokko::detail::sd_solver_factory *rokko::detail::sd_solver_factory::instance_ = 0;

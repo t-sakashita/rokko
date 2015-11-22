@@ -21,7 +21,7 @@
 
 template<typename MATRIX_MAJOR>
 void test(int dim, std::string const& name) {
-  rokko::serial_dense_solver solver(name);
+  rokko::serial_dense_ev solver(name);
   solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                     boost::unit_test::framework::master_test_suite().argv);
   rokko::localized_matrix<double, MATRIX_MAJOR> mat(dim, dim);
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   std::vector<std::string> names;
   int argc = boost::unit_test::framework::master_test_suite().argc;
   if (argc == 1) {
-    names = rokko::serial_dense_solver::solvers();
+    names = rokko::serial_dense_ev::solvers();
   } else {
     for (int num=1; num < argc; ++num) {
       names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);

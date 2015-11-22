@@ -15,7 +15,7 @@ program frank_matrix
   use rokko
   implicit none
   integer :: dim
-  type(rokko_serial_dense_solver) :: solver
+  type(rokko_serial_dense_ev) :: solver
   type(rokko_localized_matrix) :: mat, Z
   type(rokko_localized_vector) :: w
   character(len=100) :: solver_name, tmp_str
@@ -37,7 +37,7 @@ program frank_matrix
   write(*,*) "solver name = ", trim(solver_name)
   write(*,*) "matrix dimension = ", dim
 
-  call rokko_serial_dense_solver_construct(solver, solver_name)
+  call rokko_serial_dense_ev_construct(solver, solver_name)
 
   call rokko_localized_matrix_construct(mat, dim, dim, rokko_matrix_col_major)
   call rokko_localized_matrix_construct(Z, dim, dim, rokko_matrix_col_major)
@@ -47,7 +47,7 @@ program frank_matrix
   call rokko_frank_matrix_generate_localized_matrix(mat)
   call rokko_localized_matrix_print(mat)
 
-  call rokko_serial_dense_solver_diagonalize_localized_matrix(solver, mat, w, Z)
+  call rokko_serial_dense_ev_diagonalize_localized_matrix(solver, mat, w, Z)
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
@@ -57,6 +57,6 @@ program frank_matrix
   call rokko_localized_matrix_destruct(mat)
   call rokko_localized_matrix_destruct(Z)
   call rokko_localized_vector_destruct(w)
-  call rokko_serial_dense_solver_destruct(solver)
+  call rokko_serial_dense_ev_destruct(solver)
 
 end program frank_matrix

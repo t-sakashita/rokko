@@ -8,7 +8,7 @@
 #
 
 # single process tests
-set(TESTS localized_matrix localized_matrix_fixed_size matrix_major serial_dense_solvers solver)
+set(TESTS localized_matrix localized_matrix_fixed_size matrix_major serial_dense_ev solver)
 foreach(name ${TESTS})
   set(target_name test_${name})
   add_executable(${target_name} ${name}.cpp)

@@ -13,7 +13,7 @@
 #define ROKKO_SOLVER_HPP
 
 #include <rokko/config.h>
-#include <rokko/serial_dense_solver.hpp>
+#include <rokko/serial_dense_ev.hpp>
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
 # include <rokko/parallel_dense_solver.hpp>
 #endif

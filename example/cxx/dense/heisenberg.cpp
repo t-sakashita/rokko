@@ -17,7 +17,7 @@
 typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
-  std::string solver_name(rokko::serial_dense_solver::default_solver());
+  std::string solver_name(rokko::serial_dense_ev::default_solver());
   int L = 8;
   if (argc >= 2) solver_name = argv[1];
   if (argc >= 3) L = boost::lexical_cast<unsigned int>(argv[2]);
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   lattice.push_back(std::make_pair(L-1, 0));
   int dim = 1 << L;
 
-  rokko::serial_dense_solver solver(solver_name);
+  rokko::serial_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
             << "solver = " << solver_name << std::endl
