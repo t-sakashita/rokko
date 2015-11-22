@@ -14,13 +14,13 @@
 #endif
 #include "Epetra_Map.h"
 
-#include <rokko/utility/lattice.hpp>
 #include <boost/lexical_cast.hpp>
+#include <rokko/utility/lattice.hpp>
+#include <rokko/utility/machine_info.hpp>
 
 using namespace Anasazi;
 
 int main(int argc, char *argv[]) {
-  using std::endl;
   double init_tick, gen_tick, diag_tick, end_tick;
 
 #ifdef HAVE_MPI
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 
   // Create an Anasazi output manager
   BasicOutputManager<double> printer;
-  printer.stream(Errors) << Anasazi_Version() << endl << endl;
+  printer.stream(Errors) << Anasazi_Version() << std::endl << std::endl;
 
   int len_ladder = 5;
   if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
@@ -170,22 +170,23 @@ int main(int argc, char *argv[]) {
   // Print the results
   std::ostringstream os;
   os.setf(std::ios_base::right, std::ios_base::adjustfield);
-  os<<"Solver manager returned " << (returnCode == Converged ? "converged." : "unconverged.") << endl;
-  os<<endl;
-  os<<"------------------------------------------------------"<<endl;
-  os<<std::setw(16)<<"Eigenvalue"
-    <<std::setw(18)<<"Direct Residual"
-    <<endl;
-  os<<"------------------------------------------------------"<<endl;
+  os << "Solver manager returned " << (returnCode == Converged ? "converged." : "unconverged.") << std::endl;
+  os << std::endl;
+  os << "------------------------------------------------------"<< std::endl;
+  os << std::setw(16) << "Eigenvalue"
+     << std::setw(18) << "Direct Residual"
+     << std::endl;
+  os<<"------------------------------------------------------" << std::endl;
   for (int i=0; i<sol.numVecs; i++) {
-    os<<std::setw(16)<<evals[i].realpart
-      <<std::setw(18)<<normR[i]/evals[i].realpart
-      <<endl;
+    os<< std::setw(16)<<evals[i].realpart
+      << std::setw(18)<<normR[i]/evals[i].realpart
+      << std::endl;
   }
-  os<<"------------------------------------------------------"<<endl;
+  os<<"------------------------------------------------------" << std::endl;
   os << "gen_time = " << diag_tick - gen_tick << std::endl
      << "diag_time = " << end_tick - diag_tick << std::endl;
-  printer.print(Errors,os.str());
+  rokko::machine_info(os);
+  printer.print(Errors, os.str());
 
 #ifdef HAVE_MPI
   MPI_Finalize();

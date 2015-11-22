@@ -14,9 +14,11 @@
 
 #include <iostream>
 #include <iomanip>
-
-#include <boost/asio.hpp>
+#include <sstream>      // for std::istringstream
 #include <ctime>
+#include <boost/asio.hpp>
+
+#include <rokko/config.h>
 
 namespace rokko {
 
@@ -25,6 +27,20 @@ void machine_info(MPI_Comm const& comm = MPI_COMM_WORLD) {
   MPI_Comm_size(comm, &nprocs);
   std::time_t now = std::time(0);
   std::cout << "num_procs = " << nprocs << std::endl
+            #ifdef _OPENMP
+	    << "num_threads per process = " << omp_get_max_threads() << std::endl
+            #endif
+	    << "hostname = " << boost::asio::ip::host_name() << std::endl
+	    << "rokko_version = " << ROKKO_VERSION << std::endl
+	    << "date = " << ctime(&now);
+}
+
+
+void machine_info(std::ostringstream& oss, MPI_Comm const& comm = MPI_COMM_WORLD) {
+  int nprocs;
+  MPI_Comm_size(comm, &nprocs);
+  std::time_t now = std::time(0);
+  oss << "num_procs = " << nprocs << std::endl
             #ifdef _OPENMP
 	    << "num_threads per process = " << omp_get_max_threads() << std::endl
             #endif

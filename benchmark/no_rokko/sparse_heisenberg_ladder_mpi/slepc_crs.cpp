@@ -1,8 +1,9 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
-#include <vector>
-#include <rokko/utility/lattice.hpp>
+//#include <vector>
 #include <boost/lexical_cast.hpp>
+#include <rokko/utility/lattice.hpp>
+#include <rokko/utility/machine_info.hpp>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -118,6 +119,7 @@ int main(int argc,char **argv)
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
 	      << "gen_time = " << diag_tick - gen_tick << std::endl
 	      << "diag_time = " << end_tick - diag_tick << std::endl;
+    rokko::machine_info();
   }
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                     Display solution and clean up
