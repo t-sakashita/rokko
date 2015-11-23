@@ -41,16 +41,15 @@ public:
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
     dim_ = row_dim;
     ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
-    --end_row_; // MatGetOwnershipRange returns the next index to the last element
     num_local_rows_ = end_row_ - start_row_ + 1;
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    ierr = MatSetValues(matrix_, 1, &row, cols.size(), &cols[0], &values[0], INSERT_VALUES);  //CHKERRQ(ierr);
+    ierr = MatSetValues(matrix_, 1, &row, cols.size(), &cols[0], &values[0], ADD_VALUES);  //CHKERRQ(ierr);
   }
   void insert(int row, int col_size, int* cols, double* const values) {
-    ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);
+    ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, ADD_VALUES);  //CHKERRQ(ierr);
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/complete"

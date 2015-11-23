@@ -30,7 +30,7 @@ public:
     dim_ = row_dim;
     num_local_rows_ = map_->get_epetra_map().NumMyElements();
     start_row_ = map_->get_epetra_map().MinMyGID();
-    end_row_ = map_->get_epetra_map().MaxMyGID();
+    end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to adjust C++ convention
   }
   void initialize(int row_dim, int col_dim) {
     map_ = new mapping_1d(row_dim);
