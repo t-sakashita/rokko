@@ -72,10 +72,38 @@ public:
   int end_row() const {
     return end_row_;
   }
+  int get_nnz() const {
+    MatInfo info;
+    MatGetInfo(matrix_, MAT_LOCAL, &info);
+    return (int)info.nz_used;
+  }
   void print() const {
     MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
   }
-
+  void output_matrix_market() const {
+    PetscInt rstart, rend;
+    int num_cols;
+    const PetscInt * cols;
+    const PetscScalar * values;
+    int local_row = 0;
+    int myrank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &myrank);
+    if (myrank == 0) {
+      std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
+      std::cout << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
+    }
+    MPI_Barrier(PETSC_COMM_WORLD);
+    for (int global_row=0; global_row<get_dim(); ++global_row) {
+      if ((global_row >= rstart) && (global_row < rend)) {
+	MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
+	for (int i=0; i<num_cols; ++i) {
+	  std::cout << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
+	}
+	MatRestoreRow(matrix_, global_row, &num_cols, &cols, &values);
+      }
+      MPI_Barrier(PETSC_COMM_WORLD);
+    }
+  }
 private:
   int dim_;
   int num_local_rows_;

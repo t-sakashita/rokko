@@ -27,7 +27,9 @@ public:
   virtual int num_local_rows() const = 0;
   virtual int start_row() const = 0;
   virtual int end_row() const = 0;
+  virtual int get_nnz() const = 0;
   virtual void print() const = 0;
+  virtual void output_matrix_market() const = 0;
 };
 
 } // end namespace detail
@@ -59,8 +61,14 @@ public:
   int end_row() const {
     return mat->end_row();
   }
+  int get_nnz() const {
+    return mat->get_nnz();
+  }
   void print() const {
     mat->print();
+  }
+  void ouput_matrix_market() const {
+    mat->output_matrix_market();
   }
   detail::distributed_crs_matrix_base* get_matrix() {
     return mat;

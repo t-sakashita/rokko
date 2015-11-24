@@ -34,7 +34,7 @@ public:
   }
   void initialize(int row_dim, int col_dim) {
     map_ = new mapping_1d(row_dim);
-    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), col_dim));    
+    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), col_dim));
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
@@ -61,8 +61,35 @@ public:
   int end_row() const {
     return end_row_;
   }
+  int get_nnz() const {
+    return matrix_->NumGlobalNonzeros();
+  }
   void print() const {
     std::cout << *matrix_ << std::endl;
+  }
+  void output_matrix_market() const {
+    int num_cols;
+    int* cols;
+    double* values;
+    int NumMyElements = map_->get_epetra_map().NumMyElements();
+    std::vector<int> MyGlobalElements(NumMyElements);
+    map_->get_epetra_map().MyGlobalElements(&MyGlobalElements[0]);
+    int local_row = 0;
+    if (map_->get_epetra_comm().MyPID() == 0) {
+      std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
+      std::cout << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
+    }
+    map_->get_epetra_comm().Barrier();
+    for (int global_row=0; global_row<get_dim(); ++global_row) {
+      if (global_row == MyGlobalElements[local_row]) {
+	matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
+	for (int i=0; i<num_cols; ++i) {
+	  std::cout << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
+	}
+	++local_row;
+      }
+      map_->get_epetra_comm().Barrier();
+    }
   }
 private:
   mapping_1d* map_;
