@@ -68,6 +68,7 @@ int main(int argc, char *argv[]) {
     mat.insert(row, cols, values);
   }
   mat.complete();
+  //mat.print();
   
   diag_tick = MPI_Wtime();
   rokko::parameters params;

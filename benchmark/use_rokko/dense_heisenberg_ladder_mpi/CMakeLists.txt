@@ -8,12 +8,13 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  add_subdirectory(dense_frank_mpi)
-  add_subdirectory(dense_heisenberg_ladder_mpi)
+  set(SAMPLE ladder_mpi)
+  foreach(name ${SAMPLE})
+    set(target_name use_rokko_dense_frank_mpi_${name})
+    add_executable(${target_name} ${name}.cpp)
+    set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
+    target_link_libraries(${target_name} rokko)
+  endforeach(name)
+  unset(SAMPLE)
 endif(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-
-if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  add_subdirectory(sparse_heisenberg_file_mpi)
-  add_subdirectory(sparse_heisenberg_ladder_mpi)
-endif(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 
