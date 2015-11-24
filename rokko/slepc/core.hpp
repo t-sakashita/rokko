@@ -128,7 +128,7 @@ public:
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
+    ierr = EPSSetDimensions(eps, num_evals, block_size_, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
@@ -161,7 +161,7 @@ public:
     ierr = MatSetFromOptions(*A);
     ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
     ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
-    ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
+    //ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
 
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -196,8 +196,7 @@ public:
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-
-    ierr = EPSSetDimensions(eps, num_evals, 2 * num_evals, PETSC_DECIDE);
+    ierr = EPSSetDimensions(eps, num_evals, block_size_, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
