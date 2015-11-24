@@ -70,7 +70,7 @@ int main(int argc,char **argv)
   ierr = MatAssemblyBegin(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
   //ierr = MatGetLocalSize(A, &n, NULL); CHKERRQ(ierr);
-  //MatView(A, PETSC_VIEWER_STDOUT_WORLD);
+  MatView(A, PETSC_VIEWER_STDOUT_WORLD);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 Create the eigensolver and set various options
@@ -85,7 +85,7 @@ int main(int argc,char **argv)
   */
   ierr = EPSSetOperators(eps, A, NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps, EPS_HEP); CHKERRQ(ierr);
-  //ierr = EPSSetDimensions(eps, 10, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
+  ierr = EPSSetDimensions(eps, 1, 5, PETSC_DECIDE); CHKERRQ(ierr);
   //char routine_name[] = "lobpcg";
   //ierr = EPSSetType(eps,routine_name); CHKERRQ(ierr);
   /*

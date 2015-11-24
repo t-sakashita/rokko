@@ -83,7 +83,7 @@ int main(int argc,char **argv)
   */
   ierr = EPSSetOperators(eps,A,NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps,EPS_HEP); CHKERRQ(ierr);
-  //ierr = EPSSetDimensions(eps, 5, 100, 100); CHKERRQ(ierr);
+  ierr = EPSSetDimensions(eps, 1, 5, PETSC_DECIDE); CHKERRQ(ierr);
   //ierr = EPSSetDimensions(eps, 1, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
   //ierr = EPSSetTolerances(eps, (PetscScalar) 1., (PetscInt) 2000);   CHKERRQ(ierr);
   /*  Vec v0;
