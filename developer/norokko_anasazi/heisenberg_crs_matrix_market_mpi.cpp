@@ -15,7 +15,20 @@
 #endif
 #include "Epetra_Map.h"
 
+#include <vector>
+#include <algorithm>
+#include <functional>
+
 using namespace Anasazi;
+
+struct comp{
+  bool operator()(const int& a, const int& b) const {
+    return v[a]<v[b];
+  }
+  comp(const int *p) : v(p) {}
+private:
+  const int *v;
+};
 
 int main(int argc, char *argv[]) {
 
@@ -100,6 +113,10 @@ int main(int argc, char *argv[]) {
   int info = A->FillComplete();
   assert( info==0 );
   A->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
+
+  int MaxNumIndices = A->MaxNumEntries();
+  std::vector<int> idx(MaxNumIndices);
+
   int num_cols;
   double* values_;
   int* cols_;
@@ -110,7 +127,16 @@ int main(int argc, char *argv[]) {
     if (global_row == MyGlobalElements[local_row]) {
       A->ExtractMyRowView(local_row, num_cols, values_, cols_);
       for (int i=0; i<num_cols; ++i) {
-	std::cout << global_row + 1 << " " << cols_[i] + 1 << " " << values_[i] << std::endl;
+	idx[i] = i;
+      }
+      std::cout << "before: ";
+      copy(&idx[0], &idx[num_cols],  std::ostream_iterator<int> (std::cout, " "));
+      std::sort(&idx[0], &idx[num_cols], comp(cols_));
+      std::cout << "/ after: ";
+      copy(&idx[0], &idx[num_cols],  std::ostream_iterator<int> (std::cout, " "));
+      std::cout << std::endl;
+      for (int i=0; i<num_cols; ++i) {
+	std::cout << global_row + 1 << " " << cols_[idx[i]] + 1 << " " << values_[idx[i]] << std::endl;
       }
       ++local_row;
     }

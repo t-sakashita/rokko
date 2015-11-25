@@ -23,6 +23,16 @@
 namespace rokko {
 namespace anasazi {
 
+struct comp{
+  bool operator()(const int& a, const int& b) const {
+    return matrix_->GCID(v[a]) < matrix_->GCID(v[b]);
+  }
+  comp(const int *p, Teuchos::RCP<Epetra_CrsMatrix> const& matrix) : v(p), matrix_(matrix) {}
+private:
+  const int *v;
+  Teuchos::RCP<Epetra_CrsMatrix> matrix_;
+};
+
 class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
   explicit distributed_crs_matrix(int row_dim, int col_dim) {
@@ -68,6 +78,8 @@ public:
     std::cout << *matrix_ << std::endl;
   }
   void output_matrix_market() const {
+    int MaxNumIndices = matrix_->MaxNumEntries();
+    std::vector<int> idx(MaxNumIndices);
     int num_cols;
     int* cols;
     double* values;
@@ -84,8 +96,10 @@ public:
       if (local_row < NumMyElements) {
 	if (global_row == MyGlobalElements[local_row]) {
 	  matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
+	  for (int i=0; i<num_cols; ++i) idx[i] = i;
+	  std::sort(&idx[0], &idx[num_cols], comp(cols, matrix_));
 	  for (int i=0; i<num_cols; ++i) {
-	    std::cout << global_row + 1 << " " << matrix_->GCID(cols[i]) + 1 << " " << values[i] << std::endl;
+	    std::cout << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
 	  }
 	  ++local_row;
 	}

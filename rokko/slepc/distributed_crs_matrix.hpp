@@ -22,7 +22,16 @@
 
 namespace rokko {
 namespace slepc {
-    
+
+struct comp{
+  bool operator()(const int& a, const int& b) const {
+    return v[a]<v[b];
+  }
+  comp(const int *p) : v(p) {}
+private:
+  const int *v;
+};
+
 class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
   distributed_crs_matrix() {}
@@ -81,6 +90,8 @@ public:
     MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
   }
   void output_matrix_market() const {
+    std::vector<int> idx;
+
     PetscInt num_cols;
     const PetscInt * cols;
     const PetscScalar * values;
@@ -95,8 +106,11 @@ public:
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if ((global_row >= start_row()) && (global_row < end_row())) {
 	MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
+	idx.resize(num_cols);
+	for (int i=0; i<num_cols; ++i) idx[i] = i;
+	std::sort(&idx[0], &idx[num_cols], comp(cols));
 	for (int i=0; i<num_cols; ++i) {
-	  std::cout << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
+	  std::cout << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
 	}
 	MatRestoreRow(matrix_, global_row, &num_cols, &cols, &values);
       }
