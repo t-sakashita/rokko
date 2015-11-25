@@ -81,12 +81,14 @@ public:
     }
     map_->get_epetra_comm().Barrier();
     for (int global_row=0; global_row<get_dim(); ++global_row) {
-      if (global_row == MyGlobalElements[local_row]) {
-	matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
-	for (int i=0; i<num_cols; ++i) {
-	  std::cout << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
+      if (local_row < NumMyElements) {
+	if (global_row == MyGlobalElements[local_row]) {
+	  matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
+	  for (int i=0; i<num_cols; ++i) {
+	    std::cout << global_row + 1 << " " << matrix_->GCID(cols[i]) + 1 << " " << values[i] << std::endl;
+	  }
+	  ++local_row;
 	}
-	++local_row;
       }
       map_->get_epetra_comm().Barrier();
     }

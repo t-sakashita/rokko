@@ -46,10 +46,10 @@ public:
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    ierr = MatSetValues(matrix_, 1, &row, cols.size(), &cols[0], &values[0], ADD_VALUES);  //CHKERRQ(ierr);
+    ierr = MatSetValues(matrix_, 1, &row, cols.size(), &cols[0], &values[0], INSERT_VALUES);  //CHKERRQ(ierr);
   }
   void insert(int row, int col_size, int* cols, double* const values) {
-    ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, ADD_VALUES);  //CHKERRQ(ierr);
+    ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/complete"
@@ -74,27 +74,26 @@ public:
   }
   int get_nnz() const {
     MatInfo info;
-    MatGetInfo(matrix_, MAT_LOCAL, &info);
+    MatGetInfo(matrix_, MAT_GLOBAL_SUM, &info);
     return (int)info.nz_used;
   }
   void print() const {
     MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
   }
   void output_matrix_market() const {
-    PetscInt rstart, rend;
-    int num_cols;
+    PetscInt num_cols;
     const PetscInt * cols;
     const PetscScalar * values;
-    int local_row = 0;
     int myrank;
     MPI_Comm_rank(PETSC_COMM_WORLD, &myrank);
+    int nnz = get_nnz();
     if (myrank == 0) {
       std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
-      std::cout << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
+      std::cout << get_dim() << " " << get_dim() << " " << nnz << std::endl;
     }
     MPI_Barrier(PETSC_COMM_WORLD);
     for (int global_row=0; global_row<get_dim(); ++global_row) {
-      if ((global_row >= rstart) && (global_row < rend)) {
+      if ((global_row >= start_row()) && (global_row < end_row())) {
 	MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
 	for (int i=0; i<num_cols; ++i) {
 	  std::cout << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
