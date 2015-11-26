@@ -57,11 +57,14 @@ int main(int argc, char *argv[]) {
           diag += 0.25;
         }
       }
-      cols.push_back(row);
-      values.push_back(diag);
+      if (diag != 0.) {
+	cols.push_back(row);
+	values.push_back(diag);
+      }
       mat.insert(row, cols, values);
     }
     mat.complete();
+    mat.print();
     if (rank == 0)
       std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
                 << "solver = " << name << std::endl
