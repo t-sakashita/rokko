@@ -96,13 +96,17 @@ public:
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
+
     int block_size_;
+    bool is_block_size;
     if (params.defined("Block Size"))  {
       block_size_ = params.get<int>("Block Size");
+      is_block_size = true;
     }
     else {
-      block_size_ = 1;
+      is_block_size = false;
     }
+
     double tol;
     if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
     int max_iters;
@@ -128,7 +132,11 @@ public:
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-    ierr = EPSSetDimensions(eps, num_evals, block_size_, PETSC_DECIDE);
+    if (is_block_size) {
+      ierr = EPSSetDimensions(eps, num_evals, block_size_, PETSC_DECIDE);
+    } else {
+      ierr = EPSSetDimensions(eps, num_evals, PETSC_DECIDE, PETSC_DECIDE);
+    }
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
@@ -168,11 +176,13 @@ public:
     ierr = EPSSetOperators(eps, *A, NULL);
 
     int block_size_;
+    bool is_block_size;
     if (params.defined("Block Size"))  {
       block_size_ = params.get<int>("Block Size");
+      is_block_size = true;
     }
     else {
-      block_size_ = 1;
+      is_block_size = false;
     }
     double tol;
     if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
@@ -196,7 +206,11 @@ public:
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-    ierr = EPSSetDimensions(eps, num_evals, block_size_, PETSC_DECIDE);
+    if (is_block_size) {
+      ierr = EPSSetDimensions(eps, num_evals, block_size_, PETSC_DECIDE);
+    } else {
+      ierr = EPSSetDimensions(eps, num_evals, PETSC_DECIDE, PETSC_DECIDE);
+    }
     ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
