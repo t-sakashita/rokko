@@ -79,8 +79,8 @@ int main(int argc, char *argv[]) {
     heisenberg_op op(L, lattice);
     rokko::distributed_crs_matrix mat(dim, dim, solver);
     rokko::distributed_mfree_to_crs(op, mat);
-    //mat.output_matrix_market();
-    mat.print();
+    mat.output_matrix_market();
+    //mat.print();
     solver.finalize();
   }
   MPI_Finalize();

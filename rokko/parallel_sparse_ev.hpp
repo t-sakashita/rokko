@@ -86,6 +86,7 @@ typedef factory<ps_solver_base> ps_solver_factory;
 class parallel_sparse_ev {
 public:
   void construct(std::string const& solver_name) {
+    solver_name_ = solver_name;
     solver_impl_ = detail::ps_solver_factory::instance()->make_product(solver_name);
   }
   parallel_sparse_ev(std::string const& solver_name) {
@@ -117,10 +118,12 @@ public:
     int col_dim) {
     return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim);
   }
+  std::string get_solver_name() { return solver_name_; }
   static std::vector<std::string> solvers() { return detail::ps_solver_factory::product_names(); }
   static std::string default_solver() { return detail::ps_solver_factory::default_product_name(); }
 private:
   detail::ps_solver_factory::product_pointer_type solver_impl_;
+  std::string solver_name_;
 };
 
 } // end namespace rokko

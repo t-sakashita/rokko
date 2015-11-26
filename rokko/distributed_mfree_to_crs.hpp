@@ -19,6 +19,11 @@
 namespace rokko {
 
 void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distributed_crs_matrix& mat) {
+  if (mat.get_solver_name() == "anasazi") {
+    std::cerr << "output_matrix_market is not available for Anasazi yet." << std::endl;
+    throw;
+  }
+
   std::vector<double> x(op.get_num_local_rows()), y(op.get_num_local_rows());
   int myrank;
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
