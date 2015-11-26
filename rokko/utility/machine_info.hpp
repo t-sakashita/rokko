@@ -19,6 +19,9 @@
 #include <boost/asio.hpp>
 
 #include <rokko/config.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 namespace rokko {
 
