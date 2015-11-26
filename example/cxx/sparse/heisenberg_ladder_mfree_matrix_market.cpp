@@ -11,6 +11,7 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+#include <rokko/utility/lattice.hpp>
 #include <rokko/distributed_mfree_to_crs.hpp>
 
 class heisenberg_op : public rokko::distributed_mfree {
@@ -62,10 +63,11 @@ int main(int argc, char *argv[]) {
     solvers = rokko::parallel_sparse_ev::solvers();
   }
 
-  int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
+  int len_ladder = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 5;
+  int L = 2 * len_ladder;
   int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  for (int i = 0; i < L; ++i) lattice.push_back(std::make_pair(i, (i+1) % L));
+  rokko::ladder_lattice_1dim(len_ladder, lattice);
 
   rokko::parameters params;
   params.set("Block Size", 5);
@@ -77,8 +79,8 @@ int main(int argc, char *argv[]) {
     heisenberg_op op(L, lattice);
     rokko::distributed_crs_matrix mat(dim, dim, solver);
     rokko::distributed_mfree_to_crs(op, mat);
-    mat.output_matrix_market();
-    //mat.print();
+    //mat.output_matrix_market();
+    mat.print();
     solver.finalize();
   }
   MPI_Finalize();

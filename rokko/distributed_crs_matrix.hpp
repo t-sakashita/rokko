@@ -67,7 +67,7 @@ public:
   void print() const {
     mat->print();
   }
-  void ouput_matrix_market() const {
+  void output_matrix_market() const {
     mat->output_matrix_market();
   }
   detail::distributed_crs_matrix_base* get_matrix() {

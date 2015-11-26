@@ -12,11 +12,15 @@
 #include <rokko/rokko.hpp>
 
 int main(int argc, char *argv[]) {
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
   int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   for (int i = 0; i < L; ++i) lattice.push_back(std::make_pair(i, (i+1) % L));
 
+  rokko::parallel_sparse_ev solver("anasazi");
+  rokko::distributed_crs_matrix mat(dim, dim, solver);
   std::vector<double> values;
   std::vector<int> cols;
   for (int row = 0; row < dim; ++row) {
@@ -39,13 +43,12 @@ int main(int argc, char *argv[]) {
     }
     cols.push_back(row);
     values.push_back(diag);
-    if (rank == 0) {
-      for (int i=0; i<cols.size(); ++i)
-	std::cout << row << " " << cols[i] << " " << values[i] << std::endl;
-    }
-    //mat.insert(row, cols, values);
+    mat.insert(row, cols, values);
   }
-  //mat.complete();
+  mat.complete();
+  //mat.print();
+  mat.output_matrix_market();
 
+  solver.finalize();
   MPI_Finalize();
 }

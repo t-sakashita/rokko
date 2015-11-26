@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   }
   mat.complete();
   //mat.print();
-  mat.ouput_matrix_market();
+  mat.output_matrix_market();
 
   solver.finalize();
   MPI_Finalize();
