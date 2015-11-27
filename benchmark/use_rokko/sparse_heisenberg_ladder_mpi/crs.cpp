@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   initend_tick = MPI_Wtime();
 
   gen_tick = MPI_Wtime();
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_crs_matrix mat(dim, dim, 2 * L, solver);
   std::vector<double> values;
   std::vector<int> cols;
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {

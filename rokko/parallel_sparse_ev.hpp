@@ -42,6 +42,9 @@ public:
   virtual int num_conv() const = 0;
   virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
 										    int col_dim) = 0;
+virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+										  int col_dim, int num_entries_per_row) = 0;
+  
 };
 
 template<typename SOLVER>
@@ -74,6 +77,10 @@ public:
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
     int col_dim) {
     return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim);
+  }
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim, int num_entries_per_row) {
+    return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
 private:
   solver_type solver_impl_;
@@ -117,6 +124,10 @@ public:
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
     int col_dim) {
     return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim);
+  }
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim, int num_entries_per_row) {
+    return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
   std::string get_solver_name() { return solver_name_; }
   static std::vector<std::string> solvers() { return detail::ps_solver_factory::product_names(); }

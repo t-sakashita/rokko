@@ -40,7 +40,6 @@ public:
   distributed_crs_matrix(int row_dim, int col_dim) {
     initialize(row_dim, col_dim);
   }
-
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/initialize"
   void initialize(int row_dim, int col_dim) {

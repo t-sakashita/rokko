@@ -41,6 +41,11 @@ public:
     mat = solver_in.create_distributed_crs_matrix(row_dim, col_dim);
     solver_name_ = solver_in.get_solver_name();
   }
+  template<typename SOLVER>
+  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row, SOLVER& solver_in) {
+    mat = solver_in.create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+    solver_name_ = solver_in.get_solver_name();
+  }
   std::string get_solver_name() { return solver_name_; }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     mat->insert(row, cols, values);

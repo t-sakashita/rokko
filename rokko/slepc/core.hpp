@@ -265,6 +265,10 @@ public:
     int col_dim) {
     return new slepc::distributed_crs_matrix(row_dim, col_dim);
   }
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim, int num_entries_per_row) { // fix me: use num_entries_per_row for optimizaing storage size
+    return new slepc::distributed_crs_matrix(row_dim, col_dim);
+  }
 
 private:
   int dimension_, offset_local_, num_local_rows_;

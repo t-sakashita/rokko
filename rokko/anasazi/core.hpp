@@ -230,7 +230,10 @@ public:
     int col_dim) {
     return new anasazi::distributed_crs_matrix(row_dim, col_dim);
   }
-
+  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+    int col_dim, int num_entries_per_row) {
+    return new anasazi::distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+  }
   double eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
 
   void eigenvector(int k, std::vector<double>& vec) const {
