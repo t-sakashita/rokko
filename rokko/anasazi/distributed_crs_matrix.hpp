@@ -55,7 +55,7 @@ public:
   }
   void initialize(int row_dim, int col_dim, int num_entries_per_row) {
     map_ = new mapping_1d(row_dim);
-    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), col_dim, num_entries_per_row));
+    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
