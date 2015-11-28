@@ -58,7 +58,8 @@ int main(int argc, char *argv[]) {
   Map.MyGlobalElements(&MyGlobalElements[0]);
 
   // Create an Epetra_Matrix
-  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow
+  int NumEntriesPerRow = 2 * L;
+  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, NumEntriesPerRow) );
 
   // Compute coefficients for hamiltonian matrix of quantum Heisenberg model
   std::vector<double> values;
