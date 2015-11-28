@@ -73,7 +73,7 @@ int main(int argc,char **argv)
   ierr = MatAssemblyBegin(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
   //ierr = MatGetLocalSize(A, &n, NULL); CHKERRQ(ierr);
-  MatView(A, PETSC_VIEWER_STDOUT_WORLD);
+  //MatView(A, PETSC_VIEWER_STDOUT_WORLD);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 Create the eigensolver and set various options
