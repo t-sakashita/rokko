@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   //  rokko::print_lattice(lattice);
 
   rokko::parallel_sparse_ev solver(name);
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_crs_matrix mat(dim, dim, 2*L, solver);
   std::vector<double> values;
   std::vector<int> cols;
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {
