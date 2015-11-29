@@ -97,20 +97,19 @@ public:
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
 
-    PetscInt block_size;
-    if (params.defined("Block Size")) block_size = params.get<int>("Block Size");
-    else block_size = PETSC_DECIDE;
-
+    PetscInt max_block_size;
+    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
+    else max_block_size = PETSC_DECIDE;
     PetscReal tol;
-    if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
-    else tol = PETSC_DECIDE;
+    if (params.defined("conv_tol")) tol = params.get<double>("conv_tol");
+    else tol = (PetscReal)PETSC_DEFAULT;
     PetscInt max_iters;
-    if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
+    if (params.defined("max_iters")) max_iters = params.get<int>("max_iters");
     else max_iters = PETSC_DECIDE;
 
     A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
     PetscInt num_evals;
-    if (params.defined("num_eigenvalues")) num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    if (params.defined("num_eigvals")) num_evals = (PetscInt) params.get<int>("num_eigvals");
     else num_evals = 1;
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
 
@@ -123,8 +122,8 @@ public:
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-    ierr = EPSSetDimensions(eps, num_evals, block_size, PETSC_DECIDE);
-    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
+    ierr = EPSSetTolerances(eps, tol, max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
 
@@ -163,20 +162,17 @@ public:
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
 
-    PetscInt block_size;
-    if (params.defined("Block Size")) block_size = params.get<int>("Block Size");
-    else block_size = PETSC_DECIDE;
-
+    PetscInt max_block_size;
+    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
+    else max_block_size = PETSC_DECIDE;
     PetscReal tol;
-    if (params.defined("Convergence Tolerance")) tol = params.get<double>("Convergence Tolerance");
-    else tol = PETSC_DECIDE;
-
+    if (params.defined("conv_tol")) tol = params.get<double>("conv_tol");
+    else tol = (PetscReal)PETSC_DEFAULT;
     PetscInt max_iters;
-    if (params.defined("Maximum Iterations")) max_iters = params.get<int>("Maximum Iterations");
+    if (params.defined("max_iters")) max_iters = params.get<int>("max_iters");
     else max_iters = PETSC_DECIDE;
-    
     PetscInt num_evals;
-    if (params.defined("num_eigenvalues")) num_evals = (PetscInt) params.get<int>("num_eigenvalues");
+    if (params.defined("num_eigvals")) num_evals = (PetscInt) params.get<int>("num_eigvals");
     else num_evals = 1;
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -187,8 +183,8 @@ public:
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
-    ierr = EPSSetDimensions(eps, num_evals, block_size, PETSC_DECIDE);
-    ierr = EPSSetTolerances(eps, (PetscScalar) tol, (PetscInt) max_iters);
+    ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
+    ierr = EPSSetTolerances(eps, tol, max_iters);
     /* Set solver parameters at runtime */
     ierr = EPSSetFromOptions(eps);
 

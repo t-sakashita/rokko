@@ -120,20 +120,20 @@ public:
     map_ = new mapping_1d(mat.get_dim());
 
     set_anasazi_parameters(params);
-    if (!params.defined("Which")) pl_.set("Which", "LM");
-
-    if (params.defined("Block Size")) {
-      block_size_ = params.get<int>("Block Size");
-    } else {
-      block_size_ = 1;
-      pl_.set("Block Size", block_size_);
-    }
-
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
+    if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
+      pl_.set("Block Size", params.get<std::string>("Block Size"));
+    //if (!params.defined("Which")) pl_.set("Which", "LM");
+    int num_eigvals;
+    if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
+    else num_eigvals = 1;
+    int max_block_size;
+    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
+    else max_block_size = num_eigvals;  // fix me : it must depend on eigenalgorithm such as 2 * num_eigvals
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
     problem_->setHermitian(true);
-    if (params.defined("num_eigenvalues")) problem_->setNEV(params.get<int>("num_eigenvalues"));
+    problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
     if (params.defined("routine")) {
@@ -166,21 +166,23 @@ public:
     map_ = new mapping_1d(mat->get_dim());
 
     set_anasazi_parameters(params);
-    if (!params.defined("Which")) pl_.set("Which", "LM");
-
-    if (params.defined("Block Size")) {
-      block_size_ = params.get<int>("Block Size");
-    } else {
-      block_size_ = 1;
-      pl_.set( "Block Size", block_size_ );
-    }
-
+    if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
+      pl_.set("Block Size", params.get<std::string>("Block Size"));
+    //if (!params.defined("Which")) pl_.set("Which", "LM");
+    int num_eigvals;
+    if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
+    else num_eigvals = 1;
+    int max_block_size;
+    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
+    else max_block_size = num_eigvals;  // fix me : it must depend on eigenalgorithm such as 2 * num_eigvals
+    //if (!params.defined("Which")) pl_.set("Which", "LM");
+  
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), block_size_));
+    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
     problem_->setHermitian(true);
-    if (params.defined("num_eigenvalues"))   problem_->setNEV(params.get<int>("num_eigenvalues"));
+    problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
     if (params.defined("routine")) {
@@ -209,7 +211,7 @@ public:
   parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
 			 int max_iters, double tol) {
     parameters params;
-    params.set("num_eigenvalues", num_evals);
+    params.set("num_eigvals", num_evals);
     params.set("Block Size", block_size);
     params.set("Maximum Iterations", max_iters);
     params.set("Convergence Tolerance", tol);
@@ -259,7 +261,7 @@ private:
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<double> > evals_;
   Teuchos::ParameterList pl_;
-  int block_size_;
+  int max_block_size;
   std::string routine_;
   int num_conv_;
 };
