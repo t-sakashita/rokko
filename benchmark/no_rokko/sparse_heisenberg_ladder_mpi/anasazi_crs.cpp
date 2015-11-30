@@ -1,6 +1,6 @@
 #include "AnasaziConfigDefs.hpp"
 #include "AnasaziBasicEigenproblem.hpp"
-#include "AnasaziSimpleLOBPCGSolMgr.hpp"
+#include "AnasaziLOBPCGSolMgr.hpp"
 #include "AnasaziBasicOutputManager.hpp"
 #include "AnasaziEpetraAdapter.hpp"
 #include "Epetra_CrsMatrix.h"
@@ -105,9 +105,9 @@ int main(int argc, char *argv[]) {
   diag_tick = MPI_Wtime();
   std::string which("LM");
   const int    nev       = 1;
-  const int    blockSize = 5;
-  const int    maxIters  = 500;
-  const double tol       = 1.0e-8;
+  const int    blockSize = nev;
+  //const int    maxIters  = 500;
+  //const double tol       = 1.0e-8;
 
   typedef Epetra_MultiVector MV;
   typedef Epetra_Operator OP;
@@ -140,13 +140,13 @@ int main(int argc, char *argv[]) {
 
   // Create parameter list to pass into the solver manager
   Teuchos::ParameterList MyPL;
-  MyPL.set( "Which", which );
-  MyPL.set( "Block Size", blockSize );
-  MyPL.set( "Maximum Iterations", maxIters );
-  MyPL.set( "Convergence Tolerance", tol );
+  //MyPL.set( "Which", which );
+  //MyPL.set( "Block Size", blockSize );
+  //MyPL.set( "Maximum Iterations", maxIters );
+  //MyPL.set( "Convergence Tolerance", tol );
 
   // Create the solver manager
-  SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  LOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
   ReturnType returnCode = MySolverMan.solve();

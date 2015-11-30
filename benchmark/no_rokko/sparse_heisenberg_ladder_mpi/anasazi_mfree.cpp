@@ -1,6 +1,6 @@
 #include "AnasaziConfigDefs.hpp"
 #include "AnasaziBasicEigenproblem.hpp"
-#include "AnasaziSimpleLOBPCGSolMgr.hpp"
+#include "AnasaziLOBPCGSolMgr.hpp"
 //#include "AnasaziBlockKrylovSchurSolMgr.hpp"
 #include "AnasaziBasicOutputManager.hpp"
 #include "AnasaziEpetraAdapter.hpp"
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]) {
   //MyPL.set( "Convergence Tolerance", tol );
 
   // Create the solver manager
-  Anasazi::SimpleLOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
+  Anasazi::LOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
   //Anasazi::BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
