@@ -25,7 +25,7 @@
 #include <Epetra_Map.h>
 
 #include <AnasaziBasicEigenproblem.hpp>
-#include <AnasaziSimpleLOBPCGSolMgr.hpp>
+#include <AnasaziLOBPCGSolMgr.hpp>
 #include <AnasaziBlockKrylovSchurSolMgr.hpp>
 #include <AnasaziBlockDavidsonSolMgr.hpp>
 #include <Teuchos_RCPDecl.hpp>
@@ -65,12 +65,12 @@ private:
   Epetra_Map ep_map;
 };
 
-static const char* const anasazi_solvers[] = { "SimpleLOBPCG", "BlockKrylovSchur", "BlockDavidson" };
+static const char* const anasazi_solvers[] = { "LOBPCG", "BlockKrylovSchur", "BlockDavidson" };
 
 class solver {
 public:
   typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> eigenproblem_t;
-  typedef Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_lobpcg_t;
+  typedef Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_lobpcg_t;
   typedef Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
 
   solver() {}
@@ -79,8 +79,8 @@ public:
   void finalize() {}
 
   solvermanager_t* create_solver_manager(std::string const& routine) {
-    if (routine == "SimpleLOBPCG")
-      return new Anasazi::SimpleLOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+    if (routine == "LOBPCG")
+      return new Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     if (routine == "BlockKrylovSchur")
       return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     if (routine == "BlockDavidson")
@@ -146,7 +146,7 @@ public:
 	throw "error: routine must be charatcters or string.";
       routine_ = params.get_string("routine");
     } else {
-      routine_ = "SimpleLOBPCG";
+      routine_ = "LOBPCG";
     }
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
@@ -198,7 +198,7 @@ public:
 	throw "error: routine is not charatcters or string";
       routine_ = params.get_string("routine");
     } else {
-      routine_ = "SimpleLOBPCG";
+      routine_ = "LOBPCG";
     }
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
