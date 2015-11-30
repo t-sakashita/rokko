@@ -69,10 +69,10 @@ int main(int argc, char *argv[]) {
   
   diag_tick = MPI_Wtime();
   rokko::parameters params;
-  params.set("Block Size", 5);
-  params.set("Maximum Iterations", 500);
-  params.set("Convergence Tolerance", 1.0e-8);
-  params.set("num_eigenvalues", 10);
+  //params.set("max_block_size", 5);
+  //params.set("max_iters", 500);
+  //params.set("conv_tol", 1.0e-8);
+  //params.set("num_eigvals", 1);
   rokko::parameters info = solver.diagonalize(mat, params);
   end_tick = MPI_Wtime();
   
@@ -90,5 +90,6 @@ int main(int argc, char *argv[]) {
 	      << "diag_time = " << end_tick - diag_tick << std::endl;
   }
 
+  solver.finalize();
   MPI_Finalize();
 }

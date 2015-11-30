@@ -121,14 +121,19 @@ public:
 
     set_anasazi_parameters(params);
     if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<std::string>("Block Size"));
-    //if (!params.defined("Which")) pl_.set("Which", "LM");
+      pl_.set("Block Size", params.get<std::string>("block_size"));
     int num_eigvals;
     if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
     else num_eigvals = 1;
     int max_block_size;
     if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
     else max_block_size = num_eigvals;  // fix me : it must depend on eigenalgorithm such as 2 * num_eigvals
+    if (params.defined("conv_tol"))
+      pl_.set("Convergence Tolerance", params.get<int>("conv_tol"));    
+    if (params.defined("max_iters"))
+      pl_.set("Maximum Iterations", params.get<int>("max_iters"));
+    //if (!params.defined("Which")) pl_.set("Which", "LM");
+
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
@@ -167,14 +172,17 @@ public:
 
     set_anasazi_parameters(params);
     if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<std::string>("Block Size"));
-    //if (!params.defined("Which")) pl_.set("Which", "LM");
+      pl_.set("Block Size", params.get<std::string>("block_size"));
     int num_eigvals;
     if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
     else num_eigvals = 1;
     int max_block_size;
     if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
     else max_block_size = num_eigvals;  // fix me : it must depend on eigenalgorithm such as 2 * num_eigvals
+    if (params.defined("conv_tol"))
+      pl_.set("Convergence Tolerance", params.get<int>("conv_tol"));    
+    if (params.defined("max_iters"))
+      pl_.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
   
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
