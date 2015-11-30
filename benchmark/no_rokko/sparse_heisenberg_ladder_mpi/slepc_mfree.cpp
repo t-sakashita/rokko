@@ -83,13 +83,8 @@ int main(int argc,char **argv)
   */
   ierr = EPSSetOperators(eps,A,NULL); CHKERRQ(ierr);
   ierr = EPSSetProblemType(eps,EPS_HEP); CHKERRQ(ierr);
-  ierr = EPSSetDimensions(eps, 1, 5, PETSC_DECIDE); CHKERRQ(ierr);
-  //ierr = EPSSetDimensions(eps, 1, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
-  //ierr = EPSSetTolerances(eps, (PetscScalar) 1., (PetscInt) 2000);   CHKERRQ(ierr);
-  /*  Vec v0;
-  MatGetVecs(A, &v0, NULL);
-  VecSet(v0,1.0);
-  EPSSetInitialSpace(eps,1,&v0);*/
+  ierr = EPSSetDimensions(eps, 1, PETSC_DECIDE, PETSC_DECIDE); CHKERRQ(ierr);
+  ierr = EPSSetTolerances(eps, PETSC_DEFAULT, PETSC_DECIDE);   CHKERRQ(ierr);
 
   /*
      Set solver parameters at runtime
