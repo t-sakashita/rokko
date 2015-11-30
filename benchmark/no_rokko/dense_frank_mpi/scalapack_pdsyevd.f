@@ -18,8 +18,8 @@
 *
 *     .. Parameters ..
       INTEGER            N
-      PARAMETER          ( N = 100 )
-*     PARAMETER          ( N = 3000 )
+      character(len=10) :: tmp_str
+      integer arg_len, status
 *     ..
 *     .. Local Scalars ..
       INTEGER            IERR
@@ -30,8 +30,8 @@
 *     ..
 *     .. Local Arrays ..
       INTEGER            DESC( 50 )
-      DOUBLE PRECISION   A( N, N ), W( N ),
-     $     Z( N, N )
+      real(8), pointer :: A(:,:),W(:),Z(:,:)
+
       DOUBLE PRECISION   TMP_WORK(1)
       INTEGER            TMP_IWORK(1)
       DOUBLE PRECISION, allocatable :: WORK(:)
@@ -50,7 +50,15 @@
 *
       include 'mpif.h'
 
-      call mpi_init(ierr)      
+      !call mpi_init(ierr)      
+      call mpi_init_thread( MPI_THREAD_MULTIPLE, i, ierr )
+      if (command_argument_count().eq.1) then
+      call get_command_argument(1, tmp_str, arg_len, status)
+      read(tmp_str, *) n
+      else
+      write(*,'(A)') "Error: eigen_exa dimension"
+      stop
+      endif
       INIT_TICK = MPI_WTIME()
       call MPI_Comm_Size(mpi_comm_world,nprocs,ierr)
       NPROW = INT(SQRT(NPROCS + 0.5))
@@ -58,18 +66,6 @@
          NPROW = NPROW - 1
       ENDDO
       NPCOL = NPROCS / NPROW
-      MB = N / NPROW
-      NB = N / NPCOL
-*      print*, "NPROW=", NPROW, "  NPCOL=", NPCOL
-*      print*, "MB=", MB, "  NB=", NB
-*     
-*     Initialize the BLACS
-*
-*      CALL BLACS_PINFO( IAM, NPROCS )
-*      IF( ( NPROCS.LT.1 ) ) THEN
-*         CALL BLACS_SETUP( IAM, NPROW*NPCOL )
-*      END IF
-
 *     
 *     Initialize a single BLACS context
 *
@@ -80,7 +76,10 @@
 *     These are basic array descriptors
 *
       GEN_TICK = MPI_WTIME()
+      MB = N / NPROW
+      NB = N / NPCOL
       LDA = N
+      allocate( a(N, N), z(N, N), w(N))
       CALL DESCINIT( DESC, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
       CALL PDLAMODHILB( N, A, 1, 1, DESC, INFO )
 *      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )

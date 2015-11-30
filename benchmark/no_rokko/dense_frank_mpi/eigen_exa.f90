@@ -5,11 +5,21 @@ program EigenExa
   double precision   init_tick, gen_tick, diag_tick, end_tick
   integer :: n, m, nm, ny, mtype, i, i_inod, ierr
   real(8), pointer :: a(:,:),z(:,:),w(:)
+  character(len=10) :: tmp_str
+  integer arg_len, status
+
   call mpi_init_thread( MPI_THREAD_MULTIPLE, i, ierr )
+  if (command_argument_count().eq.1) then
+     call get_command_argument(1, tmp_str, arg_len, status)
+     read(tmp_str, *) n
+  else
+     write(*,'(A)') "Error: eigen_exa dimension"
+     stop
+  endif
+  
   init_tick = mpi_wtime()
   call mpi_comm_rank( mpi_comm_world, i_inod, ierr )
-  call eigen_init( )
-  n = 3000
+  call eigen_init()
   gen_tick = mpi_wtime()
   call eigen_get_matdims( n, nm, ny )
   allocate( a(nm, ny), z(nm, ny), w(n))
