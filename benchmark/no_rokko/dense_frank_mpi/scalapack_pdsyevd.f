@@ -24,14 +24,14 @@
 *     .. Local Scalars ..
       INTEGER            IERR
       INTEGER            LWORK, LDA
-      INTEGER            CONTEXT, I, IAM, INFO, MYCOL, MYROW, MB, NB,
+      INTEGER            CONTEXT, I, IAM, INFO, MYCOL, MYROW,
      $                   NPCOL, NPROCS, NPROW
+      INTEGER            MB, NB, BB, M_LOCAL, N_LOCAL
       DOUBLE PRECISION   INIT_TICK, GEN_TICK, DIAG_TICK, END_TICK
 *     ..
 *     .. Local Arrays ..
       INTEGER            DESC( 50 )
-      real(8), pointer :: A(:,:),W(:),Z(:,:)
-
+      DOUBLE PRECISION, pointer :: A(:,:),W(:),Z(:,:)
       DOUBLE PRECISION   TMP_WORK(1)
       INTEGER            TMP_IWORK(1)
       DOUBLE PRECISION, allocatable :: WORK(:)
@@ -50,7 +50,6 @@
 *
       include 'mpif.h'
 
-      !call mpi_init(ierr)      
       call mpi_init_thread( MPI_THREAD_MULTIPLE, i, ierr )
       if (command_argument_count().eq.1) then
       call get_command_argument(1, tmp_str, arg_len, status)
@@ -77,10 +76,20 @@
 *
       GEN_TICK = MPI_WTIME()
       MB = N / NPROW
+      IF( MB.EQ.0 ) THEN
+         MB = 1
+      ENDIF
       NB = N / NPCOL
-      LDA = N
-      allocate( a(N, N), z(N, N), w(N))
-      CALL DESCINIT( DESC, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
+      IF( NB.EQ.0 ) THEN
+         NB = 1
+      ENDIF
+      BB = MIN(MB, NB)
+      M_LOCAL = NUMROC(N, BB, MYROW, 0, NPROW)
+      N_LOCAL = NUMROC(N, BB, MYCOL, 0, NPCOL)
+!      print*, "M_LOCAL=", M_LOCAL, " N_LOCAL=", N_LOCAL
+      LDA = MAX(M_LOCAL, 1)
+      allocate( A(M_LOCAL, N_LOCAL), Z(M_LOCAL, N_LOCAL), W(N) )
+      CALL DESCINIT( DESC, N, N, BB, BB, 0, 0, CONTEXT, LDA, INFO )
       CALL PDLAMODHILB( N, A, 1, 1, DESC, INFO )
 *      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
 *     

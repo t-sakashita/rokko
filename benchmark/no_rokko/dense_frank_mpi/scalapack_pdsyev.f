@@ -18,20 +18,20 @@
 *
 *     .. Parameters ..
       INTEGER            N
-      PARAMETER          ( N = 100 )
-*      PARAMETER          ( N = 3000 )
+      character(len=10) :: tmp_str
+      integer arg_len, status
 *     ..
 *     .. Local Scalars ..
       INTEGER            IERR
       INTEGER            LWORK, LDA
-      INTEGER            CONTEXT, I, IAM, INFO, MYCOL, MYROW, MB, NB,
+      INTEGER            CONTEXT, I, IAM, INFO, MYCOL, MYROW,
      $                   NPCOL, NPROCS, NPROW
+      INTEGER            MB, NB, BB, M_LOCAL, N_LOCAL
       DOUBLE PRECISION   INIT_TICK, GEN_TICK, DIAG_TICK, END_TICK
 *     ..
 *     .. Local Arrays ..
       INTEGER            DESC( 50 )
-      DOUBLE PRECISION   A( N, N ), W( N ),
-     $     Z( N, N )
+      DOUBLE PRECISION, pointer :: A(:,:),W(:),Z(:,:)
       DOUBLE PRECISION   TMP_WORK(1)
       DOUBLE PRECISION, allocatable :: WORK(:)
 *     ..
@@ -48,7 +48,14 @@
 *
       include 'mpif.h'
 
-      call mpi_init(ierr)      
+      call mpi_init_thread( MPI_THREAD_MULTIPLE, i, ierr )
+      if (command_argument_count().eq.1) then
+      call get_command_argument(1, tmp_str, arg_len, status)
+      read(tmp_str, *) n
+      else
+      write(*,'(A)') "Error: eigen_exa dimension"
+      stop
+      endif
       INIT_TICK = MPI_WTIME()
       call MPI_Comm_Size(mpi_comm_world,nprocs,ierr)
       NPROW = INT(SQRT(NPROCS + 0.5))
@@ -56,18 +63,6 @@
          NPROW = NPROW - 1
       ENDDO
       NPCOL = NPROCS / NPROW
-      MB = N / NPROW
-      NB = N / NPCOL
-*      print*, "NPROW=", NPROW, "  NPCOL=", NPCOL
-*      print*, "MB=", MB, "  NB=", NB
-*     
-*     Initialize the BLACS
-*
-*      CALL BLACS_PINFO( IAM, NPROCS )
-*      IF( ( NPROCS.LT.1 ) ) THEN
-*         CALL BLACS_SETUP( IAM, NPROW*NPCOL )
-*      END IF
-
 *     
 *     Initialize a single BLACS context
 *
@@ -78,8 +73,21 @@
 *     These are basic array descriptors
 *
       GEN_TICK = MPI_WTIME()
-      LDA = N
-      CALL DESCINIT( DESC, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
+      MB = N / NPROW
+      IF( MB.EQ.0 ) THEN
+         MB = 1
+      ENDIF
+      NB = N / NPCOL
+      IF( NB.EQ.0 ) THEN
+         NB = 1
+      ENDIF
+      BB = MIN(MB, NB)
+      M_LOCAL = NUMROC(N, BB, MYROW, 0, NPROW)
+      N_LOCAL = NUMROC(N, BB, MYCOL, 0, NPCOL)
+!      print*, "M_LOCAL=", M_LOCAL, " N_LOCAL=", N_LOCAL
+      LDA = MAX(M_LOCAL, 1)
+      allocate( A(M_LOCAL, N_LOCAL), Z(M_LOCAL, N_LOCAL), W(N) )
+      CALL DESCINIT( DESC, N, N, BB, BB, 0, 0, CONTEXT, LDA, INFO )
       CALL PDLAMODHILB( N, A, 1, 1, DESC, INFO )
 *      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
 *     
