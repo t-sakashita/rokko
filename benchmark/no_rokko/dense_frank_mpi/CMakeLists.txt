@@ -10,7 +10,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE scalapack eigen_exa)
+set(EXAMPLE scalapack_pdsyevd scalapack_pdsyev eigen_exa)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_dense_frank_mpi_${name})
   file(GLOB SOURCE "${name}.f*")

@@ -29,7 +29,7 @@
       DOUBLE PRECISION   INIT_TICK, GEN_TICK, DIAG_TICK, END_TICK
 *     ..
 *     .. Local Arrays ..
-      INTEGER            DESCA( 50 ), DESCZ( 50 )
+      INTEGER            DESC( 50 )
       DOUBLE PRECISION   A( N, N ), W( N ),
      $     Z( N, N )
       DOUBLE PRECISION   TMP_WORK(1)
@@ -81,22 +81,21 @@
 *
       GEN_TICK = MPI_WTIME()
       LDA = N
-      CALL DESCINIT( DESCA, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
-      CALL DESCINIT( DESCZ, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
-      CALL PDLAMODHILB( N, A, 1, 1, DESCA, INFO )
-*      CALL PDLAPRNT( N, N, A, 1, 1, DESCZ, 0, 0, 'A', 6, PRNWORK )
+      CALL DESCINIT( DESC, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
+      CALL PDLAMODHILB( N, A, 1, 1, DESC, INFO )
+*      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
 *     
 *     Ask PDSYEV to compute the entire eigendecomposition
 *
       DIAG_TICK = MPI_WTIME()
-      CALL PDSYEVD( 'V', 'U', N, A, 1, 1, DESCA, W, Z, 1, 1,
-     $             DESCZ, TMP_WORK, -1, TMP_IWORK, LIWORK, INFO )
+      CALL PDSYEVD( 'V', 'U', N, A, 1, 1, DESC, W, Z, 1, 1,
+     $             DESC, TMP_WORK, -1, TMP_IWORK, -1, INFO )
       LWORK = INT(TMP_WORK(1))
       allocate ( WORK(LWORK) )
       LIWORK = TMP_IWORK(1)
       allocate ( IWORK(LIWORK) )
-      CALL PDSYEVD( 'V', 'U', N, A, 1, 1, DESCA, W, Z, 1, 1,
-     $             DESCZ, WORK, LWORK, IWORK, LIWORK, INFO )
+      CALL PDSYEVD( 'V', 'U', N, A, 1, 1, DESC, W, Z, 1, 1,
+     $             DESC, WORK, LWORK, IWORK, LIWORK, INFO )
       END_TICK = MPI_WTIME()
 *     
 *     Print out the eigenvalues and eigenvectors

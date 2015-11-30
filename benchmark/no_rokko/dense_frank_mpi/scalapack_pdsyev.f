@@ -18,7 +18,8 @@
 *
 *     .. Parameters ..
       INTEGER            N
-      PARAMETER          ( N = 3000 )
+      PARAMETER          ( N = 100 )
+*      PARAMETER          ( N = 3000 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            IERR
@@ -28,10 +29,10 @@
       DOUBLE PRECISION   INIT_TICK, GEN_TICK, DIAG_TICK, END_TICK
 *     ..
 *     .. Local Arrays ..
-      INTEGER            DESCA( 50 ), DESCZ( 50 )
+      INTEGER            DESC( 50 )
       DOUBLE PRECISION   A( N, N ), W( N ),
      $     Z( N, N )
-      DOUBLE PRECISION   TMPWORK(1)
+      DOUBLE PRECISION   TMP_WORK(1)
       DOUBLE PRECISION, allocatable :: WORK(:)
 *     ..
 *     .. External Subroutines ..
@@ -78,29 +79,28 @@
 *
       GEN_TICK = MPI_WTIME()
       LDA = N
-      CALL DESCINIT( DESCA, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
-      CALL DESCINIT( DESCZ, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
-      CALL PDLAMODHILB( N, A, 1, 1, DESCA, INFO )
-*      CALL PDLAPRNT( N, N, A, 1, 1, DESCZ, 0, 0, 'A', 6, PRNWORK )
+      CALL DESCINIT( DESC, N, N, MB, NB, 0, 0, CONTEXT, LDA, INFO )
+      CALL PDLAMODHILB( N, A, 1, 1, DESC, INFO )
+*      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
 *     
 *     Ask PDSYEV to compute the entire eigendecomposition
 *
       DIAG_TICK = MPI_WTIME()
-      CALL PDSYEV( 'V', 'U', N, A, 1, 1, DESCA, W, Z, 1, 1,
-     $             DESCZ, TMPWORK, -1, INFO )
-      LWORK = INT(TMPWORK(1))
+      CALL PDSYEV( 'V', 'U', N, A, 1, 1, DESC, W, Z, 1, 1,
+     $             DESC, TMP_WORK, -1, INFO )
+      LWORK = INT(TMP_WORK(1))
       allocate ( WORK(LWORK) )
-      CALL PDSYEV( 'V', 'U', N, A, 1, 1, DESCA, W, Z, 1, 1,
-     $             DESCZ, WORK, LWORK, INFO )
+      CALL PDSYEV( 'V', 'U', N, A, 1, 1, DESC, W, Z, 1, 1,
+     $             DESC, WORK, LWORK, INFO )
       END_TICK = MPI_WTIME()
 *     
 *     Print out the eigenvalues and eigenvectors
 *
       IF( MYROW.EQ.0 .AND. MYCOL.EQ.0 ) THEN
          write(*,'(" Eigenvalues:",5f10.5)') W(1:N)
-         write(*,*) "INIT_TIME = ", GEN_TICK - INIT_TICK
-         write(*,*) "GEN_TIME = ", DIAG_TICK - GEN_TICK
-         write(*,*) "DIAG_TIME = ", END_TICK - DIAG_TICK
+         write(*,*) "init_time = ", GEN_TICK - INIT_TICK
+         write(*,*) "gen_time = ", DIAG_TICK - GEN_TICK
+         write(*,*) "diag_time = ", END_TICK - DIAG_TICK
       END IF
 
       CALL BLACS_GRIDEXIT( CONTEXT )
