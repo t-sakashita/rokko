@@ -87,10 +87,10 @@ int main(int argc, char *argv[]) {
   //params.set("max_iters", 500);
   //params.set("conv_tol", 1.0e-8);
   //params.set("num_eigvals", 1)
-  rokko::parameters info = solver.diagonalize(mat, params);
+  rokko::parameters params_out = solver.diagonalize(mat, params);
   end_tick = MPI_Wtime();
 
-  int num_conv = info.get<int>("num_conv");
+  int num_conv = params_out.get<int>("num_conv");
   if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
   std::vector<double> eigvec;
   solver.eigenvector(0, eigvec);
