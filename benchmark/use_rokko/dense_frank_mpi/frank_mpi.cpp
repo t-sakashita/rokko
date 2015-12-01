@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
 
   if (argc >= 2) library_routine = argv[1];
   rokko::split_solver_name(library_routine, library, routine);
-  //  if (argc >= 3) dim = boost::lexical_cast<int>(argv[2]);
   int dim = 3000;
+  if (argc >= 3) dim = boost::lexical_cast<int>(argv[2]);
   rokko::grid g(comm);
   int myrank = g.get_myrank();
   if (myrank == 0)
