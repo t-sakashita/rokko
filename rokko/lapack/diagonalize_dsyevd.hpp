@@ -39,9 +39,10 @@ parameters diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
   else
     info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
 
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at dsyevd function. info=" << info  << std::endl;
-    exit(1);
+    //exit(1);
   }
   if (params.get_bool("verbose")) {
     print_verbose("dsyevd", jobz, uplow);
@@ -68,6 +69,7 @@ parameters diagonalize_dsyevd(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
     info = LAPACKE_dsyevd(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
 
   eigvecs = mat;
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at dsyevd function. info=" << info  << std::endl;
     exit(1);

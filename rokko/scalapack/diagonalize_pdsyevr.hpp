@@ -53,8 +53,9 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
-    exit(1);
+    //exit(1);
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
@@ -93,6 +94,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
     exit(1);
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {

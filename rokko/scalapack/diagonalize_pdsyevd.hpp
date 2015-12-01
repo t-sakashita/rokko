@@ -46,9 +46,10 @@ parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
   info = ROKKO_pdsyevd(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
 		       eigvecs.get_array_pointer(), 1, 1, desc);
 
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info << std::endl;
-    exit(1);
+    //exit(1);
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyevd", jobz, uplow);
@@ -77,9 +78,10 @@ parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
   info = ROKKO_pdsyevd(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
 		       NULL, 1, 1, desc);
 
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info << std::endl;
-    exit(1);
+    //exit(1);
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyevd", jobz, uplow);

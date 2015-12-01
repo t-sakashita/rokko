@@ -59,6 +59,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       eigvecs.get_array_pointer(), 1, 1, desc,
 		       &ifail[0], &iclustr[0], &gap[0]);
 
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
   params_out.set("ifail", ifail);
@@ -105,6 +106,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       NULL, 1, 1, desc,
 		       &ifail[0], &iclustr[0], &gap[0]);
 
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
   params_out.set("ifail", ifail);

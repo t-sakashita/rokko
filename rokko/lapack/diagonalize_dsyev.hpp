@@ -39,6 +39,7 @@ parameters diagonalize_dsyev(localized_matrix<double, MATRIX_MAJOR>& mat, double
   else
     info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
 
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
     exit(1);
@@ -69,6 +70,7 @@ parameters diagonalize_dsyev(localized_matrix<double, MATRIX_MAJOR>& mat, double
     info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
 
   eigvecs = mat;
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
     exit(1);

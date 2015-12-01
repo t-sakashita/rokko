@@ -60,6 +60,7 @@ parameters diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
     }
     exit(1);
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("ifail", ifail);
   
@@ -121,6 +122,7 @@ parameters diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
     }
     exit(1);
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("ifail", ifail);
   

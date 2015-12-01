@@ -41,8 +41,11 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int desc[9];
   blacs::set_desc(ictxt, mat, desc);
   int info;
+
   info = ROKKO_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
 		      eigvecs.get_array_pointer(), 1, 1, desc);
+
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info << std::endl;
     exit(1);
@@ -74,6 +77,8 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
 
   info = ROKKO_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
 		      NULL, 1, 1, desc);
+
+  params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info << std::endl;
     exit(1);

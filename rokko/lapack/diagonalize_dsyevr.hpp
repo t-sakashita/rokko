@@ -53,8 +53,9 @@ parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
-    exit(1);
+    //exit(1);
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("isuppz", isuppz);
 
@@ -104,6 +105,7 @@ parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
     exit(1);
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("isuppz", isuppz);
   
