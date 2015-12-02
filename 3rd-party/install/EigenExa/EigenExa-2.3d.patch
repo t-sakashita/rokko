@@ -1,0 +1,54 @@
+diff -crN EigenExa-1.3.orig/CMakeLists.txt EigenExa-1.3/CMakeLists.txt
+*** EigenExa-1.3.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
+--- EigenExa-1.3/CMakeLists.txt	2013-12-25 15:32:39.000000000 +0900
+***************
+*** 0 ****
+--- 1,48 ----
++ cmake_minimum_required(VERSION 2.8)
++ project(EigenExa NONE)
++ enable_language(C Fortran)
++ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
++ option(USE_C_LINKER "Use C Linker instead of Fortran" OFF)
++ 
++ # RPATH setting
++ if(APPLE)
++   set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
++ else(APPLE)
++   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
++   set(CMAKE_SKIP_BUILD_RPATH FALSE)
++   set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
++   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
++ endif(APPLE)
++ 
++ # OpenMP
++ find_package(OpenMP)
++ if(OPENMP_FOUND)
++   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
++   # Almost always OpenMP flags are same both for C and for Fortran.
++   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_C_FLAGS}")
++ endif(OPENMP_FOUND)
++ 
++ # MPI library
++ find_package(MPI)
++ 
++ add_definitions(-DUSE_SYNC=1 -D_DEBUG_=0 -D_DEBUG2_=0 -DAT_BCAST_OVERLAP=1 -DOVERLAP_DECISION_TYPE=3)
++ 
++ set(SOURCES eigen_prd.F eigen_t1.F eigen_prd_t2.F eigen_prd_t4x.F eigen_prd_t5.F eigen_prd_t6_3.F eigen_prd_t7.F eigen_prd_t8.F eigen_scaling.F dcx.F my_pdsxedc.F my_pdlaedz.F my_pdlaed0.F my_pdlaed1.F my_pdlaed2.F my_pdlaed3.F my_pdlasrt.F lapack_eigen.F dlaed3.F dlaed6.F dlaed6_init.F dc_redist1.F dc_redist2.F trbakwy4.F trbakwy4_body.F eigen_sx.F comm.F matrix_adjustment.F CSTAB.F eigen_libs.F eigen_blacs.F eigen_devel.F eigen_house.F eigen_dc.F eigen_trbak.F dlaed6_common.F bisect.F bisect2.F eigen_scaling.F miscC.c eigen_s.F eigen_trd.F eigen_trd_t2.F eigen_trd_t4.F eigen_trd_t5.F eigen_trd_t5x.F eigen_trd_t6_3.F eigen_trd_t7.F eigen_trd_t8.F dc2.F mx_pdlaed0.F mx_pdlaed2.F mx_pdlaedz.F mx_pdlaed1.F mx_pdlaed3.F mx_pdstedc.F mat_set.f w_test.f)
++ add_library(EigenExa ${SOURCES})
++ target_link_libraries(EigenExa ${SCALAPACK_LIB} ${MPI_Fortran_LIBRARIES})
++ install(TARGETS EigenExa ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
++ install(FILES ${PROJECT_BINARY_DIR}/eigen_libs.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
++ install(FILES ${PROJECT_BINARY_DIR}/eigen_devel.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
++ 
++ add_executable(main2 main2.f mat_set.f ev_test.f)
++ target_link_libraries(main2 EigenExa)
++# add_executable(main_comm_create main_comm_create.f mat_set.f ev_test.f)
++# target_link_libraries(main_comm_create EigenExa)
++# add_executable(main_comm_create_null main_comm_create_null.f mat_set.f ev_test.f)
++# target_link_libraries(main_comm_create_null EigenExa)
++# add_executable(main_cartesian main_cartesian.f mat_set.f ev_test.f)
++# target_link_libraries(main_cartesian EigenExa)
++ 
++ if(USE_C_LINKER)
++   set_target_properties(EigenExa main2 PROPERTIES LINKER_LANGUAGE C)
++ endif(USE_C_LINKER)
