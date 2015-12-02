@@ -16,5 +16,5 @@ cd $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
 patch -p1 < $SCRIPT_DIR/EigenExa-$EIGENEXA_VERSION.patch
 
 ln -s CSTAB.h_in C.c
-mpiicc -E C.c | gawk '/^#/{ next }{print }' > CSTAB.h
+mpicc -E C.c | gawk '/^#/{ next }{print }' > CSTAB.h
 

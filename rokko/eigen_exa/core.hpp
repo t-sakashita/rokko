@@ -34,9 +34,9 @@ public:
     int npcol = g.get_npcol();
     int n = global_dim;
     ROKKO_eigen_exa_get_matdims(nprow, npcol, n, &nx, &ny);
-    //std::cout << "nx=" << nx << std::endl;
+    std::cout << "nx=" << nx << "ny=" << ny << std::endl;
     int lld = nx;
-    return mapping_bc<matrix_col_major>(global_dim, 1, lld, g);  // block_size = 1
+    return mapping_bc<matrix_col_major>(global_dim, 1, lld, ny, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>

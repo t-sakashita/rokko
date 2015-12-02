@@ -31,6 +31,9 @@ public:
   explicit mapping_local2array(int lld_in) : lld(lld_in) {
     set_default_length_array();
   }
+  explicit mapping_local2array(int lld_in, int lld2) : lld(lld_in) {
+    set_length_array(lld * lld2);
+  }
   //explicit mapping_local2array(int lld_in, int length_array_in) : lld(lld_in), length_array(length_array_in) {
   //  is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   //}
