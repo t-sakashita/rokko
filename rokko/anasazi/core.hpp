@@ -127,9 +127,9 @@ public:
     else num_eigvals = 1;
     int max_block_size;
     if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = num_eigvals;  // fix me : it must depend on eigenalgorithm such as 2 * num_eigvals
+    else max_block_size = num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
     if (params.defined("conv_tol"))
-      pl_.set("Convergence Tolerance", params.get<int>("conv_tol"));    
+      pl_.set("Convergence Tolerance", params.get<double>("conv_tol"));    
     if (params.defined("max_iters"))
       pl_.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
@@ -178,9 +178,9 @@ public:
     else num_eigvals = 1;
     int max_block_size;
     if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = num_eigvals;  // fix me : it must depend on eigenalgorithm such as 2 * num_eigvals
+    else max_block_size = num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
     if (params.defined("conv_tol"))
-      pl_.set("Convergence Tolerance", params.get<int>("conv_tol"));    
+      pl_.set("Convergence Tolerance", params.get<double>("conv_tol"));    
     if (params.defined("max_iters"))
       pl_.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
