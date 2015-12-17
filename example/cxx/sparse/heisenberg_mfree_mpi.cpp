@@ -95,6 +95,7 @@ int main(int argc, char *argv[]) {
       for (int j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
       std::cout << std::endl;
     }
+    solver.finalize();
   }
 
   MPI_Finalize();
