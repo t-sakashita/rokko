@@ -157,7 +157,7 @@ public:
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
     if (returnCode == Anasazi::Unconverged) {
-      std::cout << "solvermanager.solve()_error" << std::endl;
+      std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
 
     num_conv_ = problem_->getSolution().numVecs;
@@ -209,7 +209,7 @@ public:
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
     if (returnCode == Anasazi::Unconverged) {
-      std::cout << "solvermanager.solve()_error" << std::endl;
+      std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
     num_conv_ = problem_->getSolution().numVecs;
     params_out.set("num_conv", num_conv_);
