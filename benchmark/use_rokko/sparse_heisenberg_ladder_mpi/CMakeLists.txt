@@ -8,7 +8,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(SAMPLE crs mfree)
+  set(SAMPLE crs mfree crs_verify mfree_verify)
   foreach(name ${SAMPLE})
     set(target_name use_rokko_sparse_heisenberg_ladder_mpi_${name})
     add_executable(${target_name} ${name}.cpp)

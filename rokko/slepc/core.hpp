@@ -148,14 +148,7 @@ public:
     PetscReal tol2;
     PetscInt maxits2;
     if (params.get_bool("verbose") && (myrank == 0)) {
-      std::cout << "myrank=" << myrank << std::endl;
-      ierr = EPSGetDimensions(eps, &nev2, &ncv2, &mpd2);
-      ierr = EPSGetTolerances(eps, &tol2, &maxits2);
-      std::cout << "number of eigenvalues to compute=" << nev2 << std::endl;
-      std::cout << "maximum dimension of the subspace=" << ncv2 << std::endl;
-      std::cout << "maximum dimension allowed for the projected problem=" << mpd2 << std::endl;
-      std::cout << "convergence tolerance=" << tol2 << std::endl;
-      std::cout << "maximum number of iterations=" << maxits2 << std::endl;
+      info_verbose();
     }
     return params_out;
   }
@@ -218,21 +211,29 @@ public:
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-    PetscInt nev2, ncv2, mpd2;
-    PetscReal tol2;
-    PetscInt maxits2;
+
     if (params.get_bool("verbose") && (myrank == 0)) {
-      ierr = EPSGetDimensions(eps, &nev2, &ncv2, &mpd2);
-      ierr = EPSGetTolerances(eps, &tol2, &maxits2);
-      std::cout << "number of eigenvalues to compute=" << nev2 << std::endl;
-      std::cout << "maximum dimension of the subspace=" << ncv2 << std::endl;
-      std::cout << "maximum dimension allowed for the projected problem=" << mpd2 << std::endl;
-      std::cout << "convergence tolerance=" << tol2 << std::endl;
-      std::cout << "maximum number of iterations=" << maxits2 << std::endl;
+      info_verbose();
     }
     return params_out;
   }
 
+  void info_verbose() {
+    PetscInt nev2, ncv2, mpd2;
+    PetscReal tol2;
+    PetscInt maxits2, its2;
+
+    ierr = EPSGetDimensions(eps, &nev2, &ncv2, &mpd2);
+    ierr = EPSGetTolerances(eps, &tol2, &maxits2);
+    ierr = EPSGetIterationNumber(eps, &its2);
+    std::cout << "number of eigenvalues to compute=" << nev2 << std::endl;
+    std::cout << "maximum dimension of the subspace=" << ncv2 << std::endl;
+    std::cout << "maximum dimension allowed for the projected problem=" << mpd2 << std::endl;
+    std::cout << "convergence tolerance=" << tol2 << std::endl;
+    std::cout << "maximum number of iterations=" << maxits2 << std::endl;
+    std::cout << "number of iterations=" << its2 << std::endl;
+  }
+  
   double eigenvalue(int i) const {
     PetscScalar eval_r, eval_i;
     EPSGetEigenvalue(eps, i, &eval_r, &eval_i);

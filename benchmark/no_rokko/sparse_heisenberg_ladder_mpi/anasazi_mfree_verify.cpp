@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
   const int    nev       = 1;
   const int    blockSize = nev;
   //const int    maxIters  = 500;
-  //const double tol       = 1.0e-12;
+  const double tol       = 1.0e-12;
 
   typedef Epetra_MultiVector MV;
   typedef Epetra_Operator OP;
@@ -222,6 +222,7 @@ int main(int argc, char *argv[]) {
 
   // Create parameter list to pass into the solver manager
   Teuchos::ParameterList MyPL;
+  MyPL.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
   //MyPL.set( "Which", which );
   //MyPL.set( "Block Size", blockSize );
   //MyPL.set( "Maximum Iterations", maxIters );

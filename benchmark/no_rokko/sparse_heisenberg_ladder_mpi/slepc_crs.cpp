@@ -124,15 +124,16 @@ int main(int argc,char **argv)
     rokko::machine_info();
     PetscInt nev, ncv, mpd;
     PetscReal tol;
-    PetscInt maxits;
+    PetscInt maxits, its;
     ierr = EPSGetDimensions(eps, &nev, &ncv, &mpd);   CHKERRQ(ierr);
     ierr = EPSGetTolerances(eps, &tol, &maxits);   CHKERRQ(ierr);
-
-    std::cout << "the number of eigenvalues to compute=" << nev << std::endl;
-    std::cout << "the maximum dimension of the subspace to be used by the solver=" << ncv << std::endl;
-    std::cout << "the maximum dimension allowed for the projected problem=" << mpd << std::endl;
-    std::cout << "the convergence tolerance=" << tol << std::endl;
+    ierr = EPSGetIterationNumber(eps, &its);   CHKERRQ(ierr);
+    std::cout << "number of eigenvalues to compute=" << nev << std::endl;
+    std::cout << "maximum dimension of the subspace to be used by the solver=" << ncv << std::endl;
+    std::cout << "maximum dimension allowed for the projected problem=" << mpd << std::endl;
+    std::cout << "convergence tolerance=" << tol << std::endl;
     std::cout << "maximum number of iterations=" << maxits << std::endl;
+    std::cout << "number of iterations=" << its << std::endl;
   }
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                     Display solution and clean up

@@ -140,6 +140,8 @@ int main(int argc, char *argv[]) {
 
   // Create parameter list to pass into the solver manager
   Teuchos::ParameterList MyPL;
+  //std::cout << MyPL.get<std::string>("Which") << std::endl;
+  MyPL.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
   //MyPL.set( "Which", which );
   //MyPL.set( "Block Size", blockSize );
   //MyPL.set( "Maximum Iterations", maxIters );
@@ -190,6 +192,7 @@ int main(int argc, char *argv[]) {
   os << "gen_time = " << diag_tick - gen_tick << std::endl
      << "diag_time = " << end_tick - diag_tick << std::endl;
   rokko::machine_info(os);
+  os << "the number of eigenvalues to compute=" << MyProblem->getNEV() << std::endl;
   printer.print(Errors, os.str());
 
 #ifdef HAVE_MPI
