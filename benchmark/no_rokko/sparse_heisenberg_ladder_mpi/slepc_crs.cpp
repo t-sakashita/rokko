@@ -122,6 +122,17 @@ int main(int argc,char **argv)
 	      << "gen_time = " << diag_tick - gen_tick << std::endl
 	      << "diag_time = " << end_tick - diag_tick << std::endl;
     rokko::machine_info();
+    PetscInt nev, ncv, mpd;
+    PetscReal tol;
+    PetscInt maxits;
+    ierr = EPSGetDimensions(eps, &nev, &ncv, &mpd);   CHKERRQ(ierr);
+    ierr = EPSGetTolerances(eps, &tol, &maxits);   CHKERRQ(ierr);
+
+    std::cout << "the number of eigenvalues to compute=" << nev << std::endl;
+    std::cout << "the maximum dimension of the subspace to be used by the solver=" << ncv << std::endl;
+    std::cout << "the maximum dimension allowed for the projected problem=" << mpd << std::endl;
+    std::cout << "the convergence tolerance=" << tol << std::endl;
+    std::cout << "maximum number of iterations=" << maxits << std::endl;
   }
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                     Display solution and clean up

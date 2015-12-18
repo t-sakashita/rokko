@@ -73,7 +73,9 @@ public:
   typedef Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_lobpcg_t;
   typedef Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
 
-  solver() {}
+  solver() {
+    MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  }
   ~solver() {}
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
@@ -87,7 +89,7 @@ public:
       return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     else {
       std::cerr << routine << " is not a solver in Anasazi" << std::endl;
-      std::cerr << "The list of Anasazi solvers:" << std::endl;
+      std::cerr << "list of Anasazi solvers:" << std::endl;
       for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
 	std::cerr << anasazi_solvers[i] << " " << std::endl;
       }
@@ -134,6 +136,9 @@ public:
       pl_.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
 
+    if (params.get_bool("verbose")) {
+      pl_.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
+    }
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
@@ -184,7 +189,11 @@ public:
     if (params.defined("max_iters"))
       pl_.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
-  
+
+    if (params.get_bool("verbose")) {
+      pl_.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
+    }
+    
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
@@ -264,6 +273,7 @@ public:
 
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
+  int myrank;
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
