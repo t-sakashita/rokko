@@ -10,10 +10,10 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE scalapack_pdsyevd scalapack_pdsyev eigen_exa)
+set(EXAMPLE scalapack_pdsyevd scalapack_pdsyev eigen_exa elemental)
 foreach(name ${EXAMPLE})
-  set(target_name benchmark_dense_frank_mpi_${name})
-  file(GLOB SOURCE "${name}.f*")
+  set(target_name benchmark_dense_no_rokko_frank_mpi_${name})
+  file(GLOB SOURCE "${name}.f*" "${name}.cpp")
   add_executable(${target_name} ${SOURCE})
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   target_link_libraries(${target_name} rokko)

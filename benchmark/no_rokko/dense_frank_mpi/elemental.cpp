@@ -10,9 +10,6 @@
 using namespace std;
 using namespace El;
 
-// Typedef our real and complex types to 'Real' and 'C' for convenience
-typedef double Real;
-typedef Complex<Real> C;
 
 int main( int argc, char* argv[] ) {
     // This detects whether or not you have already initialized MPI and 
@@ -23,8 +20,7 @@ int main( int argc, char* argv[] ) {
     // safely handle any exceptions that were thrown during execution.
     try 
     {
-        const Int n = Input("--size","size of matrix",100);
-        const bool print = Input("--print","print matrices?",false);
+      const Int n = 100; //30000;
         ProcessInput();
         PrintInputReport();
 
@@ -41,7 +37,7 @@ int main( int argc, char* argv[] ) {
         // allow you to pass in your own local buffer and to specify the 
         // distribution alignments (i.e., which process row and column owns the
         // top-left element)
-        DistMatrix<C> H( n, n, g );
+        DistMatrix<double> H( n, n, g );
 
         // Fill the matrix since we did not pass in a buffer. 
         //
@@ -59,7 +55,7 @@ int main( int argc, char* argv[] ) {
             for( Int iLoc=0; iLoc<localHeight; ++iLoc )
             {
                 const Int i = H.GlobalRow(iLoc);
-                H.SetLocal( iLoc, jLoc, C(i+j,i-j) );
+                H.SetLocal( iLoc, jLoc, n - std::max(i, j) );
             }
         }
 
@@ -71,28 +67,23 @@ int main( int argc, char* argv[] ) {
         //
         // Optional: set blocksizes and algorithmic choices here. See the 
         //           'Tuning' section of the README for details.
-        DistMatrix<Real,VR,STAR> w( g );
-        DistMatrix<C> X( g );
+        DistMatrix<double,VR,STAR> w( g );
+        DistMatrix<double> X( g );
         HermitianEig( LOWER, H, w, X, ASCENDING ); 
 
-        if( print )
-        {
-            Print( HCopy, "H" );
-            Print( X, "X" );
-            Print( w, "w" );
-        }
+        
 
         // Check the residual, || H X - Omega X ||_F
-        const Real frobH = HermitianFrobeniusNorm( LOWER, HCopy );
+        const double frobH = HermitianFrobeniusNorm( LOWER, HCopy );
         auto E( X );
         DiagonalScale( RIGHT, NORMAL, w, E );
-        Hemm( LEFT, LOWER, C(-1), HCopy, X, C(1), E );
-        const Real frobResid = FrobeniusNorm( E );
+        Hemm( LEFT, LOWER, double(-1), HCopy, X, double(1), E );
+        const double frobResid = FrobeniusNorm( E );
 
         // Check the orthogonality of X
         Identity( E, n, n );
-        Herk( LOWER, NORMAL, Real(-1), X, Real(1), E );
-        const Real frobOrthog = HermitianFrobeniusNorm( LOWER, E );
+        Herk( LOWER, NORMAL, double(-1), X, double(1), E );
+        const double frobOrthog = HermitianFrobeniusNorm( LOWER, E );
 
         if( mpi::WorldRank() == 0 )
         {
