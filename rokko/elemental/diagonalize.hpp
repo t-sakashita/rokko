@@ -20,6 +20,82 @@
 namespace rokko {
 namespace elemental {
 
+El::UpperOrLower get_matrix_part(parameters const& params) {
+  std::string matrix_part;
+  char matrix_part_letter;
+  if (params.defined("uplow"))
+    matrix_part = params.get_string("uplow");
+  if (params.defined("matrix_part"))
+    matrix_part = params.get_string("matrix_part");
+  if (!matrix_part.empty()) {
+    matrix_part_letter = matrix_part[0];
+    if ((matrix_part_letter == 'u') || (matrix_part_letter == 'U'))
+      return El::UPPER;
+    if ((matrix_part_letter == 'l') || (matrix_part_letter == 'L'))
+      return El::LOWER;
+  }
+  return El::LOWER;  // default
+}
+
+El::HermitianEigSubset<double> get_subset(parameters const& params) {
+  El::HermitianEigSubset<double> subset;
+  bool is_lower_value, is_lower_index, is_upper_value, is_upper_index;
+  is_lower_value = get_key(params, "lower_value", subset.lowerBound);
+  is_lower_index = get_key(params, "lower_index", subset.lowerIndex);
+  is_upper_value = get_key(params, "upper_value", subset.upperBound);
+  is_upper_index = get_key(params, "upper_index", subset.upperIndex);
+  if (is_lower_value && is_upper_value) {
+    subset.rangeSubset = true;
+  } else if (is_lower_index && is_upper_index) {
+    subset.indexSubset = true;
+  } else if (!(is_lower_index && is_lower_value && is_upper_index && is_upper_value)) {  
+  } else {
+    std::cerr << "error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index";
+    throw;
+  }
+  return subset;
+}
+
+El::HermitianEigCtrl<double> get_ctrl(parameters const& params) {
+  El::HermitianEigCtrl<double> ctrl;
+  if (params.defined("USESDC")) {
+    ctrl.useSDC = params.get<bool>("USESDC");
+  }
+  if (params.defined("cutoff")) {
+    ctrl.useSDC = params.get<double>("cutoff");
+  }
+  if (params.defined("maxInnerIts")) {
+    ctrl.sdcCtrl.maxInnerIts = params.get<int>("maxInnerIts");
+  }
+  if (params.defined("maxOuterIts")) {
+    ctrl.sdcCtrl.maxOuterIts = params.get<int>("maxOuterIts");
+  }
+  if (params.defined("tol")) {
+    ctrl.sdcCtrl.tol = params.get<int>("tol");
+  }
+  if (params.defined("spreadFactor")) {
+    ctrl.sdcCtrl.spreadFactor = params.get<double>("spreadFactor");
+  }
+  if (params.defined("progress")) {
+    ctrl.sdcCtrl.progress = params.get<bool>("progress");
+  }
+  //if (params.defined("verbose")) {
+  //  ctrl.sdcCtrl.progress = true;
+  //}
+  return ctrl;
+}
+
+El::SortType get_sort(parameters const& params) {
+  El::SortType elem_sort = El::ASCENDING;
+  if (params.defined("sort")) {
+    std::string str_sort = params.get<std::string>("sort");    
+    if (str_sort == "ascending") elem_sort =  El::ASCENDING;
+    if (str_sort == "descending") elem_sort =  El::DESCENDING;
+    if (str_sort == "unsorted") elem_sort =  El::UNSORTED;
+  }
+  return elem_sort;
+}
+
 // eigenvalues / eigenvectors
 template<typename MATRIX_MAJOR>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
@@ -40,12 +116,17 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   El::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
   El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
 
-  El::HermitianEig(El::LOWER, elem_mat, elem_w, elem_eigvecs); // only access lower half of H
+  El::UpperOrLower elem_uplow = get_matrix_part(params);
+  El::SortType elem_sort = get_sort(params);
+  El::HermitianEigSubset<double> subset = get_subset(params);;
+  El::HermitianEigCtrl<double> ctrl = get_ctrl(params);
 
-  for (int i = 0; i < eigvals.size(); ++i) eigvals(i) = elem_w.Get(i, 0);
+  El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_eigvecs, elem_sort, subset, ctrl);
+
+  for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
   double* result_mat = elem_eigvecs.Buffer();
   for(int local_i=0; local_i<mat.get_m_local(); ++local_i) {
-    for(int local_j=0; local_j<mat.get_n_local(); ++local_j) {
+    for(int local_j=0; local_j<elem_w.LocalHeight(); ++local_j) {
       eigvecs.set_local(local_i, local_j, result_mat[local_j * mat.get_lld() + local_i]);
     }
   }
@@ -59,7 +140,7 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       parameters const& params) {
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
-  enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
+  enum El::GridOrder elemental_grid_order;
   if (mat.get_grid().is_row_major()) {
     elemental_grid_order = El::ROW_MAJOR;
   } else {
@@ -72,7 +153,14 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   El::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
   El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
 
-  El::HermitianEig(El::LOWER, elem_mat, elem_w); // only access lower half of H
+  El::UpperOrLower elem_uplow = get_matrix_part(params);
+  El::HermitianEigSubset<double> subset = get_subset(params);;
+  El::HermitianEigCtrl<double> ctrl = get_ctrl(params);
+  El::SortType elem_sort = get_sort(params);
+  
+  El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_sort, subset, ctrl);
+  for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
+
   return params_out;
 }
 
