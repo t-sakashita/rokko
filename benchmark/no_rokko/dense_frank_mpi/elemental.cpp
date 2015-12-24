@@ -25,8 +25,6 @@ int main( int argc, char* argv[] ) {
   // safely handle any exceptions that were thrown during execution.
   try {
     const El::Int dim = 100; //30000;
-    El::ProcessInput();
-    El::PrintInputReport();
     
     // Create a 2d process grid from a communicator. In our case, it is
     // MPI_COMM_WORLD. There is another constructor that allows you to 
