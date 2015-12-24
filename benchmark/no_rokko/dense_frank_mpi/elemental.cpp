@@ -9,14 +9,14 @@
 #include "El.hpp"
 #include <rokko/utility/machine_info.hpp>
 
-using namespace std;
-using namespace El;
+//using namespace std;
+//using namespace El;
 
 int main( int argc, char* argv[] ) {
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
   
   // This detects whether or not you have already initialized MPI and 
-    // does so if necessary. The full routine is El::Initialize.
+  // does so if necessary. The full routine is El::Initialize.
   init_tick = MPI_Wtime();
   El::Initialize( argc, argv );
   initend_tick = MPI_Wtime();
@@ -24,7 +24,7 @@ int main( int argc, char* argv[] ) {
   // Surround the Elemental calls with try/catch statements in order to 
   // safely handle any exceptions that were thrown during execution.
   try {
-    const Int dim = 100; //30000;
+    const El::Int dim = 100; //30000;
     El::ProcessInput();
     El::PrintInputReport();
     
@@ -32,7 +32,7 @@ int main( int argc, char* argv[] ) {
     // MPI_COMM_WORLD. There is another constructor that allows you to 
     // specify the grid dimensions, Grid g( comm, r ), which creates a
     // grid of height r.
-    El::Grid g( mpi::COMM_WORLD );
+    El::Grid g( El::mpi::COMM_WORLD );
     
     // Create an n x n complex distributed matrix, 
     // We distribute the matrix using grid 'g'.
@@ -49,14 +49,14 @@ int main( int argc, char* argv[] ) {
     // the global matrix is Hermitian. However, only one triangle of the 
     // matrix actually needs to be filled, the symmetry can be implicit.
     //
-    const Int localHeight = H.LocalHeight();
-    const Int localWidth = H.LocalWidth();
-    for( Int jLoc=0; jLoc<localWidth; ++jLoc ) {
+    const El::Int localHeight = H.LocalHeight();
+    const El::Int localWidth = H.LocalWidth();
+    for( El::Int jLoc=0; jLoc<localWidth; ++jLoc ) {
       // Our process owns the rows colShift:colStride:n,
       //           and the columns rowShift:rowStride:n
-      const Int j = H.GlobalCol(jLoc);
-      for( Int iLoc=0; iLoc<localHeight; ++iLoc ) {
-	const Int i = H.GlobalRow(iLoc);
+      const El::Int j = H.GlobalCol(jLoc);
+      for( El::Int iLoc=0; iLoc<localHeight; ++iLoc ) {
+	const El::Int i = H.GlobalRow(iLoc);
 	H.SetLocal( iLoc, jLoc, dim - std::max(i, j) );
       }
     }
@@ -73,11 +73,11 @@ int main( int argc, char* argv[] ) {
     diag_tick = MPI_Wtime();
     El::DistMatrix<double,El::VR,El::STAR> w( g );
     El::DistMatrix<double> X( g );
-    El::HermitianEig( LOWER, H, w, X, ASCENDING ); 
+    El::HermitianEig( El::LOWER, H, w, X, El::ASCENDING ); 
     end_tick = MPI_Wtime();        
     
     // Check the residual, || H X - Omega X ||_F
-    const double frobH = El::HermitianFrobeniusNorm( LOWER, HCopy );
+    const double frobH = El::HermitianFrobeniusNorm( El::LOWER, HCopy );
     auto E( X );
     El::DiagonalScale( El::RIGHT, El::NORMAL, w, E );
     El::Hemm( El::LEFT, El::LOWER, double(-1), HCopy, X, double(1), E );
@@ -85,7 +85,7 @@ int main( int argc, char* argv[] ) {
     
     // Check the orthogonality of X
     El::Identity( E, dim, dim );
-    El::Herk( LOWER, NORMAL, double(-1), X, double(1), E );
+    El::Herk( El::LOWER, El::NORMAL, double(-1), X, double(1), E );
     const double frobOrthog = El::HermitianFrobeniusNorm( El::LOWER, E );
     
     double* eigvals;
@@ -94,7 +94,7 @@ int main( int argc, char* argv[] ) {
       eigvals[i] = w.Get(i,0);
     }
     
-    if( mpi::WorldRank() == 0 ) {
+    if( El::mpi::WorldRank() == 0 ) {
       std::cout << "|| H ||_F = " << frobH << "\n"
 		<< "|| H X - X Omega ||_F / || A ||_F = " 
 		<< frobResid / frobH << "\n"
@@ -114,9 +114,9 @@ int main( int argc, char* argv[] ) {
     }
     
   }
-  catch( exception& e ) { ReportException(e); }
+  catch( std::exception& e ) { El::ReportException(e); }
   
-  Finalize();
+  El::Finalize();
   return 0;
 }
 
