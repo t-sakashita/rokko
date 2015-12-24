@@ -90,7 +90,7 @@ int main( int argc, char* argv[] ) {
     
     double* eigvals;
     eigvals = new double[dim];
-    for (int i = 0; i < std::min(dim, 10); ++i) {
+    for (int i = 0; i < dim; ++i) {
       eigvals[i] = w.Get(i,0);
     }
     
@@ -108,7 +108,7 @@ int main( int argc, char* argv[] ) {
       for (unsigned int i = 1; i < dim; ++i) sorted &= (eigvals[i-1] <= eigvals[i]);
       if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       std::cout << "largest eigenvalues:";
-      for (int i = 0; i < std::min(dim, 10); ++i)
+      for (int i = 0; i < std::min(dim, 100); ++i)
 	std::cout << ' ' << eigvals[i];
       std::cout << std::endl;
     }
