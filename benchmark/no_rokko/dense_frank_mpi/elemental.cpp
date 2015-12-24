@@ -72,19 +72,7 @@ int main( int argc, char* argv[] ) {
     El::DistMatrix<double,El::VR,El::STAR> w( g );
     El::DistMatrix<double> X( g );
     El::HermitianEig( El::LOWER, H, w, X, El::ASCENDING ); 
-    end_tick = MPI_Wtime();        
-    
-    // Check the residual, || H X - Omega X ||_F
-    const double frobH = El::HermitianFrobeniusNorm( El::LOWER, HCopy );
-    auto E( X );
-    El::DiagonalScale( El::RIGHT, El::NORMAL, w, E );
-    El::Hemm( El::LEFT, El::LOWER, double(-1), HCopy, X, double(1), E );
-    const double frobResid = El::FrobeniusNorm( E );
-    
-    // Check the orthogonality of X
-    El::Identity( E, dim, dim );
-    El::Herk( El::LOWER, El::NORMAL, double(-1), X, double(1), E );
-    const double frobOrthog = El::HermitianFrobeniusNorm( El::LOWER, E );
+    end_tick = MPI_Wtime();
     
     double* eigvals;
     eigvals = new double[dim];
@@ -93,11 +81,6 @@ int main( int argc, char* argv[] ) {
     }
     
     if( El::mpi::WorldRank() == 0 ) {
-      std::cout << "|| H ||_F = " << frobH << "\n"
-		<< "|| H X - X Omega ||_F / || A ||_F = " 
-		<< frobResid / frobH << "\n"
-		<< "|| X X^H - I ||_F = " << frobOrthog / frobH
-		<< "\n" << std::endl;
       std::cout << "init_time = " << initend_tick - init_tick << std::endl
 		<< "gen_time = " << diag_tick - gen_tick << std::endl
 		<< "diag_time = " << end_tick - diag_tick << std::endl;
@@ -106,7 +89,7 @@ int main( int argc, char* argv[] ) {
       for (unsigned int i = 1; i < dim; ++i) sorted &= (eigvals[i-1] <= eigvals[i]);
       if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       std::cout << "largest eigenvalues:";
-      for (int i = 0; i < std::min(dim, 100); ++i)
+      for (int i = 0; i < std::min(dim, 10); ++i)
 	std::cout << ' ' << eigvals[i];
       std::cout << std::endl;
     }
