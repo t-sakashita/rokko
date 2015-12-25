@@ -16,6 +16,7 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.h>
+#include <rokko/elpa/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
 
 namespace rokko {
@@ -28,22 +29,26 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   parameters params_out;
   int dim = mat.get_m_global();
   MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
-  MPI_Fint comm_rows_f, comm_cols_f;
   int mpi_comm_rows, mpi_comm_cols;
   int myrow = mat.get_grid().get_myrow();
   int mycol = mat.get_grid().get_mycol();
   elpa_get_communicators(comm_f, myrow, mycol, &mpi_comm_rows, &mpi_comm_cols);
   
   // call eigenvalue routine
+  int nev = dim;
+  get_nev(params, nev);
   int mat_lld = mat.get_lld();
   int mat_mb = mat.get_mb();
   int eigvecs_lld = eigvecs.get_lld();
   //std::cout << "mat_lld=" << mat_lld << " mat_mb=" << mat_mb << std::endl;
+  int kernel = ELPA2_REAL_KERNEL_GENERIC;
+  get_kernel(params, kernel);
   int use_qr = 0;
-  int THIS_REAL_ELPA_KERNEL_API = ELPA2_REAL_KERNEL_GENERIC;
-  int info = elpa_solve_evp_real_2stage(dim, dim, mat.get_array_pointer(), mat_lld, &eigvals[0],
-  			     eigvecs.get_array_pointer(), eigvecs_lld, mat_mb, dim,
-			     mpi_comm_rows, mpi_comm_cols, comm_f, THIS_REAL_ELPA_KERNEL_API, use_qr);
+  get_blocked_qr(params, use_qr);
+
+  int info = elpa_solve_evp_real_2stage(dim, nev, mat.get_array_pointer(), mat_lld, &eigvals[0],
+					eigvecs.get_array_pointer(), eigvecs_lld, mat_mb, dim,
+					mpi_comm_rows, mpi_comm_cols, comm_f, kernel, use_qr);
   params_out.set("info", info);
   return params_out;
 }
