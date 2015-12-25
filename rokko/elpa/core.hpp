@@ -14,7 +14,8 @@
 
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.hpp>
-#include <rokko/elpa/diagonalize.hpp>
+#include <rokko/elpa/diagonalize_elpa1.hpp>
+#include <rokko/elpa/diagonalize_elpa2.hpp>
 
 namespace rokko {
 namespace elpa {
@@ -39,12 +40,27 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    return rokko::elpa::diagonalize(mat, eigvals, eigvecs, params);
+    std::string routine = "";
+    if(params.defined("routine")) {
+      routine = params.get_string("routine");
+    }
+    if (routine=="elpa1") {
+      return rokko::elpa::diagonalize_elpa1(mat, eigvals, eigvecs, params);
+    } else if (routine=="elpa2") {
+      return rokko::elpa::diagonalize_elpa2(mat, eigvals, eigvecs, params);
+    } else if (routine=="") {  // default
+      return rokko::elpa::diagonalize_elpa2(mat, eigvals, eigvecs, params);
+    } else {
+      std::cerr << "error: " << routine << " is not ELPA's routine" << std::endl;
+      throw;
+    }
   }
   template <typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    return rokko::elpa::diagonalize(mat, eigvals, params);
+    std::cerr << "not yet implemented" << std::endl;
+    throw;
+    //return rokko::elpa::diagonalize(mat, eigvals, params);
   }
 };
 

@@ -42,7 +42,7 @@ foreach (_PATH ${_PATHS})
 endforeach()
 
 find_library(_ELPA_LIBRARY
-  NAME elpa-2011.12
+  NAME elpa
   PATHS ${_LIBPATHS}
   DOC "The ELPA library")
 if(_ELPA_LIBRARY)
