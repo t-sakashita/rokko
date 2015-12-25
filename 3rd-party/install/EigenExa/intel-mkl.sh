@@ -17,7 +17,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   mkdir -p EigenExa-$EIGENEXA_VERSION-build-$build_type
   cd EigenExa-$EIGENEXA_VERSION-build-$build_type
-  if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
+  if [ `which mpicc > /dev/null 2>&1; echo $?` = 0 ]; then
     check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
