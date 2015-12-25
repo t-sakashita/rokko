@@ -38,11 +38,12 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int mat_lld = mat.get_lld();
   int mat_mb = mat.get_mb();
   int eigvecs_lld = eigvecs.get_lld();
-  std::cout << "mat_lld=" << mat_lld << " mat_mb=" << mat_mb << std::endl;
+  //std::cout << "mat_lld=" << mat_lld << " mat_mb=" << mat_mb << std::endl;
   int use_qr = 0;
   int THIS_REAL_ELPA_KERNEL_API = ELPA2_REAL_KERNEL_GENERIC;
   elpa_solve_evp_real_2stage(dim, dim, mat.get_array_pointer(), mat_lld, &eigvals[0],
-  			     eigvecs.get_array_pointer(), eigvecs_lld, mat_mb, dim, mpi_comm_rows, mpi_comm_cols, comm_f, THIS_REAL_ELPA_KERNEL_API, use_qr);
+  			     eigvecs.get_array_pointer(), eigvecs_lld, mat_mb, dim,
+			     mpi_comm_rows, mpi_comm_cols, comm_f, THIS_REAL_ELPA_KERNEL_API, use_qr);
 
   return params;
 }

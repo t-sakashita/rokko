@@ -39,7 +39,8 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int mat_mb = mat.get_mb();
   int eigvecs_lld = eigvecs.get_lld();
   elpa_solve_evp_real_1stage(dim, dim, mat.get_array_pointer(), mat_lld, &eigvals[0],
-			     eigvecs.get_array_pointer(), eigvecs_lld, mat_mb, dim, mpi_comm_rows, mpi_comm_cols);
+			     eigvecs.get_array_pointer(), eigvecs_lld, mat_mb, dim,
+			     mpi_comm_rows, mpi_comm_cols);
 
   return params;
 }
