@@ -10,16 +10,20 @@ sh $SCRIPT_DIR/setup.sh
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX_BACKEND=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION/Linux-s64fx/$build_type
+
+  PREFIX=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION/$build_type
   cd $BUILD_DIR
-  mkdir -p elpa_lib-$ELPA_VERSION-build-Linux-s64fx-$build_type
-  cd elpa_lib-$ELPA_VERSION-build-Linux-s64fx-$build_type
-  check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX_BACKEND \
-    -DCMAKE_C_COMPILER=mpifccpx -DCMAKE_Fortran_COMPILER=mpifrtpx \
-    -DCMAKE_Fortran_FLAGS_RELEASE="-Kfast" \
-    -DCMAKE_Fortran_FLAGS_DEBUG="-g -O0" \
-    -DSCALAPACK_LIB="-SCALAPACK -SSL2" \
-    $BUILD_DIR/elpa_lib-$ELPA_VERSION
-  check make VERBOSE=1 -j4
+  cp -rp elpa-$ELPA_VERSION elpa-$ELPA_VERSION-build-Linux-s64fx-$build_type
+  cd elpa-$ELPA_VERSION-build-Linux-s64fx-$build_type
+  if [ $build_type == "Release" ]; then
+      FLAGS="-O3"
+  else
+      FLAGS="-g -O0"
+  fi
+  check ./configure SCALAPACK_LDFLAGS="-SCALAPACK -SSL2BLAMP" \
+	            CFLAGS=$FLAGS FCFLAGS=$FLAGS
+	            --enable-openmp  --prefix=$PREFIX_BACKEND
+  check make -j4
   $SUDO make install
 done
 
