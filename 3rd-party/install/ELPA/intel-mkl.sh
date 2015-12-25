@@ -11,22 +11,17 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/elpa-$ELPA_VERSION-$ELPA_RK_REVISION/$build_type
   cd $BUILD_DIR
-  mkdir -p elpa_lib-$ELPA_VERSION-build-$build_type
-  cd elpa_lib-$ELPA_VERSION-build-$build_type
-  if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
-    check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
-      -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
-      -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-      $BUILD_DIR/elpa_lib-$ELPA_VERSION
+  cp -rp elpa-$ELPA_VERSION elpa-$ELPA_VERSION-build-$build_type
+  cd elpa-$ELPA_VERSION-build-$build_type
+  if [ $build_type == "Release" ]; then
+      FLAGS="-O3"
   else
-    check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
-      -DCMAKE_C_COMPILER=icc -DCMAKE_Fortran_COMPILER=ifort \
-      -DMPI_C_INCLUDE_PATH="/usr/include" \
-      -DMPI_C_LIBRARIES="-lmpi" -DMPI_Fortran_LIBRARIES="-lmpi" \
-      -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-      $BUILD_DIR/elpa_lib-$ELPA_VERSION
+      FLAGS="-g"
   fi
-  check make VERBOSE=1 -j4
+  ./configure SCALAPACK_LDFLAGS="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
+	      FCFLAGS=$FLAGS CFLAGS=$FLAGS CXXFLAGS=$FLAGS \
+	      --enable-openmp  --prefix=$PREFIX
+  check make -j4
   $SUDO make install
 done
 

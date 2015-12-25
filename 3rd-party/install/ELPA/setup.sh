@@ -6,7 +6,12 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 set_prefix
 
 cd $BUILD_DIR
-rm -rf elpa_lib-$ELPA_VERSION*
-check tar zxf $SOURCE_DIR/elpa_lib-$ELPA_VERSION.tar.gz
-cd $BUILD_DIR/elpa_lib-$ELPA_VERSION
-patch -p1 < $SCRIPT_DIR/elpa_lib-201305.patch
+rm -rf elpa-$ELPA_VERSION*
+if test -f $SOURCE_DIR/elpa-$ELPA_VERSION.tar.gz; then
+    tar zxf $SOURCE_DIR/elpa-$ELPA_VERSION.tar.gz
+else
+    wget -O - http://elpa.mpcdf.mpg.de/elpa-$ELPA_VERSION.tar.gz | tar zxf -
+fi
+
+cd $BUILD_DIR/elpa-$ELPA_VERSION
+
