@@ -1,4 +1,5 @@
-!    This file is part of ELPA.
+!    This file is modified by T. Sakashita.
+!    It is originally part of ELPA.
 !
 !    The ELPA library was originally created by the ELPA consortium,
 !    consisting of the following organizations:
@@ -100,9 +101,8 @@ subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
      na_cols, sc_desc, my_blacs_ctxt, info)
 
   use elpa_utilities, only : error_unit
-
+  use mpi
   implicit none
-  include "mpif.h"
   
   integer, intent(inout)  :: na, nblk, my_prow, my_pcol, np_rows,   &
        np_cols, na_rows, na_cols, sc_desc(1:9), &
@@ -161,19 +161,18 @@ SUBROUTINE generate_matrix( N, A, DESCA, INFO )
   DOUBLE PRECISION   A( * )
   !     ..
   !     .. Local Scalars ..
-  INTEGER            I, J, MYCOL, MYROW, NPCOL, NPROW
+  INTEGER            I, J
   !     ..
   !     .. External Subroutines ..
-  EXTERNAL           BLACS_GRIDINFO, PDELSET
-  !     ..
-  
+  EXTERNAL           PDELSET
+
   ! Create Frank matrix
-  DO 20 J = 1, N
-     DO 10 I = 1, N
+  DO J = 1, N
+     DO I = 1, N
         CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
-10      CONTINUE
-20      CONTINUE
-        
+     ENDDO
+  ENDDO
+ 
 END SUBROUTINE generate_matrix
 
       
@@ -195,9 +194,8 @@ program test_real2
    use ELPA1
    use ELPA2
    use elpa_utilities, only : error_unit
-
+   use mpi
    implicit none
-   include 'mpif.h'
 
    !-------------------------------------------------------------------------------
    ! Please set system size parameters below!
@@ -224,13 +222,6 @@ program test_real2
 
    !  MPI Initialization
    call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
-   
-!   if (required_mpi_thread_level .ne. provided_mpi_thread_level) then
-!      write(error_unit,*) "MPI ERROR: MPI_THREAD_MULTIPLE is not provided on this system"
-!      write(error_unit,*) "           only ", mpi_thread_level_name(provided_mpi_thread_level), " is! available"
-!      call exit(77)
-!   endif
-
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
       
