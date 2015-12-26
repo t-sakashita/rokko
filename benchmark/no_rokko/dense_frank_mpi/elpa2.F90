@@ -39,24 +39,12 @@
 !    the original distribution, the GNU Lesser General Public License.
 !
 !
-!#include "config-f90.h"
 !>
-!> Fortran test programm to demonstrates the use of
-!> ELPA 2 real case library.
-!> If "HAVE_REDIRECT" was defined at build time
-!> the stdout and stderr output of each MPI task
-!> can be redirected to files if the environment
-!> variable "REDIRECT_ELPA_TEST_OUTPUT" is set
-!> to "true".
-!>
-!> By calling executable [arg1] [arg2] [arg3] [arg4]
+!> By calling executable [arg1] [arg2] [arg3]
 !> one can define the size (arg1), the number of
 !> Eigenvectors to compute (arg2), and the blocking (arg3).
 !> If these values are not set default values (4000, 1500, 16)
 !> are choosen.
-!> If these values are set the 4th argument can be
-!> "output", which specifies that the EV's are written to
-!> an ascii file.
 !>
 !> The real ELPA 2 kernel is set as the default kernel.
 !> However, this can be overriden by setting
@@ -108,8 +96,8 @@ subroutine set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, &
 end subroutine set_up_blacsgrid
     
 subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
-                                       np_rows, np_cols, na_rows,  &
-                                       na_cols, sc_desc, my_blacs_ctxt, info)
+     np_rows, np_cols, na_rows,  &
+     na_cols, sc_desc, my_blacs_ctxt, info)
 
   use elpa_utilities, only : error_unit
 
@@ -150,54 +138,43 @@ subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
 end subroutine set_up_blacs_descriptor
 
 
-SUBROUTINE PDLAMODHILB( N, A, DESCA, INFO )
+SUBROUTINE generate_matrix( N, A, DESCA, INFO )
 !  -- ScaLAPACK routine (version 1.2) --
 !     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
 !     and University of California, Berkeley.
 !     May 10, 1996
 
-!     .. Parameters ..
-      INTEGER            BLOCK_CYCLIC_2D, DLEN_, DT_, CTXT_, M_, N_,&
-     &                   MB_, NB_, RSRC_, CSRC_, LLD_
-      PARAMETER          ( BLOCK_CYCLIC_2D = 1, DLEN_ = 9, DT_ = 1,&
-     &                   CTXT_ = 2, M_ = 3, N_ = 4, MB_ = 5, NB_ = 6,&
-     &                   RSRC_ = 7, CSRC_ = 8, LLD_ = 9 )
-      DOUBLE PRECISION   ONE
-      PARAMETER          ( ONE = 1.0D+0 )
-!     ..
-!     .. Scalar Arguments ..
-      INTEGER            IA, INFO, JA, N
-!     ..
-!     .. Array Arguments ..
-      INTEGER            DESCA( * )
-      DOUBLE PRECISION   A( * )
-!     ..
-!     .. Local Scalars ..
-      INTEGER            I, J, MYCOL, MYROW, NPCOL, NPROW
-!     ..
-!     .. External Subroutines ..
-      EXTERNAL           BLACS_GRIDINFO, PDELSET
-!     ..
-!     .. Intrinsic Functions ..
-      INTRINSIC          DBLE
-!     ..
-!     .. Executable Statements ..
-!
-
-!       This is just to keep ftnchek happy
-!      IF( BLOCK_CYCLIC_2D*CSRC_*CTXT_*DLEN_*DT_*LLD_*MB_*M_*NB_*N_*
-!     $    RSRC_.LT.0 )RETURN
-!
-      INFO = 0
-
-      ! Create Frank matrix
-      DO 20 J = 1, N
-         DO 10 I = 1, N
-            CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
-10          CONTINUE
-20          CONTINUE
-            
-END SUBROUTINE PDLAMODHILB
+  !     .. Parameters ..
+  INTEGER            BLOCK_CYCLIC_2D, DLEN_, DT_, CTXT_, M_, N_,&
+       &                   MB_, NB_, RSRC_, CSRC_, LLD_
+  PARAMETER          ( BLOCK_CYCLIC_2D = 1, DLEN_ = 9, DT_ = 1,&
+       &                   CTXT_ = 2, M_ = 3, N_ = 4, MB_ = 5, NB_ = 6,&
+       &                   RSRC_ = 7, CSRC_ = 8, LLD_ = 9 )
+  DOUBLE PRECISION   ONE
+  PARAMETER          ( ONE = 1.0D+0 )
+  !     ..
+  !     .. Scalar Arguments ..
+  INTEGER            N
+  !     ..
+  !     .. Array Arguments ..
+  INTEGER            DESCA( * )
+  DOUBLE PRECISION   A( * )
+  !     ..
+  !     .. Local Scalars ..
+  INTEGER            I, J, MYCOL, MYROW, NPCOL, NPROW
+  !     ..
+  !     .. External Subroutines ..
+  EXTERNAL           BLACS_GRIDINFO, PDELSET
+  !     ..
+  
+  ! Create Frank matrix
+  DO 20 J = 1, N
+     DO 10 I = 1, N
+        CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
+10      CONTINUE
+20      CONTINUE
+        
+END SUBROUTINE generate_matrix
 
       
 program test_real2
@@ -218,12 +195,6 @@ program test_real2
    use ELPA1
    use ELPA2
    use elpa_utilities, only : error_unit
-#ifdef WITH_OPENMP
-!   use test_util
-#endif
-   !use mod_setup_mpi
-!   use mod_blacs_infrastructure
-   use test_util
 
    implicit none
    include 'mpif.h'
@@ -234,27 +205,22 @@ program test_real2
    ! nev:  Number of eigenvectors to be calculated
    ! nblk: Blocking factor in block cyclic distribution
    !-------------------------------------------------------------------------------
-
    integer :: nblk, na, nev
 
    !-------------------------------------------------------------------------------
    !  Local Variables
-
    integer np_rows, np_cols, na_rows, na_cols
 
    integer myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
    integer i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
 
-   real*8, allocatable :: a(:,:), z(:,:), ev(:)
+   double precision, allocatable :: a(:,:), z(:,:), ev(:)
+   double precision :: init_tick, gen_tick, diag_tick, end_tick
 
-   integer :: iseed(4096) ! Random seed, size should be sufficient for every generator
-   integer :: STATUS
 !#ifdef WITH_OPENMP
    integer :: omp_get_max_threads, required_mpi_thread_level, provided_mpi_thread_level
 !#endif
    logical :: success
-
-   success = .true.
 
    !  MPI Initialization
    call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
@@ -270,7 +236,6 @@ program test_real2
       
    call read_input_parameters(na, nev, nblk)
 
-   STATUS = 0
 #ifdef WITH_OPENMP
    if (myid .eq. 0) then
       print *,"Threaded version of test program"
@@ -278,8 +243,6 @@ program test_real2
       print *," "
    endif
 #endif
-
-
 
    if (myid .eq. 0) then
       print *," "
@@ -347,83 +310,50 @@ program test_real2
    call set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, np_cols, &
                          nprow, npcol, my_prow, my_pcol)
 
-   if (myid==0) then
-     print '(a)','| Past BLACS_Gridinfo.'
-   end if
-
    ! All ELPA routines need MPI communicators for communicating within
    ! rows or columns of processes, these are set in get_elpa_row_col_comms.
-
+   gen_tick = mpi_wtime()
    mpierr = get_elpa_row_col_comms(mpi_comm_world, my_prow, my_pcol, &
                                    mpi_comm_rows, mpi_comm_cols)
-
-   if (myid==0) then
-     print '(a)','| Past split communicator setup for rows and columns.'
-   end if
 
    call set_up_blacs_descriptor(na ,nblk, my_prow, my_pcol, np_rows, np_cols, &
                                 na_rows, na_cols, sc_desc, my_blacs_ctxt, info)
 
-   if (myid==0) then
-     print '(a)','| Past scalapack descriptor setup.'
-   end if
-
    !-------------------------------------------------------------------------------
    ! Allocate matrices and set up a test matrix for the eigenvalue problem
-!   call timer%start("set up matrix")
-
-   allocate(a (na_rows,na_cols))
-   allocate(z (na_rows,na_cols))
-
+   allocate(a(na_rows,na_cols))
+   allocate(z(na_rows,na_cols))
    allocate(ev(na))
 
-   !call generate_matrix(na, myid, sc_desc, iseed, a, z)
-   CALL PDLAMODHILB( na, A, SC_DESC, INFO )
-
-!   call timer%stop("set up matrix")
+   CALL generate_matrix( na, A, SC_DESC, INFO )
 
    !-------------------------------------------------------------------------------
    ! Calculate eigenvalues/eigenvectors
-
-   if (myid==0) then
-     print '(a)','| Entering two-stage ELPA solver ... '
-     print *
-   end if
-
-   call mpi_barrier(mpi_comm_world, mpierr) ! for correct timings only
+   diag_tick = mpi_wtime()
    success = solve_evp_real_2stage(na, nev, a, na_rows, ev, z, na_rows,  nblk, na_cols, &
         mpi_comm_rows, mpi_comm_cols, mpi_comm_world)
+   end_tick = mpi_wtime()
 
    if (.not.(success)) then
       write(error_unit,*) "solve_evp_real_2stage produced an error! Aborting..."
       call MPI_ABORT(mpi_comm_world, 1, mpierr)
    endif
 
-   if (myid==0) then
-     print '(a)','| Two-step ELPA solver complete.'
-     print *
-   end if
-
-   if(myid == 0) print *,'Time transform to tridi :',time_evp_fwd
-   if(myid == 0) print *,'Time solve tridi        :',time_evp_solve
-   if(myid == 0) print *,'Time transform back EVs :',time_evp_back
-   if(myid == 0) print *,'Total time (sum above)  :',time_evp_back+time_evp_solve+time_evp_fwd
-
    if (myid == 0) then
       do i=1,na
          print*, i,ev(i)
       enddo
+      print *, "init_time = ", gen_tick - init_tick
+      print *, "gen_time = ", diag_tick - gen_tick
+      print *, "diag_time = ", end_tick - diag_tick
    endif
 
    deallocate(a)
    deallocate(z)
    deallocate(ev)
 
-!   call timer%stop("program")
-
    call blacs_gridexit(my_blacs_ctxt)
    call mpi_finalize(mpierr)
-   call EXIT(STATUS)
-end
 
-!-------------------------------------------------------------------------------
+end program test_real2
+ 
