@@ -95,7 +95,7 @@ subroutine read_input_parameters(na, nev, nblk)
 end subroutine read_input_parameters
 
 
-SUBROUTINE PDLAMODHILB( N, A, IA, JA, DESCA, INFO )
+SUBROUTINE PDLAMODHILB( N, A, DESCA, INFO )
 !  -- ScaLAPACK routine (version 1.2) --
 !     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
 !     and University of California, Berkeley.
@@ -135,13 +135,7 @@ SUBROUTINE PDLAMODHILB( N, A, IA, JA, DESCA, INFO )
 !
       INFO = 0
 
-      IF( IA.NE.1 ) THEN
-         INFO = -3
-      ELSE IF( JA.NE.1 ) THEN
-         INFO = -4
-      END IF
-
-      !     Create Frank matrix
+      ! Create Frank matrix
       DO 20 J = 1, N
          DO 10 I = 1, N
             CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
@@ -321,7 +315,7 @@ program test_real2
    allocate(ev(na))
 
    !call generate_matrix(na, myid, sc_desc, iseed, a, z)
-   CALL PDLAMODHILB( na, A, 1, 1, SC_DESC, INFO )
+   CALL PDLAMODHILB( na, A, SC_DESC, INFO )
 
 !   call timer%stop("set up matrix")
 
