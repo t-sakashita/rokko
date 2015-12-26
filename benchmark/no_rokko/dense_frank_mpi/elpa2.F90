@@ -94,6 +94,61 @@ subroutine read_input_parameters(na, nev, nblk)
 
 end subroutine read_input_parameters
 
+subroutine set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, &
+                                np_cols, nprow, npcol, my_prow, my_pcol)
+
+  implicit none
+  integer, intent(in)     :: mpi_comm_world
+  integer, intent(inout)  :: my_blacs_ctxt, np_rows, &
+       np_cols, nprow, npcol, my_prow, my_pcol
+  
+  my_blacs_ctxt = mpi_comm_world
+  call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
+  call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
+end subroutine set_up_blacsgrid
+    
+subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
+                                       np_rows, np_cols, na_rows,  &
+                                       na_cols, sc_desc, my_blacs_ctxt, info)
+
+  use elpa_utilities, only : error_unit
+
+  implicit none
+  include "mpif.h"
+  
+  integer, intent(inout)  :: na, nblk, my_prow, my_pcol, np_rows,   &
+       np_cols, na_rows, na_cols, sc_desc(1:9), &
+       my_blacs_ctxt, info
+  
+  integer, external       :: numroc
+  integer                 :: mpierr
+  
+  ! determine the neccessary size of the distributed matrices,
+  ! we use the scalapack tools routine NUMROC
+  
+  na_rows = numroc(na, nblk, my_prow, 0, np_rows)
+  na_cols = numroc(na, nblk, my_pcol, 0, np_cols)
+  
+  ! set up the scalapack descriptor for the checks below
+  ! For ELPA the following restrictions hold:
+  ! - block sizes in both directions must be identical (args 4 a. 5)
+  ! - first row and column of the distributed matrix must be on
+  !   row/col 0/0 (arg 6 and 7)
+  
+  call descinit(sc_desc, na, na, nblk, nblk, 0, 0, my_blacs_ctxt, na_rows, info)
+
+  if (info .ne. 0) then
+     write(error_unit,*) 'Error in BLACS descinit! info=',info
+     write(error_unit,*) 'Most likely this happend since you want to use'
+     write(error_unit,*) 'more MPI tasks than are possible for your'
+     write(error_unit,*) 'problem size (matrix size and blocksize)!'
+     write(error_unit,*) 'The blacsgrid can not be set up properly'
+     write(error_unit,*) 'Try reducing the number of MPI tasks...'
+     call MPI_ABORT(mpi_comm_world, 1, mpierr)
+  endif
+  
+end subroutine set_up_blacs_descriptor
+
 
 SUBROUTINE PDLAMODHILB( N, A, DESCA, INFO )
 !  -- ScaLAPACK routine (version 1.2) --
@@ -166,8 +221,9 @@ program test_real2
 #ifdef WITH_OPENMP
 !   use test_util
 #endif
-   use mod_setup_mpi
-   use mod_blacs_infrastructure
+   !use mod_setup_mpi
+!   use mod_blacs_infrastructure
+   use test_util
 
    implicit none
    include 'mpif.h'
@@ -189,22 +245,30 @@ program test_real2
    integer myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
    integer i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
 
-   real*8, allocatable :: a(:,:), z(:,:), as(:,:), ev(:)
+   real*8, allocatable :: a(:,:), z(:,:), ev(:)
 
    integer :: iseed(4096) ! Random seed, size should be sufficient for every generator
    integer :: STATUS
-#ifdef WITH_OPENMP
-   integer :: omp_get_max_threads,  required_mpi_thread_level, provided_mpi_thread_level
-#endif
+!#ifdef WITH_OPENMP
+   integer :: omp_get_max_threads, required_mpi_thread_level, provided_mpi_thread_level
+!#endif
    logical :: success
 
    success = .true.
 
-   call read_input_parameters(na, nev, nblk)
-
-   !-------------------------------------------------------------------------------
    !  MPI Initialization
-   call setup_mpi(myid, nprocs)
+   call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
+   
+!   if (required_mpi_thread_level .ne. provided_mpi_thread_level) then
+!      write(error_unit,*) "MPI ERROR: MPI_THREAD_MULTIPLE is not provided on this system"
+!      write(error_unit,*) "           only ", mpi_thread_level_name(provided_mpi_thread_level), " is! available"
+!      call exit(77)
+!   endif
+
+   call mpi_comm_rank(mpi_comm_world,myid,mpierr)
+   call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
+      
+   call read_input_parameters(na, nev, nblk)
 
    STATUS = 0
 #ifdef WITH_OPENMP
@@ -310,7 +374,6 @@ program test_real2
 
    allocate(a (na_rows,na_cols))
    allocate(z (na_rows,na_cols))
-   allocate(as(na_rows,na_cols))
 
    allocate(ev(na))
 
@@ -329,7 +392,7 @@ program test_real2
 
    call mpi_barrier(mpi_comm_world, mpierr) ! for correct timings only
    success = solve_evp_real_2stage(na, nev, a, na_rows, ev, z, na_rows,  nblk, na_cols, &
-                              mpi_comm_rows, mpi_comm_cols, mpi_comm_world)
+        mpi_comm_rows, mpi_comm_cols, mpi_comm_world)
 
    if (.not.(success)) then
       write(error_unit,*) "solve_evp_real_2stage produced an error! Aborting..."
@@ -353,8 +416,6 @@ program test_real2
    endif
 
    deallocate(a)
-   deallocate(as)
-
    deallocate(z)
    deallocate(ev)
 
