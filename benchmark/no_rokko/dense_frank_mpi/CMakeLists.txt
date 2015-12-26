@@ -10,9 +10,6 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-# User need to specify include dir of ELPA's installasion by ELPA_INCLUDE_DIR.
-include_directories(${ELPA_INCLUDE_DIR})
-
 set(EXAMPLE scalapack_pdsyevd scalapack_pdsyev eigen_exa elemental)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_dense_no_rokko_frank_mpi_${name})
@@ -24,6 +21,10 @@ foreach(name ${EXAMPLE})
     SET_TARGET_PROPERTIES(${target_name} PROPERTIES LINKER_LANGUAGE CXX)
   endif(ROKKO_USE_CXX_LINKER)
 endforeach(name)
+
+# User need to specify include dir of ELPA's installation by ELPA_INCLUDE_DIR.
+# It is only for no_rokko version of ELPA program.
+include_directories(${ELPA_INCLUDE_DIR})
 
 set(name elpa2)
 set(target_name benchmark_dense_no_rokko_frank_mpi_${name})

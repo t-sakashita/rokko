@@ -94,7 +94,63 @@ subroutine read_input_parameters(na, nev, nblk)
 
 end subroutine read_input_parameters
 
-    
+
+SUBROUTINE PDLAMODHILB( N, A, IA, JA, DESCA, INFO )
+!  -- ScaLAPACK routine (version 1.2) --
+!     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
+!     and University of California, Berkeley.
+!     May 10, 1996
+
+!     .. Parameters ..
+      INTEGER            BLOCK_CYCLIC_2D, DLEN_, DT_, CTXT_, M_, N_,&
+     &                   MB_, NB_, RSRC_, CSRC_, LLD_
+      PARAMETER          ( BLOCK_CYCLIC_2D = 1, DLEN_ = 9, DT_ = 1,&
+     &                   CTXT_ = 2, M_ = 3, N_ = 4, MB_ = 5, NB_ = 6,&
+     &                   RSRC_ = 7, CSRC_ = 8, LLD_ = 9 )
+      DOUBLE PRECISION   ONE
+      PARAMETER          ( ONE = 1.0D+0 )
+!     ..
+!     .. Scalar Arguments ..
+      INTEGER            IA, INFO, JA, N
+!     ..
+!     .. Array Arguments ..
+      INTEGER            DESCA( * )
+      DOUBLE PRECISION   A( * )
+!     ..
+!     .. Local Scalars ..
+      INTEGER            I, J, MYCOL, MYROW, NPCOL, NPROW
+!     ..
+!     .. External Subroutines ..
+      EXTERNAL           BLACS_GRIDINFO, PDELSET
+!     ..
+!     .. Intrinsic Functions ..
+      INTRINSIC          DBLE
+!     ..
+!     .. Executable Statements ..
+!
+
+!       This is just to keep ftnchek happy
+!      IF( BLOCK_CYCLIC_2D*CSRC_*CTXT_*DLEN_*DT_*LLD_*MB_*M_*NB_*N_*
+!     $    RSRC_.LT.0 )RETURN
+!
+      INFO = 0
+
+      IF( IA.NE.1 ) THEN
+         INFO = -3
+      ELSE IF( JA.NE.1 ) THEN
+         INFO = -4
+      END IF
+
+      !     Create Frank matrix
+      DO 20 J = 1, N
+         DO 10 I = 1, N
+            CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
+10          CONTINUE
+20          CONTINUE
+            
+END SUBROUTINE PDLAMODHILB
+
+      
 program test_real2
 
 !-------------------------------------------------------------------------------
@@ -116,10 +172,8 @@ program test_real2
 #ifdef WITH_OPENMP
 !   use test_util
 #endif
-
    use mod_setup_mpi
    use mod_blacs_infrastructure
-   use mod_prepare_matrix
 
    implicit none
    include 'mpif.h'
@@ -266,7 +320,8 @@ program test_real2
 
    allocate(ev(na))
 
-   call prepare_matrix(na, myid, sc_desc, iseed, a, z, as)
+   !call generate_matrix(na, myid, sc_desc, iseed, a, z)
+   CALL PDLAMODHILB( na, A, 1, 1, SC_DESC, INFO )
 
 !   call timer%stop("set up matrix")
 
