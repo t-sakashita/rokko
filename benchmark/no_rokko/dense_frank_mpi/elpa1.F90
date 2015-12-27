@@ -180,7 +180,6 @@ program test_real1
 !-------------------------------------------------------------------------------
 
    use ELPA1
- !  use ELPA2
    use elpa_utilities, only : error_unit
    use mpi
    implicit none
