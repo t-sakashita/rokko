@@ -37,13 +37,32 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    return rokko::elemental::diagonalize(mat, eigvals, eigvecs, params);
+    std::string routine = "";
+    if(params.defined("routine")) {
+      routine = params.get_string("routine");
+    }
+    if ((routine == "") || (routine == "pmrrr")) {
+      return rokko::elemental::diagonalize(mat, eigvals, eigvecs, params);
+    } else {
+      std::cerr << "error: " << routine << " is not Elemental's routine" << std::endl;
+      throw;
+    }
   }
+  
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 parameters const& params) {
-    return rokko::elemental::diagonalize(mat, eigvals, params);
+    std::string routine = "";
+    if(params.defined("routine")) {
+      routine = params.get_string("routine");
+    }
+    if ((routine == "") || (routine == "pmrrr")) {
+      return rokko::elemental::diagonalize(mat, eigvals, params);
+    } else {
+      std::cerr << "error: " << routine << " is not Elemental's routine" << std::endl;
+      throw;
+    }
   }
 };
 

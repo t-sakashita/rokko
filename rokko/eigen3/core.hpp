@@ -35,7 +35,7 @@ public:
     if ((routine == "") || (routine == "qr")) {
       return rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params);
     } else {
-      std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
+      std::cerr << "error: " << routine << " is not Eigen3's routine" << std::endl;
       throw;
     }
   }
@@ -51,7 +51,7 @@ public:
     if ((routine == "") || (routine == "qr")) {
       return rokko::eigen3::diagonalize(mat, eigvals, params);
     } else {
-      std::cerr << "error: " << routine << " is not eigen3 routine" << std::endl;
+      std::cerr << "error: " << routine << " is not Eigen3's routine" << std::endl;
       throw;
     }
   }
@@ -62,7 +62,7 @@ public:
 			 VEC& eigvals,
 			 localized_matrix<T, MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params) {  
-    std::cerr << "error: " << "eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
+    std::cerr << "error: " << "Eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
     throw;
   }
   // only eigenvalues
@@ -70,7 +70,7 @@ public:
   parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
 			 VEC& eigvals,
 			 rokko::parameters const& params) {
-    std::cerr << "error: " << "eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
+    std::cerr << "error: " << "Eigen3 does not have routine for generalized eigenvalue problem" << std::endl;
     throw;
   }
 };
