@@ -139,7 +139,14 @@ int main(int argc, char *argv[]) {
       printf("dimension = %d\n", dim);
     }
 
-    rokko_parallel_sparse_ev_diagonalize_distributed_mfree(&solver, &mat, nev, block_size, max_iters, tol);
+    struct rokko_parameters params;
+    rokko_parameters_construct(&params);
+    // set some parameters
+    rokko_parameters_set_int(&params, "max_block_size", 5);
+    rokko_parameters_set_int(&params, "max_iters", 500);
+    rokko_parameters_set_double(&params, "conv_tol", 1.0e-8);
+    rokko_parameters_set_int(&params, "num_eigvals", 1);
+    rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params);
 
     int num_conv = rokko_parallel_sparse_ev_num_conv(&solver);
     if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);

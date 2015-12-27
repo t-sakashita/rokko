@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
       printf("dimension = %d\n", dim);
     }
 
-    rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(&solver, &mat, nev, block_size, max_iters, tol);
+    rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noparams(&solver, &mat, nev, block_size, max_iters, tol);
 
     int num_conv = rokko_parallel_sparse_ev_num_conv(&solver);
     if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
