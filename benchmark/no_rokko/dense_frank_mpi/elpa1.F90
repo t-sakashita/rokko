@@ -164,7 +164,7 @@ subroutine generate_matrix( n, a, desca, info )
 end subroutine generate_matrix
 
       
-program test_real2
+program test_real1
 
 !-------------------------------------------------------------------------------
 ! Standard eigenvalue problem - REAL version
@@ -180,7 +180,7 @@ program test_real2
 !-------------------------------------------------------------------------------
 
    use ELPA1
-   use ELPA2
+ !  use ELPA2
    use elpa_utilities, only : error_unit
    use mpi
    implicit none
@@ -221,7 +221,7 @@ program test_real2
 
    if (myid .eq. 0) then
       print *," "
-      print *,"This ELPA2 is build with"
+      print *,"This ELPA1 is build with"
 #ifdef WITH_REAL_AVX_BLOCK2_KERNEL
       print *,"AVX optimized kernel (2 blocking) for real matrices"
 #endif
@@ -304,8 +304,8 @@ program test_real2
    !-------------------------------------------------------------------------------
    ! Calculate eigenvalues/eigenvectors
    diag_tick = mpi_wtime()
-   success = solve_evp_real_2stage(na, nev, a, na_rows, ev, z, na_rows,  nblk, na_cols, &
-        mpi_comm_rows, mpi_comm_cols, mpi_comm_world)
+   success = solve_evp_real(na, nev, a, na_rows, ev, z, na_rows, nblk, &
+                            na_cols, mpi_comm_rows, mpi_comm_cols)
    end_tick = mpi_wtime()
 
    if (.not.(success)) then
@@ -327,5 +327,5 @@ program test_real2
    call blacs_gridexit(my_blacs_ctxt)
    call mpi_finalize(mpierr)
 
-end program test_real2
+end program test_real1
 
