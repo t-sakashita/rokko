@@ -13,7 +13,6 @@
 #define ROKKO_ELPA_CORE_HPP
 
 #include <rokko/parameters.hpp>
-#include <rokko/elpa/elpa.hpp>
 #include <rokko/elpa/diagonalize_elpa1.hpp>
 #include <rokko/elpa/diagonalize_elpa2.hpp>
 
