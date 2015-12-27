@@ -112,8 +112,8 @@ module rokko_serial_dense
   end interface
 
   interface rokko_serial_dense_ev_diagonalize
-     subroutine rokko_serial_dense_ev_diagonalize_localized_matrix(solver, mat, eigvals, &
-          eigvecs) bind(c)
+     subroutine rokko_serial_dense_ev_diagonalize_localized_matrix_noparams(solver, mat, &
+          eigvals, eigvecs) bind(c)
        use iso_c_binding
        import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
        implicit none
@@ -121,7 +121,7 @@ module rokko_serial_dense
        type(rokko_localized_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_localized_matrix), intent(inout) :: eigvecs
-     end subroutine rokko_serial_dense_ev_diagonalize_localized_matrix
+     end subroutine rokko_serial_dense_ev_diagonalize_localized_matrix_noparams
 
      subroutine rokko_serial_dense_ev_diagonalize_eigvals(solver, mat, eigvals) bind(c)
        use iso_c_binding
@@ -132,8 +132,8 @@ module rokko_serial_dense
        type(rokko_localized_vector), intent(inout) :: eigvals
      end subroutine rokko_serial_dense_ev_diagonalize_eigvals
 
-     subroutine rokko_serial_dense_ev_diagonalize_params(solver, mat, eigvals, &
-          eigvecs, params) bind(c)
+     subroutine rokko_serial_dense_ev_diagonalize_localized_matrix(solver, mat, &
+          eigvals, eigvecs, params) bind(c)
        use iso_c_binding
        use parameters
        import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
@@ -143,7 +143,7 @@ module rokko_serial_dense
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_localized_matrix), intent(inout) :: eigvecs
        type(rokko_parameters), intent(in) :: params
-     end subroutine rokko_serial_dense_ev_diagonalize_params
+     end subroutine rokko_serial_dense_ev_diagonalize_localized_matrix
 
      subroutine rokko_serial_dense_ev_diagonalize_eigvals_params(solver, mat, eigvals, params) bind(c)
        use iso_c_binding
