@@ -94,6 +94,7 @@ subroutine set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, &
   my_blacs_ctxt = mpi_comm_world
   call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
   call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
+
 end subroutine set_up_blacsgrid
     
 subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
@@ -138,42 +139,29 @@ subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
 end subroutine set_up_blacs_descriptor
 
 
-SUBROUTINE generate_matrix( N, A, DESCA, INFO )
-!  -- ScaLAPACK routine (version 1.2) --
-!     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
-!     and University of California, Berkeley.
-!     May 10, 1996
-
-  !     .. Parameters ..
-  INTEGER            BLOCK_CYCLIC_2D, DLEN_, DT_, CTXT_, M_, N_,&
-       &                   MB_, NB_, RSRC_, CSRC_, LLD_
-  PARAMETER          ( BLOCK_CYCLIC_2D = 1, DLEN_ = 9, DT_ = 1,&
-       &                   CTXT_ = 2, M_ = 3, N_ = 4, MB_ = 5, NB_ = 6,&
-       &                   RSRC_ = 7, CSRC_ = 8, LLD_ = 9 )
-  DOUBLE PRECISION   ONE
-  PARAMETER          ( ONE = 1.0D+0 )
+subroutine generate_matrix( n, a, desca, info )
   !     ..
   !     .. Scalar Arguments ..
-  INTEGER            N
+  integer            n
   !     ..
   !     .. Array Arguments ..
-  INTEGER            DESCA( * )
-  DOUBLE PRECISION   A( * )
+  integer            desca( * )
+  double precision   a( * )
   !     ..
-  !     .. Local Scalars ..
-  INTEGER            I, J
+  !     .. local Scalars ..
+  integer            i, j
   !     ..
   !     .. External Subroutines ..
-  EXTERNAL           PDELSET
+  external           pdelset
 
   ! Create Frank matrix
-  DO J = 1, N
-     DO I = 1, N
-        CALL PDELSET( A, I, J, DESCA, dble(N - MAX(I,J) + 1))
-     ENDDO
-  ENDDO
+  do j = 1, n
+     do i = 1, n
+        call pdelset( a, i, j, desca, dble(n - max(i,j) + 1))
+     enddo
+  enddo
  
-END SUBROUTINE generate_matrix
+end subroutine generate_matrix
 
       
 program test_real2
@@ -207,24 +195,20 @@ program test_real2
 
    !-------------------------------------------------------------------------------
    !  Local Variables
-   integer np_rows, np_cols, na_rows, na_cols
-
-   integer myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
-   integer i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
+   integer :: omp_get_max_threads, required_mpi_thread_level, provided_mpi_thread_level
+   integer :: np_rows, np_cols, na_rows, na_cols
+   integer :: myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
+   integer :: i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
+   logical :: success
 
    double precision, allocatable :: a(:,:), z(:,:), ev(:)
    double precision :: init_tick, gen_tick, diag_tick, end_tick
-
-!#ifdef WITH_OPENMP
-   integer :: omp_get_max_threads, required_mpi_thread_level, provided_mpi_thread_level
-!#endif
-   logical :: success
 
    !  MPI Initialization
    call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
-      
+
    call read_input_parameters(na, nev, nblk)
 
 #ifdef WITH_OPENMP
@@ -265,14 +249,13 @@ program test_real2
 #endif
    endif
 
-
    !-------------------------------------------------------------------------------
    ! Selection of number of processor rows/columns
    ! We try to set up the grid square-like, i.e. start the search for possible
    ! divisors of nprocs with a number next to the square root of nprocs
    ! and decrement it until a divisor is found.
 
-   do np_cols = NINT(SQRT(REAL(nprocs))),2,-1
+   do np_cols = nint(sqrt(real(nprocs))),2,-1
       if(mod(nprocs,np_cols) == 0 ) exit
    enddo
    ! at the end of the above loop, nprocs is always divisible by np_cols
@@ -297,7 +280,7 @@ program test_real2
    ! and the grid setup may be done in an arbitrary way as long as it is
    ! consistent (i.e. 0<=my_prow<np_rows, 0<=my_pcol<np_cols and every
    ! process has a unique (my_prow,my_pcol) pair).
-
+   init_tick = mpi_wtime()
    call set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, np_cols, &
                          nprow, npcol, my_prow, my_pcol)
 
@@ -331,9 +314,7 @@ program test_real2
    endif
 
    if (myid == 0) then
-      do i=1,na
-         print*, i,ev(i)
-      enddo
+      print *, i,ev(1:na)
       print *, "init_time = ", gen_tick - init_tick
       print *, "gen_time = ", diag_tick - gen_tick
       print *, "diag_time = ", end_tick - diag_tick
