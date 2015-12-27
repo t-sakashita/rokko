@@ -5,7 +5,7 @@
 *     The license of the original one is the modified BSD license.
 *     http://www.netlib.org/scalapack/LICENSE
 *
-      PROGRAM SAMPLE_PDSYEV_CALL
+      PROGRAM SAMPLE_PDSYEVD_CALL
 *
 *  -- ScaLAPACK routine (version 1.2) --
 *     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
@@ -90,7 +90,7 @@
       LDA = MAX(M_LOCAL, 1)
       allocate( A(M_LOCAL, N_LOCAL), Z(M_LOCAL, N_LOCAL), W(N) )
       CALL DESCINIT( DESC, N, N, BB, BB, 0, 0, CONTEXT, LDA, INFO )
-      CALL PDLAMODHILB( N, A, 1, 1, DESC, INFO )
+      CALL PDLAMODHILB( N, A, DESC, INFO )
 *      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
 *     
 *     Ask PDSYEV to compute the entire eigendecomposition
@@ -116,64 +116,31 @@
       END IF
 
       CALL BLACS_GRIDEXIT( CONTEXT )
-*      CALL BLACS_EXIT( 0 )
-*
       call mpi_finalize(ierr)
       STOP
       END
 *
-      SUBROUTINE PDLAMODHILB( N, A, IA, JA, DESCA, INFO )
+
+*
+      SUBROUTINE PDLAMODHILB( N, A, DESCA, INFO )
 *
 *  -- ScaLAPACK routine (version 1.2) --
 *     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
 *     and University of California, Berkeley.
 *     May 10, 1996
-*
-*
-*
-*
-*     .. Parameters ..
-      INTEGER            BLOCK_CYCLIC_2D, DLEN_, DT_, CTXT_, M_, N_,
-     $                   MB_, NB_, RSRC_, CSRC_, LLD_
-      PARAMETER          ( BLOCK_CYCLIC_2D = 1, DLEN_ = 9, DT_ = 1,
-     $                   CTXT_ = 2, M_ = 3, N_ = 4, MB_ = 5, NB_ = 6,
-     $                   RSRC_ = 7, CSRC_ = 8, LLD_ = 9 )
-      DOUBLE PRECISION   ONE
-      PARAMETER          ( ONE = 1.0D+0 )
 *     ..
 *     .. Scalar Arguments ..
-      INTEGER            IA, INFO, JA, N
+      INTEGER            N
 *     ..
 *     .. Array Arguments ..
       INTEGER            DESCA( * )
       DOUBLE PRECISION   A( * )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, J, MYCOL, MYROW, NPCOL, NPROW
+      INTEGER            I, J
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           BLACS_GRIDINFO, PDELSET
-*     ..
-*     .. Intrinsic Functions ..
-      INTRINSIC          DBLE
-*     ..
-*     .. Executable Statements ..
-*
-
-*       This is just to keep ftnchek happy
-*      IF( BLOCK_CYCLIC_2D*CSRC_*CTXT_*DLEN_*DT_*LLD_*MB_*M_*NB_*N_*
-*     $    RSRC_.LT.0 )RETURN
-*
-      INFO = 0
-*
-*      CALL BLACS_GRIDINFO( DESCA( CTXT_ ), NPROW, NPCOL, MYROW, MYCOL )
-*
-*
-      IF( IA.NE.1 ) THEN
-         INFO = -3
-      ELSE IF( JA.NE.1 ) THEN
-         INFO = -4
-      END IF
+      EXTERNAL           PDELSET
 *
 *     Create Frank matrix
       DO 20 J = 1, N

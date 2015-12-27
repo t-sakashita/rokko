@@ -8,24 +8,36 @@
 */
 #include "El.hpp"
 #include <rokko/utility/machine_info.hpp>
-
-//using namespace std;
-//using namespace El;
+#include <boost/lexical_cast.hpp>
 
 int main( int argc, char* argv[] ) {
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
-  
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  int nprocs;
+  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   // This detects whether or not you have already initialized MPI and 
   // does so if necessary. The full routine is El::Initialize.
   init_tick = MPI_Wtime();
   El::Initialize( argc, argv );
   initend_tick = MPI_Wtime();
+
+  El::Int dim = 100; //30000;
+  if (argc >= 2) dim = boost::lexical_cast<int>(argv[1]);
   
+  if (El::mpi::WorldRank() == 0)
+    std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
+              << "num_procs = " << nprocs << std::endl
+#ifdef _OPENMP
+              << "num_threads per process = " << omp_get_max_threads() << std::endl
+#endif
+              << "dimension = " << dim << std::endl;
+    
   // Surround the Elemental calls with try/catch statements in order to 
   // safely handle any exceptions that were thrown during execution.
   try {
-    const El::Int dim = 100; //30000;
-    
+    gen_tick = MPI_Wtime();
+
     // Create a 2d process grid from a communicator. In our case, it is
     // MPI_COMM_WORLD. There is another constructor that allows you to 
     // specify the grid dimensions, Grid g( comm, r ), which creates a
@@ -58,10 +70,6 @@ int main( int argc, char* argv[] ) {
 	H.SetLocal( iLoc, jLoc, dim - std::max(i, j) );
       }
     }
-    gen_tick = MPI_Wtime();
-    
-    // Make a backup of H before we overwrite it within the eigensolver
-    auto HCopy( H );
     
     // Call the eigensolver. We first create an empty complex eigenvector 
     // matrix, X[MC,MR], and an eigenvalue column vector, w[VR,* ]
@@ -71,7 +79,7 @@ int main( int argc, char* argv[] ) {
     diag_tick = MPI_Wtime();
     El::DistMatrix<double,El::VR,El::STAR> w( g );
     El::DistMatrix<double> X( g );
-    El::HermitianEig( El::LOWER, H, w, X, El::ASCENDING ); 
+    El::HermitianEig( El::LOWER, H, w, X, El::UNSORTED ); 
     end_tick = MPI_Wtime();
     
     double* eigvals;
@@ -85,19 +93,21 @@ int main( int argc, char* argv[] ) {
 		<< "gen_time = " << diag_tick - gen_tick << std::endl
 		<< "diag_time = " << end_tick - diag_tick << std::endl;
       rokko::machine_info();
-      bool sorted = true;
-      for (unsigned int i = 1; i < dim; ++i) sorted &= (eigvals[i-1] <= eigvals[i]);
-      if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
+      //bool sorted = true;
+      //for (unsigned int i = 1; i < dim; ++i) sorted &= (eigvals[i-1] <= eigvals[i]);
+      //if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       std::cout << "largest eigenvalues:";
       for (int i = 0; i < std::min(dim, 10); ++i)
 	std::cout << ' ' << eigvals[i];
       std::cout << std::endl;
     }
-    
+
+    delete []eigvals;
   }
   catch( std::exception& e ) { El::ReportException(e); }
   
   El::Finalize();
+  MPI_Finalize();
   return 0;
 }
 
