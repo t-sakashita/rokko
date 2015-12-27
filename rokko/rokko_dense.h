@@ -79,6 +79,33 @@ struct rokko_parameters rokko_serial_dense_ev_diagonalize_params(
   struct rokko_localized_vector* eigvals, struct rokko_localized_matrix* eigvecs,
   struct rokko_parameters* params);
 
+/* For Fortran binding */
+void rokko_serial_dense_ev_diagonalize_f(struct rokko_serial_dense_ev* solver,
+					 struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
+					 struct rokko_localized_matrix* eigvecs,
+					 struct rokko_parameters* params, struct rokko_parameters* params_out);
+
+void rokko_serial_dense_ev_diagonalize_no_params_out_f(struct rokko_serial_dense_ev* solver,
+						       struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
+						       struct rokko_localized_matrix* eigvecs,
+						       struct rokko_parameters* params);
+
+void rokko_serial_dense_ev_diagonalize_no_params_inout_f(struct rokko_serial_dense_ev* solver,
+						       struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
+						       struct rokko_localized_matrix* eigvecs);
+
+void rokko_serial_dense_ev_diagonalize_eigvals_f(struct rokko_serial_dense_ev* solver,
+						 struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
+						 struct rokko_parameters* params, struct rokko_parameters* params_out);
+
+void rokko_serial_dense_ev_diagonalize_eigvals_no_params_out_f(struct rokko_serial_dense_ev* solver,
+							       struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
+							       struct rokko_parameters* params);
+
+void rokko_serial_dense_ev_diagonalize_eigvals_no_params_inout_f(struct rokko_serial_dense_ev* solver,
+								 struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals);
+
+
 int rokko_serial_dense_ev_num_solvers();
 char** rokko_serial_dense_ev_solvers();
 char* rokko_serial_dense_ev_default_solver();

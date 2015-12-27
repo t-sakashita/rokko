@@ -10,7 +10,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE frank frank_no_parameters)
+set(EXAMPLE frank)
 foreach(name ${EXAMPLE})
   set(target_name example_fortran_dense_${name})
   add_executable(${target_name} ${name}.f90)

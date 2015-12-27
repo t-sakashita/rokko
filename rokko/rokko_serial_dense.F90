@@ -112,40 +112,62 @@ module rokko_serial_dense
   end interface
 
   interface rokko_serial_dense_ev_diagonalize
-     subroutine rokko_serial_dense_ev_diagonalize_localized_matrix_noparams(solver, mat, &
-          eigvals, eigvecs) bind(c)
+
+     subroutine rokko_serial_dense_ev_diagonalize(solver, mat, &
+          eigvals, eigvecs, params, params_out) bind(c,name="rokko_serial_dense_ev_diagonalize_f")
        use iso_c_binding
+       use parameters
        import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
        implicit none
        type(rokko_serial_dense_ev), intent(inout) :: solver
        type(rokko_localized_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_localized_matrix), intent(inout) :: eigvecs
-     end subroutine rokko_serial_dense_ev_diagonalize_localized_matrix_noparams
-
-     subroutine rokko_serial_dense_ev_diagonalize_eigvals(solver, mat, eigvals) bind(c)
+       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), intent(out) :: params_out
+     end subroutine rokko_serial_dense_ev_diagonalize
+     
+     subroutine rokko_serial_dense_ev_diagonalize_no_params_out(solver, mat, &
+          eigvals, eigvecs, params) bind(c,name="rokko_serial_dense_ev_diagonalize_no_params_out_f")
        use iso_c_binding
+       use parameters
        import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
        implicit none
        type(rokko_serial_dense_ev), intent(inout) :: solver
        type(rokko_localized_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_localized_matrix), intent(inout) :: eigvecs
+       type(rokko_parameters), intent(in) :: params
+     end subroutine rokko_serial_dense_ev_diagonalize_no_params_out
+          
+     subroutine rokko_serial_dense_ev_diagonalize_no_params_inout(solver, mat, &
+          eigvals, eigvecs) bind(c,name='rokko_serial_dense_ev_diagonalize_no_params_inout_f')
+       use iso_c_binding
+       use parameters
+       import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_serial_dense_ev), intent(inout) :: solver
+       type(rokko_localized_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_localized_matrix), intent(inout) :: eigvecs
+     end subroutine rokko_serial_dense_ev_diagonalize_no_params_inout
+
+     ! Only eigenvalues
+     subroutine rokko_serial_dense_ev_diagonalize_eigvals(solver, mat, eigvals, params, params_out) &
+          bind(c,name="rokko_serial_dense_ev_diagonalize_eigvals_f")
+       use iso_c_binding
+       use parameters
+       import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_serial_dense_ev), intent(inout) :: solver
+       type(rokko_localized_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters) :: params_out
      end subroutine rokko_serial_dense_ev_diagonalize_eigvals
-
-     subroutine rokko_serial_dense_ev_diagonalize_localized_matrix(solver, mat, &
-          eigvals, eigvecs, params) bind(c)
-       use iso_c_binding
-       use parameters
-       import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
-       implicit none
-       type(rokko_serial_dense_ev), intent(inout) :: solver
-       type(rokko_localized_matrix), intent(inout) :: mat
-       type(rokko_localized_vector), intent(inout) :: eigvals
-       type(rokko_localized_matrix), intent(inout) :: eigvecs
-       type(rokko_parameters), intent(in) :: params
-     end subroutine rokko_serial_dense_ev_diagonalize_localized_matrix
-
-     subroutine rokko_serial_dense_ev_diagonalize_eigvals_params(solver, mat, eigvals, params) bind(c)
+     
+     subroutine rokko_serial_dense_ev_diagonalize_eigvals_no_params_out(solver, mat, eigvals, params) &
+          bind(c,name="rokko_serial_dense_ev_diagonalize_eigvals_no_params_out_f")
        use iso_c_binding
        use parameters
        import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
@@ -154,7 +176,19 @@ module rokko_serial_dense
        type(rokko_localized_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_parameters), intent(in) :: params
-     end subroutine rokko_serial_dense_ev_diagonalize_eigvals_params
+     end subroutine rokko_serial_dense_ev_diagonalize_eigvals_no_params_out
+     
+     subroutine rokko_serial_dense_ev_diagonalize_eigvals_no_params_inout(solver, mat, eigvals) &
+          bind(c,name="rokko_serial_dense_ev_diagonalize_eigvals_no_params_inout_f")
+       use iso_c_binding
+       use parameters
+       import rokko_serial_dense_ev, rokko_localized_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_serial_dense_ev), intent(inout) :: solver
+       type(rokko_localized_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+     end subroutine rokko_serial_dense_ev_diagonalize_eigvals_no_params_inout     
+     
   end interface rokko_serial_dense_ev_diagonalize
 
   !
