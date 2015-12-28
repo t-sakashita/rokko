@@ -123,7 +123,7 @@ public:
 
     set_anasazi_parameters(params);
     if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<std::string>("block_size"));
+      pl_.set("Block Size", params.get<int>("block_size"));
     int num_eigvals;
     if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
     else num_eigvals = 1;
@@ -177,7 +177,7 @@ public:
 
     set_anasazi_parameters(params);
     if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<std::string>("block_size"));
+      pl_.set("Block Size", params.get<int>("block_size"));
     int num_eigvals;
     if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
     else num_eigvals = 1;

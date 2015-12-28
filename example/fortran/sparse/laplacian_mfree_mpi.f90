@@ -159,10 +159,6 @@ program main
   call rokko_parallel_sparse_ev_construct(solver, solver_name)
   call initialize(mat, dim)
 
-  num_evals = 3
-  block_size = 5
-  max_iters = 500
-  tol = 1.0e-3
   !num_local_rows = get_num_local_rows()
   !do i=1, num_local_rows
   !   x = 0
@@ -171,6 +167,11 @@ program main
   !   print*, "y=", y
   !enddo
   call rokko_parameters_construct(params)
+  call rokko_parameters_set(params, "verbose", .true.)
+  call rokko_parameters_set(params, "num_evals", 1)
+  call rokko_parameters_set(params, "block_size", 5)
+  call rokko_parameters_set(params, "max_iters", 500)
+  call rokko_parameters_set(params, "conv_tol", 1.0d-3)
   call rokko_parallel_sparse_ev_diagonalize(solver, mat, params, params_out)
 
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
