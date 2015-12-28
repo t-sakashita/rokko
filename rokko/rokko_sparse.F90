@@ -41,28 +41,6 @@ module rokko_sparse
        type(rokko_parallel_sparse_ev), intent(inout) :: solver
      end subroutine rokko_parallel_sparse_ev_destruct
 
-     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, &
-          num_evals, block_size, max_iters, tol) bind(c)
-       use iso_c_binding
-       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
-       implicit none
-       type(rokko_parallel_sparse_ev), intent(inout) :: solver
-       type(rokko_distributed_crs_matrix), intent(inout) :: mat
-       integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
-       real(8), value, intent(in) :: tol
-     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix
-
-     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, &
-          num_evals, block_size, max_iters, tol) bind(c)
-       use iso_c_binding
-       import rokko_parallel_sparse_ev, rokko_distributed_mfree
-       implicit none
-       type(rokko_parallel_sparse_ev), intent(inout) :: solver
-       type(rokko_distributed_mfree), intent(inout) :: mat
-       integer(c_int), value, intent(in) :: num_evals, block_size, max_iters
-       real(8), value, intent(in) :: tol
-     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree
-
      function rokko_parallel_sparse_ev_num_conv(solver) bind(c)
        use iso_c_binding
        import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
@@ -89,6 +67,57 @@ module rokko_sparse
        real(c_double), dimension(*), intent(inout) :: eig_vec
      end subroutine rokko_parallel_sparse_ev_eigenvector
   end interface
+
+  interface rokko_parallel_sparse_ev_diagonalize
+      
+     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params, params_out) &
+          bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
+       type(rokko_distributed_crs_matrix), intent(inout) :: mat
+       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), intent(out) :: params_out
+     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix
+     
+     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_noreturn(solver, &
+          mat, params) bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noreturn_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
+       type(rokko_distributed_crs_matrix), intent(inout) :: mat
+       type(rokko_parameters), intent(in) :: params
+     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_noreturn
+     
+     
+     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params, params_out) &
+          bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_mfree_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_sparse_ev, rokko_distributed_mfree
+       implicit none
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
+       type(rokko_distributed_mfree), intent(inout) :: mat
+       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), intent(out) :: params_out
+     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree
+     
+     subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn(solver, mat, params) &
+          bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_sparse_ev, rokko_distributed_mfree
+       implicit none
+       type(rokko_parallel_sparse_ev), intent(inout) :: solver
+       type(rokko_distributed_mfree), intent(inout) :: mat
+       type(rokko_parameters), intent(in) :: params
+     end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn
+
+  end interface rokko_parallel_sparse_ev_diagonalize
 
   !
   ! rokko_distributed_crs_matrix

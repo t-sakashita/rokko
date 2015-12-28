@@ -163,7 +163,7 @@ module rokko_serial_dense
        type(rokko_localized_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_parameters), intent(in) :: params
-       type(rokko_parameters) :: params_out
+       type(rokko_parameters), intent(out) :: params_out
      end subroutine rokko_serial_dense_ev_diagonalize_eigvals
      
      subroutine rokko_serial_dense_ev_diagonalize_eigvals_no_params_out(solver, mat, eigvals, params) &

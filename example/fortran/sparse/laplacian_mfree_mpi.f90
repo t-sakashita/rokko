@@ -120,7 +120,8 @@ program main
   use laplacian
   implicit none
   integer :: provided, ierr
-  
+
+  type(rokko_parameters) :: params, params_out
   double precision :: eig_val
   double precision, allocatable, dimension(:) :: eig_vec
 
@@ -169,12 +170,13 @@ program main
   !   call multiply(num_local_rows, x, y);
   !   print*, "y=", y
   !enddo
-  call rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, num_evals, block_size, max_iters, tol)
+  call rokko_parameters_construct(params)
+  call rokko_parallel_sparse_ev_diagonalize(solver, mat, params, params_out)
 
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
-  eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
-  num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
-  if (myrank == 0) then
+  if ((num_conv >= 1) .and. (myrank == 0)) then
+     eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
+     num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
      print*, "eigval=", eig_val
   endif
   call rokko_distributed_mfree_destruct(mat)

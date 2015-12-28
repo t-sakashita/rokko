@@ -11,7 +11,7 @@
 !*
 !*****************************************************************************/
 
-program frank_matrix
+program heisenberg_crs_mpi
   use MPI
   use rokko
   implicit none
@@ -36,9 +36,8 @@ program frank_matrix
   type(rokko_distributed_crs_matrix) :: mat
   character(len=100) :: solver_name, tmp_str
   integer :: arg_len, status
-  integer :: num_evals, block_size, max_iters
+  type(rokko_parameters) :: params, params_out
   integer :: num_local_rows, num_conv
-  double precision :: tol
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -96,12 +95,14 @@ program frank_matrix
   call rokko_distributed_crs_matrix_complete(mat)
 !  call rokko_distributed_crs_matrix_print(mat)
 
-  num_evals = 10
-  block_size = 5
-  max_iters = 500
-  tol = 1.0e-8
-  call rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, num_evals, block_size, max_iters, tol)
-
+!  num_evals = 10
+!  block_size = 5
+!  max_iters = 500
+!  tol = 1.0e-8
+  call rokko_parameters_construct(params)
+!  call rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params, params_out)
+  call rokko_parallel_sparse_ev_diagonalize(solver, mat, params)
+  
   num_conv = rokko_parallel_sparse_ev_num_conv(solver);
   eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0);
   num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
@@ -120,4 +121,5 @@ program frank_matrix
   call rokko_parallel_sparse_ev_destruct(solver)
 
   call MPI_finalize(ierr)
-end program frank_matrix
+end program heisenberg_crs_mpi
+

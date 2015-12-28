@@ -58,7 +58,7 @@ struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_mat
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
   *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat.ptr),
-														       *static_cast<rokko::parameters*>(params.ptr));
+														      *static_cast<rokko::parameters*>(params.ptr));
   return params_out;
 }
 
@@ -71,6 +71,38 @@ struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_mfree(s
 														       *static_cast<rokko::parameters*>(params.ptr));
   return params_out;
 }
+
+// Fortran binding
+void rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_f(struct rokko_parallel_sparse_ev* solver,
+								   struct rokko_distributed_crs_matrix* mat,
+								   struct rokko_parameters* params, struct rokko_parameters* params_out) {
+  rokko_parameters_construct(params_out);
+  *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->ptr),
+															*static_cast<rokko::parameters*>(params->ptr));
+}
+
+void rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noreturn_f(struct rokko_parallel_sparse_ev* solver,
+									    struct rokko_distributed_crs_matrix* mat,
+									    struct rokko_parameters* params) {
+  static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->ptr),
+								    *static_cast<rokko::parameters*>(params->ptr));
+}
+
+void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_f(struct rokko_parallel_sparse_ev* solver,
+							      struct rokko_distributed_mfree* mat,
+							      struct rokko_parameters* params, struct rokko_parameters* params_out) {
+  rokko_parameters_construct(params_out);
+  *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat->ptr),
+															*static_cast<rokko::parameters*>(params->ptr));
+}
+
+void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn_f(struct rokko_parallel_sparse_ev* solver,
+								       struct rokko_distributed_mfree* mat,
+								       struct rokko_parameters* params) {
+  static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat->ptr),
+								    *static_cast<rokko::parameters*>(params->ptr));
+}
+
 
 double rokko_parallel_sparse_ev_eigenvalue(struct rokko_parallel_sparse_ev* solver, int i) {
   return static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->eigenvalue(i);

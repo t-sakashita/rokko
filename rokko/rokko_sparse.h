@@ -85,6 +85,21 @@ struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_mat
 struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_mfree(struct rokko_parallel_sparse_ev solver,
 									       struct rokko_distributed_mfree mat,
 									       struct rokko_parameters params);
+
+/* Fortran binding */
+void rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_f(struct rokko_parallel_sparse_ev* solver,
+								   struct rokko_distributed_crs_matrix* mat,
+								   struct rokko_parameters* params, struct rokko_parameters* params_out);
+void rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noreturn_f(struct rokko_parallel_sparse_ev* solver,
+									    struct rokko_distributed_crs_matrix* mat,
+									    struct rokko_parameters* params);
+void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_f(struct rokko_parallel_sparse_ev* solver,
+							      struct rokko_distributed_mfree* mat,
+							      struct rokko_parameters* params, struct rokko_parameters* params_out);
+void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn_f(struct rokko_parallel_sparse_ev* solver,
+								       struct rokko_distributed_mfree* mat,
+								       struct rokko_parameters* params);
+
 double rokko_parallel_sparse_ev_eigenvalue(struct rokko_parallel_sparse_ev* solver, int i);
 void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev* solver, int i,
   double* vec);
