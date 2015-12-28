@@ -74,26 +74,7 @@ public:
   ~solver() {}
   void initialize(int& argc, char**& argv) {}
   void finalize() { SlepcFinalize(); }
-  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-			 int max_iters, double tol) {
-    parameters params;
-    params.set("num_eigenvalues", num_evals);
-    params.set("Block Size", block_size);
-    params.set("Maximum Iterations", max_iters);
-    params.set("Convergence Tolerance", tol);
-    return diagonalize(mat, params);
-  }
-
-  parameters diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
-			 double tol) {
-    parameters params;
-    params.set("num_eigenvalues", num_evals);
-    params.set("Block Size", block_size);
-    params.set("Maximum Iterations", max_iters);
-    params.set("Convergence Tolerance", tol);
-    return diagonalize(mat, params);
-  }
-
+  
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     parameters params_out;
     dimension_ = mat.get_dim();

@@ -175,10 +175,16 @@ program main
   call rokko_parallel_sparse_ev_diagonalize(solver, mat, params, params_out)
 
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
-  if ((num_conv >= 1) .and. (myrank == 0)) then
+  if (num_conv == 0) then
+     call MPI_Abort(MPI_COMM_WORLD, -1, ierr);
+  endif
+  
+  if (myrank == 0) then
      eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
      num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
-     print*, "eigval=", eig_val
+     print *, "eigval=", eig_val
+     print*, "Computed Eigenvector = "
+     print '(8f10.4)', eig_vec
   endif
   call rokko_distributed_mfree_destruct(mat)
   call rokko_parallel_sparse_ev_destruct(solver)

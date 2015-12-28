@@ -41,10 +41,6 @@ int main(int argc, char *argv[]) {
     lattice_second[l] = (l+1) % L;
   }
 
-  int nev = 10;
-  int block_size = 5;
-  int max_iters = 500;
-  double tol = 1.0e-8;
   int s;
   for (s = 0; s < num_solvers; ++s) {
     struct rokko_parallel_sparse_ev solver;
@@ -100,15 +96,16 @@ int main(int argc, char *argv[]) {
     rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params);
 
     int num_conv = rokko_parallel_sparse_ev_num_conv(&solver);
+    printf("num_conv=%d", num_conv);
     if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
     int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
     double eig_vec[num_local_rows];
-    rokko_parallel_sparse_ev_eigenvector(&solver, 0, eig_vec);
     if (rank == 0) {
       printf("number of converged eigenpairs = %d\n", num_conv);
       printf("smallest eigenvalues: ");
       for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(&solver, i));
       printf("\n");
+      rokko_parallel_sparse_ev_eigenvector(&solver, 0, eig_vec);
       printf("smallest eigenvector: ");
       for (j = 0; j < num_local_rows; ++j)
         printf("%30.20f ", eig_vec[j]);

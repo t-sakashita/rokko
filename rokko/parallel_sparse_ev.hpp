@@ -29,10 +29,6 @@ public:
   virtual ~ps_solver_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual parameters diagonalize(rokko::distributed_crs_matrix& mat,
-				 int num_evals, int block_size, int max_iters, double tol) = 0;
-  virtual parameters diagonalize(rokko::distributed_mfree& mat,
-				 int num_evals, int block_size, int max_iters, double tol) = 0;
   virtual parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) = 0;
   virtual parameters diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params) = 0;
   virtual double eigenvalue(int k) const = 0;
@@ -42,7 +38,7 @@ public:
   virtual int num_conv() const = 0;
   virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
 										    int col_dim) = 0;
-virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
 										  int col_dim, int num_entries_per_row) = 0;
   
 };
@@ -55,14 +51,6 @@ public:
   virtual ~ps_solver_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
-  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-			 int max_iters, double tol) {
-    return solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol);
-  }
-  parameters diagonalize(rokko::distributed_mfree& mat, int num_evals, int block_size, int max_iters,
-			 double tol) {
-    return solver_impl_.diagonalize(mat, num_evals, block_size, max_iters, tol);
-  }
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     return solver_impl_.diagonalize(mat, params);
   }
@@ -107,10 +95,6 @@ public:
   }
   void finalize() {
     solver_impl_->finalize();
-  }
-  template<typename MAT>
-  parameters diagonalize(MAT& mat, int num_evals, int block_size, int max_iters, double tol) {
-    return solver_impl_->diagonalize(mat, num_evals, block_size, max_iters, tol);
   }
   template<typename MAT>
   parameters diagonalize(MAT& mat, rokko::parameters const& params) {

@@ -32,25 +32,6 @@ void rokko_parallel_sparse_ev_destruct(rokko_parallel_sparse_ev* solver) {
   delete ptr;
 }
 
-struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noparams(struct rokko_parallel_sparse_ev* solver,
-								     struct rokko_distributed_crs_matrix* mat,
-								     int num_evals, int block_size, int max_iters, double tol) {
-  struct rokko_parameters params_out;
-  rokko_parameters_construct(&params_out);
-  *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->ptr),
-									num_evals, block_size, max_iters, tol);
-  return params_out;
-}
-
-struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noparams(struct rokko_parallel_sparse_ev* solver,
-								struct rokko_distributed_mfree* mat,
-								int num_evals, int block_size, int max_iters, double tol) {
-  struct rokko_parameters params_out;
-  rokko_parameters_construct(&params_out);
-  *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat->ptr),
-									num_evals, block_size, max_iters, tol);
-  return params_out;
-}
 
 struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(struct rokko_parallel_sparse_ev solver,
 										    struct rokko_distributed_crs_matrix mat,

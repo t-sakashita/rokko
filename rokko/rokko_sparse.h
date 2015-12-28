@@ -73,12 +73,6 @@ void rokko_parallel_sparse_ev_construct(struct rokko_parallel_sparse_ev* solver,
 void rokko_parallel_sparse_ev_construct_f(struct rokko_parallel_sparse_ev* solver,
   const char* solver_name);
 void rokko_parallel_sparse_ev_destruct(struct rokko_parallel_sparse_ev* solver);
-struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noparams(
-  struct rokko_parallel_sparse_ev* solver, struct rokko_distributed_crs_matrix* mat,
-  int num_evals, int block_size, int max_iters, double tol);
-struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noparams(
-  struct rokko_parallel_sparse_ev* solver, struct rokko_distributed_mfree* mat,
-  int num_evals, int block_size, int max_iters, double tol);
 struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(struct rokko_parallel_sparse_ev solver,
 										    struct rokko_distributed_crs_matrix mat,
 										    struct rokko_parameters params);

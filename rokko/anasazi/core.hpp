@@ -225,26 +225,6 @@ public:
     return params_out;
   }
 
-  parameters diagonalize(rokko::distributed_crs_matrix& mat, int num_evals, int block_size,
-			 int max_iters, double tol) {
-    parameters params;
-    params.set("num_eigvals", num_evals);
-    params.set("Block Size", block_size);
-    params.set("Maximum Iterations", max_iters);
-    params.set("Convergence Tolerance", tol);
-    return diagonalize(mat, params);
-  }
-
-  parameters diagonalize(rokko::distributed_mfree& mat_in, int num_evals, int block_size, int max_iters,
-			 double tol) {
-    parameters params;
-    params.set("num_eigenvalues", num_evals);
-    params.set("Block Size", block_size);
-    params.set("Maximum Iterations", max_iters);
-    params.set("Convergence Tolerance", tol);
-    return diagonalize(mat_in, params);
-  }
-
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
     int col_dim) {
     return new anasazi::distributed_crs_matrix(row_dim, col_dim);

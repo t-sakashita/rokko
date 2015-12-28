@@ -95,15 +95,16 @@ program heisenberg_crs_mpi
   call rokko_distributed_crs_matrix_complete(mat)
 !  call rokko_distributed_crs_matrix_print(mat)
 
-!  num_evals = 10
-!  block_size = 5
-!  max_iters = 500
-!  tol = 1.0e-8
   call rokko_parameters_construct(params)
-!  call rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params, params_out)
   call rokko_parallel_sparse_ev_diagonalize(solver, mat, params)
   
   num_conv = rokko_parallel_sparse_ev_num_conv(solver);
+  num_conv = rokko_parallel_sparse_ev_num_conv(solver)
+  if ((num_conv >= 1) .and. (myrank == 0)) then
+     eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
+     print *, "eigval=", eig_val
+  endif
+
   eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0);
   num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
   print*, "num_local_rows=", num_local_rows
