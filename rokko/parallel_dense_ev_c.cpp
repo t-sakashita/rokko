@@ -30,22 +30,22 @@ void rokko_parallel_dense_ev_destruct(rokko_parallel_dense_ev* solver) {
   delete ptr;
 }
 
-struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(struct rokko_parallel_dense_ev* solver,
-  struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
-  struct rokko_distributed_matrix* eigvecs) {
+struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(struct rokko_parallel_dense_ev solver,
+  struct rokko_distributed_matrix mat, struct rokko_localized_vector eigvals,
+  struct rokko_distributed_matrix eigvecs) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
 
-  if (mat->major == rokko_matrix_col_major)
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(
-      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-      *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr));
+  if (mat.major == rokko_matrix_col_major)
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver.ptr)->diagonalize(
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
+      *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs.ptr));
   else
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(
-      *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-      *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-      *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs->ptr));
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver.ptr)->diagonalize(
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
+      *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+      *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs.ptr));
   return params_out;
 }
 

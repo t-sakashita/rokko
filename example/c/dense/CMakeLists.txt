@@ -18,7 +18,7 @@ endforeach(name)
 unset(SAMPLE)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  set(SAMPLE frank_mpi  frank_function_pointer)
+  set(SAMPLE frank_mpi  frank_function_pointer_mpi)
   foreach(name ${SAMPLE})
     set(target_name example_c_dense_${name})
     add_executable(${target_name} ${name}.c)

@@ -50,10 +50,10 @@ int main(int argc, char *argv[]) {
   rokko_localized_vector_construct(&w, dim);
 
   /* generate frank matrix */
-  rokko_frank_matrix_generate_distributed_matrix(&mat);
+  rokko_frank_matrix_generate_distributed_matrix(mat);
   rokko_distributed_matrix_print(mat);
 
-  rokko_parallel_dense_ev_diagonalize_distributed_matrix(&solver, &mat, &w, &Z);
+  rokko_parallel_dense_ev_diagonalize_distributed_matrix(solver, mat, w, Z);
 
   if (myrank == 0) {
     printf("Computed Eigenvalues =\n");
