@@ -21,10 +21,10 @@
 int main(int argc, char *argv[]) {
   int dim;
   struct rokko_parallel_dense_ev solver;
+  struct rokko_grid grid;
+  struct rokko_mapping_bc map;
   struct rokko_distributed_matrix A, B, eigvec;
   struct rokko_localized_matrix locA, locB;
-
-  struct rokko_grid grid;
   struct rokko_localized_vector eigval;
   char* solver_name;
 
@@ -50,11 +50,10 @@ int main(int argc, char *argv[]) {
   rokko_localized_matrix_construct(&locA, dim, dim, rokko_matrix_col_major);
   rokko_localized_matrix_construct(&locB, dim, dim, rokko_matrix_col_major);
   set_A_B_c(locA, locB);
-
-  rokko_distributed_matrix_construct(&A, dim, dim, grid, solver, rokko_matrix_col_major);
-  rokko_distributed_matrix_construct(&B, dim, dim, grid, solver, rokko_matrix_col_major);
-  rokko_distributed_matrix_construct(&eigvec, dim, dim, grid, solver, rokko_matrix_col_major);
-
+  rokko_mapping_bc_construct(&map, dim, grid, solver);
+  rokko_distributed_matrix_construct(&A, map);
+  rokko_distributed_matrix_construct(&B, map);
+  rokko_distributed_matrix_construct(&eigvec, map);
   rokko_localized_vector_construct(&eigval, dim);
   rokko_scatter_localized_matrix(locA, A, 0);
   rokko_scatter_localized_matrix(locB, B, 0);

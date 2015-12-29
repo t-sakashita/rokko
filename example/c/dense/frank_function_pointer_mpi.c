@@ -21,9 +21,10 @@ double frank_calculate_matrix_element(int i, int j) {
 
 int main(int argc, char *argv[]) {
   int dim;
-  struct rokko_distributed_matrix mat, Z;
-  struct rokko_grid grid;
   struct rokko_parallel_dense_ev solver;
+  struct rokko_grid grid;
+  struct rokko_mapping_bc map;
+  struct rokko_distributed_matrix mat, Z;
   struct rokko_localized_vector w;
   char* solver_name;
 
@@ -46,9 +47,9 @@ int main(int argc, char *argv[]) {
 
   rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
-
-  rokko_distributed_matrix_construct(&mat, dim, dim, grid, solver, rokko_matrix_col_major);
-  rokko_distributed_matrix_construct(&Z, dim, dim, grid, solver, rokko_matrix_col_major);
+  rokko_mapping_bc_construct(&map, dim, grid, solver);
+  rokko_distributed_matrix_construct(&mat, map);
+  rokko_distributed_matrix_construct(&Z, map);
   rokko_localized_vector_construct(&w, dim);
 
   /* generate frank matrix */
