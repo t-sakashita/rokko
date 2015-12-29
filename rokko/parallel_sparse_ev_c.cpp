@@ -85,16 +85,16 @@ void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn_f(struct ro
 }
 
 
-double rokko_parallel_sparse_ev_eigenvalue(struct rokko_parallel_sparse_ev* solver, int i) {
-  return static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->eigenvalue(i);
+double rokko_parallel_sparse_ev_eigenvalue(struct rokko_parallel_sparse_ev solver, int i) {
+  return static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->eigenvalue(i);
 }
 
-void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev* solver, int i, double* vec) {
-  return static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->eigenvector(i, vec);
+void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev solver, int i, double* vec) {
+  return static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->eigenvector(i, vec);
 }
 
-int rokko_parallel_sparse_ev_num_conv(struct rokko_parallel_sparse_ev* solver) {
-  return static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->num_conv();
+int rokko_parallel_sparse_ev_num_conv(struct rokko_parallel_sparse_ev solver) {
+  return static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->num_conv();
 }
 
 int rokko_parallel_sparse_ev_num_solvers() {

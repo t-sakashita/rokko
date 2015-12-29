@@ -51,15 +51,15 @@ void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {
   delete static_cast<distributed_mfree_c*>(matrix->ptr);
 }
 
-int rokko_distributed_mfree_dim(struct rokko_distributed_mfree* matrix) {
-  return static_cast<rokko::distributed_mfree*>(matrix->ptr)->get_dim();
+int rokko_distributed_mfree_dim(struct rokko_distributed_mfree matrix) {
+  return static_cast<rokko::distributed_mfree*>(matrix.ptr)->get_dim();
 }
 
-int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree* matrix) {
-  return static_cast<rokko::distributed_mfree*>(matrix->ptr)->get_num_local_rows();
+int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree matrix) {
+  return static_cast<rokko::distributed_mfree*>(matrix.ptr)->get_num_local_rows();
 }
 
-int rokko_distributed_mfree_offset(struct rokko_distributed_mfree* matrix) {
-  return static_cast<rokko::distributed_mfree*>(matrix->ptr)->get_local_offset();
+int rokko_distributed_mfree_offset(struct rokko_distributed_mfree matrix) {
+  return static_cast<rokko::distributed_mfree*>(matrix.ptr)->get_local_offset();
 }
 

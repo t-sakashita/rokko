@@ -148,16 +148,16 @@ int main(int argc, char *argv[]) {
     rokko_parameters_set_int(&params, "num_eigvals", 1);
     rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params);
 
-    int num_conv = rokko_parallel_sparse_ev_num_conv(&solver);
+    int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
     if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
-    int num_local_rows = rokko_distributed_mfree_num_local_rows(&mat);
+    int num_local_rows = rokko_distributed_mfree_num_local_rows(mat);
     double eig_vec[num_local_rows];
-    rokko_parallel_sparse_ev_eigenvector(&solver, 0, eig_vec);
+    rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
     if (rank == 0) {
       printf("number of converged eigenpairs = %d\n", num_conv);
       printf("largest eigenvalues: ");
       int i, j;
-      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(&solver, i));
+      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(solver, i));
       printf("\n");
       printf("largest eigenvector: ");
       for (j = 0; j < num_local_rows; ++j)

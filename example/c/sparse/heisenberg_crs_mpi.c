@@ -48,8 +48,8 @@ int main(int argc, char *argv[]) {
     struct rokko_distributed_crs_matrix mat;
     rokko_distributed_crs_matrix_construct(&mat, dim, dim, solver);
     int row;
-    int row_start = rokko_distributed_crs_matrix_start_row(&mat);
-    int row_end = rokko_distributed_crs_matrix_end_row(&mat);
+    int row_start = rokko_distributed_crs_matrix_start_row(mat);
+    int row_end = rokko_distributed_crs_matrix_end_row(mat);
     int cols[dim];
     double values[dim];
     int count;
@@ -76,9 +76,9 @@ int main(int argc, char *argv[]) {
       cols[count] = row;
       values[count] = diag;
       ++count;
-      rokko_distributed_crs_matrix_insert(&mat, row, count, cols, values);
+      rokko_distributed_crs_matrix_insert(mat, row, count, cols, values);
     }
-    rokko_distributed_crs_matrix_complete(&mat);
+    rokko_distributed_crs_matrix_complete(mat);
     if (rank == 0) {
       printf("Eigenvalue decomposition of antiferromagnetic Heisenberg chain\n");
       printf("solver = %s\n", solvers[s]);
@@ -95,17 +95,17 @@ int main(int argc, char *argv[]) {
     rokko_parameters_set_int(&params, "num_eigvals", 1);
     rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params);
 
-    int num_conv = rokko_parallel_sparse_ev_num_conv(&solver);
+    int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
     printf("num_conv=%d", num_conv);
     if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
-    int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(&mat);
+    int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
     double eig_vec[num_local_rows];
     if (rank == 0) {
       printf("number of converged eigenpairs = %d\n", num_conv);
       printf("smallest eigenvalues: ");
-      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(&solver, i));
+      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(solver, i));
       printf("\n");
-      rokko_parallel_sparse_ev_eigenvector(&solver, 0, eig_vec);
+      rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
       printf("smallest eigenvector: ");
       for (j = 0; j < num_local_rows; ++j)
         printf("%30.20f ", eig_vec[j]);
