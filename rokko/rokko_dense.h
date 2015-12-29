@@ -47,6 +47,11 @@ struct rokko_grid {
   int major;
 };
 
+struct rokko_mapping_bc {
+  void* ptr;
+  int major;
+};
+
 struct rokko_distributed_matrix {
   void* ptr;
   int major;
@@ -144,8 +149,15 @@ void rokko_grid_destruct(struct rokko_grid* grid);
 int rokko_grid_get_myrank(struct rokko_grid grid);
 int rokko_grid_get_nprocs(struct rokko_grid grid);
 
+/* mapping_bc */
+void rokko_mapping_bc_construct(struct rokko_mapping_bc* map, int global_dim, struct rokko_grid grid, struct rokko_parallel_dense_ev solver);
+void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int global_dim, int block_size);
+void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map);
+
+
 /* distributed_matrix */
-void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
+void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map);
+void rokko_distributed_matrix_construct_solver(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
   struct rokko_grid grid, struct rokko_parallel_dense_ev solver, int matrix_major);
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,

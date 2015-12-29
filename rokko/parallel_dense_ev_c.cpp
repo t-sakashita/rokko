@@ -13,21 +13,22 @@
 #include <rokko/rokko_dense.h>
 #include <rokko/parameters.h>
 
-void rokko_parallel_dense_ev_construct(rokko_parallel_dense_ev* solver, const char* solver_name, int argc, char** argv) {
+void rokko_parallel_dense_ev_construct(struct rokko_parallel_dense_ev* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::parallel_dense_ev(std::string(solver_name));
   static_cast<rokko::parallel_dense_ev*>(solver->ptr)->initialize(argc, argv);
 }
 
-void rokko_parallel_dense_ev_construct_f(rokko_parallel_dense_ev* solver, const char* solver_name) {
+void rokko_parallel_dense_ev_construct_f(struct rokko_parallel_dense_ev* solver, const char* solver_name) {
   int argc = 0;
   char** argv;
   rokko_parallel_dense_ev_construct(solver, solver_name, argc, argv);
 }
 
-void rokko_parallel_dense_ev_destruct(rokko_parallel_dense_ev* solver) {
+void rokko_parallel_dense_ev_destruct(struct rokko_parallel_dense_ev* solver) {
   rokko::parallel_dense_ev* ptr = static_cast<rokko::parallel_dense_ev*>(solver->ptr);
   ptr->finalize();
   delete ptr;
+  solver->ptr = 0;
 }
 
 struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(struct rokko_parallel_dense_ev solver,

@@ -14,7 +14,15 @@
 #include <rokko/collective.hpp>
 #include <rokko/rokko_dense.h>
 
-void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int dim1, int dim2,
+void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(*static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr));
+  else
+    matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_row_major>(*static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr));
+  matrix->major = map.major;
+}
+
+void rokko_distributed_matrix_construct_solver(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
   rokko_grid grid, rokko_parallel_dense_ev solver, int matrix_major) {
   if (matrix_major == rokko_matrix_col_major)
     matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(dim1, dim2,
@@ -27,7 +35,7 @@ void rokko_distributed_matrix_construct(rokko_distributed_matrix* matrix, int di
   matrix->major = matrix_major;
 }
 
-void rokko_distributed_matrix_destruct(rokko_distributed_matrix* matrix) {
+void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix) {
   if (matrix->major == rokko_matrix_col_major)
     delete static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix->ptr);
   else

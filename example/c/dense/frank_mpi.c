@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
   struct rokko_parallel_dense_ev solver;
   struct rokko_distributed_matrix mat, Z;
   struct rokko_grid grid;
+  struct rokko_mapping_bc map;
   struct rokko_localized_vector w;
   char* solver_name;
 
@@ -45,8 +46,12 @@ int main(int argc, char *argv[]) {
   rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
 
-  rokko_distributed_matrix_construct(&mat, dim, dim, grid, solver, rokko_matrix_col_major);
-  rokko_distributed_matrix_construct(&Z, dim, dim, grid, solver, rokko_matrix_col_major);
+  rokko_mapping_bc_construct(&map, dim, grid, solver);
+  rokko_distributed_matrix_construct(&mat, map);
+  rokko_distributed_matrix_construct(&Z, map);
+
+  /*rokko_distributed_matrix_construct(&mat, dim, dim, grid, solver, rokko_matrix_col_major);
+    rokko_distributed_matrix_construct(&Z, dim, dim, grid, solver, rokko_matrix_col_major);*/
   rokko_localized_vector_construct(&w, dim);
 
   /* generate frank matrix */
@@ -65,6 +70,7 @@ int main(int argc, char *argv[]) {
   rokko_distributed_matrix_destruct(&Z);
   rokko_localized_vector_destruct(&w);
   rokko_parallel_dense_ev_destruct(&solver);
+  rokko_mapping_bc_destruct(&map);
   rokko_grid_destruct(&grid);
 
   MPI_Finalize();
