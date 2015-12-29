@@ -158,7 +158,7 @@ void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map);
 /* distributed_matrix */
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map);
 void rokko_distributed_matrix_construct_solver(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
-  struct rokko_grid grid, struct rokko_parallel_dense_ev solver, int matrix_major);
+  struct rokko_grid grid, struct rokko_parallel_dense_ev solver);
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,
   double (*func)(int i, int j));

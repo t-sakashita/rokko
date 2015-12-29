@@ -49,9 +49,8 @@ int main(int argc, char *argv[]) {
   rokko_mapping_bc_construct(&map, dim, grid, solver);
   rokko_distributed_matrix_construct(&mat, map);
   rokko_distributed_matrix_construct(&Z, map);
-
-  /*rokko_distributed_matrix_construct(&mat, dim, dim, grid, solver, rokko_matrix_col_major);
-    rokko_distributed_matrix_construct(&Z, dim, dim, grid, solver, rokko_matrix_col_major);*/
+  /*rokko_distributed_matrix_construct_solver(&mat, dim, dim, grid, solver);
+    rokko_distributed_matrix_construct_solver(&Z, dim, dim, grid, solver);*/
   rokko_localized_vector_construct(&w, dim);
 
   /* generate frank matrix */
