@@ -14,7 +14,9 @@
 module rokko_parallel_dense
   use iso_c_binding
   use rokko_parallel_dense_classes
+  use rokko_mapping_bc_mod
   use rokko_distributed_matrix_mod
+  use rokko_serial_dense
   implicit none
   
   !
@@ -67,19 +69,88 @@ module rokko_parallel_dense
        implicit none
        type(rokko_parallel_dense_ev), intent(inout) :: solver
      end subroutine rokko_parallel_dense_ev_destruct
-     
-     subroutine rokko_parallel_dense_ev_diagonalize_distributed_matrix(solver, mat, eigvals, &
-          eigvecs) bind(c)
+
+  end interface
+
+  interface rokko_parallel_dense_ev_diagonalize
+
+     subroutine rokko_parallel_dense_ev_diagonalize(solver, mat, &
+          eigvals, eigvecs, params, params_out) bind(c,name="rokko_parallel_dense_ev_diagonalize_f")
        use iso_c_binding
-       use rokko_serial_dense, only : rokko_localized_vector
-       import rokko_parallel_dense_ev, rokko_distributed_matrix
+       use parameters
+       import rokko_parallel_dense_ev, rokko_distributed_matrix, rokko_localized_vector
        implicit none
        type(rokko_parallel_dense_ev), intent(inout) :: solver
        type(rokko_distributed_matrix), intent(inout) :: mat
        type(rokko_localized_vector), intent(inout) :: eigvals
        type(rokko_distributed_matrix), intent(inout) :: eigvecs
-     end subroutine rokko_parallel_dense_ev_diagonalize_distributed_matrix
-  end interface
+       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), intent(out) :: params_out
+     end subroutine rokko_parallel_dense_ev_diagonalize
+     
+     subroutine rokko_parallel_dense_ev_diagonalize_no_params_out(solver, mat, &
+          eigvals, eigvecs, params) bind(c,name="rokko_parallel_dense_ev_diagonalize_no_params_out_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_dense_ev, rokko_distributed_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
+       type(rokko_distributed_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_distributed_matrix), intent(inout) :: eigvecs
+       type(rokko_parameters), intent(in) :: params
+     end subroutine rokko_parallel_dense_ev_diagonalize_no_params_out
+          
+     subroutine rokko_parallel_dense_ev_diagonalize_no_params_inout(solver, mat, &
+          eigvals, eigvecs) bind(c,name='rokko_parallel_dense_ev_diagonalize_no_params_inout_f')
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_dense_ev, rokko_distributed_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
+       type(rokko_distributed_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_distributed_matrix), intent(inout) :: eigvecs
+     end subroutine rokko_parallel_dense_ev_diagonalize_no_params_inout
+
+     ! Only eigenvalues
+     subroutine rokko_parallel_dense_ev_diagonalize_eigvals(solver, mat, eigvals, params, params_out) &
+          bind(c,name="rokko_parallel_dense_ev_diagonalize_eigvals_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_dense_ev, rokko_distributed_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
+       type(rokko_distributed_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), intent(out) :: params_out
+     end subroutine rokko_parallel_dense_ev_diagonalize_eigvals
+     
+     subroutine rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out(solver, mat, eigvals, params) &
+          bind(c,name="rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_dense_ev, rokko_distributed_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
+       type(rokko_distributed_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+       type(rokko_parameters), intent(in) :: params
+     end subroutine rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out
+     
+     subroutine rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout(solver, mat, eigvals) &
+          bind(c,name="rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout_f")
+       use iso_c_binding
+       use parameters
+       import rokko_parallel_dense_ev, rokko_distributed_matrix, rokko_localized_vector
+       implicit none
+       type(rokko_parallel_dense_ev), intent(inout) :: solver
+       type(rokko_distributed_matrix), intent(inout) :: mat
+       type(rokko_localized_vector), intent(inout) :: eigvals
+     end subroutine rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout     
+     
+  end interface rokko_parallel_dense_ev_diagonalize
   
   !
   ! collective operations
@@ -123,7 +194,7 @@ module rokko_parallel_dense
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
-       type(rokko_distributed_matrix), intent(inout) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
      end subroutine rokko_frank_matrix_generate_distributed_matrix
   end interface
   

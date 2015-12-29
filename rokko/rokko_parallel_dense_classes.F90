@@ -25,6 +25,11 @@ module rokko_parallel_dense_classes
      type(c_ptr) ptr
   end type rokko_parallel_dense_ev
 
+  type, bind(c) :: rokko_mapping_bc
+     type(c_ptr) ptr
+     integer(c_int) major
+  end type rokko_mapping_bc
+  
   type, bind(c) :: rokko_distributed_matrix
      type(c_ptr) ptr
      integer(c_int) major
