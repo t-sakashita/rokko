@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   rokko_frank_matrix_generate_localized_matrix(&mat);
   rokko_localized_matrix_print(mat);
 
-  rokko_serial_dense_ev_diagonalize_localized_matrix(&solver, &mat, &w, &Z);
+  rokko_serial_dense_ev_diagonalize_localized_matrix(solver, mat, w, Z);
 
   printf("Computed Eigenvalues =\n");
   int i;

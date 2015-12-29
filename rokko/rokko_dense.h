@@ -62,24 +62,24 @@ struct rokko_parallel_dense_ev {
 /* rokko_serial_dense_ev */
 void rokko_serial_dense_ev_construct(struct rokko_serial_dense_ev* solver,
   const char* solver_name, int argc, char** argv);
-void rokko_serial_dense_ev_construct_f(struct rokko_serial_dense_ev* solver,
-  const char* solver_name);
 void rokko_serial_dense_ev_destruct(struct rokko_serial_dense_ev* solver);
 struct rokko_parameters rokko_serial_dense_ev_diagonalize_localized_matrix(
-  struct rokko_serial_dense_ev* solver, struct rokko_localized_matrix* mat,
-  struct rokko_localized_vector* eigval, struct rokko_localized_matrix* eigvecs);
+  struct rokko_serial_dense_ev solver, struct rokko_localized_matrix mat,
+  struct rokko_localized_vector eigval, struct rokko_localized_matrix eigvecs);
 struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals(
-  struct rokko_serial_dense_ev* solver, struct rokko_localized_matrix* mat,
-  struct rokko_localized_vector* eigval);
+  struct rokko_serial_dense_ev solver, struct rokko_localized_matrix mat,
+  struct rokko_localized_vector eigval);
 struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals_params(
-  struct rokko_serial_dense_ev* solver, struct rokko_localized_matrix* mat,
-  struct rokko_localized_vector* eigvals, struct rokko_parameters* params);
+  struct rokko_serial_dense_ev solver, struct rokko_localized_matrix mat,
+  struct rokko_localized_vector eigvals, struct rokko_parameters params);
 struct rokko_parameters rokko_serial_dense_ev_diagonalize_params(
-  struct rokko_serial_dense_ev* solver, struct rokko_localized_matrix* mat,
-  struct rokko_localized_vector* eigvals, struct rokko_localized_matrix* eigvecs,
-  struct rokko_parameters* params);
+  struct rokko_serial_dense_ev solver, struct rokko_localized_matrix mat,
+  struct rokko_localized_vector eigvals, struct rokko_localized_matrix eigvecs,
+  struct rokko_parameters params);
 
 /* For Fortran binding */
+void rokko_serial_dense_ev_construct_f(struct rokko_serial_dense_ev* solver,
+  const char* solver_name);
 void rokko_serial_dense_ev_diagonalize_f(struct rokko_serial_dense_ev* solver,
 					 struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
 					 struct rokko_localized_matrix* eigvecs,
@@ -119,13 +119,13 @@ void rokko_localized_matrix_construct(struct rokko_localized_matrix* matrix, int
   int matrix_major);
 void rokko_localized_matrix_destruct(struct rokko_localized_matrix* matrix);
 void rokko_localized_matrix_print(struct rokko_localized_matrix matrix);
-void rokko_localized_matrix_generate_function(struct rokko_localized_matrix* matrix,
+void rokko_localized_matrix_generate_function(struct rokko_localized_matrix matrix,
   double (*func)(int i, int j));
-void rokko_localized_matrix_set_local(struct rokko_localized_matrix* matrix,
+void rokko_localized_matrix_set_local(struct rokko_localized_matrix matrix,
   int local_i, int local_j, double value);
 double rokko_localized_matrix_get_local(struct rokko_localized_matrix matrix,
   int local_i, int local_j);
-void rokko_localized_matrix_set_global(struct rokko_localized_matrix* matrix,
+void rokko_localized_matrix_set_global(struct rokko_localized_matrix matrix,
   int global_i, int global_j, double value);
 double rokko_localized_matrix_get_global(struct rokko_localized_matrix matrix,
   int global_i, int global_j);
@@ -148,14 +148,14 @@ int rokko_grid_get_nprocs(struct rokko_grid grid);
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
   struct rokko_grid grid, struct rokko_parallel_dense_ev solver, int matrix_major);
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
-void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix* matrix,
+void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,
   double (*func)(int i, int j));
 void rokko_distributed_matrix_print(struct rokko_distributed_matrix matrix);
-void rokko_distributed_matrix_set_local(struct rokko_distributed_matrix* matrix,
+void rokko_distributed_matrix_set_local(struct rokko_distributed_matrix matrix,
   int local_i, int local_j, double value);
 double rokko_distributed_matrix_get_local(struct rokko_distributed_matrix matrix,
   int local_i, int local_j);
-void rokko_distributed_matrix_set_global(struct rokko_distributed_matrix* matrix,
+void rokko_distributed_matrix_set_global(struct rokko_distributed_matrix matrix,
   int global_i, int global_j, double value);
 double rokko_distributed_matrix_get_global(struct rokko_distributed_matrix matrix,
   int global_i, int global_j);
@@ -193,14 +193,14 @@ int rokko_parallel_dense_ev_num_solvers();
 char** rokko_parallel_dense_ev_solvers();
 char* rokko_parallel_dense_ev_default_solver();
   
-void rokko_gather(struct rokko_distributed_matrix* matrix, double* array, int root);
+void rokko_gather(struct rokko_distributed_matrix matrix, double* array, int root);
 
-void rokko_scatter(double* global_array, struct rokko_distributed_matrix* matrix, int root);
+void rokko_scatter(double* global_array, struct rokko_distributed_matrix matrix, int root);
 
 void rokko_gather_localized_matrix(struct rokko_distributed_matrix matrix, struct rokko_localized_matrix lmatrix, int root);
 void rokko_scatter_localized_matrix(struct rokko_localized_matrix lmatrix, struct rokko_distributed_matrix matrix, int root);
 
-void rokko_all_gather(struct rokko_distributed_matrix* matrix, double* array);
+void rokko_all_gather(struct rokko_distributed_matrix matrix, double* array);
 
 
 #endif

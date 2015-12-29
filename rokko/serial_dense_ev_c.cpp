@@ -28,70 +28,71 @@ void rokko_serial_dense_ev_destruct(rokko_serial_dense_ev* solver) {
   rokko::serial_dense_ev* ptr = static_cast<rokko::serial_dense_ev*>(solver->ptr);
   ptr->finalize();
   delete ptr;
+  ptr = 0;
 }
 
 // eigenvalues/eigenvectors, no parameters
-struct rokko_parameters rokko_serial_dense_ev_diagonalize_localized_matrix(struct rokko_serial_dense_ev* solver,
-										struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
-										struct rokko_localized_matrix* eigvecs) {
+struct rokko_parameters rokko_serial_dense_ev_diagonalize_localized_matrix(struct rokko_serial_dense_ev solver,
+									   struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
+									   struct rokko_localized_matrix eigvecs) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
-  if (mat->major == rokko_matrix_col_major)
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-								       *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr));
+  if (mat.major == rokko_matrix_col_major)
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+								       *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(eigvecs.ptr));
   else
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr));
   return params_out;
 }
 
 // only eigenvalues, no parameters
-struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals(struct rokko_serial_dense_ev* solver,
-						   struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals) {
+struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals(struct rokko_serial_dense_ev solver,
+						   struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
-  if (mat->major == rokko_matrix_col_major)
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+  if (mat.major == rokko_matrix_col_major)
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr));
   else
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr));
   return params_out;
 }
 
 // only eigenvalues, parameters
-struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals_params(struct rokko_serial_dense_ev* solver,
-							  struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
-							  struct rokko_parameters* params) {
+struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals_params(struct rokko_serial_dense_ev solver,
+							  struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
+							  struct rokko_parameters params) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
-  if (mat->major == rokko_matrix_col_major)
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+  if (mat.major == rokko_matrix_col_major)
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr));
   else
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr));
   return params_out;
 }
 
 // eigenvalues/eigenvectors, parameters
-struct rokko_parameters rokko_serial_dense_ev_diagonalize_params(struct rokko_serial_dense_ev* solver,
-								 struct rokko_localized_matrix* mat, struct rokko_localized_vector* eigvals,
-								 struct rokko_localized_matrix* eigvecs,
-								 struct rokko_parameters* params) {
+struct rokko_parameters rokko_serial_dense_ev_diagonalize_params(struct rokko_serial_dense_ev solver,
+								 struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
+								 struct rokko_localized_matrix eigvecs,
+								 struct rokko_parameters params) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
-  if (mat->major == rokko_matrix_col_major)
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-								       *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr),
-								       *static_cast<rokko::parameters*>(params->ptr));
+  if (mat.major == rokko_matrix_col_major)
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+								       *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(eigvecs.ptr),
+								       *static_cast<rokko::parameters*>(params.ptr));
   else
-    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
-								       *static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(eigvecs->ptr),
-								       *static_cast<rokko::parameters*>(params->ptr));
+    *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::serial_dense_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
+								       *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+								       *static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(eigvecs.ptr),
+								       *static_cast<rokko::parameters*>(params.ptr));
   return params_out;
 }
 
