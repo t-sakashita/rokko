@@ -31,7 +31,7 @@ endforeach(name)
 unset(SAMPLE)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  set(SAMPLE frank_mpi frank_partial_mpi frank_no_mapping_mpi helmert_mpi heisenberg_mpi xyz_mpi all_gather_mpi gather_mpi gev_fixedB_mpi)
+  set(SAMPLE frank_mpi frank_partial_mpi frank_block_mpi frank_no_mapping_mpi helmert_mpi heisenberg_mpi xyz_mpi all_gather_mpi gather_mpi gev_fixedB_mpi)
   foreach(name ${SAMPLE})
     set(target_name example_dense_cxx_${name})
     add_executable(${target_name} ${name}.cpp)
