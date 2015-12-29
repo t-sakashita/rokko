@@ -21,7 +21,7 @@ module mod_frank
   end function func
 end module mod_frank
 
-program frank_matrix
+program frank_matrix_array_mpi
   use iso_c_binding
   use omp_lib
   use MPI
@@ -29,12 +29,12 @@ program frank_matrix
   use mod_frank
   implicit none
 
-  integer::dim
-  type(rokko_distributed_matrix) :: mat,Z !defined in rokko
-  type(rokko_grid) :: grid !defined in rokko
-  type(rokko_parallel_dense_ev) :: solver !defined in rokko
-
-  type(rokko_localized_vector) :: w !localized_vector
+  integer :: dim
+  type(rokko_parallel_dense_ev) :: solver
+  type(rokko_grid) :: grid
+  type(rokko_mapping_bc) :: map
+  type(rokko_distributed_matrix) :: mat, Z
+  type(rokko_localized_vector) :: w
   character(len=100) :: solver_name
   character(len=100) :: tmp_str
   integer args_cnt, arg_len, status
@@ -64,9 +64,9 @@ program frank_matrix
   write(*,*) "dim=",dim
   call rokko_parallel_dense_ev_construct(solver, solver_name)
   call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
-
-  call rokko_distributed_matrix_construct(mat, dim, dim, grid, solver, rokko_matrix_col_major)
-  call rokko_distributed_matrix_construct(Z, dim, dim, grid, solver, rokko_matrix_col_major)
+  call rokko_mapping_bc_construct(map, dim, grid, solver)
+  call rokko_distributed_matrix_construct(mat, map)
+  call rokko_distributed_matrix_construct(Z, map)
   call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
@@ -82,7 +82,7 @@ program frank_matrix
   call rokko_distributed_matrix_generate_function_f(mat, func)
 
   call rokko_distributed_matrix_print(mat)
-  call rokko_parallel_dense_ev_diagonalize_distributed_matrix(solver, mat, w, Z)
+  call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)
 
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
@@ -99,4 +99,5 @@ program frank_matrix
 
   call MPI_finalize(ierr)
 
-end program frank_matrix
+end program frank_matrix_array_mpi
+
