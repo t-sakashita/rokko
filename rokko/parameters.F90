@@ -99,7 +99,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
        real(c_double), value, intent(in) :: val
      end subroutine rokko_parameters_set_double_c

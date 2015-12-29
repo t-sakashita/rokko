@@ -56,21 +56,23 @@ program frank_matrix
 
   call rokko_parameters_construct(params)
 
-!  call rokko_parameters_set(params, "routine", "dsyev")
+  call rokko_parameters_set_string(params, "routine", "dsyevr")
   call rokko_parameters_set(params, "verbose", .true.)
-!  call rokko_parameters_set(params, "upper_index", 4)
-!  call rokko_parameters_set(params, "lower_index", 2)
-!  call rokko_parameters_set(params, "upper_value", 3.2d0)
-!  call rokko_parameters_set(params, "lower_value", 1.11d0)
+  call rokko_parameters_set(params, "upper_index", 4)
+  call rokko_parameters_set(params, "lower_index", 2)
+  call rokko_parameters_set(params, "upper_value", 3.2d0)
+  call rokko_parameters_set(params, "lower_value", 1.11d0)
 
-  call rokko_serial_dense_ev_diagonalize(solver, mat, w, Z, params, params_out)
+!  call rokko_serial_dense_ev_diagonalize(solver, mat, w, Z, params, params_out)
 !  call rokko_serial_dense_ev_diagonalize(solver, mat, w, Z, params)
 !  call rokko_serial_dense_ev_diagonalize(solver, mat, w, Z)
-!  call rokko_serial_dense_ev_diagonalize(solver, mat, w, params, params_out)
+  call rokko_serial_dense_ev_diagonalize(solver, mat, w, params, params_out)
 !  call rokko_serial_dense_ev_diagonalize(solver, mat, w, params)
 !  call rokko_serial_dense_ev_diagonalize(solver, mat, w)
   
   call rokko_parameters_get(params_out, "info", info)
+!  call rokko_parameters_get_int(params_out, "info", info)
+
   print *, "info=", info
 
   write(*,'(A)') "Computed Eigenvalues = "
