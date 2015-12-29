@@ -88,7 +88,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
   if ((routine=="dsyev") || (routine=="qr")) {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
-    rokko::lapack::diagonalize_dsyevr(mat, eigvals, params);
+    return rokko::lapack::diagonalize_dsyevr(mat, eigvals, params);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
     return rokko::lapack::diagonalize_dsyevd(mat, eigvals, params);
   } else if (routine=="dsyevx") {
