@@ -28,7 +28,7 @@ void rokko_serial_dense_ev_destruct(rokko_serial_dense_ev* solver) {
   rokko::serial_dense_ev* ptr = static_cast<rokko::serial_dense_ev*>(solver->ptr);
   ptr->finalize();
   delete ptr;
-  ptr = 0;
+  solver->ptr = 0;
 }
 
 // eigenvalues/eigenvectors, no parameters

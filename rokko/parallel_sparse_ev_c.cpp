@@ -30,6 +30,7 @@ void rokko_parallel_sparse_ev_destruct(rokko_parallel_sparse_ev* solver) {
   rokko::parallel_sparse_ev* ptr = static_cast<rokko::parallel_sparse_ev*>(solver->ptr);
   ptr->finalize();
   delete ptr;
+  solver->ptr = 0;
 }
 
 
