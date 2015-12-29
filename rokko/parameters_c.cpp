@@ -21,52 +21,52 @@ void rokko_parameters_destruct(struct rokko_parameters* params) {
   delete ptr;
 }
 
-void rokko_parameters_clear_all(struct rokko_parameters* params) {
-  static_cast<rokko::parameters*>(params->ptr)->clear();
+void rokko_parameters_clear_all(struct rokko_parameters params) {
+  static_cast<rokko::parameters*>(params.ptr)->clear();
 }
 
-void rokko_parameters_clear(struct rokko_parameters* params, const char* key) {
-  static_cast<rokko::parameters*>(params->ptr)->clear(key);
+void rokko_parameters_clear(struct rokko_parameters params, const char* key) {
+  static_cast<rokko::parameters*>(params.ptr)->clear(key);
 }
 
-void rokko_parameters_set_int(rokko_parameters* params, const char* key, int value) {
-  static_cast<rokko::parameters*>(params->ptr)->set<int>(key, value);
+void rokko_parameters_set_int(rokko_parameters params, const char* key, int value) {
+  static_cast<rokko::parameters*>(params.ptr)->set<int>(key, value);
 }
 
-void rokko_parameters_set_double(rokko_parameters* params, const char* key, double value) { 
-  static_cast<rokko::parameters*>(params->ptr)->set<double>(key, value);
+void rokko_parameters_set_double(rokko_parameters params, const char* key, double value) { 
+  static_cast<rokko::parameters*>(params.ptr)->set<double>(key, value);
 }
 
-void rokko_parameters_set_true(rokko_parameters* params, const char* key) {
-  static_cast<rokko::parameters*>(params->ptr)->set<bool>(key, true);
+void rokko_parameters_set_true(rokko_parameters params, const char* key) {
+  static_cast<rokko::parameters*>(params.ptr)->set<bool>(key, true);
 }
 
-void rokko_parameters_set_false(rokko_parameters* params, const char* key) {
-  static_cast<rokko::parameters*>(params->ptr)->set<bool>(key, false);
+void rokko_parameters_set_false(rokko_parameters params, const char* key) {
+  static_cast<rokko::parameters*>(params.ptr)->set<bool>(key, false);
 }
 
-void rokko_parameters_set_char(rokko_parameters* params, const char* key, char value) { 
-  static_cast<rokko::parameters*>(params->ptr)->set<char>(key, value);
+void rokko_parameters_set_char(rokko_parameters params, const char* key, char value) { 
+  static_cast<rokko::parameters*>(params.ptr)->set<char>(key, value);
 }
 
-void rokko_parameters_set_string(struct rokko_parameters* params, const char* key, const char* value) {
-  static_cast<rokko::parameters*>(params->ptr)->set<std::string>(key, std::string(value));
+void rokko_parameters_set_string(struct rokko_parameters params, const char* key, const char* value) {
+  static_cast<rokko::parameters*>(params.ptr)->set<std::string>(key, std::string(value));
 }
 
-int rokko_parameters_get_int(rokko_parameters* params, const char* key) { 
-  return static_cast<rokko::parameters*>(params->ptr)->get<int>(key);
+int rokko_parameters_get_int(rokko_parameters params, const char* key) { 
+  return static_cast<rokko::parameters*>(params.ptr)->get<int>(key);
 }
 
-int rokko_parameters_get_logicalint(rokko_parameters* params, const char* key) { 
-  return static_cast<rokko::parameters*>(params->ptr)->get<bool>(key);  // automatically cast bool to int
+int rokko_parameters_get_logicalint(rokko_parameters params, const char* key) { 
+  return static_cast<rokko::parameters*>(params.ptr)->get<bool>(key);  // automatically cast bool to int
 }
 
-double rokko_parameters_get_double(rokko_parameters* params, const char* key) {
-  return static_cast<rokko::parameters*>(params->ptr)->get<double>(key);
+double rokko_parameters_get_double(rokko_parameters params, const char* key) {
+  return static_cast<rokko::parameters*>(params.ptr)->get<double>(key);
 }
 
-char rokko_parameters_get_char(rokko_parameters* params, const char* key) { 
-  return static_cast<rokko::parameters*>(params->ptr)->get<char>(key);
+char rokko_parameters_get_char(rokko_parameters params, const char* key) { 
+  return static_cast<rokko::parameters*>(params.ptr)->get<char>(key);
 }
 
 char* copy_string(std::string const& str) {
@@ -77,26 +77,26 @@ char* copy_string(std::string const& str) {
 }
 
 
-char* rokko_parameters_get_string(struct rokko_parameters* params, const char* key) {
-  std::string tmp = static_cast<rokko::parameters*>(params->ptr)->get_string(key);
+char* rokko_parameters_get_string(struct rokko_parameters params, const char* key) {
+  std::string tmp = static_cast<rokko::parameters*>(params.ptr)->get_string(key);
   char* p = copy_string(tmp);
   return p;
 }
 
-int rokko_parameters_defined(struct rokko_parameters* params, const char* key) {
-  return static_cast<int>(static_cast<rokko::parameters*>(params->ptr)->defined(key));
+int rokko_parameters_defined(struct rokko_parameters params, const char* key) {
+  return static_cast<int>(static_cast<rokko::parameters*>(params.ptr)->defined(key));
 }
 
-int rokko_parameters_get_key_size(struct rokko_parameters* params, const char* key) {
-  return static_cast<rokko::parameters*>(params->ptr)->get_string(key).size();
+int rokko_parameters_get_key_size(struct rokko_parameters params, const char* key) {
+  return static_cast<rokko::parameters*>(params.ptr)->get_string(key).size();
 }
 
-int rokko_parameters_size(struct rokko_parameters* params) {
-  return static_cast<rokko::parameters*>(params->ptr)->get_map().size();
+int rokko_parameters_size(struct rokko_parameters params) {
+  return static_cast<rokko::parameters*>(params.ptr)->get_map().size();
 }
 
-char** rokko_parameters_keys(struct rokko_parameters* params) {
-  rokko::parameters* ptr = static_cast<rokko::parameters*>(params->ptr);
+char** rokko_parameters_keys(struct rokko_parameters params) {
+  rokko::parameters* ptr = static_cast<rokko::parameters*>(params.ptr);
   int num_keys = ptr->get_map().size();
   char** keys = (char**) malloc( sizeof(char*) * num_keys );
   int i = 0;

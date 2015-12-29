@@ -27,3 +27,4 @@ void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix matrix)
   else
     rokko::frank_matrix::generate(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(matrix.ptr));
 }
+

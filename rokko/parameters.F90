@@ -62,7 +62,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
        integer(c_int), value, intent(in) :: val
      end subroutine rokko_parameters_set_int_c
@@ -72,7 +72,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end subroutine rokko_parameters_set_true_c
 
@@ -81,7 +81,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end subroutine rokko_parameters_set_false_c
 
@@ -90,7 +90,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_key_size_c
     
@@ -110,7 +110,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
        character(c_char), value, intent(in) :: val   
      end subroutine rokko_parameters_set_char_c
@@ -120,7 +120,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char), intent(in) :: key(*)
        character(c_char), intent(in) :: val(*)
      end subroutine rokko_parameters_set_string_c
@@ -130,7 +130,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_int_c
 
@@ -139,7 +139,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_logical_c
 
@@ -148,7 +148,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_double_c
 
@@ -157,7 +157,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_char_c
 
@@ -166,7 +166,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_string_c
      
@@ -175,7 +175,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_defined_c
 
@@ -184,7 +184,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
      end function rokko_parameters_keys_c
 
      integer(c_int) function rokko_parameters_size_c (params) &
@@ -192,7 +192,7 @@ module parameters
        use iso_c_binding
        import rokko_parameters
        implicit none
-       type(rokko_parameters), intent(in) :: params
+       type(rokko_parameters), value, intent(in) :: params
      end function rokko_parameters_size_c
 
      type(c_ptr) function rokko_string_i_c (ptr, i) &
@@ -211,7 +211,7 @@ contains
   subroutine rokko_parameters_get_int (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     integer, intent(out) :: val
     val =  rokko_parameters_get_int_c (params, trim(key)//c_null_char)
@@ -220,7 +220,7 @@ contains
   subroutine rokko_parameters_get_double (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     double precision, intent(out) :: val
     val = rokko_parameters_get_double_c (params, trim(key)//c_null_char)
@@ -229,7 +229,7 @@ contains
   subroutine rokko_parameters_get_logical (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     logical, intent(out) :: val
     integer(c_int) :: tmp
@@ -244,7 +244,7 @@ contains
   subroutine rokko_parameters_get_char (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character, intent(out) :: val
     val =  rokko_parameters_get_char_c (params, trim(key)//c_null_char)
@@ -253,7 +253,7 @@ contains
   subroutine rokko_parameters_get_string (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character(len=:), allocatable, intent(out) :: val
     type(c_ptr) :: ptr
@@ -274,7 +274,7 @@ contains
   subroutine rokko_parameters_keys (params, keys)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     type(string), allocatable, intent(out) :: keys(:)
     type(c_ptr) :: ptr, ptr_i
     integer :: i, size
@@ -292,7 +292,7 @@ contains
   function rokko_parameters_get_string_fixed (params, key) result(val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character*255 :: val
     type(c_ptr) :: ptr!(*)
@@ -314,7 +314,7 @@ contains
   subroutine rokko_parameters_set_int (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     integer, value, intent(in) :: val
     call rokko_parameters_set_int_c (params, trim(key)//c_null_char, val)
@@ -323,7 +323,7 @@ contains
   subroutine rokko_parameters_set_double (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     double precision, value, intent(in) :: val
     call rokko_parameters_set_double_c (params, trim(key)//c_null_char, val)
@@ -332,7 +332,7 @@ contains
   subroutine rokko_parameters_set_logical (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     logical, value, intent(in) :: val
     if (val .eqv. .true.) then
@@ -345,7 +345,7 @@ contains
   subroutine rokko_parameters_set_char (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character, value, intent(in) :: val
     call rokko_parameters_set_char_c (params, trim(key)//c_null_char, val)
@@ -354,7 +354,7 @@ contains
   subroutine rokko_parameters_set_string (params, key, val)
     use iso_c_binding
     implicit none
-    type(rokko_parameters), intent(in) :: params
+    type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character(*), intent(in) :: val
     call rokko_parameters_set_string_c (params, trim(key)//c_null_char, val//c_null_char)

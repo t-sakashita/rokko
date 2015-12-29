@@ -22,6 +22,7 @@ void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix*
 
 void rokko_distributed_crs_matrix_destruct(rokko_distributed_crs_matrix* matrix) {
   delete static_cast<rokko::distributed_crs_matrix*>(matrix->ptr);
+  matrix->ptr = 0;
 }
 
 void rokko_distributed_crs_matrix_insert(struct rokko_distributed_crs_matrix matrix, int row, int col_size, int* cols, double* values) {

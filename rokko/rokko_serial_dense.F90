@@ -200,7 +200,7 @@ module rokko_serial_dense
        use iso_c_binding
        import rokko_localized_matrix
        implicit none
-       type(rokko_localized_matrix), intent(inout) :: matrix
+       type(rokko_localized_matrix), value, intent(in) :: matrix
      end subroutine rokko_frank_matrix_generate_localized_matrix
   end interface
 
