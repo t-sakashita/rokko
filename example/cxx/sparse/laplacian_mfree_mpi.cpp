@@ -40,7 +40,7 @@ public:
     
     if ((!is_first_proc) && (nprocs != 1)) {
       //std::cout << "recv myrank=" << myrank << std::endl;
-      MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
+      MPI_Send((double*)&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
       MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status_m);
       //std::cout << "buffff=" << buf << std::endl;
     }
@@ -48,7 +48,7 @@ public:
     if ((!is_last_proc) && (nprocs != 1)) {
       //std::cout << "send myrank=" << myrank << std::endl;
       MPI_Recv(&buf_p, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status_p);
-      MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
+      MPI_Send((double*)&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
       //std::cout << "buffff=" << buf2 << std::endl;
     }
 
