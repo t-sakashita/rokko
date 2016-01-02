@@ -28,7 +28,7 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  mapping_bc<matrix_col_major> optimized_mapping(int global_dim, grid const& g) const {
+  mapping_bc<matrix_col_major> default_mapping(int global_dim, grid const& g) const {
     int nx, ny;
     int nprow = g.get_nprow();
     int npcol = g.get_npcol();

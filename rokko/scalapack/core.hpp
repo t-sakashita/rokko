@@ -27,7 +27,7 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
-  mapping_bc<matrix_col_major> optimized_mapping(int dim, grid const& g)  const {
+  mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g)  const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();
     if (mb == 0)  mb = 1;

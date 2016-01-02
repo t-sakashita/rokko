@@ -45,7 +45,7 @@ public:
   virtual parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 				 localized_vector<double>& eigvals,
 				 parameters const& params) = 0;
-  virtual mapping_bc<matrix_col_major> optimized_mapping(int dim, grid const& g) const = 0;
+  virtual mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const = 0;
 };
   
 template<typename SOLVER>
@@ -86,9 +86,9 @@ public:
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
-  // optimized_mapping
-  mapping_bc<matrix_col_major> optimized_mapping(int dim, grid const& g) const {
-    return solver_impl_.optimized_mapping(dim, g);
+  // default_mapping
+  mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
+    return solver_impl_.default_mapping(dim, g);
   }
 private:
   solver_type solver_impl_;
@@ -144,8 +144,8 @@ public:
 			 VEC& eigvals) {
     return diagonalize(mat, eigvals, null_params);
   }
-  mapping_bc<matrix_col_major> optimized_mapping(int dim, grid const& g) const {
-    return solver_impl_->optimized_mapping(dim, g);
+  mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
+    return solver_impl_->default_mapping(dim, g);
   }
   static std::vector<std::string> solvers() {
     return detail::pd_solver_factory::product_names();

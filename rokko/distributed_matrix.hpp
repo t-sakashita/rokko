@@ -43,7 +43,7 @@ public:
   }
   template<typename SOLVER>
   distributed_matrix(int m_global_in, const grid& g_in, SOLVER const& solver_in)// need fix
-    : map(solver_in.optimized_mapping(m_global_in, g_in)) {
+    : map(solver_in.default_mapping(m_global_in, g_in)) {
     allocate_array();
   }
   template<typename SOLVER>
@@ -53,7 +53,7 @@ public:
       std::cerr << "error: matrix major of tamplate parameter and one of given mapping are different." << std::endl;
       throw;
     }
-    map = solver_in.optimized_mapping(m_global_in, g_in);
+    map = solver_in.default_mapping(m_global_in, g_in);
     allocate_array();
   }
   ~distributed_matrix() {
