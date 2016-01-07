@@ -290,7 +290,7 @@ program test_real2
    allocate(z(na_rows,na_cols))
    allocate(ev(na))
 
-   call generate_matrix( na, A, SC_DESC, INFO )
+   call generate_matrix( na, a, sc_desc, info )
 
    !-------------------------------------------------------------------------------
    ! Calculate eigenvalues/eigenvectors
