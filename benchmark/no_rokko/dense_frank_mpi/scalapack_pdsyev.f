@@ -88,7 +88,7 @@
       LDA = MAX(M_LOCAL, 1)
       allocate( A(M_LOCAL, N_LOCAL), Z(M_LOCAL, N_LOCAL), W(N) )
       CALL DESCINIT( DESC, N, N, BB, BB, 0, 0, CONTEXT, LDA, INFO )
-      CALL PDLAMODHILB( N, A, DESC, INFO )
+      CALL FRANK_MATRIX( N, A, DESC, INFO )
 *      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
 *     
 *     Ask PDSYEV to compute the entire eigendecomposition
@@ -116,8 +116,8 @@
       STOP
       END
 *
-      SUBROUTINE PDLAMODHILB( N, A, DESCA, INFO )
-*
+      SUBROUTINE FRANK_MATRIX( N, A, DESCA, INFO )
+*  This is originally PDLAMODHILB in ScaLAPACK
 *  -- ScaLAPACK routine (version 1.2) --
 *     University of Tennessee, Knoxville, Oak Ridge National Laboratory,
 *     and University of California, Berkeley.
@@ -147,6 +147,6 @@
 *
       RETURN
 *
-*     End of PDLAMODHLIB
+*     End of FRANK_MATRIX
 *
       END
