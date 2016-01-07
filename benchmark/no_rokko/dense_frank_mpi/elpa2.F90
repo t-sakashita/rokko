@@ -290,7 +290,7 @@ program test_real2
                                    mpi_comm_rows, mpi_comm_cols)
 
    gen_tick = mpi_wtime()
-   call set_up_blacs_descriptor(na ,nblk, my_prow, my_pcol, np_rows, np_cols, &
+   call set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, np_rows, np_cols, &
                                 na_rows, na_cols, sc_desc, my_blacs_ctxt, info)
 
    !-------------------------------------------------------------------------------
@@ -299,7 +299,7 @@ program test_real2
    allocate(z(na_rows,na_cols))
    allocate(ev(na))
 
-   CALL generate_matrix( na, A, SC_DESC, INFO )
+   call generate_matrix( na, A, SC_DESC, INFO )
 
    !-------------------------------------------------------------------------------
    ! Calculate eigenvalues/eigenvectors
