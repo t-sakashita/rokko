@@ -53,19 +53,32 @@
 !> appropiate value.
 !>
 
-subroutine read_input_parameters(na)
+subroutine read_input_parameters(na, nev, nblk)
   implicit none
 
-  integer, intent(out) :: na
+  integer, intent(out) :: na, nev, nblk
   ! Command line arguments
   character(len=128)   :: arg
   
   ! default parameters
-  na = 2000
+  na = 4000
+  nev = 1500
+  nblk = 16
 
   if (COMMAND_ARGUMENT_COUNT() >= 1) then
      call GET_COMMAND_ARGUMENT(1, arg)
      read(arg, *) na
+     if (COMMAND_ARGUMENT_COUNT() >= 2) then
+        call GET_COMMAND_ARGUMENT(2, arg)
+        read(arg, *) nev
+     else
+        nev = na
+     endif
+  endif
+
+  if (COMMAND_ARGUMENT_COUNT() >= 3) then
+     call GET_COMMAND_ARGUMENT(3, arg)     
+     read(arg, *) nblk
   endif
 
 end subroutine read_input_parameters
@@ -189,14 +202,14 @@ program test_real2
    logical :: success
 
    double precision, allocatable :: a(:,:), z(:,:), ev(:)
-   double precision :: init_tick, initend_tick, gen_tick, diag_tick, end_tick
+   double precision :: init_tick, gen_tick, diag_tick, end_tick
 
    !  MPI Initialization
    call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
 
-   call read_input_parameters(na)
+   call read_input_parameters(na, nev, nblk)
 
 #ifdef WITH_OPENMP
    if (myid .eq. 0) then
@@ -249,6 +262,15 @@ program test_real2
 
    np_rows = nprocs/np_cols
 
+   if(myid==0) then
+      print *
+      print '(a)','Standard eigenvalue problem - REAL version'
+      print *
+      print '(3(a,i0))','Matrix size=',na,', Number of eigenvectors=',nev,', Block size=',nblk
+      print '(3(a,i0))','Number of processor rows=',np_rows,', cols=',np_cols,', total=',nprocs
+      print *
+   endif
+
    !-------------------------------------------------------------------------------
    ! Set up BLACS context and MPI communicators
    !
@@ -266,19 +288,6 @@ program test_real2
    ! rows or columns of processes, these are set in get_elpa_row_col_comms.
    mpierr = get_elpa_row_col_comms(mpi_comm_world, my_prow, my_pcol, &
                                    mpi_comm_rows, mpi_comm_cols)
-
-   initend_tick = mpi_wtime()
-   nblk = na / nprow
-   nev = na
-
-   if(myid==0) then
-      print *
-      print '(a)','Standard eigenvalue problem - REAL version'
-      print *
-      print '(3(a,i0))','Matrix size=',na,', Number of eigenvectors=',nev,', Block size=',nblk
-      print '(3(a,i0))','Number of processor rows=',np_rows,', cols=',np_cols,', total=',nprocs
-      print *
-   endif
 
    gen_tick = mpi_wtime()
    call set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, np_rows, np_cols, &
@@ -306,7 +315,7 @@ program test_real2
 
    if (myid == 0) then
       print *, i,ev(1:na)
-      print *, "init_time = ", initend_tick - init_tick
+      print *, "init_time = ", gen_tick - init_tick
       print *, "gen_time = ", diag_tick - gen_tick
       print *, "diag_time = ", end_tick - diag_tick
    endif
