@@ -29,8 +29,8 @@ program EigenExa
   call eigen_sx( n, n, a, nm, w, z, nm, 48, 128, 'A')
   end_tick = mpi_wtime()
   if ( i_inod == 0 ) then
-     print*, "Matrix dimension = ", N
-     do i = 1, n
+     print *, "Matrix dimension = ", n
+     do i = 1, min(100, n)
         print *, i, w(i)
      end do
      print *, "init_time = ", gen_tick - init_tick
