@@ -305,7 +305,10 @@ program test_real2
    endif
 
    if (myid == 0) then
-      print *, i,ev(1:na)
+      print *, "Matrix dimension = ", na
+      do i = 1, min(100, na)
+         print *, i, ev(i)
+      end do
       print *, "init_time = ", initend_tick - init_tick
       print *, "gen_time = ", diag_tick - gen_tick
       print *, "diag_time = ", end_tick - diag_tick
