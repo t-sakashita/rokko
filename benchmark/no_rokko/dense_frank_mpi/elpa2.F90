@@ -178,7 +178,7 @@ program test_real2
    ! nev:  Number of eigenvectors to be calculated
    ! nblk: Blocking factor in block cyclic distribution
    !-------------------------------------------------------------------------------
-   integer :: nblk, na, nev
+   integer :: mb, nb, nblk, na, nev
 
    !-------------------------------------------------------------------------------
    !  Local Variables
@@ -268,7 +268,10 @@ program test_real2
                                    mpi_comm_rows, mpi_comm_cols)
 
    initend_tick = mpi_wtime()
-   nblk = na / nprow
+   mb = na / nprow
+   nb = na / npcol
+   nblk = min(mb, nb)
+   nblk = max(nblk, 1)
    nev = na
 
    if(myid==0) then
