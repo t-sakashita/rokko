@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
       	      << "library:routine = " << library_routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map(dim, g, solver);
+  rokko::mapping_bc<matrix_major> map(dim, 16, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::localized_vector<double> diag(dim);
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
