@@ -243,7 +243,7 @@ public:
     double* vec_pt = (*problem_->getSolution().Evecs)[k];
     std::copy(vec_pt, vec_pt + map_->get_num_local_rows(), vec);
   }
-  void eigenvector(int k, distributed_vector& vec) const {
+  void eigenvector(int k, distributed_vector<double>& vec) const {
     vec.initialize(map_->get_dim(), map_->get_epetra_map().MinMyGID(),
                    map_->get_epetra_map().MaxMyGID() + 1);
     eigenvector(k, vec.get_storage());

@@ -236,7 +236,7 @@ public:
     eigenvector(k, &(vec[0]));
   }
 
-  void eigenvector(int k, distributed_vector& vec) const {
+  void eigenvector(int k, distributed_vector<double>& vec) const {
     vec.initialize(dimension_, offset_local_, offset_local_ + num_local_rows_);
     eigenvector(k, vec.get_storage());
   }
