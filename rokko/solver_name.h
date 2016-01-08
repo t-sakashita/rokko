@@ -18,9 +18,9 @@ extern "C" {
 #endif
 
 
-void rokko_split_solver_name(char* str, char* library, char* routine);
+//void rokko_split_solver_name(char* str, char* library, char* routine);
 
-void rokko_split_solver_name_f(char* str, char** library_ptr, char** routine_ptr);
+void rokko_split_solver_name(char* str, char** library_ptr, char** routine_ptr);
 
 #ifdef __cplusplus
 }

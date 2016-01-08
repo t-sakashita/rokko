@@ -21,6 +21,7 @@
 
 #else
 
+#include <rokko/solver_name.h>
 #include <rokko/rokko_dense.h>
 #include <rokko/rokko_sparse.h>
 

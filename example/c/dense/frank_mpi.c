@@ -24,7 +24,8 @@ int main(int argc, char *argv[]) {
   struct rokko_mapping_bc map;
   struct rokko_distributed_matrix mat, Z;
   struct rokko_localized_vector w;
-  char* solver_name;
+  struct rokko_parameters params;
+  char* library_routine, *library, *routine;
 
   int provided, ierr, myrank, nprocs, i;
 
@@ -32,18 +33,18 @@ int main(int argc, char *argv[]) {
   ierr = MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
   ierr = MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
-  if (argc == 3) {
-    solver_name = argv[1];
-    dim = atoi(argv[2]);
-  } else {
-    fprintf(stderr, "error: %s solver_name dimension\n", argv[0]);
-    MPI_Abort(MPI_COMM_WORLD, 34);
-  }
-    
-  printf("solver name = %s\n", solver_name);
-  printf("matrix dimension = %d\n", dim);
+  library_routine = rokko_parallel_dense_ev_default_solver();
+  if (argc >= 2) library_routine = argv[1];
+  if (argc >= 3) dim = atoi(argv[2]);
+  rokko_split_solver_name(library_routine, &library, &routine);
 
-  rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
+  if (myrank == 0) {
+    printf("library = %s\n", library);
+    printf("routine = %s\n", routine);
+    printf("dimension = %d\n", dim);
+  }
+  
+  rokko_parallel_dense_ev_construct(&solver, library, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
   rokko_mapping_bc_construct(&map, dim, grid, solver);
   rokko_distributed_matrix_construct(&mat, map);
@@ -55,8 +56,10 @@ int main(int argc, char *argv[]) {
   /* generate frank matrix */
   rokko_frank_matrix_generate_distributed_matrix(mat);
   rokko_distributed_matrix_print(mat);
-
-  rokko_parallel_dense_ev_diagonalize_distributed_matrix(solver, mat, w, Z);
+  
+  rokko_parameters_construct(&params);
+  rokko_parameters_set_string(params, "routine", routine);
+  rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z, params);
 
   if (myrank == 0) {
     printf("Computed Eigenvalues =\n");

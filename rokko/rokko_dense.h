@@ -197,6 +197,9 @@ void rokko_parallel_dense_ev_construct_f(struct rokko_parallel_dense_ev* solver,
   const char* solver_name);
 void rokko_parallel_dense_ev_destruct(struct rokko_parallel_dense_ev* solver);
 
+struct rokko_parameters rokko_parallel_dense_ev_diagonalize(
+  struct rokko_parallel_dense_ev solver, struct rokko_distributed_matrix mat,
+  struct rokko_localized_vector eigval, struct rokko_distributed_matrix eigvecs, struct rokko_parameters);
 struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(
   struct rokko_parallel_dense_ev solver, struct rokko_distributed_matrix mat,
   struct rokko_localized_vector eigval, struct rokko_distributed_matrix eigvecs);
