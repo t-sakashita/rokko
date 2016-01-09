@@ -68,6 +68,14 @@ module rokko_sparse
      end subroutine rokko_parallel_sparse_ev_eigenvector
   end interface
 
+  interface
+     type(c_ptr) function rokko_parallel_sparse_ev_default_solver_c() &
+          bind(c,name='rokko_parallel_sparse_ev_default_solver')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_sparse_ev_default_solver_c
+  end interface
+  
   interface rokko_parallel_sparse_ev_diagonalize
       
      subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params, params_out) &
@@ -226,6 +234,15 @@ module rokko_sparse
   end interface
 
 contains
+
+  subroutine rokko_parallel_sparse_ev_default_solver(name)
+    use rokko_string
+    character(len=*), intent(out) :: name
+    type(c_ptr) :: name_ptr
+    name_ptr = rokko_parallel_sparse_ev_default_solver_c ()
+    call rokko_get_string_fixedsize (name_ptr, name)
+  end subroutine rokko_parallel_sparse_ev_default_solver
+  
   subroutine rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
     use, intrinsic :: iso_c_binding
     type(rokko_distributed_mfree), intent(inout) :: mat

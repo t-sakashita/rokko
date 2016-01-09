@@ -139,18 +139,19 @@ program main
   call mpi_comm_rank(comm, myrank, ierr)
   call mpi_comm_size(comm, nprocs, ierr)
 
-  solver_name = "anasazi"  ! default
-  dim = 10
-  if (command_argument_count().ge.1) then
-     call get_command_argument(1, tmp_str, arg_len, status)
-     solver_name = trim(tmp_str)
+  if (command_argument_count() >= 1) then
+     call get_command_argument(1, solver_name, arg_len, status)
+  else
+     call rokko_parallel_sparse_ev_default_solver(solver_name)
   endif
 
-  if (command_argument_count().eq.2) then
+  if (command_argument_count() == 2) then  
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
+  else
+     dim = 10  ! default
   endif
-
+  
   if (myrank == 0) then
      write(*,*) "solver name = ", trim(solver_name)
      write(*,*) "matrix dimension = ", dim

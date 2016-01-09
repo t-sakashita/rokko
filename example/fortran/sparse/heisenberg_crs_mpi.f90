@@ -43,9 +43,19 @@ program heisenberg_crs_mpi
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
-  solver_name = "anasazi"
+  if (command_argument_count() >= 1) then
+     call get_command_argument(1, solver_name, arg_len, status)
+  else
+     call rokko_parallel_sparse_ev_default_solver(solver_name)
+  endif
 
-  L = 8
+  if (command_argument_count() == 2) then  
+     call get_command_argument(2, tmp_str, arg_len, status)
+     read(tmp_str, *) L
+  else
+     L = 8
+  endif
+  
   dim = ishft(1,L)
   allocate( lattice_first(L) )
   allocate( lattice_second(L) )
