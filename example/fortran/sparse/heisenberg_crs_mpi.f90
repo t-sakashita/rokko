@@ -23,14 +23,11 @@ program heisenberg_crs_mpi
   double precision :: diag
   integer :: i, j, m1, m2, m3, count
   integer :: row, start_row, end_row
-  integer(c_int), allocatable, dimension(:) :: cols
+  integer, allocatable, dimension(:) :: cols
   double precision, allocatable, dimension(:) :: values
 
   double precision :: eig_val
   double precision, allocatable, dimension(:) :: eig_vec
-
-!  integer(4), allocatable, dimension(:) :: cols
-!  double precision, allocatable, dimension(:) :: values
 
   type(rokko_parallel_sparse_ev) :: solver
   type(rokko_distributed_crs_matrix) :: mat
