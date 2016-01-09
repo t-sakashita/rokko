@@ -121,10 +121,7 @@ int main(int argc, char *argv[]) {
   }
 
   int dim = (argc == 3) ? dim = atoi(argv[2]) : 100;
-  int nev = 10;
-  int block_size = 5;
-  int max_iters = 500;
-  double tol = 1.0e-8;
+
   int s;
   for (s = 0; s < num_solvers; ++s) {
     struct rokko_parallel_sparse_ev solver;
@@ -142,10 +139,9 @@ int main(int argc, char *argv[]) {
     struct rokko_parameters params;
     rokko_parameters_construct(&params);
     // set some parameters
-    rokko_parameters_set_int(params, "max_block_size", 5);
+    rokko_parameters_set_int(params, "block_size", 5);
     rokko_parameters_set_int(params, "max_iters", 500);
     rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
-    rokko_parameters_set_int(params, "num_eigvals", 1);
     rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params);
 
     int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
