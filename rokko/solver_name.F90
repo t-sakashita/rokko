@@ -31,7 +31,7 @@ module solver_name_utility
 
 contains
 
-  subroutine rokko_split_solver_name(str, library, routine)
+  subroutine rokko_split_solver_name_dynstr(str, library, routine)
     character(*), intent(in) :: str
     character(len=:), allocatable, intent(out) :: library
     character(len=:), allocatable, intent(out) :: routine
@@ -39,6 +39,16 @@ contains
     call rokko_split_solver_name_f (str//c_null_char, library_ptr, routine_ptr)
     call rokko_get_string (library_ptr, library)
     call rokko_get_string (routine_ptr, routine)
+  end subroutine rokko_split_solver_name_dynstr
+
+  subroutine rokko_split_solver_name(str, library, routine)
+    character(*), intent(in) :: str
+    character(len=*), intent(out) :: library
+    character(len=*), intent(out) :: routine
+    type(c_ptr) :: library_ptr, routine_ptr
+    call rokko_split_solver_name_f (str//c_null_char, library_ptr, routine_ptr)
+    call rokko_get_string_fixedsize (library_ptr, library)
+    call rokko_get_string_fixedsize (routine_ptr, routine)
   end subroutine rokko_split_solver_name
 
 end module solver_name_utility

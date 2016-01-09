@@ -21,6 +21,7 @@ program frank_matrix
   type(rokko_mapping_bc) :: map
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_localized_vector) :: w
+  character(len=20) :: library, routine
   character(len=100) :: solver_name, tmp_str
   integer arg_len, status
 
@@ -31,19 +32,24 @@ program frank_matrix
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
-  if (command_argument_count().eq.2) then
-     call get_command_argument(1, tmp_str, arg_len, status)
-     solver_name = trim(tmp_str)
+  if (command_argument_count() >= 1) then
+     call get_command_argument(1, solver_name, arg_len, status)
+  else
+     solver_name = "scalapack"
+  endif
+  call rokko_split_solver_name(solver_name, library, routine)
+
+  if (command_argument_count() == 2) then  
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
-     write(*,'(A)') "Error: frank_mpi solver_name dimension"
-     stop
+     dim = 10
   endif
 
-  write(*,*) "solver name = ", trim(solver_name)
-  write(*,*) "matrix dimension = ", dim
-
+  print *,"library = ", library
+  print *,"routien = ", routine
+  print *,"dimension = ", dim
+  
   call rokko_parallel_dense_ev_construct(solver, solver_name)
   call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
   call rokko_mapping_bc_construct(map, dim, grid, solver)

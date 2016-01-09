@@ -40,9 +40,9 @@ program frank_matrix
      dim = 10
   endif
 
-  write(*,*) "split solver name = ", library
-  write(*,*) "split solver name = ", routine
-  write(*,*) "matrix dimension = ", dim
+  print *,"library = ", library
+  print *,"routien = ", routine
+  print *,"dimension = ", dim
 
   call rokko_serial_dense_ev_construct(solver, library)
 
