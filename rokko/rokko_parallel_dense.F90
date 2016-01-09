@@ -197,5 +197,23 @@ module rokko_parallel_dense
        type(rokko_distributed_matrix), value, intent(in) :: matrix
      end subroutine rokko_frank_matrix_generate_distributed_matrix
   end interface
+
+  interface
+     type(c_ptr) function rokko_parallel_dense_ev_default_solver_c () &
+          bind(c,name='rokko_parallel_dense_ev_default_solver')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_dense_ev_default_solver_c
+  end interface
+
+contains
+
+  subroutine rokko_parallel_dense_ev_default_solver(name)
+    use rokko_string
+    character(len=*), intent(out) :: name
+    type(c_ptr) :: name_ptr
+    name_ptr = rokko_parallel_dense_ev_default_solver_c ()
+    call rokko_get_string_fixedsize (name_ptr, name)
+  end subroutine rokko_parallel_dense_ev_default_solver
   
 end module rokko_parallel_dense

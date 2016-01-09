@@ -35,7 +35,7 @@ program frank_matrix
   if (command_argument_count() >= 1) then
      call get_command_argument(1, solver_name, arg_len, status)
   else
-     solver_name = "scalapack"
+     call rokko_parallel_dense_ev_default_solver(solver_name)
   endif
   call rokko_split_solver_name(solver_name, library, routine)
 
@@ -47,7 +47,7 @@ program frank_matrix
   endif
 
   print *,"library = ", library
-  print *,"routien = ", routine
+  print *,"routine = ", routine
   print *,"dimension = ", dim
   
   call rokko_parallel_dense_ev_construct(solver, solver_name)
