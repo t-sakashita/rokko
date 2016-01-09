@@ -19,7 +19,7 @@ program frank_matrix
   type(rokko_localized_matrix) :: mat, Z
   type(rokko_localized_vector) :: w
   type(rokko_parameters) :: params, params_out
-  character(len=:), allocatable :: library, routine
+  character(len=20) :: library, routine
   character(len=20) :: solver_name, tmp_str
   integer arg_len, status
 
@@ -29,7 +29,7 @@ program frank_matrix
   if (command_argument_count() >= 1) then
      call get_command_argument(1, solver_name, arg_len, status)
   else
-     solver_name = "lapack"
+     call rokko_serial_dense_ev_default_solver(solver_name)
   endif
   call rokko_split_solver_name(solver_name, library, routine)
 
@@ -41,7 +41,7 @@ program frank_matrix
   endif
 
   print *,"library = ", library
-  print *,"routien = ", routine
+  print *,"routine = ", routine
   print *,"dimension = ", dim
 
   call rokko_serial_dense_ev_construct(solver, library)

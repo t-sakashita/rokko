@@ -204,6 +204,14 @@ module rokko_serial_dense
      end subroutine rokko_frank_matrix_generate_localized_matrix
   end interface
 
+  interface
+     type(c_ptr) function rokko_serial_dense_ev_default_solver_c () &
+          bind(c,name='rokko_serial_dense_ev_default_solver')
+       use iso_c_binding
+       implicit none
+     end function rokko_serial_dense_ev_default_solver_c
+  end interface
+  
 contains
 
   subroutine rokko_serial_dense_ev_construct(solver, solver_name)
@@ -223,5 +231,13 @@ contains
     call rokko_serial_dense_ev_construct_f(solver, trim(solver_name)//C_NULL_CHAR)
   end subroutine rokko_serial_dense_ev_construct
 
+  subroutine rokko_serial_dense_ev_default_solver(name)
+    use rokko_string
+    character(len=*), intent(out) :: name
+    type(c_ptr) :: name_ptr
+    name_ptr = rokko_serial_dense_ev_default_solver_c ()
+    call rokko_get_string_fixedsize (name_ptr, name)
+  end subroutine rokko_serial_dense_ev_default_solver
+  
 end module rokko_serial_dense
 

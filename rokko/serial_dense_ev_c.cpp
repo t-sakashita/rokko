@@ -203,3 +203,4 @@ char* rokko_serial_dense_ev_default_solver() {
   strcpy(solver_c, solver.c_str());
   return solver_c;
 }
+
