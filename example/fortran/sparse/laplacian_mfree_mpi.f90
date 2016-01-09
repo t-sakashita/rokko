@@ -136,8 +136,8 @@ program main
   double precision :: x(10), y(10)
 
   call mpi_init_thread(mpi_thread_multiple, provided, ierr)
-  call mpi_comm_rank(comm, myrank, ierr)
-  call mpi_comm_size(comm, nprocs, ierr)
+  call mpi_comm_rank(mpi_comm_world, myrank, ierr)
+  call mpi_comm_size(mpi_comm_world, nprocs, ierr)
 
   if (command_argument_count() >= 1) then
      call get_command_argument(1, solver_name, arg_len, status)
