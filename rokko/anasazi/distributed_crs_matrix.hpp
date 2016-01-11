@@ -41,7 +41,6 @@ public:
     num_local_rows_ = map_->get_epetra_map().NumMyElements();
     start_row_ = map_->get_epetra_map().MinMyGID();
     end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to adjust C++ convention
-    std::cout << "end_row_=" << end_row_ << std::endl;
   }
   explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
     initialize(row_dim, col_dim, num_entries_per_row);

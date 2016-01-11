@@ -55,8 +55,7 @@ int main(int argc, char *argv[]) {
     int count;
     double diag;
     int i, j, m1, m2, m3;
-    printf("row_start=%d, row_end=%d\n", row_start, row_end);
-    for (row = row_start; row <= row_end; ++row) {
+    for (row = row_start; row < row_end; ++row) {
       count = 0;
       diag = 0;
       for (l = 0; l < L; ++l) {
