@@ -70,8 +70,8 @@ program heisenberg_crs_mpi
 
   call rokko_distributed_crs_matrix_construct(mat, dim, dim, solver)
 
-  start_row = rokko_distributed_crs_matrix_start_row(mat);
-  end_row = rokko_distributed_crs_matrix_end_row(mat);
+  start_row = rokko_distributed_crs_matrix_start_row_c(mat);
+  end_row = rokko_distributed_crs_matrix_end_row_c(mat);
 
   allocate( cols(dim) )
   allocate( values(dim) )
@@ -97,7 +97,7 @@ program heisenberg_crs_mpi
      count = count + 1
      cols(count) = row
      values(count) = diag
-     call rokko_distributed_crs_matrix_insert(mat, row, count, cols, values)
+     call rokko_distributed_crs_matrix_insert_c(mat, row, count, cols, values)
   end do
   call rokko_distributed_crs_matrix_complete(mat)
 !  call rokko_distributed_crs_matrix_print(mat)
