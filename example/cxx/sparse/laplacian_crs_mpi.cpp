@@ -46,20 +46,21 @@ int main(int argc, char *argv[]) {
       ++start_row;
       mat.insert(0, cols, values);
     }
-    int end_row = mat.end_row();
-    if (end_row == (dim-1)) {
-      --end_row;
+    int end_loop_row = mat.end_row();
+    bool has_end_row = (mat.end_row() == dim);
+    if (has_end_row) {
+      --end_loop_row;
     }
     values.clear();
     values.push_back(-1.);  values.push_back(2.);  values.push_back(-1.);
-    for (int row = start_row; row <= end_row; ++row) {
+    for (int row = start_row; row < end_loop_row; ++row) {
       cols.clear();
       cols.push_back(row-1);  cols.push_back(row);  cols.push_back(row+1);
       mat.insert(row, cols, values);
     }
     cols.clear();
     values.clear();
-    if (mat.end_row() == (dim-1)) {
+    if (has_end_row) {
       values.push_back(-1.);  values.push_back(2.);
       cols.push_back(dim-2);  cols.push_back(dim-1);
       mat.insert(dim-1, cols, values);
