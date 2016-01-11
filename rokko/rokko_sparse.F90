@@ -265,5 +265,31 @@ contains
     call rokko_distributed_mfree_f_construct(mat, cproc, dim, num_local_rows)
   end subroutine rokko_distributed_mfree_construct
 
+  function rokko_distributed_crs_matrix_start_row(matrix) result(ind)
+    integer :: ind
+    type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
+    ind = rokko_distributed_crs_matrix_start_row_c(matrix) + 1
+  end function rokko_distributed_crs_matrix_start_row
+  
+  function rokko_distributed_crs_matrix_end_row(matrix) result(ind)  ! same with rokko_distributed_crs_matrix_end_row_c
+    integer :: ind
+    type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
+    ind = rokko_distributed_crs_matrix_end_row_c(matrix)
+  end function rokko_distributed_crs_matrix_end_row
+
+  subroutine rokko_distributed_crs_matrix_insert(matrix, row, col_size, cols, values)
+    type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
+    integer, intent(in) :: row, col_size
+    integer, dimension(col_size), intent(in) :: cols
+    integer, dimension(col_size) :: cols2
+    double precision, dimension(col_size), intent(in) :: values
+    integer :: i
+
+    do i=1, col_size
+       cols2(i) = cols(i) - 1
+    enddo
+    call rokko_distributed_crs_matrix_insert_c(matrix, row-1, col_size, cols2, values)
+  end subroutine rokko_distributed_crs_matrix_insert
+     
 end module rokko_sparse
 

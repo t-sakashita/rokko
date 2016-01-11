@@ -13,7 +13,7 @@ include_directories(${PROJECT_BINARY_DIR}/rokko)
 include_directories(${MPI_Fortran_INCLUDE_PATH})
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(SAMPLE heisenberg_crs_mpi laplacian_mfree_mpi)
+  set(SAMPLE heisenberg_crs_mpi laplacian_mfree_mpi laplacian_crs_mpi)
   foreach(name ${SAMPLE})
     set(target_name example_fortran_sparse_${name})
     add_executable(${target_name} ${name}.f90)
