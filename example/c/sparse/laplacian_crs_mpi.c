@@ -31,10 +31,6 @@ int main(int argc, char *argv[]) {
   }
 
   int dim = (argc == 3) ? dim = atoi(argv[2]) : 100;
-  //  int nev = 10;
-  //  int block_size = 5;
-  //  int max_iters = 500;
-  //  double tol = 1.0e-8;
 
   struct rokko_parallel_sparse_ev solver;
   rokko_parallel_sparse_ev_construct(&solver, solver_name, argc, argv);

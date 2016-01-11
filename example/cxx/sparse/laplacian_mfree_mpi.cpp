@@ -121,9 +121,6 @@ int main(int argc, char *argv[]) {
   params.set("block_size", 5);
   params.set("max_iters", 500);
   params.set("conv_tol", 1.0e-8);
-  //params.set("Block Size", 5);
-  //params.set("Maximum Iterations", 500);
-  //params.set("Convergence Tolerance", 1.0e-8);
   BOOST_FOREACH(std::string const& name, solvers) {
     rokko::parallel_sparse_ev solver(name);
     laplacian_op  mat(dim);
