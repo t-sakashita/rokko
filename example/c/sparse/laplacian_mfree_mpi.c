@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <rokko/utility/laplacian_matrix.h>
+
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 struct laplacian_vars {
@@ -154,6 +156,10 @@ int main(int argc, char *argv[]) {
       printf("largest eigenvalues: ");
       int i, j;
       for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(solver, i));
+      printf("\n");
+      printf("smallest theoretical eigenvalues: ");
+      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, i));
+      //for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, dim-1-i));
       printf("\n");
       printf("largest eigenvector: ");
       for (j = 0; j < num_local_rows; ++j)

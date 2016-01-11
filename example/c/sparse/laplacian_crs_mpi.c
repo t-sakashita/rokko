@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <rokko/utility/laplacian_matrix.h>
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -76,7 +78,7 @@ int main(int argc, char *argv[]) {
   // set some parameters
   rokko_parameters_set_int(params, "block_size", 5);
   rokko_parameters_set_int(params, "max_iters", 500);
-  rokko_parameters_set_double(params, "conv_tol", 1.0e-3);
+  rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
   rokko_parameters_set_int(params, "num_eigvals", 1);
   rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params);
   
@@ -89,6 +91,10 @@ int main(int argc, char *argv[]) {
     printf("number of converged eigenpairs = %d\n", num_conv);
     printf("smallest eigenvalues: ");
     for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(solver, i));
+    printf("\n");
+    printf("smallest theoretical eigenvalues: ");
+    for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, i));
+    //for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, dim-1-i));
     printf("\n");
     rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
     printf("smallest eigenvector: ");
