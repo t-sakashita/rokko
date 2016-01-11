@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
     int count;
     double diag;
     int i, j, m1, m2, m3;
+    printf("row_start=%d, row_end=%d\n", row_start, row_end);
     for (row = row_start; row <= row_end; ++row) {
       count = 0;
       diag = 0;
@@ -89,14 +90,14 @@ int main(int argc, char *argv[]) {
     struct rokko_parameters params;
     rokko_parameters_construct(&params);
     // set some parameters
-    rokko_parameters_set_int(params, "max_block_size", 5);
+    rokko_parameters_set_int(params, "block_size", 5);
     rokko_parameters_set_int(params, "max_iters", 500);
     rokko_parameters_set_double(params, "conv_tol", 1.0e-12);
     rokko_parameters_set_int(params, "num_eigvals", 1);
     rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params);
 
     int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
-    printf("num_conv=%d", num_conv);
+    printf("num_conv = %d\n", num_conv);
     if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
     int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
     double eig_vec[num_local_rows];
