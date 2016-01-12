@@ -22,6 +22,7 @@
 #include <rokko/lapack/diagonalize_dsygvd.hpp>
 #include <rokko/lapack/diagonalize_dsygvx.hpp>
 #include <rokko/lapack/diagonalize_bisection_dsygvx.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -102,8 +103,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
       return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
     }
   } else {
-    std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine"));
   }
   return params_out;
 }
@@ -144,8 +144,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
       return rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params);
     }
   } else {
-    std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine"));
   }
   return params_out;
 }
@@ -184,8 +183,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, loc
       return rokko::lapack::diagonalize_dsygv(mata, matb, eigvals, params);
     }
   } else {
-    std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine"));
   }
   return params_out;
 }
@@ -222,8 +220,7 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, loc
       return rokko::lapack::diagonalize_dsygv(mata, matb, eigvals, eigvecs, params);
     }
   } else {
-    std::cerr << "error: " << routine << " is not lapack routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine"));
   }
   return params_out;
 }

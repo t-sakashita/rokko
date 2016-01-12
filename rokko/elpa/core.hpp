@@ -15,6 +15,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/diagonalize_elpa1.hpp>
 #include <rokko/elpa/diagonalize_elpa2.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace rokko {
 namespace elpa {
@@ -50,15 +51,13 @@ public:
     } else if (routine=="") {  // default
       return rokko::elpa::diagonalize_elpa1(mat, eigvals, eigvecs, params);
     } else {
-      std::cerr << "error: " << routine << " is not ELPA's routine" << std::endl;
-      throw;
+      BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name"));
     }
   }
   template <typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    std::cerr << "not yet implemented" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize() : not yet implemented for only eigenvalues"));
     //return rokko::elpa::diagonalize(mat, eigvals, params);
   }
 };

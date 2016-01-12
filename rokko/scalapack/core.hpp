@@ -74,8 +74,7 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
       return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params);
     }
   } else {
-    std::cerr << "error: " << routine << " is not scalapack routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : " + routine + " is invalid routine name"));
   }
 }
 
@@ -105,8 +104,7 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
       return rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, params);
     }
   } else {
-    std::cerr << "error: " << routine << " is not scalapack routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : " + routine + " is invalid routine name"));
   }
 }
 

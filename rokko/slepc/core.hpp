@@ -15,6 +15,7 @@
 
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
+#include <boost/throw_exception.hpp>
 
 #include <petscvec.h>
 #include <slepceps.h>
@@ -102,7 +103,7 @@ public:
     ierr = EPSSetProblemType(eps, EPS_HEP);
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw "error: routine must be charatcters or string.";
+	BOOST_THROW_EXCEPTION(std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string."));
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }
@@ -169,7 +170,7 @@ public:
     ierr = EPSSetProblemType(eps, EPS_HEP);
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw "error: routine must be charatcters or string.";
+	BOOST_THROW_EXCEPTION(std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string."));
       routine_ = params.get_string("routine");
       ierr = EPSSetType(eps, (EPSType)routine_.c_str());
     }

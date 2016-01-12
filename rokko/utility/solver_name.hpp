@@ -23,8 +23,7 @@ void split_solver_name(std::string const& str, std::string& library, std::string
   std::vector<std::string> v;
   boost::algorithm::split(v, str, boost::is_any_of(":"));
   if (v.size() > 2) {
-    std::cerr << "More than colon were detected from given string" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("split_solver_name() : More than colon were detected from given string."));
   }
   if (v.size() >= 1)
     library = v[0];
