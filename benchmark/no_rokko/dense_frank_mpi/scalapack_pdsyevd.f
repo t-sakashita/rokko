@@ -55,7 +55,7 @@
       call get_command_argument(1, tmp_str, arg_len, status)
       read(tmp_str, *) n
       else
-      write(*,'(A)') "Error: eigen_exa dimension"
+      write(*,'(A)') "Error: scalapack_pdsyevd dimension"
       stop
       endif
       INIT_TICK = MPI_WTIME()
