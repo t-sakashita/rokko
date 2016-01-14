@@ -33,10 +33,11 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
   double abstol;
   get_key(params, "abstol", abstol);
   if (abstol < 0) {
-    std::cerr << "Error in diagonalize_bisection" << std::endl
-	      << "abstol is negative value, which means QR method." << std::endl
-	      << "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
-    throw;
+    std::stringstream msg;
+    msg << "lapack::diagonalize_bisection() : " << std::endl
+	<< "abstol is negative value, which means QR method." << std::endl
+	<< "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
+    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
   }
   if (!params.defined("abstol")) {  // default: optimal value for bisection method
     abstol = 2 * LAPACKE_dlamch('S');
@@ -55,13 +56,16 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &ifail[0]);
   if (info) {
-    std::cerr << "error at dsyevx function. info=" << info << std::endl;
+    std::stringstream msg;
+    msg << "lapack::diagonalize_bisection() : " << std::endl
+	<< "error at dsyevx function. info=" << info << std::endl;
     if (info < 0) {
-      std::cerr << "This means that ";
-      std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+      msg << "This means that "
+	  << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
     }
-    exit(1);
+    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("ifail", ifail);
   
@@ -89,10 +93,11 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
   double abstol;
   get_key(params, "abstol", abstol);
   if (abstol < 0) {
-    std::cerr << "Error in diagonalize_bisection" << std::endl
-	      << "abstol is negative value, which means QR method." << std::endl
-	      << "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
-    throw;
+    std::stringstream msg;
+    msg << "lapack::diagonalize_bisection() : " << std::endl
+	<< "abstol is negative value, which means QR method." << std::endl
+	<< "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
+    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
   }
   if (!params.defined("abstol")) {  // default: optimal value for bisection method
     abstol = 2 * LAPACKE_dlamch('S');
@@ -111,23 +116,26 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);
 
   if (info) {
-    std::cerr << "Error at dsyevx function. info=" << info << std::endl;
+    std::stringstream msg;
+    msg << "lapack::diagonalize_bisection() : "
+	<< "error at dsyevx function. info=" << info << std::endl;
     if (params.get_bool("verbose")) {
-      std::cerr << "This means that ";
+      msg << "This means that ";
       if (info < 0) {
-	std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+	msg << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
       } else {
-	std::cerr << "This means that "	<< info << " eigenvectors failed to converge." << std::endl;
-	std::cerr << "The indices of the eigenvectors that failed to converge:" << std::endl;
+	msg << "This means that " << info << " eigenvectors failed to converge." << std::endl;
+	msg << "The indices of the eigenvectors that failed to converge:" << std::endl;
 	for (int i=0; i<ifail.size(); ++i) {
 	  if (ifail[i] == 0) break;
-	  std::cerr << ifail[i] << " ";
+	  msg << ifail[i] << " ";
 	}
-	std::cerr << std::endl;
+	msg << std::endl;
       }
     }
-    exit(1);
+    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
   }
+  params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("ifail", ifail);
   
