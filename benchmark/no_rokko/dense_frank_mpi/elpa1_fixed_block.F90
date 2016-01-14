@@ -62,8 +62,8 @@ subroutine read_input_parameters(na, nev, nblk)
   
   ! default parameters
   na = 4000
-  nev = 1500
-  nblk = 16
+  nev = na
+  nblk = 64
 
   if (COMMAND_ARGUMENT_COUNT() >= 1) then
      call GET_COMMAND_ARGUMENT(1, arg)
