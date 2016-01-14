@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
   params.set("routine", routine);
   try {
     solver.diagonalize(mat, eigval, eigvec, params);
-    //solver.diagonalize(mat, eigval, eigvec);
   }
   catch (const char *e) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
