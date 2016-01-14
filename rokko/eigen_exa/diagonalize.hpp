@@ -16,6 +16,7 @@
 #include <rokko/localized_vector.hpp>
 #include <rokko/eigen_exa/eigen_exa_wrap.h>
 #include <rokko/utility/timer.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace rokko {
 namespace eigen_exa {
@@ -27,7 +28,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   if(mat.is_row_major())
-    throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_s() : eigen_exa doesn't support matrix_row_major.  Use it with matrix_col_major."));
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
@@ -47,7 +48,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		   localized_vector<double>& eigvals,
  		   timer& timer_in) {
   if(mat.is_row_major())
-    throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_s() : eigen_exa doesn't support matrix_row_major.  Use it with matrix_col_major."));
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
@@ -66,7 +67,7 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		    timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   if(mat.is_row_major())
-    throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_sx() : eigen_exa doesn't support matrix_row_major.  Use it with matrix_col_major."));
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
@@ -86,7 +87,7 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 		    localized_vector<double>& eigvals,
 		    timer& timer_in) {
   if(mat.is_row_major())
-    throw "eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.";
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_sx() : eigen_exa doesn't support matrix_row_major.  Use it with matrix_col_major."));
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int dim = mat.get_m_global();
   int lld = mat.get_lld();

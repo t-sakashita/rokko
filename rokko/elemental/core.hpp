@@ -44,8 +44,7 @@ public:
     if ((routine == "") || (routine == "pmrrr")) {
       return rokko::elemental::diagonalize(mat, eigvals, eigvecs, params);
     } else {
-      std::cerr << "error: " << routine << " is not Elemental's routine" << std::endl;
-      throw;
+      BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name"));
     }
   }
   
@@ -60,8 +59,7 @@ public:
     if ((routine == "") || (routine == "pmrrr")) {
       return rokko::elemental::diagonalize(mat, eigvals, params);
     } else {
-      std::cerr << "error: " << routine << " is not Elemental's routine" << std::endl;
-      throw;
+      BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name"));
     }
   }
 };

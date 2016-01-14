@@ -50,8 +50,7 @@ El::HermitianEigSubset<double> get_subset(parameters const& params) {
     subset.indexSubset = true;
   } else if (!(is_lower_index && is_lower_value && is_upper_index && is_upper_value)) {  
   } else {
-    std::cerr << "error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index";
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::get_subset() : sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index"));
   }
   return subset;
 }

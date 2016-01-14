@@ -88,12 +88,13 @@ public:
     if (routine == "BlockDavidson")
       return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     else {
-      std::cerr << routine << " is not a solver in Anasazi" << std::endl;
-      std::cerr << "list of Anasazi solvers:" << std::endl;
+      std::stringstream msg;
+      msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
+      msg << "list of Anasazi solvers:" << std::endl;
       for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
 	std::cerr << anasazi_solvers[i] << " " << std::endl;
       }
-      throw;
+      BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
     }
   }
 
@@ -148,7 +149,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw "error: routine must be charatcters or string.";
+	BOOST_THROW_EXCEPTION(std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string"));
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";
@@ -204,7 +205,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
-	throw "error: routine is not charatcters or string";
+	BOOST_THROW_EXCEPTION(std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string"));
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";

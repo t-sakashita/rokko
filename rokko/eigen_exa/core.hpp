@@ -61,8 +61,7 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
     return rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, eigvecs, params);
   } else {
-    std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize() : " + routine + " is invalid routine name"));
   }
 }
 
@@ -79,8 +78,7 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
     return rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, params);
   } else {
-    std::cerr << "error: " << routine << " is not EigenExa routine" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize() : " + routine + " is invalid routine name"));
   }
 }
 

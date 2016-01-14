@@ -19,6 +19,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/any.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace rokko {
 
@@ -55,7 +56,7 @@ public:
   template<typename T>
   T get(key_type const& key) const {
     if (type(key) != typeid(T)) {
-      throw "error: type given as template parameter is not correct";
+      BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get() : type given as template parameter is not correct."));
     }
     return boost::any_cast<T>(map_.find(key)->second);
   }
@@ -81,7 +82,7 @@ public:
       return boost::lexical_cast<std::string>(get<char>(key));
     }
     else {
-      throw "error: get_string only accepts char*, string, int or double as an argument";      
+      BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get_string() : value type given as template parameter must be char*, string, int, or double.")); 
     }
   }
   bool get_bool(key_type const& key) const {
@@ -90,8 +91,7 @@ public:
 	return get<bool>(key);
       }
       else {
-	std::cerr << "error in get_bool: '" << key << "' is not bool type" << std::endl;
-	throw;
+	BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type")); 
       }
     }
     return false;

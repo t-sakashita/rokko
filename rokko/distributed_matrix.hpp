@@ -35,8 +35,7 @@ public:
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) {
     bool is_col_major = boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
     if (is_col_major != map.is_col_major()) {
-      std::cerr << "error: matrix major of tamplate parameter and one of given mapping are different." << std::endl;
-      throw;
+      BOOST_THROW_EXCEPTION(std::invalid_argument("distributed_matrix() : matrix major of tamplate parameter and one of given mapping are different."));
     }
     map = map_in;
     allocate_array();
@@ -50,8 +49,7 @@ public:
   distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
     bool is_col_major = boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
     if (is_col_major != map.is_col_major()) {
-      std::cerr << "error: matrix major of tamplate parameter and one of given mapping are different." << std::endl;
-      throw;
+      BOOST_THROW_EXCEPTION(std::invalid_argument("distributed_matrix() : matrix major of tamplate parameter and one of given mapping are different."));
     }
     map = solver_in.default_mapping(m_global_in, g_in);
     allocate_array();

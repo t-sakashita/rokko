@@ -67,9 +67,7 @@ public:
   parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
 			 VEC& eigvals,
 			 rokko::parameters const& params) {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3 does not have routine for generalized eigenvalue problem"));
-    std::cerr << "error: " << "" << std::endl;
-    throw;
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3 does not have routine for generalized eigenvalue problem"));
   }
 };
 
