@@ -100,6 +100,8 @@ template<typename MATRIX_MAJOR>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		       parameters const& params) {
+  if(mat.is_row_major())
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major."));
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size."));
   parameters params_out;
@@ -139,6 +141,8 @@ template<typename MATRIX_MAJOR>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals,
 		       parameters const& params) {
+  if(mat.is_row_major())
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major."));
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size."));
   parameters params_out;

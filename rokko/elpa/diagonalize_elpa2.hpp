@@ -28,7 +28,8 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			     localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   parameters params_out;
-  BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major."));
+  if(mat.is_row_major())
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major."));
   MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
   int mpi_comm_rows, mpi_comm_cols;
   elpa_get_communicators(comm_f, mat.get_grid().get_myrow(), mat.get_grid().get_mycol(), &mpi_comm_rows, &mpi_comm_cols);
@@ -55,7 +56,8 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			     localized_vector<double>& eigvals,
 			     parameters const& params) {
   parameters params_out;
-  BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa2() : not yet implemented."));
+  if(mat.is_row_major())
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa2() : not yet implemented."));
   return params_out;
 }
 
