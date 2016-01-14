@@ -100,6 +100,8 @@ template<typename MATRIX_MAJOR>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		       parameters const& params) {
+  if((mat.get_mb() != 1) || (mat.get_nb() != 1))
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size."));
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
   enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
@@ -137,6 +139,8 @@ template<typename MATRIX_MAJOR>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals,
 		       parameters const& params) {
+  if((mat.get_mb() != 1) || (mat.get_nb() != 1))
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size."));
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
   enum El::GridOrder elemental_grid_order;

@@ -31,6 +31,8 @@ parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>&
   parameters params_out;
   if(mat.is_row_major())
     BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_eigen_sx() : eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major."));
+  if((mat.get_mb() != 1) || (mat.get_nb() != 1))
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_eigen_sx() : eigen_exa supports only 1x1 block size."));
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
@@ -53,6 +55,8 @@ parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>&
   parameters params_out;
   if(mat.is_row_major())
     BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_eigen_sx() : eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major."));
+  if((mat.get_mb() != 1) || (mat.get_nb() != 1))
+    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen_exa::diagonalize_eigen_sx() : eigen_exa supports only 1x1 block size."));
   ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
