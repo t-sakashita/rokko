@@ -29,21 +29,21 @@ public:
   explicit mapping_bc(int global_dim, int block_size, MATRIX_MAJOR matrix_major, grid const& g_in)
     : mapping_global2local(global_dim, block_size, g_in), mapping_local2array<MATRIX_MAJOR>() {}
   // This consutuctor is used by default_mapping func of solver interface for elpa, elemental, scalapack
-
+  
+  explicit mapping_bc(int global_dim, int block_size, int padded_row_size, int padded_col_size, grid const& g_in)
+    : mapping_global2local(global_dim, block_size, g_in), mapping_local2array<MATRIX_MAJOR>(padded_row_size, padded_col_size) {}
+  // This consutuctor is used by default_mapping func of solver interface for eigen_exa
+  
   explicit mapping_bc(int global_dim, int block_size, int lld, grid const& g_in)
     : mapping_global2local(global_dim, block_size, g_in), mapping_local2array<MATRIX_MAJOR>(lld) {}
-  // This consutuctor is used by default_mapping func of solver interface for eigen_exa
-
-  explicit mapping_bc(int global_dim, int block_size, int lld, int lld2, grid const& g_in)
-    : mapping_global2local(global_dim, block_size, g_in), mapping_local2array<MATRIX_MAJOR>(lld, lld2) {}
-  // This consutuctor is used by default_mapping func of solver interface for eigen_exa (new)
+  // This consutuctor can be used for every solvers
   
-  //explicit mapping_bc(int m_global_in, int n_global_in, int mb_in, int nb_in, grid const& g_in)
-  //  : mapping_global2local(m_global_in, n_global_in, mb_in, nb_in, g_in), mapping_local2array<MATRIX_MAJOR>() {}
-
   explicit mapping_bc(int global_dim, int block_size, grid const& g_in)
     : mapping_global2local(global_dim, block_size, g_in), mapping_local2array<MATRIX_MAJOR>() {}
   // defalut major is col-major
+  
+  //explicit mapping_bc(int m_global_in, int n_global_in, int mb_in, int nb_in, grid const& g_in)
+  //  : mapping_global2local(m_global_in, n_global_in, mb_in, nb_in, g_in), mapping_local2array<MATRIX_MAJOR>() {}
 
   template<typename SOLVER>
   explicit mapping_bc(int global_dim, grid const& g_in, SOLVER const& solver_in) {
