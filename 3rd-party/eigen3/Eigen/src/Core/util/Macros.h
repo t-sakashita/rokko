@@ -30,7 +30,7 @@
   #define EIGEN_GNUC_AT_MOST(x,y) 0
 #endif
 
-#if EIGEN_GNUC_AT_MOST(4,3) && !defined(__clang__)
+#if EIGEN_GNUC_AT_MOST(4,3) && !defined(__clang__) && defined(__FCC_VERSION)
   // see bug 89
   #define EIGEN_SAFE_TO_USE_STANDARD_ASSERT_MACRO 0
 #else
