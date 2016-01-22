@@ -23,6 +23,6 @@
 
 BOOST_AUTO_TEST_CASE(test_serial_dense_evs) {
   BOOST_FOREACH(std::string name, rokko::serial_dense_ev::solvers()) {
-        std::cerr << name << std::endl;
-    }
+    std::cerr << name << std::endl;
+  }
 }
