@@ -85,7 +85,8 @@ int main(int argc, char *argv[]) {
   rokko::parameters params;
   //params.set("max_block_size", 5);
   //params.set("max_iters", 500);
-  //params.set("conv_tol", 1.0e-8);
+  //params.set("conv_tol", 1.0e-12);
+  params.set("Convergence Tolerance", 1.0e-12);
   //params.set("num_eigvals", 1)
   rokko::parameters params_out = solver.diagonalize(mat, params);
   end_tick = MPI_Wtime();
