@@ -97,3 +97,5 @@ unset(TESTS)
 
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
+add_subdirectory(factory)
+

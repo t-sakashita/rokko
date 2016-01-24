@@ -41,7 +41,7 @@ if(DEFINED MKL_INCLUDE_DIR)
       NAMES mkl_blacs_sgimpt_lp64
       PATHS $ENV{MKLROOT}/lib/intel64 $ENV{MKLROOT}/lib/em64t
       DOC "The BLACS library")
-    MESSAGE(STASTUS "SGI MPT is used")
+    MESSAGE(STATUS "SGI MPT is used")
   else(_SGI_MPT)
     try_compile(_OPENMPI
       ${CMAKE_CURRENT_BINARY_DIR}
