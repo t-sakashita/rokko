@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
   const int    nev       = 1;
   const int    blockSize = nev;
   //const int    maxIters  = 500;
-  //const double tol       = 1.0e-12;
+  const double tol       = 1.0e-12;
 
   typedef Epetra_MultiVector MV;
   typedef Epetra_Operator OP;
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
   //MyPL.set( "Which", which );
   //MyPL.set( "Block Size", blockSize );
   //MyPL.set( "Maximum Iterations", maxIters );
-  //MyPL.set( "Convergence Tolerance", tol );
+  MyPL.set( "Convergence Tolerance", tol );
 
   // Create the solver manager
   LOBPCGSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
