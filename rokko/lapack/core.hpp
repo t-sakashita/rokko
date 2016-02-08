@@ -51,26 +51,6 @@ public:
   parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params);
-  // generalized eigenvalue problem, only eigenvalues, eigenvalue:double*
-  template<typename MATRIX_MAJOR>
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			 double* eigvals,
-			 parameters const& params);
-  // generalized eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:double*
-  template<typename MATRIX_MAJOR>  
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			 parameters const& params);
-  // generalized eigenvalue problem, only eigenvalues, eigenvalue:VEC&
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			 VEC& eigvals,
-			 parameters const& params);
-  // generalized eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:VEC&
-  template<typename MATRIX_MAJOR, typename VEC>  
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			 VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			 parameters const& params);
 private:
   //std::string routine_;  // record routine_;
 };
@@ -157,83 +137,6 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
   if (eigvals.size() < dim) eigvals.resize(dim);
   return solver::diagonalize(mat, &eigvals[0], eigvecs, params);
 }
-
-
-// -------------------------generalized eigenvalue problem-----------------------------
-// generalized eigenvalue problem, only eigenvalues
-template<typename MATRIX_MAJOR>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			       double* eigvals,
-			       parameters const& params) {
-  parameters params_out;
-  std::string routine = "";
-  if(params.defined("routine")) {
-    routine = params.get_string("routine");
-  }
-  if ((routine=="dsygv") || (routine=="qr")) {
-    return rokko::lapack::diagonalize_dsygv(mata, matb, eigvals, params);
-  } else if ((routine=="dsygvd") || (routine=="dc")) {
-    return rokko::lapack::diagonalize_dsygvd(mata, matb, eigvals, params);
-  } else if (routine=="dsygvx") {
-    return rokko::lapack::diagonalize_dsygvx(mata, matb, eigvals, params);
-  } else if (routine=="") {
-    if (lapack::is_interval(params)) {
-      return rokko::lapack::diagonalize_dsygvx(mata, matb, eigvals, params);
-    } else {
-      return rokko::lapack::diagonalize_dsygv(mata, matb, eigvals, params);
-    }
-  } else {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine"));
-  }
-  return params_out;
-}
-
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			       VEC& eigvals,
-			       parameters const& params) {
-  int dim = mata.rows();
-  if (eigvals.size() < dim) eigvals.resize(dim);
-  return solver::diagonalize(mata, matb, &eigvals[0], params);
-}
-
-// generalized eigenvalue problem, eigenvalues/eigenvectors
-template<typename MATRIX_MAJOR>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			       double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			       parameters const& params) {
-  parameters params_out;
-  std::string routine = "";
-  if(params.defined("routine")) {
-    routine = params.get_string("routine");
-  }
-  if ((routine=="dsygv") || (routine=="qr")) {
-    return rokko::lapack::diagonalize_dsygv(mata, matb, eigvals, eigvecs, params);
-  } else if ((routine=="dsygvd") || (routine=="dc")) {
-    return rokko::lapack::diagonalize_dsygvd(mata, matb, eigvals, eigvecs, params);
-  } else if (routine=="dsygvx") {
-    return rokko::lapack::diagonalize_dsygvx(mata, matb, eigvals, eigvecs, params);
-  } else if (routine=="") {
-    if (is_interval(params)) {
-      return rokko::lapack::diagonalize_dsygvx(mata, matb, eigvals, eigvecs, params);
-    } else {
-      return rokko::lapack::diagonalize_dsygv(mata, matb, eigvals, eigvecs, params);
-    }
-  } else {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine"));
-  }
-  return params_out;
-}
-
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
-			       VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			       parameters const& params) {
-  int dim = mata.rows();
-  if (eigvals.size() < dim) eigvals.resize(dim);
-  return solver::diagonalize(mata, matb, &eigvals[0], eigvecs, params);
-}
-
 
 } // namespace lapack
 } // namespace rokko

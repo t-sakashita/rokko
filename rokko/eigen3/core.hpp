@@ -53,22 +53,6 @@ public:
       BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : " + routine + " is invalid routine name"));
     }
   }
-  // -------------------------generalized eigenvalue problem-----------------------------
-  // eigenvalues/eigenvectors
-  template<typename T, typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
-			 VEC& eigvals,
-			 localized_matrix<T, MATRIX_MAJOR>& eigvecs,
-			 rokko::parameters const& params) {  
-    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3 does not have routine for generalized eigenvalue problem"));
-  }
-  // only eigenvalues
-  template<typename T, typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mata, localized_matrix<T, MATRIX_MAJOR>& matb,
-			 VEC& eigvals,
-			 rokko::parameters const& params) {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3 does not have routine for generalized eigenvalue problem"));
-  }
 };
 
 } // namespace eigen3
