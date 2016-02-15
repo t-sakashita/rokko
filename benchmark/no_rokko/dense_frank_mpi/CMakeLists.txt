@@ -14,7 +14,7 @@ include_directories(${PROJECT_BINARY_DIR}/rokko)
 # It is only for no_rokko version of ELPA program.
 include_directories(${ELPA_INCLUDE_DIR})
 
-set(EXAMPLE scalapack_pdsyevd scalapack_pdsyevd_fixed_block scalapack_pdsyev eigen_exa elemental)
+set(EXAMPLE scalapack_pdsyevd scalapack_pdsyevd_fixed_block scalapack_pdsyev eigen_exa elemental elemental_thread_single)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_dense_no_rokko_frank_mpi_${name})
   file(GLOB SOURCE "${name}.f*" "${name}.F*" "${name}.cpp")
