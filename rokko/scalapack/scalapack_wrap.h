@@ -12,6 +12,8 @@
 #ifndef ROKKO_SCALAPACK_WRAP_H
 #define ROKKO_SCALAPACK_WRAP_H
 
+#include <rokko/config.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -36,12 +38,14 @@ int ROKKO_pdsyevd_work(char jobz, char uplo, int n,
 		       double* w, double* Z, int iz, int jz, const int* descZ,
 		       double* work, int lwork, int* iwork, int liwork);
 
+#ifdef ROKKO_HAVE_PDSYEVR
 int ROKKO_pdsyevr_work(char jobz, char range, char uplo, int n,
 		       double* A, int ia, int ja, const int* descA,
 		       double vl, double vu, int il, int iu,
 		       int m, int nz, double* w,
 		       double* Z, int iz, int jz, const int* descZ,
 		       double* work, int lwork, int* iwork, int liwork);
+#endif
 
 int ROKKO_pdsyevx_work(char jobz, char range, char uplo, int n,
 		       double* A, int iA, int jA, const int* descA,
@@ -59,11 +63,13 @@ int ROKKO_pdsyevd(char jobz, char uplo, int n,
                   double* A, int ia, int ja, const int* descA,
                   double* w, double* Z, int iz, int jz, const int* descZ);
 
+#ifdef ROKKO_HAVE_PDSYEVR
 int ROKKO_pdsyevr(char jobz, char range, char uplo, int n,
                   double* A, int ia, int ja, const int* descA,
                   double vl, double vu, int il, int iu,
                   int m, int nz, double* w,
                   double* Z, int iz, int jz, const int* descZ);
+#endif
 
 int ROKKO_pdsyevx(char jobz, char range, char uplo, int n,
                   double* A, int iA, int jA, const int* descA,

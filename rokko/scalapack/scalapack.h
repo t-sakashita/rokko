@@ -12,6 +12,7 @@
 #ifndef ROKKO_SCALAPACK_H
 #define ROKKO_SCALAPACK_H
 
+#include <rokko/config.h>
 #include <rokko/mangling.h>
 
 #ifdef __cplusplus
@@ -47,6 +48,7 @@ void SCALAPACK_pdsyevd(const char* jobz, const char* uplo, const int* n,
                        double* Z, const int* iz, const int* jz, const int* descZ,
                        double* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
+#ifdef ROKKO_HAVE_PDSYEVR
 #define SCALAPACK_pdsyevr LAPACK_GLOBAL(pdsyevr,PDSYEVR)
 void SCALAPACK_pdsyevr(const char* jobz, const char* range, const char* uplo, const int* n,
                        double* A, const int* ia, const int* ja, const int* descA,
@@ -54,6 +56,7 @@ void SCALAPACK_pdsyevr(const char* jobz, const char* range, const char* uplo, co
                        int* m, int* nz, double* w,
                        double* Z, const int* iz, const int* jz, const int* descZ,
                        double* work, const int* lwork, int* iwork, const int* liwork, int* info);
+#endif
 
 #define SCALAPACK_pdsyevx LAPACK_GLOBAL(pdsyevx,PDSYEVX)
 void SCALAPACK_pdsyevx(const char* jobz, const char* range, const char* uplo, const int* n,

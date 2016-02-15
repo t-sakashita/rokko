@@ -12,7 +12,6 @@
 #ifndef ROKKO_SCALAPACK_CORE_HPP
 #define ROKKO_SCALAPACK_CORE_HPP
 
-#include <rokko/config.h>
 #include <rokko/parameters.hpp>
 #include <rokko/scalapack/diagonalize_pdsyev.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
