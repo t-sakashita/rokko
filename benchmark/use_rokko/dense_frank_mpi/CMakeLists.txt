@@ -8,7 +8,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  set(SAMPLE frank_mpi frank_block_size_mpi)
+  set(SAMPLE frank_mpi frank_block_size_mpi frank_mpi_thread_single)
   foreach(name ${SAMPLE})
     set(target_name use_rokko_dense_frank_mpi_${name})
     add_executable(${target_name} ${name}.cpp)
