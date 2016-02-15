@@ -53,4 +53,6 @@
 /* Define if you have parallel sparse solver */
 #cmakedefine ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 
+#cmakedefine ROKKO_HAVE_PDSYEVR
+
 #endif /* ROKKO_CONFIG_H */

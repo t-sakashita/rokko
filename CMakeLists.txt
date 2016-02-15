@@ -32,6 +32,8 @@ option(DISABLE_PETSC "Disable PETSc Library" OFF)
 option(DISABLE_SLEPC "Disable SLEPc Library" OFF)
 option(DISABLE_ANASAZI "Disable Anasazi Library" OFF)
 
+option(DISABLE_PDSYEVR "DISABLE pdsyevr of ScaLAPACK" OFF)
+
 option(BUILD_TESTS "Build test suites" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_BENCHMARKS "Build benchmark tests" ON)
@@ -178,6 +180,12 @@ else(DISABLE_SCALAPACK)
 endif(DISABLE_SCALAPACK)
 set(ROKKO_HAVE_SCALAPACK ${BUILD_SCALAPACK})
 string(REGEX REPLACE ";" " " SCAPALACK_LIBS "${SCAPALACK_LIBRARIES}")
+
+if(DISABLE_PDSYEVR)
+  set(ROKKO_HAVE_PDSYEVR OFF)
+else(DISABLE_PDSYEVR)
+  set(ROKKO_HAVE_PDSYEVR ON)
+endif(DISABLE_PDSYEVR)
 
 # find EigenExa
 if(DISABLE_EIGENEXA)

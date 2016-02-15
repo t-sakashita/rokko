@@ -12,11 +12,14 @@
 #ifndef ROKKO_SCALAPACK_CORE_HPP
 #define ROKKO_SCALAPACK_CORE_HPP
 
+#include <rokko/config.h>
 #include <rokko/parameters.hpp>
 #include <rokko/scalapack/diagonalize_pdsyev.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevd.hpp>
+#ifdef ROKKO_HAVE_PDSYEVR
 #include <rokko/scalapack/diagonalize_pdsyevr.hpp>
+#endif
 
 namespace rokko {
 namespace scalapack {
@@ -60,7 +63,11 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((routine=="pdsyev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params);
   } else if ((routine=="pdsyevr") || (routine=="mr3")) {
+#ifdef ROKKO_HAVE_PDSYEVR
     return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params);
+#else
+    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine."));
+#endif
   } else if ((routine=="pdsyevd") || (routine=="dc")) {
     return rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, eigvecs, params);
   } else if (routine=="pdsyevx") {
@@ -69,7 +76,11 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     //rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
+#ifdef ROKKO_HAVE_PDSYEVR
       return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params);
+#else
+      BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the default routine for a range of eigenvalues, pdsyevr does not exist in your machine."));
+#endif
     } else {
       return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params);
     }
@@ -90,7 +101,11 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((routine=="pdsyev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, params);
   } else if ((routine=="pdsyevr") || (routine=="mr3")) {
+#ifdef ROKKO_HAVE_PDSYEVR
     return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, params);
+#else
+    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine."));
+#endif
   } else if ((routine=="pdsyevd") || (routine=="dc")) {
     return rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, params);
   } else if (routine=="pdsyevx") {
@@ -99,7 +114,11 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     //rokko::scalapack::diagonalize_bisection(mat, eigvals, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
+#ifdef ROKKO_HAVE_PDSYEVR
       return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, params);
+#else
+      BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the default routine for a range of eigenvalues, pdsyevr does not exist in your machine."));
+#endif
     } else {
       return rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, params);
     }
