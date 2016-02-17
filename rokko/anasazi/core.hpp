@@ -38,7 +38,7 @@ class anasazi_mfree_operator : public Epetra_Operator {
 public:
   anasazi_mfree_operator(rokko::distributed_mfree* const op, mapping_1d const* map) :
     op_(op), ep_map(map->get_epetra_map()), ep_comm(map->get_epetra_comm()) {}
-  ~anasazi_mfree_operator() {};
+  ~anasazi_mfree_operator() {}
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };
   virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
     const int numvectors = X.NumVectors();

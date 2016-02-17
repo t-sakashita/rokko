@@ -31,8 +31,8 @@ public:
   typedef map_type::key_type key_type;
   typedef map_type::value_type value_type;
 
-  parameters() {};
-  ~parameters() {};
+  parameters() {}
+  ~parameters() {}
   
   void clear() { map_.clear(); }
   void clear(key_type const& key) { map_.erase(map_.find(key)); }

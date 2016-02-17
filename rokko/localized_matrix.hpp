@@ -44,11 +44,11 @@ public:
   typedef Eigen::Matrix<value_type, ROWS, COLS, detail::eigen3_matrix_major<major_type>::value> super_type;
   typedef localized_matrix<value_type, major_type, ROWS, COLS> matrix_type;
 
-  localized_matrix() : super_type() {};
-  localized_matrix(int rows, int cols) : super_type(rows, cols) {};
+  localized_matrix() : super_type() {}
+  localized_matrix(int rows, int cols) : super_type(rows, cols) {}
 
   template<typename U>
-  localized_matrix(U const& other) : super_type(other) {}; 
+  localized_matrix(U const& other) : super_type(other) {}
   template<typename U>
   matrix_type& operator=(U const& other) { super_type::operator=(other); return *this; } 
 

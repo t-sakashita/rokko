@@ -159,7 +159,7 @@ public:
   //
 
   // Destructor
-  virtual ~MyOp() {};
+  virtual ~MyOp() {}
 
   // Returns the maps
   RCP<const Map> getDomainMap() const { return opMap_; };

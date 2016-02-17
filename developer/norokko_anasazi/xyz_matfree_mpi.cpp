@@ -38,7 +38,7 @@ class HeisenbergOp : public Epetra_Operator {
   }
 
   //! Destructor
-  ~HeisenbergOp() {};
+  ~HeisenbergOp() {}
   //@}
 
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };

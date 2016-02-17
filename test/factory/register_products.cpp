@@ -16,7 +16,7 @@
 
 class test_base {
 public:
-  virtual ~test_base() {};
+  virtual ~test_base() {}
   virtual void print() = 0;
 };
 

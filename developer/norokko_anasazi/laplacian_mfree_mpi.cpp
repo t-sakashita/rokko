@@ -48,7 +48,7 @@ class LaplacianOp : public Epetra_Operator {
   }
 
   //! Destructor
-  ~LaplacianOp() {};
+  ~LaplacianOp() {}
   //@}
 
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };
