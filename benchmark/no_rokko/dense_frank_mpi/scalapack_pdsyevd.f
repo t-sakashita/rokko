@@ -24,7 +24,7 @@
 *     .. Local Scalars ..
       INTEGER            IERR
       INTEGER            LWORK, LDA
-      INTEGER            CONTEXT, I, IAM, INFO, MYCOL, MYROW,
+      INTEGER            CONTEXT, I, INFO, MYCOL, MYROW,
      $                   NPCOL, NPROCS, NPROW
       INTEGER            MB, NB, BB, M_LOCAL, N_LOCAL
       DOUBLE PRECISION   INIT_TICK, GEN_TICK, DIAG_TICK, END_TICK
@@ -40,7 +40,7 @@
 *     .. External Subroutines ..
       EXTERNAL           BLACS_EXIT, BLACS_GET, BLACS_GRIDEXIT,
      $                   BLACS_GRIDINFO, BLACS_GRIDINIT, BLACS_PINFO,
-     $                   BLACS_SETUP, DESCINIT, PDLAMODHILB, PDLAPRNT,
+     $                   BLACS_SETUP, DESCINIT,
      $                   PDSYEV
 *     ..
 *     .. Executable Statements ..
