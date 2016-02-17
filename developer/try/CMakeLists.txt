@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(SAMPLE parameters)
+set(SAMPLE parameters blacs_get_test)
 foreach(name ${SAMPLE})
   set(target_name developer_try_${name})
   add_executable(${target_name} ${name}.cpp)
