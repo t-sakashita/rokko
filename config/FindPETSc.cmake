@@ -37,6 +37,7 @@ else(PETSC_DIR)
 	      /opt/rokko/${CMAKE_BUILD_TYPE}
 	      /opt/rokko
 	      /opt/local /opt
+              /usr
 	      )
   # Standard paths for Debian with version number
   file(GLOB tmp "/usr/lib/petscdir/*")
@@ -44,7 +45,7 @@ else(PETSC_DIR)
   unset(tmp)
 endif(PETSC_DIR)
 
-find_path(PETSC_DIR include/petscversion.h PATHS ${_PATHS} DOC "PETSc directory")
+find_path(PETSC_DIR NAMES include/petscversion.h include/petsc/petscversion.h PATHS ${_PATHS} DOC "PETSc directory")
 if(PETSC_DIR)
   set(PETSC_INCLUDE_DIR "${PETSC_DIR}/include")
 else(PETSC_DIR)

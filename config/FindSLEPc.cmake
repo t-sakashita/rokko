@@ -40,6 +40,7 @@ else(SLEPC_DIR)
 	      /opt/rokko/${CMAKE_BUILD_TYPE}
 	      /opt/rokko
 	      /opt/local /opt
+              /usr
 	      )
   # Standard paths for Debian with version number
   file(GLOB tmp "/usr/lib/slepcdir/*")
@@ -48,7 +49,7 @@ else(SLEPC_DIR)
 endif(SLEPC_DIR)
 
 # Try to figure out SLEPC_DIR by finding slepc.h
-find_path(SLEPC_DIR include/slepc.h PATHS ${_PATHS} DOC "SLEPc directory")
+find_path(SLEPC_DIR NAMES include/slepc.h include/slepc/slepc.h PATHS ${_PATHS} DOC "SLEPc directory")
 
 if(SLEPC_DIR)
   set(SLEPC_INCLUDE_DIR "${SLEPC_DIR}/include")
