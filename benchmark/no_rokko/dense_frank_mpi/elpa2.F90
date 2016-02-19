@@ -92,7 +92,7 @@ subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
   use mpi
   implicit none
   
-  integer, intent(inout)  :: na, nblk, my_prow, my_pcol, np_rows,   &
+  integer, intent(inout)  :: na, nblk, my_prow, my_pcol, np_rows, &
        np_cols, na_rows, na_cols, sc_desc(1:9), &
        my_blacs_ctxt, info
   

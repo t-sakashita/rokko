@@ -50,10 +50,10 @@
 
       call mpi_init_thread( MPI_THREAD_MULTIPLE, i, ierr )
       if (command_argument_count().eq.1) then
-      call get_command_argument(1, tmp_str, arg_len, status)
-      read(tmp_str, *) n
+         call get_command_argument(1, tmp_str, arg_len, status)
+         read(tmp_str, *) n
       else
-      write(*,'(A)') "Error: eigen_exa dimension"
+         write(*,'(A)') "Error: argument dimension is needed"
       stop
       endif
       INIT_TICK = MPI_WTIME()
@@ -105,7 +105,7 @@
 *     Print out the eigenvalues and eigenvectors
 *
       IF( MYROW.EQ.0 .AND. MYCOL.EQ.0 ) THEN
-         write(*,'(" Eigenvalues:",5f10.5)') W(1:N)
+         write(*,'(" Eigenvalues:",5E12.5e2)') W(1:N)
          write(*,*) "init_time = ", GEN_TICK - INIT_TICK
          write(*,*) "gen_time = ", DIAG_TICK - GEN_TICK
          write(*,*) "diag_time = ", END_TICK - DIAG_TICK
