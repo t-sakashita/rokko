@@ -21,6 +21,8 @@
 #include <boost/any.hpp>
 #include <boost/throw_exception.hpp>
 
+#include <stdexcept>
+
 namespace rokko {
 
 class parameters {
