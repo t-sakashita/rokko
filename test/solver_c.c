@@ -28,9 +28,11 @@ int main(int argc, char** argv) {
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);
 
+#if defined(ROKKO_HAVE_MPI)
   int provided, ierr;
   ierr = MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   n = rokko_parallel_dense_ev_num_solvers();
   solver_names = rokko_parallel_dense_ev_solvers();
   struct rokko_parallel_dense_ev solver_pd;
@@ -41,7 +43,9 @@ int main(int argc, char** argv) {
   }
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);
+#endif
 
+#if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
   n = rokko_parallel_sparse_ev_num_solvers();
   solver_names = rokko_parallel_sparse_ev_solvers();
   struct rokko_parallel_sparse_ev solver_ps;
@@ -52,6 +56,9 @@ int main(int argc, char** argv) {
   }
   for (i = 0; i < n; ++i) free(solver_names[i]);
   free(solver_names);
+#endif
 
   MPI_Finalize();
+
+#endif // ROKKO_HAVE_MPI
 }

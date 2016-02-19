@@ -28,6 +28,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     solver.finalize();
   }
 
+#if ROKKO_HAVE_MPI
   int provided, ierr;
   ierr = MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
 			 &boost::unit_test::framework::master_test_suite().argv,
@@ -54,4 +55,5 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 #endif // ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 
   MPI_Finalize();
+#endif // ROKKO_HAVE_MPI
 }
