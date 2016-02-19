@@ -49,14 +49,19 @@ else(SLEPC_DIR)
 endif(SLEPC_DIR)
 
 # Try to figure out SLEPC_DIR by finding slepc.h
-find_path(SLEPC_DIR NAMES include/slepc.h include/slepc/slepc.h PATHS ${_PATHS} DOC "SLEPc directory")
+find_path(SLEPC_DIR NAMES include/slepc.h PATHS ${_PATHS} DOC "SLEPc directory")
 
 if(SLEPC_DIR)
   set(SLEPC_INCLUDE_DIR "${SLEPC_DIR}/include")
 else(SLEPC_DIR)
-  message(STATUS "SLEPc library: not found")
-  set(SLEPSC_FOUND FALSE)
-  return()
+  find_path(SLEPC_DIR NAMES include/slepc/slepc.h PATHS ${_PATHS} DOC "SLEPc directory")
+  if(SLEPC_DIR)
+    set(SLEPC_INCLUDE_DIR "${SLEPC_DIR}/include/slepc")
+  else(SLEPC_DIR)
+    message(STATUS "SLEPc library: not found")
+    set(SLEPSC_FOUND FALSE)
+    return()
+  endif(SLEPC_DIR)
 endif(SLEPC_DIR)
 
 find_library(SLEPC_LIBRARIES
