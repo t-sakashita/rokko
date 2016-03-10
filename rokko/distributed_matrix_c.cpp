@@ -22,14 +22,6 @@ void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix,
   matrix->major = map.major;
 }
 
-void rokko_distributed_matrix_construct_solver(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
-					       struct rokko_grid grid, struct rokko_parallel_dense_ev solver) {
-  matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(dim1, dim2,
-      *static_cast<rokko::grid*>(grid.ptr),
-      *static_cast<rokko::parallel_dense_ev*>(solver.ptr));
-  matrix->major = rokko_matrix_col_major;
-}
-
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix) {
   if (matrix->major == rokko_matrix_col_major)
     delete static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix->ptr);

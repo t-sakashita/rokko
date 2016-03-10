@@ -47,10 +47,11 @@ BOOST_AUTO_TEST_CASE(test_solver) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);
       rokko::grid g(comm, rokko::grid_col_major);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(dim, dim, g, solver);
+      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
       rokko::localized_vector<double> w(dim);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(dim, dim, g, solver);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
 
       solver.diagonalize(mat, w, Z);
       
@@ -68,10 +69,11 @@ BOOST_AUTO_TEST_CASE(test_solver) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
                         boost::unit_test::framework::master_test_suite().argv);
       rokko::grid g(comm, rokko::grid_row_major);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(dim, dim, g, solver);
+      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
       rokko::localized_vector<double> w(dim);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(dim, dim, g, solver);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
       
       solver.diagonalize(mat, w, Z);
       

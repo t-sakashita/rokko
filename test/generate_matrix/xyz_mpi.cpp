@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
   // test for generate function
   rokko::localized_matrix<rokko::matrix_col_major> lmat(N_seq, N_seq);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, lmat);
-  
-  rokko::distributed_matrix<rokko::matrix_col_major> mat(N_seq, N_seq, g, solver);
+
+  rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
   rokko::localized_matrix<rokko::matrix_col_major> lmat_gather(N_seq, N_seq);
   rokko::gather(mat, lmat_gather, root);

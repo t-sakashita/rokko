@@ -159,7 +159,8 @@ int main(int argc, char *argv[]) {
   rokko::localized_matrix<rokko::matrix_col_major> lmat(N_seq, N_seq);
   rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
 
-  rokko::distributed_matrix<rokko::matrix_col_major> mat(N_seq, N_seq, g, solver);
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(N_seq, g);
+  rokko::distributed_matrix<rokko::matrix_col_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   rokko::localized_matrix<rokko::matrix_col_major> lmat_gather(N_seq, N_seq);
   rokko::gather(mat, lmat_gather, root);

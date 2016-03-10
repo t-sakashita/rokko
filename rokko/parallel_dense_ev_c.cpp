@@ -157,6 +157,13 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout_f(struct rokko_
 								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
 }
 
+struct rokko_mapping_bc rokko_parallel_dense_ev_default_mapping(struct rokko_parallel_dense_ev solver, int dim, struct rokko_grid g) {
+  struct rokko_mapping_bc map;
+  map.major = rokko_matrix_col_major;
+  map.ptr = new rokko::mapping_bc<rokko::matrix_col_major>(static_cast<rokko::parallel_dense_ev*>(solver.ptr)->default_mapping(dim, *static_cast<rokko::grid*>(g.ptr)));
+  return map;
+}
+
 int rokko_parallel_dense_ev_num_solvers() {
   return rokko::parallel_dense_ev::solvers().size();
 }

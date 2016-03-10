@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   initend_tick = MPI_Wtime();
 
   gen_tick = MPI_Wtime();
-  rokko::mapping_bc<matrix_major> map(dim, g, solver);
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
   //  rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);

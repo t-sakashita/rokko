@@ -157,8 +157,6 @@ void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map);
 
 /* distributed_matrix */
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map);
-void rokko_distributed_matrix_construct_solver(struct rokko_distributed_matrix* matrix, int dim1, int dim2,
-  struct rokko_grid grid, struct rokko_parallel_dense_ev solver);
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,
   double (*func)(int i, int j));
@@ -242,7 +240,7 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out_f(struct rokko_pa
 void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout_f(struct rokko_parallel_dense_ev* solver,
 								 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals);
 
-
+struct rokko_mapping_bc rokko_parallel_dense_ev_default_mapping(struct rokko_parallel_dense_ev solver, int dim, struct rokko_grid g);
 int rokko_parallel_dense_ev_num_solvers();
 char** rokko_parallel_dense_ev_solvers();
 char* rokko_parallel_dense_ev_default_solver();

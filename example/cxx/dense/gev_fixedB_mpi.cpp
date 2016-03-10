@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
   set_A_B(locA, locB);
   if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;  
 
-  rokko::mapping_bc<matrix_major> map(dim, g, solver);
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> A(map), B(map), eigvec(map);
   rokko::localized_vector<double> eigval(dim);
   rokko::scatter(locA, A, 0);

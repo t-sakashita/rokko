@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
       	      << "library:routine = " << library_routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map(dim, g, solver);
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   mat.generate(&func);
   mat.print();

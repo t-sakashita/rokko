@@ -42,15 +42,8 @@ public:
     : mapping_global2local(global_dim, block_size, g_in), mapping_local2array<MATRIX_MAJOR>() {}
   // defalut major is col-major
   
-  //explicit mapping_bc(int m_global_in, int n_global_in, int mb_in, int nb_in, grid const& g_in)
-  //  : mapping_global2local(m_global_in, n_global_in, mb_in, nb_in, g_in), mapping_local2array<MATRIX_MAJOR>() {}
-
-  template<typename SOLVER>
-  explicit mapping_bc(int global_dim, grid const& g_in, SOLVER const& solver_in) {
-    //std::cout << "constructor: m_local=" << solver_in.default_mapping(g_in, global_dim).get_m_local() << " n_local=" << solver_in.default_mapping(g_in, global_dim).get_n_local() << std::endl;
-    *this = solver_in.default_mapping(global_dim, g_in);
-  }
-
+  explicit mapping_bc(int m_global_in, int n_global_in, grid const& g_in, int mb_in, int nb_in)
+    : mapping_global2local(m_global_in, n_global_in, mb_in, nb_in, g_in), mapping_local2array<MATRIX_MAJOR>() {}
 };
 
 } // namespace rokko

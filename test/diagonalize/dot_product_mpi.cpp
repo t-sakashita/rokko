@@ -37,10 +37,11 @@ BOOST_AUTO_TEST_CASE(test_dot_product) {
     rng(eng, boost::uniform_real<>());
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
-  rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
+  //rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm);
-  rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(dim, 1, g, solver);
-  rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(dim, 1, g, solver);
+  rokko::mapping_bc<rokko::matrix_col_major> map(dim, 1, g, 1, 1);
+  rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(map);
+  rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(map);
   rokko::localized_matrix<double, rokko::matrix_col_major> locX(dim, 1);
   rokko::localized_matrix<double, rokko::matrix_col_major> locY(dim, 1);
   for (int i = 0; i < dim; ++i) locX(i, 0) = rng();

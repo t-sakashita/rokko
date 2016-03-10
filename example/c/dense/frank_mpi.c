@@ -46,11 +46,9 @@ int main(int argc, char *argv[]) {
   
   rokko_parallel_dense_ev_construct(&solver, library, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
-  rokko_mapping_bc_construct(&map, dim, grid, solver);
+  map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
   rokko_distributed_matrix_construct(&mat, map);
   rokko_distributed_matrix_construct(&Z, map);
-  /*rokko_distributed_matrix_construct_solver(&mat, dim, dim, grid, solver);
-    rokko_distributed_matrix_construct_solver(&Z, dim, dim, grid, solver);*/
   rokko_localized_vector_construct(&w, dim);
 
   /* generate frank matrix */

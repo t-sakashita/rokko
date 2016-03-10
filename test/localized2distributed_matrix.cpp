@@ -50,7 +50,8 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   BOOST_FOREACH(std::string name, rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(argc, argv);
-    rokko::distributed_matrix<rokko::matrix_col_major> mat(dim, dim, g, solver);
+    rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
+    rokko::distributed_matrix<rokko::matrix_col_major> mat(map);
     rokko::localized_matrix<double, rokko::matrix_col_major> lmat(dim, dim);
     rokko::frank_matrix::generate(lmat);
     localized_2_distributed(lmat, mat);

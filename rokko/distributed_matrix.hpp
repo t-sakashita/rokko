@@ -40,20 +40,7 @@ public:
     map = map_in;
     allocate_array();
   }
-  template<typename SOLVER>
-  distributed_matrix(int m_global_in, const grid& g_in, SOLVER const& solver_in)// need fix
-    : map(solver_in.default_mapping(m_global_in, g_in)) {
-    allocate_array();
-  }
-  template<typename SOLVER>
-  distributed_matrix(int m_global_in, int n_global_in, const grid& g_in, SOLVER const& solver_in) {
-    bool is_col_major = boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
-    if (is_col_major != map.is_col_major()) {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different."));
-    }
-    map = solver_in.default_mapping(m_global_in, g_in);
-    allocate_array();
-  }
+  
   ~distributed_matrix() {
     delete[] array;
     array = 0;

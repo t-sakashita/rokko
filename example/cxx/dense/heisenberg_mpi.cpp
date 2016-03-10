@@ -49,13 +49,14 @@ int main(int argc, char *argv[]) {
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::distributed_matrix<double, matrix_major> mat(dim, dim, g, solver);
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
 
   rokko::localized_vector<double> eigval(dim);
-  rokko::distributed_matrix<double, matrix_major> eigvec(dim, dim, g, solver);
+  rokko::distributed_matrix<double, matrix_major> eigvec(map);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

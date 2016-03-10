@@ -34,7 +34,8 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm, grid_major);
-  rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(dim, dim, g, solver);
+  rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);
+  rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(map);
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
       double d = rng();

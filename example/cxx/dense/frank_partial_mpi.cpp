@@ -48,9 +48,7 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map(dim, g, solver);
-  //rokko::mapping_bc<matrix_major> map = solver.optimized_mapping(dim, g);
-
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
