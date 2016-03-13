@@ -14,11 +14,11 @@ module mod_frank
 !  integer(c_int) :: dim_frank
   double precision, allocatable, dimension(:,:) :: localized_array
   contains
-  double precision function func(i, j) bind(c)
-    integer(c_int), value, intent(in) :: i, j
-    print*, "i=", i
-    func = localized_array(i+1,j+1)
-  end function func
+    double precision function func(i, j) bind(c)
+      integer(c_int), value, intent(in) :: i, j
+      print*, "i=", i
+      func = localized_array(i+1,j+1)
+    end function func
 end module mod_frank
 
 program frank_matrix_array_mpi
@@ -44,7 +44,7 @@ program frank_matrix_array_mpi
 
   !---loop variables---
   integer :: i, j, count
-  integer :: m_local, n_local
+  integer :: m_global, n_global
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -70,12 +70,12 @@ program frank_matrix_array_mpi
   call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
-  m_local = rokko_distributed_matrix_get_m_local(mat)
-  n_local = rokko_distributed_matrix_get_n_local(mat)
+  m_global = rokko_distributed_matrix_get_m_global(mat)
+  n_global = rokko_distributed_matrix_get_n_global(mat)
 
   allocate(localized_array(dim,dim))
-  do i = 1, m_local
-     do j = 1, n_local
+  do i = 1, m_global
+     do j = 1, n_global
         localized_array(j, i) = dim + 1 - max(i, j);
      end do
   end do
