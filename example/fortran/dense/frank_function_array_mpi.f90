@@ -79,7 +79,7 @@ program frank_matrix_array_mpi
         localized_array(j, i) = dim + 1 - max(i, j);
      end do
   end do
-  call rokko_distributed_matrix_generate_function_f(mat, func)
+  call rokko_distributed_matrix_generate_function(mat, func)
 
   call rokko_distributed_matrix_print(mat)
   call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)

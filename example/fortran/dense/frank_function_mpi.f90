@@ -73,7 +73,7 @@ program frank_function
 
   ! generate frank matrix from frank_matrix_element function
   call frank_matrix_set_dimension(dim)
-  call rokko_distributed_matrix_generate_function_f(mat, frank_matrix_element)
+  call rokko_distributed_matrix_generate_function(mat, frank_matrix_element)
   call rokko_distributed_matrix_print(mat)
 
   call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)

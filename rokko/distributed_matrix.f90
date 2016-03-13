@@ -48,10 +48,6 @@ module rokko_distributed_matrix_mod
   ! rokko_distributed_matrix
   !
 
-  interface  rokko_distributed_matrix_generate
-     module procedure rokko_distributed_matrix_generate_function_f
-  end interface rokko_distributed_matrix_generate
-
   interface
      subroutine rokko_distributed_matrix_construct(matrix, map) &
           bind(c)
@@ -85,7 +81,7 @@ module rokko_distributed_matrix_mod
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
-       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
      end subroutine rokko_distributed_matrix_generate_function_c
      
@@ -235,9 +231,9 @@ contains
     enddo
   end subroutine rokko_distributed_matrix_generate_array
 
-  subroutine rokko_distributed_matrix_generate_function_f(matrix, func_in) bind(c)
+  subroutine rokko_distributed_matrix_generate_function(matrix, func_in)
     use iso_c_binding
-    type(rokko_distributed_matrix), intent(out) :: matrix
+    type(rokko_distributed_matrix), value, intent(in) :: matrix
     type(c_funptr) :: cproc
     interface
        double precision function func_in (i, j) bind(c)
@@ -249,7 +245,7 @@ contains
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
     call rokko_distributed_matrix_generate_function_c(matrix, cproc)
-  end subroutine rokko_distributed_matrix_generate_function_f
+  end subroutine rokko_distributed_matrix_generate_function
 
 end module rokko_distributed_matrix_mod
 
