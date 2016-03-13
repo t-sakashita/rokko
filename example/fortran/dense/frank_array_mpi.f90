@@ -61,17 +61,10 @@ program frank_matrix
      end do
   end do
 
-!!$  do i=0, dim -1 
-!!$    do j=0, dim -1
-!!$      call rokko_distributed_matrix_set_global(mat,i,j,array(i+1,j+1))
-!!$    enddo
-!!$  enddo
-  call rokko_distributed_matrix_generate_array(mat,array)
-!  call generate_array_distributed_matrix(array, mat, dim, dim, dim)
+  call rokko_distributed_matrix_generate_from_array(mat,array)
   call rokko_distributed_matrix_print(mat)
 
   call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)
-!  call generate_distributed_matrix_array(Z, array, dim, dim, dim)
 
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
