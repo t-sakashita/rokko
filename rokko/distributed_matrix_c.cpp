@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -141,6 +141,13 @@ int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix m
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_g2l_col(global_j);
   else
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_col(global_j);
+}
+
+double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matrix matrix) { 
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_array_pointer();
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_array_pointer();
 }
 
 void rokko_gather(struct rokko_distributed_matrix matrix, double* array, int root) {

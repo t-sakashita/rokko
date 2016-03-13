@@ -183,6 +183,7 @@ int rokko_distributed_matrix_translate_g2l_row(struct rokko_distributed_matrix m
   int global_i);
 int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix matrix,
   int global_j);
+double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matrix matrix);
 
 #endif
 

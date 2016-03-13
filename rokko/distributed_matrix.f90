@@ -211,6 +211,15 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in) :: global_j
      end function rokko_distributed_matrix_translate_g2l_col
+
+     type(c_ptr) function rokko_distributed_matrix_get_array_pointer_c(matrix) &
+          bind(c,name='rokko_distributed_matrix_get_array_pointer')
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       type(c_ptr) :: c_array_ptr
+     end function rokko_distributed_matrix_get_array_pointer_c
   end interface
 
 contains
@@ -247,8 +256,18 @@ contains
     call rokko_distributed_matrix_generate_function_c(matrix, cproc)
   end subroutine rokko_distributed_matrix_generate_function
 
+  subroutine rokko_distributed_matrix_get_array_pointer(matrix, f_array_ptr)
+    use iso_c_binding
+    implicit none
+    type(rokko_distributed_matrix), value, intent(in) :: matrix
+    double precision, pointer, dimension(:,:), intent(out) :: f_array_ptr
+    type(c_ptr) :: c_array_ptr
+    integer(c_int) :: m_local, n_local
+    c_array_ptr = rokko_distributed_matrix_get_array_pointer_c(matrix)
+    m_local = rokko_distributed_matrix_get_m_local(matrix)
+    n_local = rokko_distributed_matrix_get_n_local(matrix)
+    call c_f_pointer(c_array_ptr, f_array_ptr, (/m_local,n_local/) )
+  end subroutine rokko_distributed_matrix_get_array_pointer
+  
 end module rokko_distributed_matrix_mod
 
-
-
-    
