@@ -52,36 +52,35 @@ program frank_matrix
   call rokko_distributed_matrix_construct(Z, map)
   call rokko_localized_vector_construct(w, dim)
 
-  ! generate frank matrix as a localized matrix
+  ! Generating frank matrix as a "localized array" at all processes
   allocate(array(dim, dim))
   do i=1, dim
      do j=1, dim
         array(i,j) = dble(dim + 1 - max(i, j))
      end do
   end do
-  allocate(array_tmp(dim, dim))
 
-  call rokko_distributed_matrix_generate_array(mat,array)
+  call rokko_distributed_matrix_generate_from_array(mat, array)
   call rokko_distributed_matrix_print(mat)
   call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)
 
-  array = 0.0
+  allocate(array_tmp(dim, dim))
   call rokko_all_gather(Z, array_tmp)
   array = matmul(transpose(array_tmp), array_tmp)
-  call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
-
-  !  print*, "array=", array
+  call mpi_barrier(mpi_comm_world, ierr)
+  
+  ! Display orthogonality of eigenvectors
   do proc = 0, nprocs-1
      if (proc == myrank) then
-        print*, "fmyrank=", myrank
-     do i = 1, dim
-        write(*,'(10f8.4)') (array(i, j), j=1, dim)
-     end do
+        print*, "myrank=", myrank
+        do i = 1, dim
+           write(*,'(10f8.4)') (array(i, j), j=1, dim)
+        end do
      endif
      call mpi_barrier(mpi_comm_world, ierr)
      !   call sleep(0.1)
   end do
-
+  
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
@@ -89,8 +88,8 @@ program frank_matrix
      enddo
   endif
 
-  call mpi_barrier(mpi_comm_world, ierr)                                                                                                                                       
-
+  call mpi_barrier(mpi_comm_world, ierr)
+  
   call rokko_distributed_matrix_destruct(mat)
   call rokko_distributed_matrix_destruct(Z)
   call rokko_localized_vector_destruct(w)

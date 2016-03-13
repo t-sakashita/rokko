@@ -13,13 +13,12 @@ subroutine rokko_all_gather(matrix, array)
   use iso_c_binding
   use rokko_parallel_dense_classes
 !  use rokko_distributed_matrix_mod
-!  use rokko_parallel_dense
   use rokko_parallel_dense, only: rokko_distributed_matrix, rokko_distributed_matrix_get_nprocs, rokko_gather
   implicit none
-  type(rokko_distributed_matrix), intent(out) :: matrix
-  real(8), intent(in), target :: array(:,:)
+  type(rokko_distributed_matrix), value, intent(in) :: matrix
+  double precision, intent(in), target :: array(:,:)
   integer(c_int) :: root, nprocs, ierr
-  real(8), pointer :: parray
+  double precision, pointer :: parray
   nprocs = rokko_distributed_matrix_get_nprocs(matrix)
   parray => array(1, 1)
   do root = 0, nprocs - 1

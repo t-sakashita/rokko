@@ -174,7 +174,7 @@ module rokko_parallel_dense
        import rokko_distributed_matrix
        implicit none
        integer(c_int) :: rokko_gather
-       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_ptr), value, intent(in) :: array
        integer(c_int), value ::root
      end function rokko_gather
@@ -182,7 +182,7 @@ module rokko_parallel_dense
      subroutine rokko_all_gather(matrix, array)
        import rokko_distributed_matrix
        implicit none
-       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
        double precision, intent(in), target :: array(:,:)
      end subroutine rokko_all_gather
 
@@ -191,7 +191,7 @@ module rokko_parallel_dense
        import rokko_distributed_matrix
        implicit none
        integer(c_int) :: rokko_scatter
-       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_ptr), value, intent(in) :: array
        integer(c_int), value :: root
      end function rokko_scatter
