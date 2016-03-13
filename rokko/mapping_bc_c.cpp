@@ -12,18 +12,9 @@
 #include <rokko/solver.hpp>
 #include <rokko/mapping_bc.hpp>
 #include <rokko/rokko_dense.h>
-
-/*void rokko_mapping_bc_construct(struct rokko_mapping_bc* map, int global_dim, struct rokko_grid grid, struct rokko_parallel_dense_ev solver) {
-  // Fix me: All parallel dense solvers use matrix_col_major. So we omit its checking, yet...
-  map->ptr = new rokko::mapping_bc<rokko::matrix_col_major>(global_dim,
-							    *static_cast<rokko::grid*>(grid.ptr),
-							    *static_cast<rokko::parallel_dense_ev*>(solver.ptr));
-  map->major = rokko_matrix_col_major;
-  }*/
-
   
 void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int global_dim, int block_size) {
-  // Fix me: All parallel dense solvers use matrix_col_major. So we omit its checking, yet...
+  // Fix me: All parallel dense solvers use matrix_col_major. So we omit its checking, so far...
   map->ptr = new rokko::mapping_bc<rokko::matrix_col_major>(global_dim, block_size);
   map->major = rokko_matrix_col_major;
 }

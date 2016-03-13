@@ -47,7 +47,7 @@ program frank_matrix
 
   call rokko_parallel_dense_ev_construct(solver, solver_name)
   call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
-  call rokko_mapping_bc_construct(map, dim, grid, solver)
+  call rokko_parallel_dense_ev_default_mapping(solver, dim, grid, map)
   call rokko_distributed_matrix_construct(mat, map)
   call rokko_distributed_matrix_construct(Z, map)
   call rokko_localized_vector_construct(w, dim)
@@ -78,8 +78,8 @@ program frank_matrix
         write(*,'(10f8.4)') (array(i, j), j=1, dim)
      end do
      endif
-   call mpi_barrier(mpi_comm_world, ierr)
-!   call sleep(0.1)
+     call mpi_barrier(mpi_comm_world, ierr)
+     !   call sleep(0.1)
   end do
 
   if (myrank.eq.0) then

@@ -100,7 +100,7 @@ module rokko_distributed_matrix_mod
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
-       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix       
        integer(c_int), value, intent(in) :: local_i, local_j
        real(c_double), value, intent(in) :: value
      end subroutine rokko_distributed_matrix_set_local
@@ -118,7 +118,7 @@ module rokko_distributed_matrix_mod
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
-       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in) :: global_i, global_j
        real(c_double), value, intent(in) :: value
      end subroutine rokko_distributed_matrix_set_global

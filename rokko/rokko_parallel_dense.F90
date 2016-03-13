@@ -69,9 +69,21 @@ module rokko_parallel_dense
        implicit none
        type(rokko_parallel_dense_ev), intent(inout) :: solver
      end subroutine rokko_parallel_dense_ev_destruct
-
   end interface
 
+  interface
+     subroutine rokko_parallel_dense_ev_default_mapping(solver, global_dim, grid, map) &
+          bind(c,name="rokko_parallel_dense_ev_default_mapping_f")
+       use iso_c_binding
+       import rokko_parallel_dense_ev, rokko_grid, rokko_mapping_bc
+       implicit none
+       type(rokko_parallel_dense_ev), value, intent(in) :: solver
+       integer(c_int), value, intent(in) :: global_dim
+       type(rokko_grid), value, intent(in) :: grid
+       type(rokko_mapping_bc), intent(out) :: map
+     end subroutine rokko_parallel_dense_ev_default_mapping
+  end interface
+  
   interface rokko_parallel_dense_ev_diagonalize
 
      subroutine rokko_parallel_dense_ev_diagonalize(solver, mat, &

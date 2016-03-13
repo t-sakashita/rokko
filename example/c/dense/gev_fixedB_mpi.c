@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   rokko_localized_matrix_construct(&locA, dim, dim, rokko_matrix_col_major);
   rokko_localized_matrix_construct(&locB, dim, dim, rokko_matrix_col_major);
   set_A_B_c(locA, locB);
-  rokko_mapping_bc_construct(&map, dim, grid, solver);
+  map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
   rokko_distributed_matrix_construct(&A, map);
   rokko_distributed_matrix_construct(&B, map);
   rokko_distributed_matrix_construct(&eigvec, map);

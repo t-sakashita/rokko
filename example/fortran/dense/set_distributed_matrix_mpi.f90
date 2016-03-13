@@ -25,8 +25,12 @@ program frank_matrix
   integer args_cnt, arg_len, status
 
   integer :: ierr, myrank, nprocs
+  integer :: m_local, n_local
   integer :: i, j
-
+  integer :: local_i, local_j
+  integer :: global_i, global_j
+  double precision :: val
+  
   call MPI_init(ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
@@ -45,18 +49,26 @@ program frank_matrix
   write(*,*) "matrix dimension = ", dim
 
   call rokko_parallel_dense_ev_construct(solver, solver_name)
-  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_col_major)
-  call rokko_mapping_bc_construct(map, dim, grid, solver)
+  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
+  call rokko_parallel_dense_ev_default_mapping(solver, dim, grid, map)
   call rokko_distributed_matrix_construct(mat, map)
   call rokko_distributed_matrix_construct(Z, map)
   call rokko_localized_vector_construct(w, dim)
 
   ! generate frank matrix
-  do i=1, dim
-     do j=1, dim
-        call rokko_distributed_matrix_set_local(mat, i, j, dble(dim + 1 - max(i, j)))
-     end do
-  end do
+  m_local = rokko_distributed_matrix_get_m_local(mat)
+  n_local = rokko_distributed_matrix_get_n_local(mat)
+  print *,"m_local=", m_local
+  print *,"n_local=", n_local
+  
+  do local_i = 0, m_local-1
+     do local_j = 0, n_local-1
+      global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
+      global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
+      val = dble(dim - max(global_i, global_j))
+      call rokko_distributed_matrix_set_local(mat, local_i, local_j, val);
+   enddo
+  enddo
   call rokko_distributed_matrix_print(mat)
 
   call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)

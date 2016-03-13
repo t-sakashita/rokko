@@ -164,6 +164,11 @@ struct rokko_mapping_bc rokko_parallel_dense_ev_default_mapping(struct rokko_par
   return map;
 }
 
+void rokko_parallel_dense_ev_default_mapping_f(struct rokko_parallel_dense_ev solver, int dim, struct rokko_grid g, struct rokko_mapping_bc* map) {
+  map->major = rokko_matrix_col_major;
+  map->ptr = new rokko::mapping_bc<rokko::matrix_col_major>(static_cast<rokko::parallel_dense_ev*>(solver.ptr)->default_mapping(dim, *static_cast<rokko::grid*>(g.ptr)));
+}
+
 int rokko_parallel_dense_ev_num_solvers() {
   return rokko::parallel_dense_ev::solvers().size();
 }
