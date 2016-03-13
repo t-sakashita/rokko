@@ -57,9 +57,8 @@ program frank_matrix
   ! generate frank matrix
   m_local = rokko_distributed_matrix_get_m_local(mat)
   n_local = rokko_distributed_matrix_get_n_local(mat)
-  print *,"m_local=", m_local
-  print *,"n_local=", n_local
-  
+  print *,"m_local=", m_local, " n_local=", n_local
+
   do local_i = 0, m_local-1
      do local_j = 0, n_local-1
       global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
