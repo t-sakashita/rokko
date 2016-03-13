@@ -23,7 +23,7 @@ endforeach(name)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   include_directories(${MPI_Fortran_INCLUDE_PATH})
-  set(EXAMPLE frank_array_all_gather_mpi frank_array_mpi frank_function_array_mpi frank_function_mpi frank_mpi frank_set_global_mpi frank_set_local_mpi set_distributed_matrix_mpi)
+  set(EXAMPLE frank_array_all_gather_mpi frank_array_mpi frank_function_array_mpi frank_function_mpi frank_mpi frank_set_global_mpi frank_set_local_mpi)
   if(BUILD_EIGENEXA)
   set(EXAMPLE ${EXAMPLE} eigen_exa)
   endif(BUILD_EIGENEXA)
