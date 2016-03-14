@@ -54,14 +54,10 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  std::vector<std::string> solvers;
-  if (argc >= 2) {
-    solvers.push_back(argv[1]);
-  } else {
-    solvers = rokko::parallel_sparse_ev::solvers();
-  }
-
+  
+  std::string library(rokko::parallel_sparse_ev::default_solver());
+  if (argc >= 2) library = argv[1];
+  
   int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
   int dim = 1 << L;
   std::vector<std::pair<int, int> > lattice;
@@ -72,14 +68,13 @@ int main(int argc, char *argv[]) {
   params.set("Maximum Iterations", 500);
   params.set("Convergence Tolerance", 1.0e-8);
   params.set("num_eigenvalues", 10);
-  BOOST_FOREACH(std::string const& name, solvers) {
-    rokko::parallel_sparse_ev solver(name);
-    heisenberg_op op(L, lattice);
-    rokko::distributed_crs_matrix mat(dim, dim, solver);
-    rokko::distributed_mfree_to_crs(op, mat);
-    mat.output_matrix_market();
-    //mat.print();
-    solver.finalize();
-  }
+  rokko::parallel_sparse_ev solver(library);
+  heisenberg_op op(L, lattice);
+  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_mfree_to_crs(op, mat);
+  mat.output_matrix_market();
+  //mat.print();
+  
+  solver.finalize();
   MPI_Finalize();
 }
