@@ -110,68 +110,60 @@ int main(int argc, char *argv[]) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  int num_solvers;
-  char** solvers;
+  char* library_routine, *library, *routine;
   if (argc >= 2) {
-    num_solvers = 1;
-    solvers = (char**)malloc((size_t)(num_solvers * sizeof(char*)));
-    solvers[0] = (char*)malloc((size_t)((strlen(argv[1]) + 1) * sizeof(char)));
-    strcpy(solvers[0], argv[1]);
+    library_routine = rokko_parallel_dense_ev_default_solver();
+    if (argc >= 2) library_routine = argv[1];
   } else {
-    num_solvers = rokko_parallel_sparse_ev_num_solvers();
-    solvers = rokko_parallel_sparse_ev_solvers();
+    library_routine = rokko_parallel_dense_ev_default_solver();
   }
-
+  rokko_split_solver_name(library_routine, &library, &routine);
   int dim = (argc == 3) ? dim = atoi(argv[2]) : 100;
-
-  int s;
-  for (s = 0; s < num_solvers; ++s) {
-    struct rokko_parallel_sparse_ev solver;
-    rokko_parallel_sparse_ev_construct(&solver, solvers[s], argc, argv);
-    struct rokko_distributed_mfree mat;
-    struct laplacian_vars vars;
-    laplacian_initialize(dim, &vars);
-    rokko_distributed_mfree_construct(&mat, laplacian_multiply, &vars, vars.dim, vars.num_local_rows);
-    if (rank == 0) {
-      printf("Eigenvalue decomposition of Laplacian matrix\n");
-      printf("solver = %s\n", solvers[s]);
-      printf("dimension = %d\n", dim);
-    }
-
-    struct rokko_parameters params;
-    rokko_parameters_construct(&params);
-    // set some parameters
-    rokko_parameters_set_int(params, "block_size", 5);
-    rokko_parameters_set_int(params, "max_iters", 500);
-    rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
-    rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params);
-
-    int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
-    if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
-    int num_local_rows = rokko_distributed_mfree_num_local_rows(mat);
-    double eig_vec[num_local_rows];
-    rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
-    if (rank == 0) {
-      printf("number of converged eigenpairs = %d\n", num_conv);
-      printf("largest eigenvalues: ");
-      int i, j;
-      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(solver, i));
-      printf("\n");
-      printf("smallest theoretical eigenvalues: ");
-      for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, i));
-      //for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, dim-1-i));
-      printf("\n");
-      printf("largest eigenvector: ");
-      for (j = 0; j < num_local_rows; ++j)
-        printf("%30.20f ", eig_vec[j]);
-      printf("\n");    
-    }
-    rokko_distributed_mfree_destruct(&mat);
-    rokko_parallel_sparse_ev_destruct(&solver);
+  
+  struct rokko_parallel_sparse_ev solver;
+  rokko_parallel_sparse_ev_construct(&solver, library, argc, argv);
+  struct rokko_distributed_mfree mat;
+  struct laplacian_vars vars;
+  laplacian_initialize(dim, &vars);
+  rokko_distributed_mfree_construct(&mat, laplacian_multiply, &vars, vars.dim, vars.num_local_rows);
+  if (rank == 0) {
+    printf("Eigenvalue decomposition of Laplacian matrix\n");
+    printf("solver = %s\n", library);
+    printf("dimension = %d\n", dim);
   }
+  
+  struct rokko_parameters params;
+  rokko_parameters_construct(&params);
+  // set some parameters
+  if (routine[0] != '\0')  rokko_parameters_set_string(params, "routine", routine);
+  rokko_parameters_set_int(params, "block_size", 5);
+  rokko_parameters_set_int(params, "max_iters", 500);
+  rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
+  rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params);
+  
+  int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
+  if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
+  int num_local_rows = rokko_distributed_mfree_num_local_rows(mat);
+  double eig_vec[num_local_rows];
+  rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
+  if (rank == 0) {
+    printf("number of converged eigenpairs = %d\n", num_conv);
+    printf("largest eigenvalues: ");
+    int i, j;
+    for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_parallel_sparse_ev_eigenvalue(solver, i));
+    printf("\n");
+    printf("smallest theoretical eigenvalues: ");
+    for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, i));
+    //for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, dim-1-i));
+    printf("\n");
+    printf("largest eigenvector: ");
+    for (j = 0; j < num_local_rows; ++j)
+      printf("%30.20f ", eig_vec[j]);
+    printf("\n");    
+  }
+  rokko_distributed_mfree_destruct(&mat);
+  rokko_parallel_sparse_ev_destruct(&solver);
 
-  for (s = 0; s < num_solvers; ++s) free(solvers[s]);
-  free(solvers);
   MPI_Finalize();
   return 0;
 }

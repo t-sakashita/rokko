@@ -21,19 +21,19 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  char* solver_name;
+  
+  char* library_routine, *library, *routine;
   if (argc >= 2) {
-    solver_name = (char*)malloc((size_t)((strlen(argv[1]) + 1) * sizeof(char)));
-    strcpy(solver_name, argv[1]);
+    library_routine = rokko_parallel_dense_ev_default_solver();
+    if (argc >= 2) library_routine = argv[1];
   } else {
-    solver_name = rokko_parallel_sparse_ev_default_solver();
+    library_routine = rokko_parallel_dense_ev_default_solver();
   }
-
+  rokko_split_solver_name(library_routine, &library, &routine);
   int dim = (argc == 3) ? dim = atoi(argv[2]) : 100;
 
   struct rokko_parallel_sparse_ev solver;
-  rokko_parallel_sparse_ev_construct(&solver, solver_name, argc, argv);
+  rokko_parallel_sparse_ev_construct(&solver, library, argc, argv);
   struct rokko_distributed_crs_matrix mat;
   rokko_distributed_crs_matrix_construct(&mat, dim, dim, solver);
   int row;
@@ -65,13 +65,14 @@ int main(int argc, char *argv[]) {
   rokko_distributed_crs_matrix_complete(mat);
   if (rank == 0) {
     printf("Eigenvalue decomposition of Laplacian matrix\n");
-    printf("solver = %s\n", solver_name);
+    printf("solver = %s\n", library);
     printf("dimension = %d\n", dim);
   }
   
   struct rokko_parameters params;
   rokko_parameters_construct(&params);
   // set some parameters
+  if (routine[0] != '\0')  rokko_parameters_set_string(params, "routine", routine);
   rokko_parameters_set_int(params, "block_size", 5);
   rokko_parameters_set_int(params, "max_iters", 500);
   rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
