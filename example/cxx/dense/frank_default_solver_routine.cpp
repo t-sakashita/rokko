@@ -19,7 +19,7 @@ typedef rokko::matrix_col_major matrix_major;
 
 template<typename MATRIX_MAJOR, typename VEC>
 void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-			 rokko::parameters const& params, rokko::timer& timer = *rokko::global_timer::instance()) {
+			 rokko::parameters const& params) {
   rokko::serial_dense_ev solver(rokko::serial_dense_ev::default_solver());
   int argc;
   char** xargv;
@@ -30,7 +30,7 @@ void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC
 template<typename MATRIX_MAJOR, typename VEC>
 void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 rokko::localized_matrix<double, MATRIX_MAJOR>& eigvecs,
-			 rokko::parameters const& params, rokko::timer& timer = *rokko::global_timer::instance()) {
+			 rokko::parameters const& params) {
   rokko::serial_dense_ev solver(rokko::serial_dense_ev::default_solver());
   int argc;
   char** xargv;
