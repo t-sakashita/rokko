@@ -37,7 +37,8 @@ program frank_function
   type(rokko_mapping_bc) :: map
   type(rokko_distributed_matrix) :: mat, Z
   type(rokko_localized_vector) :: w
-  character(len=100) :: solver_name, tmp_str
+  character(len=20) :: library, routine
+  character(len=100) :: library_routine, tmp_str
   integer arg_len, status
 
   integer :: provided,ierr, myrank, nprocs
@@ -48,20 +49,25 @@ program frank_function
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
-  if (command_argument_count().eq.2) then
-     call get_command_argument(1, tmp_str, arg_len, status)
-     solver_name = trim(tmp_str)
+  if (command_argument_count() >= 1) then
+     call get_command_argument(1, library_routine, arg_len, status)
+  else
+     call rokko_parallel_dense_ev_default_solver(library_routine)
+  endif
+  call rokko_split_solver_name(library_routine, library, routine)
+
+  if (command_argument_count() == 2) then  
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
-     write(*,'(A)') "Error: frank_function solver_name dimension"
-     stop
+     dim = 10
   endif
-
-  write(*,*) "solver name = ", trim(solver_name)
-  write(*,*) "matrix dimension = ", dim
-
-  call rokko_parallel_dense_ev_construct(solver, solver_name)
+  
+  print *,"library = ", library
+  print *,"routine = ", routine
+  print *,"dimension = ", dim
+  
+  call rokko_parallel_dense_ev_construct(solver, library)
   call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
   call rokko_parallel_dense_ev_default_mapping(solver, dim, grid, map)
   call rokko_distributed_matrix_construct(mat, map)
