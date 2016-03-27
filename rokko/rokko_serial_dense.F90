@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -109,6 +109,18 @@ module rokko_serial_dense
        implicit none
        type(rokko_serial_dense_ev), intent(inout) :: solver
      end subroutine rokko_serial_dense_ev_destruct
+
+     type(c_ptr) function rokko_serial_dense_ev_default_solver_c() &
+          bind(c,name='rokko_serial_dense_ev_default_solver')
+       use iso_c_binding
+       implicit none
+     end function rokko_serial_dense_ev_default_solver_c
+
+     integer(c_int) function rokko_serial_dense_ev_num_solvers_c() &
+          bind(c,name='rokko_serial_dense_ev_num_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_serial_dense_ev_num_solvers_c     
   end interface
 
   interface rokko_serial_dense_ev_diagonalize
@@ -204,20 +216,6 @@ module rokko_serial_dense
      end subroutine rokko_frank_matrix_generate_localized_matrix
   end interface
 
-  interface
-     type(c_ptr) function rokko_serial_dense_ev_default_solver_c() &
-          bind(c,name='rokko_serial_dense_ev_default_solver')
-       use iso_c_binding
-       implicit none
-     end function rokko_serial_dense_ev_default_solver_c
-
-     integer(c_int) function rokko_serial_dense_ev_num_solvers_c() &
-          bind(c,name='rokko_serial_dense_ev_num_solvers')
-       use iso_c_binding
-       implicit none
-     end function rokko_serial_dense_ev_num_solvers_c
-     
-  end interface
   
 contains
 
