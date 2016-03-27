@@ -205,11 +205,18 @@ module rokko_serial_dense
   end interface
 
   interface
-     type(c_ptr) function rokko_serial_dense_ev_default_solver_c () &
+     type(c_ptr) function rokko_serial_dense_ev_default_solver_c() &
           bind(c,name='rokko_serial_dense_ev_default_solver')
        use iso_c_binding
        implicit none
      end function rokko_serial_dense_ev_default_solver_c
+
+     integer(c_int) function rokko_serial_dense_ev_num_solvers_c() &
+          bind(c,name='rokko_serial_dense_ev_num_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_serial_dense_ev_num_solvers_c
+     
   end interface
   
 contains
@@ -238,6 +245,11 @@ contains
     name_ptr = rokko_serial_dense_ev_default_solver_c ()
     call rokko_get_string_fixedsize (name_ptr, name)
   end subroutine rokko_serial_dense_ev_default_solver
+
+  subroutine rokko_serial_dense_ev_num_solvers(num)
+    integer, intent(out) :: num
+    num = rokko_serial_dense_ev_num_solvers_c()
+  end subroutine rokko_serial_dense_ev_num_solvers
   
 end module rokko_serial_dense
 
