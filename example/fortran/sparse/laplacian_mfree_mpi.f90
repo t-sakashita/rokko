@@ -126,7 +126,8 @@ program main
   double precision, allocatable, dimension(:) :: eig_vec
 
   type(rokko_parallel_sparse_ev) :: solver
-  character(len=100) :: solver_name, tmp_str
+  character(len=100) :: library_routine, tmp_str
+  character(len=50) :: library, routine
   integer arg_len, status
   type(rokko_distributed_mfree) :: mat
   integer :: dim, i
@@ -140,11 +141,12 @@ program main
   call mpi_comm_size(mpi_comm_world, nprocs, ierr)
 
   if (command_argument_count() >= 1) then
-     call get_command_argument(1, solver_name, arg_len, status)
+     call get_command_argument(1, library_routine, arg_len, status)
   else
-     call rokko_parallel_sparse_ev_default_solver(solver_name)
+     call rokko_parallel_sparse_ev_default_solver(library_routine)
   endif
-
+  call rokko_split_solver_name(library_routine, library, routine)
+  
   if (command_argument_count() == 2) then  
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
@@ -153,11 +155,11 @@ program main
   endif
   
   if (myrank == 0) then
-     write(*,*) "solver name = ", trim(solver_name)
+     write(*,*) "solver name = ", trim(library)
      write(*,*) "matrix dimension = ", dim
   endif
 
-  call rokko_parallel_sparse_ev_construct(solver, solver_name)
+  call rokko_parallel_sparse_ev_construct(solver, library)
   call initialize(mat, dim)
 
   !num_local_rows = get_num_local_rows()
@@ -168,6 +170,7 @@ program main
   !   print*, "y=", y
   !enddo
   call rokko_parameters_construct(params)
+  call rokko_parameters_set_string(params, "routine", routine)
   call rokko_parameters_set(params, "verbose", .true.)
   call rokko_parameters_set(params, "num_evals", 1)
   call rokko_parameters_set(params, "block_size", 5)

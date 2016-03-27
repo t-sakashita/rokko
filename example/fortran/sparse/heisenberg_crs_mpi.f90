@@ -41,7 +41,7 @@ program heisenberg_crs_mpi
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
-    if (command_argument_count() >= 1) then
+  if (command_argument_count() >= 1) then
      call get_command_argument(1, library_routine, arg_len, status)
   else
      call rokko_parallel_sparse_ev_default_solver(library_routine)
@@ -55,7 +55,7 @@ program heisenberg_crs_mpi
      L = 8
   endif
   
-  dim = ishft(1,L)
+  dim = ishft(1, L)
   allocate( lattice_first(L) )
   allocate( lattice_second(L) )
   do k = 1, L
