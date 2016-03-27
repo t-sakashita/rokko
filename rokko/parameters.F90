@@ -357,7 +357,7 @@ contains
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character(*), intent(in) :: val
-    call rokko_parameters_set_string_c (params, trim(key)//c_null_char, val//c_null_char)
+    call rokko_parameters_set_string_c (params, trim(key)//c_null_char, trim(val)//c_null_char)
   end subroutine rokko_parameters_set_string
 
 end module parameters

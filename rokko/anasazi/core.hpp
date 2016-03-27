@@ -81,7 +81,7 @@ public:
   void finalize() {}
 
   solvermanager_t* create_solver_manager(std::string const& routine) {
-    if (routine == "LOBPCG")
+    if ((routine == "LOBPCG") || (routine == ""))
       return new Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     if (routine == "BlockKrylovSchur")
       return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);

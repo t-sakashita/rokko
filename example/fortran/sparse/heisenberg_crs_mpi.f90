@@ -31,7 +31,8 @@ program heisenberg_crs_mpi
 
   type(rokko_parallel_sparse_ev) :: solver
   type(rokko_distributed_crs_matrix) :: mat
-  character(len=100) :: solver_name, tmp_str
+  character(len=50) :: library, routine
+  character(len=100) :: library_routine, tmp_str
   integer :: arg_len, status
   type(rokko_parameters) :: params, params_out
   integer :: num_local_rows, num_conv
@@ -40,12 +41,13 @@ program heisenberg_crs_mpi
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
-  if (command_argument_count() >= 1) then
-     call get_command_argument(1, solver_name, arg_len, status)
+    if (command_argument_count() >= 1) then
+     call get_command_argument(1, library_routine, arg_len, status)
   else
-     call rokko_parallel_sparse_ev_default_solver(solver_name)
+     call rokko_parallel_sparse_ev_default_solver(library_routine)
   endif
-
+  call rokko_split_solver_name(library_routine, library, routine)
+  
   if (command_argument_count() == 2) then  
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) L
@@ -62,11 +64,11 @@ program heisenberg_crs_mpi
   end do
 
   if (myrank == 0) then
-     write(*,*) "solver name = ", trim(solver_name)
+     write(*,*) "solver name = ", trim(library)
      write(*,*) "matrix dimension = ", dim
   endif
 
-  call rokko_parallel_sparse_ev_construct(solver, solver_name)
+  call rokko_parallel_sparse_ev_construct(solver, library)
 
   call rokko_distributed_crs_matrix_construct(mat, dim, dim, solver)
 
@@ -103,6 +105,7 @@ program heisenberg_crs_mpi
 !  call rokko_distributed_crs_matrix_print(mat)
 
   call rokko_parameters_construct(params)
+  call rokko_parameters_set_string(params, "routine", routine)
   call rokko_parallel_sparse_ev_diagonalize(solver, mat, params)
   
   num_conv = rokko_parallel_sparse_ev_num_conv(solver);
@@ -125,6 +128,7 @@ program heisenberg_crs_mpi
      print '(8f10.4)', eig_vec
   endif
 
+  call rokko_parameters_destruct(params)
   call rokko_distributed_crs_matrix_destruct(mat)
   call rokko_parallel_sparse_ev_destruct(solver)
 
