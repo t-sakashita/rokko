@@ -17,6 +17,7 @@ module rokko_parallel_dense
   use rokko_mapping_bc_mod
   use rokko_distributed_matrix_mod
   use rokko_serial_dense
+  use rokko_string
   implicit none
   
   !
@@ -69,6 +70,24 @@ module rokko_parallel_dense
        implicit none
        type(rokko_parallel_dense_ev), intent(inout) :: solver
      end subroutine rokko_parallel_dense_ev_destruct
+
+     type(c_ptr) function rokko_parallel_dense_ev_default_solver_c() &
+          bind(c,name='rokko_parallel_dense_ev_default_solver')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_dense_ev_default_solver_c
+
+     integer(c_int) function rokko_parallel_dense_ev_num_solvers_c() &
+          bind(c,name='rokko_parallel_dense_ev_num_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_dense_ev_num_solvers_c
+
+     type(c_ptr) function rokko_parallel_dense_ev_solvers_c() &
+          bind(c,name='rokko_parallel_dense_ev_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_dense_ev_solvers_c
   end interface
 
   interface
@@ -210,13 +229,6 @@ module rokko_parallel_dense
      end subroutine rokko_frank_matrix_generate_distributed_matrix
   end interface
 
-  interface
-     type(c_ptr) function rokko_parallel_dense_ev_default_solver_c () &
-          bind(c,name='rokko_parallel_dense_ev_default_solver')
-       use iso_c_binding
-       implicit none
-     end function rokko_parallel_dense_ev_default_solver_c
-  end interface
 
 contains
 
@@ -227,5 +239,27 @@ contains
     name_ptr = rokko_parallel_dense_ev_default_solver_c ()
     call rokko_get_string_fixedsize (name_ptr, name)
   end subroutine rokko_parallel_dense_ev_default_solver
+
+  subroutine rokko_parallel_dense_ev_num_solvers(num)
+    integer, intent(out) :: num
+    num = rokko_parallel_dense_ev_num_solvers_c()
+  end subroutine rokko_parallel_dense_ev_num_solvers
+
+  subroutine rokko_parallel_dense_ev_solvers(names)
+    use iso_c_binding
+    implicit none
+    type(string), allocatable, intent(out) :: names(:)
+    type(c_ptr) :: ptr, ptr_i
+    integer :: i, size
+    character(len=:), allocatable :: str
+    ptr = rokko_parallel_dense_ev_solvers_c ()
+    size = rokko_parallel_dense_ev_num_solvers_c ()
+    allocate(names(size))
+    do i = 1, size
+       ptr_i = rokko_string_i_c (ptr, i-1)
+       call rokko_get_string(ptr_i, str)
+       names(i)%str = str
+    enddo
+  end subroutine rokko_parallel_dense_ev_solvers
   
 end module rokko_parallel_dense

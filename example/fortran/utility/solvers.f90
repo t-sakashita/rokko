@@ -9,6 +9,8 @@
 !
 !*****************************************************************************
 
+#include <rokko/config.h>
+
 program solvers
   use rokko
   implicit none
@@ -20,6 +22,20 @@ program solvers
   do i = 1, size(names)
      print *, names(i)%str
   enddo
+
+#ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+  call rokko_parallel_dense_ev_solvers(names)
+  do i = 1, size(names)
+     print *, names(i)%str
+  enddo
+#endif
+
+#ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
+  call rokko_parallel_sparse_ev_solvers(names)
+  do i = 1, size(names)
+     print *, names(i)%str
+  enddo
+#endif
 
 end program solvers
 

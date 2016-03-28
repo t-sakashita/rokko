@@ -11,6 +11,7 @@
 
 module rokko_sparse
   use iso_c_binding
+  use rokko_string
   implicit none
 
   !
@@ -74,6 +75,18 @@ module rokko_sparse
        use iso_c_binding
        implicit none
      end function rokko_parallel_sparse_ev_default_solver_c
+
+     integer(c_int) function rokko_parallel_sparse_ev_num_solvers_c() &
+          bind(c,name='rokko_parallel_sparse_ev_num_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_sparse_ev_num_solvers_c
+
+     type(c_ptr) function rokko_parallel_sparse_ev_solvers_c() &
+          bind(c,name='rokko_parallel_sparse_ev_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_parallel_sparse_ev_solvers_c
   end interface
   
   interface rokko_parallel_sparse_ev_diagonalize
@@ -245,6 +258,28 @@ contains
     name_ptr = rokko_parallel_sparse_ev_default_solver_c ()
     call rokko_get_string_fixedsize (name_ptr, name)
   end subroutine rokko_parallel_sparse_ev_default_solver
+
+  subroutine rokko_parallel_sparse_ev_num_solvers(num)
+    integer, intent(out) :: num
+    num = rokko_parallel_sparse_ev_num_solvers_c()
+  end subroutine rokko_parallel_sparse_ev_num_solvers
+
+  subroutine rokko_parallel_sparse_ev_solvers(names)
+    use iso_c_binding
+    implicit none
+    type(string), allocatable, intent(out) :: names(:)
+    type(c_ptr) :: ptr, ptr_i
+    integer :: i, size
+    character(len=:), allocatable :: str
+    ptr = rokko_parallel_sparse_ev_solvers_c ()
+    size = rokko_parallel_sparse_ev_num_solvers_c ()
+    allocate(names(size))
+    do i = 1, size
+       ptr_i = rokko_string_i_c (ptr, i-1)
+       call rokko_get_string(ptr_i, str)
+       names(i)%str = str
+    enddo
+  end subroutine rokko_parallel_sparse_ev_solvers
   
   subroutine rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
     use, intrinsic :: iso_c_binding
