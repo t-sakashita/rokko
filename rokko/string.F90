@@ -12,13 +12,19 @@ module rokko_string
   end type array_strings
   
   interface
-
      ! interface for C function "void free(void *ptr)"
      subroutine free_c(ptr) bind(C,name="free")
        use iso_c_binding
        type(c_ptr), value, intent(in) :: ptr
      end subroutine free_c
-     
+
+     type(c_ptr) function rokko_string_i_c (ptr, i) &
+          bind(c,name='rokko_string_i')
+       use iso_c_binding
+       implicit none
+       type(c_ptr), value, intent(in) :: ptr
+       integer(c_int), value, intent(in) :: i
+     end function rokko_string_i_c
   end interface
 
 contains
@@ -67,5 +73,5 @@ contains
        str = c_null_ptr
     end if
   end subroutine string_free_c
-
+  
 end module rokko_string

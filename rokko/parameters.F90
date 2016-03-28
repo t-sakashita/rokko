@@ -194,15 +194,6 @@ module parameters
        implicit none
        type(rokko_parameters), value, intent(in) :: params
      end function rokko_parameters_size_c
-
-     type(c_ptr) function rokko_string_i_c (ptr, i) &
-          bind(c,name='rokko_string_i')
-       use iso_c_binding
-       import rokko_parameters
-       implicit none
-       type(c_ptr), value, intent(in) :: ptr
-       integer(c_int), value, intent(in) :: i
-     end function rokko_string_i_c
      
   end interface
 

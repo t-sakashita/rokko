@@ -13,6 +13,7 @@
 
 module rokko_serial_dense
   use iso_c_binding
+  use rokko_string
   implicit none
 
   enum, bind(c)
@@ -121,6 +122,13 @@ module rokko_serial_dense
        use iso_c_binding
        implicit none
      end function rokko_serial_dense_ev_num_solvers_c     
+
+     type(c_ptr) function rokko_serial_dense_ev_solvers_c() &
+          bind(c,name='rokko_serial_dense_ev_solvers')
+       use iso_c_binding
+       implicit none
+     end function rokko_serial_dense_ev_solvers_c
+     
   end interface
 
   interface rokko_serial_dense_ev_diagonalize
@@ -248,6 +256,23 @@ contains
     integer, intent(out) :: num
     num = rokko_serial_dense_ev_num_solvers_c()
   end subroutine rokko_serial_dense_ev_num_solvers
-  
+
+  subroutine rokko_serial_dense_ev_solvers(names)
+    use iso_c_binding
+    implicit none
+    type(string), allocatable, intent(out) :: names(:)
+    type(c_ptr) :: ptr, ptr_i
+    integer :: i, size
+    character(len=:), allocatable :: str
+    ptr = rokko_serial_dense_ev_solvers_c ()
+    size = rokko_serial_dense_ev_num_solvers_c ()
+    allocate(names(size))
+    do i = 1, size
+       ptr_i = rokko_string_i_c (ptr, i-1)
+       call rokko_get_string(ptr_i, str)
+       names(i)%str = str
+    enddo
+  end subroutine rokko_serial_dense_ev_solvers
+
 end module rokko_serial_dense
 
