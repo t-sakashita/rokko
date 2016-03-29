@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < L; ++i) lattice.push_back(std::make_pair(i, (i+1) % L));
 
   rokko::parameters params;
-  if (!routine.empty()) params.set("routine", routine);
+  params.set("routine", routine);
   params.set("Block Size", 5);
   params.set("Maximum Iterations", 500);
   params.set("Convergence Tolerance", 1.0e-8);
