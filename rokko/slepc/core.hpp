@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>,
-*                       Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -105,7 +104,11 @@ public:
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
 	BOOST_THROW_EXCEPTION(std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string."));
       routine_ = params.get_string("routine");
-      ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+      if (!routine_.empty()) {
+	ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+      } else {
+	ierr = EPSSetType(eps, "krylovschur");
+      }
     }
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
@@ -172,7 +175,11 @@ public:
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
 	BOOST_THROW_EXCEPTION(std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string."));
       routine_ = params.get_string("routine");
-      ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+      if (!routine_.empty()) {
+	ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+      } else {
+	ierr = EPSSetType(eps, "krylovschur");
+      }
     }
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
