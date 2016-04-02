@@ -39,7 +39,9 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il = 0, iu = 0;
   char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
 
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  MPI_Fint fcomm = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int bhandle = sys2blacs_handle_(&fcomm);
+  int ictxt = bhandle;
   char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
@@ -61,6 +63,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
+  free_blacs_system_handle_(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
 
   return params_out;
@@ -78,7 +81,9 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il = 0, iu = 0;
   char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
 
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  MPI_Fint fcomm = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int bhandle = sys2blacs_handle_(&fcomm);
+  int ictxt = bhandle;
   char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
@@ -100,6 +105,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
+  free_blacs_system_handle_(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
 
   return params_out;

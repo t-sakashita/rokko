@@ -44,6 +44,9 @@ void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const 
                     const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
                     int* info);
 
+int sys2blacs_handle_(int *SysCtxt);
+void free_blacs_system_handle_(int *ISysCxt);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

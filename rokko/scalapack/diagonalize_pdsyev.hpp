@@ -22,7 +22,7 @@
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
-
+#include <rokko/blacs/blacs.h>
 namespace rokko {
 namespace scalapack {
 
@@ -34,8 +34,10 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = lapack::get_matrix_part(params);
-
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  
+  MPI_Fint fcomm = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int bhandle = sys2blacs_handle_(&fcomm);
+  int ictxt = bhandle;
   char char_grid_major = blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
@@ -43,7 +45,7 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int info;
 
   info = ROKKO_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
-		      eigvecs.get_array_pointer(), 1, 1, desc);
+  		      eigvecs.get_array_pointer(), 1, 1, desc);
 
   params_out.set("info", info);
   if (info) {
@@ -54,6 +56,7 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyev", jobz, uplow);
   }
+  free_blacs_system_handle_(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
 
   return params_out;
@@ -68,7 +71,9 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   char jobz = 'N';  // only eigenvalues
   char uplow = lapack::get_matrix_part(params);
 
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  MPI_Fint fcomm = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int bhandle = sys2blacs_handle_(&fcomm);
+  int ictxt = bhandle;
   char char_grid_major = blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
@@ -87,6 +92,7 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyev", jobz, uplow);
   }
+  free_blacs_system_handle_(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
 
   return params_out;

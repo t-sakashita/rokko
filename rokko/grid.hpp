@@ -53,6 +53,15 @@ public:
 protected:
   template <typename GRID_MAJOR>
   void initialize(GRID_MAJOR) {
+    if (comm == MPI_COMM_NULL) {
+      myrank = -1;
+      myrow = -1;
+      mycol = -1;
+      nprocs = 0;
+      nprow = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
+      npcol = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
+      return;
+    }
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
     is_row = boost::is_same<GRID_MAJOR, grid_row_major_t>::value;
