@@ -25,12 +25,12 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   
   MPI_Comm comm;
-  int dims[2], period[2];
+  int dims[2], periods[2];
   dims[0] = 2;  dims[1] = 2;
-  period[0] = 0;  period[1] = 0;
+  periods[0] = 0;  periods[1] = 0;
   int reorder = 0;
 
-  int ierr = MPI_Cart_create(MPI_COMM_WORLD, 2, dims, period, reorder, &comm);
+  int ierr = MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, &comm);
   rokko::grid g(comm);
   int myrank = g.get_myrank();
 
