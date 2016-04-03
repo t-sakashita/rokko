@@ -22,12 +22,11 @@ typedef rokko::matrix_col_major matrix_major;
 
 int main(int argc, char *argv[]) {
   int provided;
-  int rank;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   
   MPI_Group group_world, even_group;;
   MPI_Comm comm;
-  int i, p, Neven, Nodd, members[8], ierr;
+  int rank, p, Neven, Nodd, members[8], ierr;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
@@ -35,7 +34,7 @@ int main(int argc, char *argv[]) {
 
   Neven = (p + 1) / 2;
   Nodd = p - Neven;
-  for (i=0; i<Neven; ++i) {
+  for (int i=0; i<Neven; ++i) {
     members[i] = 2 * i;
   };
   //Neven = 4;
@@ -91,8 +90,7 @@ int main(int argc, char *argv[]) {
     params.set("routine", routine);
     try {
       solver.diagonalize(mat, eigval, eigvec, params);
-    }
-    catch (const char *e) {
+    } catch (const char *e) {
       if (myrank == 0) std::cout << "Exception : " << e << std::endl;
       MPI_Abort(MPI_COMM_WORLD, 22);
     }
