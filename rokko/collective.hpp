@@ -30,7 +30,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   }
 
   MPI_Fint fcomm = MPI_Comm_c2f(from.get_grid().get_comm());
-  int bhandle = sys2blacs_handle_(&fcomm);
+  int bhandle = BLACS_sys2blacs_handle(&fcomm);
   int ictxt = bhandle;
   char char_grid_major = (from.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, from.get_nprow(), from.get_npcol());
@@ -47,7 +47,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   for (int j = 0; j < n; ++j)
     PBLASE_pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
 
-  free_blacs_system_handle_(&bhandle);
+  BLACS_free_blacs_system_handle(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
 }
 
@@ -66,7 +66,7 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   }
 
   MPI_Fint fcomm = MPI_Comm_c2f(to.get_grid().get_comm());
-  int bhandle = sys2blacs_handle_(&fcomm);
+  int bhandle = BLACS_sys2blacs_handle(&fcomm);
   int ictxt = bhandle;
   char char_grid_major = (to.get_grid().is_row_major() ? 'R' : 'C');
   ROKKO_blacs_gridinit(&ictxt, char_grid_major, to.get_nprow(), to.get_npcol());
@@ -81,7 +81,7 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   for (int j = 0; j < n; ++j)
     PBLASE_pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
 
-  free_blacs_system_handle_(&bhandle);
+  BLACS_free_blacs_system_handle(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
 }
 

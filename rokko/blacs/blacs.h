@@ -44,7 +44,10 @@ void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const 
                     const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
                     int* info);
 
+#define BLACS_sys2blacs_handle LAPACK_GLOBAL(sys2blacs_handle,SYS2BLACS_HANDLE)
 int sys2blacs_handle_(int *SysCtxt);
+
+#define BLACS_free_blacs_system_handle LAPACK_GLOBAL(free_blacs_system_handle,FREE_BLACS_SYSTEM_HANDLE)
 void free_blacs_system_handle_(int *ISysCxt);
 
 #ifdef __cplusplus
