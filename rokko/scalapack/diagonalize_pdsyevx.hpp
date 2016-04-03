@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,8 +38,8 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il, iu;
   char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   
-  MPI_Fint fcomm = MPI_Comm_c2f(mat.get_grid().get_comm());
-  int bhandle = BLACS_sys2blacs_handle(&fcomm);
+  MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int bhandle = BLACS_sys2blacs_handle(&comm_f);
   int ictxt = bhandle;
   char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
@@ -88,8 +88,8 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il, iu;
   char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
 
-  MPI_Fint fcomm = MPI_Comm_c2f(mat.get_grid().get_comm());
-  int bhandle = BLACS_sys2blacs_handle(&fcomm);
+  MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int bhandle = BLACS_sys2blacs_handle(&comm_f);
   int ictxt = bhandle;
   char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
