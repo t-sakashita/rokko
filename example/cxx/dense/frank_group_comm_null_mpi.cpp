@@ -26,14 +26,14 @@ int main(int argc, char *argv[]) {
   
   MPI_Group group_world, even_group;;
   MPI_Comm comm;
-  int rank, p, Neven, Nodd, members[8], ierr;
+  int rank, p, members[8], ierr;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
   MPI_Comm_group(MPI_COMM_WORLD, &group_world);
 
-  Neven = (p + 1) / 2;
-  Nodd = p - Neven;
+  int Neven = (p + 1) / 2;
+  int Nodd = p - Neven;
   for (int i=0; i<Neven; ++i) {
     members[i] = 2 * i;
   };
@@ -47,14 +47,13 @@ int main(int argc, char *argv[]) {
   MPI_Group_free(&even_group);
   std::cout << "rank=" << rank << " ierr=" << ierr << std::endl;
   
-  int myrank;
   if (comm == MPI_COMM_NULL) {
     std::cout << "orig_rank=" << rank << " is COMM_NULL" << std::endl;
   } else {
     std::cout << "orig_rank=" << rank << " is NOT COMM_NULL" << std::endl;
   }
   rokko::grid g(comm);
-  myrank = g.get_myrank();
+  int myrank = g.get_myrank();
 
   if (comm != MPI_COMM_NULL) {
     std::string library_routine(rokko::parallel_dense_ev::default_solver());
