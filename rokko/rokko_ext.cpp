@@ -74,7 +74,7 @@ public:
 	}
 
 	void diagonalize_localized_matrix(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_localized_matrix* eigvecs) {
-		rokko_serial_dense_ev_diagonalize_localized_matrix(raw, mat->get_raw(), eigvals->get_raw(), eigvecs->get_raw());
+	  rokko_serial_dense_ev_diagonalize_localized_matrix(*raw, *(mat->get_raw()), *(eigvals->get_raw()), *(eigvecs->get_raw()));
 	}
 
 	~wrap_rokko_serial_dense_ev(void) {
@@ -85,7 +85,7 @@ public:
 
 static void wrap_rokko_frank_matrix_generate_localized_matrix(wrap_rokko_localized_matrix* mat)
 {
-	rokko_frank_matrix_generate_localized_matrix(mat->get_raw());
+  rokko_frank_matrix_generate_localized_matrix(*(mat->get_raw()));
 }
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
@@ -155,7 +155,7 @@ public:
 	}
 
 	void set_local(int local_i, int local_j, double value) {
-		rokko_distributed_matrix_set_local(raw, local_i, local_j, value);
+		rokko_distributed_matrix_set_local(*raw, local_i, local_j, value);
 	}
 
 	double get_local(int local_i, int local_j) {
@@ -163,7 +163,7 @@ public:
 	}
 
 	void set_global(int global_i, int global_j, double value) {
-		rokko_distributed_matrix_set_global(raw, global_i, global_j, value);
+		rokko_distributed_matrix_set_global(*raw, global_i, global_j, value);
 	}
 
 	double get_global(int global_i, int global_j) {
@@ -218,27 +218,27 @@ public:
 
 void wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs)
 {
-	rokko_parallel_dense_ev_diagonalize_distributed_matrix(raw, mat->get_raw(), eigvals->get_raw(), eigvecs->get_raw());
+  rokko_parallel_dense_ev_diagonalize_distributed_matrix(*raw, *(mat->get_raw()), *(eigvals->get_raw()), *(eigvecs->get_raw()));
 }
 
 void wrap_rokko_gather(wrap_rokko_distributed_matrix* matrix, double* array, int root)
 {
-	return rokko_gather(matrix->get_raw(), array, root);
+  rokko_gather(*(matrix->get_raw()), array, root);
 }
 
 void wrap_rokko_scatter(double* global_array, wrap_rokko_distributed_matrix* matrix, int root)
 {
-	rokko_scatter(global_array, matrix->get_raw(), root);
+  rokko_scatter(global_array, *(matrix->get_raw()), root);
 }
 
 void wrap_rokko_all_gather(wrap_rokko_distributed_matrix* matrix, double* array)
 {
-	rokko_all_gather(matrix->get_raw(), array);
+  rokko_all_gather(*(matrix->get_raw()), array);
 }
 
 static void wrap_rokko_frank_matrix_generate_distributed_matrix(wrap_rokko_distributed_matrix* mat)
 {
-	rokko_frank_matrix_generate_distributed_matrix(mat->get_raw());
+  rokko_frank_matrix_generate_distributed_matrix(*(mat->get_raw()));
 }
 
 class wrap_rokko_distributed_crs_matrix;
@@ -257,20 +257,20 @@ public:
 	void diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix*, int, int, int, double);
 
 	double eigenvalue(int i) {
-		return rokko_parallel_sparse_ev_eigenvalue(raw, i);
+		return rokko_parallel_sparse_ev_eigenvalue(*raw, i);
 	}
 
 	void eigenvector(int i, boost::python::list& vec) {
 		int len_vec = boost::python::len(vec);
 		double raw_vec[len_vec];
-		rokko_parallel_sparse_ev_eigenvector(raw, i, raw_vec);
-		for (int i = 0; i < len_vec; i++) {
+		rokko_parallel_sparse_ev_eigenvector(*raw, i, raw_vec);
+		for (int i = 0; i < len_vec; ++i) {
 			vec[i] = raw_vec[i];
 		}
 	}
 
 	int num_conv(void) {
-		return rokko_parallel_sparse_ev_num_conv(raw);
+		return rokko_parallel_sparse_ev_num_conv(*raw);
 	}
 
 	~wrap_rokko_parallel_sparse_ev(void) {
@@ -293,37 +293,37 @@ public:
 	void insert(int row, int col_size, boost::python::list& cols, boost::python::list& values) {
 		int len_cols = boost::python::len(cols);
 		int raw_cols[len_cols];
-		for (int i = 0; i < len_cols; i++) {
+		for (int i = 0; i < len_cols; ++i) {
 			raw_cols[i] = boost::python::extract<int>(cols[i]);
 		}
 
 		int len_values = boost::python::len(values);
 		double raw_values[len_values];
-		for (int i = 0; i < len_cols; i++) {
+		for (int i = 0; i < len_cols; ++i) {
 			raw_values[i] = boost::python::extract<double>(values[i]);
 		}
 
-		rokko_distributed_crs_matrix_insert(raw, row, col_size, raw_cols, raw_values);
+		rokko_distributed_crs_matrix_insert(*raw, row, col_size, raw_cols, raw_values);
 	}
 
 	void complete(void) {
-		rokko_distributed_crs_matrix_complete(raw);
+		rokko_distributed_crs_matrix_complete(*raw);
 	}
 
 	int num_local_rows(void) {
-		return rokko_distributed_crs_matrix_num_local_rows(raw);
+		return rokko_distributed_crs_matrix_num_local_rows(*raw);
 	}
 
 	int start_row(void) {
-		return rokko_distributed_crs_matrix_start_row(raw);
+	  return rokko_distributed_crs_matrix_start_row(*raw);
 	}	
 
 	int end_row(void) {
-		return rokko_distributed_crs_matrix_end_row(raw);
+		return rokko_distributed_crs_matrix_end_row(*raw);
 	}
 
 	void print(void) {
-		rokko_distributed_crs_matrix_print(raw);
+		rokko_distributed_crs_matrix_print(*raw);
 	}
 
 	~wrap_rokko_distributed_crs_matrix(void) {
@@ -334,7 +334,7 @@ public:
 
 void wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat, int num_evals, int block_size, int max_iters, double tol)
 {
-	rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(raw, mat->get_raw(), num_evals, block_size, max_iters, tol);
+  rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(*raw, *(mat->get_raw()), num_evals, block_size, max_iters, tol);
 }
 
 #endif
