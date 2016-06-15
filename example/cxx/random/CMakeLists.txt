@@ -9,7 +9,7 @@
 
 set(PROG sgv)
 foreach(name ${PROG})
-  set(target_name sample_random_${name})
+  set(target_name example_random_${name})
   add_executable(${target_name} ${name}.cpp)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   set_target_properties(${target_name} PROPERTIES LINKER_LANGUAGE CXX)

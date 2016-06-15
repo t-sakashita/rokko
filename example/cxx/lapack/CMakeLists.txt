@@ -9,7 +9,7 @@
 
 set(PROG diagonalization diagonalization_c orthonormalization orthonormalization_c svd svd_c)
 foreach(name ${PROG})
-  set(target_name sample_lapack_${name})
+  set(target_name example_lapack_${name})
   add_executable(${target_name} ${name}.cpp)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   set_target_properties(${target_name} PROPERTIES LINKER_LANGUAGE CXX)
