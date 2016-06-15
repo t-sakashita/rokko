@@ -14,10 +14,16 @@
 #include "rokko_dense.h"
 #include "rokko_sparse.h"
 #include "utility/frank_matrix_c.h"
+#include <rokko/parameters.hpp>
 
-enum rokko {
+enum rokko_enum {
   grid_col_major = rokko_grid_col_major, grid_row_major = rokko_grid_row_major,
   matrix_col_major = rokko_matrix_col_major, matrix_row_major = rokko_matrix_row_major
+};
+
+class wrap_rokko_parameters {
+  rokko_distributed_crs_matrix* raw;
+public:
 };
 
 class wrap_rokko_localized_matrix {
@@ -144,7 +150,9 @@ class wrap_rokko_distributed_matrix {
 public:
 	wrap_rokko_distributed_matrix(int dim1, int dim2, wrap_rokko_grid* grid, wrap_rokko_parallel_dense_ev* solver, int matrix_major) {
 		raw = new rokko_distributed_matrix();
-		rokko_distributed_matrix_construct(raw, dim1, dim2, *grid->get_raw(), *solver->get_raw(), matrix_major);
+		struct rokko_mapping_bc map;
+		//		map = rokko_parallel_dense_ev_default_mapping(*(solver->get_raw(), dim, grid);
+		rokko_distributed_matrix_construct(raw, map);
 	}
 	rokko_distributed_matrix* get_raw(void) {
 		return raw;
@@ -254,7 +262,7 @@ public:
 		return raw;
 	}
 
-	void diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix*, int, int, int, double);
+	void diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix*);
 
 	double eigenvalue(int i) {
 		return rokko_parallel_sparse_ev_eigenvalue(*raw, i);
@@ -332,9 +340,11 @@ public:
 	}
 };
 
-void wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat, int num_evals, int block_size, int max_iters, double tol)
+void wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat)
 {
-  rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(*raw, *(mat->get_raw()), num_evals, block_size, max_iters, tol);
+  struct rokko_parameters params;
+  rokko_parameters_construct(&params);
+  rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(*raw, *(mat->get_raw()), params);
 }
 
 #endif
@@ -342,12 +352,20 @@ void wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokk
 BOOST_PYTHON_MODULE(rokko_ext) {
   using namespace boost::python;
 
-  enum_<rokko>("rokko")
+  enum_<rokko_enum>("rokko")
     .value("grid_col_major", grid_col_major)
     .value("grid_row_major", grid_row_major)
     .value("matrix_col_major", matrix_col_major)
     .value("matrix_row_major", matrix_row_major);
-  
+
+  class_<rokko::parameters>("rokko_parameters")
+    //    .def("keys", &wrap_rokko_parameters::keys)
+    //    .def("clear", &rokko::parameters::clear)
+    .def("defined", &rokko::parameters::defined)
+    .def("get", &rokko::parameters::get<double>)
+    .def("set", &rokko::parameters::set<double>);
+
+    
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize_localized_matrix",
          &wrap_rokko_serial_dense_ev::diagonalize_localized_matrix);
