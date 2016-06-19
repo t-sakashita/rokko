@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   
   rokko_parallel_dense_ev_construct(&solver, library, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
-  rokko_mapping_bc_construct_block_size(&map, dim, 1);
+  rokko_mapping_bc_construct_block_size(&map, dim, 1, grid);
   rokko_distributed_matrix_construct(&mat, map);
   rokko_distributed_matrix_construct(&Z, map);
   rokko_localized_vector_construct(&w, dim);
