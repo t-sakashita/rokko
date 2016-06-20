@@ -7,8 +7,6 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-#enable_testing()
-
 set(TESTS frank)
 if(BUILD_PARALLEL_DENSE_SOLVER)
   set(TESTS ${TESTS} frank_block_mpi)

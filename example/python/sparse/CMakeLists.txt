@@ -7,10 +7,8 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-#enable_testing()
-
 if(BUILD_PARALLEL_SPARSE_SOLVER)
-  set(TESTS ${TESTS} rokko_test_sparse)
+  set(TESTS ${TESTS} heisenberg_crs_mpi)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)
 foreach(name ${TESTS})
   add_test(python_${name}
