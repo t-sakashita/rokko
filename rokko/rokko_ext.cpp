@@ -168,12 +168,10 @@ public:
 	rokko_parallel_dense_ev* get_raw(void) {
 		return raw;
 	}
-        struct wrap_rokko_mapping_bc default_mapping(int dim, wrap_rokko_grid* grid) {
-	  //wrap_rokko_mapping_bc map( ::rokko_parallel_dense_ev_default_mapping(*raw, dim, *(grid->get_raw())) );
-	  //struct rokko_mapping_bc* map_raw = ::rokko_parallel_dense_ev_default_mapping(*raw, dim, *(grid->get_raw()));
-
-	  wrap_rokko_mapping_bc map;
-	  return map;
+        struct wrap_rokko_mapping_bc* default_mapping(int dim, wrap_rokko_grid* grid) {
+	  wrap_rokko_mapping_bc* wrap_map = new wrap_rokko_mapping_bc();
+	  rokko_parallel_dense_ev_default_mapping_f(*raw, dim, *(grid->get_raw()), wrap_map->get_raw());
+	  return wrap_map;
 	}
 	void diagonalize_distributed_matrix(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*);
 
@@ -187,11 +185,10 @@ class wrap_rokko_distributed_matrix {
 	rokko_distributed_matrix* raw;
 public:
   wrap_rokko_distributed_matrix(wrap_rokko_mapping_bc* map) {
-    //raw = new rokko_distributed_matrix( *(map->get_raw()) );
     raw = new rokko_distributed_matrix();
     rokko_distributed_matrix_construct(raw, *(map->get_raw()));
   }
-	rokko_distributed_matrix* get_raw(void) {
+  rokko_distributed_matrix* get_raw(void) {
 		return raw;
 	}
 
@@ -418,15 +415,15 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .def("get_myrank", &wrap_rokko_grid::get_myrank)
     .def("get_nprocs", &wrap_rokko_grid::get_nprocs);
   class_<wrap_rokko_parallel_dense_ev>("rokko_parallel_dense_ev",
-                                           init<char*, int, char**>())
+				       init<char*, int, char**>())
     .def("default_mapping",
-         &wrap_rokko_parallel_dense_ev::default_mapping)
+         &wrap_rokko_parallel_dense_ev::default_mapping, return_value_policy<boost::python::return_opaque_pointer>())
     .def("diagonalize_distributed_matrix",
          &wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix);
   class_<wrap_rokko_mapping_bc>("rokko_mapping_bc",
 				init<int,int,wrap_rokko_grid*>());
   class_<wrap_rokko_distributed_matrix>("rokko_distributed_matrix",
-    init<wrap_rokko_mapping_bc*>())
+					init<wrap_rokko_mapping_bc*>())
     .def("show", &wrap_rokko_distributed_matrix::print)
     .def("set_local", &wrap_rokko_distributed_matrix::set_local)
     .def("get_local", &wrap_rokko_distributed_matrix::get_local)
