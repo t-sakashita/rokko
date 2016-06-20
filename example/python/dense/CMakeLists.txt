@@ -9,12 +9,12 @@
 
 #enable_testing()
 
-set(TESTS rokko_test)
+set(TESTS frank)
 if(BUILD_PARALLEL_DENSE_SOLVER)
-  set(TESTS ${TESTS} rokko_test_mpi)
+  set(TESTS ${TESTS} frank_block_mpi)
 endif(BUILD_PARALLEL_DENSE_SOLVER)
 foreach(name ${TESTS})
-  add_test(python_${name}
+  add_test(python_dense_${name}
     ${CMAKE_COMMAND}
     -Dpython_interpreter=${PYTHON_EXECUTABLE}
     -Dcmd=${name}.py
