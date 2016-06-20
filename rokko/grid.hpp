@@ -25,6 +25,8 @@ extern struct grid_col_major_t {} grid_col_major;
 
 class grid {
 public:
+  /*grid(grid const& g_in)
+    : comm(g_in.get_comm()), nprocs(g_in.get_nprocs()), nprow(g_in.get_nprow()), npcol(g_in.get_npcol()), myrank(g_in.get_myrank()), myrow(g_in.get_myrow()), mycol(g_in.get_mycol()), is_row(g_in.is_row_major()) {}*/
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : comm(comm_in) {
     initialize(grid_row_major);
   }

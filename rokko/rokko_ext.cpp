@@ -21,37 +21,6 @@ enum rokko_enum {
   matrix_col_major = rokko_matrix_col_major, matrix_row_major = rokko_matrix_row_major
 };
 
-class wrap_rokko_parameters {
-  rokko_distributed_crs_matrix* raw;
-public:
-};
-
-class wrap_rokko_mapping_bc {
-	rokko_mapping_bc* raw;
-public:
-  wrap_rokko_mapping_bc() {
-    raw = new rokko_mapping_bc();
-  }
-  wrap_rokko_mapping_bc(rokko_mapping_bc* map_ptr) {
-	  raw = new rokko_mapping_bc();
-	  *raw = *map_ptr;
-	}
-        wrap_rokko_mapping_bc(const rokko_mapping_bc& map_in) {
-	  raw = new rokko_mapping_bc();
-	  *raw = map_in;
-	}
-	rokko_mapping_bc* get_raw(void) {
-		return raw;
-	}
-  //void set_raw(rokko_mapping_bc* pt) {
-  //		raw = pt;
-  //	}
-	~wrap_rokko_mapping_bc(void) {
-		rokko_mapping_bc_destruct(raw);
-		delete raw;
-	}
-};
-
 
 class wrap_rokko_localized_matrix {
 	rokko_localized_matrix* raw;
@@ -151,6 +120,42 @@ public:
 	}
 };
 
+class wrap_rokko_parameters {
+  rokko_distributed_crs_matrix* raw;
+public:
+};
+
+class wrap_rokko_mapping_bc {
+	rokko_mapping_bc* raw;
+public:
+  wrap_rokko_mapping_bc() {
+    raw = new rokko_mapping_bc();
+  }
+  wrap_rokko_mapping_bc(rokko_mapping_bc* map_ptr) {
+    raw = new rokko_mapping_bc();
+    *raw = *map_ptr;
+  }
+  wrap_rokko_mapping_bc(int global_dim, int block_size, wrap_rokko_grid* grid) {
+    raw = new rokko_mapping_bc();
+    //rokko_mapping_bc_construct_block_size(raw, 50, 1, grid);
+    rokko_mapping_bc_construct_block_size(raw, global_dim, block_size, *(grid->get_raw()));
+  }
+  wrap_rokko_mapping_bc(const rokko_mapping_bc& map_in) {
+	  raw = new rokko_mapping_bc();
+	  *raw = map_in;
+	}
+	rokko_mapping_bc* get_raw(void) {
+		return raw;
+	}
+  //void set_raw(rokko_mapping_bc* pt) {
+  //		raw = pt;
+  //	}
+	~wrap_rokko_mapping_bc(void) {
+		rokko_mapping_bc_destruct(raw);
+		delete raw;
+	}
+};
+
 class wrap_rokko_distributed_matrix;
 
 class wrap_rokko_parallel_dense_ev {
@@ -164,8 +169,10 @@ public:
 		return raw;
 	}
         struct wrap_rokko_mapping_bc default_mapping(int dim, wrap_rokko_grid* grid) {
-	  wrap_rokko_mapping_bc map( ::rokko_parallel_dense_ev_default_mapping(*raw, dim, *(grid->get_raw())) );
+	  //wrap_rokko_mapping_bc map( ::rokko_parallel_dense_ev_default_mapping(*raw, dim, *(grid->get_raw())) );
 	  //struct rokko_mapping_bc* map_raw = ::rokko_parallel_dense_ev_default_mapping(*raw, dim, *(grid->get_raw()));
+
+	  wrap_rokko_mapping_bc map;
 	  return map;
 	}
 	void diagonalize_distributed_matrix(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*);
@@ -181,6 +188,7 @@ class wrap_rokko_distributed_matrix {
 public:
   wrap_rokko_distributed_matrix(wrap_rokko_mapping_bc* map) {
     //raw = new rokko_distributed_matrix( *(map->get_raw()) );
+    raw = new rokko_distributed_matrix();
     rokko_distributed_matrix_construct(raw, *(map->get_raw()));
   }
 	rokko_distributed_matrix* get_raw(void) {
@@ -415,8 +423,8 @@ BOOST_PYTHON_MODULE(rokko_ext) {
          &wrap_rokko_parallel_dense_ev::default_mapping)
     .def("diagonalize_distributed_matrix",
          &wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix);
-  class_<wrap_rokko_mapping_bc>("rokko_mapping_bc");
-    //				init<wrap_rokko_mapping_bc>());
+  class_<wrap_rokko_mapping_bc>("rokko_mapping_bc",
+				init<int,int,wrap_rokko_grid*>());
   class_<wrap_rokko_distributed_matrix>("rokko_distributed_matrix",
     init<wrap_rokko_mapping_bc*>())
     .def("show", &wrap_rokko_distributed_matrix::print)
