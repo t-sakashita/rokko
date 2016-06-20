@@ -137,7 +137,6 @@ public:
   }
   wrap_rokko_mapping_bc(int global_dim, int block_size, wrap_rokko_grid* grid) {
     raw = new rokko_mapping_bc();
-    //rokko_mapping_bc_construct_block_size(raw, 50, 1, grid);
     rokko_mapping_bc_construct_block_size(raw, global_dim, block_size, *(grid->get_raw()));
   }
   wrap_rokko_mapping_bc(const rokko_mapping_bc& map_in) {
@@ -147,9 +146,6 @@ public:
   rokko_mapping_bc* get_raw(void) {
     return raw;
   }
-  //void set_raw(rokko_mapping_bc* pt) {
-  //		raw = pt;
-  //	}
   ~wrap_rokko_mapping_bc(void) {
     rokko_mapping_bc_destruct(raw);
     delete raw;
