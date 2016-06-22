@@ -10,6 +10,8 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+//#include <boost/python/suite/indexing/list.hpp>
+#include <boost/foreach.hpp>
 
 #include "rokko_dense.h"
 #include "rokko_sparse.h"
@@ -388,13 +390,26 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .value("matrix_col_major", matrix_col_major)
     .value("matrix_row_major", matrix_row_major);
 
-  class_<rokko::parameters>("rokko_parameters")
+  class_<rokko::parameters>("rokko_parameters",init<>())
     //    .def("keys", &wrap_rokko_parameters::keys)
-    //    .def("clear", &rokko::parameters::clear)
+    .def("clear", (void (rokko::parameters::*)(void)) &rokko::parameters::clear)
+    .def("clear", (void (rokko::parameters::*)(std::string const&)) &rokko::parameters::clear)
     .def("defined", &rokko::parameters::defined)
+    .def("get", (int (rokko::parameters::*)(std::string)) &rokko::parameters::get<int>)
+    .def("get", &rokko::parameters::get<float>)
     .def("get", &rokko::parameters::get<double>)
-    .def("set", &rokko::parameters::set<double>);
+    .def("get", &rokko::parameters::get<char>)
+    .def("get", &rokko::parameters::get<std::string>)
+    .def("set", &rokko::parameters::set<float>)
+    .def("set", &rokko::parameters::set<double>)
+    .def("set", &rokko::parameters::set<char>)
+    .def("set", &rokko::parameters::set<int>)
+    .def("set", &rokko::parameters::set<std::string>)
+    .def("get_string", &rokko::parameters::get_string);
+  //.def("type", &rokko::parameters::type);
 
+  //class_<std::list<boost::any> >("vector<boost::any>")
+    //    .def(vector_indexing_suite<list<boost::any> >());
     
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize_localized_matrix",

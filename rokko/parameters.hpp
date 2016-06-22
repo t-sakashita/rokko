@@ -58,6 +58,7 @@ public:
   template<typename T>
   T get(key_type const& key) const {
     if (type(key) != typeid(T)) {
+      std::cout << "type(key)=" << type(key).name() << " typeid(T)" << typeid(T).name() << std::endl;
       BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get() : type given as template parameter is not correct."));
     }
     return boost::any_cast<T>(map_.find(key)->second);

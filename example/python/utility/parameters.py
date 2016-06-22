@@ -7,13 +7,19 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-enable_testing()
+from rokko import *
 
-if(BUILD_Python_BINDING)
-  add_subdirectory(dense)
-  if(BUILD_PARALLEL_SPARSE_SOLVER)
-    add_subdirectory(sparse)
-  endif(BUILD_PARALLEL_SPARSE_SOLVER)
-endif(BUILD_Python_BINDING)
+params = rokko_parameters()
+b = int(2)
+params.set("ABCD", 1.0)
 
-add_subdirectory(utility)
+c = "pppppp"
+params.set("STR", c)
+
+b = params.get("ABCD")
+c = params.get("STR")
+
+#params.clear()
+print(params.get("ABCD"))
+print(params.get_string("ABCD"))
+print "b=", b
