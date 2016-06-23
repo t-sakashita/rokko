@@ -10,8 +10,10 @@
 from rokko import *
 
 params = rokko_parameters()
+params.set("PE", 2.3)
+
 b = int(2)
-params.set("ABCD", 1.0)
+params.set("ABCD", b)
 
 c = "pppppp"
 params.set("STR", c)
@@ -19,7 +21,8 @@ params.set("STR", c)
 b = params.get("ABCD")
 c = params.get("STR")
 
-#params.clear()
 print(params.get("ABCD"))
 print(params.get_string("ABCD"))
 print "b=", b
+
+params.clear()

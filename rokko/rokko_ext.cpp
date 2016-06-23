@@ -381,6 +381,25 @@ void wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokk
 
 #endif
 
+class wrap_parameters : public rokko::parameters {
+public:
+  boost::python::object python_get(std::string const& key) {
+    if (type(key) == typeid(int)) {
+      return boost::python::object(get<int>(key));
+    } else if (type(key) == typeid(double)) {
+      return boost::python::object(get<double>(key));
+    } else if (type(key) == typeid(std::string)) {
+      return boost::python::object(get<std::string>(key));
+    } else if (type(key) == typeid(bool)) {
+      return boost::python::object(get<bool>(key));
+    } else if (type(key) == typeid(char)) {
+      return boost::python::object(get<char>(key));
+    }
+    BOOST_THROW_EXCEPTION(std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.")); 
+  }
+};
+
+
 BOOST_PYTHON_MODULE(rokko_ext) {
   using namespace boost::python;
 
@@ -390,24 +409,19 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .value("matrix_col_major", matrix_col_major)
     .value("matrix_row_major", matrix_row_major);
 
-  class_<rokko::parameters>("rokko_parameters",init<>())
+  class_<wrap_parameters>("rokko_parameters",init<>())
     //    .def("keys", &wrap_rokko_parameters::keys)
-    .def("clear", (void (rokko::parameters::*)(void)) &rokko::parameters::clear)
-    .def("clear", (void (rokko::parameters::*)(std::string const&)) &rokko::parameters::clear)
-    .def("defined", &rokko::parameters::defined)
-    .def("get", (int (rokko::parameters::*)(std::string)) &rokko::parameters::get<int>)
-    .def("get", &rokko::parameters::get<float>)
-    .def("get", &rokko::parameters::get<double>)
-    .def("get", &rokko::parameters::get<char>)
-    .def("get", &rokko::parameters::get<std::string>)
-    .def("set", &rokko::parameters::set<float>)
-    .def("set", &rokko::parameters::set<double>)
-    .def("set", &rokko::parameters::set<char>)
-    .def("set", &rokko::parameters::set<int>)
-    .def("set", &rokko::parameters::set<std::string>)
-    .def("get_string", &rokko::parameters::get_string);
-  //.def("type", &rokko::parameters::type);
-
+    .def("clear", (void (wrap_parameters::*)(void)) &wrap_parameters::clear)
+    .def("clear", (void (wrap_parameters::*)(std::string const&)) &wrap_parameters::clear)
+    .def("defined", &wrap_parameters::defined)
+    .def("get", &wrap_parameters::python_get)
+    .def("set", &wrap_parameters::set<float>)
+    .def("set", &wrap_parameters::set<double>)
+    .def("set", &wrap_parameters::set<char>)
+    .def("set", &wrap_parameters::set<std::string>)
+    .def("set", &wrap_parameters::set<int>)
+    .def("get_string", &wrap_parameters::get_string);
+  //.def("type", &wrap_parameters::type);
   //class_<std::list<boost::any> >("vector<boost::any>")
     //    .def(vector_indexing_suite<list<boost::any> >());
     
