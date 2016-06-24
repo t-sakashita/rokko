@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
 
   char* library_routine, *library, *routine;
   if (argc >= 2) {
-    library_routine = rokko_parallel_dense_ev_default_solver();
+    library_routine = rokko_parallel_sparse_ev_default_solver();
     if (argc >= 2) library_routine = argv[1];
   } else {
-    library_routine = rokko_parallel_dense_ev_default_solver();
+    library_routine = rokko_parallel_sparse_ev_default_solver();
   }
   rokko_split_solver_name(library_routine, &library, &routine);
   
