@@ -10,9 +10,6 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/suite/indexing/map_indexing_suite.hpp>
-//#include <boost/python/suite/indexing/list.hpp>
 #include <boost/foreach.hpp>
 
 #include "rokko_dense.h"
@@ -436,15 +433,7 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .def("set", &wrap_parameters::set<int>)
     .def("get_string", &wrap_parameters::get_string);
   //.def("type", &wrap_parameters::type);
-  //class_<std::list<boost::any> >("vector<boost::any>")
-  //    .def(vector_indexing_suite<list<boost::any> >());
 
-  class_<std::vector<std::string> >("std::vector<std::string>")
-    .def(vector_indexing_suite<std::vector<std::string> >());
-
-  class_<std::map<std::string,boost::python::object> >("std::map<std::string,boost::python::object>")
-    .def(map_indexing_suite<std::map<std::string,boost::python::object> >());
-	
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize_localized_matrix",
          &wrap_rokko_serial_dense_ev::diagonalize_localized_matrix);
