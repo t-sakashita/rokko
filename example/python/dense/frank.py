@@ -18,10 +18,10 @@ mat = rokko_localized_matrix(dim, dim, rokko_matrix_col_major)
 Z = rokko_localized_matrix(dim, dim, rokko_matrix_col_major)
 w = rokko_localized_vector(dim) 
 
-rokko_frank_matrix_generate_localized_matrix(mat)
+rokko_generate_frank_matrix(mat)
 mat.show()
 
-solver.diagonalize_localized_matrix(mat, w, Z)
+solver.diagonalize(mat, w, Z)
 
 print("Computed Eigenvalues =\n");
 

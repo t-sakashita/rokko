@@ -111,7 +111,7 @@ public:
     return raw;
   }
 
-  void diagonalize_localized_matrix(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_localized_matrix* eigvecs) {
+  void diagonalize(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_localized_matrix* eigvecs) {
     rokko_serial_dense_ev_diagonalize_localized_matrix(*raw, *(mat->get_raw()), *(eigvals->get_raw()), *(eigvecs->get_raw()));
   }
 
@@ -200,7 +200,7 @@ public:
     rokko_parallel_dense_ev_default_mapping_f(*raw, dim, *(grid->get_raw()), wrap_map->get_raw());
     return wrap_map;
   }
-  wrap_parameters diagonalize_distributed_matrix(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*, wrap_parameters const& params);
+  wrap_parameters diagonalize(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*, wrap_parameters const& params);
 
   ~wrap_rokko_parallel_dense_ev(void) {
     rokko_parallel_dense_ev_destruct(raw);
@@ -285,7 +285,7 @@ public:
   }
 };
 
-wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs, wrap_parameters const& params)
+wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs, wrap_parameters const& params)
 {
   if (mat->get_raw()->major == rokko_matrix_col_major)
     return wrap_parameters( static_cast<rokko::parallel_dense_ev*>(raw->ptr)->diagonalize(
@@ -445,14 +445,13 @@ BOOST_PYTHON_MODULE(rokko_ext) {
   //.def("type", &wrap_parameters::type);
 
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
-    .def("diagonalize_localized_matrix",
-         &wrap_rokko_serial_dense_ev::diagonalize_localized_matrix);
+    .def("diagonalize",
+         &wrap_rokko_serial_dense_ev::diagonalize);
   class_<wrap_rokko_localized_vector>("rokko_localized_vector", init<int>())
     .def("get", &wrap_rokko_localized_vector::get);
   class_<wrap_rokko_localized_matrix>("rokko_localized_matrix", init<int, int, int>())
     .def("show", &wrap_rokko_localized_matrix::print);
-  def("rokko_frank_matrix_generate_localized_matrix",
-      &wrap_rokko_frank_matrix_generate_localized_matrix);
+  def("rokko_generate_frank_matrix", &wrap_rokko_frank_matrix_generate_localized_matrix);
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) || defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
   class_<wrap_rokko_grid>("rokko_grid", init<boost::python::object, int>())
@@ -462,8 +461,8 @@ BOOST_PYTHON_MODULE(rokko_ext) {
 				       init<char*, int, char**>())
     .def("default_mapping",
          &wrap_rokko_parallel_dense_ev::default_mapping, return_value_policy<boost::python::return_opaque_pointer>())
-    .def("diagonalize_distributed_matrix",
-         &wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix);
+    .def("diagonalize",
+         &wrap_rokko_parallel_dense_ev::diagonalize);
   class_<wrap_rokko_mapping_bc>("rokko_mapping_bc",
 				init<int,int,wrap_rokko_grid*>());
   class_<wrap_rokko_distributed_matrix>("rokko_distributed_matrix",
@@ -506,7 +505,6 @@ BOOST_PYTHON_MODULE(rokko_ext) {
   def("rokko_scatter", &wrap_rokko_scatter);
   def("rokko_all_gather", &wrap_rokko_all_gather);
 
-  def("rokko_frank_matrix_generate_distributed_matrix",
-      &wrap_rokko_frank_matrix_generate_distributed_matrix);
+  def("rokko_generate_frank_matrix", &wrap_rokko_frank_matrix_generate_distributed_matrix);
 #endif
 }
