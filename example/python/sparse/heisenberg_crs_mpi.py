@@ -12,7 +12,7 @@ from rokko import *
 
 L = 8
 dim = 1 << L
-solver_name = "slepc"
+solver_name = "slepc" #"anasazi"
 
 lattice_first  = [x           for x in range(0, L)]
 lattice_second = [(x + 1) % L for x in range(0, L)]
@@ -31,6 +31,7 @@ Z = rokko_distributed_crs_matrix(dim, dim, solver)
 
 row_start = mat.start_row()
 row_end = mat.end_row()
+print("row_start=%d row_end=%d" % (row_start, row_end))
 
 cols =   [0   for x in range(0, dim)]
 values = [0.0 for x in range(0, dim)]
@@ -59,19 +60,23 @@ for row in range(row_start, row_end):
 
 mat.complete()
 
-nev = 10
-block_size = 5
-max_iters = 500
-tol = 1.0e-8
+params = rokko_parameters()
+#params.set("routine", routine);
+params.set("Block Size", 5);
+params.set("Maximum Iterations", 500);
+params.set("Convergence Tolerance", 1.0e-8);
+params.set("num_eigenvalues", 10)
 
-solver.diagonalize_distributed_crs_matrix(mat, nev, block_size, max_iters, tol)
+solver.diagonalize_distributed_crs_matrix(mat, params)
 num_conv = solver.num_conv()
 
 eig_val = solver.eigenvalue(0)
 num_local_rows = mat.num_local_rows()
+print("num_local_rows=%d" % num_local_rows)
+
 eig_vec = [0.0 for x in range(0, num_local_rows)]
 
-solver.eigenvector(i, eig_vec)
+solver.eigenvector(0, eig_vec)
 
 if (MPI.COMM_WORLD.Get_rank() == 0):
 	print("number of converged eigenpairs = %d" % num_conv)
@@ -83,4 +88,4 @@ if (MPI.COMM_WORLD.Get_rank() == 0):
 
 #print "rank = ", MPI.COMM_WORLD.Get_rank()
 
-MPI.Finalize()
+#MPI.Finalize()

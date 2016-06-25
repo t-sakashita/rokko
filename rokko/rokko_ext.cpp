@@ -17,12 +17,30 @@
 #include "rokko_sparse.h"
 #include "utility/frank_matrix_c.h"
 #include <rokko/parameters.hpp>
+#include <rokko/parallel_sparse_ev.hpp>
+
+class wrap_parameters : public rokko::parameters {
+public:
+  boost::python::object python_get(std::string const& key) {
+    if (type(key) == typeid(int)) {
+      return boost::python::object(get<int>(key));
+    } else if (type(key) == typeid(double)) {
+      return boost::python::object(get<double>(key));
+    } else if (type(key) == typeid(std::string)) {
+      return boost::python::object(get<std::string>(key));
+    } else if (type(key) == typeid(bool)) {
+      return boost::python::object(get<bool>(key));
+    } else if (type(key) == typeid(char)) {
+      return boost::python::object(get<char>(key));
+    }
+    BOOST_THROW_EXCEPTION(std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.")); 
+  }
+};
 
 enum rokko_enum {
   grid_col_major = rokko_grid_col_major, grid_row_major = rokko_grid_row_major,
   matrix_col_major = rokko_matrix_col_major, matrix_row_major = rokko_matrix_row_major
 };
-
 
 class wrap_rokko_localized_matrix {
   rokko_localized_matrix* raw;
@@ -120,11 +138,6 @@ public:
     rokko_grid_destruct(raw);
     delete raw;
   }
-};
-
-class wrap_rokko_parameters {
-  rokko_distributed_crs_matrix* raw;
-public:
 };
 
 class wrap_rokko_mapping_bc {
@@ -294,7 +307,7 @@ public:
     return raw;
   }
 
-  void diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix*);
+  wrap_parameters diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix*, wrap_parameters const& params);
 
   double eigenvalue(int i) {
     return rokko_parallel_sparse_ev_eigenvalue(*raw, i);
@@ -372,32 +385,15 @@ public:
   }
 };
 
-void wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat)
+wrap_parameters wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat, wrap_parameters const& params)
 {
-  struct rokko_parameters params;
-  rokko_parameters_construct(&params);
-  rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(*raw, *(mat->get_raw()), params);
+  wrap_parameters params_out;
+  static_cast<rokko::parameters>(params_out) = static_cast<rokko::parallel_sparse_ev*>(raw->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->get_raw()->ptr),
+													      static_cast<rokko::parameters>(params));
+  return params_out;
 }
 
 #endif
-
-class wrap_parameters : public rokko::parameters {
-public:
-  boost::python::object python_get(std::string const& key) {
-    if (type(key) == typeid(int)) {
-      return boost::python::object(get<int>(key));
-    } else if (type(key) == typeid(double)) {
-      return boost::python::object(get<double>(key));
-    } else if (type(key) == typeid(std::string)) {
-      return boost::python::object(get<std::string>(key));
-    } else if (type(key) == typeid(bool)) {
-      return boost::python::object(get<bool>(key));
-    } else if (type(key) == typeid(char)) {
-      return boost::python::object(get<char>(key));
-    }
-    BOOST_THROW_EXCEPTION(std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.")); 
-  }
-};
 
 
 BOOST_PYTHON_MODULE(rokko_ext) {
@@ -410,7 +406,7 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .value("matrix_row_major", matrix_row_major);
 
   class_<wrap_parameters>("rokko_parameters",init<>())
-    //    .def("keys", &wrap_rokko_parameters::keys)
+    //    .def("keys", &wrap_parameters::keys)
     .def("clear", (void (wrap_parameters::*)(void)) &wrap_parameters::clear)
     .def("clear", (void (wrap_parameters::*)(std::string const&)) &wrap_parameters::clear)
     .def("defined", &wrap_parameters::defined)

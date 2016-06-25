@@ -49,7 +49,7 @@ public:
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
     dim_ = row_dim;
     ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
-    num_local_rows_ = end_row_ - start_row_ + 1;
+    num_local_rows_ = end_row_ - start_row_;// + 1;
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
