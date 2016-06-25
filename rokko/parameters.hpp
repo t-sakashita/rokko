@@ -34,6 +34,7 @@ public:
   typedef map_type::value_type value_type;
 
   parameters() {}
+  parameters(parameters const& map_in) : map_(map_in.get_map()) {}
   ~parameters() {}
   
   void clear() { map_.clear(); }
@@ -99,7 +100,7 @@ public:
     }
     return false;
   }
-  std::map<std::string, boost::any>& get_map() { return map_; }
+  std::map<std::string, boost::any>const& get_map() const { return map_; }
   
 private:
   std::map<std::string, boost::any> map_;

@@ -12,7 +12,7 @@ from rokko import *
 
 L = 8
 dim = 1 << L
-solver_name = "slepc" #"anasazi"
+solver_name = "anasazi"
 
 lattice_first  = [x           for x in range(0, L)]
 lattice_second = [(x + 1) % L for x in range(0, L)]
@@ -67,7 +67,9 @@ params.set("Maximum Iterations", 500);
 params.set("Convergence Tolerance", 1.0e-8);
 params.set("num_eigenvalues", 10)
 
-solver.diagonalize_distributed_crs_matrix(mat, params)
+params_out = solver.diagonalize_distributed_crs_matrix(mat, params)
+print("num_conv=%d" % params_out.get("num_conv"))
+keys = params_out.keys()
 num_conv = solver.num_conv()
 
 eig_val = solver.eigenvalue(0)

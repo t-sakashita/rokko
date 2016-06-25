@@ -10,6 +10,7 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 //#include <boost/python/suite/indexing/list.hpp>
 #include <boost/foreach.hpp>
 
@@ -21,6 +22,8 @@
 
 class wrap_parameters : public rokko::parameters {
 public:
+  wrap_parameters() {}
+  wrap_parameters(rokko::parameters const& params_in) : rokko::parameters(params_in) {}
   boost::python::object python_get(std::string const& key) {
     if (type(key) == typeid(int)) {
       return boost::python::object(get<int>(key));
@@ -34,6 +37,11 @@ public:
       return boost::python::object(get<char>(key));
     }
     BOOST_THROW_EXCEPTION(std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.")); 
+  }
+  std::vector<std::string> python_keys() const {
+    std::vector<std::string> keys;
+    BOOST_FOREACH(value_type const& p, get_map()) { keys.push_back(p.first); }
+    return keys;
   }
 };
 
@@ -387,9 +395,8 @@ public:
 
 wrap_parameters wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat, wrap_parameters const& params)
 {
-  wrap_parameters params_out;
-  static_cast<rokko::parameters>(params_out) = static_cast<rokko::parallel_sparse_ev*>(raw->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->get_raw()->ptr),
-													      static_cast<rokko::parameters>(params));
+  wrap_parameters params_out( static_cast<rokko::parallel_sparse_ev*>(raw->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->get_raw()->ptr),
+											     static_cast<rokko::parameters>(params)) );
   return params_out;
 }
 
@@ -406,7 +413,7 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .value("matrix_row_major", matrix_row_major);
 
   class_<wrap_parameters>("rokko_parameters",init<>())
-    //    .def("keys", &wrap_parameters::keys)
+    .def("keys", &wrap_parameters::python_keys)
     .def("clear", (void (wrap_parameters::*)(void)) &wrap_parameters::clear)
     .def("clear", (void (wrap_parameters::*)(std::string const&)) &wrap_parameters::clear)
     .def("defined", &wrap_parameters::defined)
@@ -419,8 +426,11 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .def("get_string", &wrap_parameters::get_string);
   //.def("type", &wrap_parameters::type);
   //class_<std::list<boost::any> >("vector<boost::any>")
-    //    .def(vector_indexing_suite<list<boost::any> >());
-    
+  //    .def(vector_indexing_suite<list<boost::any> >());
+
+  class_<std::vector<std::string> >("std::vector<std::string>")
+    .def(vector_indexing_suite<std::vector<std::string> >());
+
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize_localized_matrix",
          &wrap_rokko_serial_dense_ev::diagonalize_localized_matrix);
