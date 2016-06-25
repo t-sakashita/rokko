@@ -28,4 +28,6 @@ print "b=", b
 dic = params.dict()
 print(dic["STR"])
 
+print(params.keys())
+
 #params.clear()

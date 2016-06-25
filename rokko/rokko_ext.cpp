@@ -39,12 +39,12 @@ public:
     }
     BOOST_THROW_EXCEPTION(std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.")); 
   }
-  std::vector<std::string> python_keys() const {
-    std::vector<std::string> keys;
+  boost::python::list python_keys() const {
+    boost::python::list py_list;
     BOOST_FOREACH(value_type const& p, get_map()) {
-      keys.push_back(p.first);
+      py_list.append(p.first);
     }
-    return keys;
+    return py_list;
   }
   boost::python::dict dict() const {
     boost::python::dict dict;
