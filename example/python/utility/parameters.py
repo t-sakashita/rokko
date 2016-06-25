@@ -25,4 +25,7 @@ print(params.get("ABCD"))
 print(params.get_string("ABCD"))
 print "b=", b
 
-params.clear()
+dic = params.dict()
+print(dic["STR"])
+
+#params.clear()

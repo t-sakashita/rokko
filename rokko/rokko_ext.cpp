@@ -11,6 +11,7 @@
 
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
 //#include <boost/python/suite/indexing/list.hpp>
 #include <boost/foreach.hpp>
 
@@ -24,7 +25,7 @@ class wrap_parameters : public rokko::parameters {
 public:
   wrap_parameters() {}
   wrap_parameters(rokko::parameters const& params_in) : rokko::parameters(params_in) {}
-  boost::python::object python_get(std::string const& key) {
+  boost::python::object python_get(std::string const& key) const {
     if (type(key) == typeid(int)) {
       return boost::python::object(get<int>(key));
     } else if (type(key) == typeid(double)) {
@@ -40,8 +41,17 @@ public:
   }
   std::vector<std::string> python_keys() const {
     std::vector<std::string> keys;
-    BOOST_FOREACH(value_type const& p, get_map()) { keys.push_back(p.first); }
+    BOOST_FOREACH(value_type const& p, get_map()) {
+      keys.push_back(p.first);
+    }
     return keys;
+  }
+  boost::python::dict dict() const {
+    boost::python::dict dict;
+    BOOST_FOREACH(value_type const& p, get_map()) {
+      dict[p.first] = boost::python::object(python_get(p.first));
+    }
+    return dict;
   }
 };
 
@@ -414,6 +424,7 @@ BOOST_PYTHON_MODULE(rokko_ext) {
 
   class_<wrap_parameters>("rokko_parameters",init<>())
     .def("keys", &wrap_parameters::python_keys)
+    .def("dict", &wrap_parameters::dict)
     .def("clear", (void (wrap_parameters::*)(void)) &wrap_parameters::clear)
     .def("clear", (void (wrap_parameters::*)(std::string const&)) &wrap_parameters::clear)
     .def("defined", &wrap_parameters::defined)
@@ -431,6 +442,9 @@ BOOST_PYTHON_MODULE(rokko_ext) {
   class_<std::vector<std::string> >("std::vector<std::string>")
     .def(vector_indexing_suite<std::vector<std::string> >());
 
+  class_<std::map<std::string,boost::python::object> >("std::map<std::string,boost::python::object>")
+    .def(map_indexing_suite<std::map<std::string,boost::python::object> >());
+	
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize_localized_matrix",
          &wrap_rokko_serial_dense_ev::diagonalize_localized_matrix);
