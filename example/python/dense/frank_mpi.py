@@ -28,7 +28,9 @@ w = rokko_localized_vector(dim)
 rokko_frank_matrix_generate_distributed_matrix(mat)
 mat.show()
 
-solver.diagonalize_distributed_matrix(mat, w, Z)
+
+params = rokko_parameters()
+solver.diagonalize_distributed_matrix(mat, w, Z, params)
 
 if (MPI.COMM_WORLD.Get_rank() == 0):
 	print("Computed Eigenvalues =\n");

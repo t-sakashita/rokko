@@ -16,6 +16,7 @@
 #include "rokko_sparse.h"
 #include "utility/frank_matrix_c.h"
 #include <rokko/parameters.hpp>
+#include <rokko/parallel_dense_ev.hpp>
 #include <rokko/parallel_sparse_ev.hpp>
 
 class wrap_parameters : public rokko::parameters {
@@ -199,7 +200,7 @@ public:
     rokko_parallel_dense_ev_default_mapping_f(*raw, dim, *(grid->get_raw()), wrap_map->get_raw());
     return wrap_map;
   }
-  void diagonalize_distributed_matrix(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*);
+  wrap_parameters diagonalize_distributed_matrix(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*, wrap_parameters const& params);
 
   ~wrap_rokko_parallel_dense_ev(void) {
     rokko_parallel_dense_ev_destruct(raw);
@@ -284,9 +285,18 @@ public:
   }
 };
 
-void wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs)
+wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize_distributed_matrix(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs, wrap_parameters const& params)
 {
-  rokko_parallel_dense_ev_diagonalize_distributed_matrix(*raw, *(mat->get_raw()), *(eigvals->get_raw()), *(eigvecs->get_raw()));
+  if (mat->get_raw()->major == rokko_matrix_col_major)
+    return wrap_parameters( static_cast<rokko::parallel_dense_ev*>(raw->ptr)->diagonalize(
+     *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->get_raw()->ptr),
+     *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr),
+     *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->get_raw()->ptr), params) );
+  else
+    return wrap_parameters( static_cast<rokko::parallel_dense_ev*>(raw->ptr)->diagonalize(
+     *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->get_raw()->ptr),
+     *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr),
+     *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->get_raw()->ptr), params) );
 }
 
 void wrap_rokko_gather(wrap_rokko_distributed_matrix* matrix, double* array, int root)
