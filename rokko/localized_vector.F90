@@ -1,4 +1,15 @@
-module localized_vector_mod
+!*****************************************************************************
+!
+! Rokko: Integrated Interface for libraries of eigenvalue decomposition
+!
+! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+!
+! Distributed under the Boost Software License, Version 1.0. (See accompanying
+! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+!
+!*****************************************************************************
+
+module rokko_localized_vector_mod
   use iso_c_binding
   implicit none
 
@@ -47,4 +58,4 @@ module localized_vector_mod
      end function rokko_localized_vector_get_f
   end interface rokko_localized_vector_get
 
-end module localized_vector_mod
+end module rokko_localized_vector_mod

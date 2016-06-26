@@ -14,8 +14,8 @@
 module rokko_serial_dense
   use iso_c_binding
   use rokko_string
-  use localized_matrix_mod
-  use localized_vector_mod
+  use rokko_localized_matrix_mod
+  use rokko_localized_vector_mod
   implicit none
 
   enum, bind(c)
