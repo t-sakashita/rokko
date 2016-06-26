@@ -24,7 +24,27 @@ module parameters
      type(c_ptr) ptr
   end type rokko_parameters
 
-  ! generic_interface
+  ! generic interface
+  !interface construct
+  !   module procedure rokko_parameters_construct
+  !end interface construct
+  
+  interface get
+     module procedure rokko_parameters_get_int
+     module procedure rokko_parameters_get_double
+     !module procedure rokko_parameters_get_char
+     module procedure rokko_parameters_get_logical
+     module procedure rokko_parameters_get_string
+  end interface get
+
+  interface set
+     module procedure rokko_parameters_set_int
+     module procedure rokko_parameters_set_double
+     !module procedure rokko_parameters_set_char
+     module procedure rokko_parameters_set_logical
+     module procedure rokko_parameters_set_string
+  end interface set
+  
   interface rokko_parameters_get
      module procedure rokko_parameters_get_int
      module procedure rokko_parameters_get_double

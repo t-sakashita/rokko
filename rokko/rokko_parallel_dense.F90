@@ -62,7 +62,7 @@ module rokko_parallel_dense
   !
   ! rokko_parallel_dense_ev
   !
-     
+
   interface
      subroutine rokko_parallel_dense_ev_destruct(solver) bind(c)
        use iso_c_binding
@@ -182,6 +182,19 @@ module rokko_parallel_dense
      end subroutine rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout     
      
   end interface rokko_parallel_dense_ev_diagonalize
+
+  ! generic names
+  !interface construct
+  !   procedure rokko_parallel_dense_ev_construct
+  !end interface contruct
+
+  interface destruct
+     procedure rokko_parallel_dense_ev_destruct
+  end interface destruct
+
+  interface diagonalize
+     procedure rokko_parallel_dense_ev_diagonalize
+  end interface diagonalize
   
   !
   ! collective operations
