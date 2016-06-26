@@ -445,7 +445,7 @@ public:
   }
 };
 
-wrap_parameters wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat, wrap_parameters const& params)
+wrap_parameters wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix(wrap_rokko_distributed_crs_matrix* mat, wrap_parameters const& params = dummy_parameters)
 {
   wrap_parameters params_out( static_cast<rokko::parallel_sparse_ev*>(raw->ptr)->diagonalize(*static_cast<rokko::distributed_crs_matrix*>(mat->get_raw()->ptr),
 											     static_cast<rokko::parameters>(params)) );
@@ -459,6 +459,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(localized_matrix_diagonalize_overloads, w
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_matrix_diagonalize_eigvals_overloads, wrap_rokko_parallel_dense_ev::diagonalize_eigvals, 2, 3)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_matrix_diagonalize_overloads, wrap_rokko_parallel_dense_ev::diagonalize, 3, 4)
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_crs_matrix_diagonalize_overloads, wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix, 1, 2)
 
 BOOST_PYTHON_MODULE(rokko_ext) {
   using namespace boost::python;
@@ -529,8 +531,8 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .def("translate_g2l_col", &wrap_rokko_distributed_matrix::translate_g2l_col);
   class_<wrap_rokko_parallel_sparse_ev>("rokko_parallel_sparse_ev",
 					init<char*, int, char**>())
-    .def("diagonalize_distributed_crs_matrix",
-         &wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix)
+    .def("diagonalize",
+         &wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix, distributed_crs_matrix_diagonalize_overloads())
     .def("eigenvalue", &wrap_rokko_parallel_sparse_ev::eigenvalue)
     .def("eigenvector", &wrap_rokko_parallel_sparse_ev::eigenvector)
     .def("num_conv", &wrap_rokko_parallel_sparse_ev::num_conv);

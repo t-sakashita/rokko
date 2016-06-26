@@ -67,7 +67,7 @@ params.set("Maximum Iterations", 500);
 params.set("Convergence Tolerance", 1.0e-8);
 params.set("num_eigenvalues", 10)
 
-params_out = solver.diagonalize_distributed_crs_matrix(mat, params)
+params_out = solver.diagonalize(mat, params)
 print("num_conv=%d" % params_out.get("num_conv"))
 keys = params_out.keys()
 num_conv = solver.num_conv()
