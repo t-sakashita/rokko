@@ -9,44 +9,16 @@
 !
 !*****************************************************************************
 
-module rokko_mapping_bc_mod
-  use rokko_parallel_dense_classes
-  use iso_c_binding
-  implicit none
-
-  interface
-
-     subroutine rokko_mapping_bc_construct(map, global_dim, grid, solver) &
-          bind(c)
-       use iso_c_binding
-       import rokko_grid, rokko_mapping_bc, rokko_parallel_dense_ev
-       implicit none
-       type(rokko_mapping_bc), intent(inout) :: map
-       integer(c_int), value, intent(in) :: global_dim
-       type(rokko_grid), value, intent(in) :: grid
-       type(rokko_parallel_dense_ev), value, intent(in) :: solver
-     end subroutine rokko_mapping_bc_construct
-     
-     subroutine rokko_mapping_bc_destruct(map) bind(c)
-       use iso_c_binding
-       import rokko_mapping_bc
-       implicit none
-       type(rokko_mapping_bc), intent(inout) :: map
-     end subroutine rokko_mapping_bc_destruct
-
-  end interface
-  
-end module rokko_mapping_bc_mod
-
-     
 module rokko_distributed_matrix_mod
-  use rokko_parallel_dense_classes
+!  use rokko_parallel_dense_classes
   use iso_c_binding
+!  use rokko_parallel_dense_ev_type
+  use rokko_mapping_bc_type
+  use rokko_distributed_matrix_type
+!  use rokko_parallel_dense, only : rokko_parallel_dense_ev
+  use rokko_grid_mod, only : rokko_grid
+!  use rokko_mapping_bc_mod, only : rokko_mapping_bc
   implicit none
-
-  !
-  ! rokko_distributed_matrix
-  !
 
   interface
      subroutine rokko_distributed_matrix_construct(matrix, map) &
@@ -58,16 +30,16 @@ module rokko_distributed_matrix_mod
        type(rokko_mapping_bc), value, intent(in) :: map
      end subroutine rokko_distributed_matrix_construct
 
-     subroutine rokko_distributed_matrix_construct_solver(matrix, dim1, dim2, grid, solver) &
-          bind(c)
-       use iso_c_binding
-       import rokko_grid, rokko_parallel_dense_ev, rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), intent(out) :: matrix
-       integer(c_int), value, intent(in) :: dim1, dim2
-       type(rokko_grid), value, intent(in) :: grid
-       type(rokko_parallel_dense_ev), value, intent(in) :: solver
-     end subroutine rokko_distributed_matrix_construct_solver
+     ! subroutine rokko_distributed_matrix_construct_solver(matrix, dim1, dim2, grid, solver) &
+     !      bind(c)
+     !   use iso_c_binding
+     !   import rokko_grid, rokko_parallel_dense_ev, rokko_distributed_matrix
+     !   implicit none
+     !   type(rokko_distributed_matrix), intent(out) :: matrix
+     !   integer(c_int), value, intent(in) :: dim1, dim2
+     !   type(rokko_grid), value, intent(in) :: grid
+     !   type(rokko_parallel_dense_ev), value, intent(in) :: solver
+     ! end subroutine rokko_distributed_matrix_construct_solver
      
      subroutine rokko_distributed_matrix_destruct(matrix) bind(c)
        use iso_c_binding

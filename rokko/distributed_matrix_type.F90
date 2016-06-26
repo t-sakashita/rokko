@@ -9,15 +9,13 @@
 !
 !*****************************************************************************
 
-#include <rokko/config.h>
-
-module rokko_dense
+module rokko_distributed_matrix_type
   use iso_c_binding
-  use rokko_serial_dense
-#ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
-  use rokko_parallel_dense_mod
-  use collective
-#endif
   implicit none
-end module rokko_dense
 
+  type, bind(c) :: rokko_distributed_matrix
+     type(c_ptr) :: ptr
+     integer(c_int) :: major
+  end type rokko_distributed_matrix
+contains
+end module rokko_distributed_matrix_type

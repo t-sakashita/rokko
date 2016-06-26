@@ -9,15 +9,21 @@
 !
 !*****************************************************************************
 
-#include <rokko/config.h>
-
-module rokko_dense
+module rokko_mapping_bc_type
   use iso_c_binding
-  use rokko_serial_dense
-#ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
-  use rokko_parallel_dense_mod
-  use collective
-#endif
   implicit none
-end module rokko_dense
 
+  type, bind(c) :: rokko_mapping_bc
+     type(c_ptr) ptr
+     integer(c_int) major
+  end type rokko_mapping_bc
+end module rokko_mapping_bc_type
+
+!module rokko_parallel_dense_classes
+!  use iso_c_binding
+
+  !
+  ! classes (circular dependent types)
+  !
+
+!end module rokko_parallel_dense_classes

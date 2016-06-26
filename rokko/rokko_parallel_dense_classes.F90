@@ -9,30 +9,31 @@
 !
 !*****************************************************************************
 
-module rokko_parallel_dense_classes
+module rokko_mapping_bc_type
   use iso_c_binding
-
-  !
-  ! classes
-  !
-
-  type, bind(c) :: rokko_grid
-     type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_grid
-
-  type, bind(c) :: rokko_parallel_dense_ev
-     type(c_ptr) ptr
-  end type rokko_parallel_dense_ev
+  implicit none
 
   type, bind(c) :: rokko_mapping_bc
      type(c_ptr) ptr
      integer(c_int) major
   end type rokko_mapping_bc
-  
-  type, bind(c) :: rokko_distributed_matrix
+end module rokko_mapping_bc_type
+
+module rokko_parallel_dense_ev_type
+  use iso_c_binding
+  implicit none
+
+  type, bind(c) :: rokko_parallel_dense_ev
      type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_distributed_matrix
-  
-end module rokko_parallel_dense_classes
+  end type rokko_parallel_dense_ev
+
+end module rokko_parallel_dense_ev_type
+
+!module rokko_parallel_dense_classes
+!  use iso_c_binding
+
+  !
+  ! classes (circular dependent types)
+  !
+
+!end module rokko_parallel_dense_classes

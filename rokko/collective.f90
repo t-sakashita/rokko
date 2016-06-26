@@ -9,19 +9,49 @@
 !
 !*****************************************************************************
 
-subroutine rokko_all_gather(matrix, array)
-  use iso_c_binding
-  use rokko_parallel_dense_classes
-!  use rokko_distributed_matrix_mod
-  use rokko_parallel_dense, only: rokko_distributed_matrix, rokko_distributed_matrix_get_nprocs, rokko_gather
+module collective
+  use rokko_distributed_matrix_mod
   implicit none
-  type(rokko_distributed_matrix), value, intent(in) :: matrix
-  double precision, intent(in), target :: array(:,:)
-  integer(c_int) :: root, nprocs, ierr
-  double precision, pointer :: parray
-  nprocs = rokko_distributed_matrix_get_nprocs(matrix)
-  parray => array(1, 1)
-  do root = 0, nprocs - 1
-    ierr = rokko_gather(matrix, c_loc(parray), root)
-  end do
-end subroutine rokko_all_gather
+
+  interface
+     function rokko_gather(matrix, array, root) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_gather
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       type(c_ptr), value, intent(in) :: array
+       integer(c_int), value ::root
+     end function rokko_gather
+
+     function rokko_scatter(array, matrix, root) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_scatter
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       type(c_ptr), value, intent(in) :: array
+       integer(c_int), value :: root
+     end function rokko_scatter
+  end interface
+
+contains
+  
+  subroutine rokko_all_gather(matrix, array)
+    use iso_c_binding
+    use rokko_parallel_dense_classes
+!    use rokko_distributed_matrix_mod
+!    use rokko_parallel_dense, only : rokko_distributed_matrix_get_nprocs, rokko_gather
+    implicit none
+    type(rokko_distributed_matrix), value, intent(in) :: matrix
+    double precision, intent(in), target :: array(:,:)
+    integer(c_int) :: root, nprocs, ierr
+    double precision, pointer :: parray
+    nprocs = rokko_distributed_matrix_get_nprocs(matrix)
+    parray => array(1, 1)
+    do root = 0, nprocs - 1
+       ierr = rokko_gather(matrix, c_loc(parray), root)
+    end do
+  end subroutine rokko_all_gather
+
+end module collective
