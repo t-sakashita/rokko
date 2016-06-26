@@ -14,50 +14,12 @@
 module rokko_parallel_dense
   use iso_c_binding
   use rokko_parallel_dense_classes
+  use rokko_grid_mod
   use rokko_mapping_bc_mod
   use rokko_distributed_matrix_mod
   use rokko_serial_dense
   use rokko_string
   implicit none
-  
-  !
-  ! rokko_grid
-  !
-  
-  interface
-     subroutine rokko_grid_destruct(grid) bind(c)
-       import rokko_grid
-       implicit none
-       type(rokko_grid), intent(inout) :: grid
-     end subroutine rokko_grid_destruct
-
-     function rokko_grid_get_myrank(grid) bind(c)
-       use iso_c_binding
-       import rokko_grid
-       implicit none
-       integer(c_int) :: rokko_grid_get_myrank
-       type(rokko_grid), value, intent(in) :: grid
-     end function rokko_grid_get_myrank
-
-     function rokko_grid_get_nprocs(grid) bind(c)
-       use iso_c_binding
-       import rokko_grid
-       implicit none
-       integer(c_int) :: rokko_grid_get_nprocs
-       type(rokko_grid), value, intent(in) :: grid
-     end function rokko_grid_get_nprocs
-  end interface
-  
-  interface rokko_grid_construct
-     subroutine rokko_grid_construct_f(grid, comm, grid_major) bind(c)
-       use iso_c_binding
-       import rokko_grid
-       implicit none
-       type(rokko_grid), intent(out) :: grid
-       integer(c_int), value, intent(in) :: comm
-       integer(c_int), value, intent(in) :: grid_major
-     end subroutine rokko_grid_construct_f
-  end interface rokko_grid_construct
 
   !
   ! rokko_parallel_dense_ev

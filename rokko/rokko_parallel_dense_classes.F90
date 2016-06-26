@@ -16,23 +16,8 @@ module rokko_parallel_dense_classes
   ! classes
   !
 
-  type, bind(c) :: rokko_grid
-     type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_grid
-
   type, bind(c) :: rokko_parallel_dense_ev
      type(c_ptr) ptr
   end type rokko_parallel_dense_ev
-
-  type, bind(c) :: rokko_mapping_bc
-     type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_mapping_bc
-  
-  type, bind(c) :: rokko_distributed_matrix
-     type(c_ptr) ptr
-     integer(c_int) major
-  end type rokko_distributed_matrix
   
 end module rokko_parallel_dense_classes

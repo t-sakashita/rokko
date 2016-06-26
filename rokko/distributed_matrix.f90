@@ -11,9 +11,15 @@
 
 module rokko_mapping_bc_mod
   use rokko_parallel_dense_classes
+  use rokko_grid_mod
   use iso_c_binding
   implicit none
 
+  type, bind(c) :: rokko_mapping_bc
+     type(c_ptr) ptr
+     integer(c_int) major
+  end type rokko_mapping_bc
+  
   interface
 
      subroutine rokko_mapping_bc_construct(map, global_dim, grid, solver) &
@@ -41,12 +47,15 @@ end module rokko_mapping_bc_mod
      
 module rokko_distributed_matrix_mod
   use rokko_parallel_dense_classes
+  use rokko_grid_mod, only : rokko_grid
+  use rokko_mapping_bc_mod, only : rokko_mapping_bc
   use iso_c_binding
   implicit none
 
-  !
-  ! rokko_distributed_matrix
-  !
+  type, bind(c) :: rokko_distributed_matrix
+     type(c_ptr) ptr
+     integer(c_int) major
+  end type rokko_distributed_matrix
 
   interface
      subroutine rokko_distributed_matrix_construct(matrix, map) &
