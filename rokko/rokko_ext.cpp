@@ -481,6 +481,7 @@ BOOST_PYTHON_MODULE(rokko_ext) {
     .def("set", &wrap_parameters::set<char>)
     .def("set", &wrap_parameters::set<std::string>)
     .def("set", &wrap_parameters::set<int>)
+    .def("set", &wrap_parameters::set<bool>)
     .def("get_string", &wrap_parameters::get_string);
   //.def("type", &wrap_parameters::type);
 
