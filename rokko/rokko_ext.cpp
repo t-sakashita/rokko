@@ -16,6 +16,7 @@
 #include "rokko_sparse.h"
 #include "utility/frank_matrix_c.h"
 #include <rokko/parameters.hpp>
+#include <rokko/serial_dense_ev.hpp>
 #include <rokko/parallel_dense_ev.hpp>
 #include <rokko/parallel_sparse_ev.hpp>
 
@@ -114,8 +115,28 @@ public:
     return raw;
   }
 
-  void diagonalize(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_localized_matrix* eigvecs) {
-    rokko_serial_dense_ev_diagonalize_localized_matrix(*raw, *(mat->get_raw()), *(eigvals->get_raw()), *(eigvecs->get_raw()));
+  wrap_parameters diagonalize_eigvals(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_parameters const& params = dummy_parameters) {
+  if (mat->get_raw()->major == rokko_matrix_col_major)
+    return wrap_parameters( static_cast<rokko::serial_dense_ev*>(raw->ptr)->diagonalize(
+     *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->get_raw()->ptr),
+     *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr), params) );
+  else
+    return wrap_parameters( static_cast<rokko::serial_dense_ev*>(raw->ptr)->diagonalize(
+     *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->get_raw()->ptr),
+     *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr), params) );
+  }
+
+  wrap_parameters diagonalize(wrap_rokko_localized_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_localized_matrix* eigvecs, wrap_parameters const& params = dummy_parameters) {
+    if (mat->get_raw()->major == rokko_matrix_col_major)
+      return wrap_parameters( static_cast<rokko::serial_dense_ev*>(raw->ptr)->diagonalize(
+       *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(mat->get_raw()->ptr),
+       *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr),
+       *static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(eigvecs->get_raw()->ptr), params) );
+    else
+      return wrap_parameters( static_cast<rokko::serial_dense_ev*>(raw->ptr)->diagonalize(
+       *static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(mat->get_raw()->ptr),
+       *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr),
+       *static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(eigvecs->get_raw()->ptr), params) );
   }
 
   ~wrap_rokko_serial_dense_ev(void) {
@@ -204,9 +225,7 @@ public:
     return wrap_map;
   }
   wrap_parameters diagonalize_eigvals(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_parameters const& params);
-  //wrap_parameters diagonalize_eigvals(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals);
   wrap_parameters diagonalize(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*, wrap_parameters const& params);
-  //wrap_parameters diagonalize(wrap_rokko_distributed_matrix*, wrap_rokko_localized_vector*, wrap_rokko_distributed_matrix*);
 
   ~wrap_rokko_parallel_dense_ev(void) {
     rokko_parallel_dense_ev_destruct(raw);
@@ -302,11 +321,6 @@ wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize_eigvals(wrap_rokko_dis
      *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr), params) );
 }
 
-/*wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize_eigvals(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals) {
-  wrap_parameters dummy_params;
-  return wrap_rokko_parallel_dense_ev::diagonalize_eigvals(mat, eigvals, dummy_params);
-  }*/
-
 wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs, wrap_parameters const& params = dummy_parameters) {
   if (mat->get_raw()->major == rokko_matrix_col_major)
     return wrap_parameters( static_cast<rokko::parallel_dense_ev*>(raw->ptr)->diagonalize(
@@ -315,15 +329,10 @@ wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize(wrap_rokko_distributed
      *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->get_raw()->ptr), params) );
   else
     return wrap_parameters( static_cast<rokko::parallel_dense_ev*>(raw->ptr)->diagonalize(
-     *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->get_raw()->ptr),
+     *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->get_raw()->ptr),
      *static_cast<rokko::localized_vector<double>*>(eigvals->get_raw()->ptr),
-     *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->get_raw()->ptr), params) );
+     *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs->get_raw()->ptr), params) );
 }
-
-/*wrap_parameters wrap_rokko_parallel_dense_ev::diagonalize(wrap_rokko_distributed_matrix* mat, wrap_rokko_localized_vector* eigvals, wrap_rokko_distributed_matrix* eigvecs) {
-  wrap_parameters dummy_params;
-  return wrap_rokko_parallel_dense_ev::diagonalize(mat, eigvals, eigvecs, dummy_params);
-  }*/
 
 void wrap_rokko_gather(wrap_rokko_distributed_matrix* matrix, double* array, int root)
 {
@@ -445,6 +454,9 @@ wrap_parameters wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matri
 
 #endif
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(localized_matrix_diagonalize_eigvals_overloads, wrap_rokko_serial_dense_ev::diagonalize_eigvals, 2, 3)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(localized_matrix_diagonalize_overloads, wrap_rokko_serial_dense_ev::diagonalize, 3, 4)
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_matrix_diagonalize_eigvals_overloads, wrap_rokko_parallel_dense_ev::diagonalize_eigvals, 2, 3)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_matrix_diagonalize_overloads, wrap_rokko_parallel_dense_ev::diagonalize, 3, 4)
 
@@ -474,7 +486,9 @@ BOOST_PYTHON_MODULE(rokko_ext) {
 
   class_<wrap_rokko_serial_dense_ev>("rokko_serial_dense_ev", init<char*, int, char**>())
     .def("diagonalize",
-         &wrap_rokko_serial_dense_ev::diagonalize);
+         &wrap_rokko_serial_dense_ev::diagonalize_eigvals, localized_matrix_diagonalize_eigvals_overloads())
+    .def("diagonalize",
+         &wrap_rokko_serial_dense_ev::diagonalize, localized_matrix_diagonalize_overloads());
   class_<wrap_rokko_localized_vector>("rokko_localized_vector", init<int>())
     .def("get", &wrap_rokko_localized_vector::get);
   class_<wrap_rokko_localized_matrix>("rokko_localized_matrix", init<int, int, int>())
