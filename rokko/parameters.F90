@@ -16,18 +16,14 @@ module parameters
   use rokko_string
   implicit none
 
-  !
-  ! classes
-  !
-
   type, bind(c) :: rokko_parameters
      type(c_ptr) ptr
   end type rokko_parameters
 
   ! generic interface
-  !interface construct
-  !   module procedure rokko_parameters_construct
-  !end interface construct
+  interface construct
+     procedure rokko_parameters_construct
+  end interface construct
   
   interface get
      module procedure rokko_parameters_get_int

@@ -44,15 +44,15 @@ program frank_matrix
 
   call construct(solver, library)
 
-  call rokko_localized_matrix_construct(mat, dim, dim, rokko_matrix_col_major)
-  call rokko_localized_matrix_construct(Z, dim, dim, rokko_matrix_col_major)
-  call rokko_localized_vector_construct(w, dim)
+  call construct(mat, dim, dim, rokko_matrix_col_major)
+  call construct(Z, dim, dim, rokko_matrix_col_major)
+  call construct(w, dim)
 
   ! generate frank matrix
-  call rokko_frank_matrix_generate_localized_matrix(mat)
-  call rokko_localized_matrix_print(mat)
+  call frank_matrix_generate(mat)
+  call print(mat)
 
-  call rokko_parameters_construct(params)
+  call construct(params)
 
   call set(params, "routine", "dsyevr")
   call set(params, "verbose", .true.)

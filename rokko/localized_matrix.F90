@@ -53,6 +53,10 @@ module localized_matrix_mod
   ! rokko_frank_matrix for localized_matrix
   !
 
+  interface frank_matrix_generate
+     procedure rokko_frank_matrix_generate_localized_matrix
+  end interface frank_matrix_generate
+  
   interface
      subroutine rokko_frank_matrix_generate_localized_matrix(matrix) bind(c)
        use iso_c_binding
