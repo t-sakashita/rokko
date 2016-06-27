@@ -39,9 +39,6 @@ contains
   
   subroutine rokko_all_gather(matrix, array)
     use iso_c_binding
-    use rokko_parallel_dense_classes
-!    use rokko_distributed_matrix_mod
-!    use rokko_parallel_dense, only : rokko_distributed_matrix_get_nprocs, rokko_gather
     implicit none
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     double precision, intent(in), target :: array(:,:)
