@@ -11,7 +11,6 @@
 
 module rokko_distributed_matrix_mod
   use iso_c_binding
-  use rokko_parallel_dense_ev_mod, only : rokko_parallel_dense_ev
   use rokko_grid_mod, only : rokko_grid
   use rokko_mapping_bc_mod, only : rokko_mapping_bc
   implicit none
@@ -30,17 +29,6 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), intent(out) :: matrix
        type(rokko_mapping_bc), value, intent(in) :: map
      end subroutine rokko_distributed_matrix_construct
-
-     ! subroutine rokko_distributed_matrix_construct_solver(matrix, dim1, dim2, grid, solver) &
-     !      bind(c)
-     !   use iso_c_binding
-     !   import rokko_grid, rokko_parallel_dense_ev, rokko_distributed_matrix
-     !   implicit none
-     !   type(rokko_distributed_matrix), intent(out) :: matrix
-     !   integer(c_int), value, intent(in) :: dim1, dim2
-     !   type(rokko_grid), value, intent(in) :: grid
-     !   type(rokko_parallel_dense_ev), value, intent(in) :: solver
-     ! end subroutine rokko_distributed_matrix_construct_solver
      
      subroutine rokko_distributed_matrix_destruct(matrix) bind(c)
        use iso_c_binding
