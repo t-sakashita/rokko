@@ -13,7 +13,7 @@ module rokko_distributed_matrix_mod
 !  use rokko_parallel_dense_classes
   use iso_c_binding
 !  use rokko_parallel_dense_ev_type
-  use rokko_mapping_bc_type
+  use rokko_mapping_bc_mod, only : rokko_mapping_bc
   use rokko_distributed_matrix_type
 !  use rokko_parallel_dense, only : rokko_parallel_dense_ev
   use rokko_grid_mod, only : rokko_grid

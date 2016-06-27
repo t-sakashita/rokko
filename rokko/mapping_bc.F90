@@ -13,10 +13,15 @@ module rokko_mapping_bc_mod
 !  use rokko_parallel_dense, only : rokko_parallel_dense_ev
 !  use rokko_parallel_dense_classes
   use rokko_grid_mod
-  use rokko_mapping_bc_type
+!  use rokko_mapping_bc_type
   use iso_c_binding
   implicit none
-  
+
+  type, bind(c) :: rokko_mapping_bc
+     type(c_ptr) ptr
+     integer(c_int) major
+  end type rokko_mapping_bc
+
   interface
 
      ! subroutine rokko_mapping_bc_construct(map, global_dim, grid, solver) &

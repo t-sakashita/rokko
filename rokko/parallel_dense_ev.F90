@@ -16,9 +16,8 @@ module rokko_parallel_dense_ev_mod
   use rokko_grid_mod
 !  use rokko_parallel_dense_classes
   use rokko_parallel_dense_ev_type
-  use rokko_mapping_bc_type
+  use rokko_mapping_bc_mod, only : rokko_mapping_bc
   use rokko_distributed_matrix_type
-!  use rokko_mapping_bc_mod, only : rokko_mapping_bc
 !  use rokko_distributed_matrix_mod, only : rokko_distributed_matrix
   use rokko_serial_dense
   use rokko_string
