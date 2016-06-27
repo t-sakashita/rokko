@@ -21,7 +21,11 @@ w = rokko_localized_vector(dim)
 rokko_generate_frank_matrix(mat)
 mat.show()
 
-solver.diagonalize(mat, w, Z)
+params = rokko_parameters()
+params.set("routine", "dsyevr")
+b = True
+params.set("verbose", 1)
+solver.diagonalize(mat, w, Z, params)
 
 print("Computed Eigenvalues =\n");
 
