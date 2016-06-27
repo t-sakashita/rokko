@@ -12,12 +12,10 @@
 #include <rokko/config.h>
 
 module rokko_parallel_dense_mod
-!  use rokko_serial_dense
   use rokko_parallel_dense_ev_mod
   use rokko_grid_mod
   use rokko_mapping_bc_mod
   use rokko_distributed_matrix_mod
-!  use rokko_string
   implicit none
   
 end module rokko_parallel_dense_mod
