@@ -18,8 +18,8 @@ module rokko_localized_matrix_mod
   end enum
 
   type, bind(c) :: rokko_localized_matrix
-     type(c_ptr) ptr
-     integer(c_int) major
+     type(c_ptr) :: ptr
+     integer(c_int) :: major
   end type rokko_localized_matrix
 
   ! generic names

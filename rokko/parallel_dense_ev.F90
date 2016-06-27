@@ -20,7 +20,7 @@ module rokko_parallel_dense_ev_mod
   implicit none
 
   type, bind(c) :: rokko_parallel_dense_ev
-     type(c_ptr) ptr
+     type(c_ptr) :: ptr
   end type rokko_parallel_dense_ev
   
   interface

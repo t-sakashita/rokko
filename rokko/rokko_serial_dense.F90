@@ -24,7 +24,7 @@ module rokko_serial_dense
   end enum
 
   type, bind(c) :: rokko_serial_dense_ev
-     type(c_ptr) ptr
+     type(c_ptr) :: ptr
   end type rokko_serial_dense_ev
 
   interface
