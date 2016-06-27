@@ -14,8 +14,8 @@ module rokko_grid_mod
   implicit none
 
   type, bind(c) :: rokko_grid
-     type(c_ptr) ptr
-     integer(c_int) major
+     type(c_ptr) :: ptr
+     integer(c_int) :: major
   end type rokko_grid
   
   interface

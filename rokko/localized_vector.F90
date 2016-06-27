@@ -14,7 +14,7 @@ module rokko_localized_vector_mod
   implicit none
 
   type, bind(c) :: rokko_localized_vector
-     type(c_ptr) ptr
+     type(c_ptr) :: ptr
   end type rokko_localized_vector
 
   ! generic names

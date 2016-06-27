@@ -16,8 +16,8 @@ module rokko_mapping_bc_mod
   implicit none
 
   type, bind(c) :: rokko_mapping_bc
-     type(c_ptr) ptr
-     integer(c_int) major
+     type(c_ptr) :: ptr
+     integer(c_int) :: major
   end type rokko_mapping_bc
 
   interface

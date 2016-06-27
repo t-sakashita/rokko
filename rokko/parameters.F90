@@ -17,7 +17,7 @@ module parameters
   implicit none
 
   type, bind(c) :: rokko_parameters
-     type(c_ptr) ptr
+     type(c_ptr) :: ptr
   end type rokko_parameters
 
   ! generic interface
