@@ -9,8 +9,6 @@
 !
 !*****************************************************************************
 
-#include <rokko/config.h>
-
 module rokko_parallel_dense_ev_mod
   use iso_c_binding
   use rokko_grid_mod

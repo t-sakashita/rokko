@@ -9,8 +9,6 @@
 !
 !*****************************************************************************
 
-#include <rokko/config.h>
-
 module rokko_parallel_dense_mod
   use rokko_parallel_dense_ev_mod
   use rokko_grid_mod
