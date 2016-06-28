@@ -23,17 +23,17 @@ module rokko_localized_matrix_mod
   end type rokko_localized_matrix
 
   ! generic names
-  interface construct
+  interface rokko_construct
      procedure rokko_localized_matrix_construct
-  end interface construct
+  end interface rokko_construct
 
-  interface destruct
+  interface rokko_destruct
      procedure rokko_localized_matrix_destruct
-  end interface destruct
+  end interface rokko_destruct
 
-  interface print
+  interface rokko_print
      procedure rokko_localized_matrix_print
-  end interface print
+  end interface rokko_print
   
   interface
      subroutine rokko_localized_matrix_construct(matrix, dim1, dim2, matrix_major) bind(c)
@@ -64,9 +64,9 @@ module rokko_localized_matrix_mod
   ! rokko_frank_matrix for localized_matrix
   !
 
-  interface frank_matrix_generate
+  interface rokko_frank_matrix_generate
      procedure rokko_frank_matrix_generate_localized_matrix
-  end interface frank_matrix_generate
+  end interface rokko_frank_matrix_generate
   
   interface
      subroutine rokko_frank_matrix_generate_localized_matrix(matrix) bind(c)

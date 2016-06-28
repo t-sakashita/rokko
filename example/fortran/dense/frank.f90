@@ -42,33 +42,33 @@ program frank_matrix
   print *,"routine = ", routine
   print *,"dimension = ", dim
 
-  call construct(solver, library)
+  call rokko_construct(solver, library)
 
-  call construct(mat, dim, dim, rokko_matrix_col_major)
-  call construct(Z, dim, dim, rokko_matrix_col_major)
-  call construct(w, dim)
+  call rokko_construct(mat, dim, dim, rokko_matrix_col_major)
+  call rokko_construct(Z, dim, dim, rokko_matrix_col_major)
+  call rokko_construct(w, dim)
 
   ! generate frank matrix
-  call frank_matrix_generate(mat)
-  call print(mat)
+  call rokko_frank_matrix_generate(mat)
+  call rokko_print(mat)
 
-  call construct(params)
+  call rokko_construct(params)
 
-  call set(params, "routine", "dsyevr")
-  call set(params, "verbose", .true.)
-  call set(params, "upper_index", 4)
-  call set(params, "lower_index", 2)
-  call set(params, "upper_value", 3.2d0)
-  call set(params, "lower_value", 1.11d0)
+  call rokko_set(params, "routine", "dsyevr")
+  call rokko_set(params, "verbose", .true.)
+  call rokko_set(params, "upper_index", 4)
+  call rokko_set(params, "lower_index", 2)
+  call rokko_set(params, "upper_value", 3.2d0)
+  call rokko_set(params, "lower_value", 1.11d0)
 
 !  call diagonalize(solver, mat, w, Z, params, params_out)
 !  call diagonalize(solver, mat, w, Z, params)
 !  call diagonalize(solver, mat, w, Z)
-  call diagonalize(solver, mat, w, params, params_out)
+  call rokko_diagonalize(solver, mat, w, params, params_out)
 !  call diagonalize(solver, mat, w, params)
 !  call diagonalize(solver, mat, w)
   
-  call get(params_out, "info", info)
+  call rokko_get(params_out, "info", info)
 
   print *, "info=", info
 
@@ -77,9 +77,9 @@ program frank_matrix
      write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
   enddo
 
-  call destruct(mat)
-  call destruct(Z)
-  call destruct(w)
-  call destruct(solver)
+  call rokko_destruct(mat)
+  call rokko_destruct(Z)
+  call rokko_destruct(w)
+  call rokko_destruct(solver)
 
 end program frank_matrix

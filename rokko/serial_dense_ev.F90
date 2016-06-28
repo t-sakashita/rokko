@@ -136,22 +136,22 @@ module rokko_serial_dense_ev_mod
   end interface rokko_serial_dense_ev_diagonalize
 
   ! generic names
-  interface construct
+  interface rokko_construct
      module procedure rokko_serial_dense_ev_construct
-  end interface construct
+  end interface rokko_construct
   
-  interface destruct
+  interface rokko_destruct
      procedure rokko_serial_dense_ev_destruct
-  end interface destruct
+  end interface rokko_destruct
 
-  interface diagonalize
+  interface rokko_diagonalize
      procedure rokko_serial_dense_ev_diagonalize
      procedure rokko_serial_dense_ev_diagonalize_no_params_out
      procedure rokko_serial_dense_ev_diagonalize_no_params_inout
      procedure rokko_serial_dense_ev_diagonalize_eigvals
      procedure rokko_serial_dense_ev_diagonalize_eigvals_no_params_out
      procedure rokko_serial_dense_ev_diagonalize_eigvals_no_params_inout
-  end interface diagonalize
+  end interface rokko_diagonalize
   
 contains
 

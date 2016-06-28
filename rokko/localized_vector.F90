@@ -18,17 +18,17 @@ module rokko_localized_vector_mod
   end type rokko_localized_vector
 
   ! generic names
-  interface construct
+  interface rokko_construct
      procedure rokko_localized_vector_construct
-  end interface construct
+  end interface rokko_construct
 
-  interface destruct
+  interface rokko_destruct
      procedure rokko_localized_vector_destruct
-  end interface destruct
+  end interface rokko_destruct
 
-!  interface print
+!  interface rokko_print
 !     procedure rokko_localized_vector_print
-!  end interface print
+!  end interface rokko_print
   
   interface
      subroutine rokko_localized_vector_construct(vec, dim1) bind(c)
