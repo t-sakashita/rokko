@@ -29,7 +29,6 @@ module rokko_serial_dense_ev_mod
 
   interface
      subroutine rokko_serial_dense_ev_destruct(solver) bind(c)
-       use iso_c_binding
        import rokko_serial_dense_ev
        implicit none
        type(rokko_serial_dense_ev), intent(inout) :: solver
@@ -156,7 +155,6 @@ module rokko_serial_dense_ev_mod
 contains
 
   subroutine rokko_serial_dense_ev_construct(solver, solver_name)
-    use iso_c_binding
     implicit none
     interface
        subroutine rokko_serial_dense_ev_construct_f(solver, solver_name) bind(c)
@@ -173,7 +171,6 @@ contains
   end subroutine rokko_serial_dense_ev_construct
 
   subroutine rokko_serial_dense_ev_default_solver(name)
-    use rokko_string
     character(len=*), intent(out) :: name
     type(c_ptr) :: name_ptr
     name_ptr = rokko_serial_dense_ev_default_solver_c ()
@@ -186,7 +183,6 @@ contains
   end subroutine rokko_serial_dense_ev_num_solvers
 
   subroutine rokko_serial_dense_ev_solvers(names)
-    use iso_c_binding
     implicit none
     type(string), allocatable, intent(out) :: names(:)
     type(c_ptr) :: ptr, ptr_i
