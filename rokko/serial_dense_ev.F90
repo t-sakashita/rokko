@@ -11,7 +11,7 @@
 
 #include <rokko/config.h>
 
-module rokko_serial_dense
+module rokko_serial_dense_ev_mod
   use iso_c_binding
   use rokko_string
   use rokko_localized_matrix_mod
@@ -202,5 +202,6 @@ contains
     enddo
   end subroutine rokko_serial_dense_ev_solvers
 
-end module rokko_serial_dense
+end module rokko_serial_dense_ev_mod
+
 
