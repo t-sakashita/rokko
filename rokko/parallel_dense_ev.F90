@@ -177,7 +177,6 @@ module rokko_parallel_dense_ev_mod
 contains
 
   subroutine rokko_parallel_dense_ev_default_solver(name)
-    use rokko_string
     character(len=*), intent(out) :: name
     type(c_ptr) :: name_ptr
     name_ptr = rokko_parallel_dense_ev_default_solver_c ()
@@ -190,7 +189,6 @@ contains
   end subroutine rokko_parallel_dense_ev_num_solvers
 
   subroutine rokko_parallel_dense_ev_solvers(names)
-    use iso_c_binding
     implicit none
     type(string), allocatable, intent(out) :: names(:)
     type(c_ptr) :: ptr, ptr_i
@@ -207,8 +205,6 @@ contains
   end subroutine rokko_parallel_dense_ev_solvers
   
   subroutine rokko_parallel_dense_ev_construct(solver, solver_name)
-    use iso_c_binding
-    use rokko_parallel_dense_ev_type
     implicit none
     interface
        subroutine rokko_parallel_dense_ev_construct_f(solver, solver_name) bind(c)
