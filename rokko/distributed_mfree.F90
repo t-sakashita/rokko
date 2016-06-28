@@ -65,7 +65,6 @@ module rokko_distributed_mfree_mod
 contains
 
   subroutine rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
-    use, intrinsic :: iso_c_binding
     type(rokko_distributed_mfree), intent(inout) :: mat
     integer(c_int), intent(in) :: dim, num_local_rows
     type(c_funptr) :: cproc

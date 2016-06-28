@@ -202,7 +202,6 @@ contains
   end subroutine rokko_distributed_matrix_generate_from_array
 
   subroutine rokko_distributed_matrix_generate_function(matrix, func_in)
-    use iso_c_binding
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     type(c_funptr) :: cproc
     interface
@@ -218,7 +217,6 @@ contains
   end subroutine rokko_distributed_matrix_generate_function
 
   subroutine rokko_distributed_matrix_get_array_pointer(matrix, f_array_ptr)
-    use iso_c_binding
     implicit none
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     double precision, pointer, dimension(:,:), intent(out) :: f_array_ptr
