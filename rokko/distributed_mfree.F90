@@ -17,6 +17,19 @@ module rokko_distributed_mfree_mod
      type(c_ptr) :: ptr
   end type rokko_distributed_mfree
 
+  ! generic names
+  interface rokko_construct
+     procedure rokko_distributed_mfree_construct
+  end interface rokko_construct
+  
+  interface rokko_destruct
+     procedure rokko_distributed_mfree_destruct
+  end interface rokko_destruct
+  
+  interface rokko_get_num_local_rows
+     procedure rokko_distributed_mfree_num_local_rows
+  end interface rokko_get_num_local_rows
+
   interface
      subroutine rokko_distributed_mfree_f_construct(matrix, func, dim, num_local_rows) bind(c)
        use iso_c_binding

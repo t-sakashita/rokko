@@ -154,7 +154,7 @@ program main
   if (command_argument_count() >= 1) then
      call get_command_argument(1, library_routine, arg_len, status)
   else
-     call rokko_parallel_sparse_ev_default_solver(library_routine)
+     call rokko_default_solver(library_routine)
   endif
   call rokko_split_solver_name(library_routine, library, routine)
   
@@ -170,7 +170,7 @@ program main
      write(*,*) "matrix dimension = ", dim
   endif
 
-  call rokko_parallel_sparse_ev_construct(solver, library)
+  call rokko_construct(solver, library)
   call initialize(mat, dim)
 
   !num_local_rows = get_num_local_rows()
@@ -180,14 +180,14 @@ program main
   !   call multiply(num_local_rows, x, y);
   !   print*, "y=", y
   !enddo
-  call rokko_parameters_construct(params)
-  call rokko_parameters_set_string(params, "routine", routine)
-  call rokko_parameters_set(params, "verbose", .true.)
-  call rokko_parameters_set(params, "num_evals", 1)
-  call rokko_parameters_set(params, "block_size", 5)
-  call rokko_parameters_set(params, "max_iters", 500)
-  call rokko_parameters_set(params, "conv_tol", 1.0d-3)
-  call rokko_parallel_sparse_ev_diagonalize(solver, mat, params, params_out)
+  call rokko_construct(params)
+  call rokko_set(params, "routine", routine)
+  call rokko_set(params, "verbose", .true.)
+  call rokko_set(params, "num_evals", 1)
+  call rokko_set(params, "block_size", 5)
+  call rokko_set(params, "max_iters", 500)
+  call rokko_set(params, "conv_tol", 1.0d-3)
+  call rokko_diagonalize(solver, mat, params, params_out)
 
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
   if (num_conv == 0) then
@@ -201,8 +201,8 @@ program main
      print*, "Computed Eigenvector = "
      print '(8f10.4)', eig_vec
   endif
-  call rokko_distributed_mfree_destruct(mat)
-  call rokko_parallel_sparse_ev_destruct(solver)
+  call rokko_destruct(mat)
+  call rokko_destruct(solver)
 
   call mpi_finalize(ierr)
 end program main
