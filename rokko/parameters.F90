@@ -21,41 +21,29 @@ module parameters
   end type rokko_parameters
 
   ! generic interface
-  interface construct
+  interface rokko_construct
      procedure rokko_parameters_construct
-  end interface construct
-  
-  interface get
+  end interface rokko_construct
+
+  interface rokko_destruct
+     procedure rokko_parameters_destruct
+  end interface rokko_destruct
+
+  interface rokko_get
      module procedure rokko_parameters_get_int
      module procedure rokko_parameters_get_double
      !module procedure rokko_parameters_get_char
      module procedure rokko_parameters_get_logical
      module procedure rokko_parameters_get_string
-  end interface get
+  end interface rokko_get
 
-  interface set
+  interface rokko_set
      module procedure rokko_parameters_set_int
      module procedure rokko_parameters_set_double
      !module procedure rokko_parameters_set_char
      module procedure rokko_parameters_set_logical
      module procedure rokko_parameters_set_string
-  end interface set
-  
-  interface rokko_parameters_get
-     module procedure rokko_parameters_get_int
-     module procedure rokko_parameters_get_double
-     !module procedure rokko_parameters_get_char
-     module procedure rokko_parameters_get_logical
-     module procedure rokko_parameters_get_string
-  end interface rokko_parameters_get
-
-  interface rokko_parameters_set
-     module procedure rokko_parameters_set_int
-     module procedure rokko_parameters_set_double
-     !module procedure rokko_parameters_set_char
-     module procedure rokko_parameters_set_logical
-     module procedure rokko_parameters_get_string
-  end interface rokko_parameters_set
+  end interface rokko_set
 
   interface
   

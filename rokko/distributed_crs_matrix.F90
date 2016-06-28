@@ -78,6 +78,35 @@ module rokko_distributed_crs_matrix_mod
      end subroutine rokko_distributed_crs_matrix_print
   end interface
 
+  ! generic names
+  interface rokko_destruct
+     procedure rokko_distributed_crs_matrix_destruct
+  end interface rokko_destruct
+
+  interface rokko_insert
+     module procedure rokko_distributed_crs_matrix_insert
+  end interface rokko_insert
+
+  interface rokko_complete
+     procedure rokko_distributed_crs_matrix_complete
+  end interface rokko_complete
+
+  interface rokko_get_start_row
+     module procedure rokko_distributed_crs_matrix_start_row
+  end interface rokko_get_start_row
+  
+  interface rokko_get_end_row
+     module procedure rokko_distributed_crs_matrix_end_row
+  end interface rokko_get_end_row
+
+  interface rokko_get_num_local_rows
+     procedure rokko_distributed_crs_matrix_num_local_rows
+  end interface rokko_get_num_local_rows
+  
+  interface rokko_print
+     procedure rokko_distributed_crs_matrix_print  
+  end interface rokko_print
+  
 contains
 
   function rokko_distributed_crs_matrix_start_row(matrix) result(ind)

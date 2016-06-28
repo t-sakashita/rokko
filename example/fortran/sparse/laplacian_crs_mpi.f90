@@ -38,7 +38,7 @@ program heisenberg_crs_mpi
   if (command_argument_count() >= 1) then
      call get_command_argument(1, library_routine, arg_len, status)
   else
-     call rokko_parallel_sparse_ev_default_solver(library_routine)
+     call rokko_default_solver(library_routine)
   endif
   call rokko_split_solver_name(library_routine, library, routine)
   
@@ -54,9 +54,9 @@ program heisenberg_crs_mpi
      write(*,*) "matrix dimension = ", dim
   endif
 
-  call rokko_parallel_sparse_ev_construct(solver, library)
+  call rokko_construct(solver, library)
 
-  call rokko_distributed_crs_matrix_construct(mat, dim, dim, solver)
+  call rokko_construct(mat, dim, dim, solver)
 
   start_row = rokko_distributed_crs_matrix_start_row(mat)
   end_row = rokko_distributed_crs_matrix_end_row(mat)
@@ -64,7 +64,7 @@ program heisenberg_crs_mpi
      values(1) = 1d0;  values(2) = -1d0
      cols(1) = 1;   cols(2) = 2
      start_row = start_row + 1
-     call rokko_distributed_crs_matrix_insert(mat, 1, 2, cols, values)
+     call rokko_insert(mat, 1, 2, cols, values)
   endif
   end_loop_row = end_row;
   if (end_row == dim) then
@@ -73,26 +73,26 @@ program heisenberg_crs_mpi
   values(1) = -1d0;  values(2) = 2d0;  values(3) = -1d0
   do row = start_row, end_loop_row
      cols(1) = row-1;   cols(2) = row;   cols(3) = row+1
-     call rokko_distributed_crs_matrix_insert(mat, row, 3, cols, values)
+     call rokko_insert(mat, row, 3, cols, values)
   enddo
   
   if (end_row == dim) then
      values(1) = -1d0;  values(2) = 2d0
      cols(1) = dim-1;   cols(2) = dim
-     call rokko_distributed_crs_matrix_insert(mat, dim, 2, cols, values)
+     call rokko_insert(mat, dim, 2, cols, values)
   endif
   
-  call rokko_distributed_crs_matrix_complete(mat)
+  call rokko_complete(mat)
 !  call rokko_distributed_crs_matrix_print(mat)
 
-  call rokko_parameters_construct(params)
-  call rokko_parameters_set_string(params, "routine", routine)
-  call rokko_parameters_set(params, "verbose", .true.)
-  call rokko_parameters_set(params, "num_evals", 1)
-  call rokko_parameters_set(params, "block_size", 5)
-  call rokko_parameters_set(params, "max_iters", 500)
-  call rokko_parameters_set(params, "conv_tol", 1.0d-8)
-  call rokko_parallel_sparse_ev_diagonalize(solver, mat, params)
+  call rokko_construct(params)
+  call rokko_set(params, "routine", routine)
+  call rokko_set(params, "verbose", .true.)
+  call rokko_set(params, "num_evals", 1)
+  call rokko_set(params, "block_size", 5)
+  call rokko_set(params, "max_iters", 500)
+  call rokko_set(params, "conv_tol", 1.0d-8)
+  call rokko_diagonalize(solver, mat, params)
   
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
   if (num_conv >= 1) then
@@ -103,7 +103,7 @@ program heisenberg_crs_mpi
         print*, "num_local_rows=", num_local_rows
      endif
      allocate( eig_vec(num_local_rows) )
-     call rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec)
+     call rokko_eigenvector(solver, 0, eig_vec)
   endif
   
   if (myrank.eq.0) then
@@ -113,8 +113,8 @@ program heisenberg_crs_mpi
      print '(8f10.4)', eig_vec
   endif
 
-  call rokko_distributed_crs_matrix_destruct(mat)
-  call rokko_parallel_sparse_ev_destruct(solver)
+  call rokko_destruct(mat)
+  call rokko_destruct(solver)
 
   call MPI_finalize(ierr)
 end program heisenberg_crs_mpi

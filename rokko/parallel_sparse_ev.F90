@@ -138,6 +138,39 @@ module rokko_parallel_sparse_ev_mod
        type(rokko_parallel_sparse_ev), value, intent(in) :: solver
      end subroutine rokko_distributed_crs_matrix_construct
   end interface
+
+  ! generic names
+  interface rokko_default_solver
+     procedure rokko_parallel_sparse_ev_default_solver
+  end interface rokko_default_solver
+  
+  interface rokko_construct
+     procedure rokko_parallel_sparse_ev_construct
+     procedure rokko_distributed_crs_matrix_construct
+  end interface rokko_construct
+
+  interface rokko_destruct
+     procedure rokko_parallel_sparse_ev_destruct
+  end interface rokko_destruct
+
+  interface rokko_diagonalize
+     procedure rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix
+     procedure rokko_parallel_sparse_ev_diagonalize_distributed_crs_noreturn
+     procedure rokko_parallel_sparse_ev_diagonalize_distributed_mfree
+     procedure rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn
+  end interface rokko_diagonalize
+
+  interface rokko_num_conv
+     procedure rokko_parallel_sparse_ev_num_conv
+  end interface rokko_num_conv
+
+  interface rokko_eigenvalue
+     procedure rokko_parallel_sparse_ev_eigenvalue
+  end interface rokko_eigenvalue
+  
+  interface rokko_eigenvector
+     procedure rokko_parallel_sparse_ev_eigenvector
+  end interface rokko_eigenvector
   
 contains
 
