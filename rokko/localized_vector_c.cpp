@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/localized_vector.hpp>
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 
 void rokko_localized_vector_construct(rokko_localized_vector* vec, int dim) {
   vec->ptr = new rokko::localized_vector<double>(dim);

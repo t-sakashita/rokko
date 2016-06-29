@@ -12,7 +12,7 @@
 #ifndef ROKKO_FRANK_MATRIX_C_H
 #define ROKKO_FRANK_MATRIX_C_H
 
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 
 #ifdef __cplusplus
 extern "C"{

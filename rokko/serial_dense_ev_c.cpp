@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/solver.hpp>
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 #include <rokko/parameters.h>
 
 void rokko_serial_dense_ev_construct(rokko_serial_dense_ev* solver, const char* solver_name, int argc, char** argv) {

@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/solver.hpp>
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map) {
   if (map.major == rokko_matrix_col_major)

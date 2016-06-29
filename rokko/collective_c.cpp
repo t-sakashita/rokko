@@ -11,7 +11,7 @@
 
 #include <rokko/solver.hpp>
 #include <rokko/collective.hpp>
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 
 void rokko_gather(struct rokko_distributed_matrix matrix, double* array, int root) {
   if (matrix.major == rokko_matrix_col_major){

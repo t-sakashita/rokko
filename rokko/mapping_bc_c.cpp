@@ -11,7 +11,7 @@
 
 #include <rokko/solver.hpp>
 #include <rokko/mapping_bc.hpp>
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 #include <rokko/mapping_bc.h>
 
 void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int global_dim, int block_size, struct rokko_grid grid) {
