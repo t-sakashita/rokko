@@ -152,6 +152,8 @@ int rokko_grid_get_myrow(struct rokko_grid grid);
 int rokko_grid_get_mycol(struct rokko_grid grid);
 int rokko_grid_get_nprow(struct rokko_grid grid);
 int rokko_grid_get_npcol(struct rokko_grid grid);
+bool rokko_grid_is_row_major(struct rokko_grid grid);
+bool rokko_grid_is_col_major(struct rokko_grid grid);
 
 /* mapping_bc */
 void rokko_mapping_bc_construct(struct rokko_mapping_bc* map, int global_dim, struct rokko_grid grid, struct rokko_parallel_dense_ev solver);

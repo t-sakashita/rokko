@@ -56,3 +56,11 @@ int rokko_grid_get_npcol(rokko_grid grid) {
   return static_cast<rokko::grid*>(grid.ptr)->get_npcol();
 }
 
+bool rokko_grid_is_row_major(rokko_grid grid) {
+  return static_cast<rokko::grid*>(grid.ptr)->is_row_major();
+}
+
+bool rokko_grid_is_col_major(rokko_grid grid) {
+  return static_cast<rokko::grid*>(grid.ptr)->is_col_major();
+}
+

@@ -110,6 +110,22 @@ module rokko_grid_mod
        type(rokko_grid), value, intent(in) :: grid
      end function rokko_grid_get_npcol
 
+     function rokko_grid_is_row_major(grid) bind(c)
+       use iso_c_binding
+       import rokko_grid
+       implicit none
+       logical(c_bool) :: rokko_grid_is_row_major
+       type(rokko_grid), value, intent(in) :: grid
+     end function rokko_grid_is_row_major
+
+     function rokko_grid_is_col_major(grid) bind(c)
+       use iso_c_binding
+       import rokko_grid
+       implicit none
+       logical(c_bool) :: rokko_grid_is_col_major
+       type(rokko_grid), value, intent(in) :: grid
+     end function rokko_grid_is_col_major
+
   end interface
   
   interface rokko_grid_construct
