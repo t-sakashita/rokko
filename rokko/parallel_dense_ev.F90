@@ -144,26 +144,35 @@ module rokko_parallel_dense_ev_mod
   end interface rokko_parallel_dense_ev_diagonalize
 
   ! generic names
-  !interface construct
-  !   procedure rokko_parallel_dense_ev_construct
-  !end interface contruct
+  interface rokko_construct
+     procedure rokko_parallel_dense_ev_construct
+  end interface rokko_construct
 
-  interface destruct
+  interface rokko_destruct
      procedure rokko_parallel_dense_ev_destruct
-  end interface destruct
+  end interface rokko_destruct
 
-  interface diagonalize
+  interface rokko_default_mapping
+     procedure rokko_parallel_dense_ev_default_mapping
+  end interface rokko_default_mapping
+
+  interface rokko_diagonalize
      procedure rokko_parallel_dense_ev_diagonalize
-  end interface diagonalize
+     procedure rokko_parallel_dense_ev_diagonalize_no_params_out
+     procedure rokko_parallel_dense_ev_diagonalize_no_params_inout
+     procedure rokko_parallel_dense_ev_diagonalize_eigvals
+     procedure rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out
+     procedure rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout
+  end interface rokko_diagonalize
 
   !
   ! rokko_frank_matrix for parallel dense solvers
   !
 
   ! generic name
-  interface frank_matrix_generate
+  interface rokko_frank_matrix_generate
      procedure rokko_frank_matrix_generate_distributed_matrix
-  end interface frank_matrix_generate
+  end interface rokko_frank_matrix_generate
   
   interface
      subroutine rokko_frank_matrix_generate_distributed_matrix(matrix) bind(c)

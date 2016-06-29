@@ -17,7 +17,16 @@ module rokko_grid_mod
      type(c_ptr) :: ptr
      integer(c_int) :: major
   end type rokko_grid
-  
+
+  ! generic names
+  interface rokko_construct
+     procedure rokko_grid_construct_f
+  end interface rokko_construct
+
+  interface rokko_destruct
+     procedure rokko_grid_destruct
+  end interface rokko_destruct
+
   interface
      subroutine rokko_grid_destruct(grid) bind(c)
        import rokko_grid

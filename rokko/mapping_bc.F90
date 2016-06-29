@@ -20,6 +20,15 @@ module rokko_mapping_bc_mod
      integer(c_int) :: major
   end type rokko_mapping_bc
 
+  ! generic names
+  interface rokko_construct
+     procedure rokko_mapping_bc_destruct
+  end interface rokko_construct
+
+  interface rokko_destruct
+     procedure rokko_mapping_bc_destruct
+  end interface rokko_destruct
+  
   interface
 
      ! subroutine rokko_mapping_bc_construct(map, global_dim, grid, solver) &

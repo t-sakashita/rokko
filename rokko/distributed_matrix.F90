@@ -19,7 +19,55 @@ module rokko_distributed_matrix_mod
      type(c_ptr) :: ptr
      integer(c_int) :: major
   end type rokko_distributed_matrix
+
+  ! generic names
+  interface rokko_construct
+     procedure rokko_distributed_matrix_construct
+  end interface rokko_construct
+
+  interface rokko_destruct
+     procedure rokko_distributed_matrix_destruct
+  end interface rokko_destruct
+
+  interface translate_l2g_row
+  end interface translate_l2g_row
+
+  interface get_global
+     procedure rokko_distributed_matrix_get_global
+  end interface get_global
+
+  interface get_local
+     procedure rokko_distributed_matrix_get_local
+  end interface get_local
   
+  interface set_global
+     procedure rokko_distributed_matrix_set_global
+  end interface set_global
+
+  interface set_local
+     procedure rokko_distributed_matrix_set_local
+  end interface set_local
+
+  interface get_m_global
+     procedure rokko_distributed_matrix_get_m_global
+  end interface get_m_global
+
+  interface get_n_global
+     procedure rokko_distributed_matrix_get_n_global
+  end interface get_n_global
+   
+  interface get_m_local
+     procedure rokko_distributed_matrix_get_m_local
+  end interface get_m_local
+
+  interface get_n_local
+     procedure rokko_distributed_matrix_get_n_local
+  end interface get_n_local
+
+  interface rokko_print
+     procedure rokko_distributed_matrix_print
+  end interface rokko_print
+
   interface
      subroutine rokko_distributed_matrix_construct(matrix, map) &
           bind(c)
