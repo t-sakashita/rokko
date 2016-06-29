@@ -140,10 +140,6 @@ module rokko_parallel_sparse_ev_mod
   end interface
 
   ! generic names
-  interface rokko_default_solver
-     procedure rokko_parallel_sparse_ev_default_solver
-  end interface rokko_default_solver
-  
   interface rokko_construct
      procedure rokko_parallel_sparse_ev_construct
      procedure rokko_distributed_crs_matrix_construct
