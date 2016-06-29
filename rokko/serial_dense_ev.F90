@@ -18,11 +18,6 @@ module rokko_serial_dense_ev_mod
   use rokko_localized_vector_mod
   implicit none
 
-  enum, bind(c)
-     enumerator :: rokko_grid_col_major = 1, rokko_grid_row_major = 2
-!     enumerator :: rokko_matrix_col_major = 3, rokko_matrix_row_major = 4
-  end enum
-
   type, bind(c) :: rokko_serial_dense_ev
      type(c_ptr) :: ptr
   end type rokko_serial_dense_ev

@@ -13,6 +13,10 @@ module rokko_grid_mod
   use iso_c_binding
   implicit none
 
+  enum, bind(c)
+     enumerator :: rokko_grid_col_major = 1, rokko_grid_row_major = 2
+  end enum
+
   type, bind(c) :: rokko_grid
      type(c_ptr) :: ptr
      integer(c_int) :: major
