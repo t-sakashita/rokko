@@ -27,6 +27,14 @@ module rokko_grid_mod
      procedure rokko_grid_destruct
   end interface rokko_destruct
 
+  interface rokko_get_myrank
+     procedure rokko_grid_get_myrank
+  end interface rokko_get_myrank
+
+  interface rokko_get_nprocs
+     procedure rokko_grid_get_nprocs
+  end interface rokko_get_nprocs
+  
   interface
      subroutine rokko_grid_destruct(grid) bind(c)
        import rokko_grid

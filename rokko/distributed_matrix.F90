@@ -29,40 +29,62 @@ module rokko_distributed_matrix_mod
      procedure rokko_distributed_matrix_destruct
   end interface rokko_destruct
 
-  interface translate_l2g_row
-  end interface translate_l2g_row
-
-  interface get_global
+  interface rokko_get_global
      procedure rokko_distributed_matrix_get_global
-  end interface get_global
+  end interface rokko_get_global
 
-  interface get_local
+  interface rokko_get_local
      procedure rokko_distributed_matrix_get_local
-  end interface get_local
+  end interface rokko_get_local
   
-  interface set_global
+  interface rokko_set_global
      procedure rokko_distributed_matrix_set_global
-  end interface set_global
+  end interface rokko_set_global
 
-  interface set_local
+  interface rokko_set_local
      procedure rokko_distributed_matrix_set_local
-  end interface set_local
+  end interface rokko_set_local
 
-  interface get_m_global
+  interface rokko_get_m_global
      procedure rokko_distributed_matrix_get_m_global
-  end interface get_m_global
+  end interface rokko_get_m_global
 
-  interface get_n_global
+  interface rokko_get_n_global
      procedure rokko_distributed_matrix_get_n_global
-  end interface get_n_global
+  end interface rokko_get_n_global
    
-  interface get_m_local
+  interface rokko_get_m_local
      procedure rokko_distributed_matrix_get_m_local
-  end interface get_m_local
+  end interface rokko_get_m_local
 
-  interface get_n_local
+  interface rokko_get_n_local
      procedure rokko_distributed_matrix_get_n_local
-  end interface get_n_local
+  end interface rokko_get_n_local
+
+  interface rokko_translate_l2g_row
+     procedure  rokko_distributed_matrix_translate_l2g_row
+  end interface rokko_translate_l2g_row
+
+  interface rokko_translate_l2g_col
+     procedure  rokko_distributed_matrix_translate_l2g_col
+  end interface rokko_translate_l2g_col
+
+  interface rokko_translate_g2l_row
+     procedure  rokko_distributed_matrix_translate_g2l_row
+  end interface rokko_translate_g2l_row
+
+  interface rokko_translate_g2l_col
+     procedure  rokko_distributed_matrix_translate_g2l_col
+  end interface rokko_translate_g2l_col
+
+  interface rokko_generate
+     module procedure rokko_distributed_matrix_generate_function
+     module procedure rokko_distributed_matrix_generate_from_array
+  end interface rokko_generate
+
+  interface rokko_get_array_pointer
+     module procedure rokko_distributed_matrix_get_array_pointer
+  end interface rokko_get_array_pointer
 
   interface rokko_print
      procedure rokko_distributed_matrix_print
