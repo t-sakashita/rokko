@@ -23,6 +23,6 @@
 
 #include <rokko/solver_name.h>
 #include <rokko/dense.h>
-#include <rokko/rokko_sparse.h>
+#include <rokko/sparse.h>
 
 #endif

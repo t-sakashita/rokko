@@ -13,7 +13,7 @@
 
 #include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include <rokko/rokko_sparse.h>
+#include <rokko/sparse.h>
 
 class distributed_mfree_c : public rokko::distributed_mfree {
 public:

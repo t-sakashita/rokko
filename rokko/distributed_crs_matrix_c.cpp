@@ -13,7 +13,7 @@
 
 #include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
-#include <rokko/rokko_sparse.h>
+#include <rokko/sparse.h>
 
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix, int dim1, int dim2,
 					    struct rokko_parallel_sparse_ev solver) {

@@ -12,8 +12,8 @@
 #include <boost/python.hpp>
 #include <boost/foreach.hpp>
 
-#include "rokko_dense.h"
-#include "rokko_sparse.h"
+#include <rokko/dense.h>
+#include <rokko/sparse.h>
 #include "utility/frank_matrix_c.h"
 #include <rokko/parameters.hpp>
 #include <rokko/serial_dense_ev.hpp>

@@ -12,7 +12,7 @@
 *****************************************************************************/
 
 #include <rokko/parallel_sparse_ev.hpp>
-#include <rokko/rokko_sparse.h>
+#include <rokko/sparse.h>
 #include <rokko/parameters.h>
 
 void rokko_parallel_sparse_ev_construct(struct rokko_parallel_sparse_ev* solver, const char* solver_name, int argc, char** argv) {
