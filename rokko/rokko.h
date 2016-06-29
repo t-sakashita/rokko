@@ -17,12 +17,10 @@
 #if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 #include <rokko/grid_1d.hpp>
 #include <rokko/distributed_vector.hpp>
-#endif
+#endif /* defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER) */
 
-#else
-
+#else /* __cplus */
 #include <rokko/solver_name.h>
 #include <rokko/dense.h>
 #include <rokko/sparse.h>
-
-#endif
+#endif /* __cplus */
