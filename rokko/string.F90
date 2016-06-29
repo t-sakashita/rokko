@@ -41,8 +41,6 @@ module rokko_string
 contains
 
   subroutine rokko_get_string (str_ptr, val)
-    use iso_c_binding
-    implicit none
     type(c_ptr), value, intent(in) :: str_ptr
     character(len=:), allocatable, intent(out) :: val
     character, pointer, dimension(:) :: tmp_array
@@ -59,8 +57,6 @@ contains
   end subroutine rokko_get_string
 
   subroutine rokko_get_string_fixedsize (str_ptr, val)
-    use iso_c_binding
-    implicit none
     type(c_ptr), value, intent(in) :: str_ptr
     character(len=*), intent(out) :: val
     character, pointer, dimension(:) :: tmp_array
@@ -77,7 +73,6 @@ contains
   end subroutine rokko_get_string_fixedsize
   
   subroutine string_free_c(str)
-    use iso_c_binding
     type(c_ptr), intent(inout) :: str
     if (c_associated(str)) then
        call free_c(str)

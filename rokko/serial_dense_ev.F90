@@ -155,7 +155,6 @@ module rokko_serial_dense_ev_mod
 contains
 
   subroutine rokko_serial_dense_ev_construct(solver, solver_name)
-    implicit none
     interface
        subroutine rokko_serial_dense_ev_construct_f(solver, solver_name) bind(c)
          use iso_c_binding
@@ -183,7 +182,6 @@ contains
   end subroutine rokko_serial_dense_ev_num_solvers
 
   subroutine rokko_serial_dense_ev_solvers(names)
-    implicit none
     type(string), allocatable, intent(out) :: names(:)
     type(c_ptr) :: ptr, ptr_i
     integer :: i, size

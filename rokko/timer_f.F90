@@ -19,14 +19,12 @@ module rokko_timer
 
 !timer routines
   subroutine set_timer(timer_)
-    implicit none
     type(timer),intent(out)::timer_
 
     call initialize_timer(timer_%ptr_timer)
   end subroutine set_timer
 
   subroutine del_timer(timer_)
-    implicit none
     type(timer),intent(out)::timer_
 
     call delete_timer(timer_%ptr_timer)
@@ -45,7 +43,6 @@ module rokko_timer
   end subroutine end_timer
 
   subroutine registrate_timer(timer_, id, label)
-    implicit none
     type(timer),intent(inout)::timer_
     integer,intent(in)::id
     character(*),intent(in)::label

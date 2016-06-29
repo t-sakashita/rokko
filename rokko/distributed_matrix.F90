@@ -287,7 +287,6 @@ contains
   end subroutine rokko_distributed_matrix_generate_function
 
   subroutine rokko_distributed_matrix_get_array_pointer(matrix, f_array_ptr)
-    implicit none
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     double precision, pointer, dimension(:,:), intent(out) :: f_array_ptr
     type(c_ptr) :: c_array_ptr

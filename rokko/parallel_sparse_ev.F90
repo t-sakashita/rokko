@@ -183,7 +183,6 @@ contains
   end subroutine rokko_parallel_sparse_ev_num_solvers
 
   subroutine rokko_parallel_sparse_ev_solvers(names)
-    implicit none
     type(string), allocatable, intent(out) :: names(:)
     type(c_ptr) :: ptr, ptr_i
     integer :: i, size
@@ -199,7 +198,6 @@ contains
   end subroutine rokko_parallel_sparse_ev_solvers
 
   subroutine rokko_parallel_sparse_ev_construct(solver, solver_name)
-    implicit none
     interface
        subroutine rokko_parallel_sparse_ev_construct_f(solver, solver_name) bind(c)
          use iso_c_binding

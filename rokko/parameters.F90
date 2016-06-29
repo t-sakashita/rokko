@@ -204,8 +204,6 @@ module parameters
 contains
    
   subroutine rokko_parameters_get_int (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     integer, intent(out) :: val
@@ -213,8 +211,6 @@ contains
   end subroutine rokko_parameters_get_int
   
   subroutine rokko_parameters_get_double (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     double precision, intent(out) :: val
@@ -222,8 +218,6 @@ contains
   end subroutine rokko_parameters_get_double
 
   subroutine rokko_parameters_get_logical (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     logical, intent(out) :: val
@@ -237,8 +231,6 @@ contains
   end subroutine rokko_parameters_get_logical
   
   subroutine rokko_parameters_get_char (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character, intent(out) :: val
@@ -246,8 +238,6 @@ contains
   end subroutine rokko_parameters_get_char
 
   subroutine rokko_parameters_get_string (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character(len=:), allocatable, intent(out) :: val
@@ -267,8 +257,6 @@ contains
   end subroutine rokko_parameters_get_string
 
   subroutine rokko_parameters_keys (params, keys)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     type(string), allocatable, intent(out) :: keys(:)
     type(c_ptr) :: ptr, ptr_i
@@ -285,8 +273,6 @@ contains
   end subroutine rokko_parameters_keys
   
   function rokko_parameters_get_string_fixed (params, key) result(val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character*255 :: val
@@ -307,8 +293,6 @@ contains
   end function rokko_parameters_get_string_fixed
   
   subroutine rokko_parameters_set_int (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     integer, value, intent(in) :: val
@@ -316,8 +300,6 @@ contains
   end subroutine rokko_parameters_set_int
   
   subroutine rokko_parameters_set_double (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     double precision, value, intent(in) :: val
@@ -325,8 +307,6 @@ contains
   end subroutine rokko_parameters_set_double
 
   subroutine rokko_parameters_set_logical (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     logical, value, intent(in) :: val
@@ -338,8 +318,6 @@ contains
   end subroutine rokko_parameters_set_logical
   
   subroutine rokko_parameters_set_char (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character, value, intent(in) :: val
@@ -347,8 +325,6 @@ contains
   end subroutine rokko_parameters_set_char
 
   subroutine rokko_parameters_set_string (params, key, val)
-    use iso_c_binding
-    implicit none
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character(*), intent(in) :: val

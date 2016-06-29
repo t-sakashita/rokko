@@ -10,6 +10,7 @@
 !*****************************************************************************
 
 module collective
+  use iso_c_binding  
   use rokko_distributed_matrix_mod
   implicit none
 
@@ -38,8 +39,6 @@ module collective
 contains
   
   subroutine rokko_all_gather(matrix, array)
-    use iso_c_binding
-    implicit none
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     double precision, intent(in), target :: array(:,:)
     integer(c_int) :: root, nprocs, ierr
