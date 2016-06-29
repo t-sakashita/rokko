@@ -9,15 +9,29 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DENSE_H
-#define ROKKO_DENSE_H
+#ifndef ROKKO_PARALLEL_DENSE_H
+#define ROKKO_PARALLEL_DENSE_H
 
-#include <rokko/config.h>
+#include <mpi.h>
 
-#include <rokko/serial_dense.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-#include <rokko/parallel_dense.h>
-#endif /* defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) */
+#include <rokko/grid.h>
 
-#endif /* ROKKO_DENSE_H */
+struct rokko_mapping_bc {
+  void* ptr;
+  int major;
+};
+
+#include <rokko/parallel_dense_ev.h>
+#include <rokko/mapping_bc.h>
+#include <rokko/distributed_matrix.h>
+#include <rokko/collective.h>
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* ROKKO_PARALLEL_DENSE_H */

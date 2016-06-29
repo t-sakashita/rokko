@@ -9,15 +9,27 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DENSE_H
-#define ROKKO_DENSE_H
+#ifndef ROKKO_SERIAL_DENSE_H
+#define ROKKO_SERIAL_DENSE_H
 
-#include <rokko/config.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include <rokko/serial_dense.h>
+#include <rokko/parameters.h>
 
-#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-#include <rokko/parallel_dense.h>
-#endif /* defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) */
+#include <rokko/localized_matrix.h>
+#include <rokko/localized_vector.h>
 
-#endif /* ROKKO_DENSE_H */
+enum {
+  rokko_matrix_col_major = 3, rokko_matrix_row_major = 4
+};
+
+#include <rokko/serial_dense_ev.h>
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* ROKKO_SERIAL_DENSE_H */
