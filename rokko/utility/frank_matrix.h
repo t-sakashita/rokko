@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_FRANK_MATRIX_C_H
-#define ROKKO_FRANK_MATRIX_C_H
+#ifndef ROKKO_UTILITY_FRANK_MATRIX_H
+#define ROKKO_UTILITY_FRANK_MATRIX_H
 
 #include <rokko/dense.h>
 
@@ -22,11 +22,10 @@ void rokko_frank_matrix_generate_localized_matrix(struct rokko_localized_matrix 
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 void rokko_frank_matrix_generate_distributed_matrix(struct rokko_distributed_matrix matrix);
-#endif
-
+#endif /* defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* ROKKO_UTILITY_FRANK_MATRIX_H */

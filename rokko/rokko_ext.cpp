@@ -14,7 +14,7 @@
 
 #include <rokko/dense.h>
 #include <rokko/sparse.h>
-#include "utility/frank_matrix_c.h"
+#include <rokko/utility/frank_matrix.h>
 #include <rokko/parameters.hpp>
 #include <rokko/serial_dense_ev.hpp>
 #include <rokko/parallel_dense_ev.hpp>
