@@ -12,6 +12,8 @@
 #ifndef ROKKO_SERIAL_DENSE_EV_H
 #define ROKKO_SERIAL_DENSE_EV_H
 
+#include <rokko/parameters.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

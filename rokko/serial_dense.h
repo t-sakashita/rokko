@@ -16,8 +16,6 @@
 extern "C" {
 #endif
 
-#include <rokko/parameters.h>
-
 #include <rokko/localized_matrix.h>
 #include <rokko/localized_vector.h>
 
