@@ -29,3 +29,7 @@ double rokko_localized_vector_get(rokko_localized_vector vec, int i) {
 double rokko_localized_vector_get_f(rokko_localized_vector vec, int i) {
   return (*static_cast<rokko::localized_vector<double>*>(vec.ptr))[i-1];
 }
+
+void rokko_localized_vector_print(rokko_localized_vector vec) {
+  static_cast<rokko::localized_vector<double>*>(vec.ptr)->print();
+}

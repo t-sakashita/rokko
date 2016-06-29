@@ -120,6 +120,8 @@ void rokko_localized_vector_construct(struct rokko_localized_vector* vec, int di
 void rokko_localized_vector_destruct(struct rokko_localized_vector* vec);
 double rokko_localized_vector_get(struct rokko_localized_vector vec, int i);
 double rokko_localized_vector_get_f(struct rokko_localized_vector vec, int i);
+void rokko_localized_vector_print(rokko_localized_vector vec);
+
 void rokko_localized_matrix_construct(struct rokko_localized_matrix* matrix, int dim1, int dim2,
   int matrix_major);
 void rokko_localized_matrix_destruct(struct rokko_localized_matrix* matrix);

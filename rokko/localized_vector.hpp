@@ -13,6 +13,7 @@
 #define ROKKO_LOCALIZED_VECTOR_HPP
 
 #include <Eigen/Dense>
+#include <iostream>
 
 namespace rokko {
 
@@ -30,6 +31,8 @@ public:
   localized_vector(U const & other) : super_type(other) {}
   template <typename U>
   localized_vector& operator=(T const& other) { super_type::operator=(other); return *this; }
+
+  void print() const { std::cout << *this << std::endl; }
 };
 
 typedef localized_vector<float> flvector;

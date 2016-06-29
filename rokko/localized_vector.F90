@@ -26,9 +26,9 @@ module rokko_localized_vector_mod
      procedure rokko_localized_vector_destruct
   end interface rokko_destruct
 
-!  interface rokko_print
-!     procedure rokko_localized_vector_print
-!  end interface rokko_print
+  interface rokko_print
+     procedure rokko_localized_vector_print
+  end interface rokko_print
   
   interface
      subroutine rokko_localized_vector_construct(vec, dim1) bind(c)
@@ -45,6 +45,13 @@ module rokko_localized_vector_mod
        implicit none
        type(rokko_localized_vector), intent(inout) :: vec
      end subroutine rokko_localized_vector_destruct
+
+     subroutine rokko_localized_vector_print(vec) bind(c)
+       use iso_c_binding
+       import rokko_localized_vector
+       implicit none
+       type(rokko_localized_vector), value, intent(in) :: vec
+     end subroutine rokko_localized_vector_print
   end interface
 
   interface rokko_localized_vector_get
