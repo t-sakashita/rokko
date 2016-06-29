@@ -206,7 +206,39 @@ module rokko_distributed_matrix_mod
        integer(c_int) :: rokko_distributed_matrix_get_myrank
        type(rokko_distributed_matrix), value, intent(in) :: matrix
      end function rokko_distributed_matrix_get_myrank
- 
+
+     function rokko_distributed_matrix_get_nprow(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_get_nprow
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_nprow
+
+     function rokko_distributed_matrix_get_npcol(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_get_npcol
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_npcol
+
+     function rokko_distributed_matrix_get_myrow(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_get_myrow
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_myrow
+
+     function rokko_distributed_matrix_get_mycol(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_get_mycol
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_mycol
+
      function rokko_distributed_matrix_translate_l2g_row(matrix, local_i) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
@@ -243,6 +275,22 @@ module rokko_distributed_matrix_mod
        integer(c_int), value, intent(in) :: global_j
      end function rokko_distributed_matrix_translate_g2l_col
 
+     function rokko_distributed_matrix_is_row_major(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       logical(c_bool) :: rokko_distributed_matrix_is_row_major
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_is_row_major
+
+     function rokko_distributed_matrix_is_col_major(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       logical(c_bool) :: rokko_distributed_matrix_is_col_major
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_is_col_major
+     
      type(c_ptr) function rokko_distributed_matrix_get_array_pointer_c(matrix) &
           bind(c,name='rokko_distributed_matrix_get_array_pointer')
        use iso_c_binding
