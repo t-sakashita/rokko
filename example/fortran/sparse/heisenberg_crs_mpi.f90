@@ -66,9 +66,9 @@ program heisenberg_crs_mpi
      write(*,*) "matrix dimension = ", dim
   endif
 
-  call rokko_parallel_sparse_ev_construct(solver, library)
+  call rokko_construct(solver, library)
 
-  call rokko_distributed_crs_matrix_construct(mat, dim, dim, solver)
+  call rokko_construct(mat, dim, dim, solver)
 
   start_row = rokko_distributed_crs_matrix_start_row_c(mat);
   end_row = rokko_distributed_crs_matrix_end_row_c(mat);
@@ -97,27 +97,27 @@ program heisenberg_crs_mpi
      count = count + 1
      cols(count) = row
      values(count) = diag
-     call rokko_distributed_crs_matrix_insert_c(mat, row, count, cols, values)
+     call rokko_insert_c(mat, row, count, cols, values)
   end do
-  call rokko_distributed_crs_matrix_complete(mat)
+  call rokko_complete(mat)
 !  call rokko_distributed_crs_matrix_print(mat)
 
-  call rokko_parameters_construct(params)
-  call rokko_parameters_set_string(params, "routine", routine)
-  call rokko_parallel_sparse_ev_diagonalize(solver, mat, params)
+  call rokko_construct(params)
+  call rokko_set(params, "routine", routine)
+  call rokko_diagonalize(solver, mat, params)
   
-  num_conv = rokko_parallel_sparse_ev_num_conv(solver);
-  num_conv = rokko_parallel_sparse_ev_num_conv(solver)
+  num_conv = rokko_num_conv(solver);
+  num_conv = rokko_num_conv(solver)
   if ((num_conv >= 1) .and. (myrank == 0)) then
-     eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
+     eig_val = rokko_eigenvalue(solver, 0)
      print *, "eigval=", eig_val
   endif
 
-  eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0);
-  num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
+  eig_val = rokko_eigenvalue(solver, 0);
+  num_local_rows = rokko_num_local_rows(mat);
   print*, "num_local_rows=", num_local_rows
   allocate( eig_vec(num_local_rows) )
-  call rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec)
+  call rokko_eigenvector(solver, 0, eig_vec)
 
   if (myrank.eq.0) then
      print*, "number of converged eigenpairs=", num_conv
@@ -126,9 +126,9 @@ program heisenberg_crs_mpi
      print '(8f10.4)', eig_vec
   endif
 
-  call rokko_parameters_destruct(params)
-  call rokko_distributed_crs_matrix_destruct(mat)
-  call rokko_parallel_sparse_ev_destruct(solver)
+  call rokko_destruct(params)
+  call rokko_destruct(mat)
+  call rokko_destruct(solver)
 
   call MPI_finalize(ierr)
 end program heisenberg_crs_mpi

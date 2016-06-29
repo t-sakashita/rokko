@@ -87,21 +87,25 @@ module rokko_distributed_crs_matrix_mod
      module procedure rokko_distributed_crs_matrix_insert
   end interface rokko_insert
 
+  interface rokko_insert_c
+     procedure rokko_distributed_crs_matrix_insert_c
+  end interface rokko_insert_c
+
   interface rokko_complete
      procedure rokko_distributed_crs_matrix_complete
   end interface rokko_complete
 
-  interface rokko_get_start_row
+  interface rokko_start_row
      module procedure rokko_distributed_crs_matrix_start_row
-  end interface rokko_get_start_row
+  end interface rokko_start_row
   
-  interface rokko_get_end_row
+  interface rokko_end_row
      module procedure rokko_distributed_crs_matrix_end_row
-  end interface rokko_get_end_row
+  end interface rokko_end_row
 
-  interface rokko_get_num_local_rows
+  interface rokko_num_local_rows
      procedure rokko_distributed_crs_matrix_num_local_rows
-  end interface rokko_get_num_local_rows
+  end interface rokko_num_local_rows
   
   interface rokko_print
      procedure rokko_distributed_crs_matrix_print  
