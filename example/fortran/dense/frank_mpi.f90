@@ -63,9 +63,10 @@ program frank_matrix
 
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
-     do i = 1, dim
-        write(*,"(f30.20)") rokko_localized_vector_get(w, i)
-     enddo
+     call rokko_print(w)
+     !     do i = 1, dim
+     !        write(*,"(f30.20)") rokko_localized_vector_get(w, i)
+     !     enddo
   endif
 
   call rokko_destruct(mat)
