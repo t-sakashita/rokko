@@ -13,15 +13,15 @@ module frank_mod
   use iso_c_binding
   implicit none
   public frank_matrix_element
-  integer(c_int), private :: dim
+  integer, private :: dim
 contains
   double precision function frank_matrix_element(i, j) bind(c)
-    integer(c_int), value, intent(in) :: i, j
+    integer, value, intent(in) :: i, j
     frank_matrix_element = dble(dim - max(i, j))
   end function frank_matrix_element
   
   subroutine frank_matrix_set_dimension(dim_in)
-    integer(c_int), value, intent(in) :: dim_in
+    integer, intent(in) :: dim_in
     dim = dim_in
   end subroutine frank_matrix_set_dimension
 end module frank_mod

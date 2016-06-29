@@ -14,14 +14,13 @@ module mod_frank
   double precision, allocatable, dimension(:,:) :: localized_array
   contains
     double precision function func(i, j) bind(c)
-      integer(c_int), value, intent(in) :: i, j
+      integer, value, intent(in) :: i, j
 !      print *, "i=", i
       func = localized_array(i+1,j+1)
     end function func
 end module mod_frank
 
 program frank_matrix_array_mpi
-  use iso_c_binding
   use omp_lib
   use MPI
   use rokko
@@ -52,7 +51,7 @@ program frank_matrix_array_mpi
   if (command_argument_count() >= 1) then
      call get_command_argument(1, library_routine, arg_len, status)
   else
-     call rokko_default_solver(library_routine)
+     call rokko_parallel_dense_ev_default_solver(library_routine)
   endif
   call rokko_split_solver_name(library_routine, library, routine)
 
