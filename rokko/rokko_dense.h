@@ -148,6 +148,10 @@ void rokko_grid_construct_f(struct rokko_grid* grid, int comm, int grid_major);
 void rokko_grid_destruct(struct rokko_grid* grid);
 int rokko_grid_get_myrank(struct rokko_grid grid);
 int rokko_grid_get_nprocs(struct rokko_grid grid);
+int rokko_grid_get_myrow(struct rokko_grid grid);
+int rokko_grid_get_mycol(struct rokko_grid grid);
+int rokko_grid_get_nprow(struct rokko_grid grid);
+int rokko_grid_get_npcol(struct rokko_grid grid);
 
 /* mapping_bc */
 void rokko_mapping_bc_construct(struct rokko_mapping_bc* map, int global_dim, struct rokko_grid grid, struct rokko_parallel_dense_ev solver);

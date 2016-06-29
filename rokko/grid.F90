@@ -38,6 +38,22 @@ module rokko_grid_mod
   interface rokko_get_nprocs
      procedure rokko_grid_get_nprocs
   end interface rokko_get_nprocs
+
+  interface rokko_get_myrow
+     procedure rokko_grid_get_myrow
+  end interface rokko_get_myrow
+
+  interface rokko_get_mycol
+     procedure rokko_grid_get_mycol
+  end interface rokko_get_mycol
+
+  interface rokko_get_nprow
+     procedure rokko_grid_get_nprow
+  end interface rokko_get_nprow
+
+  interface rokko_get_npcol
+     procedure rokko_grid_get_npcol
+  end interface rokko_get_npcol
   
   interface
      subroutine rokko_grid_destruct(grid) bind(c)
@@ -61,6 +77,39 @@ module rokko_grid_mod
        integer(c_int) :: rokko_grid_get_nprocs
        type(rokko_grid), value, intent(in) :: grid
      end function rokko_grid_get_nprocs
+
+     function rokko_grid_get_myrow(grid) bind(c)
+       use iso_c_binding
+       import rokko_grid
+       implicit none
+       integer(c_int) :: rokko_grid_get_myrow
+       type(rokko_grid), value, intent(in) :: grid
+     end function rokko_grid_get_myrow
+
+     function rokko_grid_get_mycol(grid) bind(c)
+       use iso_c_binding
+       import rokko_grid
+       implicit none
+       integer(c_int) :: rokko_grid_get_mycol
+       type(rokko_grid), value, intent(in) :: grid
+     end function rokko_grid_get_mycol
+
+     function rokko_grid_get_nprow(grid) bind(c)
+       use iso_c_binding
+       import rokko_grid
+       implicit none
+       integer(c_int) :: rokko_grid_get_nprow
+       type(rokko_grid), value, intent(in) :: grid
+     end function rokko_grid_get_nprow
+
+     function rokko_grid_get_npcol(grid) bind(c)
+       use iso_c_binding
+       import rokko_grid
+       implicit none
+       integer(c_int) :: rokko_grid_get_npcol
+       type(rokko_grid), value, intent(in) :: grid
+     end function rokko_grid_get_npcol
+
   end interface
   
   interface rokko_grid_construct

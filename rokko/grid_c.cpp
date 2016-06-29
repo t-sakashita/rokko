@@ -39,3 +39,20 @@ int rokko_grid_get_myrank(rokko_grid grid) {
 int rokko_grid_get_nprocs(rokko_grid grid) {
   return static_cast<rokko::grid*>(grid.ptr)->get_nprocs();
 }
+
+int rokko_grid_get_myrow(rokko_grid grid) {
+  return static_cast<rokko::grid*>(grid.ptr)->get_myrow();
+}
+
+int rokko_grid_get_mycol(rokko_grid grid) {
+  return static_cast<rokko::grid*>(grid.ptr)->get_mycol();
+}
+
+int rokko_grid_get_nprow(rokko_grid grid) {
+  return static_cast<rokko::grid*>(grid.ptr)->get_nprow();
+}
+
+int rokko_grid_get_npcol(rokko_grid grid) {
+  return static_cast<rokko::grid*>(grid.ptr)->get_npcol();
+}
+
