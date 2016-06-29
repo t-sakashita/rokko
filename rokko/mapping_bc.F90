@@ -21,16 +21,16 @@ module rokko_mapping_bc_mod
   end type rokko_mapping_bc
 
   ! generic names
-  interface rokko_construct
-     procedure rokko_mapping_bc_destruct
-  end interface rokko_construct
+  !interface rokko_construct
+  !   procedure rokko_mapping_bc_construct
+  !end interface rokko_construct
 
   interface rokko_destruct
      procedure rokko_mapping_bc_destruct
   end interface rokko_destruct
   
   interface
-
+     
      ! subroutine rokko_mapping_bc_construct(map, global_dim, grid, solver) &
      !      bind(c)
      !   use iso_c_binding
@@ -41,7 +41,7 @@ module rokko_mapping_bc_mod
      !   type(rokko_grid), value, intent(in) :: grid
      !   type(rokko_parallel_dense_ev), value, intent(in) :: solver
      ! end subroutine rokko_mapping_bc_construct
-     
+
      subroutine rokko_mapping_bc_destruct(map) bind(c)
        use iso_c_binding
        import rokko_mapping_bc

@@ -12,7 +12,7 @@
 *****************************************************************************/
 
 #include <rokko/grid.hpp>
-#include <rokko/rokko_dense.h>
+#include <rokko/grid.h>
 
 void rokko_grid_construct(rokko_grid* grid, MPI_Comm comm, int grid_major) {
   if (grid_major == rokko_grid_col_major)
