@@ -10,7 +10,6 @@
 !*****************************************************************************
 
 program frank_matrix
-  use iso_c_binding
   use parameters
   implicit none
 
