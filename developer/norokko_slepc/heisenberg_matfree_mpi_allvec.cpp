@@ -75,7 +75,7 @@ int main(int argc,char **argv)
   ierr = EPSSetDimensions(eps, 5, 100, 100); CHKERRQ(ierr);
   ierr = EPSSetTolerances(eps, (PetscScalar) 1e-1, (PetscInt) 100);   CHKERRQ(ierr);
   //Vec v0;
-  //MatGetVecs(A, &v0, NULL);
+  //MatCreateVecs(A, &v0, NULL);
   //VecSet(v0,1.0);
   //EPSSetInitialSpace(eps,1,&v0);
   /*

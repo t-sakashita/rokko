@@ -231,8 +231,8 @@ public:
 
   void eigenvector(int k, double* vec) const {
     Vec evec_r, evec_i;
-    MatGetVecs(*A, NULL, &evec_r);
-    MatGetVecs(*A, NULL, &evec_i);
+    MatCreateVecs(*A, NULL, &evec_r);
+    MatCreateVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, &vec[0]);
     EPSGetEigenvector(eps, k, evec_r, evec_i);
     VecDestroy(&evec_r);
