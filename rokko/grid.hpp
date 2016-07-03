@@ -66,7 +66,7 @@ protected:
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
     is_row = boost::is_same<GRID_MAJOR, grid_row_major_t>::value;
-    nprow = int(std::sqrt(nprocs + 0.5));
+    nprow = int(std::sqrt((double)nprocs));
     while (1) {
       if ( nprow == 1 ) break;
       if ( (nprocs % nprow) == 0 ) break;
