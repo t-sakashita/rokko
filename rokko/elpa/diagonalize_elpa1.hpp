@@ -39,7 +39,7 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int nev = dim;
   get_nev(params, nev);
   int info = elpa_solve_evp_real_1stage(dim, nev, mat.get_array_pointer(), mat.get_lld(), &eigvals[0],
-					eigvecs.get_array_pointer(), eigvecs.get_lld(), mat.get_mb(), dim,
+					eigvecs.get_array_pointer(), eigvecs.get_lld(), mat.get_mb(), nev,
 					mpi_comm_rows, mpi_comm_cols);
   params_out.set("info", info);
   return params_out;
@@ -51,7 +51,19 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			     parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa1() : not yet implemented."));
+    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa1() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major."));
+  MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int mpi_comm_rows, mpi_comm_cols;
+  elpa_get_communicators(comm_f, mat.get_grid().get_myrow(), mat.get_grid().get_mycol(), &mpi_comm_rows, &mpi_comm_cols);
+
+  // call eigenvalue routine
+  int dim = mat.get_m_global();
+  int nev = 0;
+  double *eigvecs = new double[dim*dim]; // No calculation of eigenvectors, but need as work array.
+  int info = elpa_solve_evp_real_1stage(dim, nev, mat.get_array_pointer(), mat.get_lld(), &eigvals[0],
+					eigvecs, mat.get_lld(), mat.get_mb(), nev,
+					mpi_comm_rows, mpi_comm_cols);
+  params_out.set("info", info);
   return params_out;
 }
 

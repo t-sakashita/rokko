@@ -56,8 +56,25 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			     localized_vector<double>& eigvals,
 			     parameters const& params) {
   parameters params_out;
-  if(mat.is_row_major())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa2() : not yet implemented."));
+  MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
+  int mpi_comm_rows, mpi_comm_cols;
+  elpa_get_communicators(comm_f, mat.get_grid().get_myrow(), mat.get_grid().get_mycol(), &mpi_comm_rows, &mpi_comm_cols);
+
+  // call eigenvalue routine
+  int dim = mat.get_m_global();
+  int nev = 0;
+  get_nev(params, nev);
+  int kernel = ELPA2_REAL_KERNEL_GENERIC;
+  get_kernel(params, kernel);
+  int use_qr = 0;
+  get_blocked_qr(params, use_qr);
+
+  double *eigvecs = new double[dim*dim]; // No calculation of eigenvectors, but need as work array.
+
+  int info = elpa_solve_evp_real_2stage(dim, nev, mat.get_array_pointer(), mat.get_lld(), &eigvals[0],
+					eigvecs, mat.get_lld(), mat.get_mb(), dim,
+					mpi_comm_rows, mpi_comm_cols, comm_f, kernel, use_qr);
+  params_out.set("info", info);
   return params_out;
 }
 

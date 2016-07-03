@@ -57,8 +57,19 @@ public:
   template <typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize() : not yet implemented for only eigenvalues"));
-    //return rokko::elpa::diagonalize(mat, eigvals, params);
+    std::string routine = "";
+    if(params.defined("routine")) {
+      routine = params.get_string("routine");
+    }
+    if (routine=="elpa1") {
+      return rokko::elpa::diagonalize_elpa1(mat, eigvals, params);
+    } else if (routine=="elpa2") {
+      return rokko::elpa::diagonalize_elpa2(mat, eigvals, params);
+    } else if (routine=="") {  // default
+      return rokko::elpa::diagonalize_elpa1(mat, eigvals, params);
+    } else {
+      BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name"));
+    }
   }
 };
 
