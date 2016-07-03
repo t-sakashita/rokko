@@ -46,6 +46,7 @@ program frank_matrix
   if (myrank == 0) then
      write(*,'("Created ", i0, "x", i0, " size communicator with new cartesian topology")') dims(1), dims(2)
   endif
+
   if (comm /= MPI_COMM_NULL) then
      if (command_argument_count() >= 1) then
         call get_command_argument(1, library_routine, arg_len, status)

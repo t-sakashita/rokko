@@ -33,11 +33,19 @@ program frank_matrix
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
-
-  dims(1) = 2;  dims(2) = 2
+  dims(1) = int(sqrt(real(nprocs)));
+  do while (.true.)
+     if ( dims(1) == 1 ) exit
+     if ( mod(nprocs, dims(1)) == 0 ) exit
+     dims(1) = dims(1) - 1
+  enddo
+  dims(2) = nprocs / dims(1);
   periods(1) = .false.;  periods(2) = .false.
   reorder = .false.
   call mpi_cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, comm, ierr)
+  if (myrank == 0) then
+     write(*,'("Created ", i0, "x", i0, " size communicator with new cartesian topology")') dims(1), dims(2)
+  endif
 
   if (comm /= MPI_COMM_NULL) then
      if (command_argument_count() >= 1) then
@@ -54,10 +62,12 @@ program frank_matrix
         dim = 10
      endif
      
-     print *,"library = ", library
-     print *,"routine = ", routine
-     print *,"dimension = ", dim
-     
+     if (myrank == 0) then
+        print *,"library = ", library
+        print *,"routine = ", routine
+        print *,"dimension = ", dim
+     endif
+
      call rokko_parallel_dense_ev_construct(solver, library)
      call rokko_grid_construct(grid, comm, rokko_grid_row_major)
      call rokko_parallel_dense_ev_default_mapping(solver, dim, grid, map)
