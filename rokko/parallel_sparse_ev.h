@@ -13,6 +13,8 @@
 #define ROKKO_PARALLEL_SPARSE_EV_H
 
 #include <rokko/parameters.h>
+#include <rokko/distributed_crs_matrix.h>
+#include <rokko/distributed_mfree.h>
 
 #ifdef __cplusplus
 extern "C" {

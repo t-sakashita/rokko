@@ -20,6 +20,8 @@ struct rokko_distributed_crs_matrix {
   void* ptr;
 };
 
+struct rokko_parallel_sparse_ev;
+
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix,
 					    int dim1, int dim2, struct rokko_parallel_sparse_ev solver);
 void rokko_distributed_crs_matrix_destruct(struct rokko_distributed_crs_matrix* matrix);
