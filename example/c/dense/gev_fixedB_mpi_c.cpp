@@ -13,7 +13,7 @@
 
 #include <mpi.h>
 #include <rokko/rokko.h>
-#include <rokko/rokko_dense.h>
+#include <rokko/dense.h>
 
 #include <stdio.h>
 #include <stdlib.h>

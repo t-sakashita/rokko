@@ -11,7 +11,7 @@
 
 #include <mpi.h>
 #include <rokko/rokko.h>
-#include <rokko/utility/frank_matrix_c.h>
+#include <rokko/utility/frank_matrix.h>
 #include <stdio.h>
 #include <stdlib.h>
 
