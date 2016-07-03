@@ -1,0 +1,30 @@
+diff -uNr petsc-3.7.2.orig/config/BuildSystem/config/packages/openmp.py petsc-3.7.2/config/BuildSystem/config/packages/openmp.py
+--- petsc-3.7.2.orig/config/BuildSystem/config/packages/openmp.py	2016-05-16 11:57:35.000000000 +0900
++++ petsc-3.7.2/config/BuildSystem/config/packages/openmp.py	2016-06-30 12:55:33.000000000 +0900
+@@ -19,7 +19,8 @@
+     self.found = 0    
+     self.setCompilers.pushLanguage('C')
+     #
+-    for flag in ["-fopenmp", # Gnu
++    for flag in ["-Kopenmp", # Fujitsu
++                 "-fopenmp", # Gnu
+                  "-qsmp=omp",# IBM XL C/C++
+                  "-h omp",   # Cray. Must come after XL because XL interprets this option as meaning "-soname omp"
+                  "-mp",      # Portland Group
+diff -uNr petsc-3.7.2.orig/config/BuildSystem/config/setCompilers.py petsc-3.7.2/config/BuildSystem/config/setCompilers.py
+--- petsc-3.7.2.orig/config/BuildSystem/config/setCompilers.py	2016-05-16 11:57:35.000000000 +0900
++++ petsc-3.7.2/config/BuildSystem/config/setCompilers.py	2016-06-30 12:56:21.000000000 +0900
+@@ -1020,11 +1020,11 @@
+     if self.language[-1] == 'CUDA':
+       yield '-Xcompiler -fPIC'
+     elif config.setCompilers.Configure.isGNU(self.getCompiler(), self.log):
+-      yield '-fPIC'
++      yield '-KPIC'
+     else:
++      yield '-KPIC'
+       yield '-PIC'
+       yield '-fPIC'
+-      yield '-KPIC'
+       yield '-qpic'
+     return
+ 
