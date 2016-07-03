@@ -23,17 +23,27 @@ typedef rokko::matrix_col_major matrix_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  
+  int nprocs;
+  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+
   MPI_Comm comm;
   int dims[2], periods[2];
-  dims[0] = 2;  dims[1] = 2;
+  dims[0] = int(std::sqrt((double)nprocs));
+  while (1) {
+    if ( dims[0] == 1 ) break;
+    if ( (nprocs % dims[0]) == 0 ) break;
+    dims[0] = dims[0] - 1;
+  }
+  dims[1] = nprocs / dims[0];
   periods[0] = 0;  periods[1] = 0;
   int reorder = 0;
-
   int ierr = MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, &comm);
   rokko::grid g(comm);
   int myrank = g.get_myrank();
 
+  if (myrank == 0)
+    std::cout << "Created " << dims[0] << "x" << dims[1] << " size communicator with new cartesian topology" << std::endl;
+      
   if (comm != MPI_COMM_NULL) {
     std::string library_routine(rokko::parallel_dense_ev::default_solver());
     std::string library, routine;
@@ -56,7 +66,7 @@ int main(int argc, char *argv[]) {
                 #endif
 		<< "routine = " << routine << std::endl
 		<< "dimension = " << dim << std::endl;
-    
+
     rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double, matrix_major> mat(map);
     rokko::frank_matrix::generate(mat);
