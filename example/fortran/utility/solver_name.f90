@@ -13,7 +13,7 @@ program frank_matrix
   use solver_name_utility
   implicit none
 
-  character(255) :: solver_name
+  character(len=:), allocatable :: solver_name
   character(len=:), allocatable :: library, routine
 
   solver_name = "lapack:dsyev"
