@@ -215,7 +215,8 @@ contains
   subroutine rokko_parallel_dense_ev_construct(solver, solver_name)
     interface
        subroutine rokko_parallel_dense_ev_construct_f(solver, solver_name) bind(c)
-         use rokko_parallel_dense_ev_type
+         import rokko_parallel_dense_ev
+         import c_char
          implicit none
          type(rokko_parallel_dense_ev), intent(out) :: solver
          character(kind=c_char), intent(in) :: solver_name(*)
