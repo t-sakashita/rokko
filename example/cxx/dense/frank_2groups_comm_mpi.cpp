@@ -26,7 +26,8 @@ int main(int argc, char *argv[]) {
   
   MPI_Group group_world, even_group, odd_group;
   MPI_Comm comm, even_comm, odd_comm;
-  int rank, p, Neven, Nodd, even_members[16], odd_members[16], ierr;
+  int rank, p, Neven, Nodd, ierr;
+  int *even_members, *odd_members;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
@@ -34,6 +35,8 @@ int main(int argc, char *argv[]) {
 
   Neven = (p + 1) / 2;
   Nodd = p - Neven;
+  even_members = new int[Neven];
+  odd_members = new int[Nodd];
   for (int i=0; i<Neven; ++i)
     even_members[i] = 2 * i;
   for (int i=0; i<Nodd; ++i)
@@ -41,7 +44,6 @@ int main(int argc, char *argv[]) {
   
   ierr = MPI_Group_incl(group_world, Neven, even_members, &even_group);
   ierr = MPI_Group_incl(group_world, Nodd, odd_members, &odd_group);
-  //std::cout << "rank=" << rank << " ierr=" << ierr << std::endl;
   ierr = MPI_Comm_create(MPI_COMM_WORLD, even_group, &even_comm);
   ierr = MPI_Comm_create(MPI_COMM_WORLD, odd_group, &odd_comm);
   comm = ((rank % 2) == 0) ? even_comm : odd_comm;
