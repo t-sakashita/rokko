@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS solver)
+set(TESTS solver grid)
 foreach(name ${TESTS})
   set(target_name test_c_${name})
   add_executable(${target_name} ${name}.c)
