@@ -17,8 +17,7 @@ program frank_matrix
   character(len=:), allocatable :: library, routine
 
   solver_name = "lapack:dsyev"
-!  solver_name = "lapack"
-  call rokko_split_solver_name(solver_name, library, routine)
+  call rokko_split_solver_name_dynstr(solver_name, library, routine)
 
   print*, "library=", library
   print*, "routine=", routine
