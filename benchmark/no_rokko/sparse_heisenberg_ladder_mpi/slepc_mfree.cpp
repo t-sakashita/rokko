@@ -133,7 +133,7 @@ int main(int argc,char **argv)
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                     Display solution and clean up
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  //ierr = EPSPrintSolution(eps,NULL); CHKERRQ(ierr);
+  //ierr = EPSValuesView(eps,NULL); CHKERRQ(ierr);
   ierr = EPSDestroy(&eps); CHKERRQ(ierr);
   ierr = MatDestroy(&A); CHKERRQ(ierr);
   ierr = SlepcFinalize();
