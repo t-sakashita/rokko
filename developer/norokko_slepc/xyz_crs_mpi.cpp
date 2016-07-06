@@ -20,7 +20,7 @@ int main(int argc,char **argv)
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&size); CHKERRQ(ierr);
 
   int L = 8;
-  ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,NULL,"-L", &L, NULL); CHKERRQ(ierr);
   N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
   std::vector<boost::tuple<double, double, double> > coupling;

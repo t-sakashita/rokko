@@ -32,7 +32,7 @@ int main(int argc,char **argv)
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&myproc); CHKERRQ(ierr);
 
   int L = 3;
-  ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,NULL,"-L", &L, NULL); CHKERRQ(ierr);
   PetscInt N_global = 10; //1 << L;
   PetscInt N_local = N_global / nproc;
   if (myproc < (N_global % nproc)) {

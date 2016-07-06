@@ -25,7 +25,7 @@ int main(int argc,char **argv)
   if (size != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only");
 
   N = 100;
-  ierr = PetscOptionsGetInt(NULL,"-N",&N,NULL);CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Compute the operator matrix that defines the eigensystem, Ax=kx

@@ -30,7 +30,7 @@ int main(int argc,char **argv)
   if (nproc != 1) SETERRQ(PETSC_COMM_WORLD,1,"This is a uniprocessor example only");
 
   int L = 8;
-  ierr = PetscOptionsGetInt(NULL,"-L", &L, NULL); CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,NULL,"-L", &L, NULL); CHKERRQ(ierr);
   N = 1 << L;
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -59,8 +59,8 @@ int main(int argc, char *argv[]) {
   rokko::parameters params;
   params.set("routine", routine);
   try {
-    solver.diagonalize(mat, eigval, eigvec, params);
-    //solver.diagonalize(mat, eigval, eigvec);
+    //solver.diagonalize(mat, eigval, eigvec, params);
+    solver.diagonalize(mat, eigval, params);
   }
   catch (const char *e) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
@@ -77,10 +77,6 @@ int main(int argc, char *argv[]) {
     std::cout << "largest eigenvalues:";
     for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
     std::cout << std::endl;
-    std::cout << "residual of the largest eigenvalue/vector: |x A x - lambda| = "
-              << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
-                          - eigval(dim - 1))
-              << std::endl;
   }
 
   solver.finalize();
