@@ -13,7 +13,7 @@
 
 #define EIGEN_WORLD_VERSION 3
 #define EIGEN_MAJOR_VERSION 2
-#define EIGEN_MINOR_VERSION 8
+#define EIGEN_MINOR_VERSION 9
 
 #define EIGEN_VERSION_AT_LEAST(x,y,z) (EIGEN_WORLD_VERSION>x || (EIGEN_WORLD_VERSION>=x && \
                                       (EIGEN_MAJOR_VERSION>y || (EIGEN_MAJOR_VERSION>=y && \
@@ -298,7 +298,8 @@
   #define EIGEN_OS_SOLARIS 0
 #endif
 
-#if EIGEN_GNUC_AT_MOST(4,3) && !defined(__clang__) && defined(__FCC_VERSION)
+
+#if EIGEN_GNUC_AT_MOST(4,3) && !defined(__clang__)
   // see bug 89
   #define EIGEN_SAFE_TO_USE_STANDARD_ASSERT_MACRO 0
 #else
