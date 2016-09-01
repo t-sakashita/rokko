@@ -49,7 +49,7 @@ else(ANASAZI_DIR)
   return()
 endif(ANASAZI_DIR)
 
-set(_LIBS anasazitpetra ModeLaplace anasaziepetra anasazi belostpetra belosepetra belos thyraepetra thyracore tpetraext tpetrainout tpetra kokkostsqr tpetrakernels tpetraclassiclinalg tpetraclassicnodeapi tpetraclassic epetra rtop teuchoskokkoscomm teuchoskokkoscompat teuchosremainder teuchosnumerics teuchoscomm teuchosparameterlist teuchoscore kokkosalgorithms kokkoscontainers kokkoscore tpi)
+set(_LIBS anasazitpetra ModeLaplace anasaziepetra anasazi belostpetra belosepetra belos thyraepetra thyracore tpetraext tpetrainout tpetra kokkostsqr tpetrakernels tpetraclassiclinalg tpetraclassicnodeapi tpetraclassic epetra rtop teuchoskokkoscomm teuchoskokkoscompat teuchosremainder teuchosnumerics teuchoscomm teuchosparameterlist teuchoscore kokkosalgorithms kokkoscontainers kokkoscore tpi epetraext triutils)
 
 foreach(name ${_LIBS})
   unset(_LIB CACHE)
