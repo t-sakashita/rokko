@@ -304,7 +304,7 @@ module rokko_distributed_matrix_mod
 contains
   
   subroutine rokko_distributed_matrix_generate_from_array(matrix, array)
-    type(rokko_distributed_matrix), intent(out) :: matrix
+    type(rokko_distributed_matrix), value, intent(in) :: matrix
     double precision, intent(in) :: array(:,:)
     integer :: m_local, n_local, local_i, local_j, global_i, global_j
     m_local = rokko_distributed_matrix_get_m_local(matrix)
