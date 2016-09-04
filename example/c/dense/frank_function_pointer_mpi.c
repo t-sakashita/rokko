@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
 *    
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -20,13 +20,13 @@ double frank_calculate_matrix_element(int i, int j) {
 }
 
 int main(int argc, char *argv[]) {
-  int dim;
+  unsigned int dim = 10;
   struct rokko_parallel_dense_ev solver;
   struct rokko_grid grid;
   struct rokko_mapping_bc map;
   struct rokko_distributed_matrix mat, Z;
   struct rokko_localized_vector w;
-  char* solver_name;
+  char *library_routine, *library, *routine;
 
   int provided, ierr, myrank, nprocs, i;
   
@@ -34,18 +34,18 @@ int main(int argc, char *argv[]) {
   ierr = MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
   ierr = MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
-  if (argc == 3) {
-    solver_name = argv[1];
-    dim = atoi(argv[2]);
-  } else {
-    fprintf(stderr, "error: %s solver_name dimension\n", argv[0]);
-    MPI_Abort(MPI_COMM_WORLD, 34);
-  }
-    
-  printf("solver name = %s\n", solver_name);
-  printf("matrix dimension = %d\n", dim);
+  if (argc >= 2) library_routine = argv[1];
+  else library_routine = rokko_parallel_dense_ev_default_solver();
+  if (argc >= 3) dim = atoi(argv[2]);
+  rokko_split_solver_name(library_routine, &library, &routine);
 
-  rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
+  if (myrank == 0) {
+    printf("library = %s\n", library);
+    printf("routine = %s\n", routine);
+    printf("dimension = %d\n", dim);
+  }
+
+  rokko_parallel_dense_ev_construct(&solver, library, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
   map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
   rokko_distributed_matrix_construct(&mat, map);

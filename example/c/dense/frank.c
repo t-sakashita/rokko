@@ -15,15 +15,15 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-  int dim;
+  unsigned int dim = 10;
   struct rokko_serial_dense_ev solver;
   struct rokko_localized_matrix mat, Z;
   struct rokko_localized_vector w;
   struct rokko_parameters params;
-  char* library_routine, *library, *routine;
+  char *library_routine, *library, *routine;
 
-  library_routine = rokko_serial_dense_ev_default_solver();
   if (argc >= 2) library_routine = argv[1];
+  else library_routine = rokko_serial_dense_ev_default_solver();
   if (argc >= 3) dim = atoi(argv[2]);
   rokko_split_solver_name(library_routine, &library, &routine);
   rokko_serial_dense_ev_construct(&solver, library, argc, argv);
