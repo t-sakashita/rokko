@@ -462,7 +462,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_matrix_diagonalize_overloads,
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(distributed_crs_matrix_diagonalize_overloads, wrap_rokko_parallel_sparse_ev::diagonalize_distributed_crs_matrix, 1, 2)
 
-BOOST_PYTHON_MODULE(rokko_ext) {
+BOOST_PYTHON_MODULE(rokko_python) {
   using namespace boost::python;
 
   enum_<rokko_enum>("rokko")

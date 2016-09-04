@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -171,8 +171,8 @@ endif(Boost_FOUND)
 
 if(BUILD_Python_BINDING)
   target_link_libraries(rokko ${PYTHON_LIBRARIES})
-  python_add_module(rokko_ext rokko_ext.cpp)
-  target_link_libraries(rokko_ext rokko)
+  python_add_module(rokko_python rokko_python.cpp)
+  target_link_libraries(rokko_python rokko)
 endif(BUILD_Python_BINDING)
 
 # install
@@ -188,7 +188,7 @@ if(BUILD_Fortran_BINDING)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rokko.mod DESTINATION include)
 endif(BUILD_Fortran_BINDING)
 if(BUILD_Python_BINDING)
-  install(TARGETS rokko_ext
+  install(TARGETS rokko_python
           ARCHIVE DESTINATION lib
           LIBRARY DESTINATION lib
           RUNTIME DESTINATION bin)
