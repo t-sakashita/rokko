@@ -9,6 +9,7 @@
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   add_subdirectory(dense_frank_mpi)
+  add_subdirectory(dense_minij_mpi)
   add_subdirectory(dense_heisenberg_ladder_mpi)
 endif(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 
