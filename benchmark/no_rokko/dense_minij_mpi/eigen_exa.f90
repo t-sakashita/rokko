@@ -23,7 +23,7 @@ program EigenExa
   gen_tick = mpi_wtime()
   call eigen_get_matdims( n, nm, ny )
   allocate( a(nm, ny), z(nm, ny), w(n))
-  call mat_set( n, a(1,1), nm, 3 ) ! minij matrix
+  call mat_set( n, a(1,1), nm, 0 ) ! minij matrix: mtype=0
 
   diag_tick = mpi_wtime()
   call eigen_sx( n, n, a, nm, w, z, nm, 48, 128, 'A')
