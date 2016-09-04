@@ -16,6 +16,7 @@
 *     When compiled and run, it produces output which can be
 *     pasted directly into matlab.
 *
+      IMPLICIT NONE
 *     .. Parameters ..
       INTEGER            N
       character(len=10) :: tmp_str
@@ -23,7 +24,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            IERR
-      INTEGER            LWORK, LDA
+      INTEGER            LWORK, LIWORK, LDA
       INTEGER            CONTEXT, I, INFO, MYCOL, MYROW,
      $                   NPCOL, NPROCS, NPROW
       INTEGER            MB, NB, BB, M_LOCAL, N_LOCAL
@@ -42,6 +43,7 @@
      $                   BLACS_GRIDINFO, BLACS_GRIDINIT, BLACS_PINFO,
      $                   BLACS_SETUP, DESCINIT,
      $                   PDSYEV
+      INTEGER            NUMROC
 *     ..
 *     .. Executable Statements ..
 *

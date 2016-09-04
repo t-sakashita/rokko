@@ -16,6 +16,7 @@
 *     When compiled and run, it produces output which can be
 *     pasted directly into matlab.
 *
+      IMPLICIT NONE
 *     .. Parameters ..
       INTEGER            N
       character(len=10) :: tmp_str
@@ -40,6 +41,7 @@
      $                   BLACS_GRIDINFO, BLACS_GRIDINIT, BLACS_PINFO,
      $                   BLACS_SETUP, DESCINIT,
      $                   PDSYEV
+      INTEGER            NUMROC
 *     ..
 *     .. Executable Statements ..
 *
