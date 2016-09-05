@@ -10,7 +10,7 @@ rm -rf elpa-$ELPA_VERSION*
 if test -f $SOURCE_DIR/elpa-$ELPA_VERSION.tar.gz; then
     tar zxf $SOURCE_DIR/elpa-$ELPA_VERSION.tar.gz
 else
-    wget -O - http://elpa.mpcdf.mpg.de/elpa-$ELPA_VERSION.tar.gz | tar zxf -
+    wget -O - http://elpa.mpcdf.mpg.de/html/Releases/$ELPA_VERSION/elpa-$ELPA_VERSION.tar.gz | tar zxf -
 fi
 
 cd $BUILD_DIR/elpa-$ELPA_VERSION
