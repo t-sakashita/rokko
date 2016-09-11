@@ -19,7 +19,7 @@ for build_type in $BUILD_TYPES; do
       -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
       -DCMAKE_CXX_FLAGS="-mt" -DCMAKE_C_FLAGS="-mt" -DCMAKE_Fortran_FLAGS="-mt" \
       -DMPI_CXX_COMPILER=mpicxx -DMPI_C_COMPILER=mpicc -DMPI_Fortran_COMPILER=mpif90 \
-      -DMPI_CXX_INCLUDE_PATH="/home/app/mpt/mpt-2.12-p11218/include" -DMPI_C_INCLUDE_PATH="/home/app/mpt/mpt-2.12-p11218/include" -DMPI_Fortran_INCLUDE_PATH="/home/app/mpt/mpt-2.12-p11218/include" \
+      -DMPI_CXX_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" -DMPI_C_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" -DMPI_Fortran_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" \
       -DMPI_CXX_LIBRARIES="-mt" -DMPI_C_LIBRARIES="-mt" -DMPI_Fortran_LIBRARIES="-mt" \
       -DMATH_LIBS="-mkl=parallel;-lifcore" \
       $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
