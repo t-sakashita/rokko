@@ -18,7 +18,7 @@ for build_type in $BUILD_TYPES; do
   else
       FLAGS="-g -mt"
   fi
-  check ./configure FC=mpif90 CC=mpicc CXX=mpicxx SCALAPACK_LDFLAGS="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
+  check ./configure FC=mpif90 CC=mpicc CXX=mpicxx SCALAPACK_LDFLAGS="-lmkl_scalapack_lp64 -lmkl_blacs_sgimpt_lp64 -mkl=parallel" \
 	      FCFLAGS="$FLAGS" CFLAGS="$FLAGS" CXXFLAGS="$FLAGS" \
 	      --enable-openmp  --prefix=$PREFIX
   check make -j4
