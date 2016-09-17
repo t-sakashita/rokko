@@ -28,6 +28,7 @@
 #include <AnasaziLOBPCGSolMgr.hpp>
 #include <AnasaziBlockKrylovSchurSolMgr.hpp>
 #include <AnasaziBlockDavidsonSolMgr.hpp>
+#include <AnasaziRTRSolMgr.hpp>
 #include <Teuchos_RCPDecl.hpp>
 
 namespace rokko {
@@ -65,7 +66,7 @@ private:
   Epetra_Map ep_map;
 };
 
-static const char* const anasazi_solvers[] = { "LOBPCG", "BlockKrylovSchur", "BlockDavidson" };
+static const char* const anasazi_solvers[] = { "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
 
 class solver {
 public:
@@ -87,6 +88,8 @@ public:
       return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     if (routine == "BlockDavidson")
       return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+    if (routine == "RTR")
+      return new Anasazi::RTRSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     else {
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
