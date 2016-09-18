@@ -285,8 +285,8 @@ program test_real2
                          nprow, npcol, my_prow, my_pcol)
 
    ! All ELPA routines need MPI communicators for communicating within
-   ! rows or columns of processes, these are set in get_elpa_row_col_comms.
-   mpierr = get_elpa_row_col_comms(mpi_comm_world, my_prow, my_pcol, &
+   ! rows or columns of processes, these are set in get_elpa_communicatos.
+   mpierr = get_elpa_communicators(mpi_comm_world, my_prow, my_pcol, &
                                    mpi_comm_rows, mpi_comm_cols)
 
    gen_tick = mpi_wtime()

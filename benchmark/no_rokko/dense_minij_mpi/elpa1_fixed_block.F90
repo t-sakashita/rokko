@@ -284,9 +284,9 @@ program test_real1
                          nprow, npcol, my_prow, my_pcol)
 
    ! All ELPA routines need MPI communicators for communicating within
-   ! rows or columns of processes, these are set in get_elpa_row_col_comms.
-   mpierr = get_elpa_row_col_comms(mpi_comm_world, my_prow, my_pcol, &
-                                   mpi_comm_rows, mpi_comm_cols)
+   ! rows or columns of processes, these are set in get_elpa_communicators.
+   mpierr = get_elpa_communicators(mpi_comm_world, my_prow, my_pcol, &
+        & mpi_comm_rows, mpi_comm_cols)
 
    gen_tick = mpi_wtime()
    call set_up_blacs_descriptor(na ,nblk, my_prow, my_pcol, np_rows, np_cols, &
@@ -303,8 +303,8 @@ program test_real1
    !-------------------------------------------------------------------------------
    ! Calculate eigenvalues/eigenvectors
    diag_tick = mpi_wtime()
-   success = solve_evp_real(na, nev, a, na_rows, ev, z, na_rows, nblk, &
-                            na_cols, mpi_comm_rows, mpi_comm_cols)
+   success = solve_evp_real_1stage(na, nev, a, na_rows, ev, z, na_rows, nblk, &
+        & na_cols, mpi_comm_rows, mpi_comm_cols)
    end_tick = mpi_wtime()
 
    if (.not.(success)) then
