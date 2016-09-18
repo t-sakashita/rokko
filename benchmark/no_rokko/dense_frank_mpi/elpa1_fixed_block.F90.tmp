@@ -101,7 +101,7 @@ subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
      np_rows, np_cols, na_rows,  &
      na_cols, sc_desc, my_blacs_ctxt, info)
 
-  use elpa_utilities, only : error_unit
+!  use elpa_utilities, only : error_unit
   use mpi
   implicit none
   
@@ -127,12 +127,12 @@ subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
   call descinit(sc_desc, na, na, nblk, nblk, 0, 0, my_blacs_ctxt, na_rows, info)
 
   if (info .ne. 0) then
-     write(error_unit,*) 'Error in BLACS descinit! info=',info
-     write(error_unit,*) 'Most likely this happend since you want to use'
-     write(error_unit,*) 'more MPI tasks than are possible for your'
-     write(error_unit,*) 'problem size (matrix size and blocksize)!'
-     write(error_unit,*) 'The blacsgrid can not be set up properly'
-     write(error_unit,*) 'Try reducing the number of MPI tasks...'
+     write(0,*) 'Error in BLACS descinit! info=',info
+     write(0,*) 'Most likely this happend since you want to use'
+     write(0,*) 'more MPI tasks than are possible for your'
+     write(0,*) 'problem size (matrix size and blocksize)!'
+     write(0,*) 'The blacsgrid can not be set up properly'
+     write(0,*) 'Try reducing the number of MPI tasks...'
      call MPI_ABORT(mpi_comm_world, 1, mpierr)
   endif
   
@@ -179,8 +179,9 @@ program test_real1
 !
 !-------------------------------------------------------------------------------
 
+!   use precision
    use ELPA1
-   use elpa_utilities, only : error_unit
+!   use elpa_utilities, only : error_unit
    use mpi
    implicit none
 
@@ -284,7 +285,7 @@ program test_real1
                          nprow, npcol, my_prow, my_pcol)
 
    ! All ELPA routines need MPI communicators for communicating within
-   ! rows or columns of processes, these are set in get_elpa_communicators.
+   ! rows or columns of processes, these are set in get_elpa_row_col_comms.
    mpierr = get_elpa_communicators(mpi_comm_world, my_prow, my_pcol, &
         & mpi_comm_rows, mpi_comm_cols)
 
@@ -308,7 +309,7 @@ program test_real1
    end_tick = mpi_wtime()
 
    if (.not.(success)) then
-      write(error_unit,*) "solve_evp_real_2stage produced an error! Aborting..."
+      write(0,*) "solve_evp_real_2stage produced an error! Aborting..."
       call MPI_ABORT(mpi_comm_world, 1, mpierr)
    endif
 
