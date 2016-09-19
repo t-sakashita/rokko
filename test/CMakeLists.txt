@@ -88,5 +88,6 @@ add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
 add_subdirectory(factory)
 
-add_subdirectory(c)
-
+if(BUILD_C_BINDING)
+  add_subdirectory(c)
+endif(BUILD_C_BINDING)
