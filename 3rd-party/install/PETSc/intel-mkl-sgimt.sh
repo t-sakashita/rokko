@@ -9,7 +9,7 @@ sh $SCRIPT_DIR/setup.sh
 
 MKL=$(echo $MKLROOT | cut -d: -f1)
 unset PETSC_DIR
-BUILD_TYPES="Debug"
+BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/$build_type
   cd $BUILD_DIR
