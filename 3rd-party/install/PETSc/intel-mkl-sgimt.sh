@@ -29,7 +29,7 @@ for build_type in $BUILD_TYPES; do
       ./configure --prefix=$PREFIX \
         --with-cxx=icpc --with-cc=icc --with-fc=ifort \
         --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
-        --with-mpi-include="/usr/include" --with-mpi-lib="-lmpi" \
+        --with-mpi-include="/usr/include" --with-mpi-lib="-lmpi_mt" \
         --with-blas-lapack-dir="$MKL/bin" \
         --with-make-np=1 \
         --with-c++-support=1 --with-debugging=0
@@ -48,7 +48,7 @@ for build_type in $BUILD_TYPES; do
       ./configure --prefix=$PREFIX \
         --with-cxx=icpc --with-cc=icc --with-fc=ifort \
         --COPTFLAGS="-O0 -g" --CXXOPTFLAGS="-O0 -g" --FOPTFLAGS="-O0 -g" \
-        --with-mpi-include="/usr/include" --with-mpi-lib="-lmpi" \
+        --with-mpi-include="/usr/include" --with-mpi-lib="-lmpi_mt" \
         --with-blas-lapack-dir="$MKL/bin" \
         --with-make-np=1 \
         --with-c++-support=1 --with-debugging=1
