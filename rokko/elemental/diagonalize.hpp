@@ -57,8 +57,8 @@ El::HermitianEigSubset<double> get_subset(parameters const& params) {
 
 El::HermitianEigCtrl<double> get_ctrl(parameters const& params) {
   El::HermitianEigCtrl<double> ctrl;
-  if (params.defined("USESDC")) {
-    ctrl.useSDC = params.get<bool>("USESDC");
+  if (params.defined("useSDC")) {
+    ctrl.useSDC = params.get<bool>("useSDC");
   }
   if (params.defined("cutoff")) {
     ctrl.useSDC = params.get<double>("cutoff");
