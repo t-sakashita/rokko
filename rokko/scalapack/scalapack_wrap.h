@@ -42,7 +42,7 @@ int ROKKO_pdsyevd_work(char jobz, char uplo, int n,
 int ROKKO_pdsyevr_work(char jobz, char range, char uplo, int n,
 		       double* A, int ia, int ja, const int* descA,
 		       double vl, double vu, int il, int iu,
-		       int m, int nz, double* w,
+		       int* m, int* nz, double* w,
 		       double* Z, int iz, int jz, const int* descZ,
 		       double* work, int lwork, int* iwork, int liwork);
 #endif
@@ -67,7 +67,7 @@ int ROKKO_pdsyevd(char jobz, char uplo, int n,
 int ROKKO_pdsyevr(char jobz, char range, char uplo, int n,
                   double* A, int ia, int ja, const int* descA,
                   double vl, double vu, int il, int iu,
-                  int m, int nz, double* w,
+                  int* m, int* nz, double* w,
                   double* Z, int iz, int jz, const int* descZ);
 #endif
 
