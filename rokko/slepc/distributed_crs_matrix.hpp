@@ -36,8 +36,11 @@ public:
   distributed_crs_matrix() {}
   ~distributed_crs_matrix() {}
 
-  distributed_crs_matrix(int row_dim, int col_dim) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim) {
     initialize(row_dim, col_dim);
+  }
+  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
+    initialize(row_dim, col_dim, num_entries_per_row);
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/initialize"
@@ -46,6 +49,17 @@ public:
     ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
+    dim_ = row_dim;
+    ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
+    num_local_rows_ = end_row_ - start_row_;// + 1;
+  }
+  #undef __FUNCT__
+    #define __FUNCT__ "distributed_crs_matrix/initialize with num_entries_per_row"
+  void initialize(int row_dim, int col_dim, int num_entries_per_row) {
+    ierr = MatCreate(PETSC_COMM_WORLD, &matrix_);  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
+    ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
+    ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);
     dim_ = row_dim;
     ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
     num_local_rows_ = end_row_ - start_row_;// + 1;

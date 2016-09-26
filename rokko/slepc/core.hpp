@@ -258,8 +258,8 @@ public:
     return new slepc::distributed_crs_matrix(row_dim, col_dim);
   }
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
-    int col_dim, int num_entries_per_row) { // fix me: use num_entries_per_row for optimizaing storage size
-    return new slepc::distributed_crs_matrix(row_dim, col_dim);
+    int col_dim, int num_entries_per_row) { // fix me: accepting different number of entries for diagonal and off-diagonal blocks in PETSc
+    return new slepc::distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
 
 private:
