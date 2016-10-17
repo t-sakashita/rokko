@@ -28,18 +28,24 @@ int elpa_get_communicators(int mpi_comm_world, int my_prow, int my_pcol, int *mp
 }
 #endif
 
-/* Fix me: we should include ELPA's header file of its install dir to use the following costants. */
-/* However, to do so, we should set include path of ELPA's install dir, which seems diificult. */
+
+/* constants for kernel */
 
 #define ELPA2_REAL_KERNEL_GENERIC 1
 #define ELPA2_REAL_KERNEL_GENERIC_SIMPLE 2
 #define ELPA2_REAL_KERNEL_BGP 3
 #define ELPA2_REAL_KERNEL_BGQ 4
 #define ELPA2_REAL_KERNEL_SSE 5
-#define ELPA2_REAL_KERNEL_AVX_BLOCK2 6
-#define ELPA2_REAL_KERNEL_AVX_BLOCK4 7
-#define ELPA2_REAL_KERNEL_AVX_BLOCK6 8
+#define ELPA2_REAL_KERNEL_SSE_BLOCK2 6
+#define ELPA2_REAL_KERNEL_SSE_BLOCK4 7
+#define ELPA2_REAL_KERNEL_SSE_BLOCK6 8
+#define ELPA2_REAL_KERNEL_AVX_BLOCK2 9
+#define ELPA2_REAL_KERNEL_AVX_BLOCK4 10
+#define ELPA2_REAL_KERNEL_AVX_BLOCK6 11
+#define ELPA2_REAL_KERNEL_AVX2_BLOCK2 12
+#define ELPA2_REAL_KERNEL_AVX2_BLOCK4 13
+#define ELPA2_REAL_KERNEL_AVX2_BLOCK6 14
 
-#define ELPA2_NUMBER_OF_REAL_KERNELS 8
+#define ELPA2_NUMBER_OF_REAL_KERNELS 14
 
 #endif // ROKKO_ELPA_H
