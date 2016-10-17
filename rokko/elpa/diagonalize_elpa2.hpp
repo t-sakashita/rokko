@@ -39,7 +39,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int nev = dim;
   get_nev(params, nev);
   //std::cout << "mat_lld=" << mat_lld << " mat_mb=" << mat_mb << std::endl;
-  int kernel = ELPA2_REAL_KERNEL_GENERIC;
+  int kernel = ELPA2_REAL_KERNEL_GENERIC_SIMPLE;
   get_kernel(params, kernel);
   int use_qr = 0;
   get_blocked_qr(params, use_qr);
@@ -64,7 +64,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int dim = mat.get_m_global();
   int nev = 0;
   get_nev(params, nev);
-  int kernel = ELPA2_REAL_KERNEL_GENERIC;
+  int kernel = ELPA2_REAL_KERNEL_GENERIC_SIMPLE;
   get_kernel(params, kernel);
   int use_qr = 0;
   get_blocked_qr(params, use_qr);
