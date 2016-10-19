@@ -182,6 +182,7 @@ program test_real2
    use ELPA1
    use ELPA2
    use elpa_utilities, only : error_unit
+   use elpa2_utilities
    use mpi
    implicit none
 
@@ -305,7 +306,7 @@ program test_real2
    ! Calculate eigenvalues/eigenvectors
    diag_tick = mpi_wtime()
    success = solve_evp_real_2stage(na, nev, a, na_rows, ev, z, na_rows,  nblk, na_cols, &
-        mpi_comm_rows, mpi_comm_cols, mpi_comm_world)
+        mpi_comm_rows, mpi_comm_cols, mpi_comm_world, REAL_ELPA_KERNEL_GENERIC_SIMPLE)
    end_tick = mpi_wtime()
 
    if (.not.(success)) then
