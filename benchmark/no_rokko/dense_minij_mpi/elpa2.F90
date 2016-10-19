@@ -207,36 +207,6 @@ program test_real2
    endif
 #endif
 
-   if (myid .eq. 0) then
-      print *," "
-      print *,"This ELPA2 is build with"
-#ifdef WITH_REAL_AVX_BLOCK2_KERNEL
-      print *,"AVX optimized kernel (2 blocking) for real matrices"
-#endif
-#ifdef WITH_REAL_AVX_BLOCK4_KERNEL
-      print *,"AVX optimized kernel (4 blocking) for real matrices"
-#endif
-#ifdef WITH_REAL_AVX_BLOCK6_KERNEL
-      print *,"AVX optimized kernel (6 blocking) for real matrices"
-#endif
-
-#ifdef WITH_REAL_GENERIC_KERNEL
-     print *,"GENERIC kernel for real matrices"
-#endif
-#ifdef WITH_REAL_GENERIC_SIMPLE_KERNEL
-     print *,"GENERIC SIMPLE kernel for real matrices"
-#endif
-#ifdef WITH_REAL_SSE_KERNEL
-     print *,"SSE ASSEMBLER kernel for real matrices"
-#endif
-#ifdef WITH_REAL_BGP_KERNEL
-     print *,"BGP kernel for real matrices"
-#endif
-#ifdef WITH_REAL_BGQ_KERNEL
-     print *,"BGQ kernel for real matrices"
-#endif
-   endif
-
    !-------------------------------------------------------------------------------
    ! Selection of number of processor rows/columns
    ! We try to set up the grid square-like, i.e. start the search for possible
