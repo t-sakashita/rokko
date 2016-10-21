@@ -188,8 +188,8 @@ int main(int argc, char *argv[]) {
   //std::string which("LM");
   const int    nev       = 1;
   const int    blockSize = nev;
-  //const int    maxIters  = 500;
-  const double tol       = 1.0e-12;
+  const int    maxIters  = 100;
+  const double tol       = 1.0e-10;
 
   typedef Epetra_MultiVector MV;
   typedef Epetra_Operator OP;
@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
   Teuchos::ParameterList MyPL;
   //MyPL.set( "Which", which );
   //MyPL.set( "Block Size", blockSize );
-  //MyPL.set( "Maximum Iterations", maxIters );
+  MyPL.set( "Maximum Iterations", maxIters );
   MyPL.set( "Convergence Tolerance", tol );
 
   // Create the solver manager
