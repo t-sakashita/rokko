@@ -108,8 +108,6 @@ int main(int argc,char **argv)
   */
   ierr = EPSGetType(eps,&type); CHKERRQ(ierr);
   ierr = PetscPrintf(PETSC_COMM_WORLD,"solution method: %s\n\n",type); CHKERRQ(ierr);
-  ierr = EPSGetDimensions(eps,&nev,NULL,NULL); CHKERRQ(ierr);
-  ierr = PetscPrintf(PETSC_COMM_WORLD,"number of requested eigenvalues: %D\n",nev); CHKERRQ(ierr);
   int num_conv;
   EPSGetConverged(eps, &num_conv);
   PetscScalar eval_r, eval_i;
