@@ -45,6 +45,10 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 
   int N = 1 << (L-p);
 
+  for(int k=0; k<N; ++k) {
+    w[k] = 0.;
+  }
+
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
