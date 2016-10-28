@@ -157,9 +157,9 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
   PetscInt len_x, len_y;
   ierr = VecGetLocalSize(x, &len_x);  CHKERRQ(ierr);
   ierr = VecGetLocalSize(y, &len_y); CHKERRQ(ierr);
-  //for(int j = 0; j < len_y; ++j) {
-  //  py[j] = 0.;
-  //}
+  for(int j = 0; j < len_y; ++j) {
+    py[j] = 0.;
+  }
   rokko::heisenberg_hamiltonian::multiply(m->comm, m->L, m->lattice, px, py, m->buffer);
   ierr = VecRestoreArrayRead(x,&px); CHKERRQ(ierr);
   ierr = VecRestoreArray(y,&py); CHKERRQ(ierr);
