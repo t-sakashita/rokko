@@ -38,6 +38,7 @@ int main(int argc,char **argv)
   ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, dim, dim); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
   //  ierr = MatSetType(A,MATAIJ); CHKERRQ(ierr);
+  ierr = MatSeqAIJSetPreallocation(A, 2 * L, NULL); CHKERRQ(ierr);
   ierr = MatMPIAIJSetPreallocation(A, 2 * L, NULL, 2 * L, NULL); CHKERRQ(ierr);
 
   PetscInt Istart, Iend;
