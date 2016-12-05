@@ -13,5 +13,8 @@ else
     wget -O - http://elpa.mpcdf.mpg.de/html/Releases/$ELPA_VERSION/elpa-$ELPA_VERSION.tar.gz | tar zxf -
 fi
 
-cd $BUILD_DIR/elpa-$ELPA_VERSION
+if [ -f $SCRIPT_DIR/elpa-$ELPA_VERSION.patch ]; then
+  cd elpa-$ELPA_VERSION
+  check patch -p1 < $SCRIPT_DIR/elpa-$ELPA_VERSION.patch
+fi
 

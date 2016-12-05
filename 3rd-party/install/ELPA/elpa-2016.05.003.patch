@@ -1,0 +1,20 @@
+diff -crN elpa-2016.05.003.orig/Makefile.in elpa-2016.05.003/Makefile.in
+*** elpa-2016.05.003.orig/Makefile.in	Mon Jul 11 20:37:19 2016
+--- elpa-2016.05.003/Makefile.in	Tue Dec  6 00:55:41 2016
+***************
+*** 1047,1053 ****
+  BUILT_SOURCES = $(generated_headers)
+  
+  # install public Fortran modules files in the include/ dir
+! elpa_includedir = $(includedir)/elpa@SUFFIX@-@PACKAGE_VERSION@
+  nobase_elpa_include_HEADERS = $(wildcard modules/*) elpa/elpa.h \
+  	elpa/elpa_kernel_constants.h elpa/elpa_generated.h
+  dist_man_MANS = \
+--- 1047,1053 ----
+  BUILT_SOURCES = $(generated_headers)
+  
+  # install public Fortran modules files in the include/ dir
+! elpa_includedir = $(includedir)
+  nobase_elpa_include_HEADERS = $(wildcard modules/*) elpa/elpa.h \
+  	elpa/elpa_kernel_constants.h elpa/elpa_generated.h
+  dist_man_MANS = \
