@@ -9,7 +9,7 @@ sh $SCRIPT_DIR/setup.sh
 
 cd $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
 ln -s CSTAB.h_in C.c
-mpicc -E C.c | gawk '/^#/{ next }{print }' > CSTAB.h
+mpicc -E C.c | awk '/^#/{ next }{print }' > CSTAB.h
 
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
