@@ -6,13 +6,17 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 set_prefix
 
 cd $BUILD_DIR
-
 rm -rf trilinos-$TRILINOS_VERSION-Source*
 if [ -f $SOURCE_DIR/trilinos-$TRILINOS_VERSION-Source.tar.bz2 ]; then
   check tar jxf $SOURCE_DIR/trilinos-$TRILINOS_VERSION-Source.tar.bz2
+elif [ -f $SOURCE_DIR/trilinos-release-$TRILINOS_VERSION_DASHED.tar.gz ]; then
+  check tar zxf $SOURCE_DIR/trilinos-release-$TRILINOS_VERSION_DASHED.tar.gz
 else
-  echo "Error: trilinos-$TRILINOS_VERSION-Source.tar.bz2 not found"
-  exit 127
+  check wget -O - https://github.com/trilinos/Trilinos/archive/trilinos-release-$TRILINOS_VERSION_DASHED.tar.gz | tar zxf -
+fi
+
+if [ -d trilinos-$TRILINOS_VERSION-Source ]; then :; else
+  mv Trilinos-trilinos-release-$TRILINOS_VERSION_DASHED trilinos-$TRILINOS_VERSION-Source
 fi
 
 if [ -f $SCRIPT_DIR/trilinos-$TRILINOS_VERSION.patch ]; then
