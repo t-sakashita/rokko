@@ -280,6 +280,12 @@ configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in ${PROJECT_BINAR
 configure_file(${PROJECT_SOURCE_DIR}/config/include.mk.in ${PROJECT_BINARY_DIR}/config/include.mk @ONLY)
 install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake ${PROJECT_BINARY_DIR}/config/include.mk ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test.cmake ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
 
+# enable C++11
+if(BUILD_ELPA)
+  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif(BUILD_ELPA)
+
 # test environment
 enable_testing()
 include(CTest)

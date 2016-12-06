@@ -115,6 +115,7 @@ endif(BUILD_ELEMENTAL)
 
 # ELPA
 if(BUILD_ELPA)
+  include_directories(${ELPA_INCLUDE_DIR})
   if(BUILD_SHARED_LIBS)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} elpa/elpa.cpp)
   endif(BUILD_SHARED_LIBS)
