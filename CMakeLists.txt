@@ -36,8 +36,8 @@ option(DISABLE_PDSYEVR "DISABLE pdsyevr of ScaLAPACK" OFF)
 
 option(BUILD_TESTS "Build test suites" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_BENCHMARKS "Build benchmark tests" ON)
 option(BUILD_TUTORIALS "Build tutorials" ON)
+option(BUILD_BENCHMARKS "Build benchmark tests" OFF)
 option(BUILD_DEVELOPERS "Build codes for Rokko's developers" OFF)
 
 if(NOT BUILD_C_BINDING)
