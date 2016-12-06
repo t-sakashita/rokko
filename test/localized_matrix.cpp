@@ -21,9 +21,9 @@
 
 BOOST_AUTO_TEST_CASE(test_localized_matrix) {
 
-  // M = 1 2 3
-  //     4 5 6
-  //     7 8 9
+  // M = 1 4 7
+  //     2 5 8
+  //     3 6 9
   //
   // a = 5
   // 
@@ -40,8 +40,9 @@ BOOST_AUTO_TEST_CASE(test_localized_matrix) {
   //              137
 
   int dim = 3;
-  rokko::localized_matrix<double, rokko::matrix_row_major> M(dim,dim);
+  rokko::localized_matrix<double> M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
+  std::cout << M << std::endl;
   double a = 5.0;
   rokko::localized_vector<double> u(dim);
   u << 1,2,3;
@@ -49,6 +50,7 @@ BOOST_AUTO_TEST_CASE(test_localized_matrix) {
   v << 4,5,6;
 
   rokko::localized_vector<double> w = a*u+M*v;
+  std::cout << w << std::endl;
   BOOST_CHECK_EQUAL(w[0],37.);
   BOOST_CHECK_EQUAL(w[1],87.);
   BOOST_CHECK_EQUAL(w[2],137.);
