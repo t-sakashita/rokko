@@ -2,6 +2,7 @@
 # Once done this will define
 #
 #  ELPA_FOUND        - system has ELPA
+#  ELPA_INCLUDE_DIR  - include directory for ELPA
 #  ELPA_LIBARIES     - libraries for ELPA
 
 if(DEFINED ELPA_FOUND)
@@ -38,6 +39,12 @@ else(ELPA_DIR)
 endif(ELPA_DIR)
 
 foreach (_PATH ${_PATHS})
+  list(APPEND _INCPATHS "${_PATH}/include")
+endforeach()
+
+find_path(ELPA_INCLUDE_DIR elpa/elpa.h PATHS ${_INCPATHS} DOC "ELPA include directory")
+
+foreach (_PATH ${_PATHS})
   list(APPEND _LIBPATHS "${_PATH}/lib")
 endforeach()
 
@@ -54,4 +61,5 @@ else(_ELPA_LIBRARY)
 endif(_ELPA_LIBRARY)
 
 set(ELPA_FOUND TRUE)
+message(STATUS "ELPA include directory: ${ELPA_INCLUDE_DIR}")
 message(STATUS "ELPA libraries: ${ELPA_LIBRARIES}")
