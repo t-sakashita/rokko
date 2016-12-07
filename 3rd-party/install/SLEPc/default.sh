@@ -17,7 +17,7 @@ for build_type in $BUILD_TYPES; do
   export SLEPC_DIR=$PWD
   export PETSC_DIR=$PETSC_ROOT/$build_type
   ./configure --prefix=$PREFIX
-  make MAKE_NP=2
+  make MAKE_NP=1
   $SUDO env LD_LIBRARY_PATH=$LD_LIBRARY_PATH make install SLEPC_DIR=$PWD PETSC_DIR=$PETSC_ROOT/$build_type
 done
 

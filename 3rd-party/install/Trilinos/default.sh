@@ -18,7 +18,7 @@ for build_type in $BUILD_TYPES; do
     -DTPL_ENABLE_MPI=ON -DMPI_USE_COMPILER_WRAPPERS=ON \
     -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
     $BUILD_DIR/trilinos-$TRILINOS_VERSION-Source
-  check make VERBOSE=1 -j4
+  check make VERBOSE=1
   $SUDO make install
 done
 

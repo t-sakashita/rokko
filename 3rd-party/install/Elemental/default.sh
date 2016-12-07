@@ -16,7 +16,7 @@ for build_type in $BUILD_TYPES; do
   check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DELEM_SHARED_LIBRARIES=ON \
     $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
-  check make VERBOSE=1 -j4
+  check make VERBOSE=1
   $SUDO make install
 done
 

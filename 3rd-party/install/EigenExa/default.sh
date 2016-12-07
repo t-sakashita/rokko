@@ -21,7 +21,7 @@ for build_type in $BUILD_TYPES; do
     -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
     -DSCALAPACK_LIB="-lscalapack" \
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  check make VERBOSE=1 -j4
+  check make VERBOSE=1
   $SUDO make install
 done
 
