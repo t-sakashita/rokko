@@ -141,7 +141,8 @@ include_directories(${PROJECT_SOURCE_DIR}/3rd-party/eigen3)
 
 # Python
 if(BUILD_Python_BINDING)
-  find_package(Python)
+  find_package(PythonInterp REQUIRED)
+  find_package(PythonLibs REQUIRED)
   include_directories(${PYTHON_INCLUDE_DIRS})
 endif(BUILD_Python_BINDING)
 
@@ -151,21 +152,12 @@ if(BUILD_Python_BINDING)
 else(BUILD_Python_BINDING)
   find_package(Boost COMPONENTS system)
 endif(BUILD_Python_BINDING)
-if(NOT Boost_FOUND)
-  find_package(BoostSrc)
-endif(NOT Boost_FOUND)
 include_directories(BEFORE ${Boost_INCLUDE_DIR})
 
-# find_package(BLAS)
 find_package(Lapack)
 if(NOT LAPACK_FOUND)
   message(FATAL_ERROR "LAPACK not found")
 endif(NOT LAPACK_FOUND)
-if(MAC_VECLIB)
-  set(LAPACK_LIBRARIES "-framework ${BLAS_LAPACK_MAC_FRAMEWORK}")
-endif(MAC_VECLIB)
-string(REGEX REPLACE ";" " " BLAS_LIBS "${BLAS_LIBRARIES}")
-string(REGEX REPLACE ";" " " LAPACK_LIBS "${LAPACK_LIBRARIES}")
 
 #
 # parallel dense solvers
