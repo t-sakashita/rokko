@@ -7,7 +7,7 @@ set_prefix
 
 sh $SCRIPT_DIR/setup.sh
 
-source $PREFIX_ROKKO/rokkoenv.d/petscvars.sh
+. $PREFIX_ROKKO/rokkoenv.d/petscvars.sh
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/$build_type

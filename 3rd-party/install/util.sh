@@ -8,7 +8,7 @@ set_prefix() {
   SUDO_DEF="/usr/bin/sudo"
 
   if [ -f "$HOME/.rokkoinstaller" ]; then
-    source $HOME/.rokkoinstaller
+    . $HOME/.rokkoinstaller
   fi
 
   if [ -z "$PREFIX_ROKKO" ]; then
