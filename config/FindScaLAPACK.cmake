@@ -110,6 +110,14 @@ else(DEFINED BLAS_mkl_core_LIBRARY)
     return()
   endif(_SCALAPACK_LIBRARY)
 
+  find_library(_BLACS_LIBRARY
+    NAMES blacs-openmpi blacs-mpich
+    PATHS ${_LIBPATHS}
+    DOC "The ScaLAPACK BLACS library")
+  if(_BLACS_LIBRARY)
+    list(APPEND _SCALAPACK_LIBRARIES ${_BLACS_LIBRARY})
+  endif(_BLACS_LIBRARY)
+
 endif(DEFINED BLAS_mkl_core_LIBRARY)
 
 set(SCALAPACK_FOUND TRUE)
