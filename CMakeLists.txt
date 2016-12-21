@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -25,14 +25,13 @@ option(BUILD_Python_BINDING "Build Python binding libraries" OFF)
 option(DISABLE_OPENMP "Disable OpenMP Parallelization" OFF)
 option(DISABLE_MPI "Disable MPI Parallelization" OFF)
 option(DISABLE_SCALAPACK "Disable ScaLAPACK Library" OFF)
+option(ENABLE_PDSYEVR "Enable pdsyevr in ScaLAPACK" OFF)
 option(DISABLE_EIGENEXA "Disable EigenExa Library" OFF)
 option(DISABLE_ELEMENTAL "Disable Elemental Library" OFF)
 option(DISABLE_ELPA "Disable ELPA Library" OFF)
 option(DISABLE_PETSC "Disable PETSc Library" OFF)
 option(DISABLE_SLEPC "Disable SLEPc Library" OFF)
 option(DISABLE_ANASAZI "Disable Anasazi Library" OFF)
-
-option(DISABLE_PDSYEVR "DISABLE pdsyevr of ScaLAPACK" OFF)
 
 option(BUILD_TESTS "Build test suites" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
@@ -176,11 +175,13 @@ endif(DISABLE_SCALAPACK)
 set(ROKKO_HAVE_SCALAPACK ${BUILD_SCALAPACK})
 string(REGEX REPLACE ";" " " SCAPALACK_LIBS "${SCAPALACK_LIBRARIES}")
 
-if(DISABLE_PDSYEVR)
-  set(ROKKO_HAVE_PDSYEVR OFF)
-else(DISABLE_PDSYEVR)
-  set(ROKKO_HAVE_PDSYEVR ON)
-endif(DISABLE_PDSYEVR)
+if(BUILD_SCALAPACK)
+  if(ENABLE_PDSYEVR)
+    set(ROKKO_HAVE_PDSYEVR ON)
+  else(ENABLE_PDSYEVR)
+    set(ROKKO_HAVE_PDSYEVR OFF)
+  endif(ENABLE_PDSYEVR)
+endif(BUILD_SCALAPACK)
 
 # find EigenExa
 if(DISABLE_EIGENEXA)
