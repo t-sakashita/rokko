@@ -16,9 +16,6 @@ install(FILES include/cblas.h include/cblas_f77.h
         ${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h COMPONENT headers
 	DESTINATION include)
 
-include_directories(${PROJECT_BINARY_DIR}/3rd-party/cblas/include)
-include_directories(${PROJECT_SOURCE_DIR}/3rd-party/cblas/include)
-
 if(BUILD_TESTS)
   add_subdirectory(testing)
 endif(BUILD_TESTS)

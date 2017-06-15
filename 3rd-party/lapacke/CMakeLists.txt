@@ -14,6 +14,3 @@ if (NOT STATIC_SCALAPACK)
 endif (NOT STATIC_SCALAPACK)
 install(TARGETS lapacke ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
 install(FILES include/lapacke.h include/lapacke_config.h include/lapacke_mangling_with_flags.h include/lapacke_utils.h ${CMAKE_CURRENT_BINARY_DIR}/include/lapacke_mangling.h COMPONENT headers DESTINATION include)
-
-include_directories(${PROJECT_BINARY_DIR}/3rd-party/lapacke/include)
-include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke/include)

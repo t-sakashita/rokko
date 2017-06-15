@@ -134,6 +134,10 @@ set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_BINARY_DIR}/3rd-party/cblas/include)
+include_directories(${PROJECT_SOURCE_DIR}/3rd-party/cblas/include)
+include_directories(${PROJECT_BINARY_DIR}/3rd-party/lapacke/include)
+include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd-party/eigen3)
 
 # Python
