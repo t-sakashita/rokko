@@ -9,7 +9,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/include/lapacke_mangling.h)
   endif(NOT FortranCInterface_COMPILED)
 endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/include/lapacke_mangling.h)
 
-file(GLOB SOURCES */*.c)
+file(GLOB SOURCES src/*.c utils/*.c)
 add_library(lapacke ${SOURCES})
 if (NOT STATIC_SCALAPACK)
   target_link_libraries(lapacke ${SCALAPACK_LIBRARIES} ${LAPACK_LIBRARIES})
