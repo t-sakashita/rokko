@@ -1,11 +1,13 @@
-include(FortranCInterface)
-FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h 
-                         MACRO_NAMESPACE "BLAS_"
-                         SYMBOL_NAMESPACE "BLAS_")
-if(NOT FortranCInterface_COMPILED)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/cblas_mangling.h.in
-${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h COPYONLY)
-endif(NOT FortranCInterface_COMPILED)
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h)
+  include(FortranCInterface)
+  FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h 
+                           MACRO_NAMESPACE "BLAS_"
+                           SYMBOL_NAMESPACE "BLAS_")
+  if(NOT FortranCInterface_COMPILED)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/cblas_mangling.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h COPYONLY)
+  endif(NOT FortranCInterface_COMPILED)
+endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/include/cblas_mangling.h)
 
 file(GLOB SOURCES src/*.c src/*.f)
 add_library(cblas ${SOURCES})
