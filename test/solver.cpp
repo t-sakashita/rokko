@@ -11,6 +11,9 @@
 
 #include <boost/foreach.hpp>
 #include <rokko/solver.hpp>
+#ifdef ROKKO_HAVE_MPI
+# include <mpi.h>
+#endif
 
 #define BOOST_TEST_MODULE test_solver
 #ifndef BOOST_TEST_DYN_LINK

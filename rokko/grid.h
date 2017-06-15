@@ -13,6 +13,7 @@
 #define ROKKO_GRID_H
 
 #include <stdbool.h>
+#include <mpi.h>
 
 #ifdef __cplusplus
 extern "C" {

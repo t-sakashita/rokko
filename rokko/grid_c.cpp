@@ -12,6 +12,10 @@
 #include <rokko/grid.hpp>
 #include <rokko/grid.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void rokko_grid_construct(rokko_grid* grid, MPI_Comm comm, int grid_major) {
   if (grid_major == rokko_grid_col_major)
     grid->ptr = static_cast<void*>(new rokko::grid(comm, rokko::grid_col_major));
@@ -61,4 +65,8 @@ bool rokko_grid_is_row_major(rokko_grid grid) {
 bool rokko_grid_is_col_major(rokko_grid grid) {
   return static_cast<rokko::grid*>(grid.ptr)->is_col_major();
 }
+
+#ifdef __cplusplus
+}
+#endif
 

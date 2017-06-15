@@ -1,3 +1,4 @@
+add_subdirectory(cblas)
 add_subdirectory(lapacke)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/3rd-party/eigen3/cmake)
