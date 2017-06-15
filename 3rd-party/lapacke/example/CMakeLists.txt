@@ -1,0 +1,14 @@
+add_executable(xexample_DGESV_rowmajor example_DGESV_rowmajor.c lapacke_example_aux.c lapacke_example_aux.h)
+add_executable(xexample_DGESV_colmajor example_DGESV_colmajor.c lapacke_example_aux.c lapacke_example_aux.h)
+add_executable(xexample_DGELS_rowmajor example_DGELS_rowmajor.c lapacke_example_aux.c lapacke_example_aux.h)
+add_executable(xexample_DGELS_colmajor example_DGELS_colmajor.c lapacke_example_aux.c lapacke_example_aux.h)
+
+target_link_libraries(xexample_DGESV_rowmajor lapacke ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(xexample_DGESV_colmajor lapacke ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(xexample_DGELS_rowmajor lapacke ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries(xexample_DGELS_colmajor lapacke ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+
+add_test(example_DGESV_rowmajor xexample_DGESV_rowmajor)
+add_test(example_DGESV_colmajor xexample_DGESV_colmajor)
+add_test(example_DGELS_rowmajor xexample_DGELS_rowmajor)
+add_test(example_DGELS_colmajor xexample_DGELS_colmajor)
