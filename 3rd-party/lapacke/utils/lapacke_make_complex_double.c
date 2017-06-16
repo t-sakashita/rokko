@@ -44,7 +44,7 @@ lapack_complex_double lapack_make_complex_double( double re, double im ) {
 #elif defined(LAPACK_COMPLEX_CPP)
     z = std::complex<double>(re,im);
 #else /* C99 is default */
-    z = re + im*I;
+    z = re + im*_Complex_I;
 #endif
    return z;
 }

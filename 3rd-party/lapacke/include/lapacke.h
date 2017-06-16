@@ -71,6 +71,7 @@
 /* Complex type (single precision) */
 #ifndef lapack_complex_float
 #include <complex.h>
+#undef I
 #define lapack_complex_float    float _Complex
 #endif
 
@@ -87,6 +88,7 @@ lapack_complex_float lapack_make_complex_float( float re, float im );
 /* Complex type (double precision) */
 #ifndef lapack_complex_double
 #include <complex.h>
+#undef I
 #define lapack_complex_double   double _Complex
 #endif
 
