@@ -12,7 +12,7 @@
 #ifndef ROKKO_LOCALIZED_VECTOR_HPP
 #define ROKKO_LOCALIZED_VECTOR_HPP
 
-#include <Eigen/Dense>
+#include <rokko/eigen3.hpp>
 #include <iostream>
 
 namespace rokko {
@@ -35,6 +35,7 @@ public:
   void print() const { std::cout << *this << std::endl; }
 };
 
+typedef localized_vector<int> ilvector;
 typedef localized_vector<float> flvector;
 typedef localized_vector<double> dlvector;
 typedef localized_vector<std::complex<float> > clvector;
