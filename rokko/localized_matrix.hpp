@@ -12,8 +12,7 @@
 #ifndef ROKKO_LOCALIZED_MATRIX_HPP
 #define ROKKO_LOCALIZED_MATRIX_HPP
 
-#include <rokko/matrix_major.hpp>
-#include <Eigen/Dense>
+#include <rokko/eigen3.hpp>
 #include <iostream>
 #include <boost/type_traits.hpp>
 
@@ -36,12 +35,15 @@ struct eigen3_matrix_major<rokko::matrix_col_major> {
 
 } // end namespace detail
   
-template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major, int ROWS = Eigen::Dynamic, int COLS = Eigen::Dynamic>
-class localized_matrix : public Eigen::Matrix<T, ROWS, COLS, detail::eigen3_matrix_major<MATRIX_MAJOR>::value> {
+template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major,
+         int ROWS = Eigen::Dynamic, int COLS = Eigen::Dynamic>
+class localized_matrix : public Eigen::Matrix<T, ROWS, COLS,
+  detail::eigen3_matrix_major<MATRIX_MAJOR>::value> {
 public:
   typedef T value_type;
   typedef MATRIX_MAJOR major_type;
-  typedef Eigen::Matrix<value_type, ROWS, COLS, detail::eigen3_matrix_major<major_type>::value> super_type;
+  typedef Eigen::Matrix<value_type, ROWS, COLS,
+    detail::eigen3_matrix_major<major_type>::value> super_type;
   typedef localized_matrix<value_type, major_type, ROWS, COLS> matrix_type;
 
   localized_matrix() : super_type() {}
