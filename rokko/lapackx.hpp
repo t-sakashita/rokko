@@ -22,7 +22,7 @@ namespace lapackx {
 template<typename MATRIX, typename VECTOR>
 lapack_int getrf(MATRIX& a, VECTOR& ipiv);
 
-template<typename MATRIX0, typename VECTOR, typename MATRIX1>
+template<typename MATRIX0, typename MATRIX1, typename VECTOR>
 lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
                  VECTOR const& ipiv, MATRIX1& b);
 
@@ -54,6 +54,8 @@ lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w);
 } // end namespace rokko
 
 #include "lapackx/gesvd.hpp"
+#include "lapackx/getrf.hpp"
+#include "lapackx/getrs.hpp"
 #include "lapackx/syev.hpp"
 
 #endif // ROKKO_LAPACKX_HPP

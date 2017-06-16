@@ -1,9 +1,21 @@
+# C examples
 set(PROG dsyev dgetr dgesvd)
 foreach(name ${PROG})
   set(target_name example_lapacke_${name})
   add_executable(${target_name} ${name}.c)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   target_link_libraries(${target_name} lapacke)
+  add_test(${name} ${name})				       
+endforeach(name)
+unset(PROG)
+
+# C++ examples
+set(PROG syev getr gesvd)
+foreach(name ${PROG})
+  set(target_name example_lapacke_${name})
+  add_executable(${target_name} ${name}.cpp)
+  set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
+  target_link_libraries(${target_name} rokko)
   add_test(${name} ${name})				       
 endforeach(name)
 unset(PROG)

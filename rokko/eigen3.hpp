@@ -19,9 +19,16 @@
 
 namespace rokko {
 
-template<typename T, int ROWS, int MATRIX_MAJOR>
-struct vector_traits<Eigen::Matrix<T, ROWS, 1, MATRIX_MAJOR> > {
+template<typename T, int ROWS>
+struct vector_traits<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor> > {
   typedef T value_type;
+  typedef rokko::matrix_col_major major_type;
+};
+
+template<typename T, int ROWS>
+struct vector_traits<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor> > {
+  typedef T value_type;
+  typedef rokko::matrix_row_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>

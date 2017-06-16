@@ -78,10 +78,9 @@ struct gemm_dispatch<std::complex<double> > {
   
 }
   
-template<typename MATRIX>
+template<typename MATRIX, typename T>
 void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
-          typename matrix_traits<MATRIX>::value_type alpha, MATRIX const& a, MATRIX const& b,
-          typename matrix_traits<MATRIX>::value_type beta, MATRIX& c) {
+          T alpha, MATRIX const& a, MATRIX const& b, T beta, MATRIX& c) {
   if (is_col_major(a) != is_col_major(b) || is_col_major(b) != is_col_major(c))
     throw std::invalid_argument("matrix major mismatch");
   if (util::op_cols(trans_a, a) != util::op_rows(trans_b, b))

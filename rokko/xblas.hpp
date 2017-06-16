@@ -13,26 +13,23 @@
 #define ROKKO_XBLAS_HPP
 
 #include <cblas.h>
-#include "vector_traits.hpp"
-#include "matrix_traits.hpp"
 
 namespace rokko {
 namespace xblas {
 
 // level 2
 
-template<typename MATRIX, typename VECTOR>
+template<typename MATRIX, typename VECTOR, typename T>
 void gemv(enum CBLAS_TRANSPOSE trans,
-          typename matrix_traits<MATRIX>::value_type alpha, MATRIX const& a,
-          VECTOR const& x, int inc_x,
-          typename matrix_traits<MATRIX>::value_type beta, VECTOR& y, int inc_y);
+          T alpha, MATRIX const& a, VECTOR const& x, int inc_x,
+          T beta, VECTOR& y, int inc_y);
 
 // level 3
 
-template<typename MATRIX>
+template<typename MATRIX, typename T>
 void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
-          typename matrix_traits<MATRIX>::value_type alpha, MATRIX const& a, MATRIX const& b,
-          typename matrix_traits<MATRIX>::value_type beta, MATRIX& c);
+          T alpha, MATRIX const& a, MATRIX const& b,
+          T beta, MATRIX& c);
 
 } // namespace xblas
 } // namespace rokko
