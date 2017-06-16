@@ -1,13 +1,13 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2017 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(rokko NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
@@ -19,6 +19,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BUILD_CXX_CORE "Build CXX core libraries" ON)
 option(BUILD_C_BINDING "Build C binding libraries" ON)
 option(BUILD_Fortran_BINDING "Build Fortran binding libraries" ON)
 option(BUILD_Python_BINDING "Build Python binding libraries" OFF)
@@ -38,6 +39,12 @@ option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_TUTORIALS "Build tutorials" ON)
 option(BUILD_BENCHMARKS "Build benchmark tests" OFF)
 option(BUILD_DEVELOPERS "Build codes for Rokko's developers" OFF)
+
+if(NOT BUILD_CXX_CORE)
+  set(BUILD_C_BINDING OFF)
+  set(BUILD_Fortran_BINDING OFF)
+  set(BUILD_Python_BINDING OFF)
+endif(NOT BUILD_CXX_CORE)
 
 if(NOT BUILD_C_BINDING)
   set(BUILD_Fortran_BINDING OFF)
@@ -61,15 +68,11 @@ if(DISABLE_PETSC)
 endif(DISABLE_PETSC)
 
 # RPATH setting
-if(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
-  set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
-else(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
-  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-  set(CMAKE_SKIP_BUILD_RPATH FALSE)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
-  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-  set(CMAKE_MACOSX_RPATH 1)
-endif(APPLE AND (CMAKE_VERSION VERSION_LESS 2.8.12))
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_MACOSX_RPATH 1)
 
 # C++, C, and Fortran compilers
 enable_language(CXX C Fortran)
@@ -153,7 +156,11 @@ if(BUILD_Python_BINDING)
 else(BUILD_Python_BINDING)
   find_package(Boost COMPONENTS system)
 endif(BUILD_Python_BINDING)
-include_directories(BEFORE ${Boost_INCLUDE_DIR})
+if(Bost_INCLUDE_DIR)
+  include_directories(BEFORE ${Boost_INCLUDE_DIR})
+else(Bost_INCLUDE_DIR)
+  set(BUILD_CXX_CORE OFF)
+endif(Bost_INCLUDE_DIR)
 
 if((EXISTS $ENV{MKLROOT}) AND (NOT BLA_VENDOR))
   set(BLA_VENDOR Intel10_64lp)
@@ -290,24 +297,29 @@ include(CTest)
 
 # directories
 add_subdirectory(3rd-party)
-add_subdirectory(rokko)
-add_subdirectory(tool)
-
-if(BUILD_TESTS)
-  add_subdirectory(test)
-endif(BUILD_TESTS)
+if(BUILD_CXX_CORE)
+  add_subdirectory(rokko)
+  add_subdirectory(tool)
+  if(BUILD_TESTS)
+    add_subdirectory(test)
+  endif(BUILD_TESTS)
+endif(BUILD_CXX_CORE)
 
 if(BUILD_EXAMPLES)
   add_subdirectory(example)
+endif(BUILD_EXAMPLES)
+
+if(BUILD_CXX_CORE)
   if(BUILD_DEVELOPERS)
     add_subdirectory(developer)
   endif(BUILD_DEVELOPERS)
-endif(BUILD_EXAMPLES)
+  if(BUILD_BENCHMARKS)
+    add_subdirectory(benchmark)
+  endif(BUILD_BENCHMARKS)
 
-if(BUILD_BENCHMARKS)
-  add_subdirectory(benchmark)
-endif(BUILD_BENCHMARKS)
+  if(BUILD_TUTORIALS)
+    add_subdirectory(tutorial)
+  endif(BUILD_TUTORIALS)
+endif(BUILD_CXX_CORE)
 
-if(BUILD_TUTORIALS)
-  add_subdirectory(tutorial)
-endif(BUILD_TUTORIALS)
+install(FILES cmatrix.h DESTINATION include COMPONENT headers)
