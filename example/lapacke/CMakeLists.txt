@@ -1,5 +1,5 @@
 # C examples
-set(PROG dsyev dgetr dgesvd)
+set(PROG dsyev dgetr dgetri dgesvd)
 foreach(name ${PROG})
   set(target_name example_lapacke_${name})
   add_executable(${target_name} ${name}.c)
