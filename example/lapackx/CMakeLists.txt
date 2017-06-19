@@ -1,0 +1,10 @@
+# C++ examples
+set(PROG getrs gesvd syev)
+foreach(name ${PROG})
+  set(target_name example_lapackx_${name})
+  add_executable(${target_name} ${name}.cpp)
+  set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
+  target_link_libraries(${target_name} rokko)
+  add_test(${name} ${name})				       
+endforeach(name)
+unset(PROG)

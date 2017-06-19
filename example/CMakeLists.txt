@@ -10,6 +10,8 @@
 add_subdirectory(lapacke)
 
 if(BUILD_CXX_CORE)
+  add_subdirectory(lapackx)
+
   add_subdirectory(cxx)
 
   if(BUILD_C_BINDING)
