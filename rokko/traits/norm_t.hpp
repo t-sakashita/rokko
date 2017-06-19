@@ -9,17 +9,20 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MATRIX_TRAITS_HPP
-#define ROKKO_MATRIX_TRAITS_HPP
+#ifndef ROKKO_TRAITS_NORM_T_HPP
+#define ROKKO_TRAITS_NORM_T_HPP
+
+#include "value_t.hpp"
+#include <boost/numeric/ublas/traits.hpp>
 
 namespace rokko {
 
-template<typename MATRIX>
-struct matrix_traits {
-  typedef typename MATRIX::value_type value_type;
-  typedef typename MATRIX::major_type major_type;
+template<typename T>
+struct norm_t {
+  typedef typename value_t<T>::type value_type;
+  typedef typename boost::numeric::ublas::type_traits<value_type>::real_type type;
 };
 
 } // namespace rokko
 
-#endif // ROKKO_MATRIX_TRAITS_HPP
+#endif // ROKKO_TRAITS_NORM_T_HPP

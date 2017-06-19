@@ -40,12 +40,12 @@ int main(int argc, char** argv) {
   ipiv = alloc_ivector(n);
   info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, MAT_PTR(ainv), n, VEC_PTR(ipiv));
   if (info != 0) {
-    fprintf(stderr, "Error: dgetrf fails\n");
+    fprintf(stderr, "Error: dgetrf fails with error code %d\n", info);
     exit(255);
   }
   info = LAPACKE_dgetri(LAPACK_COL_MAJOR, n, MAT_PTR(ainv), n, VEC_PTR(ipiv));
   if (info != 0) {
-    fprintf(stderr, "Error: dgetri fails\n");
+    fprintf(stderr, "Error: dgetri fails with error code %d\n", info);
     exit(255);
   }
   printf("Matrix A^{-1}: ");

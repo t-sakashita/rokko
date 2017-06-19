@@ -39,6 +39,10 @@ int main(int argc, char** argv) {
   cblas_dcopy(n * n, MAT_PTR(a), 1, MAT_PTR(u), 1);
   w = alloc_dvector(n);
   info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', n, MAT_PTR(u), n, VEC_PTR(w));
+  if (info != 0) {
+    fprintf(stderr, "Error: dsyev fails with error code %d\n", info);
+    exit(255);
+  }
   printf("Eigenvalues: ");
   fprint_dvector(stdout, n, w);
   printf("Eigenvectors: ");

@@ -12,8 +12,6 @@
 #ifndef ROKKO_LAPACKX_GETRS_HPP
 #define ROKKO_LAPACKX_GETRS_HPP
 
-#include <rokko/vector_traits.hpp>
-#include <rokko/matrix_traits.hpp>
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
@@ -23,10 +21,10 @@ namespace lapackx {
 
 namespace {
 
-template<typename T1, typename T2, typename T3> struct getrs_dispatch;
+template<typename T> struct getrs_dispatch;
   
 template<>
-struct getrs_dispatch<float, float, lapack_int> {
+struct getrs_dispatch<float> {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
@@ -36,7 +34,7 @@ struct getrs_dispatch<float, float, lapack_int> {
 };
 
 template<>
-struct getrs_dispatch<double, double, lapack_int> {
+struct getrs_dispatch<double> {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
@@ -46,7 +44,7 @@ struct getrs_dispatch<double, double, lapack_int> {
 };
 
 template<>
-struct getrs_dispatch<std::complex<float>, std::complex<float>, lapack_int> {
+struct getrs_dispatch<std::complex<float> > {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
@@ -56,7 +54,7 @@ struct getrs_dispatch<std::complex<float>, std::complex<float>, lapack_int> {
 };
 
 template<>
-struct getrs_dispatch<std::complex<double>, std::complex<double>, lapack_int> {
+struct getrs_dispatch<std::complex<double> > {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
@@ -70,6 +68,9 @@ struct getrs_dispatch<std::complex<double>, std::complex<double>, lapack_int> {
 template<typename MATRIX0, typename MATRIX1, typename VECTOR>
 lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
                  VECTOR const& ipiv, MATRIX1& b) {
+  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
+  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX0>::type,
+                      typename value_t<MATRIX1>::type>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
@@ -77,11 +78,9 @@ lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
     throw std::invalid_argument("vector ipiv size mismatch");
   if (rows(b) != n || cols(b) != nrhs)
     throw std::invalid_argument("matrix B size mismatch");
-  return getrs_dispatch<typename matrix_traits<MATRIX0>::value_type,
-                        typename matrix_traits<MATRIX1>::value_type,
-                        typename vector_traits<VECTOR>::value_type
-                        >::getrs((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR),
-                                 trans, n, nrhs, a, ipiv, b);
+  return getrs_dispatch<typename value_t<MATRIX0>::type>
+    ::getrs((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), trans, n, nrhs, a,
+            ipiv, b);
 }
 
 } // end namespace lapackx

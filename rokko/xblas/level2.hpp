@@ -12,9 +12,9 @@
 #ifndef ROKKO_XBLAS_LEVEL2_HPP
 #define ROKKO_XBLAS_LEVEL2_HPP
 
-#include <rokko/vector_traits.hpp>
-#include <rokko/matrix_traits.hpp>
-#include <boost/type_traits.hpp>
+#include <rokko/traits/value_t.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <complex>
 #include <stdexcept>
 #include <cblas.h>
@@ -81,17 +81,16 @@ template<typename MATRIX, typename VECTOR, typename T>
 void gemv(enum CBLAS_TRANSPOSE trans,
           T alpha, MATRIX const& a, VECTOR const& x, int inc_x,
           T beta, VECTOR& y, int inc_y) {
-  if (!boost::is_same<typename matrix_traits<MATRIX>::value_type,
-      typename vector_traits<VECTOR>::value_type>::value)
-    throw std::invalid_argument("matrix/vector type mismatch");
+  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX>::type,
+                      typename value_t<VECTOR>::type>::value);
   if (util::op_cols(trans, a) != size(x) / inc_x ||
       util::op_cols(trans, a) != size(y) / inc_y)
     throw std::invalid_argument("matrix/vector size mismatch");
   int m = util::op_rows(trans, a);
   int n = util::op_cols(trans, a);
-  gemv_dispatch<typename matrix_traits<MATRIX>::value_type>
-    ::gemv((is_col_major(a) ? CblasColMajor : CblasRowMajor),
-           trans, m, n, alpha, a, x, inc_x, beta, y, inc_y);
+  gemv_dispatch<typename value_t<MATRIX>::type>
+    ::gemv((is_col_major(a) ? CblasColMajor : CblasRowMajor), trans, m, n, alpha, a,
+           x, inc_x, beta, y, inc_y);
 }
 
 } // namespace xblas

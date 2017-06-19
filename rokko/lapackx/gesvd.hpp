@@ -12,8 +12,6 @@
 #ifndef ROKKO_LAPACKX_GESVD_HPP
 #define ROKKO_LAPACKX_GESVD_HPP
 
-#include <rokko/vector_traits.hpp>
-#include <rokko/matrix_traits.hpp>
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
@@ -93,10 +91,9 @@ lapack_int gesvd_work(char jobu, char jobvt, MATRIX& a, VECTOR& s,
     throw std::invalid_argument("matrix Vt size mismatch");
   if (jobvt == 'S' && (rows(vt) != r || cols(vt) != n))
     throw std::invalid_argument("matrix Vt size mismatch");
-  return gesvd_dispatch<typename matrix_traits<MATRIX>::value_type,
-                        typename vector_traits<VECTOR>::value_type
-                        >::gesvd((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR),
-                                 jobu, jobvt, m, n, a, s, u, vt, work);
+  return gesvd_dispatch<typename value_t<MATRIX>::type, typename value_t<VECTOR>::type>
+    ::gesvd((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR),
+            jobu, jobvt, m, n, a, s, u, vt, work);
 }
 
 } // end namespace lapackx

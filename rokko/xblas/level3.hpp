@@ -12,7 +12,6 @@
 #ifndef ROKKO_XBLAS_LEVEL3_HPP
 #define ROKKO_XBLAS_LEVEL3_HPP
 
-#include <rokko/matrix_traits.hpp>
 #include <complex>
 #include <stdexcept>
 #include <cblas.h>
@@ -84,16 +83,14 @@ struct gemm_dispatch<std::complex<double> > {
 template<typename MATRIX, typename T>
 void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
           T alpha, MATRIX const& a, MATRIX const& b, T beta, MATRIX& c) {
-  if (is_col_major(a) != is_col_major(b) || is_col_major(b) != is_col_major(c))
-    throw std::invalid_argument("matrix major mismatch");
   if (util::op_cols(trans_a, a) != util::op_rows(trans_b, b))
     throw std::invalid_argument("matrix size mismatch");
   int m = util::op_rows(trans_a, a);
   int n = util::op_cols(trans_b, b);
   int k = util::op_cols(trans_a, a);
-  gemm_dispatch<typename matrix_traits<MATRIX>::value_type>::
-    gemm((is_col_major(a) ? CblasColMajor : CblasRowMajor),
-         trans_a, trans_b, m, n, k, alpha, a, b, beta, c);
+  gemm_dispatch<typename value_t<MATRIX>::type>::
+    gemm((is_col_major(a) ? CblasColMajor : CblasRowMajor), trans_a, trans_b,
+         m, n, k, alpha, a, b, beta, c);
 }
 
 } // namespace xblas

@@ -13,30 +13,36 @@
 #define ROKKO_LAPACKX_HPP
 
 #include <lapacke.h>
+#include "traits/norm_t.hpp"
 
 namespace rokko {
 namespace lapackx {
 
 template<typename MATRIX, typename VECTOR>
-lapack_int getrf(MATRIX& a, VECTOR& ipiv);
-
-template<typename MATRIX0, typename MATRIX1, typename VECTOR>
-lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
-                 VECTOR const& ipiv, MATRIX1& b);
-
-template<typename MATRIX, typename VECTOR>
-lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s,
-                 MATRIX& u, MATRIX& vt);
+lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX& vt);
   
 template<typename MATRIX, typename VECTOR>
-lapack_int gesvd_work(char jobu, char jobvt, MATRIX& a, VECTOR& s,
-                      MATRIX& u, MATRIX& vt, VECTOR& work);
+lapack_int gesvd_work(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX& vt,
+                      VECTOR& work);
+
+template<typename MATRIX, typename VECTOR>
+lapack_int getrf(MATRIX& a, VECTOR& ipiv);
+
+template<typename MATRIX, typename VECTOR>
+lapack_int dgetri(MATRIX& a, VECTOR const& ipiv);
+
+template<typename MATRIX0, typename MATRIX1, typename VECTOR>
+lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a, VECTOR const& ipiv,
+                 MATRIX1& b);
+
+template<typename MATRIX, typename VECTOR>
+lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w);
+
+template<typename MATRIX>
+typename rokko::norm_t<MATRIX>::type lange(char norm, MATRIX const& a);
 
 template<typename MATRIX, typename VECTOR>
 lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR& w);
-  
-template<typename MATRIX, typename VECTOR>
-lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w);
 
 } // end namespace lapackx
 } // end namespace rokko
@@ -44,6 +50,7 @@ lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w);
 #include "lapackx/gesvd.hpp"
 #include "lapackx/getrf.hpp"
 #include "lapackx/getrs.hpp"
+#include "lapackx/lange.hpp"
 #include "lapackx/syev.hpp"
 
 #endif // ROKKO_LAPACKX_HPP

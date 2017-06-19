@@ -9,16 +9,18 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_VECTOR_TRAITS_HPP
-#define ROKKO_VECTOR_TRAITS_HPP
+#ifndef ROKKO_TRAITS_MAJOR_T_HPP
+#define ROKKO_TRAITS_MAJOR_T_HPP
+
+#include <complex>
 
 namespace rokko {
 
-template<typename VECTOR>
-struct vector_traits {
-  typedef typename VECTOR::value_type value_type;
+template<typename T>
+struct major_t {
+  typedef typename T::major_type type;
 };
 
 } // namespace rokko
 
-#endif // ROKKO_VECTOR_TRAITS_HPP
+#endif // ROKKO_TRAITS_MAJOR_T_HPP

@@ -1,5 +1,5 @@
 # C++ examples
-set(PROG getrs gesvd syev)
+set(PROG getrs gesvd lange syev)
 foreach(name ${PROG})
   set(target_name example_lapackx_${name})
   add_executable(${target_name} ${name}.cpp)

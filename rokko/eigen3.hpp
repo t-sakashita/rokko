@@ -9,37 +9,32 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MATRIX_TRAITS_EIGEN3_HPP
-#define ROKKO_MATRIX_TRAITS_EIGEN3_HPP
+#ifndef ROKKO_EIGEN3_HPP
+#define ROKKO_EIGEN3_HPP
 
-#include <rokko/vector_traits.hpp>
-#include <rokko/matrix_traits.hpp>
 #include <rokko/matrix_major.hpp>
+#include <rokko/traits/major_t.hpp>
 #include <Eigen/Dense>
 
 namespace rokko {
 
 template<typename T, int ROWS>
-struct vector_traits<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor> > {
-  typedef T value_type;
+struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor> > {
   typedef rokko::matrix_col_major major_type;
 };
 
 template<typename T, int ROWS>
-struct vector_traits<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor> > {
-  typedef T value_type;
+struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor> > {
   typedef rokko::matrix_row_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>
-struct matrix_traits<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor> > {
-  typedef T value_type;
+struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor> > {
   typedef rokko::matrix_col_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>
-struct matrix_traits<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor> > {
-  typedef T value_type;
+struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor> > {
   typedef rokko::matrix_row_major major_type;
 };
 
@@ -87,6 +82,16 @@ T* storage(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR>& mat) {
   return &mat(0, 0);
 }
 
+template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
+const T* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR> const& mat) {
+  return &mat(0, 0).real();
+}
+
+template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
+T* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR>& mat) {
+  return &mat(0, 0).real();
+}
+
 } // namespace Eigen
 
-#endif // ROKKO_MATRIX_TRAITS_EIGEN3_HPP
+#endif // ROKKO_EIGEN3_HPP
