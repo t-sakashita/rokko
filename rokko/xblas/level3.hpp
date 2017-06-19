@@ -15,6 +15,7 @@
 #include <rokko/matrix_traits.hpp>
 #include <complex>
 #include <stdexcept>
+#include <cblas.h>
 #include "util.hpp"
 
 namespace rokko {
@@ -55,8 +56,9 @@ struct gemm_dispatch<std::complex<float> > {
   template<typename MATRIX>
   static void gemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
                    enum CBLAS_TRANSPOSE trans_b, int m, int n, int k,
-                   std::complex<float> alpha, MATRIX const& a, MATRIX const& b,
-                   std::complex<float> beta, MATRIX& c) {
+                   std::complex<float> const& alpha, MATRIX const& a,
+                   MATRIX const& b,
+                   std::complex<float> const& beta, MATRIX& c) {
     cblas_cgemm(order, trans_a, trans_b, m, n, k,
                 &alpha, storage(a), lda(a), storage(b), lda(b),
                 &beta, storage(c), lda(c));
@@ -68,8 +70,9 @@ struct gemm_dispatch<std::complex<double> > {
   template<typename MATRIX>
   static void gemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
                    enum CBLAS_TRANSPOSE trans_b, int m, int n, int k,
-                   std::complex<double> alpha, MATRIX const& a, MATRIX const& b,
-                   std::complex<double> beta, MATRIX& c) {
+                   std::complex<double> const& alpha, MATRIX const& a,
+                   MATRIX const& b,
+                   std::complex<double> const& beta, MATRIX& c) {
     cblas_zgemm(order, trans_a, trans_b, m, n, k,
                 &alpha, storage(a), lda(a), storage(b), lda(b),
                 &beta, storage(c), lda(c));

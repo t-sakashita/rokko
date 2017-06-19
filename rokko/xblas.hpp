@@ -28,8 +28,7 @@ void gemv(enum CBLAS_TRANSPOSE trans,
 
 template<typename MATRIX, typename T>
 void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
-          T alpha, MATRIX const& a, MATRIX const& b,
-          T beta, MATRIX& c);
+          T alpha, MATRIX const& a, MATRIX const& b, T beta, MATRIX& c);
 
 } // namespace xblas
 } // namespace rokko
