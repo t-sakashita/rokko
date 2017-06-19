@@ -39,6 +39,10 @@ int main(int argc, char** argv) {
   cblas_dcopy(n * n, MAT_PTR(a), 1, MAT_PTR(ainv), 1);
   ipiv = alloc_ivector(n);
   info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, MAT_PTR(ainv), n, VEC_PTR(ipiv));
+  if (info != 0) {
+    fprintf(stderr, "Error: dgetrf fails\n");
+    exit(255);
+  }
   info = LAPACKE_dgetri(LAPACK_COL_MAJOR, n, MAT_PTR(ainv), n, VEC_PTR(ipiv));
   if (info != 0) {
     fprintf(stderr, "Error: dgetri fails\n");
@@ -49,8 +53,8 @@ int main(int argc, char** argv) {
 
   /* solution check */
   t = alloc_dmatrix(n, n);
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n,
-              1, MAT_PTR(ainv), n, MAT_PTR(a), n, 0, MAT_PTR(t), n);
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(ainv), n,
+              MAT_PTR(a), n, 0, MAT_PTR(t), n);
   for (i = 0; i < n; ++i) MAT_ELEM(t, i, i) -= 1;
   norm2 = 0;
   for (j = 0; j < n; ++j) {

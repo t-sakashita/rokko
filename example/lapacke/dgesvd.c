@@ -30,12 +30,8 @@ int main(int argc, char** argv) {
   }
   r = imin(m, n);
   
-  a = alloc_dmatrix(m, n);
-  u = alloc_dmatrix(m, r);
-  vt = alloc_dmatrix(r, n);
-  s = alloc_dvector(r);
-
   /* generate matrix */
+  a = alloc_dmatrix(m, n);
   for (j = 0; j < n; ++j) {
     for (i = 0; i < m; ++i) {
       MAT_ELEM(a, i, j) = n - imax(i, j);
@@ -45,14 +41,20 @@ int main(int argc, char** argv) {
   fprint_dmatrix(stdout, m, n, a);
 
   /* singular value decomposition */
-  lwork = imax(3 * r + imax(m, n), 5 * r);
-  work = alloc_dvector(lwork);
+  u = alloc_dmatrix(m, r);
+  vt = alloc_dmatrix(r, n);
+  s = alloc_dvector(r);
   t = alloc_dmatrix(m, n);
   cblas_dcopy(m * n, MAT_PTR(a), 1, MAT_PTR(t), 1);
-  info = LAPACKE_dgesvd_work(LAPACK_COL_MAJOR, 'S', 'S',
-                             m, n, MAT_PTR(t), m,
+  lwork = imax(3 * r + imax(m, n), 5 * r);
+  work = alloc_dvector(lwork);
+  info = LAPACKE_dgesvd_work(LAPACK_COL_MAJOR, 'S', 'S', m, n, MAT_PTR(t), m,
                              VEC_PTR(s), MAT_PTR(u), m, MAT_PTR(vt), r,
                              VEC_PTR(work), lwork);
+  if (info != 0) {
+    fprintf(stderr, "Error: dgesvd fails\n");
+    exit(255);
+  }
   free_dmatrix(t);
   printf("Matrix U: ");
   fprint_dmatrix(stdout, m, r, u);
@@ -114,12 +116,11 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Error: solution check\n");
     exit(255);
   }
+  free_dmatrix(t);
 
-  free_dvector(s);
-  free_dvector(work);
   free_dmatrix(a);
   free_dmatrix(u);
   free_dmatrix(vt);
-  free_dmatrix(t);
+  free_dvector(s);
   return 0;
 }

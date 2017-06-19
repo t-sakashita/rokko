@@ -24,9 +24,8 @@ int main(int argc, char** argv) {
 
   if (argc > 1) n = atoi(argv[1]);
     
-  a = alloc_dmatrix(n, n);
-
   /* generate matrix */
+  a = alloc_dmatrix(n, n);
   for (j = 0; j < n; ++j) {
     for (i = 0; i < n; ++i) {
       MAT_ELEM(a, i, j) = n - imax(i, j);
@@ -47,8 +46,8 @@ int main(int argc, char** argv) {
 
   /* orthogonality check */
   t = alloc_dmatrix(n, n);
-  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, n, n, n,
-              1, MAT_PTR(u), n, MAT_PTR(u), n, 0, MAT_PTR(t), n);
+  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(u), n,
+              MAT_PTR(u), n, 0, MAT_PTR(t), n);
   for (i = 0; i < n; ++i) MAT_ELEM(t, i, i) -= 1;
   norm2 = 0;
   for (j = 0; j < n; ++j) {
@@ -63,10 +62,10 @@ int main(int argc, char** argv) {
   }
 
   /* eigenvalue check */
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n,
-              1, MAT_PTR(a), n, MAT_PTR(u), n, 0, MAT_PTR(t), n);
-  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, n, n, n,
-              1, MAT_PTR(u), n, MAT_PTR(t), n, 0, MAT_PTR(a), n);
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(a), n,
+              MAT_PTR(u), n, 0, MAT_PTR(t), n);
+  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(u), n,
+              MAT_PTR(t), n, 0, MAT_PTR(a), n);
   for (i = 0; i < n; ++i) MAT_ELEM(a, i, i) -= w[i];
   norm2 = 0;
   for (j = 0; j < n; ++j) {
@@ -80,9 +79,9 @@ int main(int argc, char** argv) {
     exit(255);
   }
 
-  free_dvector(w);
   free_dmatrix(a);
   free_dmatrix(u);
+  free_dvector(w);
   free_dmatrix(t);
   return 0;
 }
