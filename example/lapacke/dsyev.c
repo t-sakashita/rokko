@@ -18,7 +18,7 @@ int imax(int x, int y) { return (x > y) ? x : y; }
 int main(int argc, char** argv) {
   int n = 5;
   int i, j, info;
-  double norm2;
+  double norm;
   double *w;
   double **a, **u, **t;
 
@@ -49,14 +49,9 @@ int main(int argc, char** argv) {
   cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(u), n,
               MAT_PTR(u), n, 0, MAT_PTR(t), n);
   for (i = 0; i < n; ++i) MAT_ELEM(t, i, i) -= 1;
-  norm2 = 0;
-  for (j = 0; j < n; ++j) {
-    for (i = 0; i < n; ++i) {
-      norm2 = MAT_ELEM(t, i, j) * MAT_ELEM(t, i, j);
-    }
-  }
-  printf("|| U^t U - I ||^2 = %e\n", norm2);
-  if (norm2 > 1e-16) {
+  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', n, n, MAT_PTR(t), n);
+  printf("|| U^t U - I || = %e\n", norm);
+  if (norm > 1e-10) {
     fprintf(stderr, "Error: orthogonality check\n");
     exit(255);
   }
@@ -67,14 +62,9 @@ int main(int argc, char** argv) {
   cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(u), n,
               MAT_PTR(t), n, 0, MAT_PTR(a), n);
   for (i = 0; i < n; ++i) MAT_ELEM(a, i, i) -= w[i];
-  norm2 = 0;
-  for (j = 0; j < n; ++j) {
-    for (i = 0; i < n; ++i) {
-      norm2 = MAT_ELEM(a, i, j) * MAT_ELEM(a, i, j);
-    }
-  }
-  printf("|| U^t A U - diag(w) ||^2 = %e\n", norm2);
-  if (norm2 > 1e-16) {
+  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', n, n, MAT_PTR(a), n);
+  printf("|| U^t A U - diag(w) || = %e\n", norm);
+  if (norm > 1e-10) {
     fprintf(stderr, "Error: eigenvalue check\n");
     exit(255);
   }

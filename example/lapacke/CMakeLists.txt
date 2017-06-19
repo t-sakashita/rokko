@@ -1,5 +1,5 @@
 # C examples
-set(PROG dsyev dgetr dgetri dgesvd)
+set(PROG dgetri dgetrs dgesvd dlange dsyev)
 foreach(name ${PROG})
   set(target_name example_lapacke_${name})
   add_executable(${target_name} ${name}.c)
@@ -11,7 +11,7 @@ unset(PROG)
 
 if(BUILD_CXX_CORE)
   # C++ examples
-  set(PROG syev getr gesvd)
+  set(PROG getrs gesvd syev)
   foreach(name ${PROG})
     set(target_name example_lapacke_${name})
     add_executable(${target_name} ${name}.cpp)

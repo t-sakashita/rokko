@@ -18,7 +18,7 @@ int imax(int x, int y) { return (x > y) ? x : y; }
 int main(int argc, char** argv) {
   int n = 5;
   int i, j, info;
-  double norm2;
+  double norm;
   double *x, *b;
   double **a, **lu;
   int *ipiv;
@@ -62,10 +62,9 @@ int main(int argc, char** argv) {
   /* solution check */
   cblas_dgemv(CblasColMajor, CblasNoTrans, n, n, 1, MAT_PTR(a), n, VEC_PTR(x), 1,
               -1, VEC_PTR(b), 1);
-  norm2 = 0;
-  for (i = 0; i < n; ++i) norm2 = b[i] * b[i];
-  printf("|| A x - b ||^2 = %e\n", norm2);
-  if (norm2 > 1e-16) {
+  norm = cblas_dnrm2(n, VEC_PTR(b), 1);
+  printf("|| A x - b || = %e\n", norm);
+  if (norm > 1e-10) {
     fprintf(stderr, "Error: solution check\n");
     exit(255);
   }
