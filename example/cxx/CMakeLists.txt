@@ -8,7 +8,6 @@
 #
 
 add_subdirectory(random)
-add_subdirectory(lapack)
 add_subdirectory(dense)
 if(BUILD_PARALLEL_SPARSE_SOLVER)
   add_subdirectory(sparse)
