@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/lapackx.hpp>
+#include <rokko/lapack.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
   std::cout << "Matrix A: " << rows(a) << ' ' << cols(a) << std::endl
             << a << std::endl;
 
-  double norm = rokko::lapackx::lange('F', a);
+  double norm = rokko::lapack::lange('F', a);
   std::cout << "|| A || = " << norm << std::endl;
 
   return 0;

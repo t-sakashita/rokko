@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_XBLAS_LEVEL2_HPP
-#define ROKKO_XBLAS_LEVEL2_HPP
+#ifndef ROKKO_BLAS_LEVEL2_HPP
+#define ROKKO_BLAS_LEVEL2_HPP
 
 #include <rokko/traits/value_t.hpp>
 #include <boost/static_assert.hpp>
@@ -21,7 +21,7 @@
 #include "util.hpp"
 
 namespace rokko {
-namespace xblas {
+namespace blas {
 
 namespace {
 
@@ -93,7 +93,7 @@ void gemv(enum CBLAS_TRANSPOSE trans,
            x, inc_x, beta, y, inc_y);
 }
 
-} // namespace xblas
+} // namespace blas
 } // namespace rokko
 
-#endif // ROKKO_XBLAS_LEVEL2_HPP
+#endif // ROKKO_BLAS_LEVEL2_HPP

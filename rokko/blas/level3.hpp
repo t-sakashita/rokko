@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_XBLAS_LEVEL3_HPP
-#define ROKKO_XBLAS_LEVEL3_HPP
+#ifndef ROKKO_BLAS_LEVEL3_HPP
+#define ROKKO_BLAS_LEVEL3_HPP
 
 #include <complex>
 #include <stdexcept>
@@ -18,7 +18,7 @@
 #include "util.hpp"
 
 namespace rokko {
-namespace xblas {
+namespace blas {
 
 namespace {
 
@@ -93,7 +93,7 @@ void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
          m, n, k, alpha, a, b, beta, c);
 }
 
-} // namespace xblas
+} // namespace blas
 } // namespace rokko
 
-#endif // ROKKO_XBLAS_LEVEL3_HPP
+#endif // ROKKO_BLAS_LEVEL3_HPP

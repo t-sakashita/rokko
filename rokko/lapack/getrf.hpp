@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACKX_GETRF_HPP
-#define ROKKO_LAPACKX_GETRF_HPP
+#ifndef ROKKO_LAPACK_GETRF_HPP
+#define ROKKO_LAPACK_GETRF_HPP
 
 #include <boost/type_traits.hpp>
 #include <complex>
@@ -18,7 +18,7 @@
 #include <lapacke.h>
 
 namespace rokko {
-namespace lapackx {
+namespace lapack {
 
 namespace {
 
@@ -74,7 +74,7 @@ lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
             m, n, a, ipiv);
 }
 
-} // end namespace lapackx
+} // end namespace lapack
 } // end namespace rokko
 
-#endif // ROKKO_LAPACKX_GETRF_HPP
+#endif // ROKKO_LAPACK_GETRF_HPP

@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/xblas.hpp>
-#include <rokko/lapackx.hpp>
+#include <rokko/blas.hpp>
+#include <rokko/lapack.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -39,13 +39,13 @@ int main(int argc, char** argv) {
   rokko::dlmatrix lu = a;
   rokko::dlvector x = b;
   rokko::ilvector ipiv(n);
-  int info = rokko::lapackx::getrf(lu, ipiv);
-  info = rokko::lapackx::getrs('n', 1, lu, ipiv, x);
+  int info = rokko::lapack::getrf(lu, ipiv);
+  info = rokko::lapack::getrs('n', 1, lu, ipiv, x);
   std::cout << "Solution x: " << size(x) << std::endl
             << x << std::endl;
 
   /* solution check */
-  rokko::xblas::gemv(CblasNoTrans, 1, a, x, 1, -1, b, 1);
+  rokko::blas::gemv(CblasNoTrans, 1, a, x, 1, -1, b, 1);
   double norm2 = 0;
   for (int i = 0; i < n; ++i) norm2 = b(i) * b(i);
   std::cout << "|| A x - b ||^2 = " << norm2 << std::endl;

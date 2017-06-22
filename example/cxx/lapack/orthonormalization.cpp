@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/lapack.h>
+#include <rokko/lapack.hpp>
 #include <boost/lexical_cast.hpp>
 
 typedef rokko::localized_vector<double> vector_t;
@@ -34,13 +34,13 @@ int main(int argc, char *argv[]) {
   // orthonormalization
   matrix_t mat = a;
   vector_t tau(k);
-  info = LAPACKE_dgeqrf(LAPACK_COL_MAJOR, m, n, &mat(0, 0), m, &tau(0));
+  info = rokko::lapack::geqrf(mat, tau);
   matrix_t r = mat;
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < i; ++j)
       r(i, j) = 0;
   std::cout << "Upper triangle matrix R:\n" << r << std::endl;
-  info = LAPACKE_dorgqr(LAPACK_COL_MAJOR, m, k, k, &mat(0, 0), m, &tau(0));
+  info = rokko::lapack::orgqr(k, mat, tau);
   matrix_t q(m, k);
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < k; ++j)

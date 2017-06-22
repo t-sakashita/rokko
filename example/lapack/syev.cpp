@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/xblas.hpp>
-#include <rokko/lapackx.hpp>
+#include <rokko/blas.hpp>
+#include <rokko/lapack.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
   // diagonalization
   rokko::dlmatrix u = a;
   rokko::dlvector w(n);
-  int info = rokko::lapackx::syev('V', 'U', u, w);
+  int info = rokko::lapack::syev('V', 'U', u, w);
   std::cout << "Eigenvalues: " << size(w) << std::endl
             << w << std::endl;
   std::cout << "Eigenvectors: " << rows(u) << ' ' << cols(u) << std::endl
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 
   // orthogonality check
   rokko::dlmatrix t(n, n);
-  rokko::xblas::gemm(CblasTrans, CblasNoTrans, 1, u, u, 0, t);
+  rokko::blas::gemm(CblasTrans, CblasNoTrans, 1, u, u, 0, t);
   for (int i = 0; i < n; ++i) t(i, i) -= 1;
   double norm2 = 0;
   for (int j = 0; j < n; ++j) {
@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
   }
 
   // eigenvalue check
-  rokko::xblas::gemm(CblasNoTrans, CblasNoTrans, 1, a, u, 0, t);
-  rokko::xblas::gemm(CblasTrans, CblasNoTrans, 1, u, t, 0, a);
+  rokko::blas::gemm(CblasNoTrans, CblasNoTrans, 1, a, u, 0, t);
+  rokko::blas::gemm(CblasTrans, CblasNoTrans, 1, u, t, 0, a);
   for (int i = 0; i < n; ++i) a(i, i) -= w(i);
   norm2 = 0;
   for (int j = 0; j < n; ++j) {

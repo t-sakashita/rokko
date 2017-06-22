@@ -9,15 +9,15 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACKX_GETRS_HPP
-#define ROKKO_LAPACKX_GETRS_HPP
+#ifndef ROKKO_LAPACK_GETRS_HPP
+#define ROKKO_LAPACK_GETRS_HPP
 
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
 
 namespace rokko {
-namespace lapackx {
+namespace lapack {
 
 namespace {
 
@@ -83,7 +83,7 @@ lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
             ipiv, b);
 }
 
-} // end namespace lapackx
+} // end namespace lapack
 } // end namespace rokko
 
-#endif // ROKKO_LAPACKX_GETRS_HPP
+#endif // ROKKO_LAPACK_GETRS_HPP

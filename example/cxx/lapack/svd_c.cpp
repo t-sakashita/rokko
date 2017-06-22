@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/lapack.h>
+#include <rokko/lapack.hpp>
 #include <boost/lexical_cast.hpp>
 
 typedef rokko::localized_vector<double> vector_t;
@@ -33,10 +33,9 @@ int main(int argc, char *argv[]) {
 
   // singular value decomposition
   matrix_t a = mat; // 'a' will be destroyed by dgesvd
-  vector_t s(k), superb(k);
+  vector_t s(k), superb(k-1);
   matrix_t u(m, k), vt(k, n);
-  info = LAPACKE_zgesvd(LAPACK_COL_MAJOR, 'S', 'S', m, n, &a(0, 0), m, &s(0),
-                         &u(0, 0), m, &vt(0, 0), k, &superb(0));
+  info = rokko::lapack::gesvd('S', 'S', a, s, u, vt, superb);
   std::cout << "U:\n" << u << std::endl;
   std::cout << "S:\n" << s << std::endl;
   std::cout << "Vt:\n" << vt << std::endl;

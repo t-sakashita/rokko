@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/xblas.hpp>
-#include <rokko/lapackx.hpp>
+#include <rokko/blas.hpp>
+#include <rokko/lapack.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -44,8 +44,8 @@ int main(int argc, char** argv) {
   rokko::dlmatrix u(m, r), vt(r, n);
   {
     rokko::dlmatrix t(a);
-    rokko::dlvector work(imax(3 * r + imax(m, n), 5 * r));
-    int info = rokko::lapackx::gesvd_work('S', 'S', t, s, u, vt, work);
+    rokko::dlvector superb(r-1);
+    int info = rokko::lapack::gesvd('S', 'S', t, s, u, vt, superb);
     if (info) throw std::runtime_error("Error: gesvd_work failed");
   }
   std::cout << "Matrix U: " << rows(u) << ' ' << cols(u) << std::endl
@@ -58,9 +58,9 @@ int main(int argc, char** argv) {
   // orthogonality check
   {
     rokko::dlmatrix t(r, r);
-    rokko::xblas::gemm(CblasTrans, CblasNoTrans, 1, u, u, 0, t);
+    rokko::blas::gemm(CblasTrans, CblasNoTrans, 1, u, u, 0, t);
     for (int i = 0; i < r; ++i) t(i, i) -= 1;
-    double norm = rokko::lapackx::lange('F', t);
+    double norm = rokko::lapack::lange('F', t);
     std::cout << "|| U^t U - I || = " << norm << std::endl;
     if (norm > 1e-10) {
       std::cerr << "Error: orthogonality check" << std::endl;
@@ -69,9 +69,9 @@ int main(int argc, char** argv) {
   }
   {
     rokko::dlmatrix t(r, r);
-    rokko::xblas::gemm(CblasNoTrans, CblasTrans, 1, vt, vt, 0, t);
+    rokko::blas::gemm(CblasNoTrans, CblasTrans, 1, vt, vt, 0, t);
     for (int i = 0; i < r; ++i) t(i, i) -= 1;
-    double norm = rokko::lapackx::lange('F', t);
+    double norm = rokko::lapack::lange('F', t);
     std::cout << "|| V V^t - I || = " << norm << std::endl;
     if (norm > 1e-10) {
       std::cerr << "Error: orthogonality check" << std::endl;
@@ -82,11 +82,11 @@ int main(int argc, char** argv) {
   // solution check
   {
     rokko::dlmatrix t(m, r);
-    rokko::xblas::gemm(CblasNoTrans, CblasTrans, 1, a, vt, 0, t);
+    rokko::blas::gemm(CblasNoTrans, CblasTrans, 1, a, vt, 0, t);
     rokko::dlmatrix w(r, r);
-    rokko::xblas::gemm(CblasTrans, CblasNoTrans, 1, u, t, 0, w);
+    rokko::blas::gemm(CblasTrans, CblasNoTrans, 1, u, t, 0, w);
     for (int i = 0; i < r; ++i) w(i, i) -= s(i);
-    double norm = rokko::lapackx::lange('F', w);
+    double norm = rokko::lapack::lange('F', w);
     std::cout << "|| U^t A V - diag(S) || = " << norm << std::endl;
     if (norm > 1e-10) {
       std::cerr << "Error: solution check" << std::endl;

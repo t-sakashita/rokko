@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2017 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,32 +14,31 @@
 
 #define ROKKO_VERSION "0.3"
 
-/* Define if you have C binding */
-#cmakedefine ROKKO_HAVE_C_BINDING
-
-/* Define if you have Fortran binding */
-#cmakedefine ROKKO_HAVE_Fortran_BINDING
-
-/* Define if you have OpenMP */
+/* Define if built with OpenMP */
 #cmakedefine ROKKO_HAVE_OPENMP
 
-/* Define if you have MPI */
+/* solvers */
+
+/* Define if you have Boost Library */
+#cmakedefine ROKKO_HAVE_BOOST
+
+/* Define if you have MPI Library */
 #cmakedefine ROKKO_HAVE_MPI
 
 /* Define if you have ScaLAPACK Library */
 #cmakedefine ROKKO_HAVE_SCALAPACK
 
+/* Define if you have ScaLAPACK/pdsyevr */
+#cmakedefine ROKKO_HAVE_SCALAPACK_PDSYEVR
+
 /* Define if you have EigenExa Library */
 #cmakedefine ROKKO_HAVE_EIGENEXA
-
-/* Define if you have Elemental Library */
-#cmakedefine ROKKO_HAVE_ELEMENTAL
 
 /* Define if you have ELPA Library */
 #cmakedefine ROKKO_HAVE_ELPA
 
-/* Define if you have parallel dense solver */
-#cmakedefine ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+/* Define if you have Elemental Library */
+#cmakedefine ROKKO_HAVE_ELEMENTAL
 
 /* Define if you have PETSc Library */
 #cmakedefine ROKKO_HAVE_PETSC
@@ -50,9 +49,48 @@
 /* Define if you have Anasazi Library */
 #cmakedefine ROKKO_HAVE_ANASAZI
 
+/* components */
+
+/* Define if you have lapacke component */
+#define ROKKO_HAVE_LAPACKE
+
+/* Define if you have scalapack_c component */
+#cmakedefine ROKKO_HAVE_SCALAPACK_C
+
+/* Define if you have eigenexa_c component */
+#cmakedefine ROKKO_HAVE_EIGENEXA_C
+
+/* Define if you have lapack_cxx component */
+#cmakedefine ROKKO_HAVE_LAPACK_CXX
+
+/* Define if you have scalapack_cxx component */
+#cmakedefine ROKKO_HAVE_SCALAPACK_CXX
+
+/* Define if you have eigenexa_cxx component */
+#cmakedefine ROKKO_HAVE_EIGENEXA_CXX
+
+/* Define if you have elpa_cxx component */
+#cmakedefine ROKKO_HAVE_ELPA_CXX
+
+/* Define if you have parallel sparse solver */
+#cmakedefine ROKKO_HAVE_SERIAL_DENSE_SOLVER
+
+/* Define if you have parallel sparse solver */
+#cmakedefine ROKKO_HAVE_SERIAL_SPARSE_SOLVER
+
+/* Define if you have parallel sparse solver */
+#cmakedefine ROKKO_HAVE_PARALLEL_DENSE_SOLVER
+
 /* Define if you have parallel sparse solver */
 #cmakedefine ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 
-#cmakedefine ROKKO_HAVE_PDSYEVR
+/* Define if you have C binding */
+#cmakedefine ROKKO_HAVE_C_BINDING
+
+/* Define if you have Fortran binding */
+#cmakedefine ROKKO_HAVE_FORTRAN_BINDING
+
+/* Define if you have Python binding */
+#cmakedefine ROKKO_HAVE_PYTHON_BINDING
 
 #endif /* ROKKO_CONFIG_H */

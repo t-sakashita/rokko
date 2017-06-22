@@ -16,7 +16,7 @@
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
-#include <rokko/lapack.h>
+#include <rokko/lapack.hpp>
 
 namespace rokko {
 namespace lapack {

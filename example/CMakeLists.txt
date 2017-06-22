@@ -7,22 +7,18 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-add_subdirectory(lapacke)
+add_subdirectory(lapack)
 
-if(BUILD_CXX_CORE)
-  add_subdirectory(lapackx)
+add_subdirectory(cxx)
 
-  add_subdirectory(cxx)
+if(BUILD_C_BINDING)
+  add_subdirectory(c)
+endif(BUILD_C_BINDING)
 
-  if(BUILD_C_BINDING)
-    add_subdirectory(c)
-  endif(BUILD_C_BINDING)
+if(BUILD_Fortran_BINDING)
+  add_subdirectory(fortran)
+endif(BUILD_Fortran_BINDING)
 
-  if(BUILD_Fortran_BINDING)
-    add_subdirectory(fortran)
-  endif(BUILD_Fortran_BINDING)
-
-  if(BUILD_Python_BINDING)
-    add_subdirectory(python)
-  endif(BUILD_Python_BINDING)
-endif(BUILD_CXX_CORE)
+if(BUILD_Python_BINDING)
+  add_subdirectory(python)
+endif(BUILD_Python_BINDING)

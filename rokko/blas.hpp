@@ -9,13 +9,13 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_XBLAS_HPP
-#define ROKKO_XBLAS_HPP
+#ifndef ROKKO_BLAS_HPP
+#define ROKKO_BLAS_HPP
 
 #include <cblas.h>
 
 namespace rokko {
-namespace xblas {
+namespace blas {
 
 // level 2
 
@@ -30,10 +30,10 @@ template<typename MATRIX, typename T>
 void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
           T alpha, MATRIX const& a, MATRIX const& b, T beta, MATRIX& c);
 
-} // namespace xblas
+} // namespace blas
 } // namespace rokko
 
-#include "xblas/level2.hpp"
-#include "xblas/level3.hpp"
+#include "blas/level2.hpp"
+#include "blas/level3.hpp"
 
-#endif // ROKKO_XBLAS_HPP
+#endif // ROKKO_BLAS_HPP

@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/lapack.h>
+#include <rokko/lapack.hpp>
 #include <boost/lexical_cast.hpp>
 
 typedef rokko::localized_vector<double> vector_t;
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   // diagonalization
   vector_t w(n);
   matrix_t v = mat; // v will be overwritten by eigenvectors
-  info = LAPACKE_zheev(LAPACK_COL_MAJOR, 'V', 'U', n, &v(0, 0), n, &w(0));
+  info = rokko::lapack::heev('V', 'U', v, w);
   std::cout << "Eigenvalues:\n" << w << std::endl;
   std::cout << "Eigenvectors:\n" << v << std::endl;
 

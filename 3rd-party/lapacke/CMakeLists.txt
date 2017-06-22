@@ -11,10 +11,14 @@ endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/include/lapacke_mangling.h)
 
 file(GLOB SOURCES src/*.c utils/*.c)
 add_library(lapacke ${SOURCES})
-if (NOT STATIC_SCALAPACK)
-  target_link_libraries(lapacke ${SCALAPACK_LIBRARIES} ${LAPACK_LIBRARIES})
-endif (NOT STATIC_SCALAPACK)
-install(TARGETS lapacke ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
-install(FILES include/lapacke.h include/lapacke_config.h include/lapacke_mangling_with_flags.h include/lapacke_utils.h ${CMAKE_CURRENT_BINARY_DIR}/include/lapacke_mangling.h COMPONENT headers DESTINATION include)
+target_link_libraries(lapacke ${LAPACK_LIBRARIES})
+install(TARGETS lapacke ARCHIVE DESTINATION lib LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+install(FILES include/lapacke.h include/lapacke_config.h
+  include/lapacke_mangling_with_flags.h include/lapacke_utils.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/lapacke_mangling.h COMPONENT headers
+  DESTINATION include)
 
-add_subdirectory(example)
+if(BUILD_EXAMPLES)
+  add_subdirectory(example)
+endif(BUILD_EXAMPLES)

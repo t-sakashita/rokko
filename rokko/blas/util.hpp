@@ -9,13 +9,13 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_XBLAS_UTIL_HPP
-#define ROKKO_XBLAS_UTIL_HPP
+#ifndef ROKKO_BLAS_UTIL_HPP
+#define ROKKO_BLAS_UTIL_HPP
 
 #include <cblas.h>
 
 namespace rokko {
-namespace xblas {
+namespace blas {
 namespace util {
 
 template<typename MATRIX>
@@ -29,7 +29,7 @@ int op_cols(enum CBLAS_TRANSPOSE trans, MATRIX const& a) {
 }
   
 } // namespace util
-} // namespace xblas
+} // namespace blas
 } // namespace rokko
 
-#endif // ROKKO_XBLAS_UTIL_HPP
+#endif // ROKKO_BLAS_UTIL_HPP

@@ -9,15 +9,16 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACKX_LANGE_HPP
-#define ROKKO_LAPACKX_LANGE_HPP
+#ifndef ROKKO_LAPACK_LANGE_HPP
+#define ROKKO_LAPACK_LANGE_HPP
 
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
+#include "complex_cast.hpp"
 
 namespace rokko {
-namespace lapackx {
+namespace lapack {
 
 namespace {
 
@@ -46,9 +47,7 @@ struct lange_dispatch<std::complex<float> > {
   template<typename MATRIX>
   static float lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                      MATRIX const& a) {
-    return LAPACKE_clange(matrix_layout, norm, m, n,
-                          reinterpret_cast<const lapack_complex_float*>(storage(a)),
-                          lda(a));
+    return LAPACKE_clange(matrix_layout, norm, m, n, complex_cast((storage(a))), lda(a));
   }
 };
 
@@ -57,9 +56,7 @@ struct lange_dispatch<std::complex<double> > {
   template<typename MATRIX>
   static double lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                       MATRIX const& a) {
-    return LAPACKE_zlange(matrix_layout, norm, m, n,
-                          reinterpret_cast<const lapack_complex_double*>(storage(a)),
-                          lda(a));
+    return LAPACKE_zlange(matrix_layout, norm, m, n, complex_cast((storage(a))), lda(a));
   }
 };
 
@@ -74,7 +71,7 @@ typename norm_t<MATRIX>::type lange(char norm, MATRIX const& a) {
             m, n, a);
 }
 
-} // end namespace lapackx
+} // end namespace lapack
 } // end namespace rokko
 
-#endif // ROKKO_LAPACKX_LANGE_HPP
+#endif // ROKKO_LAPACK_LANGE_HPP
