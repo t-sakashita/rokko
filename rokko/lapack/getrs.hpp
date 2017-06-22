@@ -15,6 +15,7 @@
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
+#include "complex_cast.hpp"
 
 namespace rokko {
 namespace lapack {
@@ -48,8 +49,8 @@ struct getrs_dispatch<std::complex<float> > {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
-    return LAPACKE_cgetrs(matrix_layout, trans, n, nrhs, storage(a), lda(a), storage(ipiv),
-                          storage(b), lda(b));
+    return LAPACKE_cgetrs(matrix_layout, trans, n, nrhs, complex_cast(storage(a)), lda(a),
+                          storage(ipiv), complex_cast(storage(b)), lda(b));
   }
 };
 
@@ -58,8 +59,8 @@ struct getrs_dispatch<std::complex<double> > {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
-    return LAPACKE_zgetrs(matrix_layout, trans, n, nrhs, storage(a), lda(a), storage(ipiv),
-                          storage(b), lda(b));
+    return LAPACKE_zgetrs(matrix_layout, trans, n, nrhs, complex_cast(storage(a)), lda(a),
+                          storage(ipiv), complex_cast(storage(b)), lda(b));
   }
 };
 

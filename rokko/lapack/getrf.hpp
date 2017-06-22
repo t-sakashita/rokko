@@ -16,6 +16,7 @@
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
+#include "complex_cast.hpp"
 
 namespace rokko {
 namespace lapack {
@@ -47,7 +48,8 @@ struct getrf_dispatch<std::complex<float> > {
   template<typename MATRIX, typename VECTOR>
   static lapack_int getrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& ipiv) {
-    return LAPACKE_cgetrf(matrix_layout, m, n, storage(a), lda(a), storage(ipiv));
+    return LAPACKE_cgetrf(matrix_layout, m, n, complex_cast(storage(a)), lda(a),
+                          storage(ipiv));
   }
 };
 
@@ -56,7 +58,8 @@ struct getrf_dispatch<std::complex<double> > {
   template<typename MATRIX, typename VECTOR>
   static lapack_int getrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& ipiv) {
-    return LAPACKE_zgetrf(matrix_layout, m, n, storage(a), lda(a), storage(ipiv));
+    return LAPACKE_zgetrf(matrix_layout, m, n, complex_cast(storage(a)), lda(a),
+                          storage(ipiv));
   }
 };
 

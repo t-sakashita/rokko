@@ -20,27 +20,22 @@ int main(int argc, char** argv) {
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
   // generate matrix and rhs vector
-  rokko::dlmatrix a(n, n);
-  for (int j = 0; j < n; ++j) {
-    for (int i = 0; i < n; ++i) {
-      a(i, j) = std::min(i, j) + 1;
-    }
-  }
+  rokko::zlmatrix a = rokko::zlmatrix::Random(n, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
-  rokko::dlvector b(n);
+  rokko::zlvector b(n);
   for (int i = 0; i < n; ++i) b(i) = i * i + 1;
   std::cout << "Vector b: " << std::endl << b << std::endl;
 
   // solve linear equation
-  rokko::dlmatrix lu = a;
-  rokko::dlvector x = b;
+  rokko::zlmatrix lu = a;
+  rokko::zlvector x = b;
   rokko::ilvector ipiv(n);
   int info = rokko::lapack::getrf(lu, ipiv);
   info = rokko::lapack::getrs('n', 1, lu, ipiv, x);
   std::cout << "Solution x: " << std::endl << x << std::endl;
 
   /* solution check */
-  rokko::dlvector check = a * x - b;
+  rokko::zlvector check = a * x - b;
   double norm = check.norm();
   std::cout << "|| A x - b || = " << norm << std::endl;
   if (norm > 1e-10) throw std::runtime_error("Error: solution check");

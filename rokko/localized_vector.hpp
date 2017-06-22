@@ -37,7 +37,7 @@ public:
 };
 
 typedef localized_vector<int> ilvector;
-typedef localized_vector<float> flvector;
+typedef localized_vector<float> slvector;
 typedef localized_vector<double> dlvector;
 typedef localized_vector<std::complex<float> > clvector;
 typedef localized_vector<std::complex<double> > zlvector;

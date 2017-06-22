@@ -27,18 +27,13 @@ int main(int argc, char** argv) {
   int r = std::min(m, n);
   
   // generate matrix
-  rokko::dlmatrix a(m, n);
-  for (int j = 0; j < n; ++j) {
-    for (int i = 0; i < m; ++i) {
-      a(i, j) = std::min(i, j) + 1;
-    }
-  }
+  rokko::zlmatrix a = rokko::zlmatrix::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
 
   // singular value decomposition
   rokko::dlvector s(r);
-  rokko::dlmatrix u(m, r), vt(r, n);
-  rokko::dlmatrix t = a;
+  rokko::zlmatrix u(m, r), vt(r, n);
+  rokko::zlmatrix t = a;
   rokko::dlvector superb(r-1);
   int info = rokko::lapack::gesvd('S', 'S', t, s, u, vt, superb);
   if (info) throw std::runtime_error("Error: gesvd failed");
@@ -47,18 +42,18 @@ int main(int argc, char** argv) {
   std::cout << "Matrix Vt: " << std::endl << vt << std::endl;
 
   // orthogonality check
-  rokko::dlmatrix check1 = u.adjoint() * u - rokko::dlmatrix::Identity(r, r);
+  rokko::zlmatrix check1 = u.adjoint() * u - rokko::zlmatrix::Identity(r, r);
   double norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| U^t U - I || = " << norm1 << std::endl;
   if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
 
-  rokko::dlmatrix check2 = vt * vt.adjoint() - rokko::dlmatrix::Identity(r, r);
+  rokko::zlmatrix check2 = vt * vt.adjoint() - rokko::zlmatrix::Identity(r, r);
   double norm2 = rokko::lapack::lange('F', check2);
   std::cout << "|| V^t V - I || = " << norm2 << std::endl;
   if (norm2 > 1e-10) throw std::runtime_error("Error: orthogonality check");
 
   // solution check
-  rokko::dlmatrix check3 = u.adjoint() * a * vt.adjoint();
+  rokko::zlmatrix check3 = u.adjoint() * a * vt.adjoint();
   for (int i = 0; i < r; ++i) check3(i, i) -= s(i);
   double norm3 = rokko::lapack::lange('F', check3);
   std::cout << "|| U^t A V - diag(S) || = " << norm3 << std::endl;

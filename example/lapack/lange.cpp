@@ -18,18 +18,13 @@ int main(int argc, char** argv) {
   int m = 3;
   int n = 5;
   
-  // generate matrix
-  rokko::zlmatrix a(m, n);
-  for (int j = 0; j < n; ++j) {
-    for (int i = 0; i < m; ++i) {
-      a(i, j) = std::complex<double>(i, j);
-    }
-  }
-  std::cout << "Matrix A: " << rows(a) << ' ' << cols(a) << std::endl
-            << a << std::endl;
+  rokko::dlmatrix a = rokko::dlmatrix::Random(m, n);
+  std::cout << "Matrix A: " << std::endl << a << std::endl;
+  std::cout << "|| A || = " << rokko::lapack::lange('F', a) << std::endl;
 
-  double norm = rokko::lapack::lange('F', a);
-  std::cout << "|| A || = " << norm << std::endl;
+  rokko::zlmatrix b = rokko::zlmatrix::Random(m, n);
+  std::cout << "Matrix B: " << std::endl << b << std::endl;
+  std::cout << "|| B || = " << rokko::lapack::lange('F', b) << std::endl;
 
   return 0;
 }
