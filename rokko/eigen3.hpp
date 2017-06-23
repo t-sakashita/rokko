@@ -84,12 +84,12 @@ T* storage(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR>& mat) {
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 const T* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR> const& mat) {
-  return &mat(0, 0).real();
+  return reinterpret_cast<const T*>(&mat(0, 0));
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 T* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR>& mat) {
-  return &mat(0, 0).real();
+  return reinterpret_cast<T*>(&mat(0, 0));
 }
 
 } // namespace Eigen
