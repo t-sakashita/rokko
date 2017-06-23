@@ -13,6 +13,7 @@
 #define ROKKO_TRAITS_NORM_T_HPP
 
 #include "value_t.hpp"
+#include <complex>
 #include <boost/numeric/ublas/traits.hpp>
 
 namespace rokko {

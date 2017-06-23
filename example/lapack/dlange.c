@@ -35,24 +35,12 @@ int main(int argc, char** argv) {
 
   /* calculate various norms */
   norm = LAPACKE_dlange(LAPACK_COL_MAJOR, '1', n, n, MAT_PTR(a), n);
-  if (info != 0) {
-    fprintf(stderr, "Error: dlange fails\n");
-    exit(255);
-  }
   printf("norm1(A) = %e\n", norm);
 
   norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'I', n, n, MAT_PTR(a), n);
-  if (info != 0) {
-    fprintf(stderr, "Error: dlange fails\n");
-    exit(255);
-  }
   printf("normI(A) = %e\n", norm);
 
   norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', n, n, MAT_PTR(a), n);
-  if (info != 0) {
-    fprintf(stderr, "Error: dlange fails\n");
-    exit(255);
-  }
   printf("normF(A) = %e\n", norm);
   
   free_dmatrix(a);
