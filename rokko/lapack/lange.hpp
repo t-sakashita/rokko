@@ -15,6 +15,7 @@
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
+#include <rokko/traits/norm_t.hpp>
 #include "complex_cast.hpp"
 
 namespace rokko {

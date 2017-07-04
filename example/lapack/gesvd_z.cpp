@@ -10,7 +10,8 @@
 *****************************************************************************/
 
 #include <rokko/blas.hpp>
-#include <rokko/lapack.hpp>
+#include <rokko/lapack/gesvd.hpp>
+#include <rokko/lapack/lange.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>

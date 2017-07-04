@@ -78,6 +78,17 @@ lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
     heev((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, uplo, n, a, w);
 }
   
+template<typename MATRIX, typename VECTOR>
+lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
+  return heev(jobz, uplo, a, w);
+};
+
+template<typename MATRIX, typename VECTOR0, typename VECTOR1>
+lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work,
+                VECTOR1& rwork) {
+  return heev(jobz, uplo, a, w, work, rwork);
+};
+
 } // end namespace lapack
 } // end namespace rokko
 

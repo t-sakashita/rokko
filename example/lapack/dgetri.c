@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
   a = alloc_dmatrix(n, n);
   for (j = 0; j < n; ++j) {
     for (i = 0; i < n; ++i) {
-      MAT_ELEM(a, i, j) = n - imax(i, j);
+      mat_elem(a, i, j) = n - imax(i, j);
     }
   }
   printf("Matrix A: ");
@@ -36,14 +36,14 @@ int main(int argc, char** argv) {
 
   /* invert matrix */
   ainv = alloc_dmatrix(n, n);
-  cblas_dcopy(n * n, MAT_PTR(a), 1, MAT_PTR(ainv), 1);
+  cblas_dcopy(n * n, mat_ptr(a), 1, mat_ptr(ainv), 1);
   ipiv = alloc_ivector(n);
-  info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, MAT_PTR(ainv), n, VEC_PTR(ipiv));
+  info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, mat_ptr(ainv), n, vec_ptr(ipiv));
   if (info != 0) {
     fprintf(stderr, "Error: dgetrf fails with error code %d\n", info);
     exit(255);
   }
-  info = LAPACKE_dgetri(LAPACK_COL_MAJOR, n, MAT_PTR(ainv), n, VEC_PTR(ipiv));
+  info = LAPACKE_dgetri(LAPACK_COL_MAJOR, n, mat_ptr(ainv), n, vec_ptr(ipiv));
   if (info != 0) {
     fprintf(stderr, "Error: dgetri fails with error code %d\n", info);
     exit(255);
@@ -53,10 +53,10 @@ int main(int argc, char** argv) {
 
   /* solution check */
   t = alloc_dmatrix(n, n);
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1, MAT_PTR(ainv), n,
-              MAT_PTR(a), n, 0, MAT_PTR(t), n);
-  for (i = 0; i < n; ++i) MAT_ELEM(t, i, i) -= 1;
-  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', n, n, MAT_PTR(t), n);
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1, mat_ptr(ainv), n,
+              mat_ptr(a), n, 0, mat_ptr(t), n);
+  for (i = 0; i < n; ++i) mat_elem(t, i, i) -= 1;
+  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', n, n, mat_ptr(t), n);
   printf("|| A^{-1} A - I || = %e\n", norm);
   if (norm > 1e-10) {
     fprintf(stderr, "Error: solution check\n");

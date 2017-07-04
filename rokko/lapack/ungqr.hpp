@@ -116,6 +116,16 @@ lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
     ::ungqr((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), m, n, k, a, tau, work);
 }
 
+template<typename MATRIX, typename VECTOR>
+lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
+  return ungqr(k, a, tau);
+}
+  
+template<typename MATRIX, typename VECTOR>
+lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
+  return ungqr(k, a, tau, work);
+};
+  
 } // end namespace lapack
 } // end namespace rokko
 

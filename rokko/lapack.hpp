@@ -55,20 +55,16 @@ template<typename MATRIX, typename VECTOR>
 typename rokko::norm_t<MATRIX>::type lange(char norm, MATRIX const& a, VECTOR& work);
   
 template<typename MATRIX, typename VECTOR>
+lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau);
+  
+template<typename MATRIX, typename VECTOR>
+lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work);
+  
+template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau);
   
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work);
-  
-template<typename MATRIX, typename VECTOR>
-lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
-  return ungqr(k, a, tau);
-}
-  
-template<typename MATRIX, typename VECTOR>
-lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
-  return ungqr(k, a, tau, work);
-};
   
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w);
@@ -77,15 +73,17 @@ template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work, VECTOR1& rwork);
   
 template<typename MATRIX, typename VECTOR>
-lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
-  return heev(jobz, uplo, a, w);
-};
+lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR& b, VECTOR& w);
+  
+template<typename MATRIX, typename VECTOR0, typename VECTOR1>
+lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b, VECTOR0& w,
+                VECTOR1& work);
+
+template<typename MATRIX, typename VECTOR>
+lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR& w);
 
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
-lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work,
-                VECTOR1& rwork) {
-  return heev(jobz, uplo, a, w, work, rwork);
-};
+lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work, VECTOR1& rwork);
 
 template<typename MATRIX, typename VECTOR>
 lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR& b,
@@ -95,18 +93,6 @@ template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
                 VECTOR0& w, VECTOR1& work);
   
-template<typename MATRIX, typename VECTOR>
-lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR& b,
-                VECTOR& w) {
-  sygv(itype, jobz, uplo, a, b, w);
-}
-  
-template<typename MATRIX, typename VECTOR0, typename VECTOR1>
-lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
-                VECTOR0& w, VECTOR1& work) {
-  sygv(itype, jobz, uplo, a, b, w, work);
-}
-
 } // end namespace lapack
 } // end namespace rokko
 
@@ -115,6 +101,7 @@ lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
 #include "lapack/getrf.hpp"
 #include "lapack/getrs.hpp"
 #include "lapack/heev.hpp"
+// #include "lapack/hegv.hpp"
 #include "lapack/lange.hpp"
 #include "lapack/ungqr.hpp"
 

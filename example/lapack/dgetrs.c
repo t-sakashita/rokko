@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
   a = alloc_dmatrix(n, n);
   for (j = 0; j < n; ++j) {
     for (i = 0; i < n; ++i) {
-      MAT_ELEM(a, i, j) = n - imax(i, j);
+      mat_elem(a, i, j) = n - imax(i, j);
     }
   }
   printf("Matrix A: ");
@@ -41,17 +41,17 @@ int main(int argc, char** argv) {
 
   /* solve linear equation */
   lu = alloc_dmatrix(n, n);
-  cblas_dcopy(n * n, MAT_PTR(a), 1, MAT_PTR(lu), 1);
+  cblas_dcopy(n * n, mat_ptr(a), 1, mat_ptr(lu), 1);
   x = alloc_dvector(n);
-  cblas_dcopy(n, VEC_PTR(b), 1, VEC_PTR(x), 1);
+  cblas_dcopy(n, vec_ptr(b), 1, vec_ptr(x), 1);
   ipiv = alloc_ivector(n);
-  info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, MAT_PTR(lu), n, VEC_PTR(ipiv));
+  info = LAPACKE_dgetrf(LAPACK_COL_MAJOR, n, n, mat_ptr(lu), n, vec_ptr(ipiv));
   if (info != 0) {
     fprintf(stderr, "Error: dgetrf fails\n");
     exit(255);
   }
-  info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, 'n', n, 1, MAT_PTR(lu), n, VEC_PTR(ipiv),
-                        VEC_PTR(x), n);
+  info = LAPACKE_dgetrs(LAPACK_COL_MAJOR, 'n', n, 1, mat_ptr(lu), n, vec_ptr(ipiv),
+                        vec_ptr(x), n);
   if (info != 0) {
     fprintf(stderr, "Error: dgetrs fails\n");
     exit(255);
@@ -60,9 +60,9 @@ int main(int argc, char** argv) {
   fprint_dvector(stdout, n, x);
 
   /* solution check */
-  cblas_dgemv(CblasColMajor, CblasNoTrans, n, n, 1, MAT_PTR(a), n, VEC_PTR(x), 1,
-              -1, VEC_PTR(b), 1);
-  norm = cblas_dnrm2(n, VEC_PTR(b), 1);
+  cblas_dgemv(CblasColMajor, CblasNoTrans, n, n, 1, mat_ptr(a), n, vec_ptr(x), 1,
+              -1, vec_ptr(b), 1);
+  norm = cblas_dnrm2(n, vec_ptr(b), 1);
   printf("|| A x - b || = %e\n", norm);
   if (norm > 1e-10) {
     fprintf(stderr, "Error: solution check\n");

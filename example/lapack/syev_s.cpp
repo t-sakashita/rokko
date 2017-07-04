@@ -10,7 +10,8 @@
 *****************************************************************************/
 
 #include <rokko/blas.hpp>
-#include <rokko/lapack.hpp>
+#include <rokko/lapack/syev.hpp>
+#include <rokko/lapack/lange.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -38,14 +39,14 @@ int main(int argc, char** argv) {
 
   // orthogonality check
   rokko::slmatrix check1 = u.adjoint() * u - rokko::slmatrix::Identity(n, n);
-  double norm1 = rokko::lapack::lange('F', check1);
+  float norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| U^t U - I || = " << norm1 << std::endl;
   if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
 
   // eigenvalue check
   rokko::slmatrix check2 = u.adjoint() * a * u;
   for (int i = 0; i < n; ++i) check2(i, i) -= w(i);
-  double norm2 = rokko::lapack::lange('F', check2);
+  float norm2 = rokko::lapack::lange('F', check2);
   std::cout << "|| U^t A U - diag(w) || = " << norm2 << std::endl;
   if (norm2 > 1e-10) throw std::runtime_error("Error: eigenvalue check");
 

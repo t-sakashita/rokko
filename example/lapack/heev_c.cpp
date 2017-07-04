@@ -10,7 +10,8 @@
 *****************************************************************************/
 
 #include <rokko/blas.hpp>
-#include <rokko/lapack.hpp>
+#include <rokko/lapack/heev.hpp>
+#include <rokko/lapack/lange.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
@@ -42,6 +43,13 @@ int main(int argc, char** argv) {
   rokko::clmatrix check2 = u.adjoint() * a * u;
   for (int i = 0; i < n; ++i) check2(i, i) -= w(i);
   double norm2 = rokko::lapack::lange('F', check2);
+  norm2 = 0;
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      norm2 += norm(check2(i, j)) * norm(check2(i, j));
+    }
+  }
+  std::cout << norm2 << std::endl;
   std::cout << "|| U^t A U - diag(w) || = " << norm2 << std::endl;
   if (norm2 > 1e-10) throw std::runtime_error("Error: eigenvalue check");
 

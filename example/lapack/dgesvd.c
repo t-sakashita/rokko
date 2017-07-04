@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
   a = alloc_dmatrix(m, n);
   for (j = 0; j < n; ++j) {
     for (i = 0; i < m; ++i) {
-      MAT_ELEM(a, i, j) = n - imax(i, j);
+      mat_elem(a, i, j) = n - imax(i, j);
     }
   }
   printf("Matrix A: ");
@@ -45,12 +45,12 @@ int main(int argc, char** argv) {
   vt = alloc_dmatrix(r, n);
   s = alloc_dvector(r);
   t = alloc_dmatrix(m, n);
-  cblas_dcopy(m * n, MAT_PTR(a), 1, MAT_PTR(t), 1);
+  cblas_dcopy(m * n, mat_ptr(a), 1, mat_ptr(t), 1);
   lwork = imax(3 * r + imax(m, n), 5 * r);
   work = alloc_dvector(lwork);
-  info = LAPACKE_dgesvd_work(LAPACK_COL_MAJOR, 'S', 'S', m, n, MAT_PTR(t), m,
-                             VEC_PTR(s), MAT_PTR(u), m, MAT_PTR(vt), r,
-                             VEC_PTR(work), lwork);
+  info = LAPACKE_dgesvd_work(LAPACK_COL_MAJOR, 'S', 'S', m, n, mat_ptr(t), m,
+                             vec_ptr(s), mat_ptr(u), m, mat_ptr(vt), r,
+                             vec_ptr(work), lwork);
   if (info != 0) {
     fprintf(stderr, "Error: dgesvd fails\n");
     exit(255);
@@ -65,20 +65,20 @@ int main(int argc, char** argv) {
 
   /* orthogonality check */
   t = alloc_dmatrix(r, r);
-  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, r, r, m, 1, MAT_PTR(u), m,
-              MAT_PTR(u), m, 0, MAT_PTR(t), r);
-  for (i = 0; i < r; ++i) MAT_ELEM(t, i, i) -= 1;
-  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', r, r, MAT_PTR(t), r);
+  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, r, r, m, 1, mat_ptr(u), m,
+              mat_ptr(u), m, 0, mat_ptr(t), r);
+  for (i = 0; i < r; ++i) mat_elem(t, i, i) -= 1;
+  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', r, r, mat_ptr(t), r);
   printf("|| U^t U - I || = %e\n", norm);
   if (norm > 1e-10) {
     fprintf(stderr, "Error: orthogonality check\n");
     exit(255);
   }
 
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, r, r, n, 1, MAT_PTR(vt), r,
-              MAT_PTR(vt), r, 0, MAT_PTR(t), r);
-  for (i = 0; i < r; ++i) MAT_ELEM(t, i, i) -= 1;
-  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', r, r, MAT_PTR(t), r);
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, r, r, n, 1, mat_ptr(vt), r,
+              mat_ptr(vt), r, 0, mat_ptr(t), r);
+  for (i = 0; i < r; ++i) mat_elem(t, i, i) -= 1;
+  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', r, r, mat_ptr(t), r);
   printf("|| V^t V - I || = %e\n", norm);
   if (norm > 1e-10) {
     fprintf(stderr, "Error: orthogonality check\n");
@@ -88,14 +88,14 @@ int main(int argc, char** argv) {
 
   /* solution check */
   t = alloc_dmatrix(m, r);
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m, r, n, 1, MAT_PTR(a), m,
-              MAT_PTR(vt), r, 0, MAT_PTR(t), m);
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m, r, n, 1, mat_ptr(a), m,
+              mat_ptr(vt), r, 0, mat_ptr(t), m);
   free_dmatrix(vt);
   vt = alloc_dmatrix(r, r);
-  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, r, r, m, 1, MAT_PTR(u), m,
-              MAT_PTR(t), m, 0, MAT_PTR(vt), r);
-  for (i = 0; i < r; ++i) MAT_ELEM(vt, i, i) -= s[i];
-  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', r, r, MAT_PTR(vt), r);
+  cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, r, r, m, 1, mat_ptr(u), m,
+              mat_ptr(t), m, 0, mat_ptr(vt), r);
+  for (i = 0; i < r; ++i) mat_elem(vt, i, i) -= s[i];
+  norm = LAPACKE_dlange(LAPACK_COL_MAJOR, 'F', r, r, mat_ptr(vt), r);
   printf("|| U^t A V - diag(S) || = %e\n", norm);
   if (norm > 1e-10) {
     fprintf(stderr, "Error: solution check\n");

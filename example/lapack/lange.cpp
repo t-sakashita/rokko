@@ -9,22 +9,30 @@
 *
 *****************************************************************************/
 
-#include <rokko/lapack.hpp>
+#include <rokko/lapack/lange.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
 int main(int argc, char** argv) {
-  int m = 3;
-  int n = 5;
+  int m = 5;
+  int n = 3;
   
-  rokko::dlmatrix a = rokko::dlmatrix::Random(m, n);
+  rokko::slmatrix a = rokko::slmatrix::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
   std::cout << "|| A || = " << rokko::lapack::lange('F', a) << std::endl;
 
-  rokko::zlmatrix b = rokko::zlmatrix::Random(m, n);
+  rokko::dlmatrix b = rokko::dlmatrix::Random(m, n);
   std::cout << "Matrix B: " << std::endl << b << std::endl;
   std::cout << "|| B || = " << rokko::lapack::lange('F', b) << std::endl;
 
+  rokko::clmatrix c = rokko::clmatrix::Random(m, n);
+  std::cout << "Matrix : C" << std::endl << c << std::endl;
+  std::cout << "|| C || = " << rokko::lapack::lange('F', c) << std::endl;
+
+  rokko::zlmatrix d = rokko::zlmatrix::Random(m, n);
+  std::cout << "Matrix D: " << std::endl << d << std::endl;
+  std::cout << "|| D || = " << rokko::lapack::lange('F', d) << std::endl;
+  
   return 0;
 }
