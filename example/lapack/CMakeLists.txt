@@ -1,4 +1,4 @@
-set(PROG dgesvd dgetri dgetrs dlange slange dsyev zheev)
+set(PROG dgesvd dgetri dgetrs dlange slange dsyev dsyev_r zheev)
 foreach(name ${PROG})
   set(target_name example_lapack_${name})
   add_executable(${target_name} ${name}.c)

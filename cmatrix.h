@@ -28,7 +28,7 @@ extern "C" {
 /*********
   vectors
 **********/
-  
+
 /* allocate vector of int */
 static inline int *alloc_ivector(int n) {
   int *vec;
@@ -192,7 +192,7 @@ static inline void read_dvector(FILE *fp, int *n, double **vec) {
   *vec = alloc_dvector(*n);
   for (i = 0; i < *n; ++i) fscanf(fp, "%le", &(*vec)[i]);
 }
-  
+
 /* read vector of float complex from file */
 static inline void read_cvector(FILE *fp, int *n, float complex **vec) {
   int i;
@@ -216,11 +216,11 @@ static inline void read_zvector(FILE *fp, int *n, double complex **vec) {
     (*vec)[i] = v_re + _Complex_I * v_im;
   }
 }
-  
+
 /**********
   matrices
 ***********/
-  
+
 /* allocate m x n column-major matrix of float */
 static inline float **alloc_smatrix(int m, int n) {
   int i;
@@ -238,6 +238,9 @@ static inline float **alloc_smatrix(int m, int n) {
   for (i = 1; i < n; ++i) mat[i] = mat[i-1] + m;
   return mat;
 }
+
+/* allocate m x n row-major matrix of float */
+static inline float **alloc_smatrix_r(int m, int n) { return alloc_smatrix(n, m); }
 
 /* allocate m x n column-major matrix of double */
 static inline double **alloc_dmatrix(int m, int n) {
@@ -257,6 +260,9 @@ static inline double **alloc_dmatrix(int m, int n) {
   return mat;
 }
 
+/* allocate m x n row-major matrix of double */
+static inline double **alloc_dmatrix_r(int m, int n) { return alloc_dmatrix(n, m); }
+
 /* allocate m x n column-major matrix of float complex */
 static inline float complex **alloc_cmatrix(int m, int n) {
   int i;
@@ -275,6 +281,9 @@ static inline float complex **alloc_cmatrix(int m, int n) {
   return mat;
 }
 
+/* allocate m x n row-major matrix of float complex */
+static inline float complex **alloc_cmatrix_r(int m, int n) { return alloc_cmatrix(n, m); }
+
 /* allocate m x n column-major matrix of double complex */
 static inline double complex **alloc_zmatrix(int m, int n) {
   int i;
@@ -292,6 +301,9 @@ static inline double complex **alloc_zmatrix(int m, int n) {
   for (i = 1; i < n; ++i) mat[i] = mat[i-1] + m;
   return mat;
 }
+
+/* allocate m x n row-major matrix of double complex */
+static inline double complex **alloc_zmatrix_r(int m, int n) { return alloc_zmatrix(n, m); }
 
 /* deallocate matrix of float */
 static inline void free_smatrix(float **mat) {
@@ -321,7 +333,7 @@ static inline void free_zmatrix(double complex **mat) {
   mat = NULL;
 }
 
-/* print out matrix of float */
+/* print out column-major matrix of float */
 static inline void fprint_smatrixf(FILE *fp, const char *fmt, int m, int n, float **mat) {
   int i, j;
   fprintf(fp, "%d %d\n", m, n);
@@ -334,7 +346,20 @@ static inline void fprint_smatrix(FILE *fp, int m, int n, float **mat) {
   fprint_smatrixf(fp, "%e ", m, n, mat);
 }
 
-/* print out matrix of double */
+/* print out row-major matrix of float */
+static inline void fprint_smatrixf_r(FILE *fp, const char *fmt, int m, int n, float **mat) {
+  int i, j;
+  fprintf(fp, "%d %d\n", m, n);
+  for (i = 0; i < m; ++i) {
+    for (j = 0; j < n; ++j) fprintf(fp, fmt, mat[i][j]);
+    fprintf(fp, "\n");
+  }
+}
+static inline void fprint_smatrix_r(FILE *fp, int m, int n, float **mat) {
+  fprint_smatrixf_r(fp, "%e ", m, n, mat);
+}
+
+/* print out column-major matrix of double */
 static inline void fprint_dmatrixf(FILE *fp, const char *fmt, int m, int n, double **mat) {
   int i, j;
   fprintf(fp, "%d %d\n", m, n);
@@ -346,8 +371,20 @@ static inline void fprint_dmatrixf(FILE *fp, const char *fmt, int m, int n, doub
 static inline void fprint_dmatrix(FILE *fp, int m, int n, double **mat) {
   fprint_dmatrixf(fp, "%20.14e ", m, n, mat);
 }
+/* print out row-major matrix of double */
+static inline void fprint_dmatrixf_r(FILE *fp, const char *fmt, int m, int n, double **mat) {
+  int i, j;
+  fprintf(fp, "%d %d\n", m, n);
+  for (i = 0; i < m; ++i) {
+    for (j = 0; j < n; ++j) fprintf(fp, fmt, mat[i][j]);
+    fprintf(fp, "\n");
+  }
+}
+static inline void fprint_dmatrix_r(FILE *fp, int m, int n, double **mat) {
+  fprint_dmatrixf_r(fp, "%20.14e ", m, n, mat);
+}
 
-/* print out matrix of float complex */
+/* print out column-major matrix of float complex */
 static inline void fprint_cmatrixf(FILE *fp, const char *fmt, int m, int n, float complex **mat) {
   int i, j;
   fprintf(fp, "%d %d\n", m, n);
@@ -361,7 +398,21 @@ static inline void fprint_cmatrix(FILE *fp, int m, int n, float complex **mat) {
   fprint_cmatrixf(fp, "(%e,%e) ", m, n, mat);
 }
 
-/* print out matrix of double complex */
+/* print out row-major matrix of float complex */
+static inline void fprint_cmatrixf_r(FILE *fp, const char *fmt, int m, int n, float complex **mat) {
+  int i, j;
+  fprintf(fp, "%d %d\n", m, n);
+  for (i = 0; i < m; ++i) {
+    for (j = 0; j < n; ++j)
+      fprintf(fp, fmt, crealf(mat[i][j]), cimagf(mat[i][j]));
+    fprintf(fp, "\n");
+  }
+}
+static inline void fprint_cmatrix_r(FILE *fp, int m, int n, float complex **mat) {
+  fprint_cmatrixf_r(fp, "(%e,%e) ", m, n, mat);
+}
+
+/* print out column-major matrix of double complex */
 static inline void fprint_zmatrixf(FILE *fp, const char *fmt, int m, int n, double complex **mat) {
   int i, j;
   fprintf(fp, "%d %d\n", m, n);
@@ -375,7 +426,21 @@ static inline void fprint_zmatrix(FILE *fp, int m, int n, double complex **mat) 
   fprint_zmatrixf(fp, "(%20.14e,%20.14e) ", m, n, mat);
 }
 
-/* read matrix of float from file */
+/* print out row-major matrix of double complex */
+static inline void fprint_zmatrixf_r(FILE *fp, const char *fmt, int m, int n, double complex **mat) {
+  int i, j;
+  fprintf(fp, "%d %d\n", m, n);
+  for (i = 0; i < m; ++i) {
+    for (j = 0; j < n; ++j)
+      fprintf(fp, fmt, creal(mat[i][j]), cimag(mat[i][j]));
+    fprintf(fp, "\n");
+  }
+}
+static inline void fprint_zmatrix_r(FILE *fp, int m, int n, double complex **mat) {
+  fprint_zmatrixf_r(fp, "(%20.14e,%20.14e) ", m, n, mat);
+}
+
+/* read column-major matrix of float from file */
 static inline void read_smatrix(FILE *fp, int *m, int *n, float ***mat) {
   int i, j;
   fscanf(fp, "%d", m);
@@ -386,7 +451,18 @@ static inline void read_smatrix(FILE *fp, int *m, int *n, float ***mat) {
   }
 }
 
-/* read matrix of double from file */
+/* read row-major matrix of float from file */
+static inline void read_smatrix_r(FILE *fp, int *m, int *n, float ***mat) {
+  int i, j;
+  fscanf(fp, "%d", m);
+  fscanf(fp, "%d", n);
+  *mat = alloc_smatrix_r(*m, *n);
+  for (i = 0; i < *m; ++i) {
+    for (j = 0; j < *n; ++j) fscanf(fp, "%f", &(*mat)[i][j]);
+  }
+}
+
+/* read column-major matrix of double from file */
 static inline void read_dmatrix(FILE *fp, int *m, int *n, double ***mat) {
   int i, j;
   fscanf(fp, "%d", m);
@@ -397,7 +473,18 @@ static inline void read_dmatrix(FILE *fp, int *m, int *n, double ***mat) {
   }
 }
 
-/* read matrix of float complex from file */
+/* read row-major matrix of double from file */
+static inline void read_dmatrix_r(FILE *fp, int *m, int *n, double ***mat) {
+  int i, j;
+  fscanf(fp, "%d", m);
+  fscanf(fp, "%d", n);
+  *mat = alloc_dmatrix_r(*m, *n);
+  for (i = 0; i < *m; ++i) {
+    for (j = 0; j < *n; ++j) fscanf(fp, "%lf", &(*mat)[i][j]);
+  }
+}
+
+/* read column-major matrix of float complex from file */
 static inline void read_cmatrix(FILE *fp, int *m, int *n, float complex ***mat) {
   int i, j;
   float v_re, v_im;
@@ -412,7 +499,22 @@ static inline void read_cmatrix(FILE *fp, int *m, int *n, float complex ***mat) 
   }
 }
 
-/* read matrix of double complex from file */
+/* read row-major matrix of float complex from file */
+static inline void read_cmatrix_r(FILE *fp, int *m, int *n, float complex ***mat) {
+  int i, j;
+  float v_re, v_im;
+  fscanf(fp, "%d", m);
+  fscanf(fp, "%d", n);
+  *mat = alloc_cmatrix_r(*m, *n);
+  for (i = 0; i < *m; ++i) {
+    for (j = 0; j < *n; ++j) {
+      fscanf(fp, "(%f,%f)%*c", v_re, v_im);
+      (*mat)[i][j] = v_re + _Complex_I * v_im;
+    }
+  }
+}
+
+/* read column-major matrix of double complex from file */
 static inline void read_zmatrix(FILE *fp, int *m, int *n, double complex ***mat) {
   int i, j;
   double v_re, v_im;
@@ -423,6 +525,21 @@ static inline void read_zmatrix(FILE *fp, int *m, int *n, double complex ***mat)
     for (j = 0; j < *n; ++j) {
       fscanf(fp, "(%lf,%lf)%*c", v_re, v_im);
       mat_elem(*mat, i, j) = v_re + _Complex_I * v_im;
+    }
+  }
+}
+
+/* read row-major matrix of double complex from file */
+static inline void read_zmatrix_r(FILE *fp, int *m, int *n, double complex ***mat) {
+  int i, j;
+  double v_re, v_im;
+  fscanf(fp, "%d", m);
+  fscanf(fp, "%d", n);
+  *mat = alloc_zmatrix_r(*m, *n);
+  for (i = 0; i < *m; ++i) {
+    for (j = 0; j < *n; ++j) {
+      fscanf(fp, "(%lf,%lf)%*c", v_re, v_im);
+      (*mat)[i][j] = v_re + _Complex_I * v_im;
     }
   }
 }
