@@ -86,6 +86,42 @@ if(NOT LAPACK_FOUND)
   message(FATAL_ERROR "LAPACK not found")
 endif(NOT LAPACK_FOUND)
 
+# cblas library
+try_compile(_HAVE_CBLAS
+  ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/config/check_cblas.c
+  LINK_LIBRARIES ${BLAS_LIBRARIES} OUTPUT_VARIABLE LOG)
+if(_HAVE_CBLAS)
+  message(STATUS "Found CBLAS in BLAS")
+  set(BUILD_CBLAS OFF)
+else(_HAVE_CBLAS)
+  try_compile(_HAVE_CBLAS_MKL ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/check_cblas_mkl.c
+    LINK_LIBRARIES ${BLAS_LIBRARIES} OUTPUT_VARIABLE LOG)
+  if(_HAVE_CBLAS_MKL)
+    message(STATUS "Found CBLAS in MKL")
+    set(BUILD_CBLAS OFF)
+    set(HAVE_CBLAS_MKL TRUE)
+  endif(_HAVE_CBLAS_MKL)
+endif(_HAVE_CBLAS)
+
+# lapacke library
+try_compile(_HAVE_LAPACKE ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/config/check_lapacke.c
+  LINK_LIBRARIES ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} OUTPUT_VARIABLE LOG)
+if(_HAVE_LAPACKE)
+  message(STATUS "Found LAPACKE in LAPACK")
+  set(BUILD_LAPACKE OFF)
+else(_HAVE_LAPACKE)
+  try_compile(_HAVE_LAPACKE_MKL ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/check_lapacke_mkl.c
+    LINK_LIBRARIES ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} OUTPUT_VARIABLE LOG)
+  if(_HAVE_LAPACKE_MKL)
+    message(STATUS "Found LAPACKE in MKL")
+    set(BUILD_LAPACKE OFF)
+    set(HAVE_LAPACKE_MKL TRUE)
+  endif(_HAVE_LAPACKE_MKL)
+endif(_HAVE_LAPACKE)
+
 # boost Library
 set(ROKKO_HAVE_BOOST False)
 if(BUILD_Python_BINDING)
@@ -208,10 +244,18 @@ include_directories(${PROJECT_SOURCE_DIR})
 if(BUILD_CBLAS)
   include_directories(${PROJECT_BINARY_DIR}/3rd-party/cblas/include)
   include_directories(${PROJECT_SOURCE_DIR}/3rd-party/cblas/include)
+else(BUILD_CBLAS)
+  if(HAVE_CBLAS_MKL)
+    include_directories(${PROJECT_SOURCE_DIR}/3rd-party/cblas_mkl)
+  endif(HAVE_CBLAS_MKL)
 endif(BUILD_CBLAS)
 if(BUILD_LAPACKE)
   include_directories(${PROJECT_BINARY_DIR}/3rd-party/lapacke/include)
   include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke/include)
+else(BUILD_LAPACKE)
+  if(HAVE_LAPACKE_MKL)
+    include_directories(${PROJECT_SOURCE_DIR}/3rd-party/lapacke_mkl)
+  endif(HAVE_LAPACKE_MKL)
 endif(BUILD_LAPACKE)
 if(BUILD_BASE_CXX)
   include_directories(${PROJECT_SOURCE_DIR}/3rd-party/eigen3)

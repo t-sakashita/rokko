@@ -18,36 +18,36 @@
 extern "C" {
 #endif
   
-#define BLACS_barrier LAPACK_GLOBAL(blacs_barrier,BLACS_BARRIER)
+#define BLACS_barrier ROKKO_GLOBAL(blacs_barrier,BLACS_BARRIER)
 void BLACS_barrier(const int* ictxt, const char* score);
 
-#define BLACS_exit LAPACK_GLOBAL(blacs_exit,BLACS_EXIT)
+#define BLACS_exit ROKKO_GLOBAL(blacs_exit,BLACS_EXIT)
 void BLACS_exit(const int* conti);
   
-#define BLACS_get LAPACK_GLOBAL(blacs_get,BLACS_GET)
+#define BLACS_get ROKKO_GLOBAL(blacs_get,BLACS_GET)
 void BLACS_get(const int* context, const int* request, int* value);
 
-#define BLACS_gridexit LAPACK_GLOBAL(blacs_gridexit,BLACS_GRIDEXIT)
+#define BLACS_gridexit ROKKO_GLOBAL(blacs_gridexit,BLACS_GRIDEXIT)
 void BLACS_gridexit(int* ictxt);
 
-#define BLACS_gridinfo LAPACK_GLOBAL(blacs_gridinfo,BLACS_GRIDINFO)
+#define BLACS_gridinfo ROKKO_GLOBAL(blacs_gridinfo,BLACS_GRIDINFO)
 void BLACS_gridinfo(const int* ictxt, int* nprow, int* npcol, int* myrow, int* mycol);
 
-#define BLACS_gridinit LAPACK_GLOBAL(blacs_gridinit,BLACS_GRIDINIT)
+#define BLACS_gridinit ROKKO_GLOBAL(blacs_gridinit,BLACS_GRIDINIT)
 void BLACS_gridinit(int* ictxt, const char* order, const int* nprow, const int* npcol);
 
-#define BLACS_pinfo LAPACK_GLOBAL(blacs_pinfo,BLACS_PINFO)
+#define BLACS_pinfo ROKKO_GLOBAL(blacs_pinfo,BLACS_PINFO)
 void BLACS_pinfo(int* mypnum, int* nprocs);
 
-#define BLACS_descinit LAPACK_GLOBAL(descinit,DESCINIT)
+#define BLACS_descinit ROKKO_GLOBAL(descinit,DESCINIT)
 void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
                     const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
                     int* info);
 
-#define BLACS_sys2blacs_handle LAPACK_GLOBAL(sys2blacs_handle,SYS2BLACS_HANDLE)
+#define BLACS_sys2blacs_handle ROKKO_GLOBAL(sys2blacs_handle,SYS2BLACS_HANDLE)
 int sys2blacs_handle_(int *SysCtxt);
 
-#define BLACS_free_blacs_system_handle LAPACK_GLOBAL(free_blacs_system_handle,FREE_BLACS_SYSTEM_HANDLE)
+#define BLACS_free_blacs_system_handle ROKKO_GLOBAL(free_blacs_system_handle,FREE_BLACS_SYSTEM_HANDLE)
 void free_blacs_system_handle_(int *ISysCxt);
 
 #ifdef __cplusplus

@@ -1,10 +1,16 @@
 if(BUILD_CBLAS)
   add_subdirectory(cblas)
 endif(BUILD_CBLAS)
+if(HAVE_CBLAS_MKL)
+  add_subdirectory(cblas_mkl)
+endif(HAVE_CBLAS_MKL)
 
 if(BUILD_LAPACKE)
   add_subdirectory(lapacke)
 endif(BUILD_LAPACKE)
+if(HAVE_LAPACKE_MKL)
+  add_subdirectory(lapacke_mkl)
+endif(HAVE_LAPACKE_MKL)
 
 if(BUILD_BASE_CXX)
   list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/3rd-party/eigen3/cmake)

@@ -1,11 +1,22 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2017 Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
+
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mangling.h)
+  include(FortranCInterface)
+  FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/mangling.h 
+                           MACRO_NAMESPACE "ROKKO_"
+                           SYMBOL_NAMESPACE "ROKKO_")
+  if(NOT FortranCInterface_COMPILED)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mangling.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/mangling.h COPYONLY)
+  endif(NOT FortranCInterface_COMPILED)
+endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mangling.h)
 
 set(ROKKO_SOURCES)
 

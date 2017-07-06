@@ -27,8 +27,8 @@ template<typename T> struct gemm_dispatch;
 template<>
 struct gemm_dispatch<float> {
   template<typename MATRIX>
-  static void gemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
-                   enum CBLAS_TRANSPOSE trans_b, int m, int n, int k,
+  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
+                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
                    float alpha, MATRIX const& a, MATRIX const& b,
                    float beta, MATRIX& c) {
     cblas_sgemm(order, trans_a, trans_b, m, n, k,
@@ -40,8 +40,8 @@ struct gemm_dispatch<float> {
 template<>
 struct gemm_dispatch<double> {
   template<typename MATRIX>
-  static void gemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
-                   enum CBLAS_TRANSPOSE trans_b, int m, int n, int k,
+  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
+                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
                    double alpha, MATRIX const& a, MATRIX const& b,
                    double beta, MATRIX& c) {
     cblas_dgemm(order, trans_a, trans_b, m, n, k,
@@ -53,8 +53,8 @@ struct gemm_dispatch<double> {
 template<>
 struct gemm_dispatch<std::complex<float> > {
   template<typename MATRIX>
-  static void gemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
-                   enum CBLAS_TRANSPOSE trans_b, int m, int n, int k,
+  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
+                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
                    std::complex<float> const& alpha, MATRIX const& a,
                    MATRIX const& b,
                    std::complex<float> const& beta, MATRIX& c) {
@@ -67,8 +67,8 @@ struct gemm_dispatch<std::complex<float> > {
 template<>
 struct gemm_dispatch<std::complex<double> > {
   template<typename MATRIX>
-  static void gemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
-                   enum CBLAS_TRANSPOSE trans_b, int m, int n, int k,
+  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
+                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
                    std::complex<double> const& alpha, MATRIX const& a,
                    MATRIX const& b,
                    std::complex<double> const& beta, MATRIX& c) {
@@ -81,7 +81,7 @@ struct gemm_dispatch<std::complex<double> > {
 }
   
 template<typename MATRIX, typename T>
-void gemm(enum CBLAS_TRANSPOSE trans_a, enum CBLAS_TRANSPOSE trans_b,
+void gemm(CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b,
           T alpha, MATRIX const& a, MATRIX const& b, T beta, MATRIX& c) {
   if (util::op_cols(trans_a, a) != util::op_rows(trans_b, b))
     throw std::invalid_argument("matrix size mismatch");

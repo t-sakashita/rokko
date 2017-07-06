@@ -30,7 +30,7 @@ template<typename T> struct gemv_dispatch;
 template<>
 struct gemv_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
-  static void gemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans,
+  static void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans,
                    int m, int n, float alpha, MATRIX const& a,
                    VECTOR const& x, int inc_x, 
                    float beta, VECTOR& y, int inc_y) {
@@ -42,7 +42,7 @@ struct gemv_dispatch<float> {
 template<>
 struct gemv_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
-  static void gemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans,
+  static void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans,
                    int m, int n, double alpha, MATRIX const& a,
                    VECTOR const& x, int inc_x,
                    double beta, VECTOR& y, int inc_y) {
@@ -54,7 +54,7 @@ struct gemv_dispatch<double> {
 template<>
 struct gemv_dispatch<std::complex<float> > {
   template<typename MATRIX, typename VECTOR>
-  static void gemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans,
+  static void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans,
                    int m, int n, std::complex<float> const& alpha, MATRIX const& a,
                    VECTOR const& x, int inc_x, 
                    std::complex<float> const& beta, VECTOR& y, int inc_y) {
@@ -66,7 +66,7 @@ struct gemv_dispatch<std::complex<float> > {
 template<>
 struct gemv_dispatch<std::complex<double> > {
   template<typename MATRIX, typename VECTOR>
-  static void gemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans,
+  static void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans,
                    int m, int n, std::complex<double> const& alpha, MATRIX const& a,
                    VECTOR const& x, int inc_x, 
                    std::complex<double> const& beta, VECTOR& y, int inc_y) {
@@ -78,7 +78,7 @@ struct gemv_dispatch<std::complex<double> > {
 }
   
 template<typename MATRIX, typename VECTOR, typename T>
-void gemv(enum CBLAS_TRANSPOSE trans,
+void gemv(CBLAS_TRANSPOSE trans,
           T alpha, MATRIX const& a, VECTOR const& x, int inc_x,
           T beta, VECTOR& y, int inc_y) {
   BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX>::type,

@@ -14,7 +14,7 @@
 #define PBLAS_PGEMV_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
 extern "C" { \
 void PBLASE_ ## NAMES (char TRANS, int M, int N, TYPEC ALPHA, const TYPEC * A, int IA, int JA, int* DESCA, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, TYPEC BETA, TYPEC * Y, int IY, int JY, int* DESCY, int INCY) { \
-  LAPACK_GLOBAL(NAMES, NAMEL) (&TRANS, &M, &N, &ALPHA, A, &IA, &JA, DESCA, X, &IX, &JX, DESCX, &INCX, &BETA, Y, &IY, &JY, DESCY, &INCY); } \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&TRANS, &M, &N, &ALPHA, A, &IA, &JA, DESCA, X, &IX, &JX, DESCX, &INCX, &BETA, Y, &IY, &JY, DESCY, &INCY); } \
 } \
 void PBLASE_pgemv(char TRANS, int M, int N, TYPEX ALPHA, const TYPEX * A, int IA, int JA, int* DESCA, const TYPEX * X, int IX, int JX, int* DESCX, int INCX, TYPEX BETA, TYPEX * Y, int IY, int JY, int* DESCY, int INCY) { \
   PBLASE_ ## NAMES (TRANS, M, N, ALPHA, A, IA, JA, DESCA, X, IX, JX, DESCX, INCX, BETA, Y, IY, JY, DESCY, INCY); }

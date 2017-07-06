@@ -23,7 +23,7 @@ PBLAS_PDOT_IMPL(pddot, PDDOT, double);
 #define PBLAS_PDOTC_IMPL(NAMES, NAMEL, TYPE) \
 extern "C" { \
 boost::numeric::ublas::type_traits<TYPE>::real_type PBLASE_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY) { \
-  boost::numeric::ublas::type_traits<TYPE>::real_type DOTC; LAPACK_GLOBAL(NAMES, NAMEL) (&N, &DOTC, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); return DOTC; } \
+  boost::numeric::ublas::type_traits<TYPE>::real_type DOTC; ROKKO_GLOBAL(NAMES, NAMEL) (&N, &DOTC, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); return DOTC; } \
 } \
 boost::numeric::ublas::type_traits<TYPE>::real_type PBLASE_pdotc(int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY) { \
   return PBLASE_ ## NAMES (N, X, IX, JX, DESCX, INCX, Y, IY, JY, DESCY, INCY); }

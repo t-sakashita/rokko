@@ -1,0 +1,37 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2017 by Rokko Developers https://github.com/t-sakashita/rokko
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
+#ifndef ROKKO_MANGLING_H
+#define ROKKO_MANGLING_H
+
+#ifdef __cplusplus
+# include <complex>
+# ifndef lapack_complex_float
+#   define lapack_complex_float std::complex<float>
+# endif
+# ifndef lapack_complex_double
+#   define lapack_complex_double std::complex<double>
+# endif
+#endif
+
+/* Mangling for Fortran global symbols without underscores. */
+#define ROKKO_GLOBAL(name,NAME) name##_
+
+/* Mangling for Fortran global symbols with underscores. */
+#define ROKKO_GLOBAL_(name,NAME) name##_
+
+/* Mangling for Fortran module symbols without underscores. */
+#define ROKKO_MODULE(mod_name,name, mod_NAME,NAME) __##mod_name##_MOD_##name
+
+/* Mangling for Fortran module symbols with underscores. */
+#define ROKKO_MODULE_(mod_name,name, mod_NAME,NAME) __##mod_name##_MOD_##name
+
+#endif /* ROKKO_MANGLING_H */

@@ -19,12 +19,12 @@ namespace blas {
 namespace util {
 
 template<typename MATRIX>
-int op_rows(enum CBLAS_TRANSPOSE trans, MATRIX const& a) {
+int op_rows(CBLAS_TRANSPOSE trans, MATRIX const& a) {
   return (trans == CblasNoTrans) ? rows(a) : cols(a);
 }
   
 template<typename MATRIX>
-int op_cols(enum CBLAS_TRANSPOSE trans, MATRIX const& a) {
+int op_cols(CBLAS_TRANSPOSE trans, MATRIX const& a) {
   return (trans == CblasNoTrans) ? cols(a) : rows(a);
 }
   
