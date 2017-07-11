@@ -12,6 +12,7 @@
 #ifndef ROKKO_PBLAS_H
 #define ROKKO_PBLAS_H
 
+#include <lapacke.h>
 #include <rokko/mangling.h>
 #ifdef __cplusplus
 # include <boost/numeric/ublas/traits.hpp>
