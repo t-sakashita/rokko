@@ -16,7 +16,7 @@ TYPE PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INC
   TYPE DOTU; ROKKO_GLOBAL(NAMES, NAMEL) (&N, &DOTU, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); return DOTU; \
 } \
 void PBLAS_ ## NAMES ## _sub (int N, TYPE * DOTU, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY) { \
-  ROKKO_GLOBAL(NAMES, NAMEL) (&N, DOTU, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); return DOTU; \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&N, DOTU, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); \
 }
 
 PBLAS_PDOTU_IMPL(pcdotu, PCDOTU, lapack_complex_float);
