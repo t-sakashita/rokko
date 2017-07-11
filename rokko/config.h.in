@@ -51,6 +51,12 @@
 
 /* components */
 
+/* Define if you have base_c component */
+#define ROKKO_HAVE_BASE_C
+
+/* Define if you have cblas component */
+#define ROKKO_HAVE_CBLAS
+
 /* Define if you have lapacke component */
 #define ROKKO_HAVE_LAPACKE
 
@@ -59,6 +65,9 @@
 
 /* Define if you have eigenexa_c component */
 #cmakedefine ROKKO_HAVE_EIGENEXA_C
+
+/* Define if you have lapack_cxx component */
+#cmakedefine ROKKO_HAVE_BASE_CXX
 
 /* Define if you have lapack_cxx component */
 #cmakedefine ROKKO_HAVE_LAPACK_CXX
