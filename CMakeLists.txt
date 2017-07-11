@@ -8,7 +8,7 @@
 #
 
 #
-# Basic setup 
+# Basic setup
 #
 
 cmake_minimum_required(VERSION 2.8.12)
@@ -32,7 +32,7 @@ components_init()
 # RPATH setting
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_MACOSX_RPATH 1)
 
@@ -103,6 +103,11 @@ else(_HAVE_CBLAS)
     set(HAVE_CBLAS_MKL TRUE)
   endif(_HAVE_CBLAS_MKL)
 endif(_HAVE_CBLAS)
+if(BUILD_CBLAS)
+  set(CBLAS_LIBRARIES cblas)
+else(BUILD_CBLAS)
+  set(CBLAS_LIBRARIES "")
+endif(BUILD_CBLAS)
 
 # lapacke library
 try_compile(_HAVE_LAPACKE ${CMAKE_CURRENT_BINARY_DIR}
@@ -121,6 +126,11 @@ else(_HAVE_LAPACKE)
     set(HAVE_LAPACKE_MKL TRUE)
   endif(_HAVE_LAPACKE_MKL)
 endif(_HAVE_LAPACKE)
+if(BUILD_LAPACKE)
+  set(LAPACKE_LIBRARIES lapacke)
+else(BUILD_LAPACKE)
+  set(LAPACKE_LIBRARIES "")
+endif(BUILD_LAPACKE)
 
 # boost Library
 set(ROKKO_HAVE_BOOST False)
@@ -221,8 +231,20 @@ set(ROKKO_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
 configure_file(${PROJECT_SOURCE_DIR}/rokko/config.h.in
   ${PROJECT_BINARY_DIR}/rokko/config.h)
-install(FILES ${PROJECT_BINARY_DIR}/rokko/config.h COMPONENT headers
-  DESTINATION include/rokko/)
+if(NOT EXISTS ${PROJECT_BINARY_DIR}/rokko/mangling.h)
+  include(FortranCInterface)
+  FortranCInterface_HEADER(${PROJECT_BINARY_DIR}/rokko/mangling.h
+                           MACRO_NAMESPACE "ROKKO_"
+                           SYMBOL_NAMESPACE "ROKKO_")
+  if(NOT FortranCInterface_COMPILED)
+    configure_file(${PROJECT_SOURCE_DIR}/rokko/mangling.h.in
+    ${PROJECT_BINARY_DIR}/rokko/mangling.h COPYONLY)
+  endif(NOT FortranCInterface_COMPILED)
+endif(NOT EXISTS ${PROJECT_BINARY_DIR}/rokko/mangling.h)
+install(FILES ${PROJECT_BINARY_DIR}/rokko/config.h ${PROJECT_BINARY_DIR}/rokko/mangling.h
+  COMPONENT headers DESTINATION include/rokko/)
+install(FILES cmatrix.h DESTINATION include COMPONENT headers)
+
 configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in
   ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/config/include.mk.in
@@ -233,8 +255,6 @@ install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake
   ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake
   ${PROJECT_SOURCE_DIR}/config/run_test.cmake
   ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
-
-install(FILES cmatrix.h DESTINATION include COMPONENT headers)
 
 # standard include directories
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)

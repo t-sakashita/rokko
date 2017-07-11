@@ -7,17 +7,6 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mangling.h)
-  include(FortranCInterface)
-  FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/mangling.h
-                           MACRO_NAMESPACE "ROKKO_"
-                           SYMBOL_NAMESPACE "ROKKO_")
-  if(NOT FortranCInterface_COMPILED)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mangling.h.in
-    ${CMAKE_CURRENT_BINARY_DIR}/mangling.h COPYONLY)
-  endif(NOT FortranCInterface_COMPILED)
-endif(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mangling.h)
-
 set(ROKKO_SOURCES)
 
 # For serial solvers
