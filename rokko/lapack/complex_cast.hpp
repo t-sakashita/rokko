@@ -17,22 +17,17 @@
 namespace rokko {
 namespace lapack {
 
-lapack_complex_float* complex_cast(float* data) {
-  return reinterpret_cast<lapack_complex_float*>(data);
-}
-  
-const lapack_complex_float* complex_cast(const float* data) {
-  return reinterpret_cast<const lapack_complex_float*>(data);
-}
-  
-lapack_complex_double* complex_cast(double* data) {
-  return reinterpret_cast<lapack_complex_double*>(data);
-}
-  
-const lapack_complex_double* complex_cast(const double* data) {
-  return reinterpret_cast<const lapack_complex_double*>(data);
-}
-  
+#define COMPLEX_CAST_IMPL(T) \
+inline T * complex_cast(T* data) { return data; } \
+inline const T * complex_cast(const T* data) { return data; } \
+inline lapack_complex_ ## T * complex_cast(std::complex< T >* data) { return reinterpret_cast<lapack_complex_ ## T *>(data); } \
+inline const lapack_complex_ ## T * complex_cast(const std::complex< T >* data) { return reinterpret_cast<const lapack_complex_ ## T *>(data); } \
+inline const T & complex_cast(const T & data) { return *complex_cast(&data); } \
+inline const lapack_complex_ ## T & complex_cast(const std::complex< T >& data) { return *complex_cast(&data); }
+
+COMPLEX_CAST_IMPL(float)
+COMPLEX_CAST_IMPL(double)
+
 } // end namespace lapack
 } // end namespace rokko
 

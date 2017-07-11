@@ -16,7 +16,7 @@
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_bc.hpp>
 #include <rokko/blacs/blacs_wrap.h>
-#include <rokko/pblas.h>
+#include <rokko/pblas.hpp>
 
 #include <iostream>
 #include <cstdlib>
@@ -39,7 +39,7 @@ public:
     }
     allocate_array();
   }
-  
+
   ~distributed_matrix() {
     delete[] array;
     array = 0;
@@ -200,7 +200,7 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
 
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
-  PBLASE_pgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
+  pblas::pgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
                matA.get_n_global(), alpha, matA.get_array_pointer(), 1, 1, descA,
                matB.get_array_pointer(), 1, 1, descB, beta,
                matC.get_array_pointer(), 1, 1, descC);
@@ -233,7 +233,7 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
   int iy = (transY ? yindex + 1: 1);
   int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  PBLASE_pgemv(char_transA, matA.get_m_global(), matA.get_n_global(), alpha,
+  pblas::pgemv(char_transA, matA.get_m_global(), matA.get_n_global(), alpha,
                matA.get_array_pointer(), 1, 1, descA,
                vecX.get_array_pointer(), ix, jx, descX, incx, beta,
                vecY.get_array_pointer(), iy, jy, descY, incy);
@@ -241,7 +241,7 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
 }
 
 // dot = X * Y
-template<typename T, typename MATRIX_MAJOR> 
+template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = ROKKO_blacs_get(-1, 0);
@@ -261,8 +261,8 @@ T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int 
   int iy = (transY ? yindex + 1: 1);
   int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  T dot = PBLASE_pdotc(n, vecX.get_array_pointer(), ix, jx, descX, incx,
-                       vecY.get_array_pointer(), iy, jy, descY, incy);
+  T dot = pblas::pdot(n, vecX.get_array_pointer(), ix, jx, descX, incx,
+                      vecY.get_array_pointer(), iy, jy, descY, incy);
   ROKKO_blacs_gridexit(&ictxt);
   return dot;
 }

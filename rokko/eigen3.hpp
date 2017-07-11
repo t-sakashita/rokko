@@ -46,12 +46,12 @@ template<typename T, int ROWS, int MATRIX_MAJOR>
 int size(Eigen::Matrix<T, ROWS, 1, MATRIX_MAJOR> const& vec) {
   return vec.size();
 }
-  
+
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 bool is_col_major(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const&) {
   return MATRIX_MAJOR == Eigen::ColMajor;
 }
-  
+
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 bool is_row_major(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const&) {
   return MATRIX_MAJOR == Eigen::RowMajor;
@@ -61,7 +61,7 @@ template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 int rows(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
   return mat.rows();
 }
-  
+
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 int cols(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
   return mat.cols();
@@ -83,13 +83,13 @@ T* storage(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR>& mat) {
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
-const T* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR> const& mat) {
-  return reinterpret_cast<const T*>(&mat(0, 0));
+const std::complex<T>* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR> const& mat) {
+  return reinterpret_cast<const std::complex<T>*>(&mat(0, 0));
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
-T* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR>& mat) {
-  return reinterpret_cast<T*>(&mat(0, 0));
+std::complex<T>* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR>& mat) {
+  return reinterpret_cast<std::complex<T>*>(&mat(0, 0));
 }
 
 } // namespace Eigen

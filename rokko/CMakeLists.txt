@@ -9,7 +9,7 @@
 
 if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mangling.h)
   include(FortranCInterface)
-  FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/mangling.h 
+  FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/mangling.h
                            MACRO_NAMESPACE "ROKKO_"
                            SYMBOL_NAMESPACE "ROKKO_")
   if(NOT FortranCInterface_COMPILED)
@@ -46,7 +46,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
   # BLACS, PBLAS, ScaLAPACK
   if(ROKKO_HAVE_SCALAPACK)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_exit.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c blacs/descinit.c)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pcopy.cpp pblas/pdot.cpp pblas/pdotc.cpp pblas/pgemv.cpp pblas/pgemm.cpp)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pcopy.c pblas/pdot.c pblas/pdotu.c pblas/pdotc.c pblas/pgemv.c pblas/pgemm.c)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c scalapack/pdlaprnt.c scalapack/pdsyev_work.c scalapack/pdsyev.c scalapack/pdsyevd_work.c scalapack/pdsyevd.c scalapack/pdsyevx_work.c scalapack/pdsyevx.c)
     if(ROKKO_HAVE_SCALAPACK_PDSYEVR)
       set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdsyevr.c scalapack/pdsyevr_work.c)

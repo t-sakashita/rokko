@@ -17,13 +17,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
 #define BLACS_barrier ROKKO_GLOBAL(blacs_barrier,BLACS_BARRIER)
 void BLACS_barrier(const int* ictxt, const char* score);
 
 #define BLACS_exit ROKKO_GLOBAL(blacs_exit,BLACS_EXIT)
 void BLACS_exit(const int* conti);
-  
+
 #define BLACS_get ROKKO_GLOBAL(blacs_get,BLACS_GET)
 void BLACS_get(const int* context, const int* request, int* value);
 
@@ -45,10 +45,10 @@ void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const 
                     int* info);
 
 #define BLACS_sys2blacs_handle ROKKO_GLOBAL(sys2blacs_handle,SYS2BLACS_HANDLE)
-int sys2blacs_handle_(int *SysCtxt);
+int BLACS_sys2blacs_handle(int *SysCtxt);
 
 #define BLACS_free_blacs_system_handle ROKKO_GLOBAL(free_blacs_system_handle,FREE_BLACS_SYSTEM_HANDLE)
-void free_blacs_system_handle_(int *ISysCxt);
+void BLACS_free_blacs_system_handle(int *ISysCxt);
 
 #ifdef __cplusplus
 } // extern "C"

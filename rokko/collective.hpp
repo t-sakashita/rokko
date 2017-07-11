@@ -15,7 +15,7 @@
 #include <mpi.h>
 #include <rokko/blacs/blacs.h>
 #include <rokko/blacs/blacs_wrap.h>
-#include <rokko/pblas.h>
+#include <rokko/pblas.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
 
@@ -45,7 +45,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
                             from.get_lld());
   info = ROKKO_descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
-    PBLASE_pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
+    pblas::pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
 
   BLACS_free_blacs_system_handle(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
@@ -79,7 +79,7 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   info = ROKKO_descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
 
   for (int j = 0; j < n; ++j)
-    PBLASE_pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
+    pblas::pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
 
   BLACS_free_blacs_system_handle(&bhandle);
   ROKKO_blacs_gridexit(&ictxt);
