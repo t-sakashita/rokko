@@ -133,7 +133,7 @@ static inline void fprintf_svector(FILE *fp, const char* fmt, int n, float *vec)
   fprintf(fp, "\n");
 }
 static inline void fprint_svector(FILE *fp, int n, float *vec) {
-  frpintf_svector(fp, "%e ", n, vec);
+  fpintf_svector(fp, "%e ", n, vec);
 }
 
 /* print out vector of double */
@@ -155,7 +155,7 @@ static inline void fprintf_cvector(FILE *fp, const char* fmt, int n, float compl
   fprintf(fp, "\n");
 }
 static inline void fprint_cvector(FILE *fp, int n, float complex *vec) {
-  frpintf_cvector(fp, "(%e,%e) ", n, vec);
+  fpintf_cvector(fp, "(%e,%e) ", n, vec);
 }
 
 /* print out vector of double complex */
