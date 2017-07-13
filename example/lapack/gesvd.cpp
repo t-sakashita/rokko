@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   rokko::dlmatrix a(m, n);
   for (int j = 0; j < n; ++j) {
     for (int i = 0; i < m; ++i) {
-      a(i, j) = std::min(i, j) + 1;
+      a(i, j) = n - std::max(i, j);
     }
   }
   std::cout << "Matrix A: " << std::endl << a << std::endl;

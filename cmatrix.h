@@ -19,7 +19,7 @@
 
 #define vec_ptr(vec) &(vec)[0]
 #define mat_ptr(mat) &(mat)[0][0]
-#define mat_elem(mat, i, j) (mat)[i][j]
+#define mat_elem(mat, i, j) (mat)[j][i]
 
 #ifdef __cplusplus
 extern "C" {
