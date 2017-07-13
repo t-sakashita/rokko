@@ -10,7 +10,9 @@
 *****************************************************************************/
 
 #include <rokko/rokko.h>
-#include <mpi.h>
+#if defined(ROKKO_HAVE_MPI)
+# include <mpi.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 

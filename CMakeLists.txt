@@ -149,6 +149,7 @@ components_check()
 if(ROKKO_HAVE_MPI)
   find_package(MPI)
   if(MPI_FOUND)
+    include_directories(${MPI_CXX_INCLUDE_PATH})
     set(CMAKE_EXE_LINKER_FLAGS ${MPI_CXX_LINK_FLAGS})
   else(MPI_FOUND)
     set(ROKKO_HAVE_MPI False)
@@ -258,7 +259,6 @@ install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake
 
 # standard include directories
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
-include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 if(BUILD_CBLAS)
