@@ -1,7 +1,7 @@
 program EigenExa
-  use MPI
   use eigen_libs
   implicit none
+  include 'mpif.h'
   double precision   init_tick, gen_tick, diag_tick, end_tick
   integer :: n, m, nm, ny, mtype, i, i_inod, ierr
   real(8), pointer :: a(:,:),z(:,:),w(:)

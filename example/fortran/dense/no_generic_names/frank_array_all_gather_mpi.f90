@@ -10,9 +10,9 @@
 !*****************************************************************************
 
 program frank_matrix
-  use MPI
   use rokko
   implicit none
+  include 'mpif.h'
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
   type(rokko_parallel_dense_ev) :: solver

@@ -1,7 +1,7 @@
 program EigenExa
-  use MPI
   use eigen_libs
   implicit none
+  include 'mpif.h'
   integer :: n, m, nm, ny, mtype, i, i_inod, ierr
   real(8), pointer :: a(:,:),z(:,:),w(:)
   call mpi_init_thread( MPI_THREAD_MULTIPLE, i, ierr )
