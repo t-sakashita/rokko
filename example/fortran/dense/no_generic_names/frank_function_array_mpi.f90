@@ -23,11 +23,10 @@ end module mod_frank
 program frank_matrix_array_mpi
   use iso_c_binding
   use omp_lib
-  use MPI
   use rokko
   use mod_frank
   implicit none
-
+  include 'mpif.h'
   integer :: dim
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid

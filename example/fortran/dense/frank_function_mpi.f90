@@ -27,10 +27,10 @@ contains
 end module frank_mod
 
 program frank_function
-  use MPI
   use rokko
   use frank_mod
   implicit none
+  include 'mpif.h'
   integer :: dim
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid

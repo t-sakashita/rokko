@@ -10,11 +10,10 @@
 !*****************************************************************************
 
 program heisenberg_crs_mpi
-  use MPI
   use rokko
   implicit none
+  include 'mpif.h'
   integer :: provided, ierr, myrank, nprocs
-
   integer :: L, k
   integer :: dim
   integer, allocatable, dimension(:) :: lattice_first, lattice_second

@@ -10,9 +10,9 @@
 !*****************************************************************************
 
 program heisenberg_crs_mpi
-  use MPI
   use rokko
   implicit none
+  include 'mpif.h'
   integer :: provided, ierr, myrank, nprocs
 
   integer :: dim
