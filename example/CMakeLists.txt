@@ -8,6 +8,9 @@
 #
 
 add_subdirectory(lapack)
+if(ROKKO_HAVE_SCALAPACK)
+  add_subdirectory(scalapack)
+endif(ROKKO_HAVE_SCALAPACK)
 
 add_subdirectory(cxx)
 
