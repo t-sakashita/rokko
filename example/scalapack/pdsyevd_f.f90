@@ -42,7 +42,6 @@ program main
   call pdsyevd('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, iwork, liwork, info)
   lwork = int(work(1))
   liwork = iwork(1)
-  print *, lwork, liwork
   deallocate(work, iwork)
   allocate(work(lwork), iwork(liwork))
 
