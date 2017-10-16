@@ -19,7 +19,7 @@ int ROKKO_pdsyevd(char jobz, char uplo, int n,
 		  double* w, double* Z, int iz, int jz, const int* descZ) {
   // call for querying optimal size of work array
   int lwork = -1;
-  int liwork = -1;
+  int liwork = 1;
   double work_query[1]; 
   int iwork_query[1];
   int info;

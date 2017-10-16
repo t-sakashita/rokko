@@ -6,8 +6,9 @@ program main
   integer :: icontxt, npcol, nprow, desc(50)
   integer :: i, j, info
   double precision, allocatable :: a(:, :), z(:,:), w(:)
-  integer :: lwork
+  integer :: lwork, liwork
   double precision, allocatable :: work(:)
+  integer, allocatable :: iwork(:)
   
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -26,25 +27,30 @@ program main
   call BLACS_gridinit(icontxt, 'R', nprow, npcol)
 
   call descinit(desc, n, n, nb, nb, 0, 0, icontxt, n/nprow, info)
-  allocate(a(n/nprow, n/npcol), z(n/nprow, n/npcol), w(n))
+  allocate(a(n/nprow, n/npcol))
   do j = 1, n
      do i = 1, n
         call pdelset(a, i, j, desc, dble(n - max(i-1, j-1)))
      end do
   end do
+  allocate(z(n/nprow, n/npcol))
+  allocate(w(n))
 
   lwork = -1
-  allocate(work(1))
-  call pdsyev('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, info)
+  liwork = 1
+  allocate(work(1), iwork(1))
+  call pdsyevd('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, iwork, liwork, info)
   lwork = int(work(1))
-  deallocate(work)
-  allocate(work(lwork))
+  liwork = iwork(1)
+  print *, lwork, liwork
+  deallocate(work, iwork)
+  allocate(work(lwork), iwork(liwork))
 
-  call pdsyev('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, info)
+  call pdsyevd('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, iwork, liwork, info)
   if (myrank == 0) then
      print *, w(:)
   end if
 
-  deallocate(a, z, w, work)
+  deallocate(a, z, w, work, iwork)
   call MPI_finalize(ierr)
 end program main
