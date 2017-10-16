@@ -59,8 +59,7 @@ int main(int argc, char *argv[]) {
   rokko::parameters params;
   params.set("routine", routine);
   try {
-    //solver.diagonalize(mat, eigval, eigvec, params);
-    solver.diagonalize(mat, eigval, params);
+    solver.diagonalize(mat, eigval, eigvec, params);
   }
   catch (const char *e) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
@@ -77,6 +76,8 @@ int main(int argc, char *argv[]) {
     std::cout << "largest eigenvalues:";
     for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
     std::cout << std::endl;
+    std::cout << "eigenvectors:\n";
+    eigvec_loc.print();
   }
 
   solver.finalize();
