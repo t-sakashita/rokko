@@ -21,14 +21,15 @@ for build_type in $BUILD_TYPES; do
         --with-cxx=mpicxx --with-cc=mpicc --with-fc=mpif90 \
         --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
         --with-mpiexec="mpiexec" \
-        --with-blas-lapack-dir="$MKL/bin/intel64" \
+        --with-blas-lapack-dir="$MKL/lib/intel64" \
+        --with-make-np=1 \
         --with-c++-support=1 --with-debugging=0
     else
       ./configure --prefix=$PREFIX \
         --with-cxx=icpc --with-cc=icc --with-fc=ifort \
         --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
         --with-mpi-include="/usr/include" --with-mpi-lib="-lmpi" \
-        --with-blas-lapack-dir="$MKL/bin/intel64" \
+        --with-blas-lapack-dir="$MKL/lib/intel64" \
         --with-make-np=1 \
         --with-c++-support=1 --with-debugging=0
     fi
@@ -38,14 +39,15 @@ for build_type in $BUILD_TYPES; do
         --with-cxx=mpicxx --with-cc=mpicc --with-fc=mpif90 \
         --COPTFLAGS="-O0 -g" --CXXOPTFLAGS="-O0 -g" --FOPTFLAGS="-O0 -g" \
         --with-mpiexec="mpiexec" \
-        --with-blas-lapack-dir="$MKL/bin/intel64" \
+        --with-blas-lapack-dir="$MKL/lib/intel64" \
+        --with-make-np=1 \
         --with-c++-support=1 --with-debugging=1
     else
       ./configure --prefix=$PREFIX \
         --with-cxx=icpc --with-cc=icc --with-fc=ifort \
         --COPTFLAGS="-O0 -g" --CXXOPTFLAGS="-O0 -g" --FOPTFLAGS="-O0 -g" \
         --with-mpi-include="/usr/include" --with-mpi-lib="-lmpi" \
-        --with-blas-lapack-dir="$MKL/bin/intel64" \
+        --with-blas-lapack-dir="$MKL/lib/intel64" \
         --with-make-np=1 \
         --with-c++-support=1 --with-debugging=1
     fi
