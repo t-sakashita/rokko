@@ -110,13 +110,13 @@ if(ROKKO_SOURCES)
 
   if(BUILD_CBLAS)
     target_link_libraries(rokko cblas)
-  elseif(BUILD_CBLAS)
+  else(BUILD_CBLAS)
     target_link_libraries(rokko ${BLAS_LIBRARIES})
   endif(BUILD_CBLAS)
 
   if(BUILD_LAPACKE)
     target_link_libraries(rokko lapacke)
-  elseif(BUILD_LAPACKE)
+  else(BUILD_LAPACKE)
     target_link_libraries(rokko ${LAPACK_LIBRARIES})
   endif(BUILD_LAPACKE)
 
