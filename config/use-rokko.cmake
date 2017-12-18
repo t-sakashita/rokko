@@ -1,5 +1,5 @@
 #
-# This module is provided as ROKKO_USE_FILE by RokkoConfig.cmake.  It can
+# This module is provided as ROKKO_USE_FILE by rokko-config.cmake.  It can
 # be included in a project to load the needed compiler and linker
 # settings to use Rokko.
 #

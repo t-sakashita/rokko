@@ -1,6 +1,6 @@
 #-----------------------------------------------------------------------------
 #
-# RokkoConfig.cmake - Rokko CMake configuration file for external projects.
+# rokko-config.cmake - Rokko CMake configuration file for external projects.
 #
 # This file is configured by Rokko and used by the UseRokko.cmake module
 # to load Rokko's settings for an external project.
@@ -8,8 +8,8 @@
 # The Rokko root directory.
 set(ROKKO_ROOT_DIR "@CMAKE_INSTALL_PREFIX@")
 
-# The location of the UseRokko.cmake file.
-set(ROKKO_USE_FILE "${ROKKO_ROOT_DIR}/share/rokko/UseRokko.cmake")
+# The location of the use-rokko.cmake file.
+set(ROKKO_USE_FILE "${ROKKO_ROOT_DIR}/share/rokko/use-rokko.cmake")
 
 # Build Type
 set(ROKKO_CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@")

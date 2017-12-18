@@ -246,13 +246,13 @@ install(FILES ${PROJECT_BINARY_DIR}/rokko/config.h ${PROJECT_BINARY_DIR}/rokko/m
   COMPONENT headers DESTINATION include/rokko/)
 install(FILES cmatrix.h DESTINATION include COMPONENT headers)
 
-configure_file(${PROJECT_SOURCE_DIR}/config/RokkoConfig.cmake.in
-  ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/config/rokko-config.cmake.in
+  ${PROJECT_BINARY_DIR}/config/rokko-config.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/config/include.mk.in
   ${PROJECT_BINARY_DIR}/config/include.mk @ONLY)
-install(FILES ${PROJECT_BINARY_DIR}/config/RokkoConfig.cmake
+install(FILES ${PROJECT_BINARY_DIR}/config/rokko-config.cmake
   ${PROJECT_BINARY_DIR}/config/include.mk
-  ${PROJECT_SOURCE_DIR}/config/UseRokko.cmake
+  ${PROJECT_SOURCE_DIR}/config/use-rokko.cmake
   ${PROJECT_SOURCE_DIR}/config/add_rokko_test.cmake
   ${PROJECT_SOURCE_DIR}/config/run_test.cmake
   ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake DESTINATION share/rokko/)
