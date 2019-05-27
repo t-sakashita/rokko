@@ -12,6 +12,7 @@
 #ifndef ROKKO_GRID_HPP
 #define ROKKO_GRID_HPP
 
+#include <iostream>
 #include <mpi.h>
 #include <cmath>
 #include <boost/type_traits/is_same.hpp>
