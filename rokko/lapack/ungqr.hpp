@@ -15,6 +15,7 @@
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
+#undef I
 #include "complex_cast.hpp"
 
 namespace rokko {

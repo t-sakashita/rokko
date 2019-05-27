@@ -13,6 +13,7 @@
 #define ROKKO_PBLAS_H
 
 #include <lapacke.h>
+#undef I
 #include <rokko/mangling.h>
 
 /* PvCOPY */

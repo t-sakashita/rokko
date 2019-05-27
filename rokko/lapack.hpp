@@ -13,6 +13,7 @@
 #define ROKKO_LAPACK_HPP
 
 #include <lapacke.h>
+#undef I
 #include <rokko/traits/norm_t.hpp>
 
 namespace rokko {
