@@ -4,8 +4,6 @@ addons:
   apt:
     packages:
       - libboost-all-dev
-      - libtrilinos-anasazi-dev
-      - slepc-dev
 
 install: true
 
