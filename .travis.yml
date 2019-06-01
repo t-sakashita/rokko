@@ -3,6 +3,7 @@ language: cpp
 addons:
   apt:
     packages:
+      - gfortran
       - libboost-all-dev
 
 install: true
