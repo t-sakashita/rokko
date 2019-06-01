@@ -1,17 +1,17 @@
 language: cpp
+dist: xenial
 
 addons:
   apt:
     packages:
       - gfortran
-      - openmpi-bin
-      - openmpi-common
-      - libopenmpi-dev
+      - mpich
+      - libmpich-dev
       - libboost-all-dev
       - libblas-dev
       - liblapack-dev
       - liblapacke-dev
-      - libscalapack-openmpi-dev
+      - libscalapack-mpi-dev
 
 install: true
 
