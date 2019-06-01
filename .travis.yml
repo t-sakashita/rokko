@@ -1,0 +1,23 @@
+language: cpp
+dist: xenial
+
+addons:
+  apt:
+    packages:
+      - gfortran
+      - mpich
+      - libmpich-dev
+      - libboost-all-dev
+      - libblas-dev
+      - liblapack-dev
+      - liblapacke-dev
+      - libscalapack-mpi-dev
+
+install: true
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - make test
