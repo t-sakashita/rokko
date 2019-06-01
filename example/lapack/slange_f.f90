@@ -1,12 +1,12 @@
 program main
   implicit none
   integer, parameter :: n = 5
-  real :: a(n, n), norm
+  real :: a(n, n), norm, work(n)
   integer :: i, j
-  double precision :: slange
+  real :: slange
   do j = 1, n
      do i = 1, n
-        a(i, j) = n - 0.253E0 * max(i-1, j-1)
+        a(i, j) = min(i, j)
      end do
   end do
   print *, "Matrix A: ", n, n
@@ -14,6 +14,12 @@ program main
      print *, a(1:n, j)
   end do
 
+  norm = slange('M', n, n, a, n)
+  print *, "element of largest absolute value =", norm
+  norm = slange('1', n, n, a, n)
+  print *, "one norm =", norm
+  norm = slange('I', n, n, a, n, work)
+  print *, "infinity norm =", norm
   norm = slange('F', n, n, a, n)
-  print *, "norm =", norm
+  print *, "Frobenius norm =", norm
 end program main

@@ -17872,11 +17872,11 @@ void LAPACK_claswp( lapack_int* n, lapack_complex_float* a, lapack_int* lda,
 void LAPACK_zlaswp( lapack_int* n, lapack_complex_double* a, lapack_int* lda,
                     lapack_int* k1, lapack_int* k2, const lapack_int* ipiv,
                     lapack_int* incx );
-double LAPACK_slange( char* norm, lapack_int* m, lapack_int* n, const float* a,
+float LAPACK_slange( char* norm, lapack_int* m, lapack_int* n, const float* a,
                     lapack_int* lda, float* work );
 double LAPACK_dlange( char* norm, lapack_int* m, lapack_int* n, const double* a,
                     lapack_int* lda, double* work );
-double LAPACK_clange( char* norm, lapack_int* m, lapack_int* n,
+float LAPACK_clange( char* norm, lapack_int* m, lapack_int* n,
                     const lapack_complex_float* a, lapack_int* lda, float* work );
 double LAPACK_zlange( char* norm, lapack_int* m, lapack_int* n,
                     const lapack_complex_double* a, lapack_int* lda, double* work );
