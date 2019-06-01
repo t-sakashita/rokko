@@ -493,7 +493,7 @@ static inline void read_cmatrix(FILE *fp, int *m, int *n, float complex ***mat) 
   *mat = alloc_cmatrix(*m, *n);
   for (i = 0; i < *m; ++i) {
     for (j = 0; j < *n; ++j) {
-      fscanf(fp, "(%e,%e)%*c", v_re, v_im);
+      fscanf(fp, "(%e,%e)%*c", &v_re, &v_im);
       mat_elem(*mat, i, j) = v_re + _Complex_I * v_im;
     }
   }
@@ -508,7 +508,7 @@ static inline void read_cmatrix_r(FILE *fp, int *m, int *n, float complex ***mat
   *mat = alloc_cmatrix_r(*m, *n);
   for (i = 0; i < *m; ++i) {
     for (j = 0; j < *n; ++j) {
-      fscanf(fp, "(%e,%e)%*c", v_re, v_im);
+      fscanf(fp, "(%e,%e)%*c", &v_re, &v_im);
       (*mat)[i][j] = v_re + _Complex_I * v_im;
     }
   }
@@ -523,7 +523,7 @@ static inline void read_zmatrix(FILE *fp, int *m, int *n, double complex ***mat)
   *mat = alloc_zmatrix(*m, *n);
   for (i = 0; i < *m; ++i) {
     for (j = 0; j < *n; ++j) {
-      fscanf(fp, "(%le,%le)%*c", v_re, v_im);
+      fscanf(fp, "(%le,%le)%*c", &v_re, &v_im);
       mat_elem(*mat, i, j) = v_re + _Complex_I * v_im;
     }
   }
@@ -538,7 +538,7 @@ static inline void read_zmatrix_r(FILE *fp, int *m, int *n, double complex ***ma
   *mat = alloc_zmatrix_r(*m, *n);
   for (i = 0; i < *m; ++i) {
     for (j = 0; j < *n; ++j) {
-      fscanf(fp, "(%le,%le)%*c", v_re, v_im);
+      fscanf(fp, "(%le,%le)%*c", &v_re, &v_im);
       (*mat)[i][j] = v_re + _Complex_I * v_im;
     }
   }
