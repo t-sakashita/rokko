@@ -4,7 +4,12 @@ addons:
   apt:
     packages:
       - gfortran
+      - openmpi-bin
+      - openmpi-common
+      - libopenmpi-dev
       - libboost-all-dev
+      - libblas-dev
+      - liblapack-dev
 
 install: true
 
