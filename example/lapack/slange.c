@@ -14,13 +14,14 @@
 #include <cmatrix.h>
 #include <math.h>
 
-int imax(int x, int y) { return (x > y) ? x : y; }
+int imin(int x, int y) { return (x < y) ? x : y; }
 
 int main(int argc, char** argv) {
   int n = 5;
   int i, j, info;
   float norm, check;
   float **a;
+  float *work;
 
   if (argc > 1) n = atoi(argv[1]);
 
@@ -28,21 +29,25 @@ int main(int argc, char** argv) {
   a = alloc_smatrix(n, n);
   for (j = 0; j < n; ++j) {
     for (i = 0; i < n; ++i) {
-      mat_elem(a, i, j) = n - 0.253 * imax(i, j);
+      mat_elem(a, i, j) = imin(i+1, j+1);
     }
   }
   printf("Matrix A: ");
   fprint_smatrix(stdout, n, n, a);
+  work = alloc_svector(n);
 
   /* calculate various norms */
+  norm = LAPACKE_slange_work(LAPACK_COL_MAJOR, 'M', n, n, mat_ptr(a), n, vec_ptr(work));
+  printf("element of largest absolute value = %e\n", norm);
+
   norm = LAPACKE_slange(LAPACK_COL_MAJOR, '1', n, n, mat_ptr(a), n);
-  printf("norm1(A) = %e\n", norm);
+  printf("one norm = %e\n", norm);
 
   norm = LAPACKE_slange(LAPACK_COL_MAJOR, 'I', n, n, mat_ptr(a), n);
-  printf("normI(A) = %e\n", norm);
+  printf("infinity norm = %e\n", norm);
 
   norm = LAPACKE_slange(LAPACK_COL_MAJOR, 'F', n, n, mat_ptr(a), n);
-  printf("normF(A) = %e\n", norm);
+  printf("Frobenius norm = %e\n", norm);
 
   /* check of result */
   check = 0;
