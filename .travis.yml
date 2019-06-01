@@ -1,0 +1,17 @@
+language: cpp
+
+addons:
+  apt:
+    packages:
+      - libboost-all-dev
+      - libtrilinos-anasazi-dev
+      - slepc-dev
+
+install: true
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - make test
