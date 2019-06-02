@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2017 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2018 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,8 +38,18 @@ set(CMAKE_MACOSX_RPATH 1)
 
 # C++, C, and Fortran compilers
 enable_language(CXX C)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 if(BUILD_Fortran_BINDING)
   enable_language(Fortran)
+  if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Wall -Wextra")
+  endif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   # ancient gfortran does not support iso_c_bindings
   try_compile(CMake_Fortran_SUPPORTS_ISO_C_BINDING
     ${CMAKE_CURRENT_BINARY_DIR}
