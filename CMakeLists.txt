@@ -297,9 +297,14 @@ if(BUILD_BASE_CXX)
 endif(BUILD_BASE_CXX)
 
 # test environment
-include(add_rokko_test)
-enable_testing()
-include(CTest)
+if(BUILD_TESTS OR BUILD_EXAMPLES)
+  set(GOOGLETEST_VERSION 1)
+  add_subdirectory(3rd-party/googletest)
+  include_directories(3rd-party/googletest/include)
+  include(add_rokko_test)
+  enable_testing()
+  include(CTest)
+endif(BUILD_TESTS OR BUILD_EXAMPLES)
 
 # directories
 add_subdirectory(3rd-party)
