@@ -42,7 +42,13 @@ foreach (_PATH ${_PATHS})
   list(APPEND _INCPATHS "${_PATH}/include")
 endforeach()
 
-find_path(ELPA_INCLUDE_DIR elpa/elpa.h PATHS ${_INCPATHS} DOC "ELPA include directory")
+foreach (_INCPATH ${_INCPATHS})
+  file(GLOB _ELPA_INCLUDE_FILE "${_INCPATH}/elpa_*/elpa/elpa.h")
+  if(_ELPA_INCLUDE_FILE)
+    string(REGEX REPLACE "elpa/elpa.h" "" ELPA_INCLUDE_DIR ${_ELPA_INCLUDE_FILE})  # cut the trailing "elpa/elpa.h" from _ELPA_INCLUDE_FILE
+    break()
+  endif(_ELPA_INCLUDE_FILE)
+endforeach()
 
 foreach (_PATH ${_PATHS})
   list(APPEND _LIBPATHS "${_PATH}/lib")
