@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
+! Copyright (C) 2012-2019 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
 !                            Synge Todo <wistaria@comp-phys.org>
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -11,7 +11,7 @@
 !*****************************************************************************
 
 subroutine eigen_init_wrap(comm, order)
-  use eigen_libs, only : eigen_init
+  use eigen_libs_mod, only : eigen_init
   implicit none
   integer, intent(in), optional :: comm
   character*(*), intent(in), optional :: order
@@ -20,7 +20,7 @@ subroutine eigen_init_wrap(comm, order)
 end subroutine eigen_init_wrap
 
 subroutine eigen_free_wrap(flag)
-  use eigen_libs, only : eigen_free
+  use eigen_libs_mod, only : eigen_free
   implicit none
   integer, intent(in), optional ::  flag
   call eigen_free(flag)
@@ -28,8 +28,8 @@ subroutine eigen_free_wrap(flag)
 end subroutine eigen_free_wrap
 
 subroutine eigen_get_matdims_wrap(NPROW, NPCOL, n, nx, ny)
-  use eigen_libs, only : eigen_NB
-  use eigen_devel, only : x_nnod
+  use eigen_libs_mod, only : eigen_NB
+  use CSTAB_mod, only : CSTAB_get_optdim
   implicit none
   integer, intent(in) :: NPROW, NPCOL, n
   integer, intent(out) :: nx, ny

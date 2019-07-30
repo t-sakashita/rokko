@@ -39,7 +39,7 @@ else(EIGENEXA_DIR)
 	      )
 endif(EIGENEXA_DIR)
 
-find_path(EIGENEXA_DIR include/eigen_libs.mod PATHS ${_PATHS} DOC "EigenExa directory")
+find_path(EIGENEXA_DIR include/eigen_libs_mod.mod PATHS ${_PATHS} DOC "EigenExa directory")
 
 if(EIGENEXA_DIR)
   set(EIGENEXA_INCLUDE_DIR "${EIGENEXA_DIR}/include")

@@ -25,10 +25,6 @@ void EIGEN_EXA_init_wrap(const MPI_Fint* comm, const char* grid_major);
 #define EIGEN_EXA_free_wrap ROKKO_GLOBAL(eigen_free_wrap,EIGEN_FREE_WRAP)
 void EIGEN_EXA_free_wrap(const int* flag);
 
-#define EIGEN_EXA_cstab_get_optdim ROKKO_GLOBAL(cstab_get_optdim,CSTAB_GET_OPTDIM)
-void EIGEN_EXA_cstab_get_optdim(const int* n_min, const int* n_unroll, const int* delta_L1,
-                                const int* delta_L2, int* n_opt);
-
 #define EIGEN_EXA_get_matdims_wrap ROKKO_GLOBAL(eigen_get_matdims_wrap,EIGEN_GET_MATDIMS_WRAP)
 void EIGEN_EXA_get_matdims_wrap(const int* nprow, const int* npcol, const int* n, int* nx, int* ny);
 

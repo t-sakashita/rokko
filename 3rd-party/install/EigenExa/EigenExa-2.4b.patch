@@ -1,0 +1,104 @@
+diff -U1 -uprN EigenExa-2.4b.orig/CMakeLists.txt EigenExa-2.4b/CMakeLists.txt
+--- EigenExa-2.4b.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ EigenExa-2.4b/CMakeLists.txt	2019-07-30 16:14:02.000000000 +0900
+@@ -0,0 +1,29 @@
++cmake_minimum_required(VERSION 2.8)
++project(EigenExa NONE)
++enable_language(C Fortran)
++option(BUILD_SHARED_LIBS "Build shared libraries" ON)
++option(USE_C_LINKER "Use C Linker instead of Fortran" OFF)
++
++# RPATH setting
++if(APPLE)
++  set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib")
++else(APPLE)
++  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
++  set(CMAKE_SKIP_BUILD_RPATH FALSE)
++  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
++  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
++endif(APPLE)
++
++# OpenMP
++find_package(OpenMP)
++if(OPENMP_FOUND)
++  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
++  # Almost always OpenMP flags are same both for C and for Fortran.
++  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
++endif(OPENMP_FOUND)
++
++# MPI library
++find_package(MPI)
++
++add_subdirectory(src)
++add_subdirectory(benchmark)
+diff -U1 -uprN EigenExa-2.4b.orig/benchmark/CMakeLists.txt EigenExa-2.4b/benchmark/CMakeLists.txt
+--- EigenExa-2.4b.orig/benchmark/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ EigenExa-2.4b/benchmark/CMakeLists.txt	2019-07-30 16:15:08.000000000 +0900
+@@ -0,0 +1,11 @@
++include_directories(${PROJECT_BINARY_DIR}/src)
++
++add_executable(main2 main2.f mat_set.f ev_test.f w_test.f)
++target_link_libraries(main2 EigenExa)
++
++if(USE_C_LINKER)
++  set_target_properties(main2 PROPERTIES LINKER_LANGUAGE C)
++endif(USE_C_LINKER)
++
++# copying input file in build directory
++configure_file(IN IN COPYONLY)
+diff -U1 -uprN EigenExa-2.4b.orig/src/CMakeLists.txt EigenExa-2.4b/src/CMakeLists.txt
+--- EigenExa-2.4b.orig/src/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ EigenExa-2.4b/src/CMakeLists.txt	2019-07-30 17:07:50.000000000 +0900
+@@ -0,0 +1,21 @@
++add_definitions(-DUSE_SYNC=1 -D_DEBUG_=0 -D_DEBUG2_=0 -DAT_BCAST_OVERLAP=1 -DOVERLAP_DECISION_TYPE=3)
++
++set(SOURCES miscC.c CSTAB.F
++eigen_house.F	eigen_dc.F eigen_trbak.F eigen_blacs.F eigen_devel.F
++comm.F eigen_libs.F
++dlacpy.F dlaed6_common.F dlaed6_init.F
++lapack_eigen.F
++my_pdlaedz.F my_pdlaed3.F my_pdlaed2.F my_pdlaed1.F my_pdlaed0.F my_pdlasrt.F my_pdsxedc.F
++mx_pdlaedz.F mx_pdlaed3.F mx_pdlaed2.F mx_pdlaed1.F mx_pdlaed0.F mx_pdstedc.F
++dc_redist1.F dc_redist1_r.F dc_redist2.F dc_redist2_r.F dc2.F dcx.F
++bisect.F bisect2.F
++eigen_t1.F eigen_trd_t2.F eigen_trd_t4.F eigen_trd_t5.F eigen_trd_t5x.F eigen_trd_t6_3.F eigen_trd_t7.F eigen_trd_t8.F eigen_trd.F
++eigen_prd_t2.F eigen_prd_t4x.F eigen_prd_t5.F eigen_prd_t6_3.F eigen_prd_t7.F eigen_prd_t8.F eigen_prd.F
++trbakwy4_body.F trbakwy4.F
++eigen_scaling.F eigen_sx.F eigen_s.F)
++add_library(EigenExa ${SOURCES})
++target_link_libraries(EigenExa ${SCALAPACK_LIB} ${MPI_Fortran_LIBRARIES})
++install(TARGETS EigenExa ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
++install(FILES ${PROJECT_BINARY_DIR}/src/eigen_libs_mod.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
++install(FILES ${PROJECT_BINARY_DIR}/src/eigen_devel_mod.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
++install(FILES ${PROJECT_BINARY_DIR}/src/CSTAB_mod.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+diff -U1 -uprN EigenExa-2.4b.orig/src/dc_redist1_r.F EigenExa-2.4b/src/dc_redist1_r.F
+--- EigenExa-2.4b.orig/src/dc_redist1_r.F	2018-08-17 20:44:40.000000000 +0900
++++ EigenExa-2.4b/src/dc_redist1_r.F	2019-07-30 16:00:28.000000000 +0900
+@@ -203,7 +203,7 @@
+ !------------------------------------------------------------------
+ 
+       subroutine dc_redist1_sub_x(n, NB, a, b, ldm, wk1, wk2, NBQ)
+-
++      use comm_mod
+       use eigen_devel_mod
+       use mpi
+ !$    use omp_lib
+diff -U1 -uprN EigenExa-2.4b.orig/src/dc_redist2_r.F EigenExa-2.4b/src/dc_redist2_r.F
+--- EigenExa-2.4b.orig/src/dc_redist2_r.F	2018-08-17 20:44:40.000000000 +0900
++++ EigenExa-2.4b/src/dc_redist2_r.F	2019-07-30 16:00:36.000000000 +0900
+@@ -73,7 +73,6 @@
+ !--------*---------*---------*---------*---------*---------*---------*-*
+ 
+       subroutine dc_redist2_r(n, NB, a, lda, b, ldb, wk, lwk)
+-
+       use eigen_devel_mod
+       use mpi
+ !$    use omp_lib
+@@ -254,6 +253,7 @@
+       subroutine  dc_redist2_sub_x(n, NB, a, lda, b, ldb,
+      &     wk1, wk2, ir_sz, ldr, PACK, MPACK, aa)
+ 
++      use comm_mod
+       use eigen_devel_mod
+       use mpi
+ !$    use omp_lib
