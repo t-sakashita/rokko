@@ -13,6 +13,7 @@
 #define ROKKO_ELPA_CORE_HPP
 
 #include <rokko/parameters.hpp>
+#include <rokko/elpa/elpa.h>
 #include <rokko/elpa/diagonalize_elpa1.hpp>
 #include <rokko/elpa/diagonalize_elpa2.hpp>
 #include <boost/throw_exception.hpp>
@@ -24,8 +25,15 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
-  void initialize(int& argc, char**& argv) {}
-  void finalize() {}
+  void initialize(int& argc, char**& argv) {
+    if (elpa_init(20190524) != ELPA_OK) {
+      BOOST_THROW_EXCEPTION(std::invalid_argument("ERROR: elpa::initialize()"));
+    }
+  }
+  void finalize() {
+    int error;
+    // elpa_uninit(&error);
+  }
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
     // Determine mb, nb, lld, larray
     int mb = dim / g.get_nprow();

@@ -120,11 +120,12 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
 
   El::UpperOrLower elem_uplow = get_matrix_part(params);
-  El::SortType elem_sort = get_sort(params);
-  El::HermitianEigSubset<double> subset = get_subset(params);;
   El::HermitianEigCtrl<double> ctrl = get_ctrl(params);
+  El::HermitianEigSubset<double> subset = get_subset(params);
+  ctrl.tridiagEigCtrl.subset = get_subset(params);
+  ctrl.tridiagEigCtrl.sort = get_sort(params);
 
-  El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_eigvecs, elem_sort, subset, ctrl);
+  El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_eigvecs, ctrl);
 
   for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
   double* result_mat = elem_eigvecs.Buffer();
@@ -161,11 +162,12 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
 
   El::UpperOrLower elem_uplow = get_matrix_part(params);
-  El::HermitianEigSubset<double> subset = get_subset(params);;
   El::HermitianEigCtrl<double> ctrl = get_ctrl(params);
-  El::SortType elem_sort = get_sort(params);
-  
-  El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_sort, subset, ctrl);
+  El::HermitianEigSubset<double> subset = get_subset(params);
+  ctrl.tridiagEigCtrl.subset = get_subset(params);
+  ctrl.tridiagEigCtrl.sort = get_sort(params);
+
+  El::HermitianEig(elem_uplow, elem_mat, elem_w, ctrl);
   for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
 
   return params_out;

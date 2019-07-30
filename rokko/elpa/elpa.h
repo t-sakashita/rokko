@@ -16,18 +16,14 @@
 extern "C" {
 #endif
 
-int elpa_solve_evp_real_1stage(int na, int nev, double *a, int lda, double *ev, double *q, int ldq, int nblk, int matrixCols,
-			       int mpi_comm_rows, int mpi_comm_cols);
+#define complex   _Complex
+#include <elpa/elpa.h>
+#include <assert.h>
 
-int elpa_solve_evp_real_2stage(int na, int nev, double *a, int lda, double *ev, double *q, int ldq, int nblk, int matrixCols,
-			       int mpi_comm_rows, int mpi_comm_cols, int mpi_comm_all, int THIS_REAL_ELPA_KERNEL_API, int useQR);
-
-int elpa_get_communicators(int mpi_comm_world, int my_prow, int my_pcol, int *mpi_comm_rows, int *mpi_comm_cols);
+#define assert_elpa_ok(x) assert(x == ELPA_OK)
 
 #ifdef __cplusplus
 }
 #endif
-
-#include <elpa/elpa_kernel_constants.h>
 
 #endif // ROKKO_ELPA_H

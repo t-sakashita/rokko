@@ -25,7 +25,7 @@ int main( int argc, char* argv[] ) {
   El::Int dim = 100; //30000;
   if (argc >= 2) dim = boost::lexical_cast<int>(argv[1]);
   
-  if (El::mpi::WorldRank() == 0)
+  if (El::mpi::Rank() == 0)
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
               << "num_procs = " << nprocs << std::endl
 #ifdef _OPENMP
@@ -79,7 +79,7 @@ int main( int argc, char* argv[] ) {
     diag_tick = MPI_Wtime();
     El::DistMatrix<double,El::VR,El::STAR> w( g );
     El::DistMatrix<double> X( g );
-    El::HermitianEig( El::LOWER, H, w, X, El::UNSORTED ); 
+    El::HermitianEig( El::LOWER, H, w, X );
     end_tick = MPI_Wtime();
     
     double* eigvals;
@@ -88,7 +88,7 @@ int main( int argc, char* argv[] ) {
       eigvals[i] = w.Get(i,0);
     }
     
-    if( El::mpi::WorldRank() == 0 ) {
+    if( El::mpi::Rank() == 0 ) {
       std::cout << "init_time = " << initend_tick - init_tick << std::endl
 		<< "gen_time = " << diag_tick - gen_tick << std::endl
 		<< "diag_time = " << end_tick - diag_tick << std::endl;
