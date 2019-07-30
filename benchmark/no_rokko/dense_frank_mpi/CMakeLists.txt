@@ -1,14 +1,12 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-include_directories(${PROJECT_SOURCE_DIR}/rokko)
-include_directories(${PROJECT_BINARY_DIR}/rokko)
 include_directories(${MPI_Fortran_INCLUDE_PATH})
 
 if(ROKKO_HAVE_SCALAPACK)
@@ -54,19 +52,15 @@ endforeach(name)
 endif(ROKKO_HAVE_EIGENEXA)
 
 if(ROKKO_HAVE_ELPA)
-# Users need to specify include dir of ELPA's installation by ELPA_INCLUDE_DIR.
-# It is only for no_rokko version of ELPA program.
-include_directories(${ELPA_INCLUDE_DIR}/modules)
-set(EXAMPLE elpa1_fixed_block elpa2_fixed_block elpa2)
+set(EXAMPLE elpa1)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_dense_no_rokko_frank_mpi_${name})
-  file(GLOB SOURCE "${name}.f*" "${name}.F*")
-  add_executable(${target_name} ${SOURCE} mod_precision.f90)
+  add_executable(${target_name} ${name}.F90 test_blacs_infrastructure.F90)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
+  target_include_directories(${target_name} PUBLIC ${ELPA_INCLUDE_DIR}/modules)  # Need .mod files in ELPA_INCLUDE_DIR
   target_link_libraries(${target_name} rokko)
   if(ROKKO_USE_CXX_LINKER)
     SET_TARGET_PROPERTIES(${target_name} PROPERTIES LINKER_LANGUAGE CXX)
   endif(ROKKO_USE_CXX_LINKER)
 endforeach(name)
 endif(ROKKO_HAVE_ELPA)
-
