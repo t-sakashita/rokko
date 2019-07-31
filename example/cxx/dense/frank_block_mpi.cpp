@@ -26,9 +26,9 @@ int main(int argc, char *argv[]) {
   MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
   std::string library, routine;
-  int dim = 10;
+  std::size_t dim = 10;
   if (argc >= 2) library_routine = argv[1];
-  if (argc >= 3) dim = boost::lexical_cast<int>(argv[2]);
+  if (argc >= 3) dim = boost::lexical_cast<std::size_t>(argv[2]);
   rokko::split_solver_name(library_routine, library, routine);
 
   rokko::grid g(comm);
@@ -70,11 +70,11 @@ int main(int argc, char *argv[]) {
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
     bool sorted = true;
-    for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+    for (std::size_t i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
     if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
 
     std::cout << "largest eigenvalues:";
-    for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
+    for (std::size_t i = 0; i < std::min(dim, std::size_t(10)); ++i) std::cout << ' ' << eigval(dim - 1 - i);
     std::cout << std::endl;
     std::cout << "residual of the largest eigenvalue/vector: |x A x - lambda| = "
               << std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)

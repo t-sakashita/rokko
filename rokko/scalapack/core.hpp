@@ -26,8 +26,8 @@ namespace scalapack {
 class solver {
 public:
   template <typename GRID_MAJOR>
-  bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
-  void initialize(int& argc, char**& argv) {}
+  bool is_available_grid_major(GRID_MAJOR const& /* grid_major */) { return true; }
+  void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g)  const {
     // Determine mb, nb, lld, larray

@@ -113,7 +113,7 @@ parameters diagonalize_dsyevx(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
       } else {
 	std::cerr << "This means that "	<< info << " eigenvectors failed to converge." << std::endl;
 	std::cerr << "The indices of the eigenvectors that failed to converge:" << std::endl;
-	for (int i=0; i<ifail.size(); ++i) {
+	for (std::size_t i = 0; i < ifail.size(); ++i) {
 	  if (ifail[i] == 0) break;
 	  std::cerr << ifail[i] << " ";
 	}

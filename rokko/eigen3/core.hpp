@@ -19,7 +19,7 @@ namespace eigen3 {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) {}
+  void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
   // -------------------------standard eigenvalue problem-----------------------------
   // eigenvalues/eigenvectors

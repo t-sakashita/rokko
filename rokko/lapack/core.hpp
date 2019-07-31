@@ -29,7 +29,7 @@ namespace lapack {
 
 class solver {
 public:
-  void initialize(int& argc, char**& argv) {}
+  void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
   // standard eigenvalue problem, only eigenvalues, eigenvalue:double*
   template<typename MATRIX_MAJOR>
@@ -92,7 +92,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  int dim = mat.rows();
+  std::size_t dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
   return solver::diagonalize(mat, &eigvals[0], params);
 }
@@ -133,7 +133,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  int dim = mat.rows();
+  std::size_t dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
   return solver::diagonalize(mat, &eigvals[0], eigvecs, params);
 }

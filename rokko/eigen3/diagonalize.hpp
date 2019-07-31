@@ -43,7 +43,6 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<
   if (get_matrix_part(params) == 'U') {
     BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix."));
   }
-  int info = 0;
   Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
   eigvals = ES.eigenvalues();
   return params_out;
@@ -56,8 +55,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
   if (get_matrix_part(params) == 'U') {
     BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix."));
   }
-  int info = 0;
-  int dim = mat.rows();
+  std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
   Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> > eigvals(&eigvals_in[0], eigvals_in.size());
   Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
@@ -73,7 +71,6 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<
   if (get_matrix_part(params) == 'U') {
     BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix."));
   }
-  int info = 0;
   Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();
@@ -87,8 +84,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
   if (get_matrix_part(params) == 'U') {
     BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix."));
   }
-  int info = 0;
-  int dim = mat.rows();
+  std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
   Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> > eigvals(&eigvals_in[0], eigvals_in.size());
   Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);

@@ -49,7 +49,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
     w[k] = 0.;
   }
 
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     if (i < (L-p)) {
@@ -197,7 +197,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
     w[k] = 0;
   }
 
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
 
@@ -225,7 +225,7 @@ template<typename T, typename MATRIX_MAJOR>
 void generate(int L, std::vector<std::pair<int, int> >& lattice,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     int m1 = 1 << i;

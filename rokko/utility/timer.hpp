@@ -85,8 +85,8 @@ public:
       boost::throw_exception(std::invalid_argument("duplicated id"));
     }
     if (id >= labels_.size()) {
-      int old_size = labels_.size();
-      int new_size = std::max(2 * labels_.size(), id + 1);
+      std::size_t old_size = labels_.size();
+      std::size_t new_size = std::max(2 * labels_.size(), id + 1);
       labels_.resize(new_size);
       std::valarray<double> starts_old = starts_;
       std::valarray<double> counts_old = counts_;
@@ -94,7 +94,7 @@ public:
       starts_.resize(new_size);
       counts_.resize(new_size);
       sums_.resize(new_size);
-      for (int i = 0; i < old_size; ++i) {
+      for (std::size_t i = 0; i < old_size; ++i) {
         starts_[i] = starts_old[i];
         counts_[i] = counts_old[i];
         sums_[i] = sums_old[i];
@@ -104,13 +104,13 @@ public:
       #endif
     }
     labels_[id] = label;
-    #ifdef ROKKO_ENABLE_TIMER_DETAILED
     if (option & detailed) {
+      #ifdef ROKKO_ENABLE_TIMER_DETAILED
       d_mapping_[id] = d_counts_.size();
       d_counts_.push_back(0);
       d_sums_.push_back(0);
+      #endif
     }
-    #endif
     #ifdef ROKKO_ENABLE_TIMER_TRACE
     std::clog << "rokko::timer: registered timer with id = " << id
               << " and label = \"" << label << "\"\n";
@@ -203,7 +203,7 @@ public:
     // for (std::map<std::string, int>::iterator ivm = vm.begin(); ivm != vm.end(); ++ivm) {
     //   os << "timer: " << ivm->first << "   " << ivm->second << " [kB]" << std::endl;
     // }
-    for (int i = 0; i < labels_.size(); ++i) {
+    for (std::size_t i = 0; i < labels_.size(); ++i) {
       if (counts_[i] > 0) {
         os << boost::format("timer: %5d %-55s %12.3lf %10ld\n")
           % i % labels_[i] % sums_[i] % counts_[i];
@@ -217,7 +217,7 @@ public:
       os << "timer: interval = " << interval << std::endl;
     }
     if ((d_count_ + 1) % interval == 0) {
-      for (int i = 0; i < labels_.size(); ++i) {
+      for (std::size_t i = 0; i < labels_.size(); ++i) {
         if (d_mapping_[i] >= 0) {
           os << boost::format("detail: %d %d %.3f %d\n")
             % d_count_ % i % d_sums_[d_mapping_[i]] % d_counts_[d_mapping_[i]];

@@ -41,9 +41,8 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   int csrc = (from.get_grid().is_row_major() ? (root % from.get_npcol()) :
               (root / from.get_nprow()));
   int descFrom[9], descTo[9];
-  int info = ROKKO_descinit(descFrom, m, n, from.get_mb(), from.get_nb(), 0, 0, ictxt,
-                            from.get_lld());
-  info = ROKKO_descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
+  ROKKO_descinit(descFrom, m, n, from.get_mb(), from.get_nb(), 0, 0, ictxt, from.get_lld());
+  ROKKO_descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
 
@@ -75,8 +74,8 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   int rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
   int csrc = (to.get_grid().is_row_major() ? (root % to.get_npcol()) : (root / to.get_nprow()));
   int descFrom[9], descTo[9];
-  int info = ROKKO_descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
-  info = ROKKO_descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
+  ROKKO_descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
+  ROKKO_descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
 
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
