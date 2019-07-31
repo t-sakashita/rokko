@@ -7,6 +7,8 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
+# core wrappers
+add_subdirectory(blas)
 add_subdirectory(lapack)
 if(ROKKO_HAVE_SCALAPACK)
   add_subdirectory(scalapack)
