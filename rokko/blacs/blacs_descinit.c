@@ -9,11 +9,11 @@
 *
 *****************************************************************************/
 
+#include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
 
-int ROKKO_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
-                   int ictxt, int lld) {
+int CBLACS_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
+                    int ictxt, int lld) {
   int info;
   BLACS_descinit(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ictxt, &lld, &info);
   return info;

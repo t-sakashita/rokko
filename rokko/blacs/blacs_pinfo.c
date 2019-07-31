@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
+#include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
 
-void ROKKO_blacs_pinfo(int* mypnum, int* nprocs) { BLACS_pinfo(mypnum, nprocs); }
+void CBLACS_pinfo(int* mypnum, int* nprocs) { BLACS_pinfo(mypnum, nprocs); }

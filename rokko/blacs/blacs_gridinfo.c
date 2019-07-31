@@ -9,9 +9,9 @@
 *
 *****************************************************************************/
 
+#include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
 
-void ROKKO_blacs_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol) {
+void CBLACS_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol) {
   BLACS_gridinfo(&ictxt, nprow, npcol, myrow, mycol);
 }

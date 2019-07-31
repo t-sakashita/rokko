@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
+#include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
 
-void ROKKO_blacs_gridexit(int* ictxt) { BLACS_gridexit(ictxt); }
+void CBLACS_gridexit(int* ictxt) { BLACS_gridexit(ictxt); }

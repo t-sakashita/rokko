@@ -9,10 +9,10 @@
 *
 *****************************************************************************/
 
+#include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
 
-int ROKKO_blacs_get(int context, int request) {
+int CBLACS_get(int context, int request) {
   int value;
   BLACS_get(&context, &request, &value);
   return value;

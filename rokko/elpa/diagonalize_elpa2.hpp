@@ -15,7 +15,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
-#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/cblacs.h>
 #include <rokko/blacs/utility_routines.hpp>
 #include <rokko/elpa/elpa.h>
 #include <rokko/elpa/diagonalize_get_parameters.hpp>
