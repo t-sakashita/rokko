@@ -34,13 +34,13 @@ int main() {
   double alpha = 2.1;
   double beta = 0.8;
 
-  std::cout << "a = " << a << std::endl;
-  std::cout << "b = " << b << std::endl;
-  std::cout << "c = " << c << std::endl;
+  std::cout << "a = [\n" << a << "\n]\n";
+  std::cout << "b = [\n" << b << "\n]\n";
+  std::cout << "c = [\n" << c << "\n]\n";
   
   rokko::blas::gemm(CblasNoTrans, CblasNoTrans, alpha, a, b, beta, c);
 
-  std::cout << alpha << " * a * b + " << beta << " * c = " << c << std::endl;
+  std::cout << alpha << " * a * b + " << beta << " * c = [\n" << c << "\n]\n";
 }
 
 /* gemm.m

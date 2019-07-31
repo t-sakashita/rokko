@@ -27,13 +27,13 @@ int main() {
   double alpha = 2.3;
   double beta = 0.5;
 
-  std::cout << "a = " << a << std::endl;
-  std::cout << "x = " << x << std::endl;
-  std::cout << "y = " << y << std::endl;
+  std::cout << "a = [\n" << a << "\n]\n";
+  std::cout << "x = [" << x.transpose() << "]^t\n";
+  std::cout << "y = [" << y.transpose() << "]^t\n";
   
   rokko::blas::gemv(CblasNoTrans, alpha, a, x, 1, beta, y, 1);
 
-  std::cout << alpha << " * a * x + " << beta << " * y = " << y << std::endl;
+  std::cout << alpha << " * a * x + " << beta << " * y = [" << y.transpose() << "]^t\n";
 }
 
 /* gemv.m
