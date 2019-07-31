@@ -42,7 +42,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
   int bhandle = BLACS_sys2blacs_handle(&comm_f);
   int ictxt = bhandle;
-  // char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
+  /* char char_grid_major = */ rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
   rokko::blacs::set_desc(ictxt, mat, desc);
@@ -84,7 +84,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   MPI_Fint comm_f = MPI_Comm_c2f(mat.get_grid().get_comm());
   int bhandle = BLACS_sys2blacs_handle(&comm_f);
   int ictxt = bhandle;
-  // char char_grid_major = rokko::blacs::set_grid_blacs(ictxt, mat);
+  /* char char_grid_major = */ rokko::blacs::set_grid_blacs(ictxt, mat);
   int dim = mat.get_m_global();
   int desc[9];
   rokko::blacs::set_desc(ictxt, mat, desc);
