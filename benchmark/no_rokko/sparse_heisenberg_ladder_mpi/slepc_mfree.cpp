@@ -1,5 +1,4 @@
 #include <slepceps.h>
-#include <petscblaslapack.h>
 #include <boost/lexical_cast.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <rokko/utility/lattice.hpp>
