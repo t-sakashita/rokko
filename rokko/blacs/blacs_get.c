@@ -12,7 +12,7 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
 
-int CBLACS_get(int context, int request) {
+int cblacs_get(int context, int request) {
   int value;
   BLACS_get(&context, &request, &value);
   return value;

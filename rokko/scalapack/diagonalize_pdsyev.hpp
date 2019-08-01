@@ -57,7 +57,7 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
     lapack::print_verbose("pdsyev", jobz, uplow);
   }
   BLACS_free_blacs_system_handle(&bhandle);
-  CBLACS_gridexit(&ictxt);
+  cblacs_gridexit(&ictxt);
 
   return params_out;
 }
@@ -93,7 +93,7 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
     lapack::print_verbose("pdsyev", jobz, uplow);
   }
   BLACS_free_blacs_system_handle(&bhandle);
-  CBLACS_gridexit(&ictxt);
+  cblacs_gridexit(&ictxt);
 
   return params_out;
 }

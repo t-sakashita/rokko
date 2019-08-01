@@ -12,4 +12,4 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
 
-void CBLACS_barrier(int ictxt, char score) { BLACS_barrier(&ictxt, &score); }
+void cblacs_barrier(int ictxt, char score) { BLACS_barrier(&ictxt, &score); }

@@ -12,4 +12,4 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
 
-void CBLACS_exit(int conti) { BLACS_exit(&conti); }
+void cblacs_exit(int conti) { BLACS_exit(&conti); }

@@ -12,4 +12,4 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
 
-void CBLACS_gridexit(int* ictxt) { BLACS_gridexit(ictxt); }
+void cblacs_gridexit(int* ictxt) { BLACS_gridexit(ictxt); }

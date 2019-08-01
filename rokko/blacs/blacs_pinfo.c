@@ -12,4 +12,4 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
 
-void CBLACS_pinfo(int* mypnum, int* nprocs) { BLACS_pinfo(mypnum, nprocs); }
+void cblacs_pinfo(int* mypnum, int* nprocs) { BLACS_pinfo(mypnum, nprocs); }

@@ -12,6 +12,6 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs.h>
 
-void CBLACS_gridinit(int* ictxt, char order, int nprow, int npcol) {
+void cblacs_gridinit(int* ictxt, char order, int nprow, int npcol) {
   BLACS_gridinit(ictxt, &order, &nprow, &npcol);
 }

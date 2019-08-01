@@ -16,21 +16,21 @@
 extern "C" {
 #endif
   
-void CBLACS_barrier(int ictxt, char score);
+void cblacs_barrier(int ictxt, char score);
 
-void CBLACS_exit(int conti);
+void cblacs_exit(int conti);
+  
+int cblacs_get(int context, int request);
 
-int CBLACS_get(int context, int request);
+void cblacs_gridexit(int* ictxt);
 
-void CBLACS_gridexit(int* ictxt);
+void cblacs_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol);
 
-void CBLACS_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol);
+void cblacs_gridinit(int* ictxt, char order, int nprow, int npcol);
 
-void CBLACS_gridinit(int* ictxt, char order, int nprow, int npcol);
+void cblacs_pinfo(int* mypnum, int* nprocs);
 
-void CBLACS_pinfo(int* mypnum, int* nprocs);
-
-int CBLACS_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
+int cblacs_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
                     int ictxt, int lld);
 
 #ifdef __cplusplus
