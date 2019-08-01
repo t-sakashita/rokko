@@ -9,6 +9,7 @@
 
 # core wrappers
 add_subdirectory(blas)
+add_subdirectory(lapack)
 
 # single process tests
 set(TESTS localized_matrix localized_matrix_fixed_size matrix_major serial_dense_ev solver)
