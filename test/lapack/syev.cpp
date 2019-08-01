@@ -11,8 +11,7 @@
 
 #include <gtest/gtest.h>
 #include <rokko/eigen3.hpp>
-#include <rokko/lapack/syev.hpp>
-#include <rokko/lapack/lange.hpp>
+#include <rokko/lapack.hpp>
 
 TEST(SyevTest, SyevTest) {
   int n = 10;
