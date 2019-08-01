@@ -123,12 +123,7 @@ program test_real_example
 
    real(kind=c_double), allocatable :: a(:,:), z(:,:), ev(:)
 
-   integer                          :: iseed(4096) ! Random seed, size should be sufficient for every generator
-
-   integer                          :: STATUS
    integer                          :: success
-   character(len=8)                 :: task_suffix
-   integer                          :: j
 
    integer, parameter               :: error_units = 0
 
