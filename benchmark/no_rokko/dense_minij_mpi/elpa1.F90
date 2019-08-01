@@ -224,6 +224,11 @@ program test_real_example
    call mpi_barrier(mpi_comm_world, mpierr) ! for correct timings only
    call e%eigenvectors(a, ev, z, success)
 
+   if (success /= 0) then
+      write(error_units,*) "ELPA solver produced an error! Aborting..."
+      call MPI_ABORT(mpi_comm_world, 1, mpierr)
+   endif
+   
    if (myid==0) then
      print '(a)','| One-step ELPA solver complete.'
      print *
