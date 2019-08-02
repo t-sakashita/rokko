@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/cblacs.h>
-#include <rokko/blacs/blacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
 int cblacs_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
                     int ictxt, int lld) {

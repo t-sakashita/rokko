@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/cblacs.h>
-#include <rokko/blacs/blacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
 void cblacs_barrier(int ictxt, char score) { BLACS_barrier(&ictxt, &score); }

@@ -34,7 +34,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
 
   # BLACS, PBLAS, ScaLAPACK
   if(ROKKO_HAVE_SCALAPACK)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_descinit.c blacs/blacs_exit.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} blacs/blacs_barrier.c blacs/blacs_descinit.c blacs/blacs_exit.c blacs/blacs_free_blacs_system_handle.c blacs/blacs_get.c blacs/blacs_gridexit.c blacs/blacs_gridinfo.c blacs/blacs_gridinit.c blacs/blacs_pinfo.c blacs/blacs_sys2blacs_handle.c)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} pblas/pcopy.c pblas/pdot.c pblas/pdotu.c pblas/pdotc.c pblas/pgemv.c pblas/pgemm.c)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} scalapack/pdelget.c scalapack/pdelset.c scalapack/pdlamch.c scalapack/pdlaprnt.c scalapack/pdsyev_work.c scalapack/pdsyev.c scalapack/pdsyevd_work.c scalapack/pdsyevd.c scalapack/pdsyevx_work.c scalapack/pdsyevx.c)
     if(ROKKO_HAVE_SCALAPACK_PDSYEVR)

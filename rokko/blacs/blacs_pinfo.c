@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/cblacs.h>
-#include <rokko/blacs/blacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
 void cblacs_pinfo(int* mypnum, int* nprocs) { BLACS_pinfo(mypnum, nprocs); }

@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/cblacs.h>
-#include <rokko/blacs/blacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
 void cblacs_gridexit(int* ictxt) { BLACS_gridexit(ictxt); }

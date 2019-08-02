@@ -18,8 +18,13 @@ extern "C" {
   
 void cblacs_barrier(int ictxt, char score);
 
+int cblacs_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
+                    int ictxt, int lld);
+
 void cblacs_exit(int conti);
   
+void cblacs_free_blacs_system_handle(int *ISysCxt);
+
 int cblacs_get(int context, int request);
 
 void cblacs_gridexit(int* ictxt);
@@ -30,8 +35,7 @@ void cblacs_gridinit(int* ictxt, char order, int nprow, int npcol);
 
 void cblacs_pinfo(int* mypnum, int* nprocs);
 
-int cblacs_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
-                    int ictxt, int lld);
+int cblacs_sys2blacs_handle(int *SysCtxt);
 
 #ifdef __cplusplus
 } // extern "C"

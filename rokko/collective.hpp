@@ -13,8 +13,7 @@
 #define ROKKO_COLLECTIVE_HPP
 
 #include <mpi.h>
-#include <rokko/blacs/blacs.h>
-#include <rokko/cblacs.h>
+#include <rokko/blacs.hpp>
 #include <rokko/pblas.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_matrix.hpp>
@@ -29,11 +28,10 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
     exit(67);
   }
 
-  MPI_Fint fcomm = MPI_Comm_c2f(from.get_grid().get_comm());
-  int bhandle = BLACS_sys2blacs_handle(&fcomm);
+  int bhandle = blacs::sys2blacs_handle(from.get_grid().get_comm());
   int ictxt = bhandle;
   char char_grid_major = (from.get_grid().is_row_major() ? 'R' : 'C');
-  cblacs_gridinit(&ictxt, char_grid_major, from.get_nprow(), from.get_npcol());
+  blacs::gridinit(ictxt, char_grid_major, from.get_nprow(), from.get_npcol());
   int m = from.get_m_global();
   int n = from.get_n_global();
   int rsrc = (from.get_grid().is_row_major() ? (root / from.get_npcol()) :
@@ -41,14 +39,13 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   int csrc = (from.get_grid().is_row_major() ? (root % from.get_npcol()) :
               (root / from.get_nprow()));
   int descFrom[9], descTo[9];
-  int info = cblacs_descinit(descFrom, m, n, from.get_mb(), from.get_nb(), 0, 0, ictxt,
-                            from.get_lld());
-  info = cblacs_descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
+  blacs::descinit(descFrom, m, n, from.get_mb(), from.get_nb(), 0, 0, ictxt, from.get_lld());
+  blacs::descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
 
-  BLACS_free_blacs_system_handle(&bhandle);
-  cblacs_gridexit(&ictxt);
+  blacs::free_blacs_system_handle(bhandle);
+  blacs::gridexit(ictxt);
 }
 
 template<typename T, typename MATRIX_MAJOR>
@@ -65,24 +62,23 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
     exit(67);
   }
 
-  MPI_Fint fcomm = MPI_Comm_c2f(to.get_grid().get_comm());
-  int bhandle = BLACS_sys2blacs_handle(&fcomm);
+  int bhandle = blacs::sys2blacs_handle(to.get_grid().get_comm());
   int ictxt = bhandle;
   char char_grid_major = (to.get_grid().is_row_major() ? 'R' : 'C');
-  cblacs_gridinit(&ictxt, char_grid_major, to.get_nprow(), to.get_npcol());
+  blacs::gridinit(ictxt, char_grid_major, to.get_nprow(), to.get_npcol());
   int m = to.get_m_global();
   int n = to.get_n_global();
   int rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
   int csrc = (to.get_grid().is_row_major() ? (root % to.get_npcol()) : (root / to.get_nprow()));
   int descFrom[9], descTo[9];
-  int info = cblacs_descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
-  info = cblacs_descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
+  blacs::descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
+  blacs::descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
 
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
 
-  BLACS_free_blacs_system_handle(&bhandle);
-  cblacs_gridexit(&ictxt);
+  blacs::free_blacs_system_handle(bhandle);
+  blacs::gridexit(ictxt);
 }
 
 template<typename T, typename MATRIX_MAJOR>

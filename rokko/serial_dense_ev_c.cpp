@@ -63,8 +63,8 @@ struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals(struct rokko_s
 
 // only eigenvalues, parameters
 struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals_params(struct rokko_serial_dense_ev solver,
-							  struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
-							  struct rokko_parameters params) {
+    struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
+    struct rokko_parameters /* params */) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
   if (mat.major == rokko_matrix_col_major)
@@ -190,7 +190,7 @@ int rokko_serial_dense_ev_num_solvers() {
 char** rokko_serial_dense_ev_solvers() {
   std::vector<std::string> solvers = rokko::serial_dense_ev::solvers();
   char **solvers_c = (char**)malloc((size_t)(solvers.size() * sizeof(char*)));
-  for (int i = 0; i < solvers.size(); ++i) {
+  for (std::size_t i = 0; i < solvers.size(); ++i) {
     solvers_c[i] = (char*)malloc((size_t)((solvers[i].size() + 1) * sizeof(char)));
     strcpy(solvers_c[i], solvers[i].c_str());
   }

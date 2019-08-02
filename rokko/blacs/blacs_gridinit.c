@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/cblacs.h>
-#include <rokko/blacs/blacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
 void cblacs_gridinit(int* ictxt, char order, int nprow, int npcol) {
   BLACS_gridinit(ictxt, &order, &nprow, &npcol);
