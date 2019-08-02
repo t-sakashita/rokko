@@ -55,7 +55,7 @@ if(ROKKO_HAVE_ELPA)
 set(EXAMPLE elpa1)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_dense_no_rokko_minij_mpi_${name})
-  add_executable(${target_name} ${name}.F90 test_blacs_infrastructure.F90)
+  add_executable(${target_name} ${name}.F90 my_elpa_utility.F90)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   target_include_directories(${target_name} PUBLIC ${ELPA_INCLUDE_DIR}/modules)  # Need .mod files in ELPA_INCLUDE_DIR
   target_link_libraries(${target_name} rokko)
