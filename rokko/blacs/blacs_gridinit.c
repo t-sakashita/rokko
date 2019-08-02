@@ -9,9 +9,9 @@
 *
 *****************************************************************************/
 
-#include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/cblacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
-void ROKKO_blacs_gridinit(int* ictxt, char order, int nprow, int npcol) {
+void cblacs_gridinit(int* ictxt, char order, int nprow, int npcol) {
   BLACS_gridinit(ictxt, &order, &nprow, &npcol);
 }

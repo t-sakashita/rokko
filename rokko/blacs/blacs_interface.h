@@ -21,8 +21,16 @@ extern "C" {
 #define BLACS_barrier ROKKO_GLOBAL(blacs_barrier,BLACS_BARRIER)
 void BLACS_barrier(const int* ictxt, const char* score);
 
+#define BLACS_descinit ROKKO_GLOBAL(descinit,DESCINIT)
+void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
+                    const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
+                    int* info);
+
 #define BLACS_exit ROKKO_GLOBAL(blacs_exit,BLACS_EXIT)
 void BLACS_exit(const int* conti);
+
+#define BLACS_free_blacs_system_handle ROKKO_GLOBAL(free_blacs_system_handle,FREE_BLACS_SYSTEM_HANDLE)
+void BLACS_free_blacs_system_handle(int *ISysCxt);
 
 #define BLACS_get ROKKO_GLOBAL(blacs_get,BLACS_GET)
 void BLACS_get(const int* context, const int* request, int* value);
@@ -39,16 +47,8 @@ void BLACS_gridinit(int* ictxt, const char* order, const int* nprow, const int* 
 #define BLACS_pinfo ROKKO_GLOBAL(blacs_pinfo,BLACS_PINFO)
 void BLACS_pinfo(int* mypnum, int* nprocs);
 
-#define BLACS_descinit ROKKO_GLOBAL(descinit,DESCINIT)
-void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
-                    const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
-                    int* info);
-
 #define BLACS_sys2blacs_handle ROKKO_GLOBAL(sys2blacs_handle,SYS2BLACS_HANDLE)
 int BLACS_sys2blacs_handle(int *SysCtxt);
-
-#define BLACS_free_blacs_system_handle ROKKO_GLOBAL(free_blacs_system_handle,FREE_BLACS_SYSTEM_HANDLE)
-void BLACS_free_blacs_system_handle(int *ISysCxt);
 
 #ifdef __cplusplus
 } // extern "C"

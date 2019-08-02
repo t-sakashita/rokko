@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/cblacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
-void ROKKO_blacs_barrier(int ictxt, char score) { BLACS_barrier(&ictxt, &score); }
+void cblacs_barrier(int ictxt, char score) { BLACS_barrier(&ictxt, &score); }

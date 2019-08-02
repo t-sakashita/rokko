@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/blacs/blacs.h>
-#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/cblacs.h>
+#include <rokko/blacs/blacs_interface.h>
 
-void ROKKO_blacs_exit(int conti) { BLACS_exit(&conti); }
+void cblacs_exit(int conti) { BLACS_exit(&conti); }

@@ -63,8 +63,8 @@ struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals(struct rokko_s
 
 // only eigenvalues, parameters
 struct rokko_parameters rokko_serial_dense_ev_diagonalize_eigvals_params(struct rokko_serial_dense_ev solver,
-							  struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
-                                                          struct rokko_parameters /* params */) {
+    struct rokko_localized_matrix mat, struct rokko_localized_vector eigvals,
+    struct rokko_parameters /* params */) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
   if (mat.major == rokko_matrix_col_major)

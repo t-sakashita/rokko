@@ -15,7 +15,7 @@
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_bc.hpp>
-#include <rokko/blacs/blacs_wrap.h>
+#include <rokko/blacs.hpp>
 #include <rokko/pblas.hpp>
 
 #include <iostream>
@@ -186,17 +186,17 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
              const distributed_matrix<T, MATRIX_MAJOR>& matB, bool transB,
              typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
              distributed_matrix<T, MATRIX_MAJOR>& matC) {
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  int ictxt = blacs::get(-1, 0);
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
+  blacs::gridinit(ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
 
   int descA[9], descB[9], descC[9];
-  int info = ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
-                            matA.get_nb(), 0, 0, ictxt, matA.get_lld());
-  info = ROKKO_descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(),
-                        matB.get_nb(), 0, 0, ictxt, matB.get_lld());
-  info = ROKKO_descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(),
-                        matC.get_nb(), 0, 0, ictxt, matC.get_lld());
+  int info = blacs::descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
+                             matA.get_nb(), 0, 0, ictxt, matA.get_lld());
+  info = blacs::descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(),
+                         matB.get_nb(), 0, 0, ictxt, matB.get_lld());
+  info = blacs::descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(),
+                         matC.get_nb(), 0, 0, ictxt, matC.get_lld());
 
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
@@ -204,7 +204,7 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                matA.get_n_global(), alpha, matA.get_array_pointer(), 1, 1, descA,
                matB.get_array_pointer(), 1, 1, descB, beta,
                matC.get_array_pointer(), 1, 1, descC);
-  ROKKO_blacs_gridexit(&ictxt);
+  blacs::gridexit(ictxt);
 }
 
 // Y = alpha A * X + beta Y
@@ -214,17 +214,17 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
                distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  int ictxt = blacs::get(-1, 0);
   char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
+  blacs::gridinit(ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
 
   int descA[9], descX[9], descY[9];
-  int info = ROKKO_descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
-                            matA.get_nb(), 0, 0, ictxt, matA.get_lld());
-  info = ROKKO_descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
-                        vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
-  info = ROKKO_descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(),
-                        vecY.get_nb(), 0, 0, ictxt, vecY.get_lld());
+  int info = blacs::descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
+                             matA.get_nb(), 0, 0, ictxt, matA.get_lld());
+  info = blacs::descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
+                         vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
+  info = blacs::descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(),
+                         vecY.get_nb(), 0, 0, ictxt, vecY.get_lld());
 
   char char_transA = (transA ? 'T' : 'N');
   int ix = (transX ? xindex + 1 : 1);
@@ -237,22 +237,22 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                matA.get_array_pointer(), 1, 1, descA,
                vecX.get_array_pointer(), ix, jx, descX, incx, beta,
                vecY.get_array_pointer(), iy, jy, descY, incy);
-  ROKKO_blacs_gridexit(&ictxt);
+  blacs::gridexit(ictxt);
 }
 
 // dot = X * Y
 template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int ictxt = ROKKO_blacs_get(-1, 0);
+  int ictxt = blacs::get(-1, 0);
   char char_grid_major = (vecX.get_grid().is_row_major() ? 'R' : 'C');
-  ROKKO_blacs_gridinit(&ictxt, char_grid_major, vecX.get_nprow(), vecX.get_npcol());
+  blacs::gridinit(ictxt, char_grid_major, vecX.get_nprow(), vecX.get_npcol());
 
   int descX[9], descY[9];
-  int info = ROKKO_descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
-                            vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
-  info = ROKKO_descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(),
-                        vecY.get_nb(), 0, 0, ictxt, vecY.get_lld());
+  int info = blacs::descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
+                             vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
+  info = blacs::descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(),
+                         vecY.get_nb(), 0, 0, ictxt, vecY.get_lld());
 
   int n = (transX ? vecX.get_n_global() : vecX.get_m_global());
   int ix = (transX ? xindex + 1 : 1);
@@ -263,7 +263,7 @@ T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int 
   int incy = (transY ? vecY.get_m_global() : 1);
   T dot = pblas::pdot(n, vecX.get_array_pointer(), ix, jx, descX, incx,
                       vecY.get_array_pointer(), iy, jy, descY, incy);
-  ROKKO_blacs_gridexit(&ictxt);
+  blacs::gridexit(ictxt);
   return dot;
 }
 

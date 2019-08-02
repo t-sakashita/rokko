@@ -12,6 +12,9 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs_interface.h>
 
-void cblacs_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol) {
-  BLACS_gridinfo(&ictxt, nprow, npcol, myrow, mycol);
+int cblacs_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
+                    int ictxt, int lld) {
+  int info;
+  BLACS_descinit(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ictxt, &lld, &info);
+  return info;
 }

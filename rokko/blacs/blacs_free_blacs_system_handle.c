@@ -12,6 +12,4 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs_interface.h>
 
-void cblacs_gridinfo(int ictxt, int* nprow, int* npcol, int* myrow, int* mycol) {
-  BLACS_gridinfo(&ictxt, nprow, npcol, myrow, mycol);
-}
+void cblacs_free_blacs_system_handle(int *handle) { BLACS_free_blacs_system_handle(handle); }
