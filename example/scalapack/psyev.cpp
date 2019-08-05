@@ -44,16 +44,13 @@ int main(int argc, char** argv) {
     for (int i = 0; i < n; ++i)
       a.set_global(i, j, n - std::max(i, j));
   
-  a.print();
-  // // info = rokko::scalapack::psyev('V', 'U', a, desc, w, z, desc);
-  // info = cscalapack_pdsyev('V', 'U', n, storage(a), 0, 0, desc, storage(w), storage(z), 0, 0, desc);
-  // if (info) {
-  //   std::cerr << "Error in cscalapack_pdsyev\n";
-  //   MPI_Abort(MPI_COMM_WORLD, info);
-  // }
-  // if (myrank == 0)
-  //   std::cout << "eigenvalues: " << w.transpose() << std::endl;
+  int info = rokko::scalapack::psyev('V', 'U', a, w, z);
+  if (info) {
+    std::cerr << "Error in rokko::scalapack::psyev\n";
+    MPI_Abort(MPI_COMM_WORLD, info);
+  }
+  if (grid.get_myrank() == 0)
+    std::cout << "eigenvalues: " << w.transpose() << std::endl;
 
-  // rokko::blacs::gridexit(context);
   MPI_Finalize();
 }

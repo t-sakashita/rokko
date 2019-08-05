@@ -23,11 +23,10 @@ inline int descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsr
 }
   
 template<typename MATRIX, typename VECTOR>
-int syev(char jobz, char uplo, MATRIX& a, int ia, int ja, VECTOR& w, MATRIX& z, int iz, int jz);
+int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z);
 
 template<typename MATRIX, typename VECTOR>
-int syev(char jobz, char uplo, MATRIX& a, int ia, int ja, VECTOR& w, MATRIX& z, int iz, int jz,
-         VECTOR& work, int lwork);
+int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 
 } // end namespace scalapack
 } // end namespace rokko

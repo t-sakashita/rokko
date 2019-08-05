@@ -186,7 +186,6 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
              const distributed_matrix<T, MATRIX_MAJOR>& matB, bool transB,
              typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
              distributed_matrix<T, MATRIX_MAJOR>& matC) {
-  int ictxt = matA.get_grid().get_blacs_context();
   const int* descA = matA.get_mapping().get_blacs_descriptor();
   const int* descB = matB.get_mapping().get_blacs_descriptor();
   const int* descC = matC.get_mapping().get_blacs_descriptor();
@@ -205,7 +204,6 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
                distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int ictxt = matA.get_grid().get_blacs_context();
   const int* descA = matA.get_mapping().get_blacs_descriptor();
   const int* descX = vecX.get_mapping().get_blacs_descriptor();
   const int* descY = vecY.get_mapping().get_blacs_descriptor();
@@ -226,7 +224,6 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
 template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int ictxt = vecX.get_grid().get_blacs_context();
   const int* descX = vecX.get_mapping().get_blacs_descriptor();
   const int* descY = vecY.get_mapping().get_blacs_descriptor();
   int n = (transX ? vecX.get_n_global() : vecX.get_m_global());

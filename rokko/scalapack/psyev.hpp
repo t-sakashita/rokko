@@ -13,9 +13,6 @@
 #define ROKKO_SCALAPACK_PSYEV_HPP
 
 #include <rokko/cscalapack.h>
-#undef I
-#include <rokko/traits/norm_t.hpp>
-#include <rokko/traits/value_t.hpp>
 
 namespace rokko {
 namespace scalapack {
@@ -36,17 +33,19 @@ inline int psyev_dispatch(char jobz, char uplo, int n, double* A, int ia, int ja
 }
   
 template<typename MATRIX, typename VECTOR>
-int psyev(char jobz, char uplo, int n, MATRIX& a, const int* descA, VECTOR& w,
-          MATRIX& z, const int* descZ) {
-  return psyev_dispatch(jobz, uplo, n, storage(a), 0, 0, descA, storage(w),
-                        storage(z), 0, 0, descZ);
+int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
+  const int* descA = a.get_mapping().get_blacs_descriptor();
+  const int* descZ = z.get_mapping().get_blacs_descriptor();
+  return psyev_dispatch(jobz, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
+                        storage(w), z.get_array_pointer(), 0, 0, descZ);
 }
 
 template<typename MATRIX, typename VECTOR>
-int psyev(char jobz, char uplo, int n, MATRIX& a, const int* descA, VECTOR& w,
-          MATRIX& z, const int* descZ, VECTOR& work) {
-  return psyev_dispatch(jobz, uplo, n, storage(a), 0, 0, descA, storage(w),
-                        storage(z), 0, 0, descZ, storage(work), work.size());
+int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work) {
+  const int* descA = a.get_mapping().get_blacs_descriptor();
+  const int* descZ = z.get_mapping().get_blacs_descriptor();
+  return psyev_dispatch(jobz, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
+                        storage(w), z.get_array_pointer(), 0, 0, descZ, storage(work), work.size());
 }
 
 } // end namespace scalapack
