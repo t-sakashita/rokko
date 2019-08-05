@@ -43,8 +43,6 @@ inline void gridmap(int& ConTxt, const std::vector<int>& usermap, int ldup,
   Cblacs_gridmap(&ConTxt, const_cast<int*>(&usermap[0]), ldup, nprow0, npcol0);
 }
   
-inline void pinfo(int& mypnum, int& nprocs) { Cblacs_pinfo(&mypnum, &nprocs); }
-  
 inline int sys2blacs_handle(const MPI_Comm& comm) {
   return Csys2blacs_handle(comm);
 }

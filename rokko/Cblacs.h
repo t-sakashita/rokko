@@ -34,8 +34,6 @@ void Cblacs_gridinit(int *ConTxt, char *order, int nprow, int npcol);
 
 void Cblacs_gridmap(int *ConTxt, int *usermap, int ldup, int nprow0, int npcol0);
 
-void Cblacs_pinfo(int *mypnum, int *nprocs);
-
 void Cfree_blacs_system_handle(int ISysCtxt);
 
 int Csys2blacs_handle(MPI_Comm SysCtxt);
