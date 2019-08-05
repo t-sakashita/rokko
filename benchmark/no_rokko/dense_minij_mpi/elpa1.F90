@@ -156,7 +156,7 @@ program test_real_example
 
    allocate(ev(na))
 
-   call prepare_matrix_frank(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
+   call prepare_matrix_minij(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
    
    !-------------------------------------------------------------------------------
 
