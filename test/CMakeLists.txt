@@ -10,6 +10,9 @@
 # core wrappers
 add_subdirectory(blas)
 add_subdirectory(lapack)
+if(ROKKO_HAVE_SCALAPACK)
+  add_subdirectory(scalapack)
+endif(ROKKO_HAVE_SCALAPACK)
 
 # single process tests
 set(TESTS localized_matrix localized_matrix_fixed_size matrix_major serial_dense_ev solver)

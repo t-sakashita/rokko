@@ -12,6 +12,7 @@
 #ifndef ROKKO_SCALAPACK_HPP
 #define ROKKO_SCALAPACK_HPP
 
+#include <rokko/config.h>
 #include <rokko/cscalapack.h>
 
 namespace rokko {
@@ -22,6 +23,18 @@ inline int descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsr
   return cscalapack_descinit(desc, m, n, mb, nb, irsrc, icsrc, ictxt, lld);
 }
   
+template<typename MATRIX>
+typename MATRIX::value_type pelget(char scope, char top, const MATRIX& A, int ia, int ja);
+
+template<typename MATRIX>
+void pelset(MATRIX& A, int ia, int ja, typename MATRIX::value_type alpha);
+
+template<typename MATRIX>
+typename MATRIX::value_type plange(char norm, const MATRIX& A);
+
+template<typename MATRIX, typename VECTOR>
+typename MATRIX::value_type plange(char norm, const MATRIX& A, VECTOR& work);
+
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z);
 
@@ -31,6 +44,9 @@ int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 } // end namespace scalapack
 } // end namespace rokko
 
+#include "scalapack/pelget.hpp"
+#include "scalapack/pelset.hpp"
+#include "scalapack/plange.hpp"
 #include "scalapack/psyev.hpp"
 
 #endif // ROKKO_SCALAPACK_HPP

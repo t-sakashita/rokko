@@ -12,10 +12,8 @@
 #include <rokko/cscalapack.h>
 #include <rokko/scalapack/scalapack_interface.h>
 
-double cscalapack_pdelget(char scope, char top, const double* A, int ia, int ja, const int* descA) {
-  double alpha;
-  int ia_f = ia + 1;
-  int ja_f = ja + 1;
-  SCALAPACK_pdelget(&scope, &top, &alpha, A, &ia_f, &ja_f, descA);
-  return alpha;
+int cscalapack_numroc(int n, int nb, int iproc, int isrcproc, int nprocs) {
+  int iproc_f = iproc + 1;
+  int isrcproc_f = isrcproc + 1;
+  return SCALAPACK_numroc(&n, &nb, &iproc_f, &isrcproc_f, &nprocs);
 }

@@ -12,10 +12,9 @@
 #include <rokko/cscalapack.h>
 #include <rokko/scalapack/scalapack_interface.h>
 
-double cscalapack_pdelget(char scope, char top, const double* A, int ia, int ja, const int* descA) {
-  double alpha;
-  int ia_f = ia + 1;
-  int ja_f = ja + 1;
-  SCALAPACK_pdelget(&scope, &top, &alpha, A, &ia_f, &ja_f, descA);
-  return alpha;
+double cscalapack_pdlange_work(char norm, int m, int n, const double* A, const int* descA,
+                               double* work) {
+  int ia = 1;
+  int ja = 1;
+  return SCALAPACK_pdlange(&norm, &m, &n, A, &ia, &ja, descA, work);
 }
