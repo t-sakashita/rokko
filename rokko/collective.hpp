@@ -28,11 +28,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
     MPI_Abort(MPI_COMM_WORLD,67);
     exit(67);
   }
-
-  int bhandle = blacs::sys2blacs_handle(from.get_grid().get_comm());
-  int ictxt = bhandle;
-  char char_grid_major = (from.get_grid().is_row_major() ? 'R' : 'C');
-  blacs::gridinit(ictxt, char_grid_major, from.get_nprow(), from.get_npcol());
+  int ictxt = from.get_grid().get_blacs_context();
   int m = from.get_m_global();
   int n = from.get_n_global();
   int rsrc = (from.get_grid().is_row_major() ? (root / from.get_npcol()) :
@@ -44,9 +40,6 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   scalapack::descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
-
-  blacs::free_blacs_system_handle(bhandle);
-  blacs::gridexit(ictxt);
 }
 
 template<typename T, typename MATRIX_MAJOR>
@@ -62,11 +55,7 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
     MPI_Abort(MPI_COMM_WORLD,67);
     exit(67);
   }
-
-  int bhandle = blacs::sys2blacs_handle(to.get_grid().get_comm());
-  int ictxt = bhandle;
-  char char_grid_major = (to.get_grid().is_row_major() ? 'R' : 'C');
-  blacs::gridinit(ictxt, char_grid_major, to.get_nprow(), to.get_npcol());
+  int ictxt = to.get_grid().get_blacs_context();
   int m = to.get_m_global();
   int n = to.get_n_global();
   int rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
@@ -74,12 +63,8 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   int descFrom[9], descTo[9];
   scalapack::descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
   scalapack::descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
-
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
-
-  blacs::free_blacs_system_handle(bhandle);
-  blacs::gridexit(ictxt);
 }
 
 template<typename T, typename MATRIX_MAJOR>

@@ -187,11 +187,7 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
              const distributed_matrix<T, MATRIX_MAJOR>& matB, bool transB,
              typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
              distributed_matrix<T, MATRIX_MAJOR>& matC) {
-  int ictxt;
-  blacs::get(-1, 0, ictxt);
-  char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
-  blacs::gridinit(ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
-
+  int ictxt = matA.get_grid().get_blacs_context();
   int descA[9], descB[9], descC[9];
   int info = scalapack::descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
                                  matA.get_nb(), 0, 0, ictxt, matA.get_lld());
@@ -206,7 +202,6 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                matA.get_n_global(), alpha, matA.get_array_pointer(), 1, 1, descA,
                matB.get_array_pointer(), 1, 1, descB, beta,
                matC.get_array_pointer(), 1, 1, descC);
-  blacs::gridexit(ictxt);
 }
 
 // Y = alpha A * X + beta Y
@@ -216,11 +211,7 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
                distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int ictxt;
-  blacs::get(-1, 0, ictxt);
-  char char_grid_major = (matA.get_grid().is_row_major() ? 'R' : 'C');
-  blacs::gridinit(ictxt, char_grid_major, matA.get_nprow(), matA.get_npcol());
-
+  int ictxt = matA.get_grid().get_blacs_context();
   int descA[9], descX[9], descY[9];
   int info = scalapack::descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
                              matA.get_nb(), 0, 0, ictxt, matA.get_lld());
@@ -240,18 +231,13 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                matA.get_array_pointer(), 1, 1, descA,
                vecX.get_array_pointer(), ix, jx, descX, incx, beta,
                vecY.get_array_pointer(), iy, jy, descY, incy);
-  blacs::gridexit(ictxt);
 }
 
 // dot = X * Y
 template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int ictxt;
-  blacs::get(-1, 0, ictxt);
-  char char_grid_major = (vecX.get_grid().is_row_major() ? 'R' : 'C');
-  blacs::gridinit(ictxt, char_grid_major, vecX.get_nprow(), vecX.get_npcol());
-
+  int ictxt = vecX.get_grid().get_blacs_context();
   int descX[9], descY[9];
   int info = scalapack::descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
                              vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
@@ -267,7 +253,6 @@ T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int 
   int incy = (transY ? vecY.get_m_global() : 1);
   T dot = pblas::pdot(n, vecX.get_array_pointer(), ix, jx, descX, incx,
                       vecY.get_array_pointer(), iy, jy, descY, incy);
-  blacs::gridexit(ictxt);
   return dot;
 }
 

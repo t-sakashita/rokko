@@ -35,10 +35,7 @@ parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
   parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = lapack::get_matrix_part(params);
-
-  int bhandle = blacs::sys2blacs_handle(mat.get_grid().get_comm());
-  int ictxt = bhandle;
-  blacs::set_grid(ictxt, mat);
+  int ictxt = mat.get_grid().get_blacs_context();
   int dim = mat.get_m_global();
   int desc[9];
   blacs::set_desc(ictxt, mat, desc);
@@ -55,9 +52,6 @@ parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyevd", jobz, uplow);
   }
-  blacs::free_blacs_system_handle(bhandle);
-  blacs::gridexit(ictxt);
-
   return params_out;
 }
 

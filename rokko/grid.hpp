@@ -16,6 +16,7 @@
 #include <mpi.h>
 #include <cmath>
 #include <boost/type_traits/is_same.hpp>
+#include <rokko/blacs.hpp>
 
 namespace rokko {
 
@@ -41,6 +42,7 @@ public:
   int get_myrank() const { return myrank; }
   int get_myrow() const { return myrow; }
   int get_mycol() const { return mycol; }
+  int get_blacs_context() const { return blacs_context; }
 
   bool is_row_major() const { return is_row; }
   bool is_col_major() const { return !is_row; }
@@ -51,6 +53,7 @@ public:
   int calculate_grid_col(int proc_rank) const { 
     return is_row ? proc_rank % npcol : proc_rank / nprow;
   }
+  
 protected:
   template <typename GRID_MAJOR>
   void initialize(GRID_MAJOR, int lld) {
@@ -84,6 +87,12 @@ protected:
     npcol = nprocs / nprow;
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
+    
+    // for blacs
+    blacs_handle = blacs::sys2blacs_handle(comm);
+    blacs_context = blacs_handle;
+    char char_grid_major = is_row ? 'R' : 'C';
+    blacs::gridinit(blacs_context, char_grid_major, nprow, npcol);
   }
 private:
   MPI_Comm comm;
@@ -91,6 +100,7 @@ private:
   int nprow, npcol;
   int myrow, mycol;
   bool is_row;
+  int blacs_handle, blacs_context;
 };
 
 } // namespace rokko
