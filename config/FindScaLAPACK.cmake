@@ -114,9 +114,29 @@ else(DEFINED BLAS_mkl_core_LIBRARY)
     NAMES blacs-openmpi blacs-mpich
     PATHS ${_LIBPATHS}
     DOC "The ScaLAPACK BLACS library")
+  find_library(_BLACSC_LIBRARY
+    NAMES blacsCinit-openmpi blacsCinit-mpich
+    PATHS ${_LIBPATHS}
+    DOC "The ScaLAPACK BLACS C library")
+  find_library(_BLACSF77_LIBRARY
+    NAMES blacsF77init-openmpi blacsF77init-mpich
+    PATHS ${_LIBPATHS}
+    DOC "The ScaLAPACK BLACS F77 library")
+  if(_BLACSF77_LIBRARY)
+    list(APPEND _SCALAPACK_LIBRARIES ${_BLACSF77_LIBRARY})
+  endif(_BLACSF77_LIBRARY)
+  if(_BLACSC_LIBRARY)
+    list(APPEND _SCALAPACK_LIBRARIES ${_BLACSC_LIBRARY})
+  endif(_BLACSC_LIBRARY)
   if(_BLACS_LIBRARY)
     list(APPEND _SCALAPACK_LIBRARIES ${_BLACS_LIBRARY})
   endif(_BLACS_LIBRARY)
+  if(_BLACSF77_LIBRARY)
+    list(APPEND _SCALAPACK_LIBRARIES ${_BLACSF77_LIBRARY})
+  endif(_BLACSF77_LIBRARY)
+  if(_BLACSC_LIBRARY)
+    list(APPEND _SCALAPACK_LIBRARIES ${_BLACSC_LIBRARY})
+  endif(_BLACSC_LIBRARY)
 
 endif(DEFINED BLAS_mkl_core_LIBRARY)
 
