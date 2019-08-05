@@ -26,20 +26,19 @@ int main(int argc, char *argv[]) {
   MPI_Comm comm;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
-  MPI_Group group_world, odd_group, even_group;;
-  int p, Neven, Nodd, members[8], ierr;
+  MPI_Group group_world, even_group;;
+  int p, Neven, members[8];
 
   MPI_Comm_size(MPI_COMM_WORLD, &p);
   MPI_Comm_group(MPI_COMM_WORLD, &group_world);
 
   Neven = (p+1)/2;
-  Nodd = p - Neven;
-  for (int i=0; i<Neven; ++i) {
+  for (int i = 0; i < Neven; ++i) {
     members[i] = 2*i;
   };
 
   MPI_Group_incl(group_world, Neven, members, &even_group);
-  ierr =  MPI_Comm_create(MPI_COMM_WORLD, group_world, &comm);
+  MPI_Comm_create(MPI_COMM_WORLD, group_world, &comm);
   
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int color = rank % 2;
@@ -91,7 +90,7 @@ int main(int argc, char *argv[]) {
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
     bool sorted = true;
-    for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+    for (int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
     if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
 
     std::cout << "largest eigenvalues:";

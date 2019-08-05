@@ -34,13 +34,13 @@ program frank_matrix_array_mpi
   type(rokko_localized_vector) :: w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
-  integer args_cnt, arg_len, status
+  integer arg_len, status
 
   !---MPI variables---
-  integer :: provided,ierr,myrank,nprocs,comm
+  integer :: provided, ierr, myrank, nprocs
 
   !---loop variables---
-  integer :: i, j, count
+  integer :: i, j
   integer :: m_global, n_global
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)

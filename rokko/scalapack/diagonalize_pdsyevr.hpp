@@ -36,7 +36,6 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   double vl = 0, vu = 0;
   int il = 0, iu = 0;
   char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
-  int ictxt = mat.get_grid().get_blacs_context();
   const int* desc = mat.get_mapping().get_blacs_descriptor();
   int info = ROKKO_pdsyevr(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
                            vl, vu, il, iu, &m, &nz,
@@ -65,7 +64,6 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   double vl = 0, vu = 0;
   int il = 0, iu = 0;
   char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
-  int ictxt = mat.get_grid().get_blacs_context();
   const int* desc = mat.get_mapping().get_blacs_descriptor();
   int info = ROKKO_pdsyevr(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
 		       vl, vu, il, iu, &m, &nz,

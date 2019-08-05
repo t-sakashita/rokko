@@ -18,7 +18,7 @@
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 
-int main(int argc, char *argv[]) {
+int main() {
   int L, N, num_bonds;
   L = 4;
   num_bonds = L - 1;

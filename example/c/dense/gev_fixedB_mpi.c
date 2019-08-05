@@ -28,11 +28,11 @@ int main(int argc, char *argv[]) {
   struct rokko_localized_vector eigval;
   char* solver_name;
 
-  int provided, ierr, myrank, nprocs, i;
+  int provided, myrank, nprocs, i;
 
-  ierr = MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  ierr = MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  ierr = MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
   if (argc == 1) {
     solver_name = argv[1];

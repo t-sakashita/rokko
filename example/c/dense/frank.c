@@ -15,7 +15,7 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-  unsigned int dim = 10;
+  int dim = 10;
   struct rokko_serial_dense_ev solver;
   struct rokko_localized_matrix mat, Z;
   struct rokko_localized_vector w;

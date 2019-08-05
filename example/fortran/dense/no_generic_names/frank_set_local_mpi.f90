@@ -24,7 +24,7 @@ program frank_matrix
   integer arg_len, status
   integer :: provided, ierr, myrank, nprocs
   integer :: m_local, n_local
-  integer :: i, j
+  integer :: i
   integer :: local_i, local_j
   integer :: global_i, global_j
   double precision :: val

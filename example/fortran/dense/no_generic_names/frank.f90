@@ -21,7 +21,6 @@ program frank_matrix
   character(len=20) :: solver_name, tmp_str
   integer arg_len, status
 
-  integer :: provided, ierr, myrank, nprocs
   integer :: i, info
 
   if (command_argument_count() >= 1) then

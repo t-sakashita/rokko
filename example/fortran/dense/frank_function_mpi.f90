@@ -43,7 +43,6 @@ program frank_function
 
   integer :: provided,ierr, myrank, nprocs
   integer :: i
-  integer :: m_local, n_local
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)

@@ -50,7 +50,7 @@ void sort_eigenpairs(const localized_vector<T>& eigval,
   int dim = eigval.size();
   std::vector<std::pair<T, std::size_t> > entries;
   entries.reserve(dim);
-  for (std::size_t i = 0; i < dim; ++i) {
+  for (int i = 0; i < dim; ++i) {
     entries.push_back(std::make_pair(eigval(i), i));
   }
   if (ascending)

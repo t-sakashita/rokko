@@ -14,7 +14,7 @@
 
 typedef rokko::localized_vector<double> vector_t;
 
-int main(int argc, char *argv[]) {
+int main() {
   int n = 6;
   vector_t v(n);
   boost::mt19937 engine(12345l);

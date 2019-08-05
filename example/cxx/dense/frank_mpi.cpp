@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
     bool sorted = true;
-    for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+    for (int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
     if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
 
     std::cout << "largest eigenvalues:";

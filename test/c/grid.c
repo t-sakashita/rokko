@@ -15,12 +15,12 @@
 
 int main(int argc, char** argv) {
   int i, n;
-  int provided, ierr;
+  int provided;
   struct rokko_grid grid;
   bool flag;
   int flag_int;
   
-  ierr = MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
 

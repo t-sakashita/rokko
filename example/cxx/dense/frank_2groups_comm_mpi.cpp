@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   
   MPI_Group group_world, even_group, odd_group;
   MPI_Comm comm, even_comm, odd_comm;
-  int rank, p, Neven, Nodd, ierr;
+  int rank, p, Neven, Nodd;
   int *even_members, *odd_members;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -42,10 +42,10 @@ int main(int argc, char *argv[]) {
   for (int i=0; i<Nodd; ++i)
     odd_members[i] = 2 * i + 1;
   
-  ierr = MPI_Group_incl(group_world, Neven, even_members, &even_group);
-  ierr = MPI_Group_incl(group_world, Nodd, odd_members, &odd_group);
-  ierr = MPI_Comm_create(MPI_COMM_WORLD, even_group, &even_comm);
-  ierr = MPI_Comm_create(MPI_COMM_WORLD, odd_group, &odd_comm);
+  MPI_Group_incl(group_world, Neven, even_members, &even_group);
+  MPI_Group_incl(group_world, Nodd, odd_members, &odd_group);
+  MPI_Comm_create(MPI_COMM_WORLD, even_group, &even_comm);
+  MPI_Comm_create(MPI_COMM_WORLD, odd_group, &odd_comm);
   comm = ((rank % 2) == 0) ? even_comm : odd_comm;
   MPI_Group_free(&group_world);
   MPI_Group_free(&even_group);
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
     rokko::gather(eigvec, eigvec_loc, 0);
     if (myrank == 0) {
       bool sorted = true;
-      for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+      for (int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
       if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       
       std::cout << "largest eigenvalues:";

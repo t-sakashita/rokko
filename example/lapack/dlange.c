@@ -18,7 +18,7 @@ int imax(int x, int y) { return (x > y) ? x : y; }
 
 int main(int argc, char** argv) {
   int n = 5;
-  int i, j, info;
+  int i, j;
   double norm, check;
   double **a;
 

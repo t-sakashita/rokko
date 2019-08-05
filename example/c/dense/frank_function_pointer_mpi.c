@@ -13,14 +13,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned int dim_global;
+int dim_global;
 
 double frank_calculate_matrix_element(int i, int j) {
   return (i > j) ? (dim_global - i) : (dim_global - j);
 }
 
 int main(int argc, char *argv[]) {
-  unsigned int dim = 10;
+  int dim = 10;
   struct rokko_parallel_dense_ev solver;
   struct rokko_grid grid;
   struct rokko_mapping_bc map;
@@ -28,11 +28,11 @@ int main(int argc, char *argv[]) {
   struct rokko_localized_vector w;
   char *library_routine, *library, *routine;
 
-  int provided, ierr, myrank, nprocs, i;
+  int provided, myrank, nprocs, i;
   
-  ierr = MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  ierr = MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  ierr = MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
   if (argc >= 2) library_routine = argv[1];
   else library_routine = rokko_parallel_dense_ev_default_solver();

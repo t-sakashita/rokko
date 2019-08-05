@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
   rokko::zlmatrix lu = a;
   rokko::zlvector x = b;
   rokko::ilvector ipiv(n);
-  int info = rokko::lapack::getrf(lu, ipiv);
-  info = rokko::lapack::getrs('n', 1, lu, ipiv, x);
+  rokko::lapack::getrf(lu, ipiv);
+  rokko::lapack::getrs('n', 1, lu, ipiv, x);
   std::cout << "Solution x: " << std::endl << x << std::endl;
 
   /* solution check */

@@ -176,7 +176,7 @@ int rokko_parallel_dense_ev_num_solvers() {
 char** rokko_parallel_dense_ev_solvers() {
   std::vector<std::string> solvers = rokko::parallel_dense_ev::solvers();
   char **solvers_c = (char**)malloc((size_t)(solvers.size() * sizeof(char*)));
-  for (int i = 0; i < solvers.size(); ++i) {
+  for (std::size_t i = 0; i < solvers.size(); ++i) {
     solvers_c[i] = (char*)malloc((size_t)((solvers[i].size() + 1) * sizeof(char)));
     strcpy(solvers_c[i], solvers[i].c_str());
   }

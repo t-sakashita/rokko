@@ -24,19 +24,19 @@ int main(int argc, char **argv) {
   rokko_parameters_set_char(params, "C", p);
 
   // get double
-  double t = rokko_parameters_get_double(params, "T");
+  rokko_parameters_get_double(params, "T");
 
   // get value as string
   printf("value=%s\n", rokko_parameters_get_string(params, "A"));
 
   // get char
-  char c = rokko_parameters_get_char(params, "C");
+  rokko_parameters_get_char(params, "C");
 
   // is "T" defined?
-  int t_defined = rokko_parameters_defined(params, "T");
+  rokko_parameters_defined(params, "T");
   
   // is "S" defined?
-  int s_defined = rokko_parameters_defined(params, "S");
+  rokko_parameters_defined(params, "S");
 
   // clear paramter "Pi"
   rokko_parameters_clear(params, "Pi");

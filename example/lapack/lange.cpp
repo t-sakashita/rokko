@@ -14,7 +14,7 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
-int main(int argc, char** argv) {
+int main() {
   int m = 5;
   int n = 3;
   

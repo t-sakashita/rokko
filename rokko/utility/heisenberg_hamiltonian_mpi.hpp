@@ -24,7 +24,6 @@ namespace heisenberg_hamiltonian {
 void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const double* v, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
-  int ierr;
 
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
@@ -222,7 +221,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void generate(int L, std::vector<std::pair<int, int> >& lattice,
+void generate(int /* L */, std::vector<std::pair<int, int> >& lattice,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   for (std::size_t l = 0; l < lattice.size(); ++l) {

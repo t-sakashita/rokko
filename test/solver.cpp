@@ -32,10 +32,10 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   }
 
 #ifdef ROKKO_HAVE_MPI
-  int provided, ierr;
-  ierr = MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
-			 &boost::unit_test::framework::master_test_suite().argv,
-			 MPI_THREAD_MULTIPLE, &provided);
+  int provided;
+  MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
+                  &boost::unit_test::framework::master_test_suite().argv,
+                  MPI_THREAD_MULTIPLE, &provided);
 
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   BOOST_FOREACH(std::string name, rokko::parallel_dense_ev::solvers()) {

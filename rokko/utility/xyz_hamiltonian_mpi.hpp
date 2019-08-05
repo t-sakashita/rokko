@@ -28,7 +28,6 @@ namespace xyz_hamiltonian {
 void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling, const double* v, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
-  int ierr;
 
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
@@ -48,7 +47,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   }
   int N = 1 << (L-p);
 
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
@@ -65,7 +64,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
         int m1 = 1 << i;
         int m2 = 1 << j;
         int m3 = m1 + m2;
-        for (int k=0; k<N; ++k) {
+        for (int k = 0; k < N; ++k) {
           if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
             w[k] += diag_minus * v[k] + offdiag_plus * v[k^m3];
           } else {
@@ -81,7 +80,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      comm, &status);
         int m1 = 1 << i;
         if ((myrank & m) == m) { 
-          for (int k=0; k<N; ++k) {
+          for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
               w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
             } else {
@@ -89,7 +88,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
             }
           }
         } else {
-          for (int k=0; k<N; ++k) {
+          for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
               w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
             } else {
@@ -108,7 +107,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      comm, &status);
         int m1 = 1 << j;
         if ((myrank & m) == m) {
-          for (int k=0; k<N; ++k) {
+          for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
               w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
             } else {
@@ -116,7 +115,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
             }
           }
         } else {
-          for (int k=0; k<N; ++k) {
+          for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
               w[k] += diag_minus * v[k] + offdiag_plus * buffer[k^m1];
             } else {
@@ -132,11 +131,11 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      myrank ^ m, 0,
                      comm, &status);
         if (((myrank & m) != m) && ((myrank & m) != 0)) {
-          for (int k=0; k<N; ++k) {
+          for (int k = 0; k < N; ++k) {
             w[k] += diag_minus * v[k] + offdiag_plus * buffer[k];
           }
         } else {
-          for (int k=0; k<N; ++k) {
+          for (int k = 0; k < N; ++k) {
             w[k] += diag_plus * v[k] + offdiag_minus * buffer[k];
           }
         }
@@ -175,11 +174,11 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   int nproc_shift = (nproc-1) * N;
   int mask = N - 1;
 
-  for (int k=0; k<N; ++k) {
+  for (int k = 0; k < N; ++k) {
     w[k] = 0;
   }
 
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
@@ -187,14 +186,12 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
     double jz = coupling[l].get<2>();
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
 
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
 
-    for (int k=0; k<N_seq; ++k) {
+    for (int k = 0; k < N_seq; ++k) {
       if (myrank_shift == (k & nproc_shift)) {
         if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           w[k & mask] += diag_minus;
@@ -216,7 +213,7 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
@@ -231,7 +228,7 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice,
     int m2 = 1 << j;
     int m3 = m1 + m2;
 
-    for (int k=0; k<N; ++k) {
+    for (int k = 0; k < N; ++k) {
       if (mat.is_gindex_mycol(k)) {
         int local_k = mat.translate_g2l_col(k);
         if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)

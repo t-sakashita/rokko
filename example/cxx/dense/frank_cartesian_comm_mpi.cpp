@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   dims[1] = nprocs / dims[0];
   periods[0] = 0;  periods[1] = 0;
   int reorder = 0;
-  int ierr = MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, &comm);
+  MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, &comm);
   rokko::grid g(comm);
   int myrank = g.get_myrank();
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
     rokko::gather(eigvec, eigvec_loc, 0);
     if (myrank == 0) {
       bool sorted = true;
-      for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
+      for (int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
       if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       
       std::cout << "largest eigenvalues:";

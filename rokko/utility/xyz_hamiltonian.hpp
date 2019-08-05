@@ -24,7 +24,7 @@ template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
   const std::vector<boost::tuple<double, double, double> >& coupling, const T* v, T* w) {
   int N = 1 << L;
-  for (int l = 0; l < lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
@@ -64,7 +64,7 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
   for (int k=0; k<N; ++k) {
     w[k] = 0;
   }
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();
@@ -73,8 +73,6 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
 
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
 
     int m1 = 1 << i;
     int m2 = 1 << j;
@@ -102,7 +100,7 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice,
   rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     double jx = coupling[l].get<0>();

@@ -22,13 +22,13 @@ namespace heisenberg_hamiltonian {
 
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const double* v, double* w) {
   int N = 1 << L;
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k=0; k<N; ++k) {
+    for (int k = 0; k < N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) || (bit i == 0, bit j == 1) 
         w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
       } else {
@@ -44,17 +44,17 @@ void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std
 
 void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, double* w) {
   int N = 1 << L;
-  for (int k=0; k<N; ++k) {
+  for (int k = 0; k < N; ++k) {
     w[k] = 0;
   }
 
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k=0; k<N; ++k) {
+    for (int k = 0; k < N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         w[k] -= 0.25;
       }
@@ -78,13 +78,13 @@ template<typename T, typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int> >& lattice, rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
   mat.setZero();
   int N = 1 << L;
-  for (int l = 0; l < lattice.size(); ++l) {
+  for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for (int k=0; k<N; ++k) {
+    for (int k = 0; k < N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {
         // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         mat(k^m3, k) += 0.5;

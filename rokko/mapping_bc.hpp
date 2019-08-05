@@ -73,6 +73,11 @@ public:
     int lld = mapping_local2array<matrix_major>::get_lld();
     blacs_descriptor.resize(9);
     int info = scalapack::descinit(&blacs_descriptor[0], m, n, mb, nb, 0, 0, blacs_context, lld);
+    if (info) {
+      std::cerr << "error info=" << info << " at descinit function of descA " << "mA="
+              << m << "  nA=" << n << "  lld=" << lld << "." << std::endl;
+      MPI_Abort(MPI_COMM_WORLD, info);
+    }
   }
   const int* get_blacs_descriptor() const { return &blacs_descriptor[0]; }
 private:

@@ -21,7 +21,7 @@ program frank_matrix
   type(rokko_localized_vector) w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
-  integer args_cnt, arg_len, status
+  integer arg_len, status
  
   double precision, allocatable, dimension(:,:) :: array
 

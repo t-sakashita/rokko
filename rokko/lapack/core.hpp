@@ -133,7 +133,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  std::size_t dim = mat.rows();
+  int dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
   return solver::diagonalize(mat, &eigvals[0], eigvecs, params);
 }

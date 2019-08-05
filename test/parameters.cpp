@@ -12,7 +12,7 @@
 #include <rokko/parameters.hpp>
 #include <iostream>
 
-int main(int argc, char **argv) {
+int main() {
   rokko::parameters params;
   char p = 'V';
   // set some parameters
@@ -23,19 +23,19 @@ int main(int argc, char **argv) {
   params.set("C", p);
 
   // get double
-  double t = params.get<double>("T");
+  /* double t = */ params.get<double>("T");
 
   // get string
-  std::string a = params.get<std::string>("A");
+  /* std::string a = */ params.get<std::string>("A");
 
   // get char
-  char c = params.get<char>("C");
+  /* char c = */ params.get<char>("C");
 
   // is "T" defined?
-  bool t_defined = params.defined("T");
+  /* bool t_defined = */ params.defined("T");
   
   // is "S" defined?
-  bool s_defined = params.defined("S");
+  /* bool s_defined = */ params.defined("S");
 
   // clear paramter "Pi"
   params.clear("Pi");
