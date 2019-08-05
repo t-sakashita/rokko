@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS syev heev)
+set(TESTS lange syev heev)
 foreach(name ${TESTS})
   set(target_name core_${name})
   add_executable(${target_name} ${name}.cpp)
