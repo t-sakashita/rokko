@@ -19,7 +19,9 @@ namespace rokko {
 namespace blacs {
 
 inline void barrier(int ictxt, char score) { Cblacs_barrier(ictxt, &score); }
-  
+
+inline MPI_Comm blacs2sys_handle(int BlacsCtxt) { return Cblacs2sys_handle(BlacsCtxt); }
+
 inline void exit(int NotDone) { Cblacs_exit(NotDone); }
   
 inline void free_blacs_system_handle(int ISysCxt) { Cfree_blacs_system_handle(ISysCxt); }

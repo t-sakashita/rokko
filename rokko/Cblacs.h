@@ -20,14 +20,10 @@ extern "C" {
   
 MPI_Comm Cblacs2sys_handle(int BlacsCtxt);
 
-void Cblacs_abort(int ConTxt, int ErrNo);
-
 void Cblacs_barrier(int ConTxt, char *scope);
 
 void Cblacs_exit(int NotDone);
 
-void Cblacs_freebuff(int ConTxt, int Wait);
-  
 void Cblacs_get(int ConTxt, int what, int *val);
 
 void Cblacs_gridexit(int ConTxt);
@@ -38,15 +34,7 @@ void Cblacs_gridinit(int *ConTxt, char *order, int nprow, int npcol);
 
 void Cblacs_gridmap(int *ConTxt, int *usermap, int ldup, int nprow0, int npcol0);
 
-void Cblacs_pcoord(int ConTxt, int nodenum, int *prow, int *pcol);
-  
 void Cblacs_pinfo(int *mypnum, int *nprocs);
-
-int Cblacs_pnum(int ConTxt, int prow, int pcol);
-
-void Cblacs_set(int ConTxt, int what, int *val);
-  
-void Cblacs_setup(int *mypnum, int *nprocs);
 
 void Cfree_blacs_system_handle(int ISysCtxt);
 
