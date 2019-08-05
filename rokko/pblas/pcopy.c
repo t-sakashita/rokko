@@ -12,7 +12,7 @@
 #include <rokko/pblas.h>
 
 #define PBLAS_PCOPY_IMPL(NAMES, NAMEL, TYPE) \
-void PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE * Y, int IY, int JY, int *DESCY, int INCY) { \
+void PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, TYPE * Y, int IY, int JY, const int* DESCY, int INCY) { \
   ROKKO_GLOBAL(NAMES, NAMEL) (&N, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); }
 
 PBLAS_PCOPY_IMPL(pscopy, PSCOPY, float);

@@ -12,7 +12,7 @@
 #include <rokko/pblas.h>
 
 #define PBLAS_PGEMV_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
-void PBLAS_ ## NAMES (char TRANS, int M, int N, TYPEC ALPHA, const TYPEC * A, int IA, int JA, int* DESCA, const TYPEC * X, int IX, int JX, int* DESCX, int INCX, TYPEC BETA, TYPEC * Y, int IY, int JY, int* DESCY, int INCY) { \
+void PBLAS_ ## NAMES (char TRANS, int M, int N, TYPEC ALPHA, const TYPEC * A, int IA, int JA, const int* DESCA, const TYPEC * X, int IX, int JX, const int* DESCX, int INCX, TYPEC BETA, TYPEC * Y, int IY, int JY, const int* DESCY, int INCY) { \
   ROKKO_GLOBAL(NAMES, NAMEL) (&TRANS, &M, &N, &ALPHA, A, &IA, &JA, DESCA, X, &IX, &JX, DESCX, &INCX, &BETA, Y, &IY, &JY, DESCY, &INCY); }
 
 PBLAS_PGEMV_IMPL(psgemv, PSGEMV, float, float);

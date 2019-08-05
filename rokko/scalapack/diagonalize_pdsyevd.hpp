@@ -15,8 +15,6 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
-#include <rokko/blacs.hpp>
-#include <rokko/blacs/utility_routines.hpp>
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
@@ -36,18 +34,13 @@ parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
   char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = lapack::get_matrix_part(params);
   int ictxt = mat.get_grid().get_blacs_context();
-  int dim = mat.get_m_global();
-  int desc[9];
-  blacs::set_desc(ictxt, mat, desc);
-  int info;
-
-  info = cscalapack_pdsyevd(jobz, uplow, dim, mat.get_array_pointer(), 0, 0, desc, &eigvals[0],
-		       eigvecs.get_array_pointer(), 0, 0, desc);
-
+  const int* desc = mat.get_mapping().get_blacs_descriptor();
+  int info = cscalapack_pdsyevd(jobz, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0,
+                                desc, &eigvals[0], eigvecs.get_array_pointer(), 0, 0, desc);
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info << std::endl;
-    //exit(1);
+    exit(1);
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
     lapack::print_verbose("pdsyevd", jobz, uplow);

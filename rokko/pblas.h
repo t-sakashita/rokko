@@ -19,8 +19,8 @@
 /* PvCOPY */
 
 #define PBLAS_PCOPY_DECL(NAMES, NAMEL, TYPE) \
-void ROKKO_GLOBAL(NAMES, NAMEL) (const int* N, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, TYPE * Y, const int* IY, int* JY, int *DESCY, const int* INCY); \
-void PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE * Y, int IY, int JY, int *DESCY, int INCY);
+void ROKKO_GLOBAL(NAMES, NAMEL) (const int* N, const TYPE * X, const int* IX, const int* JX, const int* DESCX, const int* INCX, TYPE * Y, const int* IY, int* JY, const int* DESCY, const int* INCY); \
+void PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, TYPE * Y, int IY, int JY, const int* DESCY, int INCY);
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,9 +40,9 @@ PBLAS_PCOPY_DECL(pzcopy, PZCOPY, lapack_complex_double);
 /* PvDOT, PvDOTU, PvDOTC */
 
 #define PBLAS_PDOT_DECL(NAMES, NAMEL, TYPE) \
-void ROKKO_GLOBAL(NAMES, NAMEL) (const int* N, TYPE * DOT, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
-TYPE PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY); \
-void PBLAS_ ## NAMES ## _sub (int N, TYPE * DOT, const TYPE * X, int IX, int JX, int* DESCX, int INCX, const TYPE * Y, int IY, int JY, int* DESCY, int INCY);
+void ROKKO_GLOBAL(NAMES, NAMEL) (const int* N, TYPE * DOT, const TYPE * X, const int* IX, const int* JX, const int* DESCX, const int* INCX, const TYPE * Y, const int* IY, const int* JY, const int* DESCY, const int* INCY); \
+TYPE PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, const TYPE * Y, int IY, int JY, const int* DESCY, int INCY); \
+void PBLAS_ ## NAMES ## _sub (int N, TYPE * DOT, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, const TYPE * Y, int IY, int JY, const int* DESCY, int INCY);
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,8 +64,8 @@ PBLAS_PDOT_DECL(pzdotc, PZDOTC, lapack_complex_double);
 /* PvGEMV */
 
 #define PBLAS_PGEMV_DECL(NAMES, NAMEL, TYPE) \
-void ROKKO_GLOBAL(NAMES, NAMEL) (const char* TRANS, const int* M, const int* N, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, int* DESCA, const TYPE * X, const int* IX, const int* JX, int* DESCX, const int* INCX, const TYPE * BETA, TYPE * Y, const int* IY, const int* JY, int* DESCY, const int* INCY); \
-void PBLAS_ ## NAMES (char TRANS, int M, int N, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * X, int IX, int JX, int* DESCX, int INCX, TYPE BETA, TYPE * Y, int IY, int JY, int* DESCY, int INCY);
+void ROKKO_GLOBAL(NAMES, NAMEL) (const char* TRANS, const int* M, const int* N, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, const int* DESCA, const TYPE * X, const int* IX, const int* JX, const int* DESCX, const int* INCX, const TYPE * BETA, TYPE * Y, const int* IY, const int* JY, const int* DESCY, const int* INCY); \
+void PBLAS_ ## NAMES (char TRANS, int M, int N, TYPE ALPHA, const TYPE * A, int IA, int JA, const int* DESCA, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, TYPE BETA, TYPE * Y, int IY, int JY, const int* DESCY, int INCY);
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,8 +85,8 @@ PBLAS_PGEMV_DECL(pzgemv, PZGEMV, lapack_complex_double);
 /* PvGEMM */
 
 #define PBLAS_PGEMM_DECL(NAMES, NAMEL, TYPE) \
-void ROKKO_GLOBAL(NAMES, NAMEL) (const char* TRANSA, const char* TRANSB, const int* M, const int* N, const int* K, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, int* DESCA, const TYPE * B, const int* IB, const int* JB, int* DESCB, const TYPE * BETA, TYPE * C, const int* IC, const int* JC, int* DESCC); \
-void PBLAS_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE * A, int IA, int JA, int* DESCA, const TYPE * B, int IB, int JB, int* DESCB, TYPE BETA, TYPE * C, int IC, int JC, int* DESCC);
+void ROKKO_GLOBAL(NAMES, NAMEL) (const char* TRANSA, const char* TRANSB, const int* M, const int* N, const int* K, const TYPE * ALPHA, const TYPE * A, const int* IA, const int* JA, const int* DESCA, const TYPE * B, const int* IB, const int* JB, const int* DESCB, const TYPE * BETA, TYPE * C, const int* IC, const int* JC, const int* DESCC); \
+void PBLAS_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE * A, int IA, int JA, const int* DESCA, const TYPE * B, int IB, int JB, const int* DESCB, TYPE BETA, TYPE * C, int IC, int JC, const int* DESCC);
 
 #ifdef __cplusplus
 extern "C" {

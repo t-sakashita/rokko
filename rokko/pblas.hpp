@@ -23,7 +23,7 @@ namespace pblas {
 // pcopy
 
 #define PBLAS_PCOPY_IMPL(NAMES, TYPE) \
-inline void pcopy(int N, const TYPE* X, int IX, int JX, int* DESCX, int INCX, TYPE* Y, int IY, int JY, int *DESCY, int INCY) { \
+inline void pcopy(int N, const TYPE* X, int IX, int JX, const int* DESCX, int INCX, TYPE* Y, int IY, int JY, const int* DESCY, int INCY) { \
   PBLAS_ ## NAMES (N, complex_cast(X), IX, JX, DESCX, INCX, complex_cast(Y), IY, JY, DESCY, INCY); \
 }
 
@@ -37,7 +37,7 @@ PBLAS_PCOPY_IMPL(pzcopy, std::complex<double>);
 // pdot, pdotu, pdotc
 
 #define PBLAS_PDOT_IMPL(NAMEX, NAMES, TYPE) \
-inline TYPE NAMEX (int N, const TYPE* X, int IX, int JX, int* DESCX, int INCX, const TYPE* Y, int IY, int JY, int* DESCY, int INCY) { \
+inline TYPE NAMEX (int N, const TYPE* X, int IX, int JX, const int* DESCX, int INCX, const TYPE* Y, int IY, int JY, const int* DESCY, int INCY) { \
   TYPE DOT; \
   PBLAS_ ## NAMES ## _sub (N, complex_cast(&DOT), complex_cast(X), IX, JX, DESCX, INCX, complex_cast(Y), IY, JY, DESCY, INCY); \
   return DOT; \
@@ -59,7 +59,7 @@ PBLAS_PDOT_IMPL(pdotc, pzdotc, std::complex<double>);
 // pgemv
 
 #define PBLAS_PGEMV_IMPL(NAMES, TYPE) \
-inline void pgemv(char TRANS, int M, int N, TYPE ALPHA, const TYPE* A, int IA, int JA, int* DESCA, const TYPE* X, int IX, int JX, int* DESCX, int INCX, TYPE BETA, TYPE* Y, int IY, int JY, int* DESCY, int INCY) { \
+inline void pgemv(char TRANS, int M, int N, TYPE ALPHA, const TYPE* A, int IA, int JA, const int* DESCA, const TYPE* X, int IX, int JX, const int* DESCX, int INCX, TYPE BETA, TYPE* Y, int IY, int JY, const int* DESCY, int INCY) { \
   PBLAS_ ## NAMES (TRANS, M, N, complex_cast(ALPHA), complex_cast(A), IA, JA, DESCA, complex_cast(X), IX, JX, DESCX, INCX, complex_cast(BETA), complex_cast(Y), IY, JY, DESCY, INCY); \
 }
 
@@ -73,7 +73,7 @@ PBLAS_PGEMV_IMPL(pzgemv, std::complex<double>);
 // pgemm
 
 #define PBLAS_PGEMM_IMPL(NAMES, TYPE) \
-inline void pgemm(char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE* A, int IA, int JA, int* DESCA, const TYPE* B, int IB, int JB, int* DESCB, TYPE BETA, TYPE* C, int IC, int JC, int* DESCC) { \
+inline void pgemm(char TRANSA, char TRANSB, int M, int N, int K, TYPE ALPHA, const TYPE* A, int IA, int JA, const int* DESCA, const TYPE* B, int IB, int JB, const int* DESCB, TYPE BETA, TYPE* C, int IC, int JC, const int* DESCC) { \
   PBLAS_ ## NAMES (TRANSA, TRANSB, M, N, K, complex_cast(ALPHA), complex_cast(A), IA, JA, DESCA, complex_cast(B), IB, JB, DESCB, complex_cast(BETA), complex_cast(C), IC, JC, DESCC); \
 }
 

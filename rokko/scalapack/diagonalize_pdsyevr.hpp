@@ -15,9 +15,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
-#include <rokko/blacs.hpp>
-#include <rokko/blacs/utility_routines.hpp>
-#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -39,19 +37,13 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il = 0, iu = 0;
   char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
   int ictxt = mat.get_grid().get_blacs_context();
-  int dim = mat.get_m_global();
-  int desc[9];
-  blacs::set_desc(ictxt, mat, desc);
-  int m, nz;
-  int info;
-
-  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 0, 0, desc,
-		       vl, vu, il, iu, &m, &nz,
-		       &eigvals[0], eigvecs.get_array_pointer(), 0, 0, desc);
-
+  const int* desc = mat.get_mapping().get_blacs_descriptor();
+  int info = ROKKO_pdsyevr(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
+                           vl, vu, il, iu, &m, &nz,
+                           &eigvals[0], eigvecs.get_array_pointer(), 0, 0, desc);
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
-    //exit(1);
+    exit(1);
   }
   params_out.set("info", info);
   params_out.set("m", m);
@@ -74,13 +66,8 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il = 0, iu = 0;
   char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
   int ictxt = mat.get_grid().get_blacs_context();
-  int dim = mat.get_m_global();
-  int desc[9];
-  blacs::set_desc(ictxt, mat, desc);
-  int m, nz;
-  int info;
-
-  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 0, 0, desc,
+  const int* desc = mat.get_mapping().get_blacs_descriptor();
+  int info = ROKKO_pdsyevr(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
 		       vl, vu, il, iu, &m, &nz,
 		       &eigvals[0], NULL, 0, 0, desc);
 

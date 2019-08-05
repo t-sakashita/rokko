@@ -12,11 +12,8 @@
 #ifndef ROKKO_MAPPING_LOCAL2ARRAY_HPP
 #define ROKKO_MAPPING_LOCAL2ARRAY_HPP
 
-#include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_common_sizes.hpp>
-
-#include <rokko/grid.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 namespace rokko {

@@ -35,8 +35,8 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
               (root % from.get_nprow()));
   int csrc = (from.get_grid().is_row_major() ? (root % from.get_npcol()) :
               (root / from.get_nprow()));
-  int descFrom[9], descTo[9];
-  scalapack::descinit(descFrom, m, n, from.get_mb(), from.get_nb(), 0, 0, ictxt, from.get_lld());
+  const int* descFrom = from.get_mapping().get_blacs_descriptor();
+  int descTo[9];
   scalapack::descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from.get_array_pointer(), 1, (j+1), descFrom, 1, to, 1, (j+1), descTo, 1);
@@ -60,9 +60,9 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   int n = to.get_n_global();
   int rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
   int csrc = (to.get_grid().is_row_major() ? (root % to.get_npcol()) : (root / to.get_nprow()));
-  int descFrom[9], descTo[9];
+  int descFrom[9];
   scalapack::descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
-  scalapack::descinit(descTo, m, n, to.get_mb(), to.get_nb(), 0, 0, ictxt, to.get_lld());
+  const int* descTo = to.get_mapping().get_blacs_descriptor();
   for (int j = 0; j < n; ++j)
     pblas::pcopy(m, from, 1, (j+1), descFrom, 1, to.get_array_pointer(), 1, (j+1), descTo, 1);
 }

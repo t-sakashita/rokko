@@ -57,9 +57,8 @@ public:
   value_type* get_array_pointer() { return array; }
   const value_type* get_array_pointer() const { return array; }
 
-  void set_mapping(mapping_bc<MATRIX_MAJOR> const& map_in) { map = map_in; }
-
-  mapping_bc<MATRIX_MAJOR>& get_mapping() { return map; }
+  // void set_mapping(mapping_bc<MATRIX_MAJOR> const& map_in) { map = map_in; }
+  const mapping_bc<MATRIX_MAJOR>& get_mapping() const { return map; }
 
   void set_local(int local_i, int local_j, value_type value) {
     array[map.get_array_index(local_i, local_j)] = value;
@@ -188,14 +187,9 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
              typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
              distributed_matrix<T, MATRIX_MAJOR>& matC) {
   int ictxt = matA.get_grid().get_blacs_context();
-  int descA[9], descB[9], descC[9];
-  int info = scalapack::descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
-                                 matA.get_nb(), 0, 0, ictxt, matA.get_lld());
-  info = scalapack::descinit(descB, matB.get_m_global(), matB.get_n_global(), matB.get_mb(),
-                         matB.get_nb(), 0, 0, ictxt, matB.get_lld());
-  info = scalapack::descinit(descC, matC.get_m_global(), matC.get_n_global(), matC.get_mb(),
-                         matC.get_nb(), 0, 0, ictxt, matC.get_lld());
-
+  const int* descA = matA.get_mapping().get_blacs_descriptor();
+  const int* descB = matB.get_mapping().get_blacs_descriptor();
+  const int* descC = matC.get_mapping().get_blacs_descriptor();
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
   pblas::pgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
@@ -212,14 +206,9 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
                distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = matA.get_grid().get_blacs_context();
-  int descA[9], descX[9], descY[9];
-  int info = scalapack::descinit(descA, matA.get_m_global(), matA.get_n_global(), matA.get_mb(),
-                             matA.get_nb(), 0, 0, ictxt, matA.get_lld());
-  info = scalapack::descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
-                         vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
-  info = scalapack::descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(),
-                         vecY.get_nb(), 0, 0, ictxt, vecY.get_lld());
-
+  const int* descA = matA.get_mapping().get_blacs_descriptor();
+  const int* descX = vecX.get_mapping().get_blacs_descriptor();
+  const int* descY = vecY.get_mapping().get_blacs_descriptor();
   char char_transA = (transA ? 'T' : 'N');
   int ix = (transX ? xindex + 1 : 1);
   int jx = (transX ? 1 : xindex + 1);
@@ -238,12 +227,8 @@ template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
   int ictxt = vecX.get_grid().get_blacs_context();
-  int descX[9], descY[9];
-  int info = scalapack::descinit(descX, vecX.get_m_global(), vecX.get_n_global(), vecX.get_mb(),
-                             vecX.get_nb(), 0, 0, ictxt, vecX.get_lld());
-  info = scalapack::descinit(descY, vecY.get_m_global(), vecY.get_n_global(), vecY.get_mb(),
-                         vecY.get_nb(), 0, 0, ictxt, vecY.get_lld());
-
+  const int* descX = vecX.get_mapping().get_blacs_descriptor();
+  const int* descY = vecY.get_mapping().get_blacs_descriptor();
   int n = (transX ? vecX.get_n_global() : vecX.get_m_global());
   int ix = (transX ? xindex + 1 : 1);
   int jx = (transX ? 1 : xindex + 1);
