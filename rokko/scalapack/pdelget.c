@@ -9,10 +9,12 @@
 *
 *****************************************************************************/
 
-#include <rokko/scalapack/scalapack.h>
-#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/cscalapack.h>
+#include <rokko/scalapack/scalapack_interface.h>
 
-void ROKKO_pdelget(char scope, char top, double* alpha,
-                   const double* A, int ia, int ja, const int* descA) {
-  SCALAPACK_pdelget(&scope, &top, alpha, A, &ia, &ja, descA);
+void cscalapack_pdelget(char scope, char top, double* alpha,
+                        const double* A, int ia, int ja, const int* descA) {
+  int ia_f = ia + 1;
+  int ja_f = ja + 1;
+  SCALAPACK_pdelget(&scope, &top, alpha, A, &ia_f, &ja_f, descA);
 }

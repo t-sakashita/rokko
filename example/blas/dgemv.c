@@ -10,8 +10,8 @@
 *****************************************************************************/
 
 #include <stdio.h>
-#include <cmatrix.h>
 #include <cblas.h>
+#include <rokko/cmatrix.h>
 
 int main() {
   int n = 4;

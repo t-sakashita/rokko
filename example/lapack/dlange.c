@@ -9,10 +9,10 @@
 *
 *****************************************************************************/
 
+#include <math.h>
 #include <cblas.h>
 #include <lapacke.h>
-#include <cmatrix.h>
-#include <math.h>
+#include <rokko/cmatrix.h>
 
 int imax(int x, int y) { return (x > y) ? x : y; }
 

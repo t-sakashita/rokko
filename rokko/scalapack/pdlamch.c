@@ -9,9 +9,9 @@
 *
 *****************************************************************************/
 
-#include <rokko/scalapack/scalapack.h>
-#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/cscalapack.h>
+#include <rokko/scalapack/scalapack_interface.h>
 
-double ROKKO_pdlamch(int icnt, char cmch) {
+double cscalapack_pdlamch(int icnt, char cmch) {
   return SCALAPACK_pdlamch(&icnt, &cmch);
 }

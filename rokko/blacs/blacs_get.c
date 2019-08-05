@@ -12,8 +12,6 @@
 #include <rokko/cblacs.h>
 #include <rokko/blacs/blacs_interface.h>
 
-int cblacs_get(int context, int request) {
-  int value;
-  BLACS_get(&context, &request, &value);
-  return value;
+void cblacs_get(int context, int request, int* value) {
+  BLACS_get(&context, &request, value);
 }

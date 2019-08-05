@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef CMATRIX_H
-#define CMATRIX_H
+#ifndef ROKKO_CMATRIX_H
+#define ROKKO_CMATRIX_H
 
 #include <stdlib.h>
 #include <stdio.h>

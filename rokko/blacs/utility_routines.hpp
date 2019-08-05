@@ -12,7 +12,8 @@
 #ifndef ROKKO_BLACS_UTILITY_ROUTINES_HPP
 #define ROKKO_BLACS_UTILITY_ROUTINES_HPP
 
-#include <rokko/cblacs.h>
+#include <rokko/Cblacs.h>
+#include <rokko/scalapack.hpp>
 #include <rokko/distributed_matrix.hpp>
 
 namespace rokko {
@@ -30,8 +31,8 @@ char set_grid(int& ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat) {
 template<typename MATRIX_MAJOR>
 void set_desc(int ictxt, distributed_matrix<double, MATRIX_MAJOR>& mat, int desc[9]) {
   int lld = (mat.get_lld() != 0) ? mat.get_lld() : 1;
-  int info = descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(),
-                      mat.get_nb(), 0, 0, ictxt, lld);
+  int info = scalapack::descinit(desc, mat.get_m_global(), mat.get_n_global(), mat.get_mb(),
+                                 mat.get_nb(), 0, 0, ictxt, lld);
   int nprow, npcol, myrow, mycol;
   if (info) {
     std::cerr << "error info=" << info << " at descinit function of descA " << "mA="

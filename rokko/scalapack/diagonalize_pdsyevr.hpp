@@ -48,9 +48,9 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int m, nz;
   int info;
 
-  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc,
+  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 0, 0, desc,
 		       vl, vu, il, iu, &m, &nz,
-		       &eigvals[0], eigvecs.get_array_pointer(), 1, 1, desc);
+		       &eigvals[0], eigvecs.get_array_pointer(), 0, 0, desc);
 
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
@@ -89,9 +89,9 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int m, nz;
   int info;
 
-  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc,
+  info = ROKKO_pdsyevr(jobz, range, uplow, dim, mat.get_array_pointer(), 0, 0, desc,
 		       vl, vu, il, iu, &m, &nz,
-		       &eigvals[0], NULL, 1, 1, desc);
+		       &eigvals[0], NULL, 0, 0, desc);
 
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;

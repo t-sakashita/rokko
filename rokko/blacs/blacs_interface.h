@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_BLACS_H
-#define ROKKO_BLACS_H
+#ifndef ROKKO_BLACS_BLACS_INTERFACE_H
+#define ROKKO_BLACS_BLACS_INTERFACE_H
 
 #include <rokko/mangling.h>
 
@@ -20,11 +20,6 @@ extern "C" {
 
 #define BLACS_barrier ROKKO_GLOBAL(blacs_barrier,BLACS_BARRIER)
 void BLACS_barrier(const int* ictxt, const char* score);
-
-#define BLACS_descinit ROKKO_GLOBAL(descinit,DESCINIT)
-void BLACS_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
-                    const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
-                    int* info);
 
 #define BLACS_exit ROKKO_GLOBAL(blacs_exit,BLACS_EXIT)
 void BLACS_exit(const int* conti);
@@ -54,4 +49,4 @@ int BLACS_sys2blacs_handle(int *SysCtxt);
 } // extern "C"
 #endif
 
-#endif // ROKKO_BLACS_H
+#endif // ROKKO_BLACS_BLACS_INTERFACE_H

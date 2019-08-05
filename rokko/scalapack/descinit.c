@@ -9,12 +9,12 @@
 *
 *****************************************************************************/
 
-#include <rokko/cblacs.h>
-#include <rokko/blacs/blacs_interface.h>
+#include <rokko/cscalapack.h>
+#include <rokko/scalapack/scalapack_interface.h>
 
-int cblacs_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
+int cscalapack_descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
                     int ictxt, int lld) {
   int info;
-  BLACS_descinit(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ictxt, &lld, &info);
+  SCALAPACK_descinit(desc, &m, &n, &mb, &nb, &irsrc, &icsrc, &ictxt, &lld, &info);
   return info;
 }

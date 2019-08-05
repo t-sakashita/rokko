@@ -11,7 +11,7 @@
 
 #include <cblas.h>
 #include <lapacke.h>
-#include <cmatrix.h>
+#include <rokko/cmatrix.h>
 
 int imin(int x, int y) { return (x < y) ? x : y; }
 int imax(int x, int y) { return (x > y) ? x : y; }

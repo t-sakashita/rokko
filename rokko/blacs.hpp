@@ -12,39 +12,39 @@
 #ifndef ROKKO_BLACS_HPP
 #define ROKKO_BLACS_HPP
 
-#include <rokko/cblacs.h>
+#include <vector>
+#include <rokko/Cblacs.h>
 
 namespace rokko {
 namespace blacs {
 
-inline void barrier(int ictxt, char score) { cblacs_barrier(ictxt, score); }
+inline void barrier(int ictxt, char score) { Cblacs_barrier(ictxt, &score); }
   
-inline int descinit(int* desc, int m, int n, int mb, int nb, int irsrc, int icsrc,
-                    int ictxt, int lld) {
-  return cblacs_descinit(desc, m, n, mb, nb, irsrc, icsrc, ictxt, lld);
-}
+inline void exit(int NotDone) { Cblacs_exit(NotDone); }
   
-inline void exit(int conti) { cblacs_exit(conti); }
-  
-inline void free_blacs_system_handle(int& ISysCxt) {  cblacs_free_blacs_system_handle(&ISysCxt); }
+inline void free_blacs_system_handle(int ISysCxt) { Cfree_blacs_system_handle(ISysCxt); }
 
-inline int get(int context, int request) { return cblacs_get(context, request); }
+inline void get(int ConTxt, int what, int& val) { Cblacs_get(ConTxt, what, &val); }
   
-inline void gridexit(int& ictxt) { cblacs_gridexit(&ictxt); }
+inline void gridexit(int ConTxt) { Cblacs_gridexit(ConTxt); }
 
-inline void gridinfo(int ictxt, int& nprow, int& npcol, int& myrow, int& mycol) {
-  cblacs_gridinfo(ictxt, &nprow, &npcol, &myrow, &mycol);
+inline void gridinfo(int ConTxt, int& nprow, int& npcol, int& myrow, int& mycol) {
+  Cblacs_gridinfo(ConTxt, &nprow, &npcol, &myrow, &mycol);
 }
 
-inline void gridinit(int& ictxt, char order, int nprow, int npcol) {
-  cblacs_gridinit(&ictxt, order, nprow, npcol);
+inline void gridinit(int& ConTxt, char order, int nprow, int npcol) {
+  Cblacs_gridinit(&ConTxt, &order, nprow, npcol);
 }
 
-inline void pinfo(int& mypnum, int& nprocs) { cblacs_pinfo(&mypnum, &nprocs); }
+inline void gridmap(int& ConTxt, const std::vector<int>& usermap, int ldup,
+                    int nprow0, int npcol0) {
+  Cblacs_gridmap(&ConTxt, const_cast<int*>(&usermap[0]), ldup, nprow0, npcol0);
+}
+  
+inline void pinfo(int& mypnum, int& nprocs) { Cblacs_pinfo(&mypnum, &nprocs); }
   
 inline int sys2blacs_handle(const MPI_Comm& comm) {
-  MPI_Fint comm_f = MPI_Comm_c2f(comm);
-  return cblacs_sys2blacs_handle(&comm_f);
+  return Csys2blacs_handle(comm);
 }
 
 }

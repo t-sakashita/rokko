@@ -16,10 +16,13 @@ program main
   nprow = int(sqrt(1. * nprocs + 0.5))
   npcol = int(1. * nprocs / nprow)
   if (myrank == 0) then
+     print *, "n =", n
+     print *, "nprocs =", nprocs
+     print *, "nprow =", nprow
+     print *, "npcol =", npcol
      if ((nprocs /= nprow * npcol) .or. (mod(n, nprow) /= 0) .or. &
           (mod(n, npcol) /= 0)) then
-        print *, "incompatible matrix size and number of processes: n =", n, &
-             "nprocs =", nprocs, "nprow =", nprow, "npcol =", npcol
+        print *, "incompatible matrix size and number of processes"
         call MPI_Abort(MPI_COMM_WORLD, 127, ierr)
      end if
   end if
@@ -27,14 +30,12 @@ program main
   call BLACS_gridinit(icontxt, 'R', nprow, npcol)
 
   call descinit(desc, n, n, nb, nb, 0, 0, icontxt, n/nprow, info)
-  allocate(a(n/nprow, n/npcol))
+  allocate(a(n/nprow, n/npcol), z(n/nprow, n/npcol), w(n))
   do j = 1, n
      do i = 1, n
         call pdelset(a, i, j, desc, dble(n - max(i-1, j-1)))
      end do
   end do
-  allocate(z(n/nprow, n/npcol))
-  allocate(w(n))
 
   lwork = -1
   liwork = 1
@@ -47,9 +48,10 @@ program main
 
   call pdsyevd('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, iwork, liwork, info)
   if (myrank == 0) then
-     print *, w(:)
+     print *, "eigenvalues:", w(:)
   end if
 
   deallocate(a, z, w, work, iwork)
+  call BLACS_gridexit(icontxt)
   call MPI_finalize(ierr)
 end program main

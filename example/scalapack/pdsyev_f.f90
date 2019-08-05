@@ -15,10 +15,13 @@ program main
   nprow = int(sqrt(1. * nprocs + 0.5))
   npcol = int(1. * nprocs / nprow)
   if (myrank == 0) then
+     print *, "n =", n
+     print *, "nprocs =", nprocs
+     print *, "nprow =", nprow
+     print *, "npcol =", npcol
      if ((nprocs /= nprow * npcol) .or. (mod(n, nprow) /= 0) .or. &
           (mod(n, npcol) /= 0)) then
-        print *, "incompatible matrix size and number of processes: n =", n, &
-             "nprocs =", nprocs, "nprow =", nprow, "npcol =", npcol
+        print *, "incompatible matrix size and number of processes"
         call MPI_Abort(MPI_COMM_WORLD, 127, ierr)
      end if
   end if
@@ -42,9 +45,10 @@ program main
 
   call pdsyev('V', 'U', n, a, 1, 1, desc, w, z, 1, 1, desc, work, lwork, info)
   if (myrank == 0) then
-     print *, w(:)
+     print *, "eigenvalues:", w(:)
   end if
 
   deallocate(a, z, w, work)
+  call BLACS_gridexit(icontxt)
   call MPI_finalize(ierr)
 end program main

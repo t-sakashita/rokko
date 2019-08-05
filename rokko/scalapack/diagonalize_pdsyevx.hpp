@@ -17,7 +17,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/blacs.hpp>
 #include <rokko/blacs/utility_routines.hpp>
-#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -47,7 +47,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int m, nz;
   int info;
  
-  double abstol = ROKKO_pdlamch(ictxt, 'U');
+  double abstol = cscalapack_pdlamch(ictxt, 'U');
   //get_key(params, "abstol", abstol);
 
   int orfac = -1;  // default value 10^{-3} is used.
@@ -55,9 +55,9 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
 
-  info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
+  info = cscalapack_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 0, 0, desc, vl, vu, il, iu,
 		       abstol, &m, &nz, &eigvals[0], orfac,
-		       eigvecs.get_array_pointer(), 1, 1, desc,
+		       eigvecs.get_array_pointer(), 0, 0, desc,
 		       &ifail[0], &iclustr[0], &gap[0]);
 
   params_out.set("info", info);
@@ -96,7 +96,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int m, nz;
   int info;
  
-  double abstol = ROKKO_pdlamch(ictxt, 'U');
+  double abstol = cscalapack_pdlamch(ictxt, 'U');
   //get_key(params, "abstol", abstol);
 
   int orfac = -1;  // default value 10^{-3} is used.
@@ -104,9 +104,9 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
 
-  info = ROKKO_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 1, 1, desc, vl, vu, il, iu,
+  info = cscalapack_pdsyevx(jobz, range, uplow, dim, mat.get_array_pointer(), 0, 0, desc, vl, vu, il, iu,
 		       abstol, &m, &nz, &eigvals[0], orfac,
-		       NULL, 1, 1, desc,
+		       NULL, 0, 0, desc,
 		       &ifail[0], &iclustr[0], &gap[0]);
 
   params_out.set("info", info);

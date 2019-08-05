@@ -17,7 +17,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/blacs.hpp>
 #include <rokko/blacs/utility_routines.hpp>
-#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -41,8 +41,8 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   blacs::set_desc(ictxt, mat, desc);
   int info;
 
-  info = ROKKO_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
-  		      eigvecs.get_array_pointer(), 1, 1, desc);
+  info = cscalapack_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 0, 0, desc, &eigvals[0],
+  		      eigvecs.get_array_pointer(), 0, 0, desc);
 
   params_out.set("info", info);
   if (info) {
@@ -76,8 +76,8 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   blacs::set_desc(ictxt, mat, desc);
   int info;
 
-  info = ROKKO_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 1, 1, desc, &eigvals[0],
-		      NULL, 1, 1, desc);
+  info = cscalapack_pdsyev(jobz, uplow, dim, mat.get_array_pointer(), 0, 0, desc, &eigvals[0],
+		      NULL, 0, 0, desc);
 
   params_out.set("info", info);
   if (info) {

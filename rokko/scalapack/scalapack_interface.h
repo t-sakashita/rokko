@@ -19,6 +19,11 @@
 extern "C" {
 #endif
 
+#define SCALAPACK_descinit ROKKO_GLOBAL(descinit,DESCINIT)
+void SCALAPACK_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
+                        const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
+                        int* info);
+  
 #define SCALAPACK_pdelget ROKKO_GLOBAL(pdelget,PDELGET)
 void SCALAPACK_pdelget(const char* scope, const char* top, double* alpha,
                        const double* A, const int* ia, const int* ja, const int* descA);

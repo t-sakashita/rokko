@@ -9,10 +9,12 @@
 *
 *****************************************************************************/
 
-#include <rokko/scalapack/scalapack.h>
-#include <rokko/scalapack/scalapack_wrap.h>
+#include <rokko/cscalapack.h>
+#include <rokko/scalapack/scalapack_interface.h>
 
-void ROKKO_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA, int irprnt,
-                    int icprnt, const char* cmatnm, int nout, double* work) {
-  SCALAPACK_pdlaprnt(&m, &n, A, &ia, &ja, descA, &irprnt, &icprnt, cmatnm, &nout, work);
+void cscalapack_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA,
+                         int irprnt, int icprnt, const char* cmatnm, int nout, double* work) {
+  int ia_f = ia + 1;
+  int ja_f = ja + 1;
+  SCALAPACK_pdlaprnt(&m, &n, A, &ia_f, &ja_f, descA, &irprnt, &icprnt, cmatnm, &nout, work);
 }
