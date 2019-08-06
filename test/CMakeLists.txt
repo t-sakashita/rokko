@@ -11,6 +11,7 @@
 add_subdirectory(blas)
 add_subdirectory(lapack)
 if(ROKKO_HAVE_SCALAPACK)
+  add_subdirectory(pblas)
   add_subdirectory(scalapack)
 endif(ROKKO_HAVE_SCALAPACK)
 
