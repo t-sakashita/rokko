@@ -18,7 +18,7 @@ void rokko_localized_vector_construct(rokko_localized_vector* vec, int dim) {
 
 void rokko_localized_vector_destruct(rokko_localized_vector* vec) {
   delete static_cast<rokko::localized_vector<double>*>(vec->ptr);
-  vec->ptr = 0;
+  vec->ptr = nullptr;
 }
 
 double rokko_localized_vector_get(rokko_localized_vector vec, int i) {

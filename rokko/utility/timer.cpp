@@ -11,4 +11,4 @@
 
 #include "timer.hpp"
 
-rokko::timer *rokko::global_timer::instance_ = 0;
+rokko::timer *rokko::global_timer::instance_ = nullptr;

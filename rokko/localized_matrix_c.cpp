@@ -26,7 +26,7 @@ void rokko_localized_matrix_destruct(rokko_localized_matrix* matrix) {
     delete static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(matrix->ptr);
   else
     delete static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(matrix->ptr);
-  matrix->ptr = 0;
+  matrix->ptr = nullptr;
 }
 
 void rokko_localized_matrix_print(rokko_localized_matrix matrix) {

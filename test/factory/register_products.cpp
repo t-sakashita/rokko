@@ -54,7 +54,7 @@ public:
 typedef rokko::factory<test_base> test_factory;
 
 template<>
-test_factory *test_factory::instance_ = 0;
+test_factory *test_factory::instance_ = nullptr;
 
 #define ROKKO_REGISTER_TEST(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \

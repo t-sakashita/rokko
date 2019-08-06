@@ -47,7 +47,7 @@ void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 
 void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {
   delete static_cast<distributed_mfree_c*>(matrix->ptr);
-  matrix->ptr = 0;
+  matrix->ptr = nullptr;
 }
 
 int rokko_distributed_mfree_dim(struct rokko_distributed_mfree matrix) {

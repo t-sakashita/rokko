@@ -12,4 +12,4 @@
 #include "parallel_dense_ev.hpp"
 
 template<>
-rokko::detail::pd_solver_factory *rokko::detail::pd_solver_factory::instance_ = 0;
+rokko::detail::pd_solver_factory *rokko::detail::pd_solver_factory::instance_ = nullptr;

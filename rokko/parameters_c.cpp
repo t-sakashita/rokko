@@ -19,7 +19,7 @@ void rokko_parameters_construct(struct rokko_parameters* params) {
 void rokko_parameters_destruct(struct rokko_parameters* params) {
   rokko::parameters* ptr = static_cast<rokko::parameters*>(params->ptr);
   delete ptr;
-  params->ptr = 0;
+  params->ptr = nullptr;
 }
 
 void rokko_parameters_clear_all(struct rokko_parameters params) {
