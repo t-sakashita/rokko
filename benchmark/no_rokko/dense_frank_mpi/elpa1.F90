@@ -76,6 +76,7 @@ program test_real_example
    use iso_c_binding
 
    use elpa
+   use input_parameters_mod
    use my_elpa_utility
    use mpi
    implicit none
@@ -106,15 +107,11 @@ program test_real_example
    class(elpa_t), pointer           :: e
    !-------------------------------------------------------------------------------
 
-
-   ! default parameters
-   na = 1000
-   nev = 500
-   nblk = 16
-
    call mpi_init(mpierr)
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
+
+   call read_input_parameters(na, nev, nblk)
 
    do np_cols = NINT(SQRT(REAL(nprocs))),2,-1
      if(mod(nprocs,np_cols) == 0 ) exit
