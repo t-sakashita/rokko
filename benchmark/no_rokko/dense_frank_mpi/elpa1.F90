@@ -130,23 +130,8 @@ program test_real_example
    end if
    ! determine the neccessary size of the distributed matrices,
    ! we use the scalapack tools routine NUMROC
-
    na_rows = numroc(na, nblk, my_prow, 0, np_rows)
    na_cols = numroc(na, nblk, my_pcol, 0, np_cols)
-
-   if (info .ne. 0) then
-     write(error_units,*) 'Error in BLACS descinit! info=',info
-     write(error_units,*) 'Most likely this happend since you want to use'
-     write(error_units,*) 'more MPI tasks than are possible for your'
-     write(error_units,*) 'problem size (matrix size and blocksize)!'
-     write(error_units,*) 'The blacsgrid can not be set up properly'
-     write(error_units,*) 'Try reducing the number of MPI tasks...'
-     call MPI_ABORT(mpi_comm_world, 1, mpierr)
-   endif
-
-   if (myid==0) then
-     print '(a)','| Past scalapack descriptor setup.'
-   end if
 
    allocate(a (na_rows,na_cols))
    allocate(z (na_rows,na_cols))
@@ -200,6 +185,10 @@ program test_real_example
 
    call elpa_deallocate(e)
    call elpa_uninit()
+
+   deallocate(a)
+   deallocate(z)
+   deallocate(ev)
 
    call blacs_gridexit(my_blacs_ctxt)
    call mpi_finalize(mpierr)
