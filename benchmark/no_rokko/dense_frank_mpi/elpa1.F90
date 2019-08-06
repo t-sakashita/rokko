@@ -95,6 +95,7 @@ program test_real_example
 
    integer                          :: myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
    integer                          :: i, mpierr, my_blacs_ctxt, info, nprow, npcol
+   double precision :: init_tick, initend_tick, gen_tick, diag_tick, end_tick
 
    integer, external                :: numroc
 
@@ -121,13 +122,15 @@ program test_real_example
    np_rows = nprocs/np_cols
 
    ! initialise BLACS
+   init_tick = mpi_wtime()
    my_blacs_ctxt = mpi_comm_world
    call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
    call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
 
-   if (myid==0) then
-     print '(a)','| Past BLACS_Gridinfo.'
-   end if
+   initend_tick = mpi_wtime()
+
+   gen_tick = mpi_wtime()
+
    ! determine the neccessary size of the distributed matrices,
    ! we use the scalapack tools routine NUMROC
    na_rows = numroc(na, nblk, my_prow, 0, np_rows)
@@ -170,18 +173,27 @@ program test_real_example
      print *
    end if
 
-   call mpi_barrier(mpi_comm_world, mpierr) ! for correct timings only
+   diag_tick = mpi_wtime()
    call e%eigenvectors(a, ev, z, success)
+   end_tick = mpi_wtime()
 
    if (success /= 0) then
       write(error_units,*) "ELPA solver produced an error! Aborting..."
       call MPI_ABORT(mpi_comm_world, 1, mpierr)
    endif
    
-   if (myid==0) then
-     print '(a)','| One-step ELPA solver complete.'
-     print *
-   end if
+
+   if (myid == 0) then
+      print *, "Matrix dimension = ", na
+      print *, "nev = ", nev
+      print *, "Block size = ", nblk
+      do i = 1, min(100, nev)
+         print *, i, ev(i)
+      end do
+      print *, "init_time = ", initend_tick - init_tick
+      print *, "gen_time = ", diag_tick - gen_tick
+      print *, "diag_time = ", end_tick - diag_tick
+   endif
 
    call elpa_deallocate(e)
    call elpa_uninit()
