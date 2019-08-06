@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -101,7 +101,7 @@ char** rokko_parameters_keys(struct rokko_parameters params) {
   int num_keys = ptr->get_map().size();
   char** keys = (char**) malloc( sizeof(char*) * num_keys );
   int i = 0;
-  BOOST_FOREACH(rokko::parameters::value_type const& term, ptr->get_map()) {
+  for(auto const& term : ptr->get_map()) {
     keys[i] = copy_string(term.first);
     ++i;
   }

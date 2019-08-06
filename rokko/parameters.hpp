@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,7 +16,6 @@
 #include <list>
 #include <map>
 #include <string>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/any.hpp>
 #include <boost/throw_exception.hpp>
@@ -52,7 +51,7 @@ public:
   // returns list of keys
   std::list<key_type> keys() const {
     std::list<key_type> keys;
-    BOOST_FOREACH(value_type const& p, map_) { keys.push_back(p.first); }
+    for(auto const& p : map_) { keys.push_back(p.first); }
     return keys;
   }
   // returns value of parameter in type T

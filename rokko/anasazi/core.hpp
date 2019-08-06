@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -103,7 +103,7 @@ public:
 
   void set_anasazi_parameters(rokko::parameters const& params) {
     std::list<std::string> keys = params.keys();
-    BOOST_FOREACH(std::string const& key, keys) {
+    for(auto const& key : keys) {
       if (!is_rokko_solver_key(key)) {
 	if (params.type(key) == typeid(int)) {
 	  pl_.set(key, params.get<int>(key));

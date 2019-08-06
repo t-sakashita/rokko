@@ -11,7 +11,6 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/helmert_matrix.hpp>
-#include <boost/foreach.hpp>
 #define BOOST_TEST_MODULE test_solver
 #ifndef BOOST_TEST_DYN_LINK
 #include <boost/test/included/unit_test.hpp>
@@ -40,7 +39,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     }
   }
   
-  BOOST_FOREACH(std::string name, names) {
+  for(auto name : names) {
     std::cout << "solver=" << name << std::endl;
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_col_major)) {
@@ -62,7 +61,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   }
 
 
-  BOOST_FOREACH(std::string name, names) {
+  for(auto name : names) {
     std::cout << "solver=" << name << std::endl;
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_row_major)) {

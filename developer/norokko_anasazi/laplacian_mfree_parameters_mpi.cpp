@@ -311,7 +311,7 @@ int main(int argc, char *argv[]) {
   Teuchos::ParameterList MyPL;
   
   std::list<std::string> keys = params.keys();
-  BOOST_FOREACH(std::string const& key, keys) {
+  for(auto const& key : keys) {
     if (params.type(key) == typeid(int)) {
       MyPL.set(key, params.get<int>(key)); std::cout << "int: " << key << std::endl;
     }
