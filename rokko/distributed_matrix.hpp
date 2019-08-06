@@ -186,15 +186,9 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
              const distributed_matrix<T, MATRIX_MAJOR>& matB, bool transB,
              typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
              distributed_matrix<T, MATRIX_MAJOR>& matC) {
-  const int* descA = matA.get_mapping().get_blacs_descriptor();
-  const int* descB = matB.get_mapping().get_blacs_descriptor();
-  const int* descC = matC.get_mapping().get_blacs_descriptor();
   char char_transA = (transA ? 'T' : 'N');
   char char_transB = (transB ? 'T' : 'N');
-  pblas::pgemm(char_transA, char_transB, matA.get_m_global(), matB.get_n_global(),
-               matA.get_n_global(), alpha, matA.get_array_pointer(), 1, 1, descA,
-               matB.get_array_pointer(), 1, 1, descB, beta,
-               matC.get_array_pointer(), 1, 1, descC);
+  pblas::pgemm(char_transA, char_transB, alpha, matA, matB, beta, matC);
 }
 
 // Y = alpha A * X + beta Y
@@ -204,38 +198,24 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
                distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  const int* descA = matA.get_mapping().get_blacs_descriptor();
-  const int* descX = vecX.get_mapping().get_blacs_descriptor();
-  const int* descY = vecY.get_mapping().get_blacs_descriptor();
   char char_transA = (transA ? 'T' : 'N');
-  int ix = (transX ? xindex + 1 : 1);
-  int jx = (transX ? 1 : xindex + 1);
   int incx = (transX ? vecX.get_m_global() : 1);
-  int iy = (transY ? yindex + 1: 1);
-  int jy = (transY ? 1 : yindex + 1);
   int incy = (transY ? vecY.get_m_global() : 1);
-  pblas::pgemv(char_transA, matA.get_m_global(), matA.get_n_global(), alpha,
-               matA.get_array_pointer(), 1, 1, descA,
-               vecX.get_array_pointer(), ix, jx, descX, incx, beta,
-               vecY.get_array_pointer(), iy, jy, descY, incy);
+  pblas::pgemv(char_transA, alpha, matA, vecX, incx, beta, vecY, incy);
 }
 
 // dot = X * Y
 template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  const int* descX = vecX.get_mapping().get_blacs_descriptor();
-  const int* descY = vecY.get_mapping().get_blacs_descriptor();
   int n = (transX ? vecX.get_n_global() : vecX.get_m_global());
-  int ix = (transX ? xindex + 1 : 1);
-  int jx = (transX ? 1 : xindex + 1);
+  int ix = (transX ? xindex : 0);
+  int jx = (transX ? 0 : xindex);
   int incx = (transX ? vecX.get_m_global() : 1);
-  int iy = (transY ? yindex + 1: 1);
-  int jy = (transY ? 1 : yindex + 1);
+  int iy = (transY ? yindex: 0);
+  int jy = (transY ? 0 : yindex);
   int incy = (transY ? vecY.get_m_global() : 1);
-  T dot = pblas::pdot(n, vecX.get_array_pointer(), ix, jx, descX, incx,
-                      vecY.get_array_pointer(), iy, jy, descY, incy);
-  return dot;
+  return pblas::pdot(n, vecX, ix, jx, incx, vecY, iy, jy, incy);
 }
 
 } // namespace rokko

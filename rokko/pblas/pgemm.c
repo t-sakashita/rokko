@@ -9,15 +9,23 @@
 *
 *****************************************************************************/
 
-#include <rokko/pblas.h>
+#include <rokko/cpblas.h>
+#include <rokko/pblas/pblas_interface.h>
 
-#define PBLAS_PGEMM_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
-void PBLAS_ ## NAMES (char TRANSA, char TRANSB, int M, int N, int K, TYPEC ALPHA, const TYPEC * A, int IA, int JA, const int* DESCA, const TYPEC * B, int IB, int JB, const int* DESCB, TYPEC BETA, TYPEC * C, int IC, int JC, const int* DESCC) { \
-  ROKKO_GLOBAL(NAMES, NAMEL) (&TRANSA, &TRANSB, &M, &N, &K, &ALPHA, A, &IA, &JA, DESCA, B, &IB, &JB, DESCB, &BETA, C, &IC, &JC, DESCC); }
+#define CPBLAS_PGEMM_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
+void cpblas_ ## NAMES (char transa, char transb, int m, int n, int k, TYPEC alpha, const TYPEC * a, int ia, int ja, const int* desca, const TYPEC * b, int ib, int jb, const int* descb, TYPEC beta, TYPEC * c, int ic, int jc, const int* descc) { \
+  int ia_f = ia + 1; \
+  int ja_f = ja + 1; \
+  int ib_f = ib + 1; \
+  int jb_f = jb + 1; \
+  int ic_f = ic + 1; \
+  int jc_f = jc + 1; \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&transa, &transb, &m, &n, &k, &alpha, a, &ia_f, &ja_f, desca, b, &ib_f, &jb_f, descb, &beta, c, &ic_f, &jc_f, descc); \
+}
 
-PBLAS_PGEMM_IMPL(psgemm, PSGEMM, float, float);
-PBLAS_PGEMM_IMPL(pdgemm, PDGEMM, double, double);
-PBLAS_PGEMM_IMPL(pcgemm, PCGEMM, lapack_complex_float, std::complex<float>);
-PBLAS_PGEMM_IMPL(pzgemm, PZGEMM, lapack_complex_double, std::complex<double>);
+CPBLAS_PGEMM_IMPL(psgemm, PSGEMM, float, float);
+CPBLAS_PGEMM_IMPL(pdgemm, PDGEMM, double, double);
+CPBLAS_PGEMM_IMPL(pcgemm, PCGEMM, lapack_complex_float, std::complex<float>);
+CPBLAS_PGEMM_IMPL(pzgemm, PZGEMM, lapack_complex_double, std::complex<double>);
 
-#undef PBLAS_PGEMM_IMPL
+#undef CPBLAS_PGEMM_IMPL

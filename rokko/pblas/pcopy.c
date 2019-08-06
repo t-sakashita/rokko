@@ -9,15 +9,20 @@
 *
 *****************************************************************************/
 
-#include <rokko/pblas.h>
+#include <rokko/cpblas.h>
 
-#define PBLAS_PCOPY_IMPL(NAMES, NAMEL, TYPE) \
-void PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, TYPE * Y, int IY, int JY, const int* DESCY, int INCY) { \
-  ROKKO_GLOBAL(NAMES, NAMEL) (&N, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); }
+#define CPBLAS_PCOPY_IMPL(NAMES, NAMEL, TYPE) \
+void cpblas_ ## NAMES (int N, const TYPE * X, int ix, int jx, const int* DESCX, int INCX, TYPE * Y, int iy, int jy, const int* DESCY, int INCY) { \
+  int ix_f = ix + 1; \
+  int jx_f = jx + 1; \
+  int iy_f = iy + 1; \
+  int jy_f = jy + 1; \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&N, X, &ix_f, &jx_f, DESCX, &INCX, Y, &iy_f, &jy_f, DESCY, &INCY); \
+}
 
-PBLAS_PCOPY_IMPL(pscopy, PSCOPY, float);
-PBLAS_PCOPY_IMPL(pdcopy, PDCOPY, double);
-PBLAS_PCOPY_IMPL(pccopy, PCCOPY, lapack_complex_float);
-PBLAS_PCOPY_IMPL(pzcopy, PZCOPY, lapack_complex_double);
+CPBLAS_PCOPY_IMPL(pscopy, PSCOPY, float);
+CPBLAS_PCOPY_IMPL(pdcopy, PDCOPY, double);
+CPBLAS_PCOPY_IMPL(pccopy, PCCOPY, lapack_complex_float);
+CPBLAS_PCOPY_IMPL(pzcopy, PZCOPY, lapack_complex_double);
 
-#undef PBLAS_PCOPY_IMPL
+#undef CPBLAS_PCOPY_IMPL

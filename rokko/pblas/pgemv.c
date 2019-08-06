@@ -9,15 +9,22 @@
 *
 *****************************************************************************/
 
-#include <rokko/pblas.h>
+#include <rokko/cpblas.h>
 
-#define PBLAS_PGEMV_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
-void PBLAS_ ## NAMES (char TRANS, int M, int N, TYPEC ALPHA, const TYPEC * A, int IA, int JA, const int* DESCA, const TYPEC * X, int IX, int JX, const int* DESCX, int INCX, TYPEC BETA, TYPEC * Y, int IY, int JY, const int* DESCY, int INCY) { \
-  ROKKO_GLOBAL(NAMES, NAMEL) (&TRANS, &M, &N, &ALPHA, A, &IA, &JA, DESCA, X, &IX, &JX, DESCX, &INCX, &BETA, Y, &IY, &JY, DESCY, &INCY); }
+#define CPBLAS_PGEMV_IMPL(NAMES, NAMEL, TYPEC, TYPEX) \
+void cpblas_ ## NAMES (char trans, int m, int n, TYPEC alpha, const TYPEC * a, int ia, int ja, const int* desca, const TYPEC * x, int ix, int jx, const int* descx, int incx, TYPEC beta, TYPEC * y, int iy, int jy, const int* descy, int incy) { \
+  int ia_f = ia + 1; \
+  int ja_f = ja + 1; \
+  int ix_f = ix + 1; \
+  int jx_f = jx + 1; \
+  int iy_f = iy + 1; \
+  int jy_f = jy + 1; \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&trans, &m, &n, &alpha, a, &ia_f, &ja_f, desca, x, &ix_f, &jx_f, descx, &incx, &beta, y, &iy_f, &jy_f, descy, &incy); \
+}
 
-PBLAS_PGEMV_IMPL(psgemv, PSGEMV, float, float);
-PBLAS_PGEMV_IMPL(pdgemv, PDGEMV, double, double);
-PBLAS_PGEMV_IMPL(pcgemv, PCGEMV, lapack_complex_float, std::complex<float>);
-PBLAS_PGEMV_IMPL(pzgemv, PZGEMV, lapack_complex_double, std::complex<double>);
+CPBLAS_PGEMV_IMPL(psgemv, PSGEMV, float, float);
+CPBLAS_PGEMV_IMPL(pdgemv, PDGEMV, double, double);
+CPBLAS_PGEMV_IMPL(pcgemv, PCGEMV, lapack_complex_float, std::complex<float>);
+CPBLAS_PGEMV_IMPL(pzgemv, PZGEMV, lapack_complex_double, std::complex<double>);
 
-#undef PBLAS_PGEMV_IMPL
+#undef CPBLAS_PGEMV_IMPL

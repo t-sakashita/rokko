@@ -12,9 +12,9 @@
 #ifndef ROKKO_LOCALIZED_MATRIX_HPP
 #define ROKKO_LOCALIZED_MATRIX_HPP
 
-#include <rokko/eigen3.hpp>
 #include <iostream>
 #include <boost/type_traits.hpp>
+#include <rokko/eigen3.hpp>
 
 namespace rokko {
 

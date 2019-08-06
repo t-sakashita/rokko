@@ -9,17 +9,27 @@
 *
 *****************************************************************************/
 
-#include <rokko/pblas.h>
+#include <rokko/cpblas.h>
 
-#define PBLAS_PDOT_IMPL(NAMES, NAMEL, TYPE) \
-TYPE PBLAS_ ## NAMES (int N, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, const TYPE * Y, int IY, int JY, const int* DESCY, int INCY) { \
-  TYPE DOT; ROKKO_GLOBAL(NAMES, NAMEL) (&N, &DOT, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); return DOT; \
+#define CPBLAS_PDOT_IMPL(NAMES, NAMEL, TYPE) \
+TYPE cpblas_ ## NAMES (int n, const TYPE * x, int ix, int jx, const int* descx, int incx, const TYPE * y, int iy, int jy, const int* descy, int incy) { \
+  int ix_f = ix + 1; \
+  int jx_f = jx + 1; \
+  int iy_f = iy + 1; \
+  int jy_f = jy + 1; \
+  TYPE dot; \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&n, &dot, x, &ix_f, &jx_f, descx, &incx, y, &iy_f, &jy_f, descy, &incy); \
+  return dot; \
 } \
-void PBLAS_ ## NAMES ## _sub (int N, TYPE * DOT, const TYPE * X, int IX, int JX, const int* DESCX, int INCX, const TYPE * Y, int IY, int JY, const int* DESCY, int INCY) { \
-  ROKKO_GLOBAL(NAMES, NAMEL) (&N, DOT, X, &IX, &JX, DESCX, &INCX, Y, &IY, &JY, DESCY, &INCY); \
+void cpblas_ ## NAMES ## _sub (int n, TYPE * dot, const TYPE * x, int ix, int jx, const int* descx, int incx, const TYPE * y, int iy, int jy, const int* descy, int incy) { \
+  int ix_f = ix + 1; \
+  int jx_f = jx + 1; \
+  int iy_f = iy + 1; \
+  int jy_f = jy + 1; \
+  ROKKO_GLOBAL(NAMES, NAMEL) (&n, dot, x, &ix_f, &jx_f, descx, &incx, y, &iy_f, &jy_f, descy, &incy); \
 }
 
-PBLAS_PDOT_IMPL(psdot, PSDOT, float);
-PBLAS_PDOT_IMPL(pddot, PDDOT, double);
+CPBLAS_PDOT_IMPL(psdot, PSDOT, float);
+CPBLAS_PDOT_IMPL(pddot, PDDOT, double);
 
-#undef PBLAS_PDOT_IMPL
+#undef CPBLAS_PDOT_IMPL

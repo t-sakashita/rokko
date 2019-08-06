@@ -41,6 +41,12 @@ int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z);
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 
+template<typename MATRIX, typename VECTOR>
+int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z);
+
+template<typename MATRIX, typename VECTOR>
+int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
+
 } // end namespace scalapack
 } // end namespace rokko
 
@@ -48,5 +54,6 @@ int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 #include "scalapack/pelset.hpp"
 #include "scalapack/plange.hpp"
 #include "scalapack/psyev.hpp"
+#include "scalapack/psyevd.hpp"
 
 #endif // ROKKO_SCALAPACK_HPP
