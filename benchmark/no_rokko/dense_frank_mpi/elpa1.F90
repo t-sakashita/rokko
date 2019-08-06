@@ -1,27 +1,3 @@
-subroutine generate_matrix( n, a, desca, info )
-  !     ..
-  !     .. Scalar Arguments ..
-  integer            n
-  !     ..
-  !     .. Array Arguments ..
-  integer            desca( * )
-  double precision   a( * )
-  !     ..
-  !     .. local Scalars ..
-  integer            i, j
-  !     ..
-  !     .. External Subroutines ..
-  external           pdelset
-
-  ! Create Frank matrix
-  do j = 1, n
-     do i = 1, n
-        call pdelset(a, i, j, desca, dble(n - max(i,j) + 1))
-     enddo
-  enddo
- 
-end subroutine generate_matrix
-
 !    This file is part of ELPA.
 !
 !    The ELPA library was originally created by the ELPA consortium,
@@ -100,7 +76,7 @@ program test_real_example
    use iso_c_binding
 
    use elpa
-
+   use my_elpa_utility
    use mpi
    implicit none
 
@@ -117,18 +93,13 @@ program test_real_example
    integer                          :: np_rows, np_cols, na_rows, na_cols
 
    integer                          :: myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
-   integer                          :: i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
+   integer                          :: i, mpierr, my_blacs_ctxt, info, nprow, npcol
 
    integer, external                :: numroc
 
    real(kind=c_double), allocatable :: a(:,:), z(:,:), ev(:)
 
-   integer                          :: iseed(4096) ! Random seed, size should be sufficient for every generator
-
-   integer                          :: STATUS
    integer                          :: success
-   character(len=8)                 :: task_suffix
-   integer                          :: j
 
    integer, parameter               :: error_units = 0
 
@@ -166,15 +137,6 @@ program test_real_example
    na_rows = numroc(na, nblk, my_prow, 0, np_rows)
    na_cols = numroc(na, nblk, my_pcol, 0, np_cols)
 
-
-   ! set up the scalapack descriptor for the checks below
-   ! For ELPA the following restrictions hold:
-   ! - block sizes in both directions must be identical (args 4 a. 5)
-   ! - first row and column of the distributed matrix must be on
-   !   row/col 0/0 (arg 6 and 7)
-
-   call descinit(sc_desc, na, na, nblk, nblk, 0, 0, my_blacs_ctxt, na_rows, info)
-
    if (info .ne. 0) then
      write(error_units,*) 'Error in BLACS descinit! info=',info
      write(error_units,*) 'Most likely this happend since you want to use'
@@ -194,8 +156,8 @@ program test_real_example
 
    allocate(ev(na))
 
-   call generate_matrix( na, a, sc_desc, info )
-
+   call prepare_matrix_frank(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
+   
    !-------------------------------------------------------------------------------
 
    if (elpa_init(20171201) /= elpa_ok) then
@@ -229,6 +191,11 @@ program test_real_example
    call mpi_barrier(mpi_comm_world, mpierr) ! for correct timings only
    call e%eigenvectors(a, ev, z, success)
 
+   if (success /= 0) then
+      write(error_units,*) "ELPA solver produced an error! Aborting..."
+      call MPI_ABORT(mpi_comm_world, 1, mpierr)
+   endif
+   
    if (myid==0) then
      print '(a)','| One-step ELPA solver complete.'
      print *
