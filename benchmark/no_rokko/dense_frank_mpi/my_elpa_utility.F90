@@ -14,11 +14,7 @@ contains
     do i = 1, na
        do j = 1, na
           if (map_global_array_index_to_local_index(i, j, rowLocal, colLocal, nblk, np_rows, np_cols, my_prow, my_pcol)) then
-             if (j .le. i) then
-                a(rowLocal,colLocal) = na+1-i
-             else
-                a(rowLocal,colLocal) = na+1-j
-             endif
+             a(rowLocal,colLocal) = na+1 - max(i,j)
           endif
        enddo
     enddo
