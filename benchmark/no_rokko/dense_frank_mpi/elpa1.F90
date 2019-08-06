@@ -87,6 +87,7 @@ program test_real_example
    ! nev:  Number of eigenvectors to be calculated
    ! nblk: Blocking factor in block cyclic distribution
    !-------------------------------------------------------------------------------
+   integer :: required_mpi_thread_level, provided_mpi_thread_level
 
    integer           :: nblk
    integer                          :: na, nev
@@ -108,7 +109,7 @@ program test_real_example
    class(elpa_t), pointer           :: e
    !-------------------------------------------------------------------------------
 
-   call mpi_init(mpierr)
+   call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
 
