@@ -9,77 +9,38 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_BLAS_LEVEL3_HPP
-#define ROKKO_BLAS_LEVEL3_HPP
+#ifndef ROKKO_BLAS_GEMM_HPP
+#define ROKKO_BLAS_GEMM_HPP
 
 #include <complex>
 #include <stdexcept>
 #include <cblas.h>
-#include "util.hpp"
+#include <rokko/blas/util.hpp>
+#include <rokko/lapack/complex_cast.hpp>
 
 namespace rokko {
 namespace blas {
 
-namespace {
-
-template<typename T> struct gemm_dispatch;
-
-template<>
-struct gemm_dispatch<float> {
-  template<typename MATRIX>
-  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
-                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
-                   float alpha, MATRIX const& a, MATRIX const& b,
-                   float beta, MATRIX& c) {
-    cblas_sgemm(order, trans_a, trans_b, m, n, k,
-                alpha, storage(a), lda(a), storage(b), lda(b),
-                beta, storage(c), lda(c));
-  }
-};
-  
-template<>
-struct gemm_dispatch<double> {
-  template<typename MATRIX>
-  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
-                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
-                   double alpha, MATRIX const& a, MATRIX const& b,
-                   double beta, MATRIX& c) {
-    cblas_dgemm(order, trans_a, trans_b, m, n, k,
-                alpha, storage(a), lda(a), storage(b), lda(b),
-                beta, storage(c), lda(c));
-  }
-};
-  
-template<>
-struct gemm_dispatch<std::complex<float> > {
-  template<typename MATRIX>
-  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
-                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
-                   std::complex<float> const& alpha, MATRIX const& a,
-                   MATRIX const& b,
-                   std::complex<float> const& beta, MATRIX& c) {
-    cblas_cgemm(order, trans_a, trans_b, m, n, k,
-                &alpha, storage(a), lda(a), storage(b), lda(b),
-                &beta, storage(c), lda(c));
-  }
-};
-  
-template<>
-struct gemm_dispatch<std::complex<double> > {
-  template<typename MATRIX>
-  static void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a,
-                   CBLAS_TRANSPOSE trans_b, int m, int n, int k,
-                   std::complex<double> const& alpha, MATRIX const& a,
-                   MATRIX const& b,
-                   std::complex<double> const& beta, MATRIX& c) {
-    cblas_zgemm(order, trans_a, trans_b, m, n, k,
-                &alpha, storage(a), lda(a), storage(b), lda(b),
-                &beta, storage(c), lda(c));
-  }
-};
-  
+#define BLAS_GEMM_IMPL(NAMES, TYPE) \
+  inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, TYPE alpha, const TYPE * a, int lda_a, const TYPE * b, int lda_b, TYPE beta, TYPE * c, int lda_c) { \
+  cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, alpha, a, lda_a, b, lda_b, beta, c, lda_c); \
 }
   
+BLAS_GEMM_IMPL(sgemm, float);
+BLAS_GEMM_IMPL(dgemm, double);
+  
+#undef BLAS_GEMM_IMPL  
+
+#define BLAS_GEMM_IMPL(NAMES, TYPE) \
+inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, TYPE alpha, const TYPE * a, int lda_a, const TYPE * b, int lda_b, TYPE beta, TYPE * c, int lda_c) { \
+  cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, &alpha, lapack::complex_cast(a), lda_a, lapack::complex_cast(b), lda_b, &beta, lapack::complex_cast(c), lda_c); \
+}
+  
+BLAS_GEMM_IMPL(cgemm, std::complex<float>);
+BLAS_GEMM_IMPL(zgemm, std::complex<double>);
+  
+#undef BLAS_GEMM_IMPL  
+
 template<typename MATRIX, typename T>
 void gemm(CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b,
           T alpha, MATRIX const& a, MATRIX const& b, T beta, MATRIX& c) {
@@ -88,12 +49,11 @@ void gemm(CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b,
   int m = util::op_rows(trans_a, a);
   int n = util::op_cols(trans_b, b);
   int k = util::op_cols(trans_a, a);
-  gemm_dispatch<typename value_t<MATRIX>::type>::
-    gemm((is_col_major(a) ? CblasColMajor : CblasRowMajor), trans_a, trans_b,
-         m, n, k, alpha, a, b, beta, c);
+  gemm((is_col_major(a) ? CblasColMajor : CblasRowMajor), trans_a, trans_b,
+       m, n, k, alpha, storage(a), lda(a), storage(b), lda(b), beta, storage(c), lda(c));
 }
 
 } // namespace blas
 } // namespace rokko
 
-#endif // ROKKO_BLAS_LEVEL3_HPP
+#endif // ROKKO_BLAS_GEMM_HPP

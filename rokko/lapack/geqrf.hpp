@@ -14,8 +14,11 @@
 
 #include <complex>
 #include <stdexcept>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <lapacke.h>
 #undef I
+#include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 
 namespace rokko {

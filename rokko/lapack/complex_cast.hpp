@@ -13,6 +13,7 @@
 #define ROKKO_LAPACK_COMPLEX_CAST_HPP
 
 #include <complex>
+#include <lapacke.h>
 
 namespace rokko {
 namespace lapack {
