@@ -1,10 +1,10 @@
-!    This file is modified by T. Sakashita.
-!    It is originally part of ELPA.
+!    This file is part of ELPA.
 !
 !    The ELPA library was originally created by the ELPA consortium,
 !    consisting of the following organizations:
 !
-!    - Rechenzentrum Garching der Max-Planck-Gesellschaft (RZG),
+!    - Max Planck Computing and Data Facility (MPCDF), formerly known as
+!      Rechenzentrum Garching der Max-Planck-Gesellschaft (RZG),
 !    - Bergische Universität Wuppertal, Lehrstuhl für angewandte
 !      Informatik,
 !    - Technische Universität München, Lehrstuhl für Informatik mit
@@ -17,7 +17,7 @@
 !
 !
 !    More information can be found here:
-!    http://elpa.rzg.mpg.de/
+!    http://elpa.mpcdf.mpg.de/
 !
 !    ELPA is free software: you can redistribute it and/or modify
 !    it under the terms of the version 3 of the license of the
@@ -41,117 +41,24 @@
 !
 !
 !>
-!> By calling executable [arg1] [arg2] [arg3]
+!> Fortran test programm to demonstrates the use of
+!> ELPA 1 real case library.
+!> If "HAVE_REDIRECT" was defined at build time
+!> the stdout and stderr output of each MPI task
+!> can be redirected to files if the environment
+!> variable "REDIRECT_ELPA_TEST_OUTPUT" is set
+!> to "true".
+!>
+!> By calling executable [arg1] [arg2] [arg3] [arg4]
 !> one can define the size (arg1), the number of
 !> Eigenvectors to compute (arg2), and the blocking (arg3).
 !> If these values are not set default values (4000, 1500, 16)
 !> are choosen.
+!> If these values are set the 4th argument can be
+!> "output", which specifies that the EV's are written to
+!> an ascii file.
 !>
-!> The real ELPA 2 kernel is set as the default kernel.
-!> However, this can be overriden by setting
-!> the environment variable "REAL_ELPA_KERNEL" to an
-!> appropiate value.
-!>
-
-subroutine read_input_parameters(na)
-  implicit none
-
-  integer, intent(out) :: na
-  ! Command line arguments
-  character(len=128)   :: arg
-  
-  ! default parameters
-  na = 2000
-
-  if (COMMAND_ARGUMENT_COUNT() >= 1) then
-     call GET_COMMAND_ARGUMENT(1, arg)
-     read(arg, *) na
-  endif
-
-end subroutine read_input_parameters
-
-subroutine set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, &
-                                np_cols, nprow, npcol, my_prow, my_pcol)
-
-  implicit none
-  integer, intent(in)     :: mpi_comm_world
-  integer, intent(inout)  :: my_blacs_ctxt, np_rows, &
-       np_cols, nprow, npcol, my_prow, my_pcol
-  
-  my_blacs_ctxt = mpi_comm_world
-  call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
-  call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
-
-end subroutine set_up_blacsgrid
-    
-subroutine set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, &
-     np_rows, np_cols, na_rows,  &
-     na_cols, sc_desc, my_blacs_ctxt, info)
-
-  use elpa_utilities, only : error_unit
-  use mpi
-  implicit none
-  
-  integer, intent(inout)  :: na, nblk, my_prow, my_pcol, np_rows, &
-       np_cols, na_rows, na_cols, sc_desc(1:9), &
-       my_blacs_ctxt, info
-  
-  integer, external       :: numroc
-  integer                 :: mpierr
-  
-  ! determine the neccessary size of the distributed matrices,
-  ! we use the scalapack tools routine NUMROC
-  
-  na_rows = numroc(na, nblk, my_prow, 0, np_rows)
-  na_cols = numroc(na, nblk, my_pcol, 0, np_cols)
-  
-  ! set up the scalapack descriptor for the checks below
-  ! For ELPA the following restrictions hold:
-  ! - block sizes in both directions must be identical (args 4 a. 5)
-  ! - first row and column of the distributed matrix must be on
-  !   row/col 0/0 (arg 6 and 7)
-  
-  call descinit(sc_desc, na, na, nblk, nblk, 0, 0, my_blacs_ctxt, na_rows, info)
-
-  if (info .ne. 0) then
-     write(error_unit,*) 'Error in BLACS descinit! info=',info
-     write(error_unit,*) 'Most likely this happend since you want to use'
-     write(error_unit,*) 'more MPI tasks than are possible for your'
-     write(error_unit,*) 'problem size (matrix size and blocksize)!'
-     write(error_unit,*) 'The blacsgrid can not be set up properly'
-     write(error_unit,*) 'Try reducing the number of MPI tasks...'
-     call MPI_ABORT(mpi_comm_world, 1, mpierr)
-  endif
-  
-end subroutine set_up_blacs_descriptor
-
-
-subroutine generate_matrix( n, a, desca, info )
-  !     ..
-  !     .. Scalar Arguments ..
-  integer            n
-  !     ..
-  !     .. Array Arguments ..
-  integer            desca( * )
-  double precision   a( * )
-  !     ..
-  !     .. local Scalars ..
-  integer            i, j
-  !     ..
-  !     .. External Subroutines ..
-  external           pdelset
-
-  ! Create minij matrix
-  do j = 1, n
-     do i = 1, n
-        call pdelset( a, i, j, desca, dble(max(i,j)))
-     enddo
-  enddo
- 
-end subroutine generate_matrix
-
-      
-program test_real2
+program test_real_example
 
 !-------------------------------------------------------------------------------
 ! Standard eigenvalue problem - REAL version
@@ -166,10 +73,11 @@ program test_real2
 !
 !-------------------------------------------------------------------------------
 
-   use ELPA1
-   use ELPA2
-   use elpa_utilities, only : error_unit
-   use elpa2_utilities
+   use iso_c_binding
+
+   use elpa
+   use input_parameters_mod
+   use my_elpa_utility
    use mpi
    implicit none
 
@@ -179,114 +87,111 @@ program test_real2
    ! nev:  Number of eigenvectors to be calculated
    ! nblk: Blocking factor in block cyclic distribution
    !-------------------------------------------------------------------------------
-   integer :: mb, nb, nblk, na, nev
+   integer :: required_mpi_thread_level, provided_mpi_thread_level
 
-   !-------------------------------------------------------------------------------
-   !  Local Variables
-   integer :: omp_get_max_threads, required_mpi_thread_level, provided_mpi_thread_level
-   integer :: np_rows, np_cols, na_rows, na_cols
-   integer :: myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
-   integer :: i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
-   logical :: success
+   integer           :: nblk
+   integer                          :: na, nev
 
-   double precision, allocatable :: a(:,:), z(:,:), ev(:)
+   integer                          :: np_rows, np_cols, na_rows, na_cols
+
+   integer                          :: myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
+   integer                          :: i, mpierr, my_blacs_ctxt, info, nprow, npcol
    double precision :: init_tick, initend_tick, gen_tick, diag_tick, end_tick
 
-   !  MPI Initialization
+   integer, external                :: numroc
+
+   real(kind=c_double), allocatable :: a(:,:), z(:,:), ev(:)
+
+   integer                          :: success
+
+   integer, parameter               :: error_units = 0
+
+   class(elpa_t), pointer           :: e
+   !-------------------------------------------------------------------------------
+
    call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
 
-   call read_input_parameters(na)
+   call read_input_parameters(na, nev, nblk)
 
-#ifdef WITH_OPENMP
-   if (myid .eq. 0) then
-      print *,"Threaded version of test program"
-      print *,"Using ",omp_get_max_threads()," threads"
-      print *," "
-   endif
-#endif
-
-   !-------------------------------------------------------------------------------
-   ! Selection of number of processor rows/columns
-   ! We try to set up the grid square-like, i.e. start the search for possible
-   ! divisors of nprocs with a number next to the square root of nprocs
-   ! and decrement it until a divisor is found.
-
-   do np_cols = nint(sqrt(real(nprocs))),2,-1
-      if(mod(nprocs,np_cols) == 0 ) exit
+   do np_cols = NINT(SQRT(REAL(nprocs))),2,-1
+     if(mod(nprocs,np_cols) == 0 ) exit
    enddo
    ! at the end of the above loop, nprocs is always divisible by np_cols
 
    np_rows = nprocs/np_cols
 
-   !-------------------------------------------------------------------------------
-   ! Set up BLACS context and MPI communicators
-   !
-   ! The BLACS context is only necessary for using Scalapack.
-   !
-   ! For ELPA, the MPI communicators along rows/cols are sufficient,
-   ! and the grid setup may be done in an arbitrary way as long as it is
-   ! consistent (i.e. 0<=my_prow<np_rows, 0<=my_pcol<np_cols and every
-   ! process has a unique (my_prow,my_pcol) pair).
+   ! initialise BLACS
    init_tick = mpi_wtime()
-   call set_up_blacsgrid(mpi_comm_world, my_blacs_ctxt, np_rows, np_cols, &
-                         nprow, npcol, my_prow, my_pcol)
-
-   ! All ELPA routines need MPI communicators for communicating within
-   ! rows or columns of processes, these are set in get_elpa_communicators.
-   mpierr = get_elpa_communicators(mpi_comm_world, my_prow, my_pcol, &
-                                   mpi_comm_rows, mpi_comm_cols)
+   my_blacs_ctxt = mpi_comm_world
+   call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
+   call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
 
    initend_tick = mpi_wtime()
-   mb = na / nprow
-   nb = na / npcol
-   nblk = min(mb, nb)
-   nblk = max(nblk, 1)
-   nev = na
-
-   if(myid==0) then
-      print *
-      print '(a)','Standard eigenvalue problem - REAL version'
-      print *
-      print '(3(a,i0))','Matrix size=',na,', Number of eigenvectors=',nev,', Block size=',nblk
-      print '(3(a,i0))','Number of processor rows=',np_rows,', cols=',np_cols,', total=',nprocs
-      print *
-   endif
 
    gen_tick = mpi_wtime()
-   call set_up_blacs_descriptor(na, nblk, my_prow, my_pcol, np_rows, np_cols, &
-                                na_rows, na_cols, sc_desc, my_blacs_ctxt, info)
 
-   !-------------------------------------------------------------------------------
-   ! Allocate matrices and set up a test matrix for the eigenvalue problem
-   allocate(a(na_rows,na_cols))
-   allocate(z(na_rows,na_cols))
+   ! determine the neccessary size of the distributed matrices,
+   ! we use the scalapack tools routine NUMROC
+   na_rows = numroc(na, nblk, my_prow, 0, np_rows)
+   na_cols = numroc(na, nblk, my_pcol, 0, np_cols)
+
+   allocate(a (na_rows,na_cols))
+   allocate(z (na_rows,na_cols))
+
    allocate(ev(na))
 
-   call generate_matrix( na, a, sc_desc, info )
-
+   call prepare_matrix_minij(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
+   
    !-------------------------------------------------------------------------------
-   ! Calculate eigenvalues/eigenvectors
    diag_tick = mpi_wtime()
-   success = solve_evp_real_2stage(na, nev, a, na_rows, ev, z, na_rows,  nblk, na_cols, &
-        mpi_comm_rows, mpi_comm_cols, mpi_comm_world, REAL_ELPA_KERNEL_GENERIC_SIMPLE)
+
+   if (elpa_init(20190524) /= elpa_ok) then
+     print *, "ELPA API version not supported"
+     stop
+   endif
+   e => elpa_allocate()
+
+   ! set parameters decribing the matrix and it's MPI distribution
+   call e%set("na", na, success)
+   call e%set("nev", nev, success)
+   call e%set("local_nrows", na_rows, success)
+   call e%set("local_ncols", na_cols, success)
+   call e%set("nblk", nblk, success)
+   call e%set("mpi_comm_parent", mpi_comm_world, success)
+   call e%set("process_row", my_prow, success)
+   call e%set("process_col", my_pcol, success)
+
+   success = e%setup()
+
+   call e%set("solver", elpa_solver_2stage, success)
+
+
+   ! Calculate eigenvalues/eigenvectors
+   call e%eigenvectors(a, ev, z, success)
    end_tick = mpi_wtime()
 
-   if (.not.(success)) then
-      write(error_unit,*) "solve_evp_real_2stage produced an error! Aborting..."
+   if (success /= 0) then
+      write(error_units,*) "ELPA solver produced an error! Aborting..."
       call MPI_ABORT(mpi_comm_world, 1, mpierr)
    endif
+   
 
    if (myid == 0) then
       print *, "Matrix dimension = ", na
-      do i = 1, min(100, na)
+      print *, "nev = ", nev
+      print *, "Block size = ", nblk
+      do i = 1, min(100, nev)
          print *, i, ev(i)
       end do
       print *, "init_time = ", initend_tick - init_tick
       print *, "gen_time = ", diag_tick - gen_tick
       print *, "diag_time = ", end_tick - diag_tick
    endif
+
+   call elpa_deallocate(e)
+   call elpa_uninit()
 
    deallocate(a)
    deallocate(z)
@@ -295,5 +200,4 @@ program test_real2
    call blacs_gridexit(my_blacs_ctxt)
    call mpi_finalize(mpierr)
 
-end program test_real2
-
+end program test_real_example
