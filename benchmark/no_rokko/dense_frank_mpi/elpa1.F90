@@ -145,6 +145,7 @@ program test_real_example
    call prepare_matrix_frank(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
    
    !-------------------------------------------------------------------------------
+   diag_tick = mpi_wtime()
 
    if (elpa_init(20190524) /= elpa_ok) then
      print *, "ELPA API version not supported"
@@ -168,13 +169,6 @@ program test_real_example
 
 
    ! Calculate eigenvalues/eigenvectors
-
-   if (myid==0) then
-     print '(a)','| Entering one-step ELPA solver ... '
-     print *
-   end if
-
-   diag_tick = mpi_wtime()
    call e%eigenvectors(a, ev, z, success)
    end_tick = mpi_wtime()
 
