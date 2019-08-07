@@ -14,7 +14,6 @@
 
 #include <rokko/traits/value_t.hpp>
 #include <boost/static_assert.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <complex>
 #include <stdexcept>
 #include <cblas.h>
@@ -81,7 +80,7 @@ template<typename MATRIX, typename VECTOR, typename T>
 void gemv(CBLAS_TRANSPOSE trans,
           T alpha, MATRIX const& a, VECTOR const& x, int inc_x,
           T beta, VECTOR& y, int inc_y) {
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
                       typename value_t<VECTOR>::type>::value);
   if (util::op_cols(trans, a) != size(x) / inc_x ||
       util::op_cols(trans, a) != size(y) / inc_y)

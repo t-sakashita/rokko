@@ -70,8 +70,8 @@ struct getrs_dispatch<std::complex<double> > {
 template<typename MATRIX0, typename MATRIX1, typename VECTOR>
 lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
                  VECTOR const& ipiv, MATRIX1& b) {
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX0>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX0>::type,
                       typename value_t<MATRIX1>::type>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))

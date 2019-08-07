@@ -12,7 +12,6 @@
 #ifndef ROKKO_LAPACK_GETRF_HPP
 #define ROKKO_LAPACK_GETRF_HPP
 
-#include <boost/type_traits.hpp>
 #include <complex>
 #include <stdexcept>
 #include <lapacke.h>
@@ -69,7 +68,7 @@ template<typename MATRIX, typename VECTOR>
 lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
   if (size(ipiv) < std::min(m, n))
     throw std::invalid_argument("vector ipiv size mismatch");
   return getrf_dispatch<typename value_t<MATRIX>::type>

@@ -93,7 +93,7 @@ struct ungqr_dispatch<std::complex<double> > {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
                       typename value_t<VECTOR>::type>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
@@ -105,7 +105,7 @@ lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
                       typename value_t<VECTOR>::type>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);

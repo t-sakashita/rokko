@@ -116,7 +116,7 @@ struct gesvd_dispatch<std::complex<double> > {
 template<typename MATRIX, typename VECTOR>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX& vt,
                  VECTOR& work) {
-  BOOST_STATIC_ASSERT(boost::is_same<typename norm_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename norm_t<MATRIX>::type,
                       typename value_t<VECTOR>::type>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
@@ -139,9 +139,9 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX&
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX& vt,
                  VECTOR1& work, VECTOR0& rwork) {
-  BOOST_STATIC_ASSERT(boost::is_same<typename norm_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename norm_t<MATRIX>::type,
                       typename value_t<VECTOR0>::type>::value);
-  BOOST_STATIC_ASSERT(boost::is_same<typename value_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
                       typename value_t<VECTOR1>::type>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);

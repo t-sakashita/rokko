@@ -15,7 +15,6 @@
 #include <iostream>
 #include <mpi.h>
 #include <cmath>
-#include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 
@@ -65,7 +64,7 @@ protected:
     }
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
-    is_row = boost::is_same<GRID_MAJOR, grid_row_major_t>::value;
+    is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value;
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
         if ( myrank == 0 )

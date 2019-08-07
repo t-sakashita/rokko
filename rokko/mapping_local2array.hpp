@@ -17,7 +17,6 @@
 #include <rokko/mapping_common_sizes.hpp>
 
 #include <rokko/grid.hpp>
-#include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 
@@ -35,7 +34,7 @@ public:
     set_length_array(lld * lld2);
   }
   //explicit mapping_local2array(int lld_in, int length_array_in) : lld(lld_in), length_array(length_array_in) {
-  //  is_row = boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+  //  is_row = std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   //}
 
   void set_length_array(int value) { length_array = value; }
@@ -55,10 +54,10 @@ public:
   int get_array_index(int local_i, int local_j) const;
 
   bool is_row_major() const {
-    return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+    return std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }
   bool is_col_major() const {
-    return !boost::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+    return !std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }
 
 private:
