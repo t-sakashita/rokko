@@ -9,7 +9,6 @@
 *
 *****************************************************************************/
 
-#include <boost/shared_ptr.hpp>
 
 #include <rokko/grid.hpp>
 #include <rokko/solver.hpp>
