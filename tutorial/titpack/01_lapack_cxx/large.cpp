@@ -88,7 +88,7 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 
     // convergence check
     if ((i + 1 > 20) && ((i + 1) % 5 == 0)) {
-      boost::tie(m, nsplit) = bisec(alpha, beta, i + 1, E, 4, eps, iblock, isplit, &work(0,0));
+      std::tie(m, nsplit) = bisec(alpha, beta, i + 1, E, 4, eps, iblock, isplit, &work(0,0));
       if (std::abs((ebefor - E[1]) / E[1]) < 1e-13) {
         if (nvec > 0) vec12(alpha, beta, i + 1, E, nvec, coeff, iblock, isplit, &work(0,0));
         return (i + 1);
@@ -96,7 +96,7 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
       ebefor = E[1];
     }
     if ((i + 1) == 20) {
-      boost::tie(m, nsplit) = bisec(alpha, beta, 20, E, 4, eps, iblock, isplit, &work(0,0));
+      std::tie(m, nsplit) = bisec(alpha, beta, 20, E, 4, eps, iblock, isplit, &work(0,0));
       ebefor = E[1];
     }
   }
