@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
     int L, num_bonds;
     std::vector<std::pair<int, int> > lattice;
-    std::vector<boost::tuple<double, double, double> > coupling;
+    std::vector<std::tuple<double, double, double> > coupling;
     ifs >> L >> num_bonds;
     for (int i=0; i<num_bonds; ++i) {
       int j, k;
@@ -50,12 +50,12 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     for (int i=0; i<num_bonds; ++i) {
       double jx, jy, jz;
       ifs >> jx >> jy >> jz;
-      coupling.push_back(boost::make_tuple(jx, jy, jz));
+      coupling.push_back(std::make_tuple(jx, jy, jz));
     }
 
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
     for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+      std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
     }
     int dim = 1 << L;
 

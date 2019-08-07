@@ -18,7 +18,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 

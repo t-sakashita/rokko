@@ -16,7 +16,7 @@
 #include "Epetra_Map.h"
 
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 using namespace Anasazi;
 
@@ -58,11 +58,11 @@ int main(int argc, char *argv[]) {
   cmdp.setOption("L", &L, "Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   for (int i=0; i<L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1)%L));
-    //coupling.push_back(boost::make_tuple(1, 1, 1));
-    coupling.push_back(boost::make_tuple(0.8, 0.3, 0.1));
+    //coupling.push_back(std::make_tuple(1, 1, 1));
+    coupling.push_back(std::make_tuple(0.8, 0.3, 0.1));
   }
 
   // Construct a Map that puts approximately the same number of
@@ -93,9 +93,9 @@ int main(int argc, char *argv[]) {
       int k = MyGlobalElements[row];
       int i = lattice[l].first;
       int j = lattice[l].second;
-      double jx = coupling[l].get<0>();
-      double jy = coupling[l].get<1>();
-      double jz = coupling[l].get<2>();
+      double jx = std::get<0>(coupling[l]);
+      double jy = std::get<1>(coupling[l]);
+      double jz = std::get<2>(coupling[l]);
       double diag_plus = jz / 4.0;
       double diag_minus = - jz/ 4.0;
       double offdiag_plus = (jx + jy) / 4.0;

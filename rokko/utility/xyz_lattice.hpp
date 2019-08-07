@@ -17,7 +17,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -84,7 +84,7 @@ void read_offset_info(std::ifstream& ifs, bool& offset1) {
 
 } // namespace detail
 
-void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<boost::tuple<double, double, double> >& coupling) {
+void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<std::tuple<double, double, double> >& coupling) {
   int num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
@@ -120,12 +120,12 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
     if (detail::read_line_with_comment(ifs, is)) {
       is >> jx >> jy >> jz;
       std::cout << "jx=" << jx << " jy=" << jy << " jz=" << jz << std::endl;
-      coupling.push_back(boost::make_tuple(jx, jy, jz));
+      coupling.push_back(std::make_tuple(jx, jy, jz));
     }
   } while (coupling.size() < num_bonds);
 }
 
-void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<boost::tuple<double, double, double> >& coupling) {
+void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<std::tuple<double, double, double> >& coupling) {
   std::ifstream ifs(filename.c_str());
   if (!ifs) {
     BOOST_THROW_EXCEPTION(std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\""));

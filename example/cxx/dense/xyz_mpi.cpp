@@ -12,7 +12,7 @@
 #include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/xyz_hamiltonian_mpi.hpp>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 #include <fstream>
 #include <iostream>
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   }
   int num_sites, num_bonds;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   ifs >> num_sites >> num_bonds;
   int dim = 1 << num_sites;
   for (int i = 0; i < num_bonds; ++i) {
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < num_bonds; ++i) {
     double jx, jy, jz;
     ifs >> jx >> jy >> jz;
-    coupling.push_back(boost::make_tuple(jx, jy, jz));
+    coupling.push_back(std::make_tuple(jx, jy, jz));
   }
 
   rokko::parallel_dense_ev solver(solver_name);

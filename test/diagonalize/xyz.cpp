@@ -33,19 +33,19 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
   for(auto name : names) {
     std::vector<std::pair<int, int> > lattice;
-    std::vector<boost::tuple<double, double, double> > coupling;
+    std::vector<std::tuple<double, double, double> > coupling;
     int L = 5;
     int num_bonds = L-1;
     int dim = 1 << L;
 
     for (int i=0; i<num_bonds; ++i) {
       lattice.push_back(std::make_pair(i, i+1));
-      coupling.push_back(boost::make_tuple(1, 1, 1));
+      coupling.push_back(std::make_tuple(1, 1, 1));
     }
 
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
     for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+      std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
     }
 
     std::cout << "solver=" << name << std::endl;

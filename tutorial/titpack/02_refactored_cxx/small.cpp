@@ -14,7 +14,7 @@
 #include "small.hpp"
 #include <lapacke.h>
 #include <iostream>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 void elm3(hamiltonian const& hop, matrix_type& elemnt) {
   // initialization

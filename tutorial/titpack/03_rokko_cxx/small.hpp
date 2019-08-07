@@ -17,7 +17,7 @@
 #include "common.hpp"
 #include "hamiltonian.hpp"
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 //
 // matrix elements

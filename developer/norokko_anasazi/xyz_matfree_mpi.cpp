@@ -24,7 +24,7 @@ class HeisenbergOp : public Epetra_Operator {
   //@{
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
-  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<boost::tuple<double, double, double> >& coupling) : comm_(comm), L_(L), lattice_(lattice), coupling_(coupling), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
+  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<std::tuple<double, double, double> >& coupling) : comm_(comm), L_(L), lattice_(lattice), coupling_(coupling), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;
@@ -130,7 +130,7 @@ class HeisenbergOp : public Epetra_Operator {
   mutable std::vector<double> buffer_;
   int L_;
   std::vector<std::pair<int, int> > lattice_;
-  std::vector<boost::tuple<double, double, double> > coupling_;
+  std::vector<std::tuple<double, double, double> > coupling_;
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };
@@ -174,11 +174,11 @@ int main(int argc, char *argv[]) {
   cmdp.setOption("L", &L ,"Lattice size.");
   int N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   for (int i=0; i<L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1)%L));
-    //coupling.push_back(boost::make_tuple(1, 1, 1));
-    coupling.push_back(boost::make_tuple(0.8, 0.3, 0.1));
+    //coupling.push_back(std::make_tuple(1, 1, 1));
+    coupling.push_back(std::make_tuple(0.8, 0.3, 0.1));
   }
 
   // Construct a Map that puts approximately the same number of

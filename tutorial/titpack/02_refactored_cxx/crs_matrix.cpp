@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include "crs_matrix.hpp"
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 crs_matrix::crs_matrix(hamiltonian const& hop) {
   int ibond = hop.num_bonds();

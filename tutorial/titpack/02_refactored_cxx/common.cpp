@@ -15,7 +15,7 @@
 #include <lapacke.h>
 #include <iostream>
 
-boost::tuple<int, int>
+std::tuple<int, int>
 bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
       std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
       std::vector<int>& isplit, double *w) {
@@ -26,7 +26,7 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
   int info = LAPACKE_dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, &alpha[0], &beta[0],
                             &m, &nsplit, &w[0], &iblock[0], &isplit[0]);
   for (int i = 0; i < ne; ++i) E[i] = w[i];
-  return boost::make_tuple(m, nsplit);
+  return std::make_tuple(m, nsplit);
 }
 
 void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,

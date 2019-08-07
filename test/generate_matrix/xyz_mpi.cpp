@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 #include <rokko/solver.hpp>
 #include <rokko/grid.hpp>
@@ -30,10 +30,10 @@ int main(int argc, char *argv[]) {
   int L = 4;
   int num_bonds = L - 1;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    coupling.push_back(boost::make_tuple(1, 0.3, 0.2));
+    coupling.push_back(std::make_tuple(1, 0.3, 0.2));
   }
 
   int myrank, nprocs;

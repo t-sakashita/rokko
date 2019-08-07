@@ -17,7 +17,7 @@
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
 typedef boost::numeric::ublas::matrix<int, boost::numeric::ublas::column_major> i_matrix_type;
@@ -51,7 +51,7 @@ void datack(std::vector<int> const& ipair, int n);
 // ne     @ number of eigenvalues to calculate
 // eps    @ limit of error
 
-boost::tuple<int, int>
+std::tuple<int, int>
 bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
       std::vector<double>& E, int ne, double eps, std::vector<int>& iblock,
       std::vector<int>& isplit, double *w);

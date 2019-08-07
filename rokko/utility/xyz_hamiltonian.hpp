@@ -13,7 +13,7 @@
 #define ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
 
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 #include <rokko/localized_matrix.hpp>
 
 namespace rokko {
@@ -22,14 +22,14 @@ namespace xyz_hamiltonian {
 
 template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, const T* v, T* w) {
+  const std::vector<std::tuple<double, double, double> >& coupling, const T* v, T* w) {
   int N = 1 << L;
   for (int l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
-    double jx = coupling[l].get<0>();
-    double jy = coupling[l].get<1>();
-    double jz = coupling[l].get<2>();
+    double jx = std::get<0>(coupling[l]);
+    double jy = std::get<1>(coupling[l]);
+    double jz = std::get<2>(coupling[l]);
 
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
@@ -52,14 +52,14 @@ void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
 
 template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, const std::vector<T>& v,
+  const std::vector<std::tuple<double, double, double> >& coupling, const std::vector<T>& v,
   std::vector<T>& w) {
   multiply(L, lattice, coupling, &v[0], &w[0]);
 }
 
 template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, T* w) {
+  const std::vector<std::tuple<double, double, double> >& coupling, T* w) {
   int N = 1 << L;
   for (int k=0; k<N; ++k) {
     w[k] = 0;
@@ -67,9 +67,9 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
-    double jx = coupling[l].get<0>();
-    double jy = coupling[l].get<1>();
-    double jz = coupling[l].get<2>();
+    double jx = std::get<0>(coupling[l]);
+    double jy = std::get<1>(coupling[l]);
+    double jz = std::get<2>(coupling[l]);
 
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
@@ -92,22 +92,22 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
 
 template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling, std::vector<T>& w) {
+  const std::vector<std::tuple<double, double, double> >& coupling, std::vector<T>& w) {
   fill_diagonal(L, lattice, coupling, &w[0]);
 }
 
 template<typename T, typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<boost::tuple<double, double, double> >& coupling,
+  const std::vector<std::tuple<double, double, double> >& coupling,
   rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
-    double jx = coupling[l].get<0>();
-    double jy = coupling[l].get<1>();
-    double jz = coupling[l].get<2>();
+    double jx = std::get<0>(coupling[l]);
+    double jy = std::get<1>(coupling[l]);
+    double jz = std::get<2>(coupling[l]);
     double diag_plus = jz / 4.0;
     double diag_minus = - jz/ 4.0;
     double offdiag_plus = (jx + jy) / 4.0;
