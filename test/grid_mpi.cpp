@@ -10,7 +10,6 @@
 *****************************************************************************/
 
 #include <boost/shared_ptr.hpp>
-#include <boost/foreach.hpp>
 
 #include <rokko/grid.hpp>
 

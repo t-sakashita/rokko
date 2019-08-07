@@ -17,7 +17,6 @@
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <tuple>
 #include <boost/algorithm/string.hpp>
-#include <boost/foreach.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
