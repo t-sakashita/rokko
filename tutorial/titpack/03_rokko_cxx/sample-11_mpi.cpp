@@ -24,7 +24,8 @@
 #include "options.hpp"
 
 typedef rokko::parallel_dense_ev solver_type;
-typedef rokko::distributed_matrix<rokko::matrix_col_major> matrix_type;
+typedef rokko::matrix_col_major matrix_major;
+typedef rokko::distributed_matrix<double, matrix_major> matrix_type;
 
 int main(int argc, char** argv) {
   int provided;
@@ -55,16 +56,18 @@ int main(int argc, char** argv) {
   subspace ss(n, 0);
   hamiltonian hop(ss, ipair, bondwt, zrtio);
   solver_type solver(opt.solver);
+  rokko::mapping_bc<matrix_major> map = solver.default_mapping(hop.dimension(), g);
+
   solver.initialize(argc, argv);
 
   // Hamiltonian matrix
-  matrix_type elemnt(hop.dimension(), hop.dimension(), g, solver);
+  matrix_type elemnt(map);
   elm3(hop, elemnt);
   MPI_Barrier(g.get_comm());
   double t2 = tm.elapsed();
   
-  rokko::localized_vector E(hop.dimension());
-  matrix_type v(hop.dimension(), hop.dimension(), g, solver);
+  rokko::localized_vector<double> E(hop.dimension());
+  matrix_type v(map);
   solver.diagonalize(elemnt, E, v);
   double t3 = tm.elapsed();
 
@@ -78,7 +81,7 @@ int main(int argc, char** argv) {
 
   // Do not forget to call elm3 again before calling check3
   elm3(hop, elemnt);
-  matrix_type w(hop.dimension(), 1, g, solver);
+  matrix_type w(map);
   check3_mpi(elemnt, v, 0, w);
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
@@ -88,7 +91,7 @@ int main(int argc, char** argv) {
   npair.push_back(1);
   npair.push_back(2);
   std::vector<double> sxx(1);
-  matrix_type sxmat(hop.dimension(), hop.dimension(), g, solver);
+  matrix_type sxmat(map);
   xcorr3_mpi(ss, npair, v, 0, sxx, sxmat, w);
   if (v.is_gindex(0, 0)) std::cout << "sxx: " << sxx[0] << std::endl;
   std::cout << std::flush;

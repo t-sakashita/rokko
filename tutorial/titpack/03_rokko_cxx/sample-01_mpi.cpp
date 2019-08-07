@@ -24,7 +24,7 @@
 #include "titpack.hpp"
 #include "options.hpp"
 
-typedef rokko::parallel_sparse_solver solver_type;
+typedef rokko::parallel_sparse_ev solver_type;
 
 int main(int argc, char** argv) {
   int provided;
@@ -63,11 +63,12 @@ int main(int argc, char** argv) {
   double t2 = tm.elapsed();
   
   // Eigenvalues
-  int nev = 10;
-  int blockSize = 5;
-  int maxIters = 500;
-  double tol = 1.0e-8;
-  solver.diagonalize(hop, nev, blockSize, maxIters, tol);
+  rokko::parameters params;
+  params.set("Block Size", 5);
+  params.set("Maximum Iterations", 500);
+  params.set("Convergence Tolerance", 1.0e-8);
+  params.set("num_eigenvalues", 10);
+  solver.diagonalize(hop, params);
   double t3 = tm.elapsed();
   
   if (g.get_myrank() == 0) {
@@ -79,7 +80,7 @@ int main(int argc, char** argv) {
   }
 
   // Ground-state eigenvector
-  rokko::distributed_vector eigvec;
+  rokko::distributed_vector<double> eigvec;
   solver.eigenvector(0, eigvec);
   if (g.get_myrank() == 0) std::cout << "[Eigenvector components (selected)]";
   std::cout << std::flush;
