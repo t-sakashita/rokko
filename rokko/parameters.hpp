@@ -18,7 +18,6 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 #include <boost/any.hpp>
-#include <boost/throw_exception.hpp>
 
 #include <stdexcept>
 
@@ -59,7 +58,7 @@ public:
   T get(key_type const& key) const {
     if (type(key) != typeid(T)) {
       //std::cout << "type(key)=" << type(key).name() << " typeid(T)=" << typeid(T).name() << std::endl;
-      BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get() : type given as template parameter is not correct."));
+      throw std::invalid_argument("parameters::get() : type given as template parameter is not correct.");
     }
     return boost::any_cast<T>(map_.find(key)->second);
   }
@@ -85,7 +84,7 @@ public:
       return boost::lexical_cast<std::string>(get<char>(key));
     }
     else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get_string() : value type given as template parameter must be char*, string, int, or double.")); 
+      throw std::invalid_argument("parameters::get_string() : value type given as template parameter must be char*, string, int, or double.");
     }
   }
   bool get_bool(key_type const& key) const {
@@ -94,7 +93,7 @@ public:
 	return get<bool>(key);
       }
       else {
-	BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type")); 
+	throw std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type");
       }
     }
     return false;

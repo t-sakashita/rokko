@@ -61,7 +61,7 @@ bool detect_offset_info(std::string const& str_line, bool& offset1) {
       offset1 = false;
       std::cout << "offset = 0" << std::endl;
     } else
-      BOOST_THROW_EXCEPTION(std::invalid_argument("detail::detect_offset_info() : give 0 or 1 after 'offset='"));
+      throw std::invalid_argument("detail::detect_offset_info() : give 0 or 1 after 'offset='");
     return true;
   }
   else {
@@ -106,11 +106,11 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
       if ((lattice.back().first < 0) || (lattice.back().first >= num_sites)) {
 	std::stringstream msg;
 	msg << "read_lattice_stream() : first index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
-	BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+	throw std::invalid_argument(msg.str());
       } else if ((lattice.back().second < 0) || (lattice.back().second >= num_sites)) {
 	std::stringstream msg;
 	msg << "read_lattice_stream() : second index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
-	BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+	throw std::invalid_argument(msg.str());
       }
     }
   } while (lattice.size() < num_bonds);
@@ -128,7 +128,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
 void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<std::tuple<double, double, double> >& coupling) {
   std::ifstream ifs(filename.c_str());
   if (!ifs) {
-    BOOST_THROW_EXCEPTION(std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\""));
+    throw std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\"");
   }
   return read_lattice_stream(ifs, num_sites, lattice, coupling);
 }

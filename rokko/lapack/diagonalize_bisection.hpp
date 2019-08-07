@@ -37,7 +37,7 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
     msg << "lapack::diagonalize_bisection() : " << std::endl
 	<< "abstol is negative value, which means QR method." << std::endl
 	<< "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
-    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+    throw std::invalid_argument(msg.str());
   }
   if (!params.defined("abstol")) {  // default: optimal value for bisection method
     abstol = 2 * LAPACKE_dlamch('S');
@@ -63,7 +63,7 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
       msg << "This means that "
 	  << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
     }
-    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+    throw std::invalid_argument(msg.str());
   }
   params_out.set("info", info);
   params_out.set("m", m);
@@ -97,7 +97,7 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
     msg << "lapack::diagonalize_bisection() : " << std::endl
 	<< "abstol is negative value, which means QR method." << std::endl
 	<< "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
-    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+    throw std::invalid_argument(msg.str());
   }
   if (!params.defined("abstol")) {  // default: optimal value for bisection method
     abstol = 2 * LAPACKE_dlamch('S');
@@ -133,7 +133,7 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
 	msg << std::endl;
       }
     }
-    BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+    throw std::invalid_argument(msg.str());
   }
   params_out.set("info", info);
   params_out.set("m", m);

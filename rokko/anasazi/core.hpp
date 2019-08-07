@@ -97,7 +97,7 @@ public:
       for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
 	std::cerr << anasazi_solvers[i] << " " << std::endl;
       }
-      BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+      throw std::invalid_argument(msg.str());
     }
   }
 
@@ -152,7 +152,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	BOOST_THROW_EXCEPTION(std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string"));
+	throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";
@@ -208,7 +208,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
-	BOOST_THROW_EXCEPTION(std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string"));
+	throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";

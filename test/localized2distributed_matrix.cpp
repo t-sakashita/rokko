@@ -28,7 +28,7 @@
 template<typename T, typename MATRIX_MAJOR>
 void localized_2_distributed(const rokko::localized_matrix<T, MATRIX_MAJOR>& lmat, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
   if (mat.get_m_global() != mat.get_n_global())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+    throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
   for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
     for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
       int global_i = mat.translate_l2g_row(local_i);

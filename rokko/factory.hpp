@@ -54,7 +54,7 @@ public:
         return f->make_creator(f->default_product_)->create();
       } else {
         std::cerr << "Error: default product is not defined\n";
-        boost::throw_exception(std::runtime_error("factory::make_product()"));
+        throw std::runtime_error("factory::make_product()");
       }
     } else {
       return f->make_creator(name)->create();
@@ -99,7 +99,7 @@ protected:
         std::cerr << "\"" << itr->first << "\"";
       }
       std::cerr << ")\n";
-      boost::throw_exception(std::runtime_error("factory::make_creator()"));
+      throw std::runtime_error("factory::make_creator()");
     }
     return itr->second;
   }

@@ -14,7 +14,6 @@
 
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
-#include <boost/throw_exception.hpp>
 
 #include <Epetra_CrsMatrix.h>
 #include <AnasaziEpetraAdapter.hpp>
