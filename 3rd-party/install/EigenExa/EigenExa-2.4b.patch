@@ -34,10 +34,11 @@ diff -U1 -uprN EigenExa-2.4b.orig/CMakeLists.txt EigenExa-2.4b/CMakeLists.txt
 diff -U1 -uprN EigenExa-2.4b.orig/benchmark/CMakeLists.txt EigenExa-2.4b/benchmark/CMakeLists.txt
 --- EigenExa-2.4b.orig/benchmark/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
 +++ EigenExa-2.4b/benchmark/CMakeLists.txt	2019-07-30 16:15:08.000000000 +0900
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,12 @@
 +include_directories(${PROJECT_BINARY_DIR}/src)
 +
 +add_executable(main2 main2.f mat_set.f ev_test.f w_test.f)
++target_include_directories(main2 PUBLIC ${CMAKE_BINARY_DIR}/src/modules)
 +target_link_libraries(main2 EigenExa)
 +
 +if(USE_C_LINKER)
@@ -67,9 +68,9 @@ diff -U1 -uprN EigenExa-2.4b.orig/src/CMakeLists.txt EigenExa-2.4b/src/CMakeList
 +eigen_scaling.F eigen_sx.F eigen_s.F)
 +add_library(EigenExa ${SOURCES})
 +target_link_libraries(EigenExa ${SCALAPACK_LIB} ${MPI_Fortran_LIBRARIES})
++set_target_properties(EigenExa PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/modules)
 +install(TARGETS EigenExa ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
-+install(FILES ${PROJECT_BINARY_DIR}/src/eigen_libs_mod.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-+install(FILES ${PROJECT_BINARY_DIR}/src/CSTAB_mod.mod DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
++install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/modules/ DESTINATION include)
 diff -U1 -uprN EigenExa-2.4b.orig/src/dc_redist1_r.F EigenExa-2.4b/src/dc_redist1_r.F
 --- EigenExa-2.4b.orig/src/dc_redist1_r.F	2018-08-17 20:44:40.000000000 +0900
 +++ EigenExa-2.4b/src/dc_redist1_r.F	2019-07-30 16:00:28.000000000 +0900
