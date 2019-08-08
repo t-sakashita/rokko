@@ -13,7 +13,7 @@
 #define ROKKO_FACTORY_HPP
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 #include <stdexcept>
 #include <map>
@@ -28,22 +28,22 @@ private:
   class abstract_creator {
   public:
     virtual ~abstract_creator() {}
-    virtual boost::shared_ptr<BASE> create() const = 0;
+    virtual std::shared_ptr<BASE> create() const = 0;
   };
   template<typename PRODUCT>
   class creator : public abstract_creator {
   public:
     virtual ~creator() {}
-    boost::shared_ptr<BASE> create() const {
-      return boost::shared_ptr<BASE>(new PRODUCT());
+    std::shared_ptr<BASE> create() const {
+      return std::shared_ptr<BASE>(new PRODUCT());
     }
   };
 
 public:
-  typedef boost::shared_ptr<BASE> product_pointer_type;
+  typedef std::shared_ptr<BASE> product_pointer_type;
 
 private:
-  typedef boost::shared_ptr<abstract_creator> creator_pointer_type;
+  typedef std::shared_ptr<abstract_creator> creator_pointer_type;
   typedef std::map<std::string, creator_pointer_type> creator_map_type;
 public:
   factory() : largest_priority_(0) {}
@@ -54,7 +54,7 @@ public:
         return f->make_creator(f->default_product_)->create();
       } else {
         std::cerr << "Error: default product is not defined\n";
-        boost::throw_exception(std::runtime_error("factory::make_product()"));
+        throw std::runtime_error("factory::make_product()");
       }
     } else {
       return f->make_creator(name)->create();
@@ -99,7 +99,7 @@ protected:
         std::cerr << "\"" << itr->first << "\"";
       }
       std::cerr << ")\n";
-      boost::throw_exception(std::runtime_error("factory::make_creator()"));
+      throw std::runtime_error("factory::make_creator()");
     }
     return itr->second;
   }

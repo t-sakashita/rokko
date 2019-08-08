@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,10 +16,8 @@
 #include <list>
 #include <map>
 #include <string>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/any.hpp>
-#include <boost/throw_exception.hpp>
 
 #include <stdexcept>
 
@@ -52,7 +50,7 @@ public:
   // returns list of keys
   std::list<key_type> keys() const {
     std::list<key_type> keys;
-    BOOST_FOREACH(value_type const& p, map_) { keys.push_back(p.first); }
+    for(auto const& p : map_) { keys.push_back(p.first); }
     return keys;
   }
   // returns value of parameter in type T
@@ -60,7 +58,7 @@ public:
   T get(key_type const& key) const {
     if (type(key) != typeid(T)) {
       //std::cout << "type(key)=" << type(key).name() << " typeid(T)=" << typeid(T).name() << std::endl;
-      BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get() : type given as template parameter is not correct."));
+      throw std::invalid_argument("parameters::get() : type given as template parameter is not correct.");
     }
     return boost::any_cast<T>(map_.find(key)->second);
   }
@@ -86,7 +84,7 @@ public:
       return boost::lexical_cast<std::string>(get<char>(key));
     }
     else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get_string() : value type given as template parameter must be char*, string, int, or double.")); 
+      throw std::invalid_argument("parameters::get_string() : value type given as template parameter must be char*, string, int, or double.");
     }
   }
   bool get_bool(key_type const& key) const {
@@ -95,7 +93,7 @@ public:
 	return get<bool>(key);
       }
       else {
-	BOOST_THROW_EXCEPTION(std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type")); 
+	throw std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type");
       }
     }
     return false;

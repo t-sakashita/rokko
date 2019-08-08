@@ -14,7 +14,7 @@
 #include "small.hpp"
 #include <lapacke.h>
 #include <iostream>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 void elm3(hamiltonian const& hop, matrix_type& elemnt) {
   // initialization
@@ -26,7 +26,7 @@ void elm3(hamiltonian const& hop, matrix_type& elemnt) {
   // elments
   for (int k = 0; k < hop.num_bonds(); ++k) {
     int isite1, isite2;
-    boost::tie(isite1, isite2) = hop.site_pair(k);
+    std::tie(isite1, isite2) = hop.site_pair(k);
     int is = (1 << isite1) + (1 << isite2);
     double wght = hop.bond_weight(k);
     double diag = 0.5 * wght * hop.z_ratio(k);

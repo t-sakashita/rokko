@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -44,7 +44,7 @@ int main() {
   std::list<std::string> keys = params.keys();
   std::cout << "number of parameters = " << keys.size() << std::endl;
   std::cout << "key-value pairs:\n";
-  BOOST_FOREACH(std::string const& key, keys) {
+  for(auto const& key : keys) {
     std::cout << "  " << key << " = " << params.get_string(key) << std::endl;
   }
 }

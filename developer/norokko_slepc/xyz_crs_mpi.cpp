@@ -3,7 +3,7 @@
 #include <rokko/localized_matrix.hpp>
 #include <rokko/utility/heisenberg_hamiltonian.hpp>
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -23,11 +23,11 @@ int main(int argc,char **argv)
   ierr = PetscOptionsGetInt(NULL,NULL,"-L", &L, NULL); CHKERRQ(ierr);
   N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   for (int i=0; i<L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1)%L));
-    //coupling.push_back(boost::make_tuple(1, 1, 1));
-    coupling.push_back(boost::make_tuple(0.8, 0.3, 0.1));
+    //coupling.push_back(std::make_tuple(1, 1, 1));
+    coupling.push_back(std::make_tuple(0.8, 0.3, 0.1));
   }
 
   // Create Hermitean matrix                                                           
@@ -48,9 +48,9 @@ int main(int argc,char **argv)
       values.clear();
       int i = lattice[l].first;
       int j = lattice[l].second;
-      double jx = coupling[l].get<0>();
-      double jy = coupling[l].get<1>();
-      double jz = coupling[l].get<2>();
+      double jx = std::get<0>(coupling[l]);
+      double jy = std::get<1>(coupling[l]);
+      double jz = std::get<2>(coupling[l]);
       double diag_plus = jz / 4.0;
       double diag_minus = - jz/ 4.0;
       double offdiag_plus = (jx + jy) / 4.0;

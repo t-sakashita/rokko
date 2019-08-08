@@ -65,7 +65,7 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 #ifdef ROKKO_HAVE_PDSYEVR
     return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params);
 #else
-    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine."));
+    throw std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine.");
 #endif
   } else if ((routine=="pdsyevd") || (routine=="dc")) {
     return rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, eigvecs, params);
@@ -78,13 +78,13 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 #ifdef ROKKO_HAVE_PDSYEVR
       return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, eigvecs, params);
 #else
-      BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the default routine for a range of eigenvalues, pdsyevr does not exist in your machine."));
+      throw std::invalid_argument("scalapack::diagonalize() : the default routine for a range of eigenvalues, pdsyevr does not exist in your machine.");
 #endif
     } else {
       return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params);
     }
   } else {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : " + routine + " is invalid routine name"));
+    throw std::invalid_argument("scalapack::diagonalize() : " + routine + " is invalid routine name");
   }
 }
 
@@ -103,10 +103,10 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 #ifdef ROKKO_HAVE_PDSYEVR
     return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, params);
 #else
-    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine."));
+    throw std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine.");
 #endif
   } else if ((routine=="pdsyevd") || (routine=="dc")) {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : " + routine + " does not support computing only eigenvalues"));
+    throw std::invalid_argument("scalapack::diagonalize() : " + routine + " does not support computing only eigenvalues");
   } else if (routine=="pdsyevx") {
     return rokko::scalapack::diagonalize_pdsyevx(mat, eigvals, params);
     //} else if (routine=="bisection") {
@@ -116,13 +116,13 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 #ifdef ROKKO_HAVE_PDSYEVR
       return rokko::scalapack::diagonalize_pdsyevr(mat, eigvals, params);
 #else
-      BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : the default routine for a range of eigenvalues, pdsyevr does not exist in your machine."));
+      throw std::invalid_argument("scalapack::diagonalize() : the default routine for a range of eigenvalues, pdsyevr does not exist in your machine.");
 #endif
     } else {
       return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, params);
     }
   } else {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("scalapack::diagonalize() : " + routine + " is invalid routine name"));
+    throw std::invalid_argument("scalapack::diagonalize() : " + routine + " is invalid routine name");
   }
 }
 

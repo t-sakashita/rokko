@@ -50,7 +50,7 @@ El::HermitianEigSubset<double> get_subset(parameters const& params) {
     subset.indexSubset = true;
   } else if (!(is_lower_index && is_lower_value && is_upper_index && is_upper_value)) {  
   } else {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::get_subset() : sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index"));
+    throw std::invalid_argument("elemental::get_subset() : sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index");
   }
   return subset;
 }
@@ -101,9 +101,9 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		       parameters const& params) {
   if(mat.is_row_major())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major."));
+    throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size."));
+    throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
   enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
@@ -143,9 +143,9 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 		       localized_vector<double>& eigvals,
 		       parameters const& params) {
   if(mat.is_row_major())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major."));
+    throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size."));
+    throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
   enum El::GridOrder elemental_grid_order;

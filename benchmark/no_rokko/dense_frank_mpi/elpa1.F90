@@ -1,27 +1,3 @@
-subroutine generate_matrix( n, a, desca, info )
-  !     ..
-  !     .. Scalar Arguments ..
-  integer            n
-  !     ..
-  !     .. Array Arguments ..
-  integer            desca( * )
-  double precision   a( * )
-  !     ..
-  !     .. local Scalars ..
-  integer            i, j
-  !     ..
-  !     .. External Subroutines ..
-  external           pdelset
-
-  ! Create Frank matrix
-  do j = 1, n
-     do i = 1, n
-        call pdelset(a, i, j, desca, dble(n - max(i,j) + 1))
-     enddo
-  enddo
- 
-end subroutine generate_matrix
-
 !    This file is part of ELPA.
 !
 !    The ELPA library was originally created by the ELPA consortium,
@@ -100,7 +76,8 @@ program test_real_example
    use iso_c_binding
 
    use elpa
-
+   use input_parameters_mod
+   use my_elpa_utility
    use mpi
    implicit none
 
@@ -110,6 +87,7 @@ program test_real_example
    ! nev:  Number of eigenvectors to be calculated
    ! nblk: Blocking factor in block cyclic distribution
    !-------------------------------------------------------------------------------
+   integer :: required_mpi_thread_level, provided_mpi_thread_level
 
    integer           :: nblk
    integer                          :: na, nev
@@ -117,33 +95,25 @@ program test_real_example
    integer                          :: np_rows, np_cols, na_rows, na_cols
 
    integer                          :: myid, nprocs, my_prow, my_pcol, mpi_comm_rows, mpi_comm_cols
-   integer                          :: i, mpierr, my_blacs_ctxt, sc_desc(9), info, nprow, npcol
+   integer                          :: i, mpierr, my_blacs_ctxt, info, nprow, npcol
+   double precision :: init_tick, initend_tick, gen_tick, diag_tick, end_tick
 
    integer, external                :: numroc
 
    real(kind=c_double), allocatable :: a(:,:), z(:,:), ev(:)
 
-   integer                          :: iseed(4096) ! Random seed, size should be sufficient for every generator
-
-   integer                          :: STATUS
    integer                          :: success
-   character(len=8)                 :: task_suffix
-   integer                          :: j
 
    integer, parameter               :: error_units = 0
 
    class(elpa_t), pointer           :: e
    !-------------------------------------------------------------------------------
 
-
-   ! default parameters
-   na = 1000
-   nev = 500
-   nblk = 16
-
-   call mpi_init(mpierr)
+   call mpi_init_thread(MPI_THREAD_MULTIPLE, provided_mpi_thread_level, mpierr)
    call mpi_comm_rank(mpi_comm_world,myid,mpierr)
    call mpi_comm_size(mpi_comm_world,nprocs,mpierr)
+
+   call read_input_parameters(na, nev, nblk)
 
    do np_cols = NINT(SQRT(REAL(nprocs))),2,-1
      if(mod(nprocs,np_cols) == 0 ) exit
@@ -153,52 +123,31 @@ program test_real_example
    np_rows = nprocs/np_cols
 
    ! initialise BLACS
+   init_tick = mpi_wtime()
    my_blacs_ctxt = mpi_comm_world
    call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
    call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
 
-   if (myid==0) then
-     print '(a)','| Past BLACS_Gridinfo.'
-   end if
+   initend_tick = mpi_wtime()
+
+   gen_tick = mpi_wtime()
+
    ! determine the neccessary size of the distributed matrices,
    ! we use the scalapack tools routine NUMROC
-
    na_rows = numroc(na, nblk, my_prow, 0, np_rows)
    na_cols = numroc(na, nblk, my_pcol, 0, np_cols)
-
-
-   ! set up the scalapack descriptor for the checks below
-   ! For ELPA the following restrictions hold:
-   ! - block sizes in both directions must be identical (args 4 a. 5)
-   ! - first row and column of the distributed matrix must be on
-   !   row/col 0/0 (arg 6 and 7)
-
-   call descinit(sc_desc, na, na, nblk, nblk, 0, 0, my_blacs_ctxt, na_rows, info)
-
-   if (info .ne. 0) then
-     write(error_units,*) 'Error in BLACS descinit! info=',info
-     write(error_units,*) 'Most likely this happend since you want to use'
-     write(error_units,*) 'more MPI tasks than are possible for your'
-     write(error_units,*) 'problem size (matrix size and blocksize)!'
-     write(error_units,*) 'The blacsgrid can not be set up properly'
-     write(error_units,*) 'Try reducing the number of MPI tasks...'
-     call MPI_ABORT(mpi_comm_world, 1, mpierr)
-   endif
-
-   if (myid==0) then
-     print '(a)','| Past scalapack descriptor setup.'
-   end if
 
    allocate(a (na_rows,na_cols))
    allocate(z (na_rows,na_cols))
 
    allocate(ev(na))
 
-   call generate_matrix( na, a, sc_desc, info )
-
+   call prepare_matrix_frank(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
+   
    !-------------------------------------------------------------------------------
+   diag_tick = mpi_wtime()
 
-   if (elpa_init(20171201) /= elpa_ok) then
+   if (elpa_init(20190524) /= elpa_ok) then
      print *, "ELPA API version not supported"
      stop
    endif
@@ -220,22 +169,33 @@ program test_real_example
 
 
    ! Calculate eigenvalues/eigenvectors
-
-   if (myid==0) then
-     print '(a)','| Entering one-step ELPA solver ... '
-     print *
-   end if
-
-   call mpi_barrier(mpi_comm_world, mpierr) ! for correct timings only
    call e%eigenvectors(a, ev, z, success)
+   end_tick = mpi_wtime()
 
-   if (myid==0) then
-     print '(a)','| One-step ELPA solver complete.'
-     print *
-   end if
+   if (success /= 0) then
+      write(error_units,*) "ELPA solver produced an error! Aborting..."
+      call MPI_ABORT(mpi_comm_world, 1, mpierr)
+   endif
+   
+
+   if (myid == 0) then
+      print *, "Matrix dimension = ", na
+      print *, "nev = ", nev
+      print *, "Block size = ", nblk
+      do i = 1, min(100, nev)
+         print *, i, ev(i)
+      end do
+      print *, "init_time = ", initend_tick - init_tick
+      print *, "gen_time = ", diag_tick - gen_tick
+      print *, "diag_time = ", end_tick - diag_tick
+   endif
 
    call elpa_deallocate(e)
    call elpa_uninit()
+
+   deallocate(a)
+   deallocate(z)
+   deallocate(ev)
 
    call blacs_gridexit(my_blacs_ctxt)
    call mpi_finalize(mpierr)

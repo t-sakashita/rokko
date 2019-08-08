@@ -22,6 +22,6 @@ void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int glo
 
 void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map) {
   delete static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map->ptr);
-  map->ptr = 0;
+  map->ptr = nullptr;
 }
 

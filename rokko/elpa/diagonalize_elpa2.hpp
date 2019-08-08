@@ -18,7 +18,6 @@
 #include <rokko/elpa/elpa.h>
 #include <rokko/elpa/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
-#include <boost/throw_exception.hpp>
 
 namespace rokko {
 namespace elpa {
@@ -29,7 +28,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			     parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major."));
+    throw std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
   MPI_Comm comm = mat.get_grid().get_comm();
   
   // call eigenvalue routine

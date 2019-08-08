@@ -20,8 +20,6 @@
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/throw_exception.hpp>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -78,11 +76,11 @@ public:
   void registrate(std::size_t id, std::string const& label, int option = 0) {
     if (label.empty()) {
       std::cerr << "Error: empty label\n";
-      boost::throw_exception(std::invalid_argument("empty label"));
+      throw std::invalid_argument("empty label");
     }
     if (id < labels_.size() && !labels_[id].empty()) {
       std::cerr << "Error: duplicated id: " << id << std::endl;
-      boost::throw_exception(std::invalid_argument("duplicated id"));
+      throw std::invalid_argument("duplicated id");
     }
     if (id >= labels_.size()) {
       std::size_t old_size = labels_.size();

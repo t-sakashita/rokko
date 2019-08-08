@@ -12,4 +12,4 @@
 #include "parallel_sparse_ev.hpp"
 
 template<>
-rokko::detail::ps_solver_factory *rokko::detail::ps_solver_factory::instance_ = 0;
+rokko::detail::ps_solver_factory *rokko::detail::ps_solver_factory::instance_ = nullptr;

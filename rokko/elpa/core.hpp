@@ -16,7 +16,6 @@
 #include <rokko/elpa/elpa.h>
 #include <rokko/elpa/diagonalize_elpa1.hpp>
 #include <rokko/elpa/diagonalize_elpa2.hpp>
-#include <boost/throw_exception.hpp>
 
 namespace rokko {
 namespace elpa {
@@ -27,7 +26,7 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& grid_major) { return true; }
   void initialize(int& argc, char**& argv) {
     if (elpa_init(20190524) != ELPA_OK) {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("ERROR: elpa::initialize()"));
+      throw std::invalid_argument("ERROR: elpa::initialize()");
     }
   }
   void finalize() {
@@ -59,7 +58,7 @@ public:
     } else if (routine=="") {  // default
       return rokko::elpa::diagonalize_elpa1(mat, eigvals, eigvecs, params);
     } else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name"));
+      throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
   }
   template <typename MATRIX_MAJOR, typename VEC>
@@ -76,7 +75,7 @@ public:
     } else if (routine=="") {  // default
       return rokko::elpa::diagonalize_elpa1(mat, eigvals, params);
     } else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name"));
+      throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
   }
 };

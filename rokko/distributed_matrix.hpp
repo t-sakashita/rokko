@@ -22,8 +22,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/throw_exception.hpp>
 
 namespace rokko {
 
@@ -34,9 +32,9 @@ class distributed_matrix {
 public:
   typedef T value_type;
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(map_in) {
-    bool is_col_major = boost::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    bool is_col_major = std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
     if (is_col_major != map.is_col_major()) {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different."));
+      throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
     allocate_array();
   }

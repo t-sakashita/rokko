@@ -15,9 +15,8 @@
 #include <fstream>
 #include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 #include <boost/algorithm/string.hpp>
-#include <boost/foreach.hpp>
 
 typedef rokko::matrix_col_major matrix_major;
 
@@ -31,7 +30,7 @@ int main(int argc, char *argv[]) {
 
   int num_sites;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   rokko::read_lattice_file(lattice_file, num_sites, lattice, coupling);
   int dim = 1 << num_sites;
 

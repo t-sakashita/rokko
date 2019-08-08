@@ -12,4 +12,4 @@
 #include "serial_dense_ev.hpp"
 
 template<>
-rokko::detail::sd_solver_factory *rokko::detail::sd_solver_factory::instance_ = 0;
+rokko::detail::sd_solver_factory *rokko::detail::sd_solver_factory::instance_ = nullptr;

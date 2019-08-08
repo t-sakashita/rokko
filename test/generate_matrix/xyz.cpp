@@ -12,7 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/localized_matrix.hpp>
@@ -24,16 +24,16 @@ int main() {
   num_bonds = L - 1;
   N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
-    coupling.push_back(boost::make_tuple(1, 1, 1));
+    coupling.push_back(std::make_tuple(1, 1, 1));
   }
 
   std::cout << "dim=" << N << std::endl;  
   std::cout << "L=" << L << std::endl;
   for (int i=0; i<num_bonds; ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
   }
 
 

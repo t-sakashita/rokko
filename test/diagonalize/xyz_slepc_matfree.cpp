@@ -8,7 +8,7 @@
 struct model {
   int L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
 };
 
 /*
@@ -56,7 +56,7 @@ int main(int argc,char **argv)
   for (int i=0; i<num_bonds; ++i) {
     double jx, jy, jz;
     std::cin >> jx >> jy >> jz;
-    m.coupling.push_back(boost::make_tuple(jx, jy, jz));
+    m.coupling.push_back(std::make_tuple(jx, jy, jz));
   }
 
   std::cout << "L=" << m.L << " num_bonds=" << num_bonds << std::endl;

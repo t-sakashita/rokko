@@ -25,7 +25,7 @@ void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix) 
     delete static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix->ptr);
   else
     delete static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix->ptr);
-  matrix->ptr = 0;
+  matrix->ptr = nullptr;
 }
 
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,

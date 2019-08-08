@@ -7,7 +7,7 @@ struct model {
   MPI_Comm comm;
   int L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<boost::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double> > coupling;
   double* buffer;
 };
 
@@ -50,7 +50,7 @@ int main(int argc,char **argv)
 
   for (int i=0; i<L; ++i) {
     m.lattice.push_back(std::make_pair(i, (i+1)%L));
-    m.coupling.push_back(boost::make_tuple(1, 1, 1));
+    m.coupling.push_back(std::make_tuple(1, 1, 1));
   }
 
   ierr = MatCreateShell(PETSC_COMM_WORLD, N_local, N_local, N_global, N_global, &m, &A); CHKERRQ(ierr);

@@ -15,7 +15,6 @@
 #include <El.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/elemental/diagonalize.hpp>
-#include <boost/type_traits/is_same.hpp>
 
 namespace rokko {
 namespace elemental {
@@ -24,7 +23,7 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) {
-    return boost::is_same<GRID_MAJOR, grid_col_major_t>::value;
+    return std::is_same<GRID_MAJOR, grid_col_major_t>::value;
   }
   void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
   void finalize() { El::Finalize(); }
@@ -44,7 +43,7 @@ public:
     if ((routine == "") || (routine == "pmrrr")) {
       return rokko::elemental::diagonalize(mat, eigvals, eigvecs, params);
     } else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name"));
+      throw std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name");
     }
   }
   
@@ -59,7 +58,7 @@ public:
     if ((routine == "") || (routine == "pmrrr")) {
       return rokko::elemental::diagonalize(mat, eigvals, params);
     } else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name"));
+      throw std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name");
     }
   }
 };

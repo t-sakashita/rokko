@@ -2,15 +2,13 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2013-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
 *****************************************************************************/
 
-#include <boost/shared_ptr.hpp>
-#include <boost/foreach.hpp>
 
 #include <rokko/grid.hpp>
 #include <rokko/solver.hpp>
@@ -29,7 +27,7 @@
 template<typename T, typename MATRIX_MAJOR>
 void localized_2_distributed(const rokko::localized_matrix<T, MATRIX_MAJOR>& lmat, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
   if (mat.get_m_global() != mat.get_n_global())
-    BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+    throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
   for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
     for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
       int global_i = mat.translate_l2g_row(local_i);
@@ -47,7 +45,7 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
-  BOOST_FOREACH(std::string name, rokko::parallel_dense_ev::solvers()) {
+  for(auto name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(argc, argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);

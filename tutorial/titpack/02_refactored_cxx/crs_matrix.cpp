@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include "crs_matrix.hpp"
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 crs_matrix::crs_matrix(hamiltonian const& hop) {
   int ibond = hop.num_bonds();
@@ -27,7 +27,7 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
   // diagonal elements
   for (int k = 0; k < ibond; ++k) {
     int isite1, isite2;
-    boost::tie(isite1, isite2) = hop.site_pair(k);
+    std::tie(isite1, isite2) = hop.site_pair(k);
     int is = (1 << isite1) + (1 << isite2);
     double wght = -hop.bond_weight(k) * hop.z_ratio(k) * 0.5;
     for (int i = 0; i < hop.dimension(); ++i) {
@@ -40,7 +40,7 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
   // off-diagonal elements
   for (int k = 0; k < ibond; ++k) {
     int isite1, isite2;
-    boost::tie(isite1, isite2) = hop.site_pair(k);
+    std::tie(isite1, isite2) = hop.site_pair(k);
     int is = (1 << isite1) + (1 << isite2);
     double wght = -hop.bond_weight(k);
     for (int i = 0; i < hop.dimension(); ++i) {

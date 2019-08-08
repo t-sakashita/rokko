@@ -20,7 +20,7 @@ void rokko_serial_dense_ev_construct(rokko_serial_dense_ev* solver, const char* 
 
 void rokko_serial_dense_ev_construct_f(rokko_serial_dense_ev* solver, const char* solver_name) {
   int argc = 0;
-  char** argv = 0;
+  char** argv = nullptr;
   rokko_serial_dense_ev_construct(solver, solver_name, argc, argv);
 }
 
@@ -28,7 +28,7 @@ void rokko_serial_dense_ev_destruct(rokko_serial_dense_ev* solver) {
   rokko::serial_dense_ev* ptr = static_cast<rokko::serial_dense_ev*>(solver->ptr);
   ptr->finalize();
   delete ptr;
-  solver->ptr = 0;
+  solver->ptr = nullptr;
 }
 
 // eigenvalues/eigenvectors, no parameters

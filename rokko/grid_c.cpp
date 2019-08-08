@@ -31,7 +31,7 @@ void rokko_grid_construct_f(rokko_grid* grid, int comm_f, int grid_major) {
 
 void rokko_grid_destruct(rokko_grid* grid) {
   delete static_cast<rokko::grid*>(grid->ptr);
-  grid->ptr = 0;
+  grid->ptr = nullptr;
 }
 
 int rokko_grid_get_myrank(rokko_grid grid) {

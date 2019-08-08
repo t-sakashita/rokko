@@ -15,13 +15,12 @@
 
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
-#include <boost/throw_exception.hpp>
 
 namespace rokko {
 
 void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distributed_crs_matrix& mat) {
   if (mat.get_solver_name() == "anasazi") {
-    BOOST_THROW_EXCEPTION(std::invalid_argument("distributed_mfree_to_crs() : output_matrix_market is not available for Anasazi yet."));
+    throw std::invalid_argument("distributed_mfree_to_crs() : output_matrix_market is not available for Anasazi yet.");
   }
 
   std::vector<double> x(op.get_num_local_rows()), y(op.get_num_local_rows());

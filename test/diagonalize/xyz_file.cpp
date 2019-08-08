@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2013-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +12,6 @@
 #include <fstream>
 #include <rokko/rokko.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
-#include <boost/foreach.hpp>
 #define BOOST_TEST_MODULE test_solver
 #ifndef BOOST_TEST_DYN_LINK
 #include <boost/test/included/unit_test.hpp>
@@ -31,7 +30,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     }
   }
 
-  BOOST_FOREACH(std::string name, names) {
+  for(auto name : names) {
     std::ifstream ifs("./heisenberg.ip"); //str);
     if (!ifs) {
       std::cout << "can't open file" << std::endl;
@@ -40,7 +39,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
 
     int L, num_bonds;
     std::vector<std::pair<int, int> > lattice;
-    std::vector<boost::tuple<double, double, double> > coupling;
+    std::vector<std::tuple<double, double, double> > coupling;
     ifs >> L >> num_bonds;
     for (int i=0; i<num_bonds; ++i) {
       int j, k;
@@ -51,12 +50,12 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     for (int i=0; i<num_bonds; ++i) {
       double jx, jy, jz;
       ifs >> jx >> jy >> jz;
-      coupling.push_back(boost::make_tuple(jx, jy, jz));
+      coupling.push_back(std::make_tuple(jx, jy, jz));
     }
 
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
     for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+      std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
     }
     int dim = 1 << L;
 

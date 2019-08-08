@@ -14,7 +14,6 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <boost/throw_exception.hpp>
 #include <rokko/localized_matrix.hpp>
 
 namespace rokko {
@@ -38,7 +37,7 @@ public:
   template<typename T, typename MATRIX_MAJOR>
   static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
-      BOOST_THROW_EXCEPTION(std::invalid_argument("laplacian_matrix::generate() : non-square matrix"));
+      throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
     int n = mat.rows();
     mat(0, 0) = 1; mat(0, 1) = -1;

@@ -13,7 +13,6 @@
 #define ROKKO_LOCALIZED_MATRIX_HPP
 
 #include <iostream>
-#include <boost/type_traits.hpp>
 #include <rokko/eigen3.hpp>
 
 namespace rokko {
@@ -103,8 +102,8 @@ public:
 
   void set_zeros() { super_type::setZero(); }
 
-  bool is_row_major() const { return boost::is_same<MATRIX_MAJOR, matrix_row_major>::value; }
-  bool is_col_major() const { return boost::is_same<MATRIX_MAJOR, matrix_col_major>::value; }
+  bool is_row_major() const { return std::is_same<MATRIX_MAJOR, matrix_row_major>::value; }
+  bool is_col_major() const { return std::is_same<MATRIX_MAJOR, matrix_col_major>::value; }
 
   void print() const { std::cout << *this << std::endl; }
 };

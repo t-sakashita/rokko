@@ -14,7 +14,6 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <boost/throw_exception.hpp>
 #include <rokko/config.h>
 #include <rokko/localized_matrix.hpp>
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
@@ -28,7 +27,7 @@ public:
   template<typename T, typename MATRIX_MAJOR>
   static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
-      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+      throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
     int n = mat.rows();
     for(int i = 0; i < n; ++i) {
       for(int j = 0; j < n; ++j) {
@@ -41,7 +40,7 @@ public:
   template<typename T, typename MATRIX_MAJOR>
   static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
-      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+      throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
     for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
       for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
         int global_i = mat.translate_l2g_row(local_i);
@@ -55,7 +54,7 @@ public:
   template<typename T, typename MATRIX_MAJOR>
   static void generate_global(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.m_global != mat.n_global)
-      BOOST_THROW_EXCEPTION(std::invalid_argument("frank_matrix::generate() : non-square matrix"));
+      throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
     for(int global_i=0; global_i<mat.m_global; ++global_i) {
       for(int global_j=0; global_j<mat.n_global; ++global_j) {
         mat.set_global(global_i, global_j, mat.m_global - std::max(global_i, global_j) );

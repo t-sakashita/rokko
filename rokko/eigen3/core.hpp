@@ -35,7 +35,7 @@ public:
     if ((routine == "") || (routine == "qr")) {
       return rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params);
     } else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : " + routine + " is invalid routine name"));
+      throw std::invalid_argument("eigen3::diagonalize() : " + routine + " is invalid routine name");
     }
   }
   // only eigenvalues
@@ -50,7 +50,7 @@ public:
     if ((routine == "") || (routine == "qr")) {
       return rokko::eigen3::diagonalize(mat, eigvals, params);
     } else {
-      BOOST_THROW_EXCEPTION(std::invalid_argument("eigen3::diagonalize() : " + routine + " is invalid routine name"));
+      throw std::invalid_argument("eigen3::diagonalize() : " + routine + " is invalid routine name");
     }
   }
 };

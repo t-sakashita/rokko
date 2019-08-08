@@ -10,7 +10,6 @@
 *****************************************************************************/
 
 #include <boost/python.hpp>
-#include <boost/foreach.hpp>
 
 #include <rokko/dense.h>
 #include <rokko/sparse.h>
@@ -36,18 +35,18 @@ public:
     } else if (type(key) == typeid(char)) {
       return boost::python::object(get<char>(key));
     }
-    BOOST_THROW_EXCEPTION(std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.")); 
+    throw std::invalid_argument("wrap_parameters::python_get() : value type given as template parameter must be char*, string, int, or double.");
   }
   boost::python::list python_keys() const {
     boost::python::list py_list;
-    BOOST_FOREACH(value_type const& p, get_map()) {
+    for(auto const& p : get_map()) {
       py_list.append(p.first);
     }
     return py_list;
   }
   boost::python::dict dict() const {
     boost::python::dict dict;
-    BOOST_FOREACH(value_type const& p, get_map()) {
+    for(auto const& p : get_map()) {
       dict[p.first] = boost::python::object(python_get(p.first));
     }
     return dict;

@@ -28,7 +28,7 @@ void rokko_parallel_dense_ev_destruct(struct rokko_parallel_dense_ev* solver) {
   rokko::parallel_dense_ev* ptr = static_cast<rokko::parallel_dense_ev*>(solver->ptr);
   ptr->finalize();
   delete ptr;
-  solver->ptr = 0;
+  solver->ptr = nullptr;
 }
 
 struct rokko_parameters rokko_parallel_dense_ev_diagonalize(struct rokko_parallel_dense_ev solver,

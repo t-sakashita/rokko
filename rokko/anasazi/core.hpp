@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -97,13 +97,13 @@ public:
       for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
 	std::cerr << anasazi_solvers[i] << " " << std::endl;
       }
-      BOOST_THROW_EXCEPTION(std::invalid_argument(msg.str()));
+      throw std::invalid_argument(msg.str());
     }
   }
 
   void set_anasazi_parameters(rokko::parameters const& params) {
     std::list<std::string> keys = params.keys();
-    BOOST_FOREACH(std::string const& key, keys) {
+    for(auto const& key : keys) {
       if (!is_rokko_solver_key(key)) {
 	if (params.type(key) == typeid(int)) {
 	  pl_.set(key, params.get<int>(key));
@@ -152,7 +152,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	BOOST_THROW_EXCEPTION(std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string"));
+	throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";
@@ -208,7 +208,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
-	BOOST_THROW_EXCEPTION(std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string"));
+	throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";
