@@ -41,25 +41,25 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   handle = elpa_allocate(&error);
 
   /* Set parameters */
-  elpa_set(handle, "na", dim, &error);
+  elpa_set_integer(handle, "na", dim, &error);
   assert_elpa_ok(error);
   
-  elpa_set(handle, "nev", nev, &error);
+  elpa_set_integer(handle, "nev", nev, &error);
   assert_elpa_ok(error);
   
   int na_rows = mat.get_m_local();
-  elpa_set(handle, "local_nrows", na_rows, &error);
+  elpa_set_integer(handle, "local_nrows", na_rows, &error);
   assert_elpa_ok(error);
   
   int na_cols = mat.get_n_local();
-  elpa_set(handle, "local_ncols", na_cols, &error);
+  elpa_set_integer(handle, "local_ncols", na_cols, &error);
   assert_elpa_ok(error);
   
   int nblk = mat.get_mb();
-  elpa_set(handle, "nblk", nblk, &error);
+  elpa_set_integer(handle, "nblk", nblk, &error);
   assert_elpa_ok(error);
   
-  elpa_set(handle, "mpi_comm_parent", MPI_Comm_c2f(comm), &error);
+  elpa_set_integer(handle, "mpi_comm_parent", MPI_Comm_c2f(comm), &error);
   assert_elpa_ok(error);
   
   int my_prow = mat.get_grid().get_myrow();
@@ -67,9 +67,9 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   MPI_Comm mpi_comm_rows, mpi_comm_cols;
   MPI_Comm_split(comm, my_pcol, my_prow, &mpi_comm_rows);  // color = my_pcol, key = my_prow
   MPI_Comm_split(comm, my_prow, my_pcol, &mpi_comm_cols);  // color = my_prow, key = my_pcol
-  elpa_set(handle, "mpi_comm_rows", MPI_Comm_c2f(mpi_comm_rows), &error);
+  elpa_set_integer(handle, "mpi_comm_rows", MPI_Comm_c2f(mpi_comm_rows), &error);
   assert_elpa_ok(error);
-  elpa_set(handle, "mpi_comm_cols", MPI_Comm_c2f(mpi_comm_cols), &error);
+  elpa_set_integer(handle, "mpi_comm_cols", MPI_Comm_c2f(mpi_comm_cols), &error);
   assert_elpa_ok(error);
 
   /* Setup */
@@ -77,11 +77,11 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
 
   /* Set tunables */
   const int solver_enum = ELPA_SOLVER_1STAGE;
-  elpa_set(handle, "solver", solver_enum, &error);
+  elpa_set_integer(handle, "solver", solver_enum, &error);
   assert_elpa_ok(error);
   
   int info;
-  elpa_eigenvectors(handle, mat.get_array_pointer(), &eigvals[0], eigvecs.get_array_pointer(), &info);
+  elpa_eigenvectors_d(handle, mat.get_array_pointer(), &eigvals[0], eigvecs.get_array_pointer(), &info);
   elpa_deallocate(handle, &error);
 
   params_out.set("info", info);
@@ -108,25 +108,25 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   handle = elpa_allocate(&error);
 
   /* Set parameters */
-  elpa_set(handle, "na", dim, &error);
+  elpa_set_integer(handle, "na", dim, &error);
   assert_elpa_ok(error);
   
-  elpa_set(handle, "nev", nev, &error);
+  elpa_set_integer(handle, "nev", nev, &error);
   assert_elpa_ok(error);
   
   int na_rows = mat.get_m_local();
-  elpa_set(handle, "local_nrows", na_rows, &error);
+  elpa_set_integer(handle, "local_nrows", na_rows, &error);
   assert_elpa_ok(error);
   
   int na_cols = mat.get_n_local();
-  elpa_set(handle, "local_ncols", na_cols, &error);
+  elpa_set_integer(handle, "local_ncols", na_cols, &error);
   assert_elpa_ok(error);
   
   int nblk = mat.get_mb();
-  elpa_set(handle, "nblk", nblk, &error);
+  elpa_set_integer(handle, "nblk", nblk, &error);
   assert_elpa_ok(error);
   
-  elpa_set(handle, "mpi_comm_parent", MPI_Comm_c2f(comm), &error);
+  elpa_set_integer(handle, "mpi_comm_parent", MPI_Comm_c2f(comm), &error);
   assert_elpa_ok(error);
   
   int my_prow = mat.get_grid().get_myrow();
@@ -134,9 +134,9 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   MPI_Comm mpi_comm_rows, mpi_comm_cols;
   MPI_Comm_split(comm, my_pcol, my_prow, &mpi_comm_rows);  // color = my_pcol, key = my_prow
   MPI_Comm_split(comm, my_prow, my_pcol, &mpi_comm_cols);  // color = my_prow, key = my_pcol
-  elpa_set(handle, "mpi_comm_rows", MPI_Comm_c2f(mpi_comm_rows), &error);
+  elpa_set_integer(handle, "mpi_comm_rows", MPI_Comm_c2f(mpi_comm_rows), &error);
   assert_elpa_ok(error);
-  elpa_set(handle, "mpi_comm_cols", MPI_Comm_c2f(mpi_comm_cols), &error);
+  elpa_set_integer(handle, "mpi_comm_cols", MPI_Comm_c2f(mpi_comm_cols), &error);
   assert_elpa_ok(error);
   
   /* Setup */
@@ -144,11 +144,11 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
 
   /* Set tunables */
   const int solver_enum = ELPA_SOLVER_1STAGE;
-  elpa_set(handle, "solver", solver_enum, &error);
+  elpa_set_integer(handle, "solver", solver_enum, &error);
   assert_elpa_ok(error);
 
   int info;
-  elpa_eigenvalues(handle, mat.get_array_pointer(), &eigvals[0], &info);
+  elpa_eigenvalues_d(handle, mat.get_array_pointer(), &eigvals[0], &info);
   elpa_deallocate(handle, &error);
 
   delete[] eigvecs;
