@@ -15,6 +15,11 @@ cmake_minimum_required(VERSION 2.8.12)
 project(rokko NONE)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
 
+if(CONFIG)
+  message(STATUS "Loading configration: " ${PROJECT_SOURCE_DIR}/config/${CONFIG}.cmake)
+  include(${PROJECT_SOURCE_DIR}/config/${CONFIG}.cmake)
+endif(CONFIG)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Type of build" FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
