@@ -7,10 +7,6 @@ set_prefix
 
 sh $SCRIPT_DIR/setup.sh
 
-cd $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-ln -s CSTAB.h_in C.c
-mpicc -E C.c | awk '/^#/{ next }{print }' > CSTAB.h
-
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/$build_type
@@ -19,9 +15,8 @@ for build_type in $BUILD_TYPES; do
   cd EigenExa-$EIGENEXA_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
-    -DSCALAPACK_LIB="-lscalapack" \
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  check make VERBOSE=1
+  check make VERBOSE=1 -j4
   $SUDO make install
 done
 

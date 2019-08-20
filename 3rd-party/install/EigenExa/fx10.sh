@@ -7,10 +7,6 @@ set_prefix
 
 sh $SCRIPT_DIR/setup.sh
 
-cd $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-ln -s CSTAB.h_in C.c
-mpifccpx -E C.c | gawk '/^#/{ next }{print }' > CSTAB.h
-
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX_BACKEND=$PREFIX_ROKKO/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx/$build_type
