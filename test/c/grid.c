@@ -14,7 +14,6 @@
 #include <stdlib.h>
 
 int main(int argc, char** argv) {
-  int i, n;
   int provided;
   struct rokko_grid grid;
   bool flag;

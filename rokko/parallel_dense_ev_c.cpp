@@ -20,7 +20,7 @@ void rokko_parallel_dense_ev_construct(struct rokko_parallel_dense_ev* solver, c
 
 void rokko_parallel_dense_ev_construct_f(struct rokko_parallel_dense_ev* solver, const char* solver_name) {
   int argc = 0;
-  char** argv;
+  char** argv = 0;
   rokko_parallel_dense_ev_construct(solver, solver_name, argc, argv);
 }
 
