@@ -41,6 +41,9 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   
   for(auto name : names) {
     std::cout << "solver=" << name << std::endl;
+    if (name == "eigenexa") {
+      std::cout << "warning: skipping test for eigenexa\n";
+    } else {
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_col_major)) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
@@ -58,11 +61,15 @@ BOOST_AUTO_TEST_CASE(test_solver) {
       
       solver.finalize();
     }
+    }
   }
 
 
   for(auto name : names) {
     std::cout << "solver=" << name << std::endl;
+    if (name == "eigenexa") {
+      std::cout << "warning: skipping test for eigenexa\n";
+    } else {
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_row_major)) {
       solver.initialize(boost::unit_test::framework::master_test_suite().argc,
@@ -79,6 +86,7 @@ BOOST_AUTO_TEST_CASE(test_solver) {
       BOOST_CHECK_CLOSE(w.sum(), diag.sum(), 10e-5);
 
       solver.finalize();
+    }
     }
   }
   MPI_Finalize();
