@@ -181,9 +181,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
     int j = lattice[l].second;
-    double jx = std::get<0>(coupling[l]);
-    double jy = std::get<1>(coupling[l]);
-    double jz = std::get<2>(coupling[l]);
+    double jz = std::get<2>(coupling[l]); // jx and jy are unused
     double diag_plus = jz / 4.0;
     double diag_minus = - jz / 4.0;
 

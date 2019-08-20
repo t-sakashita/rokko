@@ -25,4 +25,4 @@ script:
   - source rokko/rokkoenv.sh
   - cmake ..
   - make
-  - ctest -V
+  - ctest

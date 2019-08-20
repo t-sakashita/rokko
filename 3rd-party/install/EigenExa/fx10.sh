@@ -19,7 +19,7 @@ for build_type in $BUILD_TYPES; do
     -DSCALAPACK_LIB="-SCALAPACK -SSL2BLAMP" \
     -DUSE_C_LINKER=ON \
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  check make VERBOSE=1 -j4
+  check make -j4
   $SUDO make install
 done
 

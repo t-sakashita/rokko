@@ -16,7 +16,7 @@ for build_type in $BUILD_TYPES; do
   check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  check make VERBOSE=1 -j4
+  check make -j4
   $SUDO make install
 done
 

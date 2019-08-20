@@ -17,7 +17,7 @@ for build_type in $BUILD_TYPES; do
     -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
     -DSCALAPACK_LIB="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -llapack -lblas" \
     $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  check make VERBOSE=1 -j4
+  check make -j4
   $SUDO make install
 done
 

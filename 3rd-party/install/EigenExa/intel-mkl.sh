@@ -26,7 +26,7 @@ for build_type in $BUILD_TYPES; do
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
       $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
   fi
-  check make VERBOSE=1 -j4
+  check make -j4
   $SUDO make install
 done
 

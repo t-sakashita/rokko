@@ -193,9 +193,9 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
 template<typename T, typename MATRIX_MAJOR>
 void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                const distributed_matrix<T, MATRIX_MAJOR>& matA, bool transA,
-               const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
+               const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int /* xindex */,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
-               distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
+               distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int /* yindex */) {
   char char_transA = (transA ? 'T' : 'N');
   int incx = (transX ? vecX.get_m_global() : 1);
   int incy = (transY ? vecY.get_m_global() : 1);
