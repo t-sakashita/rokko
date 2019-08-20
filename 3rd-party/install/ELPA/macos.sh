@@ -18,10 +18,11 @@ for build_type in $BUILD_TYPES; do
   else
       FLAGS="-g"
   fi
-  check ./configure SCALAPACK_LDFLAGS="-L/opt/local/lib -lscalapack -Wl,-framework -Wl,Accelerate" \
-	      FCFLAGS=$FLAGS CFLAGS=$FLAGS CXXFLAGS=$FLAGS \
-	      --enable-openmp  --prefix=$PREFIX \
-          --disable-sse-assembly --disable-avx --disable-avx2
+  check ./configure \
+	LDFLAGS="-L$SCALAPACK_ROOT/lib -L/opt/local/lib" \
+	--disable-sse-assembly --disable-avx --disable-avx2 \
+	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
+	--enable-openmp --prefix=$PREFIX
   check make -j4
   $SUDO make install
 done

@@ -18,11 +18,11 @@ for build_type in $BUILD_TYPES; do
   else
       FLAGS="-g"
   fi
-  check ./configure SCALAPACK_FCFLAGS="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-              SCALAPACK_LDFLAGS="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-              CC=mpicc FC=mpif90 \
-	      FCFLAGS=$FLAGS CFLAGS=$FLAGS CXXFLAGS=$FLAGS \
-	      --enable-openmp  --prefix=$PREFIX
+  check ./configure \
+	SCALAPACK_FCFLAGS="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
+	CC=mpicc FC=mpif90 \
+	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
+	--enable-openmp --prefix=$PREFIX
   check make -j4
   $SUDO make install
 done

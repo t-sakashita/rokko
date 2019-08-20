@@ -20,9 +20,10 @@ for build_type in $BUILD_TYPES; do
   else
       FLAGS="-g -O0"
   fi
-  check ./configure SCALAPACK_LDFLAGS="-SCALAPACK -SSL2BLAMP" \
-	            CFLAGS=$FLAGS FCFLAGS=$FLAGS
-	            --enable-openmp  --prefix=$PREFIX_BACKEND
+  check ./configure \
+	SCALAPACK_LDFLAGS="-SCALAPACK -SSL2BLAMP" \
+	CFLAGS="$FLAGS" FCFLAGS="$FLAGS" \
+	--enable-openmp --prefix=$PREFIX_BACKEND
   check make -j4
   $SUDO make install
 done

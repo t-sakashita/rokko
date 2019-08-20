@@ -19,9 +19,9 @@ for build_type in $BUILD_TYPES; do
       FLAGS="-g"
   fi
   check ./configure \
-	      FCFLAGS=$FLAGS CFLAGS=$FLAGS CXXFLAGS=$FLAGS \
-	      --enable-openmp --prefix=$PREFIX
-  check make
+	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
+	--enable-openmp --prefix=$PREFIX
+  check make -j4
   $SUDO make install
 done
 
