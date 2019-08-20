@@ -10,7 +10,8 @@ rm -rf EigenExa-$EIGENEXA_VERSION*
 if test -f $SOURCE_DIR/EigenExa-$EIGENEXA_VERSION.tgz; then
   tar zxf $SOURCE_DIR/EigenExa-$EIGENEXA_VERSION.tgz
 else
-  wget -O - http://www.r-ccs.riken.jp/labs/lpnctrt/assets/img/EigenExa-$EIGENEXA_VERSION.tgz | tar zxf -
+  wget -O $SOURCE_DIR/EigenExa-$EIGENEXA_VERSION.tgz http://www.r-ccs.riken.jp/labs/lpnctrt/assets/img/EigenExa-$EIGENEXA_VERSION.tgz
+  tar zxf $SOURCE_DIR/EigenExa-$EIGENEXA_VERSION.tgz
 fi
 cd $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
 patch -p1 < $SCRIPT_DIR/EigenExa-$EIGENEXA_VERSION.patch
