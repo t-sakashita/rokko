@@ -9,9 +9,19 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa/eigen_exa.h>
-#include <rokko/eigen_exa/eigen_exa_wrap.h>
+#include <rokko/ceigenexa.h>
+#include <rokko/eigenexa/eigenexa_interface.h>
 
-void ROKKO_eigen_exa_get_matdims(int nprow, int npcol, int n, int *nx, int *ny) {
-  EIGEN_EXA_get_matdims_wrap(&nprow, &npcol, &n, nx, ny);
+void ceigenexa_init(void) {
+  EIGENEXA_init_wrap0();
+}
+
+void ceigenexa_init1(MPI_Comm comm) {
+  MPI_Fint fcomm = MPI_Comm_c2f(comm);
+  EIGENEXA_init_wrap1(&fcomm);
+}
+
+void ceigenexa_init2(MPI_Comm comm, char grid_major) {
+  MPI_Fint fcomm = MPI_Comm_c2f(comm);
+  EIGENEXA_init_wrap2(&fcomm, &grid_major);
 }

@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_H
-#define ROKKO_SCALAPACK_H
+#ifndef ROKKO_SCALAPACK_SCALAPACK_INTERFACE_H
+#define ROKKO_SCALAPACK_SCALAPACK_INTERFACE_H
 
 #include <rokko/config.h>
 #include <rokko/mangling.h>
@@ -138,4 +138,4 @@ void SCALAPACK_pssyevx(const char* jobz, const char* range, const char* uplo, co
 }
 #endif
 
-#endif // ROKKO_SCALAPACK_H
+#endif // ROKKO_SCALAPACK_SCALAPACK_INTERFACE_H

@@ -9,17 +9,17 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN_EXA_CORE_HPP
-#define ROKKO_EIGEN_EXA_CORE_HPP
+#ifndef ROKKO_EIGENEXA_CORE_HPP
+#define ROKKO_EIGENEXA_CORE_HPP
 
 #include <rokko/matrix_major.hpp>
 #include <rokko/parameters.hpp>
-#include <rokko/eigen_exa/diagonalize_eigen_s.hpp>
-#include <rokko/eigen_exa/diagonalize_eigen_sx.hpp>
+#include <rokko/eigenexa/diagonalize_eigen_s.hpp>
+#include <rokko/eigenexa/diagonalize_eigen_sx.hpp>
 
 namespace rokko {
 
-namespace eigen_exa {
+namespace eigenexa {
 
 class solver {
 public:
@@ -30,12 +30,8 @@ public:
 
   mapping_bc<matrix_col_major> default_mapping(int global_dim, grid const& g) const {
     int nx, ny;
-    int nprow = g.get_nprow();
-    int npcol = g.get_npcol();
-    int n = global_dim;
-    ROKKO_eigen_exa_get_matdims(nprow, npcol, n, &nx, &ny);
-    int lld = nx;
-    return mapping_bc<matrix_col_major>(global_dim, 1, lld, ny, g);  // block_size = 1
+    std::tie(nx, ny) = rokko::eigenexa::get_matdims(g, global_dim);
+    return mapping_bc<matrix_col_major>(global_dim, 1, nx, ny, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>
@@ -57,11 +53,11 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     routine = params.get_string("routine");
   }
   if ((routine=="tri") || (routine=="eigen_s")) {
-    return rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, eigvecs, params);
+    return rokko::eigenexa::diagonalize_eigen_s(mat, eigvals, eigvecs, params);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
-    return rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, eigvecs, params);
+    return rokko::eigenexa::diagonalize_eigen_sx(mat, eigvals, eigvecs, params);
   } else {
-    throw std::invalid_argument("eigen_exa::diagonalize() : " + routine + " is invalid routine name");
+    throw std::invalid_argument("eigenexa::diagonalize() : " + routine + " is invalid routine name");
   }
 }
 
@@ -74,15 +70,15 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     routine = params.get_string("routine");
   }
   if ((routine=="tri") || (routine=="eigen_s")) {
-    return rokko::eigen_exa::diagonalize_eigen_s(mat, eigvals, params);
+    return rokko::eigenexa::diagonalize_eigen_s(mat, eigvals, params);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
-    return rokko::eigen_exa::diagonalize_eigen_sx(mat, eigvals, params);
+    return rokko::eigenexa::diagonalize_eigen_sx(mat, eigvals, params);
   } else {
-    throw std::invalid_argument("eigen_exa::diagonalize() : " + routine + " is invalid routine name");
+    throw std::invalid_argument("eigenexa::diagonalize() : " + routine + " is invalid routine name");
   }
 }
 
-} // namespace eigen_exa
+} // namespace eigenexa
 } // namespace rokko
 
-#endif // ROKKO_EIGEN_EXA_CORE_HPP
+#endif // ROKKO_EIGENEXA_CORE_HPP

@@ -9,10 +9,10 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa/eigen_exa.h>
-#include <rokko/eigen_exa/eigen_exa_wrap.h>
+#include <rokko/ceigenexa.h>
+#include <rokko/eigenexa/eigenexa_interface.h>
 
-void ROKKO_eigen_exa_init(MPI_Comm comm, char grid_major) {
-  MPI_Fint fcomm = MPI_Comm_c2f(comm);
-  EIGEN_EXA_init_wrap(&fcomm, &grid_major);
+void ceigenexa_eigen_sx(int n, int nvec, double *a, int lda, double *w, double *z, int ldz,
+                        int m_forward, int m_backward, char mode) {
+  EIGENEXA_eigen_sx(&n, &nvec, a, &lda, w, z, &ldz, &m_forward, &m_backward, &mode);
 }

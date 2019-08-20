@@ -13,6 +13,9 @@ add_subdirectory(lapack)
 if(ROKKO_HAVE_SCALAPACK)
   add_subdirectory(scalapack)
 endif(ROKKO_HAVE_SCALAPACK)
+if(ROKKO_HAVE_EIGENEXA)
+  add_subdirectory(eigenexa)
+endif(ROKKO_HAVE_EIGENEXA)
 
 add_subdirectory(cxx)
 

@@ -9,9 +9,9 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa/eigen_exa.h>
-#include <rokko/eigen_exa/eigen_exa_wrap.h>
+#include <rokko/ceigenexa.h>
+#include <rokko/eigenexa/eigenexa_interface.h>
 
-void ROKKO_eigen_exa_free(int flag) {
-  EIGEN_EXA_free_wrap(&flag);
+void ceigenexa_get_matdims(int nprow, int npcol, int n, int *nx, int *ny) {
+  EIGENEXA_get_matdims_wrap(&nprow, &npcol, &n, nx, ny);
 }

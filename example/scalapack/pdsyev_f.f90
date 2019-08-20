@@ -32,7 +32,7 @@ program main
   allocate(a(n/nprow, n/npcol), z(n/nprow, n/npcol), w(n))
   do j = 1, n
      do i = 1, n
-        call pdelset(a, i, j, desc, dble(n - max(i-1, j-1)))
+        call pdelset(a, i, j, desc, dble(min(i, j)))
      end do
   end do
 

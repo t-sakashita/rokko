@@ -9,10 +9,11 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa/eigen_exa.h>
-#include <rokko/eigen_exa/eigen_exa_wrap.h>
+#include <rokko/ceigenexa.h>
+#include <rokko/eigenexa/eigenexa_interface.h>
 
-void ROKKO_eigen_exa_s(int n, int nvec, double *a, int lda, double *w, double *z, int ldz,
-                       int m_forward, int m_backward, char mode) {
-  EIGEN_EXA_eigen_s(&n, &nvec, a, &lda, w, z, &ldz, &m_forward, &m_backward, &mode);
+int ceigenexa_translate_l2g(int ictr, int nnod, int inod) {
+  ictr += 1;
+  inod += 1;
+  return EIGENEXA_translate_l2g_wrap(&ictr, &nnod, &inod) - 1;
 }

@@ -9,10 +9,12 @@
 *
 *****************************************************************************/
 
-#include <rokko/eigen_exa/eigen_exa.h>
-#include <rokko/eigen_exa/eigen_exa_wrap.h>
+#include <rokko/ceigenexa.h>
+#include <rokko/eigenexa/eigenexa_interface.h>
 
-void ROKKO_eigen_exa_sx(int n, int nvec, double *a, int lda, double *w, double *z, int ldz,
-                        int m_forward, int m_backward, char mode) {
-  EIGEN_EXA_eigen_sx(&n, &nvec, a, &lda, w, z, &ldz, &m_forward, &m_backward, &mode);
+void ceigenexa_get_id(int* id, int* x_id, int* y_id) {
+  EIGENEXA_get_id_wrap(id, x_id, y_id);
+  *id -= 1;
+  *x_id -= 1;
+  *y_id -= 1;
 }

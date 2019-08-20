@@ -18,6 +18,11 @@ install: true
 script:
   - mkdir build
   - cd build
+  - mkdir -p rokko rokko/build rokko/source
+  - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/00_env/default.sh
+  - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/EigenExa/default.sh
+  - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/EigenExa/link.sh
+  - source rokko/rokkoenv.sh
   - cmake ..
   - make
   - ctest -V

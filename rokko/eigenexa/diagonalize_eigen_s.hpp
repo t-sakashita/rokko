@@ -9,16 +9,16 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN_EXA_DIAGONALIZE_EIGEN_S_HPP
-#define ROKKO_EIGEN_EXA_DIAGONALIZE_EIGEN_S_HPP
+#ifndef ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_S_HPP
+#define ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_S_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/localized_vector.hpp>
-#include <rokko/eigen_exa/eigen_exa_wrap.h>
+#include <rokko/eigenexa.hpp>
 #include <rokko/utility/timer.hpp>
 
 namespace rokko {
-namespace eigen_exa {
+namespace eigenexa {
 
 // eigen_s eigenvalues / eigenvectors
 template <typename MATRIX_MAJOR>
@@ -27,20 +27,17 @@ parameters diagonalize_eigen_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& 
 			       parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())
-    throw std::invalid_argument("eigen_exa::diagonalize_eigen_s() : eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.");
+    throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa doesn't support matrix_row_major.  Use eigenexa with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
-    throw std::invalid_argument("eigen_exa::diagonalize_eigen_s() : eigen_exa supports only 1x1 block size.");
-  ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
-  int dim = mat.get_m_global();
-  int lld = mat.get_lld();
+    throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa supports only 1x1 block size.");
+  rokko::eigenexa::init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int m_forward = 48, m_backward = 128;
   get_key(params, "m_forward", m_forward);
   get_key(params, "m_backward", m_backward);
 
-  ROKKO_eigen_exa_s(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
-                    eigvecs.get_array_pointer(), lld, m_forward, m_backward, 'A');
+  rokko::eigenexa::eigen_s(mat, eigvals, eigvecs, m_forward, m_backward, 'A');
 
-  ROKKO_eigen_exa_free(1);
+  rokko::eigenexa::free(1);
   return params_out;
 }
 
@@ -51,24 +48,21 @@ parameters diagonalize_eigen_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& 
 			       parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())
-    throw std::invalid_argument("eigen_exa::diagonalize_eigen_s() : eigen_exa doesn't support matrix_row_major.  Use eigen_exa with matrix_col_major.");
+    throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa doesn't support matrix_row_major.  Use eigenexa with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
-    throw std::invalid_argument("eigen_exa::diagonalize_eigen_s() : eigen_exa supports only 1x1 block size.");
-  ROKKO_eigen_exa_init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
-  int dim = mat.get_m_global();
-  int lld = mat.get_lld();
+    throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa supports only 1x1 block size.");
+  rokko::eigenexa::init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
   int m_forward = 48, m_backward = 128;
   get_key(params, "m_forward", m_forward);
   get_key(params, "m_backward", m_backward);
 
-  ROKKO_eigen_exa_s(dim, dim, mat.get_array_pointer(), lld, &eigvals[0], NULL,
-		    lld, m_forward, m_backward, 'N');
+  rokko::eigenexa::eigen_s(mat, eigvals, m_forward, m_backward, 'N');
 
-  ROKKO_eigen_exa_free(1);
+  rokko::eigenexa::free(1);
   return params_out;
 }
 
-} // namespace eigen_exa
+} // namespace eigenexa
 } // namespace rokko
 
-#endif // ROKKO_EIGEN_EXA_DIAGONALIZE_EIGEN_S_HPP
+#endif // ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_S_HPP

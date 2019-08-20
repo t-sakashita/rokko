@@ -46,9 +46,9 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
 
   # EigenExa
   if(ROKKO_HAVE_EIGENEXA)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa_wrap.f90 eigen_exa/eigen_exa_init.c eigen_exa/eigen_exa_free.c eigen_exa/eigen_exa_get_matdims.c eigen_exa/eigen_exa_s.c eigen_exa/eigen_exa_sx.c)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} eigenexa/eigenexa_wrap.f90 eigenexa/eigen_init.c eigenexa/eigen_free.c eigenexa/eigen_get_matdims.c eigenexa/eigen_get_procs.c eigenexa/eigen_get_id.c eigenexa/eigen_loop_start.c eigenexa/eigen_loop_end.c eigenexa/eigen_translate_l2g.c eigenexa/eigen_translate_g2l.c eigenexa/eigen_s.c eigenexa/eigen_sx.c)
     if(BUILD_SHARED_LIBS)
-      set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_exa/eigen_exa.cpp)
+      set(ROKKO_SOURCES ${ROKKO_SOURCES} eigenexa/eigenexa.cpp)
     endif(BUILD_SHARED_LIBS)
   endif(ROKKO_HAVE_EIGENEXA)
 
