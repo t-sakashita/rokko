@@ -48,6 +48,15 @@ set_prefix() {
     SOURCE_DIR="$SOURCE_DIR_DEF"
   fi
   echo "SOURCE_DIR=$SOURCE_DIR"
+  if [ -d "$SOURCE_DIR" ]; then :; else
+    echo "Fatal: target directory $SOURCE_DIR does not exist!"
+    exit 127
+  fi
+  RES=$(touch $SOURCE_DIR/.rokkoinstaller.tmp > /dev/null 2>&1; echo $?; rm -f $SOURCE_DIR/.rokkoinstaller.tmp)
+  if [ $RES = 0 ]; then :; else
+    echo "Fatal: have no permission to write in source directory $SOURCE_DIR"
+    exit 127
+  fi
 
   return 0
 }
