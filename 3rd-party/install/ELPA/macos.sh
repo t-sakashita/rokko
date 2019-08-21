@@ -23,7 +23,7 @@ for build_type in $BUILD_TYPES; do
 	--disable-sse-assembly --disable-avx --disable-avx2 \
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
-  check make -j4
+  check make
   $SUDO make install
 done
 

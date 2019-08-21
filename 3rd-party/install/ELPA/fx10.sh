@@ -24,7 +24,7 @@ for build_type in $BUILD_TYPES; do
 	SCALAPACK_LDFLAGS="-SCALAPACK -SSL2BLAMP" \
 	CFLAGS="$FLAGS" FCFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX_BACKEND
-  check make -j4
+  check make
   $SUDO make install
 done
 

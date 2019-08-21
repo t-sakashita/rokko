@@ -23,7 +23,7 @@ for build_type in $BUILD_TYPES; do
 	CC=mpicc FC=mpif90 \
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
-  check make -j4
+  check make
   $SUDO make install
 done
 

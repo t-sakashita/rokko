@@ -23,7 +23,7 @@ for build_type in $BUILD_TYPES; do
 	SCALAPACK_LDFLAGS="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -llapack -lblas" \
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
-  check make -j4
+  check make
   $SUDO make install
 done
 
