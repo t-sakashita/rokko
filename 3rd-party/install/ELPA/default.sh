@@ -20,7 +20,7 @@ for build_type in $BUILD_TYPES; do
   fi
   check ./configure \
 	CC=mpicc FC=mpif90 \
-	--disable-sse --disable-avx --disable-avx2 \ 
+	--disable-sse --disable-avx --disable-avx2 \
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
   check make -j4
