@@ -14,7 +14,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   cp -rp petsc-$PETSC_VERSION petsc-$PETSC_VERSION-build-$build_type
   cd petsc-$PETSC_VERSION-build-$build_type
-  if [ $build_type == "Release" ]; then
+  if [ $build_type = "Release" ]; then
     ./configure --prefix=$PREFIX \
       --with-cc=mpicc --COPTFLAGS="-O3" --with-cxx=mpicxx --CXXOPTFLAGS="-O3" --with-fc=mpif77 --FOPTFLAGS="-O3" --with-mpiexec=mpiexec \
     --with-blas-lapack-lib="-framework Accelerate" \

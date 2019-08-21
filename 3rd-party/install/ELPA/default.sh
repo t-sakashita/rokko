@@ -13,13 +13,14 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   cp -rp elpa-$ELPA_VERSION elpa-$ELPA_VERSION-build-$build_type
   cd elpa-$ELPA_VERSION-build-$build_type
-  if [ $build_type == "Release" ]; then
+  if [ $build_type = "Release" ]; then
       FLAGS="-O3"
   else
       FLAGS="-g"
   fi
   check ./configure \
 	CC=mpicc FC=mpif90 \
+	--disable-sse --disable-avx --disable-avx2 \ 
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
   check make -j4
