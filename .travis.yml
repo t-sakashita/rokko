@@ -24,6 +24,8 @@ script:
   - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/EigenExa/link.sh
   - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/ELPA/default.sh
   - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/ELPA/link.sh
+  - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/Elemental/default.sh
+  - PREFIX_ROKKO=$(pwd)/rokko BUILD_DIR=$(pwd)/rokko/build SOURCE_DIR=$(pwd)/rokko/source sh ../3rd-party/install/Elemental/link.sh
   - source rokko/rokkoenv.sh
   - cmake ..
   - make
