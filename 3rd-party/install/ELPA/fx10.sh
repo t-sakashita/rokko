@@ -15,7 +15,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   cp -rp elpa-$ELPA_VERSION elpa-$ELPA_VERSION-build-Linux-s64fx-$build_type
   cd elpa-$ELPA_VERSION-build-Linux-s64fx-$build_type
-  if [ $build_type == "Release" ]; then
+  if [ $build_type = "Release" ]; then
       FLAGS="-O3"
   else
       FLAGS="-g -O0"

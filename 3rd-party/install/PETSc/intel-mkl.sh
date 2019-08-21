@@ -15,7 +15,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   cp -rp petsc-$PETSC_VERSION petsc-$PETSC_VERSION-build-$build_type
   cd petsc-$PETSC_VERSION-build-$build_type
-  if [ $build_type == "Release" ]; then
+  if [ $build_type = "Release" ]; then
     if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
       ./configure --prefix=$PREFIX \
         --with-cxx=mpicxx --with-cc=mpicc --with-fc=mpif90 \

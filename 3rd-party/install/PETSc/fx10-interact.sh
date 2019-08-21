@@ -16,7 +16,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   cp -rp petsc-$PETSC_VERSION petsc-$PETSC_VERSION-build-Linux-s64fx-$build_type
   cd petsc-$PETSC_VERSION-build-Linux-s64fx-$build_type
-  if [ $build_type == "Release" ]; then
+  if [ $build_type = "Release" ]; then
     check ./configure --prefix=$PREFIX_BACKEND \
       --with-cc="mpifcc" --CFLAGS="-mt -Xg" --COPTFLAGS="-Kfast" \
       --with-cxx="mpiFCC" --CXXFLAGS="-mt -Xg" --CXXOPTFLAGS="-Kfast" \

@@ -14,7 +14,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   cp -rp petsc-$PETSC_VERSION petsc-$PETSC_VERSION-build-$build_type
   cd petsc-$PETSC_VERSION-build-$build_type
-  if [ $build_type == "Release" ]; then
+  if [ $build_type = "Release" ]; then
     ./configure --prefix=$PREFIX \
       --COPTFLAGS="-O3" --CXXOPTFLAGS="-O3" --FOPTFLAGS="-O3" \
       --with-c++-support=1 --with-debugging=0
