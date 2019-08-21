@@ -14,6 +14,6 @@ if [ -d EigenExa-$EIGENEXA_VERSION ]; then :; else
   cd EigenExa-$EIGENEXA_VERSION
   if [ -f $SCRIPT_DIR/EigenExa-$EIGENEXA_VERSION.patch ]; then
     echo "applying EigenExa-$EIGENEXA_VERSION.patch"
-    patch -p1 < $SCRIPT_DIR/EigenExa-$EIGENEXA_VERSION.patch
+    check patch -p1 < $SCRIPT_DIR/EigenExa-$EIGENEXA_VERSION.patch
   fi
 fi
