@@ -100,6 +100,14 @@ public:
     }
   }
 
+  void generate(std::function<value_type(int, int)> const& func) {
+    for(int local_i = 0; local_i < get_m_local(); ++local_i) {
+      for(int local_j = 0; local_j < get_n_local(); ++local_j) {
+        set_local(local_i, local_j, func(local_i, local_j));
+      }
+    }
+  }
+  
   void set_zeros() { super_type::setZero(); }
 
   bool is_row_major() const { return std::is_same<MATRIX_MAJOR, matrix_row_major>::value; }
