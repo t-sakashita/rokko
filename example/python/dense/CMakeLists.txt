@@ -1,15 +1,15 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2015-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2015-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS frank)
+set(TESTS frank minij)
 if(BUILD_PARALLEL_DENSE_SOLVER)
-  set(TESTS ${TESTS} frank_mpi frank_only_eigval_mpi frank_block_mpi)
+  set(TESTS ${TESTS} frank_mpi frank_only_eigval_mpi frank_block_mpi minij_mpi minij_only_eigval_mpi generate_by_funtion_minij_mpi)
 endif(BUILD_PARALLEL_DENSE_SOLVER)
 foreach(name ${TESTS})
   add_test(python_dense_${name}
