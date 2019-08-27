@@ -1,33 +1,30 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2015-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2015-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-from rokko import *
-
-solver = rokko_serial_dense_ev("lapack", 0, None)
+from pyrokko import *
 
 dim = 10
-rokko_matrix_col_major = rokko.matrix_col_major
 
-mat = rokko_localized_matrix(dim, dim, rokko_matrix_col_major)
-Z = rokko_localized_matrix(dim, dim, rokko_matrix_col_major)
-w = rokko_localized_vector(dim) 
+mat = localized_matrix(dim, dim, matrix_major.col)
+eigvec = localized_matrix(dim, dim, matrix_major.col)
+eigval = localized_vector(dim)
 
-rokko_generate_frank_matrix(mat)
-mat.show()
+frank_matrix.generate(mat)
+mat.print()
 
-params = rokko_parameters()
+params = parameters()
 params.set("routine", "dsyevr")
-b = True
-params.set("verbose", 1)
-solver.diagonalize(mat, w, Z, params)
+params.set("verbose", True)
+solver = serial_dense_ev("lapack")
+solver.diagonalize(mat, eigval, eigvec, params)
 
-print("Computed Eigenvalues =\n");
-
-for i in range(0, dim):
-	print(w.get(i))
+print("Computed eigenvalues:")
+eigval.print()
+print("eigenvectors:")
+eigvec.print()

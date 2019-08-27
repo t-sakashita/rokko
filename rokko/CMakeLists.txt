@@ -159,9 +159,9 @@ if(ROKKO_SOURCES)
   endif(ROKKO_HAVE_ANASAZI)
 
   if(BUILD_Python_BINDING)
-   target_link_libraries(rokko ${PYTHON_LIBRARIES})
-    python_add_module(rokko_python rokko_python.cpp)
-    target_link_libraries(rokko_python rokko)
+    pybind11_add_module(pyrokko pyrokko.cpp)
+    target_include_directories(pyrokko PUBLIC ${MPI4PY_DIR}/include)
+    target_link_libraries(pyrokko PRIVATE rokko)
   endif(BUILD_Python_BINDING)
 
   # install
@@ -177,7 +177,7 @@ if(ROKKO_SOURCES)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rokko.mod DESTINATION include)
   endif(BUILD_Fortran_BINDING)
   if(BUILD_Python_BINDING)
-    install(TARGETS rokko_python
+    install(TARGETS pyrokko
             ARCHIVE DESTINATION lib
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin)

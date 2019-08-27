@@ -9,7 +9,7 @@
 
 set(TESTS frank)
 if(BUILD_PARALLEL_DENSE_SOLVER)
-  set(TESTS ${TESTS} frank_mpi frank_only_eigvals_mpi frank_block_mpi)
+  set(TESTS ${TESTS} frank_mpi frank_only_eigval_mpi frank_block_mpi)
 endif(BUILD_PARALLEL_DENSE_SOLVER)
 foreach(name ${TESTS})
   add_test(python_dense_${name}

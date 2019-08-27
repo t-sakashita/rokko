@@ -1,43 +1,37 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2015-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2015-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-from mpi4py import MPI
-from rokko import *
+import mpi4py
+import pyrokko
 
-solver = rokko_parallel_dense_ev("scalapack", 0, None)
-#solver = rokko_parallel_dense_ev("elemental", 0, None)
+dim = 10
+g = pyrokko.grid()
 
-dim = 50
+solver = pyrokko.parallel_dense_ev()
+map = solver.default_mapping(dim, g)
+mat = pyrokko.distributed_matrix(map)
+pyrokko.frank_matrix.generate(mat)
 
-rokko_grid_row_major = rokko.grid_row_major
-rokko_grid_col_major = rokko.grid_col_major
-rokko_matrix_col_major = rokko.matrix_col_major
+eigval = pyrokko.localized_vector(dim);
+eigvec = pyrokko.distributed_matrix(map)
+params = pyrokko.parameters()
 
-grid = rokko_grid(MPI.COMM_WORLD, rokko_grid_col_major)
-map = solver.default_mapping(dim, grid)
-mat = rokko_distributed_matrix(map)
-Z = rokko_distributed_matrix(map)
-w = rokko_localized_vector(dim)
+solver.initialize()
+solver.diagonalize(mat, eigval, eigvec, params)
+eigvec_loc = pyrokko.localized_matrix(dim,dim)
+pyrokko.gather(eigvec, eigvec_loc, 0)
 
-rokko_generate_frank_matrix(mat)
-mat.show()
+if (mpi4py.MPI.COMM_WORLD.Get_rank() == 0):
+    print("eigenvalues:")
+    eigval.print()
+    print("eigenvectors:")
+    eigvec_loc.print()
 
-
-params = rokko_parameters()
-solver.diagonalize(mat, w, Z, params)
-
-if (MPI.COMM_WORLD.Get_rank() == 0):
-	print("Computed Eigenvalues =\n");
-
-	for i in range(0, dim):
-		print(w.get(i))
-
-# print "rank = ", MPI.COMM_WORLD.Get_rank()
-
-MPI.Finalize()
+solver.finalize()
+mpi4py.MPI.Finalize()
