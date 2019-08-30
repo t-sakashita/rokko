@@ -41,18 +41,8 @@ contains
     start_row = tmp * myrank + min(rem, myrank) + 1  ! extra plus 1
     end_row = start_row + num_local_rows - 1 ! extra plus 1
     
-    if (start_row == 1) then
-       is_first_proc = .true.
-    else
-       is_first_proc = .false.
-    endif
- 
-    if (end_row == dim) then
-       is_last_proc = .true.
-    else
-       is_last_proc = .false.
-    endif
-
+    is_first_proc = start_row == 1
+    is_last_proc = end_row == dim
     end_k = num_local_rows
     !print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row,&
     !     "is_first_proc", is_first_proc, " is_last_proc", is_last_proc
