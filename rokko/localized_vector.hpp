@@ -31,7 +31,7 @@ public:
   template <typename U>
   localized_vector(U const & other) : super_type(other) {}
   template <typename U>
-  localized_vector& operator=(T const& other) { super_type::operator=(other); return *this; }
+  localized_vector& operator=(U const& other) { super_type::operator=(other); return *this; }
 
   void print() const { std::cout << *this << std::endl; }
 };
