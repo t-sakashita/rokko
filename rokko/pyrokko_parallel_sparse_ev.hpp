@@ -13,6 +13,8 @@
 #define PYROKKO_PARALLEL_SPARSE_EV_HPP
 
 #include <rokko/parallel_sparse_ev.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
+#include <rokko/pyrokko_distributed_mfree.hpp>
 
 namespace rokko {
 
@@ -29,6 +31,10 @@ public:
   }
 
   wrap_parameters diagonalize(distributed_crs_matrix& mat, wrap_parameters const& params) {
+    return parallel_sparse_ev::diagonalize(mat, parameters(params));
+  }
+
+  wrap_parameters diagonalize(wrap_distributed_mfree& mat, wrap_parameters const& params) {
     return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }
 

@@ -33,6 +33,7 @@
 
 #include <rokko/pyrokko_parallel_sparse_ev.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
+#include <rokko/pyrokko_distributed_mfree.hpp>
 
 
 namespace rokko {
@@ -211,6 +212,9 @@ PYBIND11_MODULE(pyrokko, m) {
   // collective MPI communication
   m.def("gather", &pyrokko_gather);
   m.def("scatter", &pyrokko_scatter);
+
+  py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
+    .def(py::init<std::function<void(ConstMyMap,MyMap)>, int, int>());
   
   // sparse
   py::class_<wrap_parallel_sparse_ev>(m, "parallel_sparse_ev")
@@ -222,6 +226,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("eigenvector", &wrap_parallel_sparse_ev::python_eigenvector)
     .def_property_readonly("num_conv", &parallel_sparse_ev::num_conv)
     .def("diagonalize", py::overload_cast<distributed_crs_matrix&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
+         py::arg("mat"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_distributed_mfree&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
          py::arg("mat"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &parallel_sparse_ev::solvers)
     .def_property_readonly_static("default_solver", &parallel_sparse_ev::default_solver);
