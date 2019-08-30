@@ -33,6 +33,23 @@ public:
   wrap_mapping_bc default_mapping(int dim, wrap_grid const& g) const {
     return wrap_mapping_bc(parallel_dense_ev::default_mapping(dim, g.get_grid()));
   }
+
+  wrap_parameters diagonalize_orig(wrap_distributed_matrix& mat, wrap_localized_vector& eigvals, wrap_distributed_matrix& eigvecs,
+			 wrap_parameters const& params) {
+    assert(mat.is_major_col() == eigvecs.is_major_col());
+    if (mat.is_major_col())
+      return parallel_dense_ev::diagonalize(mat.col_ver(), eigvals.obj(), eigvecs.col_ver(), parameters(params));
+    else
+      return parallel_dense_ev::diagonalize(mat.row_ver(), eigvals.obj(), eigvecs.row_ver(), parameters(params));
+  }
+
+  wrap_parameters diagonalize_orig(wrap_distributed_matrix& mat, wrap_localized_vector& eigvals,
+			 wrap_parameters const& params) {
+    if (mat.is_major_col())
+      return parallel_dense_ev::diagonalize(mat.col_ver(), eigvals.obj(), parameters(params));
+    else
+      return parallel_dense_ev::diagonalize(mat.row_ver(), eigvals.obj(), parameters(params));
+  }
   
   template<typename VEC>
   wrap_parameters diagonalize(wrap_distributed_matrix& mat,	VEC& eigvals, wrap_distributed_matrix& eigvecs,

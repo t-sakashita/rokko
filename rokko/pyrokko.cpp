@@ -13,9 +13,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
+#include <pybind11/eigen.h>
 
 #include <rokko/eigen3.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/pyrokko_localized_vector.hpp>
 #include <rokko/pyrokko_serial_dense_ev.hpp>
 
 #include <rokko/pyrokko_parameters.hpp>
@@ -60,10 +61,10 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("get_bool", &parameters::get_bool)
     .def_property_readonly("dict", &wrap_parameters::dict);
   
-  py::class_<localized_vector<double>>(m, "localized_vector", py::multiple_inheritance())
+  py::class_<wrap_localized_vector>(m, "localized_vector")
     .def(py::init<>())
     .def(py::init<int>())
-    .def("print", &localized_vector<double>::print);
+    .def("print", &wrap_localized_vector::print);
   
   py::enum_<matrix_major_enum>(m, "matrix_major")
     .value("row", matrix_major_enum::row)
@@ -92,19 +93,21 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("set_zeros", &wrap_localized_matrix::set_zeros)
     .def("generate", &wrap_localized_matrix::generate)
     .def("print", &wrap_localized_matrix::print);
-  
+
+
   py::class_<wrap_serial_dense_ev>(m, "serial_dense_ev")
     .def(py::init<std::string const&>())
     .def(py::init<>())
     //.def("initialize", py::overload_cast<int&, char**&>(&serial_dense_ev::initialize))
     .def("finalize", &serial_dense_ev::finalize)
-    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, localized_vector<double>&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<localized_vector<double>>),
-         py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, localized_vector<double>&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<localized_vector<double>>),
-         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, wrap_localized_vector&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize_orig),
+         py::arg("mat"), py::arg("eigvals").noconvert(), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, wrap_localized_vector&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize_orig),
+         py::arg("mat"), py::arg("eigvals").noconvert(), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &serial_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &serial_dense_ev::default_solver);
-  
+
+
   // For grid
   py::class_<grid_row_major_t>(m,"grid_row_major")
     .def(py::init<>());
@@ -189,9 +192,9 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("initialize", &wrap_parallel_dense_ev::initialize)
     .def("finalize", &wrap_parallel_dense_ev::finalize)
     .def("default_mapping", &wrap_parallel_dense_ev::default_mapping)
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, localized_vector<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<localized_vector<double>>),
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, wrap_localized_vector&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize_orig),
          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, localized_vector<double>&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<localized_vector<double>>),
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, wrap_localized_vector&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize_orig),
          py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &wrap_parallel_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &wrap_parallel_dense_ev::default_solver);
