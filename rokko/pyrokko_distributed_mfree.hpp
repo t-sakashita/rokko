@@ -15,23 +15,23 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <rokko/distributed_mfree.hpp>
+#include <rokko/localized_vector.hpp>
 
 
 namespace rokko {
 
-using MyVec = Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::ColMajor>;
-using MyMap = Eigen::Map<MyVec>;
-using ConstMyMap = Eigen::Map<const MyVec>;
+using MapVec = Eigen::Map<ColVec<double>>;
+using ConstMapVec = const Eigen::Map<const ColVec<double>>;
 
 class wrap_distributed_mfree : public rokko::distributed_mfree {
 public:
-  wrap_distributed_mfree(std::function<void(ConstMyMap,MyMap)> const& multiply, int dim, int num_local_rows)
+  wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim, int num_local_rows)
     : multiply_(multiply), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {}
   ~wrap_distributed_mfree() {}
 
   void multiply(const double* x, double* y) const {
-    Eigen::Map<const MyVec>  X(x, num_local_rows_);
-    Eigen::Map<MyVec>  Y(y, num_local_rows_);
+    ConstMapVec  X(x, num_local_rows_);
+    MapVec  Y(y, num_local_rows_);
     multiply_(X, Y);
   }
 
@@ -40,7 +40,7 @@ public:
   int get_num_local_rows() const { return num_local_rows_; }
 
 private:
-  std::function<void(ConstMyMap,MyMap)> multiply_;
+  std::function<void(ConstMapVec,MapVec)> multiply_;
   int dim_;
   int num_local_rows_;
   int local_offset_;

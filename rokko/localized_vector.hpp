@@ -36,6 +36,13 @@ public:
   void print() const { std::cout << *this << std::endl; }
 };
 
+
+template<typename T>
+using ColVec = typename localized_vector<T,Eigen::Dynamic>::super_type;
+
+template<typename T>
+using RefColVec = Eigen::Ref<ColVec<T>>;
+
 typedef localized_vector<int> ilvector;
 typedef localized_vector<float> slvector;
 typedef localized_vector<double> dlvector;

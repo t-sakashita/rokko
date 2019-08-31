@@ -48,6 +48,18 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<
 }
 
 template<typename T, typename MATRIX_MAJOR>
+parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, RefColVec<T>& eigvals,
+		       rokko::parameters const& params) {
+  parameters params_out;
+  if (get_matrix_part(params) == 'U') {
+    throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
+  }
+  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  eigvals = ES.eigenvalues();
+  return params_out;
+}
+
+template<typename T, typename MATRIX_MAJOR>
 parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
 		       rokko::parameters const& params) {
   parameters params_out;
@@ -66,7 +78,20 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
 template<typename T, typename MATRIX_MAJOR>
 parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
 		       localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
-  parameters params_out;  
+  parameters params_out;
+  if (get_matrix_part(params) == 'U') {
+    throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
+  }
+  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  eigvals = ES.eigenvalues();
+  eigvecs = ES.eigenvectors();
+  return params_out;
+}
+
+template<typename T, typename MATRIX_MAJOR>
+parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, RefColVec<T>& eigvals,
+		       localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
+  parameters params_out;
   if (get_matrix_part(params) == 'U') {
     throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
   }

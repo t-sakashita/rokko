@@ -105,6 +105,10 @@ PYBIND11_MODULE(pyrokko, m) {
          py::arg("mat"), py::arg("eigvals").noconvert(), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_localized_matrix&, wrap_localized_vector&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize_orig),
          py::arg("mat"), py::arg("eigvals").noconvert(), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, RefColVec<double>&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<RefColVec<double>>),
+         py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, RefColVec<double>&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<RefColVec<double>>),
+         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &serial_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &serial_dense_ev::default_solver);
 
@@ -197,6 +201,10 @@ PYBIND11_MODULE(pyrokko, m) {
          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, wrap_localized_vector&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize_orig),
          py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, RefColVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<RefColVec<double>>),
+         py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, RefColVec<double>&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<RefColVec<double>>),
+         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &wrap_parallel_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &wrap_parallel_dense_ev::default_solver);
 
@@ -214,7 +222,7 @@ PYBIND11_MODULE(pyrokko, m) {
   m.def("scatter", &pyrokko_scatter);
 
   py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
-    .def(py::init<std::function<void(ConstMyMap,MyMap)>, int, int>());
+    .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, int>());
   
   // sparse
   py::class_<wrap_parallel_sparse_ev>(m, "parallel_sparse_ev")
