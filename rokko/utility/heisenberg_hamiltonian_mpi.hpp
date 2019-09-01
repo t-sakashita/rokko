@@ -60,7 +60,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 #pragma omp parallel for
 #endif
         for (int k=0; k<N; ++k) {
-          if (((k & m3) == m1)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+          if ((k & m3) == m1) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
             w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
           } else if ((k & m3) == m2) {
             w[k] += 0.5 * v[k^m3] - 0.25 * v[k];
