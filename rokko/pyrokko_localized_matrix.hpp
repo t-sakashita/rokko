@@ -164,6 +164,33 @@ public:
     return is_col ? "col" : "row";
   }
 
+  template <typename MATRIX_MAJOR>
+  auto const eigen_ptr() {
+    using current_type = localized_matrix<double,MATRIX_MAJOR>;
+    return static_cast<typename current_type::super_type*>(boost::get<current_type*>(_ptr));
+  }
+
+  py::object get_object() {
+    if (is_col)
+      return py::cast(eigen_ptr<matrix_col_major>());
+    else
+      return py::cast(eigen_ptr<matrix_row_major>());
+  }
+
+  void set_matrix_col_major(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> mat) {
+    if (!is_col)
+      throw std::invalid_argument("Cannot set col-major ndarray to row-major localized_matrix");
+    
+    col_ver() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(mat);
+  }
+
+  void set_matrix_row_major(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> mat) {
+    if (is_col)
+      throw std::invalid_argument("Cannot set row-major ndarray to col-major localized_matrix");
+    
+    row_ver() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(mat);
+  }
+
 private:
   bool is_col;
   boost::variant<localized_matrix<double,matrix_row_major>*, localized_matrix<double,matrix_col_major>*> _ptr;
