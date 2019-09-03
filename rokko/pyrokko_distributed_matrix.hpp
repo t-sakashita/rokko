@@ -179,6 +179,44 @@ public:
     return map;
   }
 
+  template <typename MATRIX_MAJOR>
+  distributed_matrix<double,MATRIX_MAJOR>* get_ptr() {
+    return boost::get<distributed_matrix<double,MATRIX_MAJOR>*>(_ptr);
+  }
+
+  template <typename MATRIX_MAJOR>
+  double* get_array_pointer() {
+    return get_ptr<MATRIX_MAJOR>()->get_array_pointer();
+  }
+
+  py::array_t<double>* get_ndarray() {
+    py::array_t<double>* array;
+    if (is_col)
+      array = new py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer<matrix_col_major>());
+    else
+      array = new py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer<matrix_row_major>());
+    return array;
+  }
+
+  template <typename MATRIX_MAJOR>
+  auto get_eigen_map() {
+    return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, detail::eigen3_matrix_major<MATRIX_MAJOR>::value>,0,Eigen::OuterStride<>>(get_array_pointer<MATRIX_MAJOR>(), get_m_local(), get_n_local(), Eigen::OuterStride<Eigen::Dynamic>(get_lld()));
+  }
+
+  void set_col_major_matrix(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> mat) {
+    if (!is_col)
+      throw std::invalid_argument("Cannot set col-major ndarray to row-major distributed_matrix");
+
+    get_eigen_map<matrix_col_major>() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(mat);
+  }
+
+  void set_row_major_matrix(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> mat) {
+    if (is_col)
+      throw std::invalid_argument("Cannot set row-major ndarray to col-major distributed_matrix");
+
+    get_eigen_map<matrix_row_major>() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(mat);
+  }
+
 private:
   bool is_col;
   boost::variant<distributed_matrix<double,matrix_row_major>*, distributed_matrix<double,matrix_col_major>*> _ptr;
