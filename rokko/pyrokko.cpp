@@ -96,7 +96,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("get_ndarray", &wrap_localized_matrix::get_object, py::return_value_policy::reference_internal)
     .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>>(&wrap_localized_matrix::set_matrix_col_major))
     .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>>(&wrap_localized_matrix::set_matrix_row_major))
-    .def_property_readonly("ndarray", &wrap_localized_matrix::get_object)
+    .def_property("ndarray", &wrap_localized_matrix::get_object, &wrap_localized_matrix::set_ndarray)
     .def("print", &wrap_localized_matrix::print);
 
 

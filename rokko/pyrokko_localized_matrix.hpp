@@ -177,6 +177,32 @@ public:
       return py::cast(eigen_ptr<matrix_row_major>());
   }
 
+  template <typename MATRIX_MAJOR>
+  localized_matrix<double,MATRIX_MAJOR>* get_ptr() {
+    return boost::get<localized_matrix<double,MATRIX_MAJOR>*>(_ptr);
+  }
+
+  template <typename MATRIX_MAJOR>
+  double* get_array_pointer() {
+    return get_ptr<MATRIX_MAJOR>()->data();
+  }
+
+  void set_ndarray(py::array_t<double> const& mat) {
+    py::array_t<double> array;
+    if (is_col) {
+      array = py::array_t<double>({get_m_local(), get_n_local()}, get_array_pointer<matrix_col_major>(), py::cast(*this));
+    } else {
+      array = py::array_t<double>({get_m_local(), get_n_local()}, get_array_pointer<matrix_row_major>(), py::cast(*this));
+    }
+
+    auto r = array.template mutable_unchecked<2>();
+    for (auto i = 0; i < r.shape(0); ++i) {
+      for (auto j = 0; j < r.shape(1); ++j) {
+        r(i, j) = *mat.data(i, j);
+      }
+    }
+  }
+
   void set_matrix_col_major(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> mat) {
     if (!is_col)
       throw std::invalid_argument("Cannot set col-major ndarray to row-major localized_matrix");
