@@ -264,7 +264,6 @@ if(NOT EXISTS ${PROJECT_BINARY_DIR}/rokko/mangling.h)
 endif(NOT EXISTS ${PROJECT_BINARY_DIR}/rokko/mangling.h)
 install(FILES ${PROJECT_BINARY_DIR}/rokko/config.h ${PROJECT_BINARY_DIR}/rokko/mangling.h
   COMPONENT headers DESTINATION include/rokko/)
-install(FILES cmatrix.h DESTINATION include COMPONENT headers)
 
 configure_file(${PROJECT_SOURCE_DIR}/config/rokko-config.cmake.in
   ${PROJECT_BINARY_DIR}/config/rokko-config.cmake @ONLY)
