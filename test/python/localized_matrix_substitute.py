@@ -8,23 +8,15 @@
 #
 
 from pyrokko import *
+from numpy import *
 
-params = parameters()
-params.set("PE", 2.3)
-params.set("ABCD", 2)
-params.set("STR", "pppppp")
-params.set("flag", True)
+#mat = localized_matrix(2,2, matrix_major.row)
+mat = localized_matrix(2,2, matrix_major.col)
 
-b = params.get("ABCD")
-c = params.get("STR")
+A = mat.ndarray
 
-print("ABCD: ", params.get("ABCD"))
-print("flag: ", params.get("flag"))
-print("b=", b)
+B = full_like(A, 7.)
+print(B)
 
-dic = params.dict
-print(dic["STR"])
-
-print(params.keys)
-
-params.clear()
+mat.ndarray = B
+mat.print()

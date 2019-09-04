@@ -26,12 +26,8 @@ public:
     start_row_ = tmp * myrank + std::min(rem, myrank);
     end_row_ = start_row_ + num_local_rows_ - 1;
 
-    if (start_row_ == 0)  is_first_proc = true;
-    else is_first_proc = false;
-    
-    if (end_row_ == (dim-1))  is_last_proc = true;
-    else is_last_proc = false;
-
+    is_first_proc = start_row_ == 0;
+    is_last_proc = end_row_ == (dim-1);
     end_k_ = num_local_rows_ - 1;
   }
   ~laplacian_op() {}

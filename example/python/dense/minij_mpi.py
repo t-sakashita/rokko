@@ -13,10 +13,10 @@ import pyrokko
 dim = 10
 g = pyrokko.grid()
 
-solver = pyrokko.parallel_dense_ev("scalapack")
-map = pyrokko.mapping_bc(dim, 1, g)
+solver = pyrokko.parallel_dense_ev()
+map = solver.default_mapping(dim, g)
 mat = pyrokko.distributed_matrix(map)
-pyrokko.frank_matrix.generate(mat)
+pyrokko.minij_matrix.generate(mat)
 
 eigval = pyrokko.localized_vector(dim);
 eigvec = pyrokko.distributed_matrix(map)

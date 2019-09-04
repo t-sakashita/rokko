@@ -22,9 +22,9 @@ namespace rokko {
 namespace eigenexa {
 
 // eigen_sx eigenvalues / eigenvectors
-template <typename MATRIX_MAJOR>
+template <typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-				localized_vector<double>& eigvals,
+				VEC& eigvals,
 				rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 				parameters const& params) {
   parameters params_out;
@@ -44,9 +44,9 @@ parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>&
 }
 
 // eigen_sx only eigenvalues
-template <typename MATRIX_MAJOR>
+template <typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-				localized_vector<double>& eigvals,
+				VEC& eigvals,
 				parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())

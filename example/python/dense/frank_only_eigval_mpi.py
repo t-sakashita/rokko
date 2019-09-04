@@ -13,25 +13,20 @@ import pyrokko
 dim = 10
 g = pyrokko.grid()
 
-solver = pyrokko.parallel_dense_ev("scalapack")
-map = pyrokko.mapping_bc(dim, 1, g)
+solver = pyrokko.parallel_dense_ev()
+map = solver.default_mapping(dim, g)
 mat = pyrokko.distributed_matrix(map)
 pyrokko.frank_matrix.generate(mat)
 
 eigval = pyrokko.localized_vector(dim);
-eigvec = pyrokko.distributed_matrix(map)
 params = pyrokko.parameters()
 
 solver.initialize()
-solver.diagonalize(mat, eigval, eigvec, params)
-eigvec_loc = pyrokko.localized_matrix(dim,dim)
-pyrokko.gather(eigvec, eigvec_loc, 0)
+solver.diagonalize(mat, eigval, params)
 
 if (mpi4py.MPI.COMM_WORLD.Get_rank() == 0):
     print("eigenvalues:")
     eigval.print()
-    print("eigenvectors:")
-    eigvec_loc.print()
 
 solver.finalize()
 mpi4py.MPI.Finalize()

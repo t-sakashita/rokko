@@ -22,9 +22,9 @@
 namespace rokko {
 namespace elpa {
 
-template<typename MATRIX_MAJOR>
+template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			     localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			     VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())
@@ -88,9 +88,9 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
-template<typename MATRIX_MAJOR>
+template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			     localized_vector<double>& eigvals,
+			     VEC& eigvals,
 			     parameters const& params) {
   parameters params_out;
   if(mat.is_row_major())

@@ -15,14 +15,16 @@ module laplacian
   use, intrinsic :: iso_c_binding
   implicit none
   integer :: comm
-  integer :: private, nprocs, myrank
+  integer :: nprocs, myrank
   integer(c_int), private :: dim, local_offset, num_local_rows
   integer(c_int), private :: start_row, end_row
   integer(c_int), private :: start_k, end_k
   logical, private :: is_first_proc, is_last_proc
   double precision, private :: buf_p = 0, buf_m = 0
   integer, private :: status_m(mpi_status_size), status_p(mpi_status_size)
+
 contains
+
   subroutine initialize (mat, dim_in)
     type(rokko_distributed_mfree), intent(inout) :: mat
     integer(c_int), intent(in) :: dim_in
@@ -39,18 +41,8 @@ contains
     start_row = tmp * myrank + min(rem, myrank) + 1  ! extra plus 1
     end_row = start_row + num_local_rows - 1 ! extra plus 1
     
-    if (start_row == 1) then
-       is_first_proc = .true.
-    else
-       is_first_proc = .false.
-    endif
- 
-    if (end_row == dim) then
-       is_last_proc = .true.
-    else
-       is_last_proc = .false.
-    endif
-
+    is_first_proc = start_row == 1
+    is_last_proc = end_row == dim
     end_k = num_local_rows
     !print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row,&
     !     "is_first_proc", is_first_proc, " is_last_proc", is_last_proc

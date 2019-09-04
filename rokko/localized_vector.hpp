@@ -31,10 +31,17 @@ public:
   template <typename U>
   localized_vector(U const & other) : super_type(other) {}
   template <typename U>
-  localized_vector& operator=(T const& other) { super_type::operator=(other); return *this; }
+  localized_vector& operator=(U const& other) { super_type::operator=(other); return *this; }
 
   void print() const { std::cout << *this << std::endl; }
 };
+
+
+template<typename T>
+using ColVec = typename localized_vector<T,Eigen::Dynamic>::super_type;
+
+template<typename T>
+using RefColVec = Eigen::Ref<ColVec<T>>;
 
 typedef localized_vector<int> ilvector;
 typedef localized_vector<float> slvector;

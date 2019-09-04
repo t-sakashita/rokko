@@ -26,9 +26,9 @@ namespace rokko {
 namespace scalapack {
 
 // pdsyevd eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR>
+template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors

@@ -39,6 +39,14 @@ public:
 				 localized_matrix<double, matrix_col_major>& eigvecs,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+				 RefColVec<double>& eigvals,
+				 localized_matrix<double, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+				 RefColVec<double>& eigvals,
+				 localized_matrix<double, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
 				 std::vector<double>& eigvals,
 				 localized_matrix<double, matrix_row_major>& eigvecs,
 				 parameters const& params) = 0;
@@ -52,6 +60,12 @@ public:
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
 				 localized_vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+				 RefColVec<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+				 RefColVec<double>& eigvals,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
 				 std::vector<double>& eigvals,
@@ -84,6 +98,16 @@ public:
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+			 RefColVec<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+			 RefColVec<double>& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
 			 std::vector<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
@@ -105,6 +129,16 @@ public:
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
+			 RefColVec<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
+			 RefColVec<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
 			 std::vector<double>& eigvals,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
@@ -114,6 +148,7 @@ public:
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
+
 private:
   solver_type solver_impl_;
 };

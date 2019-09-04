@@ -15,7 +15,7 @@ mat = localized_matrix(dim, dim, matrix_major.col)
 eigvec = localized_matrix(dim, dim, matrix_major.col)
 eigval = localized_vector(dim)
 
-frank_matrix.generate(mat)
+minij_matrix.generate(mat)
 mat.print()
 
 params = parameters()

@@ -87,9 +87,9 @@ endif(NOT DISABLE_OPENMP)
 
 # Python
 if(BUILD_Python_BINDING)
-  find_package(PythonInterp REQUIRED)
-  find_package(PythonLibs REQUIRED)
-  include_directories(${PYTHON_INCLUDE_DIRS})
+  add_subdirectory(${PROJECT_SOURCE_DIR}/3rd-party/pybind11)
+  set(PYBIND11_CPP_STANDARD -std=c++14)
+  find_package(mpi4py)
 endif(BUILD_Python_BINDING)
 
 # lapack library

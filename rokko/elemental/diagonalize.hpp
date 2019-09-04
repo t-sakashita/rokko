@@ -96,9 +96,9 @@ El::SortType get_sort(parameters const& params) {
 }
 
 // eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR>
+  template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-		       localized_vector<double>& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		       parameters const& params) {
   if(mat.is_row_major())
     throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
@@ -138,9 +138,9 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // only eigenvalues
-template<typename MATRIX_MAJOR>
+template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-		       localized_vector<double>& eigvals,
+		       VEC& eigvals,
 		       parameters const& params) {
   if(mat.is_row_major())
     throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
