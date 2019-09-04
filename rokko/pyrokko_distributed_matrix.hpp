@@ -201,6 +201,22 @@ public:
     return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, detail::eigen3_matrix_major<MATRIX_MAJOR>::value>,0,Eigen::OuterStride<>>(get_array_pointer<MATRIX_MAJOR>(), get_m_local(), get_n_local(), Eigen::OuterStride<Eigen::Dynamic>(get_lld()));
   }
 
+  void set_ndarray(py::array_t<double> const& mat) {
+    py::array_t<double> array;
+    if (is_col) {
+      array = py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer<matrix_col_major>(), py::cast(*this));
+    } else {
+      array = py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer<matrix_row_major>(), py::cast(*this));
+    }
+
+    auto r = array.template mutable_unchecked<2>();
+    for (auto i = 0; i < r.shape(0); ++i) {
+      for (auto j = 0; j < r.shape(1); ++j) {
+        r(i, j) = *mat.data(i, j);
+      }
+    }
+  }
+
   void set_col_major_matrix(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> mat) {
     if (!is_col)
       throw std::invalid_argument("Cannot set col-major ndarray to row-major distributed_matrix");

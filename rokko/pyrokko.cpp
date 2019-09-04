@@ -194,10 +194,9 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("print", &wrap_distributed_matrix::print)
     .def("get_map", &wrap_distributed_matrix::get_map)
     .def_property_readonly("major", &wrap_distributed_matrix::get_major_string)
-    .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>>(&wrap_distributed_matrix::set_col_major_matrix))
-    .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>>(&wrap_distributed_matrix::set_row_major_matrix))
+    .def("set_ndarray", &wrap_distributed_matrix::set_ndarray)
     .def("get_ndarray", &wrap_distributed_matrix::get_ndarray, py::return_value_policy::reference_internal)
-    .def_property_readonly("ndarray", &wrap_distributed_matrix::get_ndarray);
+    .def_property("ndarray", &wrap_distributed_matrix::get_ndarray, &wrap_distributed_matrix::set_ndarray);
 
   py::class_<wrap_parallel_dense_ev>(m, "parallel_dense_ev")
     .def(py::init<std::string const&>())
