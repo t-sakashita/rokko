@@ -22,6 +22,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
+#include <functional>
 
 namespace rokko {
 
