@@ -189,13 +189,11 @@ public:
     return get_ptr<MATRIX_MAJOR>()->get_array_pointer();
   }
 
-  py::array_t<double>* get_ndarray() {
-    py::array_t<double>* array;
+  py::array_t<double> get_ndarray() {
     if (is_col)
-      array = new py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer<matrix_col_major>());
+      return py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer<matrix_col_major>(), py::cast(*this));
     else
-      array = new py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer<matrix_row_major>());
-    return array;
+      return py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer<matrix_row_major>(), py::cast(*this));
   }
 
   template <typename MATRIX_MAJOR>
