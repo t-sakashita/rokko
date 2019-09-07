@@ -21,18 +21,22 @@ public:
     int size, rank;
     MPI_Comm_size(comm_, &size);
     MPI_Comm_rank(comm_, &rank);
-    int n = size;
-    int p = -1;
-    do {
-      n /= 2;
-      ++p;
-    } while (n > 0);
+    int p = find_power_of_two(size);
     dim_ = 1 << L;
     num_local_rows_ = 1 << (L-p);
     local_offset_ = num_local_rows_ * rank;
     buffer_.assign(num_local_rows_, 0);
   }
   ~heisenberg_op() {}
+
+  int find_power_of_two(int n) {
+    int p = -1;
+    do {
+      n /= 2;
+      ++p;
+    } while (n > 0);
+    return p;
+  }
 
   void multiply(const double* x, double* y) const {
     rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
