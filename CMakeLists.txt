@@ -154,11 +154,7 @@ endif(BUILD_LAPACKE)
 
 # boost Library
 set(ROKKO_HAVE_BOOST False)
-if(BUILD_Python_BINDING)
-  find_package(Boost COMPONENTS python system)
-else(BUILD_Python_BINDING)
-  find_package(Boost COMPONENTS system)
-endif(BUILD_Python_BINDING)
+find_package(Boost COMPONENTS system)
 if(Boost_INCLUDE_DIR)
   set(ROKKO_HAVE_BOOST True)
   include_directories(BEFORE ${Boost_INCLUDE_DIR})
