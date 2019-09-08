@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   }
   rokko_split_solver_name(library_routine, &library, &routine);
   int L = (argc == 3) ? L = atoi(argv[2]) : 10;
-  int lattice_size = L+1;
+  int lattice_size = L;
   int* lattice_first = (int*) malloc(sizeof(int) * lattice_size);
   int* lattice_second = (int*) malloc(sizeof(int) * lattice_size);
   int i;
