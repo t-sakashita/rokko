@@ -129,7 +129,8 @@ PYBIND11_MODULE(pyrokko, m) {
   
   py::class_<wrap_grid>(m, "grid")
     .def(py::init<>())
-    .def(py::init<grid_row_major_t>(), py::arg("grid_major") = grid_row_major)
+    .def(py::init<grid_row_major_t>())
+    .def(py::init<grid_col_major_t>())
     .def(py::init<pybind11::handle const&, grid_row_major_t, int>())
     .def(py::init<pybind11::handle const&, grid_col_major_t, int>())
     .def("get_comm", &wrap_grid::get_comm)
