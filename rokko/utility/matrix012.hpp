@@ -9,12 +9,12 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_MATRIX123_HPP
-#define ROKKO_UTILITY_MATRIX123_HPP
+#ifndef ROKKO_UTILITY_MATRIX012_HPP
+#define ROKKO_UTILITY_MATRIX012_HPP
 
 namespace rokko {
 
-class matrix123 {
+class matrix012 {
 public:
 
   template<typename T, typename MATRIX_MAJOR>
@@ -67,4 +67,4 @@ public:
 
 } // namespace rokko
 
-#endif // ROKKO_UTILITY_MATRIX123_HPP
+#endif // ROKKO_UTILITY_MATRIX012_HPP
