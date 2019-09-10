@@ -30,6 +30,7 @@
 
 #include <rokko/utility/pyrokko_minij_matrix.hpp>
 #include <rokko/utility/pyrokko_frank_matrix.hpp>
+#include <rokko/utility/pyrokko_laplacian_matrix.hpp>
 #include <rokko/utility/pyrokko_matrix012.hpp>
 
 #include <rokko/pyrokko_parallel_sparse_ev.hpp>
@@ -230,6 +231,11 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_frank_matrix::generate))
     .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate))
     .def_static("eigenvalue", &frank_matrix::eigenvalue);
+
+  py::class_<wrap_laplacian_matrix>(m, "laplacian_matrix")
+    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_laplacian_matrix::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_laplacian_matrix::generate))
+    .def_static("eigenvalue", &laplacian_matrix::eigenvalue);
 
   py::class_<wrap_matrix012>(m, "matrix012")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_matrix012::generate))
