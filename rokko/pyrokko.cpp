@@ -30,6 +30,7 @@
 
 #include <rokko/utility/pyrokko_minij_matrix.hpp>
 #include <rokko/utility/pyrokko_frank_matrix.hpp>
+#include <rokko/utility/pyrokko_matrix012.hpp>
 
 #include <rokko/pyrokko_parallel_sparse_ev.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
@@ -227,7 +228,11 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_frank_matrix>(m, "frank_matrix")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_frank_matrix::generate))
     .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate));
-  
+
+  py::class_<wrap_matrix012>(m, "matrix012")
+    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_matrix012::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_matrix012::generate));
+
   // collective MPI communication
   m.def("gather", &pyrokko_gather);
   m.def("scatter", &pyrokko_scatter);
