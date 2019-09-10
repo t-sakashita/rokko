@@ -19,7 +19,7 @@
 
 namespace rokko {
 
-class wrap_minij_matrix : public minij_matrix {
+class wrap_minij_matrix {
 public:
   static void generate(wrap_localized_matrix& mat) {
     if (mat.is_major_col())

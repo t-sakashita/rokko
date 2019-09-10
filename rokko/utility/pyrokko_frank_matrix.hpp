@@ -19,7 +19,7 @@
 
 namespace rokko {
 
-class wrap_frank_matrix : public frank_matrix {
+class wrap_frank_matrix {
 public:
   static void generate(wrap_localized_matrix& mat) {
     if (mat.is_major_col())

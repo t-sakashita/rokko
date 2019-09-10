@@ -223,11 +223,13 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<wrap_minij_matrix>(m, "minij_matrix")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_minij_matrix::generate))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_minij_matrix::generate));
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_minij_matrix::generate))
+    .def_static("eigenvalue", &minij_matrix::eigenvalue);
   
   py::class_<wrap_frank_matrix>(m, "frank_matrix")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_frank_matrix::generate))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate));
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate))
+    .def_static("eigenvalue", &frank_matrix::eigenvalue);
 
   py::class_<wrap_matrix012>(m, "matrix012")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_matrix012::generate))
