@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,6 +15,9 @@
 #include <cmath>
 #include <stdexcept>
 #include <rokko/localized_matrix.hpp>
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
+# include <rokko/distributed_matrix.hpp>
+#endif
 
 namespace rokko {
 
@@ -49,6 +52,21 @@ public:
     }
   }
   
+  template<typename T, typename MATRIX_MAJOR>
+  static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
+    if (mat.get_m_global() != mat.get_n_global())
+      throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
+    mat.set_zeros();
+    int n = mat.get_m_global();
+    mat.set_global(0, 0, 1);  mat.set_global(0, 1, -1);
+    mat.set_global(n-1, n-2, -1);  mat.set_global(n-1, n-1, 2);
+    for(int i = 1; i < n-1; ++i) {
+      mat.set_global(i, i-1, -1);
+      mat.set_global(i, i, 2);
+      mat.set_global(i, i+1, -1);
+    }
+  }
+
   // calculate k-th smallest eigenvalue of dim-dimensional Laplacian matrix (k=0...dim-1)
   static double eigenvalue(int dim, int k) {
     return 2 * (1 - std::cos(M_PI * (2 * k + 1) / (2 * dim + 1)));
