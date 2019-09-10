@@ -33,7 +33,9 @@ public:
       minij_matrix::generate(mat.col_ver());
     else
       minij_matrix::generate(mat.row_ver());
-  }};
+  }
+};
+
 } // namespace rokko
 
 #endif // PYROKKO_MINIJ_MATRIX_HPP
