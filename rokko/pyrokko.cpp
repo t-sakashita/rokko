@@ -37,6 +37,8 @@
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/pyrokko_distributed_mfree.hpp>
 
+#include <rokko/utility/pyrokko_sort_eigenpairs.hpp>
+
 
 namespace rokko {
 
@@ -277,6 +279,10 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("print", &distributed_crs_matrix::print)
     .def("output_matrix_market", &distributed_crs_matrix::output_matrix_market)
     .def_property_readonly("solver_name", &distributed_crs_matrix::get_solver_name);
+
+  // utility functions
+  m.def("sort_eigenpairs", &pyrokko_sort_eigenpairs,
+        py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
 }
 
 } // end namespace rokko
