@@ -150,7 +150,8 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<wrap_mapping_bc>(m, "mapping_bc")
     .def(py::init<matrix_major_enum>(), py::arg("major") = col)
-    .def(py::init<int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("wrap_g"), py::arg("major") = col)
+    .def(py::init<int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"), py::arg("major") = col)
+    .def(py::init<int, int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"), py::arg("major") = col)
     .def("get_mb", &wrap_mapping_bc::get_mb)
     .def("get_nb", &wrap_mapping_bc::get_nb)
     .def_property_readonly("block_shape", &wrap_mapping_bc::get_block_shape)
