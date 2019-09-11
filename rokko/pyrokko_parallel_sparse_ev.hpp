@@ -34,6 +34,10 @@ public:
     return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }
 
+  wrap_parameters diagonalize(distributed_mfree* mat, wrap_parameters const& params) {
+    return parallel_sparse_ev::diagonalize(*mat, parameters(params));
+  }
+
   wrap_parameters diagonalize(wrap_distributed_mfree& mat, wrap_parameters const& params) {
     return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }

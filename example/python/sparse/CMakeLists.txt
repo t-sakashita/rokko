@@ -1,11 +1,18 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2015-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2015-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
+
+if(BUILD_PARALLEL_SPARSE_SOLVER)
+  pybind11_add_module(heisenberg_package py_heisenberg_mfree.cpp)
+  target_include_directories(heisenberg_package PUBLIC ${MPI4PY_DIR}/include)
+  target_link_libraries(heisenberg_package PRIVATE rokko)
+  set_target_properties(heisenberg_package PROPERTIES OUTPUT_NAME heisenberg)
+endif(BUILD_PARALLEL_SPARSE_SOLVER)
 
 if(BUILD_PARALLEL_SPARSE_SOLVER)
   set(TESTS ${TESTS} heisenberg_crs_mpi)
