@@ -38,6 +38,7 @@
 #include <rokko/pyrokko_distributed_mfree.hpp>
 
 #include <rokko/utility/pyrokko_sort_eigenpairs.hpp>
+#include <rokko/utility/pyrokko_solver_name.hpp>
 
 
 namespace rokko {
@@ -288,6 +289,8 @@ PYBIND11_MODULE(pyrokko, m) {
   // utility functions
   m.def("sort_eigenpairs", &pyrokko_sort_eigenpairs,
         py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
+
+  m.def("split_solver_name", &wrap_split_solver_name);
 }
 
 } // end namespace rokko
