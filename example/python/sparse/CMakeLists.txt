@@ -8,14 +8,18 @@
 #
 
 if(BUILD_PARALLEL_SPARSE_SOLVER)
-  pybind11_add_module(heisenberg_package py_heisenberg_mfree.cpp)
-  target_include_directories(heisenberg_package PUBLIC ${MPI4PY_DIR}/include)
-  target_link_libraries(heisenberg_package PRIVATE rokko)
-  set_target_properties(heisenberg_package PROPERTIES OUTPUT_NAME heisenberg)
+  set(TESTS heisenberg laplacian)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)
+foreach(name ${TESTS})
+  pybind11_add_module(${name}_package py_${name}_mfree.cpp)
+  target_include_directories(${name}_package PUBLIC ${MPI4PY_DIR}/include)
+  target_link_libraries(${name}_package PRIVATE rokko)
+  set_target_properties(${name}_package PROPERTIES OUTPUT_NAME ${name})
+endforeach(name)
+
 
 if(BUILD_PARALLEL_SPARSE_SOLVER)
-  set(TESTS ${TESTS} heisenberg_crs_mpi)
+  set(TESTS heisenberg_crs_mpi)
 endif(BUILD_PARALLEL_SPARSE_SOLVER)
 foreach(name ${TESTS})
   add_test(python_${name}
