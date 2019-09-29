@@ -12,7 +12,7 @@
 #include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/random.hpp>
+#include <random>
 #define BOOST_TEST_MODULE test_product_v
 #ifndef BOOST_TEST_DYN_LINK
 # include <boost/test/included/unit_test.hpp>
@@ -32,9 +32,8 @@ BOOST_AUTO_TEST_CASE(test_product_v) {
     dim = boost::lexical_cast<int>(boost::unit_test::framework::master_test_suite().argv[1]);
   }
 
-  boost::mt19937 eng;
-  boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
-    rng(eng, boost::uniform_real<>());
+  std::mt19937 engine(123lu);
+  std::uniform_real_distribution<> dist(-1.0, 1.0);
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
@@ -47,9 +46,9 @@ BOOST_AUTO_TEST_CASE(test_product_v) {
   rokko::localized_matrix<double, rokko::matrix_col_major> locA(dim, dim);
   rokko::localized_matrix<double, rokko::matrix_col_major> locX(dim, 1);
   rokko::localized_matrix<double, rokko::matrix_col_major> locY(dim, 1);
-  for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = rng();
-  for (int i = 0; i < dim; ++i) locX(i, 0) = rng();
-  for (int i = 0; i < dim; ++i) locY(i, 0) = rng();
+  for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = dist(engine);
+  for (int i = 0; i < dim; ++i) locX(i, 0) = dist(engine);
+  for (int i = 0; i < dim; ++i) locY(i, 0) = dist(engine);
   rokko::scatter(locA, matA, 0);
   rokko::scatter(locX, vecX, 0);
   rokko::scatter(locY, vecY, 0);

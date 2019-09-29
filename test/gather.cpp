@@ -19,7 +19,7 @@
 #else
 #include <boost/test/unit_test.hpp>
 #endif
-#include <boost/random.hpp>
+#include <random>
 
 template<typename GRID_MAJOR, typename DIST_MAT_MAJOR, typename LOC_MAT_MAJOR>
 bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJOR const&, LOC_MAT_MAJOR const&) {
@@ -28,9 +28,8 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   MPI_Comm_rank(comm, &rank);
 
   // same seed for all processes
-  boost::mt19937 eng;
-  boost::variate_generator<boost::mt19937&, boost::uniform_real<> >
-    rng(eng, boost::uniform_real<>());
+  std::mt19937 engine(123lu);
+  std::uniform_real_distribution<> dist(-1.0, 1.0);
   
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm, grid_major);
@@ -38,7 +37,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(map);
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
-      double d = rng();
+      double d = dist(engine);
       if (mat.is_gindex(i, j)) mat.set_global(i, j, d);
     }
   }
