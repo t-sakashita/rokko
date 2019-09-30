@@ -32,8 +32,8 @@ BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
   for(auto name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(argc, argv);
-    rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
-    rokko::distributed_matrix<rokko::matrix_col_major> mat(map);
+    rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+    rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
     rokko::frank_matrix::generate(mat);
     //    BOOST_CHECK_CLOSE(mat.get_global(0, 0), dim, 1e-14);
     solver.finalize();
