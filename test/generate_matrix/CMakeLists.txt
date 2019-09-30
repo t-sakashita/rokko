@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS frank helmert)
+set(TESTS frank helmert heisenberg)
 foreach(name ${TESTS})
   set(target_name test_generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
@@ -16,15 +16,6 @@ foreach(name ${TESTS})
   add_test(${target_name} ${name})
 endforeach(name)
 unset(TESTS)
-
-set(TESTS heisenberg)
-foreach(name ${TESTS})
-  set(target_name test_generate_matrix_${name})
-  add_executable(${target_name} ${name}.cpp)
-  set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
-  target_link_libraries(${target_name} rokko)
-  add_test(${target_name} ${name})
-endforeach(name)
 
 set(TESTS xyz)
 foreach(name ${TESTS})

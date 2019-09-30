@@ -15,8 +15,9 @@
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 
-int main()
-{
+#include <gtest/gtest.h>
+
+TEST(generate_matrix, heisenberg) {
   int L = 4;
   int N = 1 << L;
   std::vector<std::pair<int, int>> lattice;
@@ -73,7 +74,9 @@ int main()
     std::cout << "ERROR: diagonal by 'fill_diagonal' is differnet from diagonal elementas of a matrix by 'genertate'."<< std::endl;
     exit(1);
   }
-
 }
 
-
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
