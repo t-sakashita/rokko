@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   int L = 4;
   int num_bonds = L - 1;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<std::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double>> coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
     coupling.push_back(std::make_tuple(1, 0.3, 0.2));
@@ -46,8 +46,8 @@ int main(int argc, char *argv[]) {
   if (myrank == root) {
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
     for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>()
-                << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+      std::cout << lattice[i].first << " " << lattice[i].second << " "
+                << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
     }
   }
   MPI_Barrier(MPI_COMM_WORLD);
