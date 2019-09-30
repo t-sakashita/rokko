@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,7 +16,7 @@ endforeach( pattern_file )
 set(TESTS frank heisenberg xyz xyz_file)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
-  target_link_libraries(${name} rokko)
+  target_link_libraries(${name} rokko gtest_main)
   add_rokko_test(${name})
 endforeach(name)
 unset(TESTS)
