@@ -19,22 +19,22 @@
 namespace rokko {
 
 template<typename T, int ROWS>
-struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor>> {
   typedef rokko::matrix_col_major major_type;
 };
 
 template<typename T, int ROWS>
-struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor>> {
   typedef rokko::matrix_row_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>
-struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor>> {
   typedef rokko::matrix_col_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>
-struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor>> {
   typedef rokko::matrix_row_major major_type;
 };
 

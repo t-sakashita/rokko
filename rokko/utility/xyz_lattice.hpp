@@ -46,9 +46,9 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
 
 bool detect_offset_info(std::string const& str_line, bool& offset1) {
   boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
-  boost::tokenizer<boost::char_separator<char> >  tokens0(str_line, sep);
+  boost::tokenizer<boost::char_separator<char>>  tokens0(str_line, sep);
   std::vector<std::string> tokens;
-  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string> >(tokens));
+  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string>>(tokens));
   if (tokens.size() < 3) {
     return false;
   }
@@ -84,7 +84,7 @@ void read_offset_info(std::ifstream& ifs, bool& offset1) {
 
 } // namespace detail
 
-void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<std::tuple<double, double, double> >& coupling) {
+void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int>>& lattice, std::vector<std::tuple<double, double, double>>& coupling) {
   int num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
@@ -125,7 +125,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   } while (coupling.size() < num_bonds);
 }
 
-void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int> >& lattice, std::vector<std::tuple<double, double, double> >& coupling) {
+void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int>>& lattice, std::vector<std::tuple<double, double, double>>& coupling) {
   std::ifstream ifs(filename.c_str());
   if (!ifs) {
     throw std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\"");

@@ -47,9 +47,9 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
 
 bool detect_offset_info(std::string const& str_line, bool& offset1) {
   boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
-  boost::tokenizer<boost::char_separator<char> >  tokens0(str_line, sep);
+  boost::tokenizer<boost::char_separator<char>>  tokens0(str_line, sep);
   std::vector<std::string> tokens;
-  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string> >(tokens));
+  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string>>(tokens));
   if (tokens.size() < 3) {
     return false;
   }
@@ -85,7 +85,7 @@ void read_offset_info(std::ifstream& ifs, bool& offset1) {
 
 } // namespace detail
 
-void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int> >& lattice) {
+void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int>>& lattice) {
   int num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
@@ -117,7 +117,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   } while (lattice.size() < num_bonds);
 }
 
-void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int> >& lattice) {
+void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int>>& lattice) {
   std::ifstream ifs(filename.c_str());
   if (!ifs) {
     throw std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\"");
@@ -125,7 +125,7 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
   return read_lattice_stream(ifs, num_sites, lattice);
 }
 
-void ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int> >& lattice) {
+void ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int>>& lattice) {
   int L = 2 * len_ladder;
   int dim = 1 << L;
   for (int i = 0; i < (len_ladder-1); ++i) {
@@ -139,13 +139,13 @@ void ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int> >& latt
   }
 }
 
-void print_lattice(std::vector<std::pair<int, int> >& lattice) {
+void print_lattice(std::vector<std::pair<int, int>>& lattice) {
   for (int i=0; i<lattice.size(); ++i) { 
     std::cout << "no=" << i << " <" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
   }
 }
 
-void output_lattice(std::ostream& os, std::vector<std::pair<int, int> >& lattice) {
+void output_lattice(std::ostream& os, std::vector<std::pair<int, int>>& lattice) {
   for (int i=0; i<lattice.size(); ++i) { 
     os << "no=" << i << " <" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
   }

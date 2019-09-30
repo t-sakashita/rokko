@@ -45,7 +45,7 @@ struct heev_dispatch<double> {
 };
   
 template<>
-struct heev_dispatch<std::complex<float> > {
+struct heev_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int heev(int matrix_layout, char jobz, char uplo, lapack_int n,
                          MATRIX& a, VECTOR& w) {
@@ -55,7 +55,7 @@ struct heev_dispatch<std::complex<float> > {
 };
   
 template<>
-struct heev_dispatch<std::complex<double> > {
+struct heev_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int heev(int matrix_layout, char jobz, char uplo, lapack_int n,
                          MATRIX& a, VECTOR& w) {

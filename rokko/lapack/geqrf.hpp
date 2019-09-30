@@ -59,7 +59,7 @@ struct geqrf_dispatch<double> {
 };
 
 template<>
-struct geqrf_dispatch<std::complex<float> > {
+struct geqrf_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int geqrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& tau) {
@@ -76,7 +76,7 @@ struct geqrf_dispatch<std::complex<float> > {
 };
 
 template<>
-struct geqrf_dispatch<std::complex<double> > {
+struct geqrf_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int geqrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& tau) {

@@ -34,8 +34,8 @@ public:
 
 typedef localized_rowvector<float> flvector;
 typedef localized_rowvector<double> dlvector;
-typedef localized_rowvector<std::complex<float> > clvector;
-typedef localized_rowvector<std::complex<double> > zlvector;
+typedef localized_rowvector<std::complex<float>> clvector;
+typedef localized_rowvector<std::complex<double>> zlvector;
 
 } // namespace rokko
 

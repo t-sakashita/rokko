@@ -45,7 +45,7 @@ struct lange_dispatch<double> {
 };
 
 template<>
-struct lange_dispatch<std::complex<float> > {
+struct lange_dispatch<std::complex<float>> {
   template<typename MATRIX>
   static float lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                      MATRIX const& a) {
@@ -54,7 +54,7 @@ struct lange_dispatch<std::complex<float> > {
 };
 
 template<>
-struct lange_dispatch<std::complex<double> > {
+struct lange_dispatch<std::complex<double>> {
   template<typename MATRIX>
   static double lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                       MATRIX const& a) {

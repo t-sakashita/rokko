@@ -118,8 +118,8 @@ public:
 
 typedef localized_matrix<float> slmatrix;
 typedef localized_matrix<double> dlmatrix;
-typedef localized_matrix<std::complex<float> > clmatrix;
-typedef localized_matrix<std::complex<double> > zlmatrix;
+typedef localized_matrix<std::complex<float>> clmatrix;
+typedef localized_matrix<std::complex<double>> zlmatrix;
 
 } // namespace rokko
 

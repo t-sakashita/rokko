@@ -59,7 +59,7 @@ struct ungqr_dispatch<double> {
 };
 
 template<>
-struct ungqr_dispatch<std::complex<float> > {
+struct ungqr_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau) {
@@ -76,7 +76,7 @@ struct ungqr_dispatch<std::complex<float> > {
 };
 
 template<>
-struct ungqr_dispatch<std::complex<double> > {
+struct ungqr_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau) {

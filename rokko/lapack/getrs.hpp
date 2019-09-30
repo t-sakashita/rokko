@@ -49,7 +49,7 @@ struct getrs_dispatch<double> {
 };
 
 template<>
-struct getrs_dispatch<std::complex<float> > {
+struct getrs_dispatch<std::complex<float>> {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {
@@ -59,7 +59,7 @@ struct getrs_dispatch<std::complex<float> > {
 };
 
 template<>
-struct getrs_dispatch<std::complex<double> > {
+struct getrs_dispatch<std::complex<double>> {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
   static lapack_int getrs(int matrix_layout, char trans, lapack_int n, lapack_int nrhs,
                           MATRIX0& a, VECTOR& ipiv, MATRIX1& b) {

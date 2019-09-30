@@ -62,7 +62,7 @@ struct gesvd_dispatch<double> {
 };
   
 template<>
-struct gesvd_dispatch<std::complex<float> > {
+struct gesvd_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int gesvd(int matrix_layout, char jobu, char jobvt,
                           lapack_int m, lapack_int n, MATRIX& a, VECTOR& s,
@@ -87,7 +87,7 @@ struct gesvd_dispatch<std::complex<float> > {
 };
   
 template<>
-struct gesvd_dispatch<std::complex<double> > {
+struct gesvd_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int gesvd(int matrix_layout, char jobu, char jobvt,
                           lapack_int m, lapack_int n, MATRIX& a, VECTOR& s,
