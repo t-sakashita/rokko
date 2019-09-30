@@ -19,10 +19,10 @@ unset(TESTS)
 
 set(TESTS xyz)
 foreach(name ${TESTS})
-  set(target_name generate_matrix_${name})
+  set(target_name test_generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
-  target_link_libraries(${target_name} rokko)
+  target_link_libraries(${target_name} rokko gtest_main)
   add_test(${target_name} ${name} ${CMAKE_SOURCE_DIR}/test/input_data/xyz_1triangle.ip)
 endforeach(name)
 
