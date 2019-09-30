@@ -26,7 +26,7 @@ TEST(generate_matrix, xyz_hamiltonian) {
   num_bonds = L - 1;
   N = 1 << L;
   std::vector<std::pair<int, int> > lattice;
-  std::vector<std::tuple<double, double, double> > coupling;
+  std::vector<std::tuple<double, double, double>> coupling;
   for (int i=0; i<L-1; ++i) {
     lattice.push_back(std::make_pair(i, i+1));
     coupling.push_back(std::make_tuple(1, 1, 1));
