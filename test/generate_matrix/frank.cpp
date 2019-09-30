@@ -21,7 +21,7 @@ void test(int dim) {
   EXPECT_NEAR(mat.trace(), dim * (dim+1) * 0.5, 10e-5);
 }
 
-TEST(matrix_generator, frank_matrix) {
+TEST(generate_matrix, frank_matrix) {
   const int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
 
