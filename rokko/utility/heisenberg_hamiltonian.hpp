@@ -20,7 +20,7 @@ namespace rokko {
 
 namespace heisenberg_hamiltonian {
 
-void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const double* v, double* w) {
+void multiply(int L, const std::vector<std::pair<int, int>>& lattice, const double* v, double* w) {
   int N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;
@@ -38,11 +38,11 @@ void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const dou
   }
 }
 
-void multiply(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<double>& v, std::vector<double>& w) {
+void multiply(int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<double>& v, std::vector<double>& w) {
   multiply(L, lattice, &v[0], &w[0]);
 }
 
-void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, double* w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, double* w) {
   int N = 1 << L;
   for (int k = 0; k < N; ++k) {
     w[k] = 0;
@@ -65,17 +65,17 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, doub
   }
 }
 
-void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, std::vector<double>& w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, std::vector<double>& w) {
   fill_diagonal(L, lattice, &w[0]);
 }
 
 template<typename T>
-void fill_diagonal(int L, const std::vector<std::pair<int, int> >& lattice, rokko::localized_vector<T>& w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, rokko::localized_vector<T>& w) {
   fill_diagonal(L, lattice, &w[0]);
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void generate(int L, const std::vector<std::pair<int, int> >& lattice, rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
+void generate(int L, const std::vector<std::pair<int, int>>& lattice, rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
   mat.setZero();
   int N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
