@@ -18,7 +18,9 @@
 #include <rokko/localized_matrix.hpp>
 #include <rokko/localized_vector.hpp>
 
-int main() {
+#include <gtest/gtest.h>
+
+TEST(generate_matrix, xyz_hamiltonian) {
   int L, N, num_bonds;
   L = 4;
   num_bonds = L - 1;
@@ -85,7 +87,9 @@ int main() {
     std::cout << "ERROR: diagonal by 'fill_diagonal' is differnet from diagonal elements of a matrix by 'genertate'."<< std::endl;
     exit(1);
   }
-
 }
 
-
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
