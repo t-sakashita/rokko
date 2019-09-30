@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2014-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,12 +14,7 @@
 #include <algorithm>
 #include <boost/iterator/counting_iterator.hpp>
 
-#define BOOST_TEST_MODULE test_sort_eigenpairs
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
+#include <gtest/gtest.h>
 
 #define make_test(major, ascending) \
   int num = 10;\
@@ -45,17 +40,17 @@
     std::cout << "dim: " << i << std::endl;\
     double e = ascending ? 1.0 * i : 1.0*(num-i-1);\
     if(eigvecs.is_row_major()){\
-      BOOST_CHECK_EQUAL( eigvals_sorted(i), e);\
-      BOOST_CHECK_EQUAL( eigvecs_sorted(i,0), e);\
-      BOOST_CHECK_EQUAL( eigvecs_sorted(i,1), e);\
+      ASSERT_EQ( eigvals_sorted(i), e);\
+      ASSERT_EQ( eigvecs_sorted(i,0), e);\
+      ASSERT_EQ( eigvecs_sorted(i,1), e);\
     }else{\
-      BOOST_CHECK_EQUAL( eigvals_sorted(i), e);\
-      BOOST_CHECK_EQUAL( eigvecs_sorted(0,i), e);\
-      BOOST_CHECK_EQUAL( eigvecs_sorted(1,i), e);\
+      ASSERT_EQ( eigvals_sorted(i), e);\
+      ASSERT_EQ( eigvecs_sorted(0,i), e);\
+      ASSERT_EQ( eigvecs_sorted(1,i), e);\
     }\
   }
 
-BOOST_AUTO_TEST_CASE(test_sort_eigenpairs) {
+TEST(sort_eigenpairs, matrix_majors) {
   {
     std::cout << "row_major, ascending order\n";
     make_test(rokko::matrix_row_major, true)
@@ -75,3 +70,8 @@ BOOST_AUTO_TEST_CASE(test_sort_eigenpairs) {
 }
 
 #undef make_test
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
