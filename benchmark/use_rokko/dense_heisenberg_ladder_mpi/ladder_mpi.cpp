@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   int len_ladder = 5;
   if (argc >= 3) len_ladder = boost::lexical_cast<int>(argv[2]);
   int L = 2 * len_ladder;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::ladder_lattice_1dim(len_ladder, lattice);
   int dim = 1 << L;
 

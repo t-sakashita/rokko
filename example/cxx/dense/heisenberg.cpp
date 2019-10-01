@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L-1; ++i) { lattice.push_back(std::make_pair(i, i+1)); }
   lattice.push_back(std::make_pair(L-1, 0));
   int dim = 1 << L;

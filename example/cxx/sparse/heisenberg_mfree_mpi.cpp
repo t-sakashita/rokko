@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -10,44 +10,8 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+#include <rokko/utility/heisenberg_hamiltonian_mfree.hpp>
 #include <rokko/utility/solver_name.hpp>
-
-class heisenberg_op : public rokko::distributed_mfree {
-public:
-  heisenberg_op(int L, const std::vector<std::pair<int, int> >& lattice)
-    : L_(L), lattice_(lattice) {
-    comm_ = MPI_COMM_WORLD;
-    int size, rank;
-    MPI_Comm_size(comm_, &size);
-    MPI_Comm_rank(comm_, &rank);
-    int n = size;
-    int p = -1;
-    do {
-      n /= 2;
-      ++p;
-    } while (n > 0);
-    dim_ = 1 << L;
-    num_local_rows_ = 1 << (L-p);
-    local_offset_ = num_local_rows_ * rank;
-    buffer_.assign(num_local_rows_, 0);
-  }
-  ~heisenberg_op() {}
-
-  void multiply(const double* x, double* y) const {
-    rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
-  }
-  int get_dim() const { return dim_; }
-  int get_local_offset() const { return local_offset_; }
-  int get_num_local_rows() const { return num_local_rows_; }
-
-private:
-  MPI_Comm comm_;
-  int L_;
-  std::vector<std::pair<int, int> > lattice_;
-  int dim_, local_offset_, num_local_rows_;
-  mutable std::vector<double> buffer_;
-};
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -61,8 +25,7 @@ int main(int argc, char *argv[]) {
   rokko::split_solver_name(library_routine, library, routine);
 
   int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
-  int dim = 1 << L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.push_back(std::make_pair(i, (i+1) % L));
 
   rokko::parameters params;
@@ -73,7 +36,8 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
   
   rokko::parallel_sparse_ev solver(library);
-  heisenberg_op mat(L, lattice);
+  rokko::heisenberg_mfree mat(L, lattice);
+  int dim = mat.get_dim();
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
 	      << "solver = " << library << std::endl

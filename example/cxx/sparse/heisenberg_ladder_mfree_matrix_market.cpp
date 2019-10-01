@@ -16,7 +16,7 @@
 
 class heisenberg_op : public rokko::distributed_mfree {
 public:
-  heisenberg_op(int L, const std::vector<std::pair<int, int> >& lattice)
+  heisenberg_op(int L, const std::vector<std::pair<int, int>>& lattice)
     : L_(L), lattice_(lattice) {
     comm_ = MPI_COMM_WORLD;
     int size, rank;
@@ -45,7 +45,7 @@ public:
 private:
   MPI_Comm comm_;
   int L_;
-  std::vector<std::pair<int, int> > lattice_;
+  std::vector<std::pair<int, int>> lattice_;
   int dim_, local_offset_, num_local_rows_;
   mutable std::vector<double> buffer_;
 };
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
   int len_ladder = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 5;
   int L = 2 * len_ladder;
   int dim = 1 << L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::ladder_lattice_1dim(len_ladder, lattice);
 
   rokko::parameters params;

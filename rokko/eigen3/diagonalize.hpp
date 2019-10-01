@@ -68,7 +68,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
   }
   std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
-  Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> > eigvals(&eigvals_in[0], eigvals_in.size());
+  Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1>> eigvals(&eigvals_in[0], eigvals_in.size());
   Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
   eigvals = ES.eigenvalues();
   return params_out;
@@ -110,7 +110,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
   }
   std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
-  Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> > eigvals(&eigvals_in[0], eigvals_in.size());
+  Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1>> eigvals(&eigvals_in[0], eigvals_in.size());
   Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();

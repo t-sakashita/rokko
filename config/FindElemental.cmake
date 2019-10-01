@@ -44,7 +44,7 @@ find_path(ELEMENTAL_DIR include/El.h include/elemental.hpp PATHS ${_PATHS} DOC "
 if(ELEMENTAL_DIR)
   set(ELEMENTAL_INCLUDE_DIR "${ELEMENTAL_DIR}/include")
 else(ELEMENTAL_DIR)
-  message(STATUS "Elemental library: not found")
+  message(STATUS "Elemental library: include file not found")
   set(ELEMENTAL_FOUND FALSE)
   return()
 endif(ELEMENTAL_DIR)
@@ -56,7 +56,7 @@ find_library(_ELEMENTAL_LIBRARY
 if(_ELEMENTAL_LIBRARY)
   list(APPEND ELEMENTAL_LIBRARIES ${_ELEMENTAL_LIBRARY})
 else(_ELEMENTAL_LIBRARY)
-  message(STATUS "Elemental library: not found")
+  message(STATUS "Elemental library: library file not found")
   return()
 endif(_ELEMENTAL_LIBRARY)
 

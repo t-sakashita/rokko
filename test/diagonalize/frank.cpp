@@ -11,18 +11,16 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#define BOOST_TEST_MODULE test_solver
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
+
+#include <gtest/gtest.h>
+
+int global_argc;
+char** global_argv;
 
 template<typename MATRIX_MAJOR>
 void test(int dim, std::string const& name) {
   rokko::serial_dense_ev solver(name);
-  solver.initialize(boost::unit_test::framework::master_test_suite().argc,
-                    boost::unit_test::framework::master_test_suite().argv);
+  solver.initialize(global_argc, global_argv);
   rokko::localized_matrix<double, MATRIX_MAJOR> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   rokko::localized_vector<double> eigval(dim);
@@ -32,28 +30,27 @@ void test(int dim, std::string const& name) {
   
   double sum = 0;
   for(int i = 0; i < dim; ++i) sum += eigval[i];
-  BOOST_CHECK_CLOSE(sum, dim * (dim+1) * 0.5, 10e-5);
+  EXPECT_NEAR(sum, dim * (dim+1) * 0.5, 10e-5);
   
   rokko::frank_matrix::generate(mat);
   for (int i = 0; i < dim; ++i) {
     double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
-    BOOST_CHECK_CLOSE(w, eigval[i], 10e-5);
+    EXPECT_NEAR(w, eigval[i], 10e-5);
   }
 
   solver.finalize();
 }
 
-BOOST_AUTO_TEST_CASE(test_solver) {
+TEST(diagonalize, frank) {
   const int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
 
   std::vector<std::string> names;
-  int argc = boost::unit_test::framework::master_test_suite().argc;
-  if (argc == 1) {
+  if (global_argc == 1) {
     names = rokko::serial_dense_ev::solvers();
   } else {
-    for (int num=1; num < argc; ++num) {
-      names.push_back(boost::unit_test::framework::master_test_suite().argv[num]);
+    for (int num=1; num < global_argc; ++num) {
+      names.push_back(global_argv[num]);
     }
   }
 
@@ -64,4 +61,11 @@ BOOST_AUTO_TEST_CASE(test_solver) {
     std::cout << "  test for column major" << std::endl;
     test<rokko::matrix_col_major>(dim, name);
   }
+}
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  global_argc = argc;
+  global_argv = argv;
+  return RUN_ALL_TESTS();
 }

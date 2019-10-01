@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
   std::string lattice_file("xyz.dat");
   if (argc >= 2) lattice_file = argv[1];
   int L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::read_lattice_file(lattice_file, L, lattice);
   int N = 1 << L;
 
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
   ivec->Random();
 
   // Create the eigenproblem.
-  Teuchos::RCP<BasicEigenproblem<double, MV, OP> > MyProblem =
+  Teuchos::RCP<BasicEigenproblem<double, MV, OP>> MyProblem =
     Teuchos::rcp( new BasicEigenproblem<double, MV, OP>(A, ivec) );
 
   // Inform the eigenproblem that the operator A is symmetric
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
   Eigensolution<double,MV> sol = MyProblem->getSolution();
-  std::vector<Value<double> > evals = sol.Evals;
+  std::vector<Value<double>> evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.

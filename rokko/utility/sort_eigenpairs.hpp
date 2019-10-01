@@ -48,7 +48,7 @@ void sort_eigenpairs(const localized_vector<T>& eigval,
                      localized_matrix<T, MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   int dim = eigval.size();
-  std::vector<std::pair<T, std::size_t> > entries;
+  std::vector<std::pair<T, std::size_t>> entries;
   entries.reserve(dim);
   for (int i = 0; i < dim; ++i) {
     entries.push_back(std::make_pair(eigval(i), i));

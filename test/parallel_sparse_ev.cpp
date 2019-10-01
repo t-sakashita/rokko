@@ -9,18 +9,17 @@
 *
 *****************************************************************************/
 
-
 #include <rokko/solver.hpp>
 
-#define BOOST_TEST_MODULE test_parallel_sparse_evs
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
+#include <gtest/gtest.h>
 
-BOOST_AUTO_TEST_CASE(test_parallel_sparse_evs) {
+TEST(parallel_sparse_ev, names) {
   for(auto name : rokko::parallel_sparse_ev::solvers()) {
     std::cerr << name << std::endl;
   }
+}
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

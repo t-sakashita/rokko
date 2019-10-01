@@ -9,29 +9,36 @@
 
 import mpi4py
 import pyrokko
-import numpy
+import numpy as np
 
-dim = 4
-g = pyrokko.grid()
-#map = pyrokko.mapping_bc(dim, 2, g)
-map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.row)
+dim = 8
+
+g = pyrokko.grid(pyrokko.grid_row_major)
+map = pyrokko.mapping_bc(dim, 2, 10, g, pyrokko.matrix_major.row)  # where lld=10
 mat = pyrokko.distributed_matrix(map)
-mat.set_local(1, 0, 5.)
+flattened_size = mat.local_shape[0] * mat.local_shape[1]
+
+# substitute row-major matrix to row-major distributed_matrix
+mat_r = np.arange(flattened_size, dtype='float').reshape(mat.local_shape)
+mat.ndarray = mat_r
+assert(mat.ndarray.all() == mat_r.all())
+assert(mat.ndarray.all() == mat_r.T.all())
 mat.print()
+if(g.myrank == 0): print("")
 
-A = mat.ndarray
+# substitute col-major matrix to row-major distributed_matrix
+mat_c = np.arange(flattened_size, dtype='float').reshape(mat.local_shape, order='F')
+mat.ndarray = mat_c
+assert(mat.ndarray.all() == mat_c.all())
+assert(mat.ndarray.all() == mat_c.T.all())
+mpi4py.MPI.COMM_WORLD.barrier()
+mat.print();
+if(g.myrank == 0): print("")
 
-print(A)
-print(A.flags)
-print(A.strides)
-A[0,0] = 9
-A[0,1] = 2
-print(A)
-mat.print()
-
-
-B = numpy.full_like(A, 7.)
-mat.ndarray = B
+mat.ndarray = mat_r.T
+assert(mat.ndarray.all() == mat_c.all())
+assert(mat.ndarray.all() == mat_c.all())
+mpi4py.MPI.COMM_WORLD.barrier()
 mat.print()
 
 mpi4py.MPI.Finalize()

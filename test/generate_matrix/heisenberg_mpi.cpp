@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
   int L = 8;
   int num_bonds = L - 1;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   for (int i=0; i<L-1; ++i) lattice.push_back(std::make_pair(i, i+1));
 
   int myrank, nprocs;
@@ -156,13 +156,13 @@ int main(int argc, char *argv[]) {
   }
 
   // test for generate function
-  rokko::localized_matrix<rokko::matrix_col_major> lmat(N_seq, N_seq);
+  rokko::localized_matrix<double,rokko::matrix_col_major> lmat(N_seq, N_seq);
   rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(N_seq, g);
-  rokko::distributed_matrix<rokko::matrix_col_major> mat(map);
+  rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
+  rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
-  rokko::localized_matrix<rokko::matrix_col_major> lmat_gather(N_seq, N_seq);
+  rokko::localized_matrix<double,rokko::matrix_col_major> lmat_gather(N_seq, N_seq);
   rokko::gather(mat, lmat_gather, root);
 
   if (myrank == root) {

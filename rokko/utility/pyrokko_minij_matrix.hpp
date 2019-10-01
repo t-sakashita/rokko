@@ -19,7 +19,7 @@
 
 namespace rokko {
 
-class wrap_minij_matrix : public minij_matrix {
+class wrap_minij_matrix {
 public:
   static void generate(wrap_localized_matrix& mat) {
     if (mat.is_major_col())
@@ -33,7 +33,9 @@ public:
       minij_matrix::generate(mat.col_ver());
     else
       minij_matrix::generate(mat.row_ver());
-  }};
+  }
+};
+
 } // namespace rokko
 
 #endif // PYROKKO_MINIJ_MATRIX_HPP

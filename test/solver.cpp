@@ -14,34 +14,28 @@
 # include <mpi.h>
 #endif
 
-#define BOOST_TEST_MODULE test_solver
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
+#include <gtest/gtest.h>
 
-BOOST_AUTO_TEST_CASE(test_solver) {
+int global_argc;
+char** global_argv;
+
+TEST(solver, all) {
   for(auto name : rokko::serial_dense_ev::solvers()) {
     std::cerr << name << std::endl;
     rokko::serial_dense_ev solver(name);
-    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
-                      boost::unit_test::framework::master_test_suite().argv);
+    solver.initialize(global_argc, global_argv);
     solver.finalize();
   }
 
 #ifdef ROKKO_HAVE_MPI
   int provided;
-  MPI_Init_thread(&boost::unit_test::framework::master_test_suite().argc,
-                  &boost::unit_test::framework::master_test_suite().argv,
-                  MPI_THREAD_MULTIPLE, &provided);
+  MPI_Init_thread(&global_argc, &global_argv, MPI_THREAD_MULTIPLE, &provided);
 
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   for(auto name : rokko::parallel_dense_ev::solvers()) {
     std::cerr << name << std::endl;
     rokko::parallel_dense_ev solver(name);
-    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
-                      boost::unit_test::framework::master_test_suite().argv);
+    solver.initialize(global_argc, global_argv);
     solver.finalize();
   }
 #endif // ROKKO_HAVE_PARALLEL_DENSE_SOLVER
@@ -50,12 +44,18 @@ BOOST_AUTO_TEST_CASE(test_solver) {
   for(auto name : rokko::parallel_sparse_ev::solvers()) {
     std::cerr << name << std::endl;
     rokko::parallel_sparse_ev solver(name);
-    solver.initialize(boost::unit_test::framework::master_test_suite().argc,
-                      boost::unit_test::framework::master_test_suite().argv);
+    solver.initialize(global_argc, global_argv);
     solver.finalize();
   }
 #endif // ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 
   MPI_Finalize();
 #endif // ROKKO_HAVE_MPI
+}
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  global_argc = argc;
+  global_argv = argv;
+  return RUN_ALL_TESTS();
 }

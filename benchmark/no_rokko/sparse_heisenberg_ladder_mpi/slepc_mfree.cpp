@@ -7,7 +7,7 @@
 struct model {
   MPI_Comm comm;
   int L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   double* buffer;
 };
 
@@ -46,7 +46,7 @@ int main(int argc,char **argv)
   if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
 
   int L = 2 * len_ladder;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::ladder_lattice_1dim(len_ladder, m.lattice);
   int dim = 1 << L;
   if (rank == 0)

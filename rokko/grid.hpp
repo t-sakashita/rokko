@@ -52,10 +52,10 @@ public:
   int calculate_grid_col(int proc_rank) const { 
     return is_row ? proc_rank % npcol : proc_rank / nprow;
   }
-  
+
 protected:
   template <typename GRID_MAJOR>
-  void initialize(GRID_MAJOR, int lld) {
+  void initialize(GRID_MAJOR const& major, int lld) {
     if (comm == MPI_COMM_NULL) {
       myrank = -1;
       myrow = -1;
@@ -67,6 +67,17 @@ protected:
     }
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
+
+    if (is_MPI_2dim_Cart(comm))
+      calculate_sizes_cart(major);
+    else
+      calculate_sizes_default(major, lld);
+
+    set_blacs_grid();
+  }
+
+  template <typename GRID_MAJOR>
+  void calculate_sizes_default(GRID_MAJOR, int lld) {
     is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value;
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
@@ -86,13 +97,48 @@ protected:
     npcol = nprocs / nprow;
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
-    
-    // for blacs
+  }
+
+  void calculate_sizes_cart(grid_row_major_t) {
+    int cart_dim = 2;
+    int dims[2], periods[2], coords[2];
+    int ierr = MPI_Cart_get(comm, cart_dim, dims, periods, coords);
+    nprow = dims[0];
+    npcol = dims[1];
+
+    myrow = coords[0];
+    mycol = coords[1];
+
+    is_row = true;
+  }
+
+  void calculate_sizes_cart(grid_col_major_t) {
+    throw std::invalid_argument("calculate_sizes_cart : MPI Cartesian doesn't support grid_col_major.  Use it with grid_row_major.");
+  }
+
+  bool is_MPI_Cart(MPI_Comm comm) {
+    int topo_type;
+    int ierr = MPI_Topo_test(comm, &topo_type);
+    return topo_type == MPI_CART;
+  }
+
+  bool is_MPI_2dim_Cart(MPI_Comm comm) {
+    if (is_MPI_Cart(comm)) {
+      int cart_dim;
+      int ierr =  MPI_Cartdim_get(comm, &cart_dim);
+      return cart_dim == 2;
+    } else {
+      return false;
+    }
+  }
+
+  void set_blacs_grid() {
     blacs_handle = blacs::sys2blacs_handle(comm);
     blacs_context = blacs_handle;
     char char_grid_major = is_row ? 'R' : 'C';
     blacs::gridinit(blacs_context, char_grid_major, nprow, npcol);
   }
+
 private:
   MPI_Comm comm;
   int nprocs, myrank;

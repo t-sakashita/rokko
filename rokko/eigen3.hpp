@@ -19,22 +19,22 @@
 namespace rokko {
 
 template<typename T, int ROWS>
-struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor>> {
   typedef rokko::matrix_col_major major_type;
 };
 
 template<typename T, int ROWS>
-struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::RowMajor>> {
   typedef rokko::matrix_row_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>
-struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor>> {
   typedef rokko::matrix_col_major major_type;
 };
 
 template<typename T, int ROWS, int COLS>
-struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor> > {
+struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor>> {
   typedef rokko::matrix_row_major major_type;
 };
 
@@ -74,32 +74,32 @@ int lda(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 const T* storage(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
-  return &mat(0, 0);
+  return mat.data();
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 T* storage(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR>& mat) {
-  return &mat(0, 0);
+  return mat.data();
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 const T* storage(Eigen::Ref<Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR>> const& mat) {
-  return &mat(0, 0);
+  return mat.data();
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 T* storage(Eigen::Ref<Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR>>& mat) {
-  return &mat(0, 0);
+  return mat.data();
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 const std::complex<T>* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR> const& mat) {
-  return reinterpret_cast<const std::complex<T>*>(&mat(0, 0));
+  return mat.data();
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 std::complex<T>* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR>& mat) {
-  return reinterpret_cast<std::complex<T>*>(&mat(0, 0));
+  return mat.data();
 }
 
 } // namespace Eigen

@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -164,13 +164,14 @@ program main
 
   call rokko_construct(solver, library)
   call initialize(mat, dim)
+  num_local_rows = get_num_local_rows()
+  allocate( eig_vec(num_local_rows) )
 
-  !num_local_rows = get_num_local_rows()
   !do i=1, num_local_rows
   !   x = 0
   !   x(i) = 1
-  !   call multiply(num_local_rows, x, y);
-  !   print*, "y=", y
+  !   call multiply(num_local_rows, x, y)
+  !   print *, "y=", y
   !enddo
   call rokko_construct(params)
   call rokko_set(params, "routine", routine)
@@ -185,13 +186,13 @@ program main
   if (num_conv == 0) then
      call MPI_Abort(MPI_COMM_WORLD, -1, ierr);
   endif
-  
+
   if (myrank == 0) then
      eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
-     num_local_rows = rokko_distributed_mfree_num_local_rows(mat)
+     call rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec)
      print *, "eigval=", eig_val
-     print*, "Computed Eigenvector = "
-     print '(8f10.4)', eig_vec
+     print *, "Computed Eigenvector = "
+     print *, eig_vec
   endif
   call rokko_destruct(mat)
   call rokko_destruct(solver)

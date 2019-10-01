@@ -25,7 +25,7 @@ namespace rokko {
 
 namespace xyz_hamiltonian {
 
-void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<std::tuple<double, double, double> >& coupling, const double* v, double* w, double* buffer) {
+void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, const double* v, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
 
@@ -144,11 +144,11 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   }
 }
 
-void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<std::tuple<double, double, double> >& coupling, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
+void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
   multiply(comm, L, lattice, coupling, &v[0], &w[0], &buffer[0]);
 }
 
-void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<std::tuple<double, double, double> >& coupling, double* w) {
+void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, double* w) {
   int myrank, nproc;
 
   MPI_Comm_size(comm, &nproc);
@@ -201,13 +201,13 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   } // end for lattice
 }
 
-void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<std::tuple<double, double, double> >& coupling, std::vector<double>& w) {
+void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, std::vector<double>& w) {
   fill_diagonal(comm, L, lattice, coupling, &w[0]);
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void generate(int L, const std::vector<std::pair<int, int> >& lattice,
-  const std::vector<std::tuple<double, double, double> >& coupling,
+void generate(int L, const std::vector<std::pair<int, int>>& lattice,
+  const std::vector<std::tuple<double, double, double>>& coupling,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
@@ -252,7 +252,7 @@ void generate(int L, const std::vector<std::pair<int, int> >& lattice,
 // The following routine uses local indices.  It works correctly.
 /*
 template <typename MATRIX_MAJOR>
-void generate(int L, const std::vector<std::pair<int, int> >& lattice, const std::vector<std::tuple<double, double, double> >& coupling, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+void generate(int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {

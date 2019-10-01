@@ -8,15 +8,21 @@
 #
 
 from pyrokko import *
-from numpy import *
+import numpy as np
 
-#mat = localized_matrix(2,2, matrix_major.row)
-mat = localized_matrix(2,2, matrix_major.col)
+dim = 2
+mat = localized_matrix(dim, dim, matrix_major.row)
+assert(mat.major == "row")
 
-A = mat.ndarray
+# substitute row-major matrix to row-major localized_matrix
+mat_r = np.arange(dim**2, dtype='float').reshape(dim, dim)
+mat.ndarray = mat_r
+assert(mat.ndarray.all() == mat_r.all())
 
-B = full_like(A, 7.)
-print(B)
+# substitute col-major matrix to row-major localized_matrix
+mat_c = np.arange(dim**2, dtype='float').reshape(dim, dim, order='F')
+mat.ndarray = mat_c
+assert(mat.ndarray.all() == mat_c.all())
 
-mat.ndarray = B
-mat.print()
+mat.ndarray = mat_r.T
+assert(mat.ndarray.all() == mat_c.all())

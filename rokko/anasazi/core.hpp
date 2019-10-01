@@ -261,7 +261,7 @@ private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
-  //std::vector<Anasazi::Value<double> > evals_;
+  //std::vector<Anasazi::Value<double>> evals_;
   Teuchos::ParameterList pl_;
   int max_block_size;
   std::string routine_;

@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   int num_sites, num_bonds;
-  std::vector<std::pair<int, int> > lattice;
-  std::vector<std::tuple<double, double, double> > coupling;
+  std::vector<std::pair<int, int>> lattice;
+  std::vector<std::tuple<double, double, double>> coupling;
   ifs >> num_sites >> num_bonds;
   int dim = 1 << num_sites;
   for (int i = 0; i < num_bonds; ++i) {

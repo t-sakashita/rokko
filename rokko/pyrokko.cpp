@@ -30,10 +30,15 @@
 
 #include <rokko/utility/pyrokko_minij_matrix.hpp>
 #include <rokko/utility/pyrokko_frank_matrix.hpp>
+#include <rokko/utility/pyrokko_laplacian_matrix.hpp>
+#include <rokko/utility/pyrokko_matrix012.hpp>
 
 #include <rokko/pyrokko_parallel_sparse_ev.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/pyrokko_distributed_mfree.hpp>
+
+#include <rokko/utility/pyrokko_sort_eigenpairs.hpp>
+#include <rokko/utility/pyrokko_solver_name.hpp>
 
 
 namespace rokko {
@@ -97,7 +102,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>>(&wrap_localized_matrix::set_matrix_col_major))
     .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>>(&wrap_localized_matrix::set_matrix_row_major))
     .def_property("ndarray", &wrap_localized_matrix::get_object, &wrap_localized_matrix::set_ndarray)
-    .def("print", &wrap_localized_matrix::print);
+    .def("print", &wrap_localized_matrix::print)
+    .def_property_readonly("major", &wrap_localized_matrix::get_major_string);
 
 
   py::class_<wrap_serial_dense_ev>(m, "serial_dense_ev")
@@ -128,7 +134,8 @@ PYBIND11_MODULE(pyrokko, m) {
   
   py::class_<wrap_grid>(m, "grid")
     .def(py::init<>())
-    .def(py::init<grid_row_major_t>(), py::arg("grid_major") = grid_row_major)
+    .def(py::init<grid_row_major_t>())
+    .def(py::init<grid_col_major_t>())
     .def(py::init<pybind11::handle const&, grid_row_major_t, int>())
     .def(py::init<pybind11::handle const&, grid_col_major_t, int>())
     .def("get_comm", &wrap_grid::get_comm)
@@ -144,7 +151,8 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<wrap_mapping_bc>(m, "mapping_bc")
     .def(py::init<matrix_major_enum>(), py::arg("major") = col)
-    .def(py::init<int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("wrap_g"), py::arg("major") = col)
+    .def(py::init<int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"), py::arg("major") = col)
+    .def(py::init<int, int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"), py::arg("major") = col)
     .def("get_mb", &wrap_mapping_bc::get_mb)
     .def("get_nb", &wrap_mapping_bc::get_nb)
     .def_property_readonly("block_shape", &wrap_mapping_bc::get_block_shape)
@@ -196,7 +204,9 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_property_readonly("major", &wrap_distributed_matrix::get_major_string)
     .def("set_ndarray", &wrap_distributed_matrix::set_ndarray)
     .def("get_ndarray", &wrap_distributed_matrix::get_ndarray, py::return_value_policy::reference_internal)
-    .def_property("ndarray", &wrap_distributed_matrix::get_ndarray, &wrap_distributed_matrix::set_ndarray);
+    .def_property("ndarray", &wrap_distributed_matrix::get_ndarray, &wrap_distributed_matrix::set_ndarray)
+    .def_property_readonly("major", &wrap_distributed_matrix::get_major_string);
+
 
   py::class_<wrap_parallel_dense_ev>(m, "parallel_dense_ev")
     .def(py::init<std::string const&>())
@@ -218,15 +228,28 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<wrap_minij_matrix>(m, "minij_matrix")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_minij_matrix::generate))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_minij_matrix::generate));
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_minij_matrix::generate))
+    .def_static("eigenvalue", &minij_matrix::eigenvalue);
   
   py::class_<wrap_frank_matrix>(m, "frank_matrix")
     .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_frank_matrix::generate))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate));
-  
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate))
+    .def_static("eigenvalue", &frank_matrix::eigenvalue);
+
+  py::class_<wrap_laplacian_matrix>(m, "laplacian_matrix")
+    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_laplacian_matrix::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_laplacian_matrix::generate))
+    .def_static("eigenvalue", &laplacian_matrix::eigenvalue);
+
+  py::class_<wrap_matrix012>(m, "matrix012")
+    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_matrix012::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_matrix012::generate));
+
   // collective MPI communication
   m.def("gather", &pyrokko_gather);
   m.def("scatter", &pyrokko_scatter);
+
+  py::class_<distributed_mfree>(m, "distributed_mfree_base");
 
   py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, int>());
@@ -241,6 +264,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("eigenvector", &wrap_parallel_sparse_ev::python_eigenvector)
     .def_property_readonly("num_conv", &parallel_sparse_ev::num_conv)
     .def("diagonalize", py::overload_cast<distributed_crs_matrix&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
+         py::arg("mat"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<distributed_mfree*, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
          py::arg("mat"), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_distributed_mfree&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
          py::arg("mat"), py::arg("params") = wrap_parameters())
@@ -260,6 +285,12 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("print", &distributed_crs_matrix::print)
     .def("output_matrix_market", &distributed_crs_matrix::output_matrix_market)
     .def_property_readonly("solver_name", &distributed_crs_matrix::get_solver_name);
+
+  // utility functions
+  m.def("sort_eigenpairs", &pyrokko_sort_eigenpairs,
+        py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
+
+  m.def("split_solver_name", &wrap_split_solver_name);
 }
 
 } // end namespace rokko

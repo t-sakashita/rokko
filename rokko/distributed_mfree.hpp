@@ -17,7 +17,7 @@ namespace rokko {
 class distributed_mfree {
 public:
   distributed_mfree() {}
-  ~distributed_mfree() {}
+  virtual ~distributed_mfree() {}
 
   virtual void multiply(const double* x, double* y) const = 0;
   virtual int get_dim() const = 0;

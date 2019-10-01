@@ -21,7 +21,7 @@ namespace rokko {
 
 namespace heisenberg_hamiltonian {
 
-void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice, const double* v, double* w, double* buffer) {
+void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const double* v, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
 
@@ -159,12 +159,12 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   }
 }
 
-void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
+void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
   multiply(comm, L, lattice, &v[0], &w[0], &buffer[0]);
 }
 
 
-void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> > const& lattice, double* w) {
+void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>> const& lattice, double* w) {
   int myrank, nproc;
 
   MPI_Comm_size(comm, &nproc);
@@ -216,12 +216,12 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> 
   } // end for lattice
 }
 
-void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int> >& lattice, std::vector<double>& w) {
+void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, std::vector<double>& w) {
   fill_diagonal(comm, L, lattice, &w[0]);
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void generate(int /* L */, std::vector<std::pair<int, int> >& lattice,
+void generate(int /* L */, std::vector<std::pair<int, int>>& lattice,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   for (std::size_t l = 0; l < lattice.size(); ++l) {

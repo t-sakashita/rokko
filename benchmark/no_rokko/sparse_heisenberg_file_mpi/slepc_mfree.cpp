@@ -5,7 +5,7 @@
 struct model {
   MPI_Comm comm;
   int L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   double* buffer;
 };
 

@@ -10,16 +10,15 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
-#include <boost/random.hpp>
+#include <random>
 
 typedef rokko::localized_vector<double> vector_t;
 
 int main() {
   int n = 6;
   vector_t v(n);
-  boost::mt19937 engine(12345l);
-  boost::variate_generator<boost::mt19937&, boost::normal_distribution<> >
-    gauss(engine, boost::normal_distribution<>());
-  for (int i = 0; i < n; ++i) v(i) = gauss();
+  std::mt19937 engine(12345lu);
+  std::normal_distribution<> dist(0.0, 1.0);
+  for (int i = 0; i < n; ++i) v(i) = dist(engine);
   std::cout << "v: " << v << std::endl;
 }
