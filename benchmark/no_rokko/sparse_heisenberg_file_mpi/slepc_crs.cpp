@@ -25,7 +25,7 @@ int main(int argc,char **argv)
   std::string lattice_file("xyz.dat");
   if (argc >= 2) lattice_file = argv[1];
   int L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::read_lattice_file(lattice_file, L, lattice);
   int dim = 1 << L;
 

@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   int len_ladder = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 5;
   int L = 2 * len_ladder;
   int dim = 1 << L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::ladder_lattice_1dim(len_ladder, lattice);
   //if (rank == 0)
   //  rokko::print_lattice(lattice);

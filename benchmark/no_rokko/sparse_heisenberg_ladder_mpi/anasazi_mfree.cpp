@@ -26,7 +26,7 @@ class HeisenbergOp : public Epetra_Operator {
   //@{
 
   //! Basic constructor.  Accepts reference-counted pointer to an Epetra_Operator.
-  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int> >& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
+  HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     int n = nproc;
@@ -131,7 +131,7 @@ class HeisenbergOp : public Epetra_Operator {
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
-  std::vector<std::pair<int, int> > lattice_;  
+  std::vector<std::pair<int, int>> lattice_;  
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };
@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
   int len_ladder = 5;
   if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
   int L = 2 * len_ladder;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::ladder_lattice_1dim(len_ladder, lattice);
   rokko::output_lattice(printer.stream(Anasazi::Errors), lattice);
   int N = 1 << L;
@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
   ivec->Random();
 
   // Create the eigenproblem.
-  Teuchos::RCP<Anasazi::BasicEigenproblem<double, MV, OP> > MyProblem =
+  Teuchos::RCP<Anasazi::BasicEigenproblem<double, MV, OP>> MyProblem =
     Teuchos::rcp( new Anasazi::BasicEigenproblem<double, MV, OP>(A, ivec) );
 
   // Inform the eigenproblem that the operator A is symmetric
@@ -237,7 +237,7 @@ int main(int argc, char *argv[]) {
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
   Anasazi::Eigensolution<double,MV> sol = MyProblem->getSolution();
-  std::vector<Anasazi::Value<double> > evals = sol.Evals;
+  std::vector<Anasazi::Value<double>> evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.

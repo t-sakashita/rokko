@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   std::cout.precision(5);
 
   int dim = 1 << L;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) {
     lattice.push_back(std::make_pair(i, (i+1) % L));
   }

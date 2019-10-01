@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   int len_ladder = 5;
   if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
   int L = 2 * len_ladder;
-  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::pair<int, int>> lattice;
   rokko::ladder_lattice_1dim(len_ladder, lattice);
   rokko::output_lattice(printer.stream(Anasazi::Errors), lattice);
   int N = 1 << L;
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
   ivec->Random();
 
   // Create the eigenproblem.
-  Teuchos::RCP<BasicEigenproblem<double, MV, OP> > MyProblem =
+  Teuchos::RCP<BasicEigenproblem<double, MV, OP>> MyProblem =
     Teuchos::rcp( new BasicEigenproblem<double, MV, OP>(A, ivec) );
 
   // Inform the eigenproblem that the operator A is symmetric
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
   Eigensolution<double,MV> sol = MyProblem->getSolution();
-  std::vector<Value<double> > evals = sol.Evals;
+  std::vector<Value<double>> evals = sol.Evals;
   Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.
