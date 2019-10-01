@@ -19,11 +19,10 @@ char** global_argv;
 
 TEST(diagonalize, xyz) {
   std::vector<std::string> names;
-  int argc = global_argc;
-  if (argc == 1) {
+  if (global_argc == 1) {
     names = rokko::serial_dense_ev::solvers();
   } else {
-    for (int num=1; num < argc; ++num) {
+    for (int num=1; num < global_argc; ++num) {
       names.push_back(global_argv[num]);
     }
   }
