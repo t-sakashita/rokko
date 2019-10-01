@@ -8,7 +8,7 @@
 #
 
 if(BUILD_PARALLEL_DENSE_SOLVER)
-  set(TESTS grid)
+  set(TESTS grid_mpi_1proc)
   foreach(name ${TESTS})
     set(target_name test_${name})
     add_executable(${target_name} ${name}.cpp)
