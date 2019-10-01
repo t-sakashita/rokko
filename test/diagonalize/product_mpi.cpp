@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2013-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,23 +12,20 @@
 #include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
-#define BOOST_TEST_MODULE test_product
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
 
-BOOST_AUTO_TEST_CASE(test_product) {
-  MPI_Init(&boost::unit_test::framework::master_test_suite().argc,
-           &boost::unit_test::framework::master_test_suite().argv);
+#include <gtest/gtest.h>
+
+int global_argc;
+char** global_argv;
+
+TEST(product, product) {
   MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
 
   int dim = 100;
-  if (boost::unit_test::framework::master_test_suite().argc > 1) {
-    dim = boost::lexical_cast<int>(boost::unit_test::framework::master_test_suite().argv[1]);
+  if (global_argc > 1) {
+    dim = boost::lexical_cast<int>(global_argv[1]);
   }
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
@@ -62,7 +59,17 @@ BOOST_AUTO_TEST_CASE(test_product) {
   }
   if (rank == 0) std::cout << "trace of localized matrix = " << sum << std::endl;
 
-  if (rank == 0) BOOST_CHECK_CLOSE(sum_global, sum, 10e-12);
+  if (rank == 0) EXPECT_NEAR(sum_global, sum, 10e-12);
+}
 
+int main(int argc, char** argv) {
+  int result = 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  global_argc = argc;
+  global_argv = argv;
+  result = RUN_ALL_TESTS();
   MPI_Finalize();
+  return result;
 }
