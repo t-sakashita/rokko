@@ -29,7 +29,7 @@ unset(TESTS)
 # multi process tests
 if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
   if(BUILD_PARALLEL_DENSE_SOLVER)
-    set(TESTS grid mpi_thread_multiple)
+    set(TESTS grid)
   endif(BUILD_PARALLEL_DENSE_SOLVER)
   if(BUILD_PARALLEL_DENSE_SOLVER)
     set(TESTS parallel_dense_ev)
@@ -73,6 +73,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
 endif(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
 
 
+add_subdirectory(mpi_unit_test)
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
 add_subdirectory(mpi_collective)
