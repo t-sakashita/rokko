@@ -29,7 +29,7 @@ unset(TESTS)
 # multi process tests
 if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
   if(BUILD_PARALLEL_DENSE_SOLVER)
-    set(TESTS grid localized2distributed_matrix distributed_matrix mpi_thread_multiple)
+    set(TESTS grid localized2distributed_matrix mpi_thread_multiple)
   endif(BUILD_PARALLEL_DENSE_SOLVER)
   if(BUILD_PARALLEL_DENSE_SOLVER)
     set(TESTS parallel_dense_ev)
