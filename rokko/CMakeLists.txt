@@ -119,10 +119,6 @@ if(ROKKO_SOURCES)
     target_link_libraries(rokko ${LAPACK_LIBRARIES})
   endif(BUILD_LAPACKE)
 
-  if(ROKKO_HAVE_BOOST)
-    target_link_libraries(rokko ${Boost_LIBRARIES})
-  endif(ROKKO_HAVE_BOOST)
-
   if(ROKKO_HAVE_MPI)
     if(BUILD_Fortran_BINDING)
       target_link_libraries(rokko ${MPI_Fortran_LIBRARIES})

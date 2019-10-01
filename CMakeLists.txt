@@ -154,7 +154,7 @@ endif(BUILD_LAPACKE)
 
 # boost Library
 set(ROKKO_HAVE_BOOST False)
-find_package(Boost COMPONENTS system)
+find_package(Boost)
 if(Boost_INCLUDE_DIR)
   set(ROKKO_HAVE_BOOST True)
   include_directories(BEFORE ${Boost_INCLUDE_DIR})
