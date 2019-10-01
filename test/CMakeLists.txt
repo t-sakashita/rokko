@@ -57,7 +57,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
   unset(TESTS)
 
   # 2,3,4,5,6 processes
-  set(TESTS grid_mpi gather scatter)
+  set(TESTS grid_mpi)
   foreach(name ${TESTS})
     set(target_name test_${name})
     add_executable(${target_name} ${name}.cpp)
@@ -75,6 +75,7 @@ endif(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
 
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
+add_subdirectory(mpi_collective)
 add_subdirectory(factory)
 add_subdirectory(utility)
 
