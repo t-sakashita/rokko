@@ -73,7 +73,6 @@ TEST(diagonalize, xyz_file) {
     }
 
     std::cout << "w=" << w.transpose() << std::endl;
-    //BOOST_CHECK_CLOSE(sum, dim * (dim+1) * 0.5, 10e-5);
     
     solver.finalize();
   }
