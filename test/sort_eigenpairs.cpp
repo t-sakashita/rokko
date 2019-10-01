@@ -11,17 +11,15 @@
 
 #include <rokko/utility/sort_eigenpairs.hpp>
 
+#include <numeric>
 #include <algorithm>
-#include <boost/iterator/counting_iterator.hpp>
 
 #include <gtest/gtest.h>
 
 #define make_test(major, ascending) \
   int num = 10;\
-  std::vector<int> index;\
-  std::copy(boost::counting_iterator<int>(0),\
-            boost::counting_iterator<int>(num),\
-            back_inserter(index));\
+  std::vector<int> index(num);                  \
+  std::iota(index.begin(), index.end(), 0);\
   std::random_shuffle(index.begin(), index.end());\
   rokko::localized_vector<double> eigvals(num), eigvals_sorted(num);   \
   rokko::localized_matrix<double, major > eigvecs(num, num), eigvecs_sorted(num, num); \
