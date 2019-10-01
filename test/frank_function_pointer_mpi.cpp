@@ -14,12 +14,10 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 
-#define BOOST_TEST_MODULE test_distributed_matrix
-#ifndef BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
+#include <gtest/gtest.h>
+
+int global_argc;
+char** global_argv;
 
 unsigned int dim_global;
 
@@ -27,24 +25,30 @@ double frank_calculate_matrix_element(int i, int j) {
   return dim_global - std::max(i, j);
 }
 
-BOOST_AUTO_TEST_CASE(test_distributed_matrix) {
-  int argc = boost::unit_test::framework::master_test_suite().argc;
-  char** argv = boost::unit_test::framework::master_test_suite().argv;
+TEST(distributed_matrix, frank_functor_mpi) {
   unsigned int dim = 10;
   dim_global = dim;
-  int provided;
-  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
   for(auto name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
-    solver.initialize(argc, argv);
+    solver.initialize(global_argc, global_argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
     mat.generate(&frank_calculate_matrix_element);
     mat.print();
-    //    BOOST_CHECK_CLOSE(mat.get_global(0, 0), dim, 1e-14);
     solver.finalize();
   }
+}
+
+int main(int argc, char** argv) {
+  int result = 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  global_argc = argc;
+  global_argv = argv;
+  result = RUN_ALL_TESTS();
   MPI_Finalize();
+  return result;
 }
