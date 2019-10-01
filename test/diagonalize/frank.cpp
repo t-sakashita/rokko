@@ -41,7 +41,7 @@ void test(int dim, std::string const& name) {
   solver.finalize();
 }
 
-TEST(solver, frank) {
+TEST(diagonalize, frank) {
   const int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
 
