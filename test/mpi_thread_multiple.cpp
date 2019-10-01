@@ -27,5 +27,7 @@ TEST(mpi, mpi_thread_multiple) {
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
+  global_argc = argc;
+  global_argv = argv;
   return RUN_ALL_TESTS();
 }
