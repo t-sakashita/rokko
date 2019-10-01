@@ -18,7 +18,7 @@
 int global_argc;
 char** global_argv;
 
-TEST(product, product) {
+TEST(product_mpi, product_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
