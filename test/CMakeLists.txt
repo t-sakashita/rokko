@@ -16,7 +16,7 @@ if(ROKKO_HAVE_SCALAPACK)
 endif(ROKKO_HAVE_SCALAPACK)
 
 # single process tests
-set(TESTS localized_matrix localized_matrix_fixed_size matrix_major serial_dense_ev solver)
+set(TESTS serial_dense_ev solver)
 foreach(name ${TESTS})
   set(target_name test_${name})
   add_executable(${target_name} ${name}.cpp)
@@ -29,7 +29,7 @@ unset(TESTS)
 # multi process tests
 if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
   if(BUILD_PARALLEL_DENSE_SOLVER)
-    set(TESTS grid localized2distributed_matrix mpi_thread_multiple)
+    set(TESTS grid mpi_thread_multiple)
   endif(BUILD_PARALLEL_DENSE_SOLVER)
   if(BUILD_PARALLEL_DENSE_SOLVER)
     set(TESTS parallel_dense_ev)

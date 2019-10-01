@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS frank helmert heisenberg)
+set(TESTS frank helmert heisenberg localized_matrix localized_matrix_fixed_size matrix_major)
 foreach(name ${TESTS})
   set(target_name test_generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
@@ -27,7 +27,7 @@ foreach(name ${TESTS})
 endforeach(name)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  set(TESTS heisenberg_mpi laplacian_mpi frank_mpi frank_function_pointer_mpi frank_functor_mpi)
+  set(TESTS heisenberg_mpi laplacian_mpi frank_mpi frank_function_pointer_mpi frank_functor_mpi localized2distributed_matrix)
   foreach(name ${TESTS})
     set(target_name test_generate_matrix_${name})
     add_executable(${target_name} ${name}.cpp)
