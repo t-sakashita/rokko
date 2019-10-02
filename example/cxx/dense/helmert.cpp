@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   rokko::helmert_matrix::generate(mat);
   std::cout << "Helmert matrix:\n" << mat << std::endl;
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);

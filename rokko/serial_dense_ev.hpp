@@ -31,11 +31,11 @@ public:
   // -------------- standard eigenvalue probelm ---------------
   // with parameters, eigenvalues/eigenvectors
   virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
-				 localized_vector<double>& eigvals,
+				 Eigen::VectorXd& eigvals,
 				 localized_matrix<double, matrix_row_major>& eigvecs,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
-				 localized_vector<double>& eigvals,
+				 Eigen::VectorXd& eigvals,
 				 localized_matrix<double, matrix_col_major>& eigvecs,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
@@ -56,10 +56,10 @@ public:
 				 parameters const& params) = 0;
   // with parameters, only eigenvalues
   virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
-				 localized_vector<double>& eigvals,
+				 Eigen::VectorXd& eigvals,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
-				 localized_vector<double>& eigvals,
+				 Eigen::VectorXd& eigvals,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
 				 RefColVec<double>& eigvals,
@@ -88,12 +88,12 @@ public:
   // -------------- standard eigenvalue probelm ---------------
   // with parameters, eigenvalues/eigenvectors
   parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
-			 localized_vector<double>& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
+			 Eigen::VectorXd& eigvals, localized_matrix<double, matrix_row_major>& eigvecs,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
-			 localized_vector<double>& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
+			 Eigen::VectorXd& eigvals, localized_matrix<double, matrix_col_major>& eigvecs,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
@@ -119,12 +119,12 @@ public:
   }
   // with parameters, only eigenvalues
   parameters diagonalize(localized_matrix<double, matrix_row_major>& mat,
-			 localized_vector<double>& eigvals,
+			 Eigen::VectorXd& eigvals,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(localized_matrix<double, matrix_col_major>& mat,
-			 localized_vector<double>& eigvals,
+			 Eigen::VectorXd& eigvals,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }

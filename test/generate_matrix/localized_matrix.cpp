@@ -39,12 +39,12 @@ TEST(localized_matrix, 123) {
   M << 1,2,3,4,5,6,7,8,9;
   std::cout << M << std::endl;
   double a = 5.0;
-  rokko::localized_vector<double> u(dim);
+  Eigen::VectorXd u(dim);
   u << 1,2,3;
-  rokko::localized_vector<double> v(dim);
+  Eigen::VectorXd v(dim);
   v << 4,5,6;
 
-  rokko::localized_vector<double> w = a*u+M*v;
+  Eigen::VectorXd w = a*u+M*v;
   std::cout << w << std::endl;
   ASSERT_EQ(w[0], 37.);
   ASSERT_EQ(w[1], 87.);

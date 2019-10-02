@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 
   // orthonormaliation
   rokko::dlmatrix mat = a;
-  rokko::dlvector tau(k);
+  Eigen::VectorXd tau(k);
   int info = rokko::lapack::geqrf(mat, tau);
   if (info) throw std::runtime_error("Error: geqrf failed");
 

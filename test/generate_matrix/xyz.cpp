@@ -55,7 +55,7 @@ TEST(generate_matrix, xyz_hamiltonian) {
   }
 
   std::cout << "fill_diagonal:" << std::endl;
-  rokko::localized_vector<double> diagonal(N);
+  Eigen::VectorXd diagonal(N);
   std::vector<double> v(N);
   rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, v);
   for (int j=0; j<N; ++j) {

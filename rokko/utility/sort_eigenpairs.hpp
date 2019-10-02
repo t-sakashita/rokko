@@ -41,10 +41,10 @@ namespace rokko {
 // sort eivanvalue and eigenvectors 
 
 
-template<typename T, typename MATRIX_MAJOR>  
-void sort_eigenpairs(const localized_vector<T>& eigval,
+template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+void sort_eigenpairs(const Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
                      const localized_matrix<T, MATRIX_MAJOR>& eigvec,
-                     localized_vector<T>& eigval_sorted,
+                     Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval_sorted,
                      localized_matrix<T, MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   int dim = eigval.size();

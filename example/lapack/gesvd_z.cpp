@@ -32,10 +32,10 @@ int main(int argc, char** argv) {
   std::cout << "Matrix A: " << std::endl << a << std::endl;
 
   // singular value decomposition
-  rokko::dlvector s(r);
+  Eigen::VectorXd s(r);
   rokko::zlmatrix u(m, r), vt(r, n);
   rokko::zlmatrix t = a;
-  rokko::dlvector superb(r-1);
+  Eigen::VectorXd superb(r-1);
   int info = rokko::lapack::gesvd('S', 'S', t, s, u, vt, superb);
   if (info) throw std::runtime_error("Error: gesvd failed");
   std::cout << "Matrix U: " << std::endl << u << std::endl;

@@ -23,7 +23,7 @@ namespace eigen_exa {
 // eigen_s eigenvalues / eigenvectors
 template <typename MATRIX_MAJOR>
 void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-		   localized_vector<double>& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+		   Eigen::VectorXd& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		   timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
   if(mat.is_row_major())
@@ -44,7 +44,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 // eigen_s only eigenvalues
 template <typename MATRIX_MAJOR>
 void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-		   localized_vector<double>& eigvals,
+		   Eigen::VectorXd& eigvals,
  		   timer& timer_in) {
   if(mat.is_row_major())
     throw std::invalid_argument("eigen_exa::diagonalize_s() : eigen_exa doesn't support matrix_row_major.  Use it with matrix_col_major.");
@@ -61,7 +61,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 // eigen_sx eigenvalues / eigenvectors
 template <typename MATRIX_MAJOR>
 void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-		    localized_vector<double>& eigvals,
+		    Eigen::VectorXd& eigvals,
 		    rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 		    timer& timer) {
   timer.start(timer_id::diagonalize_initialize);
@@ -83,7 +83,7 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 // eigen_sx only eigenvalues
 template <typename MATRIX_MAJOR>
 void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-		    localized_vector<double>& eigvals,
+		    Eigen::VectorXd& eigvals,
 		    timer& timer_in) {
   if(mat.is_row_major())
     throw std::invalid_argument("eigen_exa::diagonalize_sx() : eigen_exa doesn't support matrix_row_major.  Use it with matrix_col_major.");

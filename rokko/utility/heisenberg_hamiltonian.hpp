@@ -70,7 +70,7 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, std::
 }
 
 template<typename T>
-void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, rokko::localized_vector<T>& w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, Vector<T>& w) {
   fill_diagonal(L, lattice, &w[0]);
 }
 

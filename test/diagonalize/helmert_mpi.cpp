@@ -20,7 +20,7 @@ char** global_argv;
 TEST(diagonalize, helmert_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
   const int dim = 100;
-  rokko::localized_vector<double> diag(dim);
+  Eigen::VectorXd diag(dim);
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
 
   std::vector<std::string> names;
@@ -44,7 +44,7 @@ TEST(diagonalize, helmert_mpi) {
       rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
-      rokko::localized_vector<double> w(dim);
+      Eigen::VectorXd w(dim);
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
 
       solver.diagonalize(mat, w, Z);
@@ -69,7 +69,7 @@ TEST(diagonalize, helmert_mpi) {
       rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
-      rokko::localized_vector<double> w(dim);
+      Eigen::VectorXd w(dim);
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
       
       solver.diagonalize(mat, w, Z);

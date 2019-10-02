@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 
   // diagonalization
   rokko::dlmatrix u = a;
-  rokko::dlvector w(n);
+  Eigen::VectorXd w(n);
   int info = rokko::lapack::syev('V', 'U', u, w);
   if (info) throw std::runtime_error("Error: syev failed");
   std::cout << "Eigenvalues: " << std::endl << w << std::endl;

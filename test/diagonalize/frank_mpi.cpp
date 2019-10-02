@@ -39,7 +39,7 @@ TEST(diagonalize, frank_mpi) {
       rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::frank_matrix::generate(mat);
-      rokko::localized_vector<double> w(dim);
+      Eigen::VectorXd w(dim);
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
 
       solver.diagonalize(mat, w, Z);
@@ -64,7 +64,7 @@ TEST(diagonalize, frank_mpi) {
       rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::frank_matrix::generate(mat);
-      rokko::localized_vector<double> w(dim);
+      Eigen::VectorXd w(dim);
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
       
       solver.diagonalize(mat, w, Z);

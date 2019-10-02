@@ -23,7 +23,7 @@ void test(int dim, std::string const& name) {
   solver.initialize(global_argc, global_argv);
   rokko::localized_matrix<double, MATRIX_MAJOR> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::localized_matrix<double, MATRIX_MAJOR> eigvec(dim, dim);
 
   solver.diagonalize(mat, eigval, eigvec);

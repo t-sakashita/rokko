@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   rokko::minij_matrix::generate(mat);
   std::cout << "minij matrix:\n" << mat << std::endl;
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   rokko::parameters params;
   params.set("routine", routine);

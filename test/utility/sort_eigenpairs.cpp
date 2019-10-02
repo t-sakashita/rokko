@@ -21,7 +21,7 @@
   std::vector<int> index(num);                  \
   std::iota(index.begin(), index.end(), 0);\
   std::random_shuffle(index.begin(), index.end());\
-  rokko::localized_vector<double> eigvals(num), eigvals_sorted(num);   \
+  Eigen::VectorXd eigvals(num), eigvals_sorted(num);   \
   rokko::localized_matrix<double, major > eigvecs(num, num), eigvecs_sorted(num, num); \
   for(int i=0; i<num; ++i){\
     eigvals(i) = 1.0*index[i];\

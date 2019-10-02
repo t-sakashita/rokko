@@ -28,20 +28,20 @@ int main(int argc, char** argv) {
     }
   }
   std::cout << "Matrix A: " << std::endl << a << std::endl;
-  rokko::dlvector b(n);
+  Eigen::VectorXd b(n);
   for (int i = 0; i < n; ++i) b(i) = i * i + 1;
   std::cout << "Vector b: " << std::endl << b << std::endl;
 
   // solve linear equation
   rokko::dlmatrix lu = a;
-  rokko::dlvector x = b;
-  rokko::ilvector ipiv(n);
+  Eigen::VectorXd x = b;
+  Eigen::VectorXi ipiv(n);
   rokko::lapack::getrf(lu, ipiv);
   rokko::lapack::getrs('n', 1, lu, ipiv, x);
   std::cout << "Solution x: " << std::endl << x << std::endl;
 
   /* solution check */
-  rokko::dlvector check = a * x - b;
+  Eigen::VectorXd check = a * x - b;
   double norm = check.norm();
   std::cout << "|| A x - b || = " << norm << std::endl;
   if (norm > 1e-10) throw std::runtime_error("Error: solution check");

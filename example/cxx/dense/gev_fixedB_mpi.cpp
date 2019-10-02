@@ -22,7 +22,7 @@
 typedef rokko::matrix_col_major matrix_major;
 
 template<typename T, typename MATRIX_MAJOR>
-void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::distributed_matrix<T, MATRIX_MAJOR> const& eigvec, rokko::distributed_matrix<T, MATRIX_MAJOR>& result, rokko::distributed_matrix<T, MATRIX_MAJOR>& tmp) {
+void function_matrix(Eigen::VectorXd const& eigval_tmp, rokko::distributed_matrix<T, MATRIX_MAJOR> const& eigvec, rokko::distributed_matrix<T, MATRIX_MAJOR>& result, rokko::distributed_matrix<T, MATRIX_MAJOR>& tmp) {
   for (int local_j=0; local_j<eigvec.get_n_local(); ++local_j) {
     int global_j = eigvec.translate_l2g_col(local_j);
     double coeff = eigval_tmp(global_j);
@@ -36,7 +36,7 @@ void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::d
 
 template<typename T, typename MATRIX_MAJOR>
 void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B,
-			rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
+			Eigen::VectorXd& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
   rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binvroot(A.get_mapping()), mat(A.get_mapping());
   rokko::parameters params;
   int myrank = A.get_myrank();
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 
   rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> A(map), B(map), eigvec(map);
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::scatter(locA, A, 0);
   rokko::scatter(locB, B, 0);
   MPI_Barrier(comm);

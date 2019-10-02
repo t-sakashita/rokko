@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 
   // diagonalization
   rokko::zlmatrix u = a;
-  rokko::dlvector w(n);
+  Eigen::VectorXd w(n);
   int info = rokko::lapack::heev('V', 'U', u, w);
   if (info) throw std::runtime_error("Error: heev failed");
  std::cout << "Eigenvalues: " << std::endl << w << std::endl;

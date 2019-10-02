@@ -13,23 +13,23 @@
 #include <rokko/dense.h>
 
 void rokko_localized_vector_construct(rokko_localized_vector* vec, int dim) {
-  vec->ptr = new rokko::localized_vector<double>(dim);
+  vec->ptr = new Eigen::VectorXd(dim);
 }
 
 void rokko_localized_vector_destruct(rokko_localized_vector* vec) {
-  delete static_cast<rokko::localized_vector<double>*>(vec->ptr);
+  delete static_cast<Eigen::VectorXd*>(vec->ptr);
   vec->ptr = nullptr;
 }
 
 double rokko_localized_vector_get(rokko_localized_vector vec, int i) {
-  return (*static_cast<rokko::localized_vector<double>*>(vec.ptr))[i];
+  return (*static_cast<Eigen::VectorXd*>(vec.ptr))[i];
 }
 
 /* offset by one */
 double rokko_localized_vector_get_f(rokko_localized_vector vec, int i) {
-  return (*static_cast<rokko::localized_vector<double>*>(vec.ptr))[i-1];
+  return (*static_cast<Eigen::VectorXd*>(vec.ptr))[i-1];
 }
 
 void rokko_localized_vector_print(rokko_localized_vector vec) {
-  static_cast<rokko::localized_vector<double>*>(vec.ptr)->print();
+  std::cout << *static_cast<Eigen::VectorXd*>(vec.ptr) << std::endl;
 }

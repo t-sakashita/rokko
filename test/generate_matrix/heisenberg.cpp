@@ -42,7 +42,7 @@ TEST(generate_matrix, heisenberg) {
   }
 
   std::cout << "fill_diagonal:" << std::endl;
-  rokko::localized_vector<double> diagonal(N);
+  Eigen::VectorXd diagonal(N);
   std::vector<double> v(N);
   rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, v);
   for (int j=0; j<N; ++j) {

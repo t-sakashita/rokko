@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   //std::cout << "mata:\n" << mata << std::endl;
   //std::cout << "matb:\n" << matb << std::endl;
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   rokko::parameters params;
   params.set("routine", routine);

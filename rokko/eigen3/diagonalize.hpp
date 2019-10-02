@@ -35,8 +35,8 @@ char get_matrix_part(rokko::parameters const& params) {
 }
 
 // only eigenvalues
-template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
+template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigvals,
 		       rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
@@ -75,8 +75,8 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
 }
 
 // eigenvalues/eigenvectors
-template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, localized_vector<T>& eigvals,
+template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Vector<T, Eigen::Dynamic, VEC_MAJOR> & eigvals,
 		       localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {

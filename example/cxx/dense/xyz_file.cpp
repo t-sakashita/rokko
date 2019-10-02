@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   rokko::localized_matrix<double, matrix_major> mat(dim, dim);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);

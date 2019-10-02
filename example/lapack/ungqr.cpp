@@ -30,16 +30,16 @@ int main(int argc, char** argv) {
   if (m < n) throw std::invalid_argument("Error: m < n");
   
   // generate matrix
-  rokko::zlmatrix a = rokko::zlmatrix::Random(m, n);
+  Eigen::VectorXcd a = rokko::zlmatrix::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
 
   // orthonormaliation
   rokko::zlmatrix mat = a;
-  rokko::zlvector tau(k);
+  Eigen::VectorXcd tau(k);
   int info = rokko::lapack::geqrf(mat, tau);
   if (info) throw std::runtime_error("Error: geqrf failed");
 
-  rokko::zlmatrix r = mat;
+  Eigen::VectorXcd r = mat;
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < i; ++j)
       r(i, j) = 0;

@@ -49,7 +49,7 @@ TEST(diagonalize, xyz) {
     solver.initialize(global_argc, global_argv);
     rokko::localized_matrix<double, rokko::matrix_col_major> mat(dim, dim);
     rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
-    rokko::localized_vector<double> w(dim);
+    Eigen::VectorXd w(dim);
     rokko::localized_matrix<double, rokko::matrix_col_major> Z(dim, dim);
     std::cout << "mat=" << mat << std::endl;
     solver.diagonalize(mat, w, Z);

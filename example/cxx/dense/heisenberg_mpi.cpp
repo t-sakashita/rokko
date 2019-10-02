@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
   rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
   try {
     solver.diagonalize(mat, eigval, eigvec);

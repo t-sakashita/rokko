@@ -20,27 +20,27 @@ class wrap_localized_vector {
 public:
 
   wrap_localized_vector() {
-    _ptr = new localized_vector<double>();
+    _ptr = new Eigen::VectorXd();
   }
 
   wrap_localized_vector(int size) {
-    _ptr = new localized_vector<double>(size);
+    _ptr = new Eigen::VectorXd(size);
   }
 
-  localized_vector<double>& obj() {
+  Eigen::VectorXd& obj() {
     return *_ptr;
   }
 
-  localized_vector<double> const & obj() const {
+  Eigen::VectorXd const & obj() const {
     return *_ptr;
   }
 
   void print() const {
-    obj().print();
+    std::cout << obj() << std::endl;
   }
 
 private:
-  localized_vector<double>* _ptr;
+  Eigen::VectorXd* _ptr;
 };
 
 } // end namespace rokko
