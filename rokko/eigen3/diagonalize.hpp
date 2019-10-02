@@ -48,7 +48,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Vector<T, Eigen::
 }
 
 template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, RefColVec<T>& eigvals,
+parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, RefVec<T>& eigvals,
 		       rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
@@ -89,7 +89,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Vector<T, Eigen::
 }
 
 template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, RefColVec<T>& eigvals,
+parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, RefVec<T>& eigvals,
 		       localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
