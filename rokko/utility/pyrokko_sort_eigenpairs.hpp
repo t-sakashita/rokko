@@ -18,15 +18,15 @@
 
 namespace rokko {
 
-void pyrokko_sort_eigenpairs(const wrap_localized_vector& eigval,
+void pyrokko_sort_eigenpairs(const Eigen::Vector<double>& eigval,
                              const wrap_localized_matrix& eigvec,
-                             wrap_localized_vector& eigval_sorted,
+                             Eigen::Ref<Eigen::Vector<double>>& eigval_sorted,
                              wrap_localized_matrix& eigvec_sorted,
                              bool ascending = true) {
   if (eigvec.is_major_col())
-    sort_eigenpairs(eigval.obj(), eigvec.col_ver(), eigval_sorted.obj(), eigvec_sorted.col_ver(), ascending);
+    sort_eigenpairs(eigval, eigvec.col_ver(), eigval_sorted, eigvec_sorted.col_ver(), ascending);
   else
-    sort_eigenpairs(eigval.obj(), eigvec.row_ver(), eigval_sorted.obj(), eigvec_sorted.row_ver(), ascending);
+    sort_eigenpairs(eigval, eigvec.row_ver(), eigval_sorted, eigvec_sorted.row_ver(), ascending);
 }
 
 } // namespace rokko

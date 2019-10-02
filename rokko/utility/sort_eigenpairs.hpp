@@ -73,6 +73,15 @@ void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
   }
 }
 
+template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
+                     const localized_matrix<T, MATRIX_MAJOR>& eigvec,
+                     Eigen::Ref<Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>> eigval_sorted,
+                     localized_matrix<T, MATRIX_MAJOR>& eigvec_sorted,
+                     bool ascending = true) {
+  sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted, ascending);
+}
+
 } // namespace rokko
 
 #endif // ROKKO_UTILITY_SORT_EIGENPAIRS_HPP

@@ -16,7 +16,6 @@
 #include <pybind11/eigen.h>
 
 #include <rokko/eigen3.hpp>
-#include <rokko/pyrokko_localized_vector.hpp>
 #include <rokko/pyrokko_serial_dense_ev.hpp>
 
 #include <rokko/pyrokko_parameters.hpp>
@@ -66,12 +65,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("get_string", &parameters::get_string)
     .def("get_bool", &parameters::get_bool)
     .def_property_readonly("dict", &wrap_parameters::dict);
-  
-  py::class_<wrap_localized_vector>(m, "localized_vector")
-    .def(py::init<>())
-    .def(py::init<int>())
-    .def("print", &wrap_localized_vector::print);
-  
+
   py::enum_<matrix_major_enum>(m, "matrix_major")
     .value("row", matrix_major_enum::row)
     .value("col", matrix_major_enum::col);
@@ -111,10 +105,6 @@ PYBIND11_MODULE(pyrokko, m) {
     .def(py::init<>())
     //.def("initialize", py::overload_cast<int&, char**&>(&serial_dense_ev::initialize))
     .def("finalize", &serial_dense_ev::finalize)
-    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, wrap_localized_vector&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize_orig),
-         py::arg("mat"), py::arg("eigvals").noconvert(), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, wrap_localized_vector&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize_orig),
-         py::arg("mat"), py::arg("eigvals").noconvert(), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_localized_matrix&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::RefVec<double>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_localized_matrix&, Eigen::RefVec<double>&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::RefVec<double>>),
@@ -214,10 +204,6 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("initialize", &wrap_parallel_dense_ev::initialize)
     .def("finalize", &wrap_parallel_dense_ev::finalize)
     .def("default_mapping", &wrap_parallel_dense_ev::default_mapping)
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, wrap_localized_vector&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize_orig),
-         py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, wrap_localized_vector&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize_orig),
-         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<Eigen::RefVec<double>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
     .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, Eigen::RefVec<double>&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<Eigen::RefVec<double>>),
