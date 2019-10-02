@@ -17,11 +17,7 @@
 
 namespace rokko {
 
-template<typename T, int ROWS = Eigen::Dynamic, int MAJOR = Eigen::ColMajor>
-using Vector = Eigen::Matrix<T, ROWS, 1, MAJOR>;
 
-template<typename T>
-using RefVec = Eigen::Ref<Vector<T>>;
 
 } // namespace rokko
 

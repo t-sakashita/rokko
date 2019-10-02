@@ -42,9 +42,9 @@ namespace rokko {
 
 
 template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
-void sort_eigenpairs(const Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
+void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
                      const localized_matrix<T, MATRIX_MAJOR>& eigvec,
-                     Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval_sorted,
+                     Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval_sorted,
                      localized_matrix<T, MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   int dim = eigval.size();

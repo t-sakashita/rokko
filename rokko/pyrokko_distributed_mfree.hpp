@@ -20,8 +20,8 @@
 
 namespace rokko {
 
-using MapVec = Eigen::Map<Vector<double>>;
-using ConstMapVec = const Eigen::Map<const Vector<double>>;
+using MapVec = Eigen::Map<Eigen::Vector<double>>;
+using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
 
 class wrap_distributed_mfree : public rokko::distributed_mfree {
 public:

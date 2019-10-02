@@ -39,10 +39,10 @@ public:
 				 Eigen::VectorXd& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
-				 RefVec<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
+				 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
-				 RefVec<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
+				 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
 				 parameters const& params) = 0;
   // only eigenvalues
   virtual parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
@@ -52,10 +52,10 @@ public:
 				 Eigen::VectorXd& eigvals,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
-				 RefVec<double>& eigvals,
+				 Eigen::RefVec<double>& eigvals,
 				 parameters const& params) = 0;
   virtual parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
-				 RefVec<double>& eigvals,
+				 Eigen::RefVec<double>& eigvals,
 				 parameters const& params) = 0;
   virtual mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const = 0;
 };
@@ -88,12 +88,12 @@ public:
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
-			 RefVec<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
+			 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
-			 RefVec<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
+			 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
@@ -109,12 +109,12 @@ public:
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
-			 RefVec<double>& eigvals,
+			 Eigen::RefVec<double>& eigvals,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
-			 RefVec<double>& eigvals,
+			 Eigen::RefVec<double>& eigvals,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }

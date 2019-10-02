@@ -37,7 +37,7 @@ public:
   }
 
   template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
-  static void generate_for_given_eigenvalues(rokko::localized_matrix<T, MATRIX_MAJOR>& mat, Vector<T, Eigen::Dynamic, VEC_MAJOR> const& diag) {
+  static void generate_for_given_eigenvalues(rokko::localized_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> const& diag) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     int n = mat.rows();
@@ -93,7 +93,7 @@ public:
   */
 
   template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
-  static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Vector<T, Eigen::Dynamic, VEC_MAJOR> const& diag) {
+  static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> const& diag) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     const int n = mat.get_m_global();
