@@ -13,7 +13,6 @@
 #define ROKKO_EIGEN3_DIAGONALIZE_HPP
 
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
 #include <Eigen/Dense>
 

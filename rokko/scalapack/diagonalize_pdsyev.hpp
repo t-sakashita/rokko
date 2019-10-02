@@ -13,7 +13,6 @@
 #define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEV_HPP
 
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/scalapack.hpp>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>

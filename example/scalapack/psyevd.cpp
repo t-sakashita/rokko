@@ -13,7 +13,7 @@
 #include <cmath>
 #include <iostream>
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/scalapack.hpp>
 
 int main(int argc, char** argv) {

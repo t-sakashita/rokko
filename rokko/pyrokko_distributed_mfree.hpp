@@ -15,7 +15,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <rokko/distributed_mfree.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/eigen3.hpp>
 
 
 namespace rokko {

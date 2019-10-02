@@ -12,7 +12,6 @@
 #ifndef PYROKKO_LOCALIZED_VECTOR_HPP
 #define PYROKKO_LOCALIZED_VECTOR_HPP
 
-#include <rokko/localized_vector.hpp>
 
 namespace rokko {
 

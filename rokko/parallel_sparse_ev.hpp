@@ -16,7 +16,6 @@
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/distributed_vector.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/parameters.hpp>
 

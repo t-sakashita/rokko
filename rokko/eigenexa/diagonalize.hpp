@@ -13,7 +13,6 @@
 #define ROKKO_EIGEN_EXA_DIAGONALIZE_HPP
 
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/eigen_exa/eigen_exa_wrap.h>
 #include <rokko/utility/timer.hpp>
 

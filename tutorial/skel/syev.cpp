@@ -12,7 +12,6 @@
 #include <rokko/blas.hpp>
 #include <rokko/lapack/syev.hpp>
 #include <rokko/lapack/lange.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
 

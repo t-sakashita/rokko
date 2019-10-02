@@ -10,7 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 
 #include <gtest/gtest.h>
 
