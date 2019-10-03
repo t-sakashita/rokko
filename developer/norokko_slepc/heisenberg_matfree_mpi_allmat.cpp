@@ -141,7 +141,7 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
   PetscInt A_m, n;
   ierr = MatGetSize(A, &A_m, &n); CHKERRQ(ierr);
   //std::cout << "Istart=" << Istart << "Iend=" << Iend << std::endl;
-  rokko::localized_matrix<> mat(n, n);
+  Eigen::MatrixXd mat(n, n);
 
   int k = 0;
   for(int i = Istart; i < Iend; ++i) {
