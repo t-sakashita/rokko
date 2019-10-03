@@ -45,7 +45,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #endif
   
   int success_local = 1;
-  rokko::localized_matrix<double, LOC_MAT_MAJOR> lmat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<LOC_MAT_MAJOR>> lmat(dim, dim);
   for (int r = 0; r < size; ++r) {
     rokko::gather(mat, lmat, r);
 #ifndef NDEBUG
