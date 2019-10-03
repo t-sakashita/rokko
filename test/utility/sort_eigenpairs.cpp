@@ -22,11 +22,11 @@
   std::iota(index.begin(), index.end(), 0);\
   std::random_shuffle(index.begin(), index.end());\
   Eigen::VectorXd eigvals(num), eigvals_sorted(num);   \
-  rokko::localized_matrix<double, major> eigvecs(num, num), eigvecs_sorted(num, num); \
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,major> eigvecs(num, num), eigvecs_sorted(num, num); \
   for(int i=0; i<num; ++i){\
     eigvals(i) = 1.0*index[i];\
     for(int j=0; j<num; ++j){\
-      if(eigvecs.is_row_major()){\
+      if(major == Eigen::RowMajor){\
         eigvecs(i,j) = eigvals(i);\
       }else{\
         eigvecs(j,i) = eigvals(i);\
@@ -37,7 +37,7 @@
   for(int i=0; i<num; ++i){\
     std::cout << "dim: " << i << std::endl;\
     double e = ascending ? 1.0 * i : 1.0*(num-i-1);\
-    if(eigvecs.is_row_major()){\
+    if(major == Eigen::RowMajor){\
       ASSERT_EQ( eigvals_sorted(i), e);\
       ASSERT_EQ( eigvecs_sorted(i,0), e);\
       ASSERT_EQ( eigvecs_sorted(i,1), e);\
@@ -51,19 +51,19 @@
 TEST(sort_eigenpairs, matrix_majors) {
   {
     std::cout << "row_major, ascending order\n";
-    make_test(rokko::matrix_row_major, true)
+    make_test(Eigen::RowMajor, true)
   }
   {
     std::cout << "row_major, descending order\n";
-    make_test(rokko::matrix_row_major, false)
+    make_test(Eigen::RowMajor, false)
   }
   {
     std::cout << "col_major, ascending order\n";
-    make_test(rokko::matrix_col_major, true)
+    make_test(Eigen::ColMajor, true)
   }
   {
     std::cout << "col_major, descending order\n";
-    make_test(rokko::matrix_col_major, false)
+    make_test(Eigen::ColMajor, false)
   }
 }
 

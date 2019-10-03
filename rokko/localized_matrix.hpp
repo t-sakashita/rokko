@@ -57,9 +57,6 @@ public:
   matrix_type& operator=(U const& other) { super_type::operator=(other); return *this; } 
   
   void set_zeros() { super_type::setZero(); }
-
-  bool is_row_major() const { return std::is_same<MATRIX_MAJOR, matrix_row_major>::value; }
-  bool is_col_major() const { return std::is_same<MATRIX_MAJOR, matrix_col_major>::value; }
 };
 
 
