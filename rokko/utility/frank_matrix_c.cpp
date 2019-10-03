@@ -23,8 +23,8 @@ void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix mat
 
 void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
-    rokko::frank_matrix::generate(*static_cast<rokko::localized_matrix<double, rokko::matrix_col_major>*>(matrix.ptr));
+    rokko::frank_matrix::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr));
   else
-    rokko::frank_matrix::generate(*static_cast<rokko::localized_matrix<double, rokko::matrix_row_major>*>(matrix.ptr));
+    rokko::frank_matrix::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr));
 }
 

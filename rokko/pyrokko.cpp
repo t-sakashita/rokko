@@ -73,30 +73,7 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_localized_matrix>(m, "localized_matrix")
     .def(py::init<matrix_major_enum>(), py::arg("major") = col)
     .def(py::init<int, int, matrix_major_enum>(), py::arg("rows"), py::arg("cols"), py::arg("major") = col)
-    .def_property_readonly("m_global", &wrap_localized_matrix::get_m_global)
-    .def_property_readonly("n_global", &wrap_localized_matrix::get_n_global)
-    .def_property_readonly("m_local", &wrap_localized_matrix::get_m_local)
-    .def_property_readonly("n_local", &wrap_localized_matrix::get_n_local)
-    .def_property_readonly("global_shape", &wrap_localized_matrix::get_global_shape)
-    .def_property_readonly("local_shape", &wrap_localized_matrix::get_local_shape)
-    .def("translate_l2g_row", &wrap_localized_matrix::translate_l2g_row)
-    .def("translate_l2g_col", &wrap_localized_matrix::translate_l2g_col)
-    .def("translate_l2g", &wrap_localized_matrix::translate_l2g) // tuple
-    .def("translate_g2l_row", &wrap_localized_matrix::translate_g2l_row)
-    .def("translate_g2l_col", &wrap_localized_matrix::translate_g2l_col)
-    .def("translate_g2l", &wrap_localized_matrix::translate_g2l) // tuple
-    .def_property_readonly("is_gindex_myrow", &wrap_localized_matrix::is_gindex_myrow)
-    .def_property_readonly("is_gindex_mycol", &wrap_localized_matrix::is_gindex_mycol)
-    .def_property_readonly("is_gindex", &wrap_localized_matrix::is_gindex)
-    .def("set_local", &wrap_localized_matrix::set_local)
-    .def("set_global", &wrap_localized_matrix::set_global)
-    .def("set_zeros", &wrap_localized_matrix::set_zeros)
     .def("generate", &wrap_localized_matrix::generate)
-    .def("get_ndarray", &wrap_localized_matrix::get_object, py::return_value_policy::reference_internal)
-    .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>>(&wrap_localized_matrix::set_matrix_col_major))
-    .def("set_ndarray", py::overload_cast<Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>>(&wrap_localized_matrix::set_matrix_row_major))
-    .def_property("ndarray", &wrap_localized_matrix::get_object, &wrap_localized_matrix::set_ndarray)
-    .def("print", &wrap_localized_matrix::print)
     .def_property_readonly("major", &wrap_localized_matrix::get_major_string);
 
 

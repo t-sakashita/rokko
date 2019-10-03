@@ -22,8 +22,8 @@ namespace rokko {
 namespace lapack {
 
 // dsygv only eigenvalues
-template<typename MATRIX_MAJOR>
-parameters diagonalize_dsygv(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+template<int MATRIX_MAJOR>
+parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
 			     double* eigvals,
 			     parameters const& params) {
   parameters params_out;
@@ -52,10 +52,10 @@ parameters diagonalize_dsygv(localized_matrix<double, MATRIX_MAJOR>& mata, local
 }
 
 // dsygv eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR>
-parameters diagonalize_dsygv(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+template<int MATRIX_MAJOR>
+parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
 			     double* eigvals,
-			     localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors

@@ -44,7 +44,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
 
 template<typename T, typename MATRIX_MAJOR>
 void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from,
-  localized_matrix<T, MATRIX_MAJOR>& to, int root) {
+  Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>>& to, int root) {
   gather(from, &to(0,0), root);
 }
 
@@ -68,7 +68,7 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void scatter(localized_matrix<T, MATRIX_MAJOR> const& from,
+void scatter(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> const& from,
   distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   scatter(&from(0,0), to, root);
 }

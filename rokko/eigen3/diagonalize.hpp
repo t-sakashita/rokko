@@ -34,32 +34,32 @@ char get_matrix_part(rokko::parameters const& params) {
 }
 
 // only eigenvalues
-template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigvals,
+template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigvals,
 		       rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
     throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
   }
-  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   return params_out;
 }
 
-template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Eigen::RefVec<T>& eigvals,
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::RefVec<T>& eigvals,
 		       rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
     throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
   }
-  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   return params_out;
 }
 
-template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
 		       rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
@@ -68,41 +68,41 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
   std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
   Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1>> eigvals(&eigvals_in[0], eigvals_in.size());
-  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   return params_out;
 }
 
 // eigenvalues/eigenvectors
-template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> & eigvals,
-		       localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
+template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> & eigvals,
+		       Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
     throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
   }
-  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();
   return params_out;
 }
 
-template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, Eigen::RefVec<T>& eigvals,
-		       localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::RefVec<T>& eigvals,
+		       Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
     throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
   }
-  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();
   return params_out;
 }
 
-template<typename T, typename MATRIX_MAJOR>
-parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
-                localized_matrix<T, MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
+                Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
     throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
@@ -110,7 +110,7 @@ parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat, std::vector<T>& e
   std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
   Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1>> eigvals(&eigvals_in[0], eigvals_in.size());
-  Eigen::SelfAdjointEigenSolver<typename localized_matrix<T, MATRIX_MAJOR>::super_type> ES(mat);
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();
   return params_out;

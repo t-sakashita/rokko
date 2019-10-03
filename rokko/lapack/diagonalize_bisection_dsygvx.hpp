@@ -21,8 +21,8 @@ namespace rokko {
 namespace lapack {
 
 // dsygvx only eigenvalues
-template<typename MATRIX_MAJOR>
-int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+template<int MATRIX_MAJOR>
+int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
 			  double* eigvals,
 			  rokko::parameters const& params, timer& timer) {
   rokko::parameters params_out;
@@ -82,10 +82,10 @@ int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mata, localize
 
 
 // dsygvx eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR>
-int diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mata, localized_matrix<double, MATRIX_MAJOR>& matb,
+template<int MATRIX_MAJOR>
+int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
 			  double* eigvals,
-			  localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+			  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			  parameters const& params, timer& timer) {
   rokko::parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors

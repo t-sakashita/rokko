@@ -31,24 +31,24 @@ public:
   void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
   // standard eigenvalue problem, only eigenvalues, eigenvalue:double*
-  template<typename MATRIX_MAJOR>
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
+  template<int MATRIX_MAJOR>
+  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			 double* eigvals,
 			 parameters const& params);
   // standard eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:double*
-  template<typename MATRIX_MAJOR>  
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
-			 double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+  template<int MATRIX_MAJOR>
+  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+			 double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 parameters const& params);
   // standard eigenvalue problem, only eigenvalues, eigenvalue:VEC&
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
+  template<int MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 parameters const& params);
   // standard eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:VEC&
-  template<typename MATRIX_MAJOR, typename VEC>  
-  parameters diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
-			 VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+  template<int MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+			 VEC& eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 parameters const& params);
 private:
   //std::string routine_;  // record routine_;
@@ -56,8 +56,8 @@ private:
 
 // -------------------------standard eigenvalue problem-----------------------------
 // standard eigenvalue problem, only eigenvalues
-template<typename MATRIX_MAJOR>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
+template<int MATRIX_MAJOR>
+parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       double* eigvals,
 			       parameters const& params) {
   parameters params_out;
@@ -87,8 +87,8 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
+template<int MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   std::size_t dim = mat.rows();
@@ -97,9 +97,9 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // standard eigenvalue problem, eigenvalues/eigenvectors
-template<typename MATRIX_MAJOR>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
-			       double* eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<int MATRIX_MAJOR>
+parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+			       double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
   std::string routine = "";
@@ -128,9 +128,9 @@ parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(localized_matrix<double, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<int MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+			       VEC& eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   int dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);

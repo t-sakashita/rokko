@@ -40,11 +40,11 @@ namespace rokko {
 // sort eivanvalue and eigenvectors 
 
 
-template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
 void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
-                     const localized_matrix<T, MATRIX_MAJOR>& eigvec,
+                     const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec,
                      Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval_sorted,
-                     localized_matrix<T, MATRIX_MAJOR>& eigvec_sorted,
+                     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   int dim = eigval.size();
   std::vector<std::pair<T, std::size_t>> entries;
@@ -58,7 +58,7 @@ void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
     std::sort(entries.begin(), entries.end(), ::more<T>());
 
   if (eigval_sorted.size() != dim) eigval_sorted.resize(dim);
-  if (eigvec_sorted.is_col_major()) {
+  if (MATRIX_MAJOR == Eigen::ColMajor) {
     if (eigvec_sorted.cols() != dim) eigvec_sorted.resize(Eigen::NoChange, dim);
     for (int i = 0; i < dim; ++i) {
       eigval_sorted(i) = entries[i].first;
@@ -73,11 +73,11 @@ void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
   }
 }
 
-template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
 void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
-                     const localized_matrix<T, MATRIX_MAJOR>& eigvec,
+                     const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec,
                      Eigen::Ref<Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>> eigval_sorted,
-                     localized_matrix<T, MATRIX_MAJOR>& eigvec_sorted,
+                     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted, ascending);
 }

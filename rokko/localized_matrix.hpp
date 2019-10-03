@@ -33,7 +33,10 @@ struct eigen3_matrix_major<rokko::matrix_col_major> {
 };
 
 } // end namespace detail
-  
+
+template<typename MATRIX_MAJOR>
+constexpr int eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
+
 template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major,
          int ROWS = Eigen::Dynamic, int COLS = Eigen::Dynamic>
 class localized_matrix : public Eigen::Matrix<T, ROWS, COLS,
@@ -120,6 +123,16 @@ typedef localized_matrix<float> slmatrix;
 typedef localized_matrix<double> dlmatrix;
 typedef localized_matrix<std::complex<float>> clmatrix;
 typedef localized_matrix<std::complex<double>> zlmatrix;
+
+
+template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
+void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {
+  for(int local_i = 0; local_i < mat.rows(); ++local_i) {
+    for(int local_j = 0; local_j < mat.cols(); ++local_j) {
+      mat(local_i, local_j) = func(local_i, local_j);
+    }
+  }
+}
 
 } // namespace rokko
 
