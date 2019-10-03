@@ -22,7 +22,7 @@ TEST(matrix, major) {
   //     4 5 6
   //     7 8 9
 
-  rokko::localized_matrix<double, rokko::matrix_row_major> M0(dim,dim); // row major
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> M0(dim,dim); // row major
   M0 << 1,2,3,4,5,6,7,8,9;
   std::cout << M0 << std::endl;
   ASSERT_EQ(M0(0,0),1.0);
@@ -33,7 +33,7 @@ TEST(matrix, major) {
   ASSERT_EQ((M0.row(0))(1), 2.0);
   ASSERT_EQ((M0.col(0))(1), 4.0);
 
-  rokko::localized_matrix<double, rokko::matrix_col_major> M1(dim,dim); // column major
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> M1(dim,dim); // column major
   M1 << 1,2,3,4,5,6,7,8,9;
   std::cout << M1 << std::endl;
   ASSERT_EQ(M1(0,0),1.0);

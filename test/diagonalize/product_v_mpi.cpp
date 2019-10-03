@@ -40,9 +40,9 @@ TEST(product_v_mpi, product_v_mpi) {
   rokko::mapping_bc<rokko::matrix_col_major> mapvec(dim, 1, g, 1, 1);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(mapvec);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(mapvec);
-  rokko::localized_matrix<double, rokko::matrix_col_major> locA(dim, dim);
-  rokko::localized_matrix<double, rokko::matrix_col_major> locX(dim, 1);
-  rokko::localized_matrix<double, rokko::matrix_col_major> locY(dim, 1);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> locA(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> locX(dim, 1);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> locY(dim, 1);
   for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = dist(engine);
   for (int i = 0; i < dim; ++i) locX(i, 0) = dist(engine);
   for (int i = 0; i < dim; ++i) locY(i, 0) = dist(engine);

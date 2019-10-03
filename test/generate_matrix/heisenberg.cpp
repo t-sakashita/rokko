@@ -24,7 +24,7 @@ TEST(generate_matrix, heisenberg) {
     lattice.push_back(std::make_pair(i, i+1));
   }
 
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat1(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat1(N, N);
 
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
@@ -51,7 +51,7 @@ TEST(generate_matrix, heisenberg) {
   std::cout << std::endl;
 
   std::cout << "fill_matrix:" << std::endl;
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat2(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat2(N, N);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat2);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {

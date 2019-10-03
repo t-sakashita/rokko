@@ -38,7 +38,7 @@ TEST(generate_matrix, xyz_hamiltonian) {
   }
 
 
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat1(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat1(N, N);
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
     std::vector<double> v, w;
@@ -64,7 +64,7 @@ TEST(generate_matrix, xyz_hamiltonian) {
   std::cout << std::endl;
 
   std::cout << "fill_matrix:" << std::endl;
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat2(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat2(N, N);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat2);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {
