@@ -93,23 +93,6 @@ public:
   value_type get_global_checked(int global_i, int global_j) {
     return get_local(global_i, global_j);
   }
-
-  template<class FUNC>
-  void generate(FUNC func) {
-    for(int local_i = 0; local_i < get_m_local(); ++local_i) {
-      for(int local_j = 0; local_j < get_n_local(); ++local_j) {
-        set_local(local_i, local_j, func(local_i, local_j));
-      }
-    }
-  }
-
-  void generate(std::function<value_type(int, int)> const& func) {
-    for(int local_i = 0; local_i < get_m_local(); ++local_i) {
-      for(int local_j = 0; local_j < get_n_local(); ++local_j) {
-        set_local(local_i, local_j, func(local_i, local_j));
-      }
-    }
-  }
   
   void set_zeros() { super_type::setZero(); }
 
@@ -127,9 +110,18 @@ typedef localized_matrix<std::complex<double>> zlmatrix;
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
 void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {
-  for(int local_i = 0; local_i < mat.rows(); ++local_i) {
-    for(int local_j = 0; local_j < mat.cols(); ++local_j) {
-      mat(local_i, local_j) = func(local_i, local_j);
+  for(int i = 0; i < mat.rows(); ++i) {
+    for(int j = 0; j < mat.cols(); ++j) {
+      mat(i, j) = func(i, j);
+    }
+  }
+}
+
+template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
+void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, std::function<T(int, int)> const& func) {
+  for(int i = 0; i < mat.rows(); ++i) {
+    for(int j = 0; j < mat.cols(); ++j) {
+      mat(i, j) = func(i, j);
     }
   }
 }
