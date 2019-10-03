@@ -55,44 +55,6 @@ public:
   localized_matrix(U const& other) : super_type(other) {}
   template<typename U>
   matrix_type& operator=(U const& other) { super_type::operator=(other); return *this; } 
-
-  int translate_l2g_row(int local_i) const { return local_i; }
-  int translate_l2g_col(int local_j) const { return local_j; }
-  int translate_g2l_row(int global_i) const { return global_i; }
-  int translate_g2l_col(int global_j) const { return global_j; }
-
-  int get_m_global() const { return super_type::rows(); }
-  int get_n_global() const { return super_type::cols(); }
-
-  int get_m_local() const { return super_type::rows(); }
-  int get_n_local() const { return super_type::cols(); }
-
-  bool is_gindex_myrow(int) const { return true; }
-  bool is_gindex_mycol(int) const { return true; }
-  bool is_gindex(int, int) const { return true; }
-
-  void set_local(int local_i, int local_j, value_type value) {
-    this->operator()(local_i, local_j) = value;
-  }
-  void update_local(int local_i, int local_j, value_type value) {
-    this->operator()(local_i, local_j) += value;
-  }
-  value_type get_local(int local_i, int local_j) const {
-    return this->operator()(local_i, local_j);
-  }
-  
-  void set_global(int global_i, int global_j, value_type value) {
-    set_local(global_i, global_j, value);
-  }
-  void update_global(int global_i, int global_j, value_type value) {
-    update_local(global_i, global_j, value);
-  }
-  value_type get_global(int global_i, int global_j) {
-    return get_local(global_i, global_j);
-  }
-  value_type get_global_checked(int global_i, int global_j) {
-    return get_local(global_i, global_j);
-  }
   
   void set_zeros() { super_type::setZero(); }
 
