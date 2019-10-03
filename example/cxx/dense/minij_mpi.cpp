@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
     std::cout << std::endl;
     std::cout << "eigenvectors:\n";
-    eigvec_loc.print();
+    std::cout << eigvec_loc << std::endl;
   }
 
   solver.finalize();
