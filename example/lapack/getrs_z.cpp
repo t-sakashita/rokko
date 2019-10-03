@@ -12,7 +12,6 @@
 #include <rokko/blas.hpp>
 #include <rokko/lapack/getrf.hpp>
 #include <rokko/lapack/getrs.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/localized_matrix.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -21,22 +20,22 @@ int main(int argc, char** argv) {
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
   // generate matrix and rhs vector
-  rokko::zlmatrix a = rokko::zlmatrix::Random(n, n);
+  Eigen::MatrixXcd a = Eigen::MatrixXcd::Random(n, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
-  rokko::zlvector b(n);
+  Eigen::VectorXcd b(n);
   for (int i = 0; i < n; ++i) b(i) = i * i + 1;
   std::cout << "Vector b: " << std::endl << b << std::endl;
 
   // solve linear equation
-  rokko::zlmatrix lu = a;
-  rokko::zlvector x = b;
-  rokko::ilvector ipiv(n);
+  Eigen::MatrixXcd lu = a;
+  Eigen::VectorXcd x = b;
+  Eigen::VectorXi ipiv(n);
   rokko::lapack::getrf(lu, ipiv);
   rokko::lapack::getrs('n', 1, lu, ipiv, x);
   std::cout << "Solution x: " << std::endl << x << std::endl;
 
   /* solution check */
-  rokko::zlvector check = a * x - b;
+  Eigen::VectorXcd check = a * x - b;
   double norm = check.norm();
   std::cout << "|| A x - b || = " << norm << std::endl;
   if (norm > 1e-10) throw std::runtime_error("Error: solution check");

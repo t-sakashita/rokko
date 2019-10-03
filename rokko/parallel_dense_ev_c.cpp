@@ -40,13 +40,13 @@ struct rokko_parameters rokko_parallel_dense_ev_diagonalize(struct rokko_paralle
   if (mat.major == rokko_matrix_col_major)
     *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver.ptr)->diagonalize(
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
-      *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+      *static_cast<Eigen::VectorXd*>(eigvals.ptr),
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs.ptr),
       *static_cast<rokko::parameters*>(params.ptr));
   else
     *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver.ptr)->diagonalize(
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
-      *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+      *static_cast<Eigen::VectorXd*>(eigvals.ptr),
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs.ptr),
       *static_cast<rokko::parameters*>(params.ptr));
   return params_out;
@@ -61,12 +61,12 @@ struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(s
   if (mat.major == rokko_matrix_col_major)
     *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver.ptr)->diagonalize(
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat.ptr),
-      *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+      *static_cast<Eigen::VectorXd*>(eigvals.ptr),
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs.ptr));
   else
     *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_dense_ev*>(solver.ptr)->diagonalize(
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat.ptr),
-      *static_cast<rokko::localized_vector<double>*>(eigvals.ptr),
+      *static_cast<Eigen::VectorXd*>(eigvals.ptr),
       *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs.ptr));
   return params_out;
 }
@@ -80,12 +80,12 @@ void rokko_parallel_dense_ev_diagonalize_f(struct rokko_parallel_dense_ev* solve
   rokko_parameters_construct(params_out);
   if (mat->major == rokko_matrix_col_major)
     *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								       *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								       *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr),
 								       *static_cast<rokko::parameters*>(params->ptr));
   else
     *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								       *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								       *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs->ptr),
 								       *static_cast<rokko::parameters*>(params->ptr));
 }
@@ -96,12 +96,12 @@ void rokko_parallel_dense_ev_diagonalize_no_params_out_f(struct rokko_parallel_d
 						       struct rokko_parameters* params) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								   *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr),
 								   *static_cast<rokko::parameters*>(params->ptr));
   else
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								   *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs->ptr),
 								   *static_cast<rokko::parameters*>(params->ptr));
 }
@@ -112,11 +112,11 @@ void rokko_parallel_dense_ev_diagonalize_no_params_inout_f(struct rokko_parallel
 							 struct rokko_distributed_matrix* eigvecs) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								   *static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(eigvecs->ptr));
   else
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								   *static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(eigvecs->ptr));
 }
 
@@ -126,11 +126,11 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_f(struct rokko_parallel_dense_e
   rokko_parameters_construct(params_out);
   if (mat->major == rokko_matrix_col_major)
     *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								       *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								       *static_cast<rokko::parameters*>(params->ptr));
   else
     *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								       *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								       *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								       *static_cast<rokko::parameters*>(params->ptr));
 }
 
@@ -139,11 +139,11 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out_f(struct rokko_pa
 							       struct rokko_parameters* params) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								   *static_cast<rokko::parameters*>(params->ptr));
   else
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr),
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr),
 								   *static_cast<rokko::parameters*>(params->ptr));
 }
 
@@ -151,10 +151,10 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout_f(struct rokko_
 								 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr));
   else
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(mat->ptr),
-								   *static_cast<rokko::localized_vector<double>*>(eigvals->ptr));
+								   *static_cast<Eigen::VectorXd*>(eigvals->ptr));
 }
 
 struct rokko_mapping_bc rokko_parallel_dense_ev_default_mapping(struct rokko_parallel_dense_ev solver, int dim, struct rokko_grid g) {

@@ -70,10 +70,10 @@ int main(int argc, char *argv[]) {
   rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
-  rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
   try {
     solver.diagonalize(mat, eigval, eigvec);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
-  rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
     std::cout << "smallest eigenvalues:";

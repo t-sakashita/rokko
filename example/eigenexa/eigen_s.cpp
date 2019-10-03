@@ -13,7 +13,7 @@
 #include <cmath>
 #include <iostream>
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/eigenexa.hpp>
 
 int main(int argc, char** argv) {
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
   rokko::mapping_bc<rokko::matrix_col_major> map(n, 1, nxy.first, nxy.second, grid);
   rokko::distributed_matrix<double> a(map);
   rokko::distributed_matrix<double> z(map);
-  rokko::localized_vector<double> w(n);
+  Eigen::VectorXd w(n);
   for (int j = 0; j < n; ++j)
     for (int i = 0; i < n; ++i)
       a.set_global(i, j, std::min(i, j) + 1);

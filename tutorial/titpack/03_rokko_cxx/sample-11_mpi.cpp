@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
   MPI_Barrier(g.get_comm());
   double t2 = tm.elapsed();
   
-  rokko::localized_vector<double> E(hop.dimension());
+  Eigen::VectorXd E(hop.dimension());
   matrix_type v(map);
   solver.diagonalize(elemnt, E, v);
   double t3 = tm.elapsed();

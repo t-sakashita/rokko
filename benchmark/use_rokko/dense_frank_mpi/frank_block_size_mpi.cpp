@@ -52,11 +52,11 @@ int main(int argc, char *argv[]) {
   rokko::mapping_bc<matrix_major> map(dim, block_size, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
-  //  rokko::localized_matrix<double, matrix_major> mat_loc(dim, dim);
+  //  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat_loc(dim, dim);
   //  rokko::gather(mat, mat_loc, 0);
 
   diag_tick = MPI_Wtime();
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
   rokko::parameters params;
   params.set("routine", routine);

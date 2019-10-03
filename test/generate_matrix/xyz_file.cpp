@@ -17,7 +17,6 @@
 
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -56,7 +55,7 @@ int main(int argc, char *argv[])
   int N = dim;
   std::cout << "dim=" << dim << std::endl;
 
-  rokko::localized_matrix<rokko::matrix_col_major> mat1(N, N);
+  Eigen::MatrixXd mat1(N, N);
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
     std::vector<double> v, w;
@@ -72,7 +71,7 @@ int main(int argc, char *argv[])
   }
 
   std::cout << "fill_diagonal:" << std::endl;
-  rokko::localized_vector diagonal(N);
+  Eigen::VectorXd diagonal(N);
   std::vector<double> v(N);
   rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, v);
   for (int j=0; j<N; ++j) {
@@ -82,7 +81,7 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
 
   std::cout << "fill_matrix:" << std::endl;
-  rokko::localized_matrix<rokko::matrix_col_major> mat2(N, N);
+  Eigen::MatrixXd mat2(N, N);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat2);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {

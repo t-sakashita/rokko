@@ -92,11 +92,11 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
   fill_diagonal(L, lattice, coupling, &w[0]);
 }
 
-template<typename T, typename MATRIX_MAJOR>
+template<typename T, int MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int>>& lattice,
-  const std::vector<std::tuple<double, double, double>>& coupling,
-  rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
-  mat.set_zeros();
+  const std::vector<std::tuple<T, T, T>>& coupling,
+  Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
+  mat.setZero();
   int N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
     int i = lattice[l].first;

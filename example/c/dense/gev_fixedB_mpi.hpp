@@ -6,7 +6,7 @@
 typedef rokko::matrix_col_major matrix_major;
 
 template<typename T, typename MATRIX_MAJOR>
-void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::distributed_matrix<T, MATRIX_MAJOR> const& eigvec, rokko::distributed_matrix<T, MATRIX_MAJOR>& result, rokko::distributed_matrix<T, MATRIX_MAJOR>& tmp) {
+void function_matrix(Eigen::VectorXd const& eigval_tmp, rokko::distributed_matrix<T, MATRIX_MAJOR> const& eigvec, rokko::distributed_matrix<T, MATRIX_MAJOR>& result, rokko::distributed_matrix<T, MATRIX_MAJOR>& tmp) {
   for (int local_j=0; local_j<eigvec.get_n_local(); ++local_j) {
     int global_j = eigvec.translate_l2g_col(local_j);
     double coeff = eigval_tmp(global_j);
@@ -19,7 +19,7 @@ void function_matrix(rokko::localized_vector<double> const& eigval_tmp, rokko::d
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
+void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_matrix<T, MATRIX_MAJOR>& A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, Eigen::VectorXd& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
   rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binvroot(A.get_mapping()), mat(A.get_mapping());
   rokko::parameters params;
   params.set("routine", "");
@@ -39,8 +39,8 @@ void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_mat
   product(1, Binvroot, false, tmp, false, 0, eigvec);
 }
 
-template<typename T, typename MATRIX_MAJOR>
-void set_A_B(rokko::localized_matrix<T, MATRIX_MAJOR>& locA, rokko::localized_matrix<T, MATRIX_MAJOR>& locB) {
+template<typename T, int MATRIX_MAJOR>
+void set_A_B(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& locA, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& locB) {
   if ((locA.rows() != 4) || (locA.cols() != 4) || (locB.rows() != 4) || (locB.cols() != 4)) {
     std::cerr << "error: size must be 4!" << std::endl;
     throw;

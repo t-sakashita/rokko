@@ -30,23 +30,6 @@ public:
     serial_dense_ev::initialize(num, ptr);
   }
 
-  wrap_parameters diagonalize_orig(wrap_localized_matrix& mat, wrap_localized_vector& eigvals, wrap_localized_matrix& eigvecs,
-			 wrap_parameters const& params) {
-    assert(mat.is_major_col() == eigvecs.is_major_col());
-    if (mat.is_major_col())
-      return serial_dense_ev::diagonalize(mat.col_ver(), eigvals.obj(), eigvecs.col_ver(), parameters(params));
-    else
-      return serial_dense_ev::diagonalize(mat.row_ver(), eigvals.obj(), eigvecs.row_ver(), parameters(params));
-  }
-
-  wrap_parameters diagonalize_orig(wrap_localized_matrix& mat, wrap_localized_vector& eigvals,
-			 wrap_parameters const& params) {
-    if (mat.is_major_col())
-      return serial_dense_ev::diagonalize(mat.col_ver(), eigvals.obj(), parameters(params));
-    else
-      return serial_dense_ev::diagonalize(mat.row_ver(), eigvals.obj(), parameters(params));
-  }
-  
   template<typename VEC>
   wrap_parameters diagonalize(wrap_localized_matrix& mat, VEC& eigvals, wrap_localized_matrix& eigvecs,
 			 wrap_parameters const& params) {

@@ -17,24 +17,24 @@ namespace rokko {
 class matrix012 {
 public:
 
-  template<typename T, typename MATRIX_MAJOR>
-  static int get_index(rokko::localized_matrix<T, MATRIX_MAJOR>& mat);
+  template<typename T, int MATRIX_MAJOR>
+  static int get_index(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat);
 
   template<typename T>
-  static int get_index(rokko::localized_matrix<T, rokko::matrix_col_major>& mat, int global_i, int global_j) {
-    return global_i + mat.get_m_global() * global_j;
+  static int get_index(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat, int global_i, int global_j) {
+    return global_i + mat.rows() * global_j;
   }
 
   template<typename T>
-  static int get_index(rokko::localized_matrix<T, rokko::matrix_row_major>& mat, int global_i, int global_j) {
-    return mat.get_n_global() * global_i + global_j;
+  static int get_index(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat, int global_i, int global_j) {
+    return mat.cols() * global_i + global_j;
   }
   
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
+  template<typename T, int MATRIX_MAJOR>
+  static void generate(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
     int n = mat.rows();
-    for(int i = 0; i < mat.get_m_local(); ++i) {
-      for(int j = 0; j < mat.get_n_local(); ++j) {
+    for(int i = 0; i < mat.rows(); ++i) {
+      for(int j = 0; j < mat.cols(); ++j) {
         mat(i,j) = get_index(mat, i, j);
       }
     }

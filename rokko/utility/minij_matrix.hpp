@@ -24,8 +24,8 @@ namespace rokko {
 
 class minij_matrix {
 public:
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
+  template<typename T, int MATRIX_MAJOR>
+  static void generate(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
     int n = mat.rows();

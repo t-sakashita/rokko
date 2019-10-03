@@ -37,8 +37,8 @@ TEST(dot_product_mpi, dot_product_mpi) {
   rokko::mapping_bc<rokko::matrix_col_major> map(dim, 1, g, 1, 1);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(map);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(map);
-  rokko::localized_matrix<double, rokko::matrix_col_major> locX(dim, 1);
-  rokko::localized_matrix<double, rokko::matrix_col_major> locY(dim, 1);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> locX(dim, 1);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> locY(dim, 1);
   for (int i = 0; i < dim; ++i) locX(i, 0) = dist(engine);
   for (int i = 0; i < dim; ++i) locY(i, 0) = dist(engine);
   rokko::scatter(locX, vecX, 0);

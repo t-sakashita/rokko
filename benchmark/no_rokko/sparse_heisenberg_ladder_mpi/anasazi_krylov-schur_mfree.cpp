@@ -130,7 +130,7 @@ class HeisenbergOp : public Epetra_Operator {
   MPI_Comm comm_;
   mutable std::vector<double> buffer_;
   int L_;
-  std::vector<std::pair<int, int>> lattice_;  
+  std::vector<std::pair<int, int>> lattice_;
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };

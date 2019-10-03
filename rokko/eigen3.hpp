@@ -102,6 +102,12 @@ std::complex<T>* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR
   return mat.data();
 }
 
+template<typename T, int ROWS = Eigen::Dynamic, int MAJOR = Eigen::ColMajor>
+using Vector = Eigen::Matrix<T, ROWS, 1, MAJOR>;
+
+template<typename T>
+using RefVec = Eigen::Ref<Vector<T>>;
+
 } // namespace Eigen
 
 #endif // ROKKO_EIGEN3_HPP

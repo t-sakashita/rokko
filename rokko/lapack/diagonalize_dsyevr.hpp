@@ -14,7 +14,6 @@
 
 #include <rokko/parameters.hpp>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
@@ -23,8 +22,8 @@ namespace rokko {
 namespace lapack {
 
 // dsyevr only eigenvalues
-template<typename MATRIX_MAJOR>
-parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+template<int MATRIX_MAJOR>
+parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 			      parameters const& params) {
   parameters params_out;
   char jobz = 'N';  // only eigenvalues
@@ -42,7 +41,7 @@ parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
   lapack_int m;  // output: found eigenvalues
   std::vector<lapack_int> isuppz(2*dim+1);
   int info;
-  if(mat.is_col_major())
+  if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
 			  &mat(0,0), ld_mat, vl, vu, il, iu,
 			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
@@ -68,9 +67,9 @@ parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
 
 
 // dsyevr eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR>
-parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-			      localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<int MATRIX_MAJOR>
+parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
+			      Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   rokko::parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
@@ -92,7 +91,7 @@ parameters diagonalize_dsyevr(localized_matrix<double, MATRIX_MAJOR>& mat, doubl
   std::vector<lapack_int> isuppz(2*dim+1);
 
   int info;
-  if(mat.is_col_major())
+  if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
 			  &mat(0,0), ld_mat, vl, vu, il, iu,
 			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);

@@ -14,7 +14,6 @@
 
 #include <rokko/parameters.hpp>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
 
@@ -22,8 +21,8 @@ namespace rokko {
 namespace lapack {
 
 // dsyevx only eigenvalues
-template<typename MATRIX_MAJOR>
-parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
+template<int MATRIX_MAJOR>
+parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 				 rokko::parameters const& params) {
   rokko::parameters params_out;
   char jobz = 'N';  // only eigenvalues
@@ -51,7 +50,7 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
 
   std::vector<lapack_int> ifail(dim);
   int info;
-  if(mat.is_col_major())
+  if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &ifail[0]);
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, NULL, ldim_mat, &ifail[0]);
@@ -78,9 +77,9 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
 
 
 // dsyevx eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR>
-parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, double* eigvals,
-				 localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<int MATRIX_MAJOR>
+parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
+				 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 				 parameters const& params) {
   rokko::parameters params_out;
   char jobz = 'V';  // eigenvalues / eigenvectors
@@ -110,7 +109,7 @@ parameters diagonalize_bisection(localized_matrix<double, MATRIX_MAJOR>& mat, do
   char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
   int info;
-  if(mat.is_col_major())
+  if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim, &mat(0,0), ldim_mat, vl, vu, il, iu, abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, &ifail[0]);

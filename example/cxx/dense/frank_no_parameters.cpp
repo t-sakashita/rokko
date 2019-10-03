@@ -30,12 +30,12 @@ int main(int argc, char *argv[]) {
             << "solver = " << solver_name << std::endl
             << "dimension = " << dim << std::endl;
 
-  rokko::localized_matrix<double, matrix_major> mat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   std::cout << "Frank matrix:\n" << mat << std::endl;
 
-  rokko::localized_vector<double> eigval(dim);
-  rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
+  Eigen::VectorXd eigval(dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

@@ -23,10 +23,10 @@ public:
   void finalize() {}
   // -------------------------standard eigenvalue problem-----------------------------
   // eigenvalues/eigenvectors
-  template<typename T, typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat,
+  template<typename T, int MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
-			 localized_matrix<T, MATRIX_MAJOR>& eigvecs,
+			 Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params) {
     std::string routine = "";
     if(params.defined("routine")) {
@@ -39,8 +39,8 @@ public:
     }
   }
   // only eigenvalues
-  template<typename T, typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(localized_matrix<T, MATRIX_MAJOR>& mat,
+  template<typename T, int MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 rokko::parameters const& params) {
     std::string routine = "";

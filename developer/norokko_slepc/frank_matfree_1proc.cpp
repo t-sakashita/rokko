@@ -31,7 +31,7 @@ int main(int argc,char **argv)
      Compute the operator matrix that defines the eigensystem, Ax=kx
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat(N, N);
   rokko::frank_matrix::generate(mat);
 
   ierr = MatCreateShell(PETSC_COMM_WORLD,N,N,N,N,&mat,&A);CHKERRQ(ierr);
@@ -91,7 +91,7 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
 {
   PetscFunctionBeginUser;
   PetscErrorCode ierr;
-  rokko::localized_matrix<double, rokko::matrix_col_major> *mat;
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> *mat;
   ierr = MatShellGetContext(A, &mat); CHKERRQ(ierr);
 
   const PetscScalar *px;
@@ -116,7 +116,7 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
 {
   PetscFunctionBeginUser;
   PetscErrorCode ierr;
-  rokko::localized_matrix<double, rokko::matrix_col_major> *mat;
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> *mat;
   ierr = MatShellGetContext(A, &mat); CHKERRQ(ierr);
 
   PetscScalar       *pd;

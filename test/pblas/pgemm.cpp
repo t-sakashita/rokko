@@ -28,9 +28,9 @@ TEST(pgemm, pdgemm) {
   double alpha = 3.3;
   double beta = 2.1;
 
-  rokko::localized_matrix<double> a(n, n);
-  rokko::localized_matrix<double> b(n, n);
-  rokko::localized_matrix<double> c(n, n);
+  Eigen::MatrixXd a(n, n);
+  Eigen::MatrixXd b(n, n);
+  Eigen::MatrixXd c(n, n);
   if (grid.get_myrank() == 0) {
     for (int j = 0; j < n; ++j) {
       for (int i = 0; i < n; ++i) {

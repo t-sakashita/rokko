@@ -24,8 +24,8 @@ namespace rokko {
 
 class helmert_matrix {
 public:
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate(rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
+  template<typename T, int MATRIX_MAJOR>
+  static void generate(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     int n = mat.rows();
@@ -36,15 +36,15 @@ public:
     }
   }
 
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate_for_given_eigenvalues(rokko::localized_matrix<T, MATRIX_MAJOR>& mat, rokko::localized_vector<T> const& diag) {
+  template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
+  static void generate_for_given_eigenvalues(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> const& diag) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     int n = mat.rows();
     for (int i=0; i<n; ++i) {
       double common_elem = diag(0) / n;
       for (int k=i+1; k<n; ++k)
-	common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
+        common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
       mat(i, i) = common_elem + i * diag(i) / (i+1);
       double val = common_elem - diag(i) / (i+1);
       mat.row(i).head(i).setConstant(val);
@@ -92,8 +92,8 @@ public:
   }
   */
 
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, rokko::localized_vector<T> const& diag) {
+  template<typename T, typename MATRIX_MAJOR, int VEC_MAJOR>
+  static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> const& diag) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     const int n = mat.get_m_global();

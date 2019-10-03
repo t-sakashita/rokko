@@ -30,7 +30,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   std::mt19937 engine(123lu);
   std::uniform_real_distribution<> dist(-1.0, 1.0);
 
-  rokko::localized_matrix<double, LOC_MAT_MAJOR> lmat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<LOC_MAT_MAJOR>> lmat(dim, dim);
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
       lmat(i, j) = dist(engine);

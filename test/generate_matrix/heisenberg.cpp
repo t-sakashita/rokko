@@ -13,7 +13,6 @@
 #include <vector>
 #include <rokko/utility/heisenberg_hamiltonian.hpp>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 
 #include <gtest/gtest.h>
 
@@ -25,7 +24,7 @@ TEST(generate_matrix, heisenberg) {
     lattice.push_back(std::make_pair(i, i+1));
   }
 
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat1(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat1(N, N);
 
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
@@ -42,7 +41,7 @@ TEST(generate_matrix, heisenberg) {
   }
 
   std::cout << "fill_diagonal:" << std::endl;
-  rokko::localized_vector<double> diagonal(N);
+  Eigen::VectorXd diagonal(N);
   std::vector<double> v(N);
   rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, v);
   for (int j=0; j<N; ++j) {
@@ -52,7 +51,7 @@ TEST(generate_matrix, heisenberg) {
   std::cout << std::endl;
 
   std::cout << "fill_matrix:" << std::endl;
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat2(N, N);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat2(N, N);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat2);
   for (int i=0; i<N; ++i) {
     for (int j=0; j<N; ++j) {

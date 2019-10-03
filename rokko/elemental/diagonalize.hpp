@@ -13,7 +13,6 @@
 #define ROKKO_ELEMENTAL_DIAGONALIZE_HPP
 
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <El.hpp>
 #include <rokko/utility/timer.hpp>
 

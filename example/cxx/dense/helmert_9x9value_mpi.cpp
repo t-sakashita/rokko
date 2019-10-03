@@ -20,7 +20,7 @@ typedef rokko::matrix_col_major matrix_major;
 
 
 double func(int i, int j) {
-  rokko::localized_matrix<double, matrix_major> mat_loc(9, 9);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat_loc(9, 9);
   //  mat_loc << 2.828968253968254132,  0.8289682539682539097,  0.3289682539682539097,  -0.004365079365079349571,  -0.2543650793650793496,  -0.4543650793650793052,  -0.6210317460317460458,  -0.7638888888888888395,  -0.8888888888888888395;
   
   mat_loc << 2.828968253968254132,  0.8289682539682539097,  0.3289682539682539097,  -0.004365079365079349571,  -0.2543650793650793496,  -0.4543650793650793052,  -0.6210317460317460458,  -0.7638888888888888395,  -0.8888888888888888395,
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   mat.generate(&func);
   mat.print();
 
-  rokko::localized_vector<double> eigval(dim);
+  Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
   rokko::parameters params;
   params.set("routine", routine);

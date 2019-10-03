@@ -13,7 +13,6 @@
 #define ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_SX_HPP
 
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/eigenexa.hpp>
 #include <rokko/utility/timer.hpp>

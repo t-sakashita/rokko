@@ -12,7 +12,7 @@
 #include <rokko/rokko.hpp>
 #include <random>
 
-typedef rokko::localized_vector<double> vector_t;
+typedef Eigen::VectorXd vector_t;
 
 int main() {
   int n = 6;

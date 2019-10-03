@@ -15,13 +15,13 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <rokko/distributed_mfree.hpp>
-#include <rokko/localized_vector.hpp>
+#include <rokko/eigen3.hpp>
 
 
 namespace rokko {
 
-using MapVec = Eigen::Map<ColVec<double>>;
-using ConstMapVec = const Eigen::Map<const ColVec<double>>;
+using MapVec = Eigen::Map<Eigen::Vector<double>>;
+using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
 
 class wrap_distributed_mfree : public rokko::distributed_mfree {
 public:

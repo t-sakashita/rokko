@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
   rokko::global_timer::registrate(2, "eigenvalue");
   timer.start(1);
   rokko::global_timer::start(1);
-  rokko::localized_matrix<double, rokko::matrix_col_major> mat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   std::cout << "dimension = " << dim << std::endl;
   std::cout << "[elements of frank matrix]" << std::endl;

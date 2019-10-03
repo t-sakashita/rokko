@@ -10,7 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 
 #include <gtest/gtest.h>
 
@@ -35,15 +34,15 @@ TEST(localized_matrix, fixed_size) {
   //              137
 
   int dim = 3;
-  rokko::localized_matrix<double, rokko::matrix_row_major, 3, 3> M(dim,dim);
+  Eigen::Matrix<double,3,3,Eigen::RowMajor> M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
   double a = 5.0;
-  rokko::localized_vector<double, 3> u(dim);
+  Eigen::Vector3d u(dim);
   u << 1,2,3;
-  rokko::localized_vector<double, 3> v(dim);
+  Eigen::Vector3d v(dim);
   v << 4,5,6;
 
-  rokko::localized_vector<double> w = a*u+M*v;
+  Eigen::VectorXd w = a*u+M*v;
   ASSERT_EQ(w[0], 37.);
   ASSERT_EQ(w[1], 87.);
   ASSERT_EQ(w[2], 137.);

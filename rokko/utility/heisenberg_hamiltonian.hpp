@@ -14,7 +14,6 @@
 
 #include <vector>
 #include <rokko/localized_matrix.hpp>
-#include <rokko/localized_vector.hpp>
 
 namespace rokko {
 
@@ -70,12 +69,12 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, std::
 }
 
 template<typename T>
-void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, rokko::localized_vector<T>& w) {
+void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, Eigen::Vector<T>& w) {
   fill_diagonal(L, lattice, &w[0]);
 }
 
-template<typename T, typename MATRIX_MAJOR>
-void generate(int L, const std::vector<std::pair<int, int>>& lattice, rokko::localized_matrix<T, MATRIX_MAJOR>& mat) {
+template<typename T, int MATRIX_MAJOR>
+void generate(int L, const std::vector<std::pair<int, int>>& lattice, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
   mat.setZero();
   int N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {

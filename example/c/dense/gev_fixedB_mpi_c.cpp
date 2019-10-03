@@ -27,7 +27,7 @@ void diagonalize_fixedB_c(struct rokko_parallel_dense_ev solver_in, struct rokko
   rokko::distributed_matrix<double, matrix_major>& A = *(static_cast<rokko::distributed_matrix<double,matrix_major>*>(A_in.ptr));
   rokko::distributed_matrix<double, matrix_major>& B = *(static_cast<rokko::distributed_matrix<double,matrix_major>*>(B_in.ptr));
   rokko::distributed_matrix<double, matrix_major>& eigvec = *(static_cast<rokko::distributed_matrix<double,matrix_major>*>(eigvec_in.ptr));
-  rokko::localized_vector<double>& eigval = *(static_cast<rokko::localized_vector<double>*>(eigval_in.ptr));
+  Eigen::VectorXd& eigval = *(static_cast<Eigen::VectorXd*>(eigval_in.ptr));
 
   rokko::mapping_bc<matrix_major> map = A.get_mapping();
   rokko::distributed_matrix<double, matrix_major> tmp(map), Binvroot(map), mat(map);
@@ -36,7 +36,7 @@ void diagonalize_fixedB_c(struct rokko_parallel_dense_ev solver_in, struct rokko
 }
 
 void set_A_B_c(struct rokko_localized_matrix locA_in, struct rokko_localized_matrix locB_in) {
-  rokko::localized_matrix<double, matrix_major>& locA = *(static_cast<rokko::localized_matrix<double,matrix_major>*>(locA_in.ptr));
-  rokko::localized_matrix<double, matrix_major>& locB = *(static_cast<rokko::localized_matrix<double,matrix_major>*>(locB_in.ptr));
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>>& locA = *(static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>>*>(locA_in.ptr));
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>>& locB = *(static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>>*>(locB_in.ptr));
   set_A_B(locA, locB);
 }

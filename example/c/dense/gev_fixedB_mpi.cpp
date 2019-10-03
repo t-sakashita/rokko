@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void diagonalize_fixedB(rokko_parallel_dense_ev* solver, rokko::distributed_matrix<T, MATRIX_MAJOR>* A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, rokko::localized_vector<double>& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
+void diagonalize_fixedB(rokko_parallel_dense_ev* solver, rokko::distributed_matrix<T, MATRIX_MAJOR>* A, rokko::distributed_matrix<T, MATRIX_MAJOR>& B, Eigen::VectorXd& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
   rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binvroot(A.get_mapping()), mat(A.get_mapping());
   rokko::parameters params;
   int myrank = A.get_myrank();
