@@ -55,8 +55,6 @@ public:
   localized_matrix(U const& other) : super_type(other) {}
   template<typename U>
   matrix_type& operator=(U const& other) { super_type::operator=(other); return *this; } 
-  
-  void set_zeros() { super_type::setZero(); }
 };
 
 
