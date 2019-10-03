@@ -37,26 +37,6 @@ struct eigen3_matrix_major<rokko::matrix_col_major> {
 template<typename MATRIX_MAJOR>
 constexpr int eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
 
-template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major,
-         int ROWS = Eigen::Dynamic, int COLS = Eigen::Dynamic>
-class localized_matrix : public Eigen::Matrix<T, ROWS, COLS,
-  detail::eigen3_matrix_major<MATRIX_MAJOR>::value> {
-public:
-  typedef T value_type;
-  typedef MATRIX_MAJOR major_type;
-  typedef Eigen::Matrix<value_type, ROWS, COLS,
-    detail::eigen3_matrix_major<major_type>::value> super_type;
-  typedef localized_matrix<value_type, major_type, ROWS, COLS> matrix_type;
-
-  localized_matrix() : super_type() {}
-  localized_matrix(int rows, int cols) : super_type(rows, cols) {}
-
-  template<typename U>
-  localized_matrix(U const& other) : super_type(other) {}
-  template<typename U>
-  matrix_type& operator=(U const& other) { super_type::operator=(other); return *this; } 
-};
-
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
 void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {
