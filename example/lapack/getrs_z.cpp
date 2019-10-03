@@ -20,14 +20,14 @@ int main(int argc, char** argv) {
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
   // generate matrix and rhs vector
-  rokko::zlmatrix a = rokko::zlmatrix::Random(n, n);
+  Eigen::MatrixXcd a = Eigen::MatrixXcd::Random(n, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
   Eigen::VectorXcd b(n);
   for (int i = 0; i < n; ++i) b(i) = i * i + 1;
   std::cout << "Vector b: " << std::endl << b << std::endl;
 
   // solve linear equation
-  rokko::zlmatrix lu = a;
+  Eigen::MatrixXcd lu = a;
   Eigen::VectorXcd x = b;
   Eigen::VectorXi ipiv(n);
   rokko::lapack::getrf(lu, ipiv);

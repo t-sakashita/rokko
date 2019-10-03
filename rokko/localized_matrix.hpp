@@ -102,11 +102,6 @@ public:
   void print() const { std::cout << *this << std::endl; }
 };
 
-typedef localized_matrix<float> slmatrix;
-typedef localized_matrix<double> dlmatrix;
-typedef localized_matrix<std::complex<float>> clmatrix;
-typedef localized_matrix<std::complex<double>> zlmatrix;
-
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
 void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {

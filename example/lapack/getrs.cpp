@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
   // generate matrix and rhs vector
-  rokko::dlmatrix a(n, n);
+  Eigen::MatrixXd a(n, n);
   for (int j = 0; j < n; ++j) {
     for (int i = 0; i < n; ++i) {
       a(i, j) = std::min(i, j) + 1;
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   std::cout << "Vector b: " << std::endl << b << std::endl;
 
   // solve linear equation
-  rokko::dlmatrix lu = a;
+  Eigen::MatrixXd lu = a;
   Eigen::VectorXd x = b;
   Eigen::VectorXi ipiv(n);
   rokko::lapack::getrf(lu, ipiv);

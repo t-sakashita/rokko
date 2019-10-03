@@ -24,8 +24,8 @@ TEST(lange, pdlange) {
   int n = 30;
 
   // generate matrix
-  rokko::dlmatrix a(m, n);
-  if (grid.get_myrank() == 0) a = rokko::dlmatrix::Random(m, n);
+  Eigen::MatrixXd a(m, n);
+  if (grid.get_myrank() == 0) a = Eigen::MatrixXd::Random(m, n);
   
   // distributed matrix
   rokko::mapping_bc<rokko::matrix_col_major> map(m, n, grid, 1, 1);

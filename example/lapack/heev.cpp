@@ -20,12 +20,12 @@ int main(int argc, char** argv) {
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
   // generate matrix
-  rokko::zlmatrix a = rokko::zlmatrix::Random(n, n);
+  Eigen::MatrixXcd a = Eigen::MatrixXcd::Random(n, n);
   a += a.adjoint().eval(); // eval() is required to avoid aliasing issue
   std::cout << "Matrix A: " << std::endl << a << std::endl;
 
   // diagonalization
-  rokko::zlmatrix u = a;
+  Eigen::MatrixXcd u = a;
   Eigen::VectorXd w(n);
   int info = rokko::lapack::heev('V', 'U', u, w);
   if (info) throw std::runtime_error("Error: heev failed");
@@ -33,13 +33,13 @@ int main(int argc, char** argv) {
   std::cout << "Eigenvectors: " << std::endl << u << std::endl;
 
   // orthogonality check
-  rokko::zlmatrix check1 = u.adjoint() * u - rokko::zlmatrix::Identity(n, n);
+  Eigen::MatrixXcd check1 = u.adjoint() * u - Eigen::MatrixXcd::Identity(n, n);
   double norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| U^t U - I || = " << norm1 << std::endl;
   if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
 
   // eigenvalue check
-  rokko::zlmatrix check2 = u.adjoint() * a * u;
+  Eigen::MatrixXcd check2 = u.adjoint() * a * u;
   for (int i = 0; i < n; ++i) check2(i, i) -= w(i);
   double norm2 = rokko::lapack::lange('F', check2);
   std::cout << check2 << std::endl;

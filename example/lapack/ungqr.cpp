@@ -29,11 +29,11 @@ int main(int argc, char** argv) {
   if (m < n) throw std::invalid_argument("Error: m < n");
   
   // generate matrix
-  Eigen::VectorXcd a = rokko::zlmatrix::Random(m, n);
+  Eigen::VectorXcd a = Eigen::MatrixXcd::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
 
   // orthonormaliation
-  rokko::zlmatrix mat = a;
+  Eigen::MatrixXcd mat = a;
   Eigen::VectorXcd tau(k);
   int info = rokko::lapack::geqrf(mat, tau);
   if (info) throw std::runtime_error("Error: geqrf failed");
@@ -44,20 +44,20 @@ int main(int argc, char** argv) {
       r(i, j) = 0;
   std::cout << "Upper triangle matrix R:" << std::endl << r << std::endl;
   info = rokko::lapack::orgqr(k, mat, tau);
-  rokko::zlmatrix q(m, k);
+  Eigen::MatrixXcd q(m, k);
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < k; ++j)
       q(i, j) = mat(i, j);
   std::cout << "Orthonormalized column vectors Q:" << std::endl << q << std::endl;
   
   // orthogonality check
-  rokko::zlmatrix check1 = q.adjoint() * q - rokko::zlmatrix::Identity(k, k);
+  Eigen::MatrixXcd check1 = q.adjoint() * q - Eigen::MatrixXcd::Identity(k, k);
   double norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| Q^t Q - I || = " << norm1 << std::endl;
   if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
 
   // solution check
-  rokko::zlmatrix check2 = q * r - a;
+  Eigen::MatrixXcd check2 = q * r - a;
   double norm2 = rokko::lapack::lange('F', check2);
   std::cout << "|| Q R - A || = " << norm2 << std::endl;
   if (norm2 > 1e-10) throw std::runtime_error("Error: solution check");

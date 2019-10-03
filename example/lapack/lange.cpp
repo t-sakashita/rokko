@@ -18,19 +18,19 @@ int main() {
   int m = 5;
   int n = 3;
   
-  rokko::slmatrix a = rokko::slmatrix::Random(m, n);
+  Eigen::MatrixXf a = Eigen::MatrixXf::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
   std::cout << "|| A || = " << rokko::lapack::lange('F', a) << std::endl;
 
-  rokko::dlmatrix b = rokko::dlmatrix::Random(m, n);
+  Eigen::MatrixXd b = Eigen::MatrixXd::Random(m, n);
   std::cout << "Matrix B: " << std::endl << b << std::endl;
   std::cout << "|| B || = " << rokko::lapack::lange('F', b) << std::endl;
 
-  rokko::clmatrix c = rokko::clmatrix::Random(m, n);
+  Eigen::MatrixXcf c = Eigen::MatrixXcf::Random(m, n);
   std::cout << "Matrix : C" << std::endl << c << std::endl;
   std::cout << "|| C || = " << rokko::lapack::lange('F', c) << std::endl;
 
-  rokko::zlmatrix d = rokko::zlmatrix::Random(m, n);
+  Eigen::MatrixXcd d = Eigen::MatrixXcd::Random(m, n);
   std::cout << "Matrix D: " << std::endl << d << std::endl;
   std::cout << "|| D || = " << rokko::lapack::lange('F', d) << std::endl;
   
