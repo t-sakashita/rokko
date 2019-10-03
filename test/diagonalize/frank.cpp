@@ -21,10 +21,10 @@ template<typename MATRIX_MAJOR>
 void test(int dim, std::string const& name) {
   rokko::serial_dense_ev solver(name);
   solver.initialize(global_argc, global_argv);
-  rokko::localized_matrix<double, MATRIX_MAJOR> mat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   Eigen::VectorXd eigval(dim);
-  rokko::localized_matrix<double, MATRIX_MAJOR> eigvec(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> eigvec(dim, dim);
 
   solver.diagonalize(mat, eigval, eigvec);
   

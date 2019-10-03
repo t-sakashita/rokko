@@ -17,8 +17,8 @@
 
 typedef rokko::matrix_col_major matrix_major;
 
-template<typename MATRIX_MAJOR, typename VEC>
-void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+template<int MATRIX_MAJOR, typename VEC>
+void default_diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
 			 rokko::parameters const& params) {
   rokko::serial_dense_ev solver(rokko::serial_dense_ev::default_solver());
   int argc;
@@ -27,9 +27,9 @@ void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC
   solver.diagonalize(mat, eigvals, params);
 }
 
-template<typename MATRIX_MAJOR, typename VEC>
-void default_diagonalize(rokko::localized_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-			 rokko::localized_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<int MATRIX_MAJOR, typename VEC>
+void default_diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
+			 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params) {
   rokko::serial_dense_ev solver(rokko::serial_dense_ev::default_solver());
   int argc;
@@ -56,12 +56,12 @@ int main(int argc, char *argv[]) {
   rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
 
-  rokko::localized_matrix<double, matrix_major> mat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   std::cout << "Frank matrix:\n" << mat << std::endl;
 
   Eigen::VectorXd eigval(dim);
-  rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
   rokko::parameters params;
   params.set("upper_value", 1.2);
   params.set("lower_value", 0.1);

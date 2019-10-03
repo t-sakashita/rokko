@@ -39,8 +39,8 @@ void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_mat
   product(1, Binvroot, false, tmp, false, 0, eigvec);
 }
 
-template<typename T, typename MATRIX_MAJOR>
-void set_A_B(rokko::localized_matrix<T, MATRIX_MAJOR>& locA, rokko::localized_matrix<T, MATRIX_MAJOR>& locB) {
+template<typename T, int MATRIX_MAJOR>
+void set_A_B(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& locA, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& locB) {
   if ((locA.rows() != 4) || (locA.cols() != 4) || (locB.rows() != 4) || (locB.cols() != 4)) {
     std::cerr << "error: size must be 4!" << std::endl;
     throw;

@@ -36,11 +36,11 @@ int main(int argc, char *argv[]) {
             << "L = " << L << std::endl
             << "dimension = " << dim << std::endl;
 
-  rokko::localized_matrix<double, matrix_major> mat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
 
   Eigen::VectorXd eigval(dim);
-  rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

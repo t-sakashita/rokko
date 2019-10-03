@@ -17,7 +17,7 @@
 
 template<typename T, typename MATRIX_MAJOR>
 void test(int dim) {
-  rokko::localized_matrix<T, MATRIX_MAJOR> mat(dim, dim);
+  Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> mat(dim, dim);
   Eigen::VectorXd diag(dim);
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
   rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);  

@@ -22,7 +22,7 @@ int global_argc;
 char** global_argv;
 
 template<typename T, typename MATRIX_MAJOR>
-void localized_2_distributed(const rokko::localized_matrix<T, MATRIX_MAJOR>& lmat, rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
+void localized_2_distributed(const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>>& lmat, rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   if (mat.get_m_global() != mat.get_n_global())
     throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
   for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
@@ -43,7 +43,7 @@ TEST(localized2distributed_matrix, localized2distributed_matrix) {
     solver.initialize(global_argc, global_argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
-    rokko::localized_matrix<double, rokko::matrix_col_major> lmat(dim, dim);
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> lmat(dim, dim);
     rokko::frank_matrix::generate(lmat);
     localized_2_distributed(lmat, mat);
     rokko::frank_matrix::generate(mat);

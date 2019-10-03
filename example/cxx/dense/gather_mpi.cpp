@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   rokko::frank_matrix::generate(mat);
   mat.print();
 
-  rokko::localized_matrix<double, matrix_major> lmat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> lmat(dim, dim);
   rokko::gather(mat, lmat, 0);
   if (g.get_myrank() == 0)
     std::cout << "lmat:" << std::endl << lmat << std::endl;

@@ -58,7 +58,7 @@ void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_mat
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void set_A_B(rokko::localized_matrix<T, MATRIX_MAJOR>& locA, rokko::localized_matrix<T, MATRIX_MAJOR>& locB) {
+void set_A_B(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>>& locA, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>>& locB) {
   if ((locA.rows() != 4) || (locA.cols() != 4) || (locB.rows() != 4) || (locB.cols() != 4)) {
     std::cerr << "error: size must be 4!" << std::endl;
     throw;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::localized_matrix<double, matrix_major> locA(dim, dim), locB(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> locA(dim, dim), locB(dim, dim);
   set_A_B(locA, locB);
   if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;  
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 
   diagonalize_fixedB(solver, A, B, eigval, eigvec);
 
-  rokko::localized_matrix<double, matrix_major> eigvec_loc(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
 
   set_A_B(locA, locB);

@@ -36,12 +36,12 @@ int main(int argc, char *argv[]) {
   rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
 
-  rokko::localized_matrix<double, matrix_major> mat(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
   rokko::minij_matrix::generate(mat);
   std::cout << "minij matrix:\n" << mat << std::endl;
 
   Eigen::VectorXd eigval(dim);
-  rokko::localized_matrix<double, matrix_major> eigvec(dim, dim);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
   rokko::parameters params;
   params.set("routine", routine);
   params.set("upper_value", 10);
