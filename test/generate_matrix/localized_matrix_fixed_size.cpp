@@ -34,7 +34,7 @@ TEST(localized_matrix, fixed_size) {
   //              137
 
   int dim = 3;
-  rokko::localized_matrix<double, rokko::matrix_row_major, 3, 3> M(dim,dim);
+  Eigen::Matrix<double,3,3,Eigen::RowMajor> M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
   double a = 5.0;
   Eigen::Vector3d u(dim);
