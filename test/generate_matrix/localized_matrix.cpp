@@ -34,7 +34,7 @@ TEST(localized_matrix, 123) {
   //              137
 
   int dim = 3;
-  rokko::localized_matrix<double> M(dim,dim);
+  Eigen::MatrixXd M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
   std::cout << M << std::endl;
   double a = 5.0;
