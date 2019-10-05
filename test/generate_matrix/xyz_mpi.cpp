@@ -39,9 +39,7 @@ int main(int argc, char *argv[]) {
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  MPI_Status status;
   const int root = 0;
-  int ierr;
 
   if (myrank == root) {
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;

@@ -12,7 +12,7 @@
 #include <rokko/parameters.h>
 #include <stdio.h>
 
-int main(int argc, char **argv) {
+int main(/* int argc , char** argv */) {
   struct rokko_parameters params;
   rokko_parameters_construct(&params);
   char p = 'V';
