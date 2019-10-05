@@ -24,13 +24,13 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& /* grid_major */) { return true; }
-  void initialize(int& /* argc, char**& /* argv */) {
+  void initialize(int& /* argc */, char**& /* argv */) {
     if (elpa_init(20190524) != ELPA_OK) {
       throw std::invalid_argument("ERROR: elpa::initialize()");
     }
   }
   void finalize() {
-    int error;
+    // int error;
     // elpa_uninit(&error);
   }
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
