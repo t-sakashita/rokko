@@ -11,11 +11,12 @@
 
 module mod_frank
   use iso_c_binding
-  double precision, allocatable, dimension(:,:) :: localized_array
+  real(c_double), allocatable, dimension(:,:) :: localized_array
   contains
-    double precision function func(i, j) bind(c)
-      integer, value, intent(in) :: i, j
-!      print *, "i=", i
+    function func(i, j) bind(c)
+      use iso_c_binding
+      real(c_double) :: func
+      integer(c_int), value, intent(in) :: i, j
       func = localized_array(i+1,j+1)
     end function func
 end module mod_frank

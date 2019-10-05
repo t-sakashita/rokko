@@ -15,7 +15,9 @@ module frank_mod
   public frank_matrix_element
   integer(c_int), private :: dim
 contains
-  double precision function frank_matrix_element(i, j) bind(c)
+  function frank_matrix_element(i, j) bind(c)
+    use iso_c_binding
+    real(c_double) frank_matrix_element
     integer(c_int), value, intent(in) :: i, j
     frank_matrix_element = dble(dim - max(i, j))
   end function frank_matrix_element

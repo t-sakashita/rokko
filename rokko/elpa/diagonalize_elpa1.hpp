@@ -90,7 +90,7 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
 template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			     VEC& eigvals,
-			     parameters const& params) {
+			     parameters const& /* params */) {
   parameters params_out;
   if(mat.is_row_major())
     throw std::invalid_argument("elpa::diagonalize_elpa1() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");

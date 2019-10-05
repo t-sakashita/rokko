@@ -48,11 +48,11 @@ public:
   ~laplacian_op() {}
 
   void multiply(const double* x, double* y) const {
-    MPI_Status *status;
+    MPI_Status status;
     if (!is_first_proc) {
       //std::cout << "recv myrank=" << myrank << std::endl;
       MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
-      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, status);
+      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status);
       y[0] = - buf + 2 * x[0] - x[1];
     }
     else { // for the first process 0
@@ -61,7 +61,7 @@ public:
     if (!is_last_proc) {
       //std::cout << "send myrank=" << myrank << std::endl;
       MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
-      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank+1, 0, comm_, status);
+      MPI_Recv(&buf, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status);
       y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf;      
     }
     else { // for the last process
@@ -98,15 +98,12 @@ int main(int argc, char *argv[]) {
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  MPI_Status status;
   const int root = 0;
-  int ierr;
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 20;
   int N = N_seq / nprocs;
   double* recv_buffer = new double[N_seq];
-  double* send_buffer = new double[N];
   std::vector<double> buffer(N);
   laplacian_op op(N_seq);
   for (int i=0; i<N_seq; ++i) {
@@ -155,8 +152,7 @@ int main(int argc, char *argv[]) {
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
-
-
+  delete(recv_buffer);
   MPI_Finalize();
   return 0;
 }

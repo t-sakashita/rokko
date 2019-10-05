@@ -34,9 +34,7 @@ int main(int argc, char *argv[]) {
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  MPI_Status status;
   const int root = 0;
-  int ierr;
 
   if (myrank == root) {
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
@@ -64,7 +62,6 @@ int main(int argc, char *argv[]) {
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
   double* recv_buffer = new double[N_seq];
-  double* send_buffer = new double[N];
   std::vector<double> buffer(N);
   for (int i=0; i<N; ++i) {
     // sequential version
@@ -121,7 +118,6 @@ int main(int argc, char *argv[]) {
       }
     }
     MPI_Barrier(MPI_COMM_WORLD);
-
   }
 
   // test fill_diagonal of quantum heisenberg hamiltonian.
@@ -175,7 +171,7 @@ int main(int argc, char *argv[]) {
       exit(1);
     }
   }
-
+  delete(recv_buffer);
   MPI_Finalize();
   return 0;
 }

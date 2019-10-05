@@ -102,7 +102,7 @@ protected:
   void calculate_sizes_cart(grid_row_major_t) {
     int cart_dim = 2;
     int dims[2], periods[2], coords[2];
-    int ierr = MPI_Cart_get(comm, cart_dim, dims, periods, coords);
+    /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims, periods, coords);
     nprow = dims[0];
     npcol = dims[1];
 
@@ -118,14 +118,14 @@ protected:
 
   bool is_MPI_Cart(MPI_Comm comm) {
     int topo_type;
-    int ierr = MPI_Topo_test(comm, &topo_type);
+    /* int ierr = */ MPI_Topo_test(comm, &topo_type);
     return topo_type == MPI_CART;
   }
 
   bool is_MPI_2dim_Cart(MPI_Comm comm) {
     if (is_MPI_Cart(comm)) {
       int cart_dim;
-      int ierr =  MPI_Cartdim_get(comm, &cart_dim);
+      /* int ierr = */ MPI_Cartdim_get(comm, &cart_dim);
       return cart_dim == 2;
     } else {
       return false;
