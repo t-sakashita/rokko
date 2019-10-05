@@ -14,21 +14,26 @@
 
 #include <rokko/utility/matrix012.hpp>
 
-#include <rokko/pyrokko_localized_matrix.hpp>
 #include <rokko/pyrokko_distributed_matrix.hpp>
 
 namespace rokko {
 
 class wrap_matrix012 {
 public:
-
-  static void generate(wrap_localized_matrix& mat) {
-    if (mat.is_major_col())
-      matrix012::generate(mat.col_ver());
-    else
-      matrix012::generate(mat.row_ver());
+  static void generate_row(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> mat_in) {
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> mat;
+    new (&mat) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>(mat_in);
+    matrix012::generate(mat);
+    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>();
   }
-  
+
+  static void generate_col(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> mat_in) {
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat;
+    new (&mat) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>(mat_in);
+    matrix012::generate(mat);
+    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>();
+  }
+
   static void generate(wrap_distributed_matrix& mat) {
     if (mat.is_major_col())
       matrix012::generate(mat.col_ver());

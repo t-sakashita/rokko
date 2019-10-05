@@ -190,22 +190,25 @@ PYBIND11_MODULE(pyrokko, m) {
 
 
   py::class_<wrap_minij_matrix>(m, "minij_matrix")
-    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_minij_matrix::generate))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_minij_matrix::generate_row))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_minij_matrix::generate_col))
     .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_minij_matrix::generate))
     .def_static("eigenvalue", &minij_matrix::eigenvalue);
   
   py::class_<wrap_frank_matrix>(m, "frank_matrix")
-    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_frank_matrix::generate))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_frank_matrix::generate_row))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_frank_matrix::generate_col))
     .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate))
     .def_static("eigenvalue", &frank_matrix::eigenvalue);
 
   py::class_<wrap_laplacian_matrix>(m, "laplacian_matrix")
-    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_laplacian_matrix::generate))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_laplacian_matrix::generate))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_laplacian_matrix::generate_row))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_laplacian_matrix::generate_col))
     .def_static("eigenvalue", &laplacian_matrix::eigenvalue);
 
   py::class_<wrap_matrix012>(m, "matrix012")
-    .def_static("generate", py::overload_cast<wrap_localized_matrix&>(&wrap_matrix012::generate))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_matrix012::generate_row))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_matrix012::generate_col))
     .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_matrix012::generate));
 
   // collective MPI communication
