@@ -24,13 +24,13 @@ namespace rokko {
 
 class frank_matrix {
 public:
-  template<typename T, int MATRIX_MAJOR>
-  static void generate(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
+  template<typename T, int ROWS, int COLS, int MAJOR>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    int n = mat.rows();
-    for(int i = 0; i < n; ++i) {
-      for(int j = 0; j < n; ++j) {
+    const int n = mat.rows();
+    for(int i = 0; i < mat.rows(); ++i) {
+      for(int j = 0; j < mat.cols(); ++j) {
         mat(i,j) = n - std::max(i, j);
       }
     }

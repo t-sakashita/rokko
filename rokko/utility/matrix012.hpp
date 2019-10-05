@@ -30,8 +30,8 @@ public:
     return mat.cols() * global_i + global_j;
   }
   
-  template<typename T, int MATRIX_MAJOR>
-  static void generate(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
+  template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat) {
     int n = mat.rows();
     for(int i = 0; i < mat.rows(); ++i) {
       for(int j = 0; j < mat.cols(); ++j) {
