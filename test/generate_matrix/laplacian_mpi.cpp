@@ -14,8 +14,7 @@
 
 #include <rokko/solver.hpp>
 #include <rokko/grid.hpp>
-#include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/distributed_mfree.hpp>
 
 #include <rokko/collective.hpp>
 

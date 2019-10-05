@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
   if (m < n) throw std::invalid_argument("Error: m < n");
   
   // generate matrix
-  Eigen::VectorXcd a = Eigen::MatrixXcd::Random(m, n);
+  Eigen::MatrixXcd a = Eigen::MatrixXcd::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
 
   // orthonormaliation
