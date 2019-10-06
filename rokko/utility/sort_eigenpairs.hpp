@@ -40,10 +40,10 @@ namespace rokko {
 // sort eivanvalue and eigenvectors 
 
 
-template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
-void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
+template<typename T, int MATRIX_MAJOR>
+void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic>& eigval,
                      const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec,
-                     Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval_sorted,
+                     Eigen::Vector<T, Eigen::Dynamic>& eigval_sorted,
                      Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   int dim = eigval.size();
@@ -71,15 +71,6 @@ void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
       eigvec_sorted.row(i) = eigvec.row(entries[i].second);
     }
   }
-}
-
-template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
-void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigval,
-                     const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec,
-                     Eigen::Ref<Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>> eigval_sorted,
-                     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec_sorted,
-                     bool ascending = true) {
-  sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted, ascending);
 }
 
 } // namespace rokko

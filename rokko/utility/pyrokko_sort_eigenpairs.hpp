@@ -12,21 +12,52 @@
 #ifndef PYROKKO_UTILITY_SORT_EIGENPAIRS_HPP
 #define PYROKKO_UTILITY_SORT_EIGENPAIRS_HPP
 
-#include <rokko/utility/sort_eigenpairs.hpp>
+#include <rokko/eigen3.hpp>
 
-#include <rokko/pyrokko_localized_matrix.hpp>
+#include <rokko/utility/sort_eigenpairs.hpp>
 
 namespace rokko {
 
-void pyrokko_sort_eigenpairs(const Eigen::Vector<double>& eigval,
-                             const wrap_localized_matrix& eigvec,
-                             Eigen::Ref<Eigen::Vector<double>>& eigval_sorted,
-                             wrap_localized_matrix& eigvec_sorted,
-                             bool ascending = true) {
-  if (eigvec.is_major_col())
-    sort_eigenpairs(eigval, eigvec.col_ver(), eigval_sorted, eigvec_sorted.col_ver(), ascending);
-  else
-    sort_eigenpairs(eigval, eigvec.row_ver(), eigval_sorted, eigvec_sorted.row_ver(), ascending);
+void pyrokko_sort_eigenpairs_row(Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>> eigval_in,
+                                 Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> eigvec_in,
+                                 Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>> eigval_sorted_in,
+                                 Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> eigvec_sorted_in,
+                                 bool ascending = true) {
+  Eigen::Vector<double,Eigen::Dynamic> eigval, eigval_sorted;
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> eigvec(eigvec_in.rows(),eigvec_in.cols()), eigvec_sorted(eigvec_in.rows(),eigvec_in.cols());
+
+  new (&eigval) Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>(eigval_in);
+  new (&eigvec) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>(eigvec_in);
+  new (&eigval_sorted) Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>(eigval_sorted_in);
+  new (&eigvec_sorted) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>(eigvec_sorted_in);
+
+  sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted, ascending);
+
+  new (&eigval) Eigen::Vector<double, Eigen::Dynamic>();
+  new (&eigvec) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>();
+  new (&eigval_sorted) Eigen::Vector<double, Eigen::Dynamic>();
+  new (&eigvec_sorted) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>();
+}
+
+void pyrokko_sort_eigenpairs_col(Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>> eigval_in,
+                                 Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> eigvec_in,
+                                 Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>> eigval_sorted_in,
+                                 Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> eigvec_sorted_in,
+                                 bool ascending = true) {
+  Eigen::Vector<double,Eigen::Dynamic> eigval, eigval_sorted;
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> eigvec(eigvec_in.rows(),eigvec_in.cols()), eigvec_sorted(eigvec_in.rows(),eigvec_in.cols());
+
+  new (&eigval) Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>(eigval_in);
+  new (&eigvec) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>(eigvec_in);
+  new (&eigval_sorted) Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>(eigval_sorted_in);
+  new (&eigvec_sorted) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>(eigvec_sorted_in);
+
+  sort_eigenpairs(eigval, eigvec, eigval_sorted, eigvec_sorted, ascending);
+
+  new (&eigval) Eigen::Vector<double, Eigen::Dynamic>();
+  new (&eigvec) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>();
+  new (&eigval_sorted) Eigen::Vector<double, Eigen::Dynamic>();
+  new (&eigvec_sorted) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>();
 }
 
 } // namespace rokko
