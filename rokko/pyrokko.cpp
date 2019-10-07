@@ -25,8 +25,6 @@
 #include <rokko/pyrokko_parallel_dense_ev.hpp>
 #include <rokko/pyrokko_collective.hpp>
 
-#include <rokko/pyrokko_localized_matrix.hpp>
-
 #include <rokko/utility/pyrokko_minij_matrix.hpp>
 #include <rokko/utility/pyrokko_frank_matrix.hpp>
 #include <rokko/utility/pyrokko_laplacian_matrix.hpp>
@@ -69,13 +67,6 @@ PYBIND11_MODULE(pyrokko, m) {
   py::enum_<matrix_major_enum>(m, "matrix_major")
     .value("row", matrix_major_enum::row)
     .value("col", matrix_major_enum::col);
-  
-  py::class_<wrap_localized_matrix>(m, "localized_matrix")
-    .def(py::init<matrix_major_enum>(), py::arg("major") = col)
-    .def(py::init<int, int, matrix_major_enum>(), py::arg("rows"), py::arg("cols"), py::arg("major") = col)
-    .def("generate", &wrap_localized_matrix::generate)
-    .def_property_readonly("major", &wrap_localized_matrix::get_major_string);
-
 
   py::class_<wrap_serial_dense_ev>(m, "serial_dense_ev")
     .def(py::init<std::string const&>())

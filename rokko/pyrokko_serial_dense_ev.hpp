@@ -12,7 +12,6 @@
 #ifndef PYROKKO_SERIAL_DENSE_EV_HPP
 #define PYROKKO_SERIAL_DENSE_EV_HPP
 
-#include <rokko/pyrokko_localized_matrix.hpp>
 #include <rokko/pyrokko_parameters.hpp>
 #include <rokko/serial_dense_ev.hpp>
 
