@@ -216,8 +216,11 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_matrix012::generate));
 
   // collective MPI communication
-  m.def("gather", &pyrokko_gather);
-  m.def("scatter", &pyrokko_scatter);
+  m.def("gather", py::overload_cast<wrap_distributed_matrix const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather));
+  m.def("gather", py::overload_cast<wrap_distributed_matrix const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather));
+
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix&, int>(&pyrokko_scatter));
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix&, int>(&pyrokko_scatter));
 
   py::class_<distributed_mfree>(m, "distributed_mfree_base");
 

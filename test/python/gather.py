@@ -9,7 +9,7 @@
 
 import mpi4py
 import pyrokko
-import numpy as np
+import numpy
 
 dim = 4
 
@@ -17,12 +17,13 @@ g = pyrokko.grid(pyrokko.grid_row_major)
 map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.col)
 mat = pyrokko.distributed_matrix(map)
 pyrokko.matrix012.generate(mat)
-mat_loc = pyrokko.localized_matrix(dim, dim, pyrokko.matrix_major.col)
+
+mat_loc = numpy.ndarray((dim, dim), order='F')
 
 pyrokko.gather(mat, mat_loc, 0)
 
-if (mpi4py.MPI.COMM_WORLD.Get_rank() == 0):
-    mat_ref = np.arange(dim**2, dtype='float').reshape(mat_loc.local_shape)
-    assert(mat_loc.ndarray.all() == mat_ref.all())
+if (g.myrank == 0):
+    mat_ref = numpy.arange(dim**2, dtype='float').reshape(mat_loc.shape)
+    assert(mat_loc.all() == mat_ref.all())
 
 mpi4py.MPI.Finalize()

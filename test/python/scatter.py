@@ -13,18 +13,20 @@ import numpy as np
 
 dim = 4
 
-mat_loc = pyrokko.localized_matrix(dim, dim, pyrokko.matrix_major.col)
-mat_loc.ndarray = np.arange(dim**2, dtype='float').reshape(mat_loc.local_shape)
+mat_loc = np.arange(dim**2, dtype='float').reshape((dim,dim), order='F')
+#mat_loc = np.arange(dim**2, dtype='float').reshape((dim,dim), order='C')
 
 g = pyrokko.grid(pyrokko.grid_row_major)
 map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.col)
+#map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.row)
 mat = pyrokko.distributed_matrix(map)
 
 pyrokko.scatter(mat_loc, mat, 0)
 
-mat_ref = pyrokko.distributed_matrix(map)
-pyrokko.matrix012.generate(mat_ref)
-
-assert(mat.ndarray.all() == mat_ref.ndarray.all())
+if g.myrank == 0:
+    print("mat_loc=")
+    print(mat_loc)
+    print("mat=")
+mat.print()
 
 mpi4py.MPI.Finalize()
