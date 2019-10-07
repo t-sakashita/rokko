@@ -8,23 +8,25 @@
 #
 
 from pyrokko import *
+import numpy
 
-dim = 10
+dim = 5
 
-mat = localized_matrix(dim, dim, matrix_major.col)
-eigvec = localized_matrix(dim, dim, matrix_major.col)
-eigval = localized_vector(dim)
+mat = numpy.ndarray((dim, dim))#, order='F')
+eigval = numpy.ndarray(dim)
+eigvec = numpy.ndarray((dim, dim))#, order='F')
 
 frank_matrix.generate(mat)
-mat.print()
+print(mat)
 
 params = parameters()
-params.set("routine", "dsyevr")
+params.set("routine", "dsyev")
 params.set("verbose", True)
 solver = serial_dense_ev("lapack")
 solver.diagonalize(mat, eigval, eigvec, params)
+#solver.diagonalize(mat, eigval, params)
 
 print("Computed eigenvalues:")
-eigval.print()
+print(eigval)
 print("eigenvectors:")
-eigvec.print()
+print(eigvec)

@@ -30,25 +30,45 @@ public:
     serial_dense_ev::initialize(num, ptr);
   }
 
-  template<typename VEC>
-  wrap_parameters diagonalize(wrap_localized_matrix& mat, VEC& eigvals, wrap_localized_matrix& eigvecs,
+  template<int MAJOR>
+  wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
+             Eigen::Ref<Eigen::VectorXd> eigval_in,
+             Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> eigvec_in,
 			 wrap_parameters const& params) {
-    assert(mat.is_major_col() == eigvecs.is_major_col());
-    if (mat.is_major_col())
-      return serial_dense_ev::diagonalize(mat.col_ver(), eigvals, eigvecs.col_ver(), parameters(params));
-    else
-      return serial_dense_ev::diagonalize(mat.row_ver(), eigvals, eigvecs.row_ver(), parameters(params));
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvec;
+    Eigen::VectorXd eigval;
+
+    new (&mat) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
+    new (&eigval) Eigen::Ref<Eigen::VectorXd>(eigval_in);
+    new (&eigvec) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(eigvec_in.data(), eigvec_in.rows(), eigvec_in.cols());
+
+    wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, eigvec, parameters(params));
+
+    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&eigval) Eigen::VectorXd();
+    new (&eigvec) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+
+    return params_out;
   }
 
-  template<typename VEC>
-  wrap_parameters diagonalize(wrap_localized_matrix& mat, VEC& eigvals,
+  template<int MAJOR>
+  wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
+             Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>> eigval_in,
 			 wrap_parameters const& params) {
-    if (mat.is_major_col())
-      return serial_dense_ev::diagonalize(mat.col_ver(), eigvals, parameters(params));
-    else
-      return serial_dense_ev::diagonalize(mat.row_ver(), eigvals, parameters(params));
-  }
+    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
+    Eigen::Vector<double,Eigen::Dynamic> eigval;
 
+    new (&mat) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
+    new (&eigval) Eigen::Ref<Eigen::VectorXd>(eigval_in);
+
+    wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, parameters(params));
+
+    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&eigval) Eigen::Vector<double, Eigen::Dynamic>();
+
+    return params_out;
+  }
 };
 
 } // end namespace rokko

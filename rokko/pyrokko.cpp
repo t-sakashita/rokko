@@ -82,10 +82,14 @@ PYBIND11_MODULE(pyrokko, m) {
     .def(py::init<>())
     //.def("initialize", py::overload_cast<int&, char**&>(&serial_dense_ev::initialize))
     .def("finalize", &serial_dense_ev::finalize)
-    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::RefVec<double>>),
-         py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_localized_matrix&, Eigen::RefVec<double>&, wrap_localized_matrix&, wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::RefVec<double>>),
-         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::RowMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::ColMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::RowMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<Eigen::ColMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &serial_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &serial_dense_ev::default_solver);
 

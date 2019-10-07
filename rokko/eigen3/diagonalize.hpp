@@ -47,18 +47,6 @@ parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJO
 }
 
 template<typename T, int MATRIX_MAJOR>
-parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::RefVec<T>& eigvals,
-		       rokko::parameters const& params) {
-  parameters params_out;
-  if (get_matrix_part(params) == 'U') {
-    throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
-  }
-  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
-  eigvals = ES.eigenvalues();
-  return params_out;
-}
-
-template<typename T, int MATRIX_MAJOR>
 parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, std::vector<T>& eigvals_in,
 		       rokko::parameters const& params) {
   parameters params_out;
@@ -76,19 +64,6 @@ parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJO
 // eigenvalues/eigenvectors
 template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
 parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> & eigvals,
-		       Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
-  parameters params_out;
-  if (get_matrix_part(params) == 'U') {
-    throw std::invalid_argument("eigen3::diagonalize() : Eigen3's SelfAdjointEigenSolver does not support upper part of matrix.");
-  }
-  Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>> ES(mat);
-  eigvals = ES.eigenvalues();
-  eigvecs = ES.eigenvectors();
-  return params_out;
-}
-
-template<typename T, int MATRIX_MAJOR>
-parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::RefVec<T>& eigvals,
 		       Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
