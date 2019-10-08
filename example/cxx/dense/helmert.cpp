@@ -31,8 +31,10 @@ int main(int argc, char *argv[]) {
             << "dimension = " << dim << std::endl;
 
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
-  rokko::helmert_matrix::generate(mat);
-  std::cout << "Helmert matrix:\n" << mat << std::endl;
+  Eigen::VectorXd diag(dim);
+  diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
+  rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
+  std::cout << "matrix whose eigenvectors are Helmert matrix:\n" << mat << std::endl;
 
   Eigen::VectorXd eigval(dim);
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
@@ -43,7 +45,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }
-  rokko::helmert_matrix::generate(mat);
+  rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
 
   bool sorted = true;
   for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
