@@ -25,11 +25,11 @@ namespace rokko {
 
 class parameters {
 private:
-  typedef std::map<std::string, boost::any> map_type;
-  typedef map_type::mapped_type mapped_type;
+  using map_type = std::map<std::string, boost::any>;
+  using mapped_type = map_type::mapped_type;
 public:
-  typedef map_type::key_type key_type;
-  typedef map_type::value_type value_type;
+  using key_type = map_type::key_type;
+  using value_type = map_type::value_type;
 
   parameters() {}
   parameters(parameters const& map_in) : map_(map_in.get_map()) {}

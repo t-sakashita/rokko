@@ -17,7 +17,7 @@ namespace rokko {
 template<typename T>
 class distributed_vector {
 public:
-  typedef T value_type;
+  using value_type = T;
   distributed_vector() {}
   distributed_vector(int n_global, int begin_local, int end_local) {
     initialize(n_global, begin_local, end_local);

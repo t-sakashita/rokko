@@ -24,7 +24,7 @@ namespace rokko {
 template <typename MATRIX_MAJOR>
 class mapping_bc : public mapping_global2local, public mapping_local2array<MATRIX_MAJOR> {
 public:
-  typedef MATRIX_MAJOR matrix_major;
+  using matrix_major = MATRIX_MAJOR;
   explicit mapping_bc() {}
   explicit mapping_bc(int global_dim, int block_size)
     : mapping_global2local(global_dim, block_size, grid()),

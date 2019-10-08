@@ -18,7 +18,7 @@ namespace rokko {
 
 template<typename T>
 struct major_t {
-  typedef typename T::major_type type;
+  using type = typename T::major_type;
 };
 
 } // namespace rokko

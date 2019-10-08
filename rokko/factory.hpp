@@ -40,11 +40,11 @@ private:
   };
 
 public:
-  typedef std::shared_ptr<BASE> product_pointer_type;
+  using product_pointer_type = std::shared_ptr<BASE>;
 
 private:
-  typedef std::shared_ptr<abstract_creator> creator_pointer_type;
-  typedef std::map<std::string, creator_pointer_type> creator_map_type;
+  using creator_pointer_type = std::shared_ptr<abstract_creator>;
+  using creator_map_type = std::map<std::string, creator_pointer_type>;
 public:
   factory() : largest_priority_(0) {}
   static product_pointer_type make_product(std::string const& name = "") {

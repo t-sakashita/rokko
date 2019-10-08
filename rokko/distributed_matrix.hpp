@@ -31,7 +31,7 @@ class parallel_dense_ev;
 template<typename T, typename MATRIX_MAJOR = rokko::matrix_col_major>
 class distributed_matrix {
 public:
-  typedef T value_type;
+  using value_type = T;
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(map_in) {
     bool is_col_major = std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
     if (is_col_major != map.is_col_major()) {

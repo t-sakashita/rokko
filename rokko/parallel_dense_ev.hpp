@@ -62,7 +62,7 @@ public:
   
 template<typename SOLVER>
 class pd_solver_wrapper : public pd_solver_base {
-  typedef SOLVER solver_type;
+  using solver_type = SOLVER;
 public:
   pd_solver_wrapper() : solver_impl_() {}
   virtual ~pd_solver_wrapper() {}
@@ -126,7 +126,7 @@ private:
   solver_type solver_impl_;
 };
 
-typedef factory<pd_solver_base> pd_solver_factory;
+using pd_solver_factory = factory<pd_solver_base>;
   
 } // end namespace detail
   
@@ -196,8 +196,8 @@ private:
 #define ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  typedef rokko::factory<rokko::detail::pd_solver_base> factory; \
-  typedef rokko::detail::pd_solver_wrapper<solver> product; \
+  using factory = rokko::factory<rokko::detail::pd_solver_base>; \
+  using product = rokko::detail::pd_solver_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

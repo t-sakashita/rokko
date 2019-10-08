@@ -58,7 +58,7 @@ struct clock {
 template<class CLOCK>
 class timer_base {
 private:
-  typedef CLOCK clock_t;
+  using clock_t = CLOCK;
 public:
   BOOST_STATIC_CONSTANT(int, detailed = (1 << 0));
   timer_base() {
@@ -262,9 +262,9 @@ public:
 } // namespace detail
 
 #ifndef ROKKO_DISABLE_TIMER
-typedef detail::timer_base<detail::clock> timer;
+using timer = detail::timer_base<detail::clock>;
 #else
-typedef detail::timer_dumb timer;
+using timer = detail::timer_dumb;
 #endif
 
 class global_timer : private boost::noncopyable {

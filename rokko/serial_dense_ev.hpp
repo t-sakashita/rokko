@@ -62,7 +62,7 @@ public:
   
 template<typename SOLVER>
 class sd_solver_wrapper : public sd_solver_base {
-  typedef SOLVER solver_type;
+  using solver_type = SOLVER;
 public:
   sd_solver_wrapper() : solver_impl_() {}
   virtual ~sd_solver_wrapper() {}
@@ -118,7 +118,7 @@ private:
   solver_type solver_impl_;
 };
     
-typedef factory<sd_solver_base> sd_solver_factory;
+using sd_solver_factory = factory<sd_solver_base>;
   
 } // end namespace detail
   
@@ -181,8 +181,8 @@ private:
 #define ROKKO_REGISTER_SERIAL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  typedef rokko::factory<rokko::detail::sd_solver_base> factory; \
-  typedef rokko::detail::sd_solver_wrapper<solver> product; \
+  using factory = rokko::factory<rokko::detail::sd_solver_base>; \
+  using product = rokko::detail::sd_solver_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

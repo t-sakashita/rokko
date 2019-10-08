@@ -70,9 +70,9 @@ static const char* const anasazi_solvers[] = { "LOBPCG", "BlockKrylovSchur", "Bl
 
 class solver {
 public:
-  typedef Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator> eigenproblem_t;
-  typedef Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator> solvermanager_lobpcg_t;
-  typedef Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator> solvermanager_t;
+  using eigenproblem_t = Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator>;
+  using solvermanager_lobpcg_t = Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>;
+  using solvermanager_t = Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator>;
 
   solver() {
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);

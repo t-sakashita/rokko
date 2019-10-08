@@ -44,7 +44,7 @@ public:
 
 template<typename SOLVER>
 class ps_solver_wrapper : public ps_solver_base {
-  typedef SOLVER solver_type;
+  using solver_type = SOLVER;
 public:
   ps_solver_wrapper() : solver_impl_() {}
   virtual ~ps_solver_wrapper() {}
@@ -73,7 +73,7 @@ private:
   solver_type solver_impl_;
 };
 
-typedef factory<ps_solver_base> ps_solver_factory;
+using ps_solver_factory = factory<ps_solver_base>;
   
 } // end namespace detail
   
@@ -125,8 +125,8 @@ private:
 #define ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  typedef rokko::factory<rokko::detail::ps_solver_base> factory; \
-  typedef rokko::detail::ps_solver_wrapper<solver> product; \
+  using factory = rokko::factory<rokko::detail::ps_solver_base>;  \
+  using product = rokko::detail::ps_solver_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

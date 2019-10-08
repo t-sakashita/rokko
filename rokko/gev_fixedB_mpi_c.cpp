@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 void diagonalize_fixedB(struct rokko_parallel_dense_ev* solver_in, struct rokko_distributed_matrix* A_in, struct rokko_distributed_matrix* B, struct rokko_localized_vector* eigval_in, struct rokko_distributed_matrix* eigvec_in, double tol) {
   rokko::mapping_bc<matrix_major> map = A->ptr->get_mapping();
