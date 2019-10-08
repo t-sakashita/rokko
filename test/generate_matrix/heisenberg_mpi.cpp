@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
       exit(1);
     }
   }
-  delete(recv_buffer);
+  delete[] recv_buffer;
   MPI_Finalize();
   return 0;
 }
