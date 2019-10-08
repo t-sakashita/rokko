@@ -251,10 +251,10 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_property_readonly("solver_name", &distributed_crs_matrix::get_solver_name);
 
   // utility functions
-  m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::RowMajor>),
+  m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::RowMajor>),
         py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
   
-  m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::ColMajor>),
+  m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::ColMajor>),
         py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
 
   m.def("split_solver_name", &wrap_split_solver_name);

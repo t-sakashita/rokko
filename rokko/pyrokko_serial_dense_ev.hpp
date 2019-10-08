@@ -53,10 +53,10 @@ public:
 
   template<int MAJOR>
   wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
-             Eigen::Ref<Eigen::Vector<double, Eigen::Dynamic>> eigval_in,
+             Eigen::Ref<Eigen::VectorXd> eigval_in,
 			 wrap_parameters const& params) {
     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
-    Eigen::Vector<double,Eigen::Dynamic> eigval;
+    Eigen::VectorXd eigval;
 
     new (&mat) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
     new (&eigval) Eigen::Ref<Eigen::VectorXd>(eigval_in);
@@ -64,7 +64,7 @@ public:
     wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, parameters(params));
 
     new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
-    new (&eigval) Eigen::Vector<double, Eigen::Dynamic>();
+    new (&eigval) Eigen::VectorXd();
 
     return params_out;
   }
