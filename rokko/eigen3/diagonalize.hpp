@@ -34,8 +34,8 @@ char get_matrix_part(rokko::parameters const& params) {
 }
 
 // only eigenvalues
-template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
-parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR>& eigvals,
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic>& eigvals,
 		       rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
@@ -62,8 +62,8 @@ parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJO
 }
 
 // eigenvalues/eigenvectors
-template<typename T, int MATRIX_MAJOR, int VEC_MAJOR>
-parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic, VEC_MAJOR> & eigvals,
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic> & eigvals,
 		       Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs, rokko::parameters const& params) {
   parameters params_out;
   if (get_matrix_part(params) == 'U') {
