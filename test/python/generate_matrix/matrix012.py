@@ -7,11 +7,15 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-import mpi4py
-import pyrokko
+from pyrokko import *
+import numpy
 
-dim = 4
+dim = 5
 
-mat = pyrokko.localized_matrix(dim, dim, pyrokko.matrix_major.col)
-pyrokko.matrix012.generate(mat)
-mat.print()
+mat = numpy.ndarray((dim, dim))
+matrix012.generate(mat)
+print(mat)
+
+mat_c = numpy.ndarray((dim, dim), order='F')
+matrix012.generate(mat_c)
+print(mat_c)
