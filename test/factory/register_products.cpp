@@ -21,7 +21,7 @@ public:
 
 template<typename SOLVER>
 class test_wrapper : public test_base {
-  typedef SOLVER solver_type;
+  using solver_type = SOLVER;
 public:
   test_wrapper() {}
   virtual ~test_wrapper() {}
@@ -51,7 +51,7 @@ public:
 };
 
 
-typedef rokko::factory<test_base> test_factory;
+using test_factory = rokko::factory<test_base>;
 
 template<>
 test_factory *test_factory::instance_ = nullptr;
@@ -59,8 +59,8 @@ test_factory *test_factory::instance_ = nullptr;
 #define ROKKO_REGISTER_TEST(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  typedef rokko::factory<test_base> factory; \
-  typedef test_wrapper<solver> product; \
+  using factory = rokko::factory<test_base>; \
+  using product = test_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

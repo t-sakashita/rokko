@@ -16,7 +16,7 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
   std::string library_routine(rokko::serial_dense_ev::default_solver());

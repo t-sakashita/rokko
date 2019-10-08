@@ -14,7 +14,7 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
   std::string solver_name(rokko::serial_dense_ev::default_solver());

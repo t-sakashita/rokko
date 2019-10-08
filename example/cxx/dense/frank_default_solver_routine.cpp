@@ -15,7 +15,7 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 template<int MATRIX_MAJOR, typename VEC>
 void default_diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,

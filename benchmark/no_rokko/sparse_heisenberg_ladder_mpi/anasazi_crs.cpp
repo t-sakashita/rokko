@@ -109,9 +109,9 @@ int main(int argc, char *argv[]) {
   const int    maxIters  = 200;
   const double tol       = 1.0e-8;
 
-  typedef Epetra_MultiVector MV;
-  typedef Epetra_Operator OP;
-  typedef MultiVecTraits<double, Epetra_MultiVector> MVT;
+  using MV = Epetra_MultiVector;
+  using OP = Epetra_Operator;
+  using MVT = Anasazi::MultiVecTraits<double, Epetra_MultiVector>;
 
   // Create an Epetra_MultiVector for an initial vector to start the solver.
   // Note:  This needs to have the same number of columns as the blocksize.

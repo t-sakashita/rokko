@@ -16,8 +16,8 @@
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
 
-typedef rokko::matrix_col_major matrix_major;
-// typedef rokko::matrix_row_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
+// using matrix_major = rokko::matrix_row_major;
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);

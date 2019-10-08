@@ -19,7 +19,7 @@
 #include <rokko/utility/machine_info.hpp>
 
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
   int provided;

@@ -12,7 +12,7 @@
 #include <rokko/rokko.hpp>
 #include <random>
 
-typedef Eigen::VectorXd vector_t;
+using vector_t = Eigen::VectorXd;
 
 int main() {
   int n = 6;

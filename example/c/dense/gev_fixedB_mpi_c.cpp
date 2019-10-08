@@ -19,7 +19,7 @@
 #include "gev_fixedB_mpi.h"
 #include "gev_fixedB_mpi.hpp"
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 void diagonalize_fixedB_c(struct rokko_parallel_dense_ev solver_in, struct rokko_distributed_matrix A_in, struct rokko_distributed_matrix B_in,
 			  struct rokko_localized_vector eigval_in, struct rokko_distributed_matrix eigvec_in, double /* tol */) {

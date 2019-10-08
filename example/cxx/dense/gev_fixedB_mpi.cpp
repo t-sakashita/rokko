@@ -19,7 +19,7 @@
 #include <iostream>
 
 
-typedef rokko::matrix_col_major matrix_major;
+using matrix_major = rokko::matrix_col_major;
 
 template<typename T, typename MATRIX_MAJOR>
 void function_matrix(Eigen::VectorXd const& eigval_tmp, rokko::distributed_matrix<T, MATRIX_MAJOR> const& eigvec, rokko::distributed_matrix<T, MATRIX_MAJOR>& result, rokko::distributed_matrix<T, MATRIX_MAJOR>& tmp) {
