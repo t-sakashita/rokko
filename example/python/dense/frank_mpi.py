@@ -9,6 +9,7 @@
 
 import mpi4py
 import pyrokko
+import numpy
 
 dim = 10
 g = pyrokko.grid()
@@ -18,20 +19,20 @@ map = solver.default_mapping(dim, g)
 mat = pyrokko.distributed_matrix(map)
 pyrokko.frank_matrix.generate(mat)
 
-eigval = pyrokko.localized_vector(dim);
+eigval = numpy.ndarray(dim)
 eigvec = pyrokko.distributed_matrix(map)
 params = pyrokko.parameters()
 
 solver.initialize()
 solver.diagonalize(mat, eigval, eigvec, params)
-eigvec_loc = pyrokko.localized_matrix(dim,dim)
+eigvec_loc = numpy.ndarray((dim,dim), order='F')
 pyrokko.gather(eigvec, eigvec_loc, 0)
 
 if (mpi4py.MPI.COMM_WORLD.Get_rank() == 0):
     print("eigenvalues:")
-    eigval.print()
+    print(eigval)
     print("eigenvectors:")
-    eigvec_loc.print()
+    print(eigvec_loc)
 
 solver.finalize()
 mpi4py.MPI.Finalize()
