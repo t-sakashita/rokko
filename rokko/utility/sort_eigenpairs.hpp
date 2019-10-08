@@ -40,11 +40,11 @@ namespace rokko {
 // sort eivanvalue and eigenvectors 
 
 
-template<typename T, int MATRIX_MAJOR>
-void sort_eigenpairs(const Eigen::Vector<T, Eigen::Dynamic>& eigval,
-                     const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec,
-                     Eigen::Vector<T, Eigen::Dynamic>& eigval_sorted,
-                     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvec_sorted,
+template<typename T, int SIZE, int ROWS, int COLS, int MATRIX_MAJOR>
+void sort_eigenpairs(const Eigen::Vector<T, SIZE>& eigval,
+                     const Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& eigvec,
+                     Eigen::Vector<T, SIZE>& eigval_sorted,
+                     Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& eigvec_sorted,
                      bool ascending = true) {
   int dim = eigval.size();
   std::vector<std::pair<T, std::size_t>> entries;

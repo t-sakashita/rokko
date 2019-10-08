@@ -24,8 +24,8 @@ namespace rokko {
 
 class helmert_matrix {
 public:
-  template<typename T, int MATRIX_MAJOR>
-  static void generate(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
+  template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     int n = mat.rows();
@@ -36,8 +36,8 @@ public:
     }
   }
 
-  template<typename T, int MATRIX_MAJOR>
-  static void generate_for_given_eigenvalues(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic> const& diag) {
+  template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, int SIZE>
+  static void generate_for_given_eigenvalues(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, Eigen::Vector<T, SIZE> const& diag) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     int n = mat.rows();
@@ -92,8 +92,8 @@ public:
   }
   */
 
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, Eigen::Dynamic> const& diag) {
+  template<typename T, typename MATRIX_MAJOR, int SIZE>
+  static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, SIZE> const& diag) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     const int n = mat.get_m_global();
