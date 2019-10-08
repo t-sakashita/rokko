@@ -24,7 +24,7 @@
 #include "titpack.hpp"
 #include "options.hpp"
 
-typedef rokko::parallel_sparse_ev solver_type;
+using solver_type = rokko::parallel_sparse_ev;
 
 int main(int argc, char** argv) {
   int provided;

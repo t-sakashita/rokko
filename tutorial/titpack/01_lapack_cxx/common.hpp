@@ -19,8 +19,8 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <tuple>
 
-typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> matrix_type;
-typedef boost::numeric::ublas::matrix<int, boost::numeric::ublas::column_major> i_matrix_type;
+using matrix_type = boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major>;
+using i_matrix_type = boost::numeric::ublas::matrix<int, boost::numeric::ublas::column_major>;
 
 //
 // configurations with the specified sz

@@ -23,9 +23,9 @@
 #include "titpack.hpp"
 #include "options.hpp"
 
-typedef rokko::parallel_dense_ev solver_type;
-typedef rokko::matrix_col_major matrix_major;
-typedef rokko::distributed_matrix<double, matrix_major> matrix_type;
+using solver_type = rokko::parallel_dense_ev;
+using matrix_major = rokko::matrix_col_major;
+using matrix_type = rokko::distributed_matrix<double, matrix_major>;
 
 int main(int argc, char** argv) {
   int provided;

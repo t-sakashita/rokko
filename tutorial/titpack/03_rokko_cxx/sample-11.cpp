@@ -22,8 +22,8 @@
 #include "titpack.hpp"
 #include "options.hpp"
 
-typedef rokko::serial_dense_ev solver_type;
-typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> matrix_type;
+using solver_type = rokko::serial_dense_ev;
+using matrix_type = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>;
 
 int main(int argc, char** argv) {
   std::cout.precision(10);
