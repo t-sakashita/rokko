@@ -17,16 +17,16 @@ namespace rokko {
 class matrix012 {
 public:
 
-  template<typename T, int MATRIX_MAJOR>
-  static int get_index(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat);
+  template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
+  static int get_index(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat);
 
-  template<typename T>
-  static int get_index(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat, int global_i, int global_j) {
+  template<typename T, int ROWS, int COLS>
+  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat, int global_i, int global_j) {
     return global_i + mat.rows() * global_j;
   }
 
-  template<typename T>
-  static int get_index(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat, int global_i, int global_j) {
+  template<typename T, int ROWS, int COLS>
+  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat, int global_i, int global_j) {
     return mat.cols() * global_i + global_j;
   }
   
