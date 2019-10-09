@@ -40,7 +40,7 @@ struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor>> {
 } // end namespace detail
 
 template<typename MATRIX_MAJOR>
-constexpr int matrix_major = detail::major_t<MATRIX_MAJOR>::major_type;
+using matrix_major = typename detail::major_t<MATRIX_MAJOR>::major_type;
 
 namespace detail {
 
