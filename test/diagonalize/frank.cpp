@@ -27,10 +27,8 @@ void test(int dim, std::string const& name) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> eigvec(dim, dim);
 
   solver.diagonalize(mat, eigval, eigvec);
-  
-  double sum = 0;
-  for(int i = 0; i < dim; ++i) sum += eigval[i];
-  EXPECT_NEAR(sum, dim * (dim+1) * 0.5, 10e-5);
+
+  EXPECT_NEAR(eigval.sum(), dim * (dim+1) * 0.5, 10e-5);
   
   rokko::frank_matrix::generate(mat);
   for (int i = 0; i < dim; ++i) {
