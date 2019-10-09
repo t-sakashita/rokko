@@ -26,7 +26,7 @@ void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {
   }
 }
 
-template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
+template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, std::function<T(int, int)> const& func) {
   for(int i = 0; i < mat.rows(); ++i) {
     for(int j = 0; j < mat.cols(); ++j) {
