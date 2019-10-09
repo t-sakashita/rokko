@@ -198,7 +198,7 @@ public:
 
   template <typename MATRIX_MAJOR>
   auto get_eigen_map() {
-    return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, detail::eigen3_matrix_major<MATRIX_MAJOR>::value>,0,Eigen::OuterStride<>>(get_array_pointer<MATRIX_MAJOR>(), get_m_local(), get_n_local(), Eigen::OuterStride<Eigen::Dynamic>(get_lld()));
+    return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, rokko::eigen3_major<MATRIX_MAJOR>>,0,Eigen::OuterStride<>>(get_array_pointer<MATRIX_MAJOR>(), get_m_local(), get_n_local(), Eigen::OuterStride<Eigen::Dynamic>(get_lld()));
   }
 
   void set_ndarray(py::array_t<double> const& mat) {
