@@ -33,6 +33,26 @@ struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor>> {
   using major_type = rokko::matrix_row_major;
 };
 
+namespace detail {
+
+template<typename MATRIX_MAJOR>
+struct eigen3_matrix_major;
+
+template<>
+struct eigen3_matrix_major<rokko::matrix_row_major> {
+  static const int value = Eigen::RowMajor;
+};
+
+template<>
+struct eigen3_matrix_major<rokko::matrix_col_major> {
+  static const int value = Eigen::ColMajor;
+};
+
+} // end namespace detail
+
+template<typename MATRIX_MAJOR>
+constexpr int eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
+
 } // namespace rokko
 
 namespace Eigen {
