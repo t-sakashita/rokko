@@ -12,7 +12,7 @@
 #include <rokko/grid.hpp>
 #include <rokko/solver.hpp>
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 #include <rokko/utility/frank_matrix.hpp>
 

@@ -13,7 +13,7 @@
 #define ROKKO_LAPACK_DIAGONALIZE_DSYGV_HPP
 
 #include <rokko/parameters.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>

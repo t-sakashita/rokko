@@ -13,7 +13,7 @@
 #define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
 
 #include <vector>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 namespace rokko {
 

@@ -17,7 +17,7 @@
 #include <rokko/scalapack.hpp>
 #include <rokko/cpblas.h>
 #include <rokko/distributed_matrix.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 namespace rokko {
 

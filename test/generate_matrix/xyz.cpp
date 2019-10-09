@@ -15,7 +15,7 @@
 #include <tuple>
 
 #include <rokko/utility/xyz_hamiltonian.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 #include <gtest/gtest.h>
 

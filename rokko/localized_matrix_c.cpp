@@ -9,7 +9,8 @@
  *
  *****************************************************************************/
 
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
+#include <rokko/eigen3/generate_matrix.hpp>
 #include <rokko/dense.h>
 
 void rokko_localized_matrix_construct(rokko_localized_matrix* matrix, int dim1, int dim2,

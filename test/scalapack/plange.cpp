@@ -11,7 +11,7 @@
 
 #include <gtest/gtest.h>
 #include <cmath>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/scalapack.hpp>
 #include <rokko/lapack.hpp>

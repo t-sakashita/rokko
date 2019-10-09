@@ -14,7 +14,7 @@
 
 #include <string>
 #include <rokko/factory.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/parameters.hpp>
 

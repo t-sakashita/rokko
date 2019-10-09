@@ -9,7 +9,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 

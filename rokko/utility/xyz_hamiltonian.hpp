@@ -14,7 +14,7 @@
 
 #include <vector>
 #include <tuple>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 namespace rokko {
 

@@ -12,7 +12,7 @@
 #include <rokko/blas.hpp>
 #include <rokko/lapack/gesvd.hpp>
 #include <rokko/lapack/lange.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <stdexcept>

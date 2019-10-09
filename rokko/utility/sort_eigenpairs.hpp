@@ -15,7 +15,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 namespace {
 

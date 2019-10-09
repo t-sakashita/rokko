@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <boost/lexical_cast.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/utility/timer.hpp>
 

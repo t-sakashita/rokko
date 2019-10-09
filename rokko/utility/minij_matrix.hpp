@@ -15,7 +15,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <rokko/config.h>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 # include <rokko/distributed_matrix.hpp>
 #endif

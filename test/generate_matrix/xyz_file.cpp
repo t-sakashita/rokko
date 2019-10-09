@@ -16,7 +16,7 @@
 #include <tuple>
 
 #include <rokko/utility/xyz_hamiltonian.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 
 int main(int argc, char *argv[])
 {

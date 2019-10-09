@@ -12,8 +12,9 @@
 #include <rokko/blas.hpp>
 #include <rokko/lapack/getrf.hpp>
 #include <rokko/lapack/getrs.hpp>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
 
 int main(int argc, char** argv) {
   int n = 5;
