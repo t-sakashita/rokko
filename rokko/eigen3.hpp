@@ -12,48 +12,8 @@
 #ifndef ROKKO_EIGEN3_HPP
 #define ROKKO_EIGEN3_HPP
 
-#include <rokko/matrix_major.hpp>
-#include <rokko/traits/major_t.hpp>
+#include <rokko/eigen3/matrix_major.hpp>
 #include <Eigen/Dense>
-
-namespace rokko {
-
-template<typename T, int ROWS>
-struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor>> {
-  using major_type = rokko::matrix_col_major;
-};
-
-template<typename T, int ROWS, int COLS>
-struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::ColMajor>> {
-  using major_type = rokko::matrix_col_major;
-};
-
-template<typename T, int ROWS, int COLS>
-struct major_t<Eigen::Matrix<T, ROWS, COLS, Eigen::RowMajor>> {
-  using major_type = rokko::matrix_row_major;
-};
-
-namespace detail {
-
-template<typename MATRIX_MAJOR>
-struct eigen3_matrix_major;
-
-template<>
-struct eigen3_matrix_major<rokko::matrix_row_major> {
-  static const int value = Eigen::RowMajor;
-};
-
-template<>
-struct eigen3_matrix_major<rokko::matrix_col_major> {
-  static const int value = Eigen::ColMajor;
-};
-
-} // end namespace detail
-
-template<typename MATRIX_MAJOR>
-constexpr int eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
-
-} // namespace rokko
 
 namespace Eigen {
 
