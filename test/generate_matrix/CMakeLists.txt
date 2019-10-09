@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(TESTS frank helmert heisenberg localized_matrix localized_matrix_fixed_size matrix_major)
+set(TESTS frank helmert heisenberg localized_matrix localized_matrix_fixed_size matrix_major matrix_major_template_transfomation)
 foreach(name ${TESTS})
   set(target_name test_generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)
