@@ -27,6 +27,7 @@
 
 #include <rokko/utility/pyrokko_minij_matrix.hpp>
 #include <rokko/utility/pyrokko_frank_matrix.hpp>
+#include <rokko/utility/pyrokko_helmert_matrix.hpp>
 #include <rokko/utility/pyrokko_laplacian_matrix.hpp>
 #include <rokko/utility/pyrokko_matrix012.hpp>
 
@@ -200,6 +201,14 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_laplacian_matrix::generate_row))
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_laplacian_matrix::generate_col))
     .def_static("eigenvalue", &laplacian_matrix::eigenvalue);
+
+  py::class_<wrap_helmert_matrix>(m, "helmert_matrix")
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_helmert_matrix::generate_eigen<Eigen::RowMajor>))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_helmert_matrix::generate_eigen<Eigen::ColMajor>))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_helmert_matrix::generate))
+    .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues_eigen<Eigen::RowMajor>))
+    .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues_eigen<Eigen::ColMajor>))
+    .def_static("generate_for_given_eigenvalues", py::overload_cast<wrap_distributed_matrix&,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues));
 
   py::class_<wrap_matrix012>(m, "matrix012")
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_matrix012::generate_row))
