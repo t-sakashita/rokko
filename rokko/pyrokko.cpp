@@ -17,6 +17,7 @@
 
 #include <rokko/eigen3.hpp>
 #include <rokko/pyrokko_serial_dense_ev.hpp>
+#include <rokko/utility/pyrokko_generate_matrix.hpp>
 
 #include <rokko/pyrokko_parameters.hpp>
 #include <rokko/pyrokko_grid.hpp>
@@ -258,6 +259,10 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("print", &distributed_crs_matrix::print)
     .def("output_matrix_market", &distributed_crs_matrix::output_matrix_market)
     .def_property_readonly("solver_name", &distributed_crs_matrix::get_solver_name);
+
+  // Eigen3 matrix
+  m.def("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,std::function<double(int, int)>const&>(&pyrokko_generate<Eigen::ColMajor>));
+  m.def("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,std::function<double(int, int)>const&>(&pyrokko_generate<Eigen::RowMajor>));
 
   // utility functions
   m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::RowMajor>),
