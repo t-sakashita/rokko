@@ -1,6 +1,6 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
-#include <rokko/localized_matrix.hpp>
+#include <rokko/eigen3.hpp>
 #include <rokko/utility/xyz_hamiltonian_mpi.hpp>
 
 struct model {
