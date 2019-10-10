@@ -14,8 +14,8 @@ program frank_matrix
   implicit none
   integer :: dim
   type(rokko_serial_dense_ev) :: solver
-  type(rokko_localized_matrix) :: mat, Z
-  type(rokko_localized_vector) :: w
+  type(rokko_eigen_matrix) :: mat, Z
+  type(rokko_eigen_vector) :: w
   type(rokko_parameters) :: params, params_out
   character(len=20) :: library, routine
   character(len=20) :: solver_name, tmp_str
@@ -73,7 +73,7 @@ program frank_matrix
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
-     write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
+     write(*,"(f30.20)") rokko_eigen_vector_get(w ,i)
   enddo
 
   call rokko_destruct(mat)

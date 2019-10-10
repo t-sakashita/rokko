@@ -33,7 +33,7 @@ void rokko_scatter(double* global_array, struct rokko_distributed_matrix matrix,
   }
 }
 
-void rokko_gather_localized_matrix(struct rokko_distributed_matrix matrix, struct rokko_localized_matrix lmatrix, int root) {
+void rokko_gather_eigen_matrix(struct rokko_distributed_matrix matrix, struct rokko_eigen_matrix lmatrix, int root) {
   if (matrix.major == rokko_matrix_col_major){
     rokko::distributed_matrix<double, rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr);
     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>* loc_ptr_ = static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(lmatrix.ptr);
@@ -45,7 +45,7 @@ void rokko_gather_localized_matrix(struct rokko_distributed_matrix matrix, struc
   }
 }
 
-void rokko_scatter_localized_matrix(struct rokko_localized_matrix lmatrix, struct rokko_distributed_matrix matrix, int root) {
+void rokko_scatter_eigen_matrix(struct rokko_eigen_matrix lmatrix, struct rokko_distributed_matrix matrix, int root) {
   if (matrix.major == rokko_matrix_col_major){
     rokko::distributed_matrix<double, rokko::matrix_col_major>* ptr_ = static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr);
     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>* loc_ptr_ = static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(lmatrix.ptr);

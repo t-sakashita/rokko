@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   struct rokko_parallel_dense_ev solver;
   struct rokko_distributed_matrix frank, eigvecs;
   struct rokko_grid grid;
-  struct rokko_localized_vector eigvals;
+  struct rokko_eigen_vector eigvals;
   char* solver_name;
 
   int provided, ierr, myrank, nprocs, i, j;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 
   rokko_distributed_matrix_construct(&frank, dim, dim, grid, solver, rokko_matrix_col_major);
   rokko_distributed_matrix_construct(&eigvecs, dim, dim, grid, solver, rokko_matrix_col_major);
-  rokko_localized_vector_construct(&eigvals, dim);
+  rokko_eigen_vector_construct(&eigvals, dim);
 
   /* generate frank matrix */
   for(i = 0; i<dim; ++i){
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   if (myrank == 0) {
     printf("Eigenvalues: \n");
     for (i = 0; i < dim; ++i)
-      printf("%30.20f\n", rokko_localized_vector_get(eigvals, i));
+      printf("%30.20f\n", rokko_eigen_vector_get(eigvals, i));
 
     printf("Eigenstates: \n");
   }
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
   rokko_distributed_matrix_print(eigvecs);
 
-  rokko_localized_vector_destruct(&eigvals);
+  rokko_eigen_vector_destruct(&eigvals);
   rokko_distributed_matrix_destruct(&eigvecs);
   rokko_distributed_matrix_destruct(&frank);
   rokko_parallel_dense_ev_destruct(&solver);

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   struct rokko_grid grid;
   struct rokko_mapping_bc map;
   struct rokko_distributed_matrix mat, Z;
-  struct rokko_localized_vector w;
+  struct rokko_eigen_vector w;
   char *library_routine, *library, *routine;
 
   int provided, myrank, nprocs, i;
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
   rokko_distributed_matrix_construct(&mat, map);
   rokko_distributed_matrix_construct(&Z, map);
-  rokko_localized_vector_construct(&w, dim);
+  rokko_eigen_vector_construct(&w, dim);
 
   /* generate frank matrix */
   dim_global = dim;
@@ -62,12 +62,12 @@ int main(int argc, char *argv[]) {
   if (myrank == 0) {
     printf("Computed Eigenvalues =\n");
     for (i = 0; i < dim; ++i)
-      printf("%30.20f\n", rokko_localized_vector_get(w, i));
+      printf("%30.20f\n", rokko_eigen_vector_get(w, i));
   }
 
   rokko_distributed_matrix_destruct(&mat);
   rokko_distributed_matrix_destruct(&Z);
-  rokko_localized_vector_destruct(&w);
+  rokko_eigen_vector_destruct(&w);
   rokko_parallel_dense_ev_destruct(&solver);
   rokko_grid_destruct(&grid);
 

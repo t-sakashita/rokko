@@ -20,8 +20,8 @@ void rokko_gather(struct rokko_distributed_matrix matrix, double* array, int roo
 
 void rokko_scatter(double* global_array, struct rokko_distributed_matrix matrix, int root);
 
-void rokko_gather_localized_matrix(struct rokko_distributed_matrix matrix, struct rokko_localized_matrix lmatrix, int root);
-void rokko_scatter_localized_matrix(struct rokko_localized_matrix lmatrix, struct rokko_distributed_matrix matrix, int root);
+void rokko_gather_eigen_matrix(struct rokko_distributed_matrix matrix, struct rokko_eigen_matrix lmatrix, int root);
+void rokko_scatter_eigen_matrix(struct rokko_eigen_matrix lmatrix, struct rokko_distributed_matrix matrix, int root);
 
 void rokko_all_gather(struct rokko_distributed_matrix matrix, double* array);
 

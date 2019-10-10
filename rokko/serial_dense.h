@@ -16,8 +16,8 @@
 extern "C" {
 #endif
 
-#include <rokko/localized_matrix.h>
-#include <rokko/localized_vector.h>
+#include <rokko/eigen_matrix.h>
+#include <rokko/eigen_vector.h>
 
 enum {
   rokko_matrix_col_major = 3, rokko_matrix_row_major = 4

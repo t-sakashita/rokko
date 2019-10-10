@@ -18,7 +18,7 @@ program frank_matrix
   type(rokko_grid) :: grid
   type(rokko_mapping_bc) :: map
   type(rokko_distributed_matrix) :: mat, Z
-  type(rokko_localized_vector) w
+  type(rokko_eigen_vector) w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
   integer arg_len, status
@@ -56,7 +56,7 @@ program frank_matrix
   call rokko_construct(Z, map)
   call rokko_construct(w, dim)
 
-  ! generate frank matrix as a localized matrix
+  ! generate frank matrix as a eigen matrix
   allocate(array(dim, dim))
   do i=1, dim
      do j=1, dim
@@ -72,7 +72,7 @@ program frank_matrix
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") rokko_localized_vector_get(w, i)
+        write(*,"(f30.20)") rokko_eigen_vector_get(w, i)
      enddo
   endif
 

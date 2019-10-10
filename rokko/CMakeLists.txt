@@ -19,12 +19,12 @@ if(BUILD_SERIAL_DENSE_SOLVER)
 
 
   if(BUILD_C_BINDING)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} localized_vector_c.cpp localized_matrix_c.cpp
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_vector_c.cpp eigen_matrix_c.cpp
       serial_dense_ev_c.cpp utility/frank_matrix_c.cpp parameters_c.cpp solver_name_c.cpp)
   endif(BUILD_C_BINDING)
   if(BUILD_Fortran_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_dense.F90 rokko.F90)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} string.F90 parameters.F90 solver_name.F90 localized_vector.F90 localized_matrix.F90 serial_dense_ev.F90)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} string.F90 parameters.F90 solver_name.F90 eigen_vector.F90 eigen_matrix.F90 serial_dense_ev.F90)
   endif(BUILD_Fortran_BINDING)
 endif(BUILD_SERIAL_DENSE_SOLVER)
 

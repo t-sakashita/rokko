@@ -18,7 +18,7 @@ program frank_matrix
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid
   type(rokko_mapping_bc) :: map
-  type(rokko_localized_vector) :: w
+  type(rokko_eigen_vector) :: w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
   integer arg_len, status
@@ -54,9 +54,9 @@ program frank_matrix
   call rokko_parallel_dense_ev_default_mapping(solver, dim, grid, map)
   call rokko_distributed_matrix_construct(mat, map)
   call rokko_distributed_matrix_construct(Z, map)
-  call rokko_localized_vector_construct(w, dim)
+  call rokko_eigen_vector_construct(w, dim)
 
-  ! Generating frank matrix as a "localized array" at all processes
+  ! Generating frank matrix as a "eigen array" at all processes
   allocate(array(dim, dim))
   do i=1, dim
      do j=1, dim
@@ -88,7 +88,7 @@ program frank_matrix
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
+        write(*,"(f30.20)") rokko_eigen_vector_get(w ,i)
      enddo
   endif
 
@@ -96,7 +96,7 @@ program frank_matrix
   
   call rokko_distributed_matrix_destruct(mat)
   call rokko_distributed_matrix_destruct(Z)
-  call rokko_localized_vector_destruct(w)
+  call rokko_eigen_vector_destruct(w)
   call rokko_parallel_dense_ev_destruct(solver)
   call rokko_grid_destruct(grid)
   deallocate(array,array_tmp)

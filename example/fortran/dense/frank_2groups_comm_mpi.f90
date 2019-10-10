@@ -18,7 +18,7 @@ program frank_matrix
   type(rokko_grid) :: grid
   type(rokko_mapping_bc) :: map
   type(rokko_parallel_dense_ev) :: solver
-  type(rokko_localized_vector) :: w
+  type(rokko_eigen_vector) :: w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
   integer arg_len, status
@@ -97,7 +97,7 @@ program frank_matrix
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") rokko_localized_vector_get(w, i)
+        write(*,"(f30.20)") rokko_eigen_vector_get(w, i)
      enddo
   endif
 

@@ -21,7 +21,7 @@ void rokko_frank_matrix_generate_distributed_matrix(rokko_distributed_matrix mat
 }
 #endif
 
-void rokko_frank_matrix_generate_localized_matrix(rokko_localized_matrix matrix) {
+void rokko_frank_matrix_generate_eigen_matrix(rokko_eigen_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
     rokko::frank_matrix::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr));
   else

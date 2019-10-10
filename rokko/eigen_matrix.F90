@@ -9,7 +9,7 @@
 !
 !*****************************************************************************
 
-module rokko_localized_matrix_mod
+module rokko_eigen_matrix_mod
   use iso_c_binding
   implicit none
 
@@ -17,64 +17,64 @@ module rokko_localized_matrix_mod
      enumerator :: rokko_matrix_col_major = 3, rokko_matrix_row_major = 4
   end enum
 
-  type, bind(c) :: rokko_localized_matrix
+  type, bind(c) :: rokko_eigen_matrix
      type(c_ptr) :: ptr
      integer(c_int) :: major
-  end type rokko_localized_matrix
+  end type rokko_eigen_matrix
 
   ! generic names
   interface rokko_construct
-     procedure rokko_localized_matrix_construct
+     procedure rokko_eigen_matrix_construct
   end interface rokko_construct
 
   interface rokko_destruct
-     procedure rokko_localized_matrix_destruct
+     procedure rokko_eigen_matrix_destruct
   end interface rokko_destruct
 
   interface rokko_print
-     procedure rokko_localized_matrix_print
+     procedure rokko_eigen_matrix_print
   end interface rokko_print
   
   interface
-     subroutine rokko_localized_matrix_construct(matrix, dim1, dim2, matrix_major) bind(c)
+     subroutine rokko_eigen_matrix_construct(matrix, dim1, dim2, matrix_major) bind(c)
        use iso_c_binding
-       import rokko_localized_matrix
+       import rokko_eigen_matrix
        implicit none
-       type(rokko_localized_matrix), intent(out) :: matrix
+       type(rokko_eigen_matrix), intent(out) :: matrix
        integer(c_int), value, intent(in) :: dim1, dim2
        integer(c_int), value, intent(in) :: matrix_major
-     end subroutine rokko_localized_matrix_construct
+     end subroutine rokko_eigen_matrix_construct
      
-     subroutine rokko_localized_matrix_destruct(matrix) bind(c)
+     subroutine rokko_eigen_matrix_destruct(matrix) bind(c)
        use iso_c_binding
-       import rokko_localized_matrix
+       import rokko_eigen_matrix
        implicit none
-       type(rokko_localized_matrix), intent(inout) :: matrix
-     end subroutine rokko_localized_matrix_destruct
+       type(rokko_eigen_matrix), intent(inout) :: matrix
+     end subroutine rokko_eigen_matrix_destruct
 
-     subroutine rokko_localized_matrix_print(matrix) bind(c)
+     subroutine rokko_eigen_matrix_print(matrix) bind(c)
        use iso_c_binding
-       import rokko_localized_matrix
+       import rokko_eigen_matrix
        implicit none
-       type(rokko_localized_matrix), value, intent(in) :: matrix
-     end subroutine rokko_localized_matrix_print
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+     end subroutine rokko_eigen_matrix_print
   end interface
 
   !
-  ! rokko_frank_matrix for localized_matrix
+  ! rokko_frank_matrix for eigen_matrix
   !
 
   interface rokko_frank_matrix_generate
-     procedure rokko_frank_matrix_generate_localized_matrix
+     procedure rokko_frank_matrix_generate_eigen_matrix
   end interface rokko_frank_matrix_generate
   
   interface
-     subroutine rokko_frank_matrix_generate_localized_matrix(matrix) bind(c)
+     subroutine rokko_frank_matrix_generate_eigen_matrix(matrix) bind(c)
        use iso_c_binding
-       import rokko_localized_matrix
+       import rokko_eigen_matrix
        implicit none
-       type(rokko_localized_matrix), value, intent(in) :: matrix
-     end subroutine rokko_frank_matrix_generate_localized_matrix
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+     end subroutine rokko_frank_matrix_generate_eigen_matrix
   end interface
 
-end module rokko_localized_matrix_mod
+end module rokko_eigen_matrix_mod

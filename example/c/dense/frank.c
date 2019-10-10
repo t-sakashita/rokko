@@ -17,8 +17,8 @@
 int main(int argc, char *argv[]) {
   int dim = 10;
   struct rokko_serial_dense_ev solver;
-  struct rokko_localized_matrix mat, Z;
-  struct rokko_localized_vector w;
+  struct rokko_eigen_matrix mat, Z;
+  struct rokko_eigen_vector w;
   struct rokko_parameters params;
   char *library_routine, *library, *routine;
 
@@ -32,27 +32,27 @@ int main(int argc, char *argv[]) {
   printf("routine = %s\n", routine);
   printf("dimension = %d\n", dim);
   
-  rokko_localized_matrix_construct(&mat, dim, dim, rokko_matrix_col_major);
-  rokko_localized_matrix_construct(&Z, dim, dim, rokko_matrix_col_major);
-  rokko_localized_vector_construct(&w, dim);
+  rokko_eigen_matrix_construct(&mat, dim, dim, rokko_matrix_col_major);
+  rokko_eigen_matrix_construct(&Z, dim, dim, rokko_matrix_col_major);
+  rokko_eigen_vector_construct(&w, dim);
   rokko_parameters_construct(&params);
   rokko_parameters_set_string(params, "routine", routine);
   
   /* generate frank matrix */
-  rokko_frank_matrix_generate_localized_matrix(mat);
-  rokko_localized_matrix_print(mat);
+  rokko_frank_matrix_generate_eigen_matrix(mat);
+  rokko_eigen_matrix_print(mat);
 
   rokko_serial_dense_ev_diagonalize_params(solver, mat, w, Z, params);
 
   printf("Computed Eigenvalues =\n");
   int i;
   for (i = 0; i < dim; ++i)
-    printf("%30.20f\n", rokko_localized_vector_get(w, i));
+    printf("%30.20f\n", rokko_eigen_vector_get(w, i));
 
   rokko_parameters_destruct(&params);
-  rokko_localized_matrix_destruct(&mat);
-  rokko_localized_matrix_destruct(&Z);
-  rokko_localized_vector_destruct(&w);
+  rokko_eigen_matrix_destruct(&mat);
+  rokko_eigen_matrix_destruct(&Z);
+  rokko_eigen_vector_destruct(&w);
   rokko_serial_dense_ev_destruct(&solver);
 
   return 0;

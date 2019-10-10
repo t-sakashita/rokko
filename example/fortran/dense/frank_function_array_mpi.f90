@@ -11,13 +11,13 @@
 
 module mod_frank
   use iso_c_binding
-  real(c_double), allocatable, dimension(:,:) :: localized_array
+  real(c_double), allocatable, dimension(:,:) :: eigen_array
   contains
     function func(i, j) bind(c)
       use iso_c_binding
       real(c_double) :: func
       integer(c_int), value, intent(in) :: i, j
-      func = localized_array(i+1,j+1)
+      func = eigen_array(i+1,j+1)
     end function func
 end module mod_frank
 
@@ -32,7 +32,7 @@ program frank_matrix_array_mpi
   type(rokko_grid) :: grid
   type(rokko_mapping_bc) :: map
   type(rokko_distributed_matrix) :: mat, Z
-  type(rokko_localized_vector) :: w
+  type(rokko_eigen_vector) :: w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
   integer arg_len, status
@@ -77,10 +77,10 @@ program frank_matrix_array_mpi
   m_global = rokko_get_m_global(mat)
   n_global = rokko_get_n_global(mat)
 
-  allocate(localized_array(dim,dim))
+  allocate(eigen_array(dim,dim))
   do i = 1, m_global
      do j = 1, n_global
-        localized_array(j, i) = dim + 1 - max(i, j);
+        eigen_array(j, i) = dim + 1 - max(i, j);
      end do
   end do
   call rokko_generate(mat, func)
@@ -91,7 +91,7 @@ program frank_matrix_array_mpi
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
+        write(*,"(f30.20)") rokko_eigen_vector_get(w ,i)
      enddo
   endif
 

@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
   struct rokko_grid grid;
   struct rokko_mapping_bc map;
   struct rokko_distributed_matrix A, B, eigvec;
-  struct rokko_localized_matrix locA, locB;
-  struct rokko_localized_vector eigval;
+  struct rokko_eigen_matrix locA, locB;
+  struct rokko_eigen_vector eigval;
   char* solver_name;
 
   int provided, myrank, nprocs, i;
@@ -47,23 +47,23 @@ int main(int argc, char *argv[]) {
   rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
 
-  rokko_localized_matrix_construct(&locA, dim, dim, rokko_matrix_col_major);
-  rokko_localized_matrix_construct(&locB, dim, dim, rokko_matrix_col_major);
+  rokko_eigen_matrix_construct(&locA, dim, dim, rokko_matrix_col_major);
+  rokko_eigen_matrix_construct(&locB, dim, dim, rokko_matrix_col_major);
   set_A_B_c(locA, locB);
   map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
   rokko_distributed_matrix_construct(&A, map);
   rokko_distributed_matrix_construct(&B, map);
   rokko_distributed_matrix_construct(&eigvec, map);
-  rokko_localized_vector_construct(&eigval, dim);
-  rokko_scatter_localized_matrix(locA, A, 0);
-  rokko_scatter_localized_matrix(locB, B, 0);
+  rokko_eigen_vector_construct(&eigval, dim);
+  rokko_scatter_eigen_matrix(locA, A, 0);
+  rokko_scatter_eigen_matrix(locB, B, 0);
 
   diagonalize_fixedB_c(solver, A, B, eigval, eigvec, 0);
 
   if (myrank == 0) {
     printf("Computed Eigenvalues =\n");
     for (i = 0; i < dim; ++i)
-      printf("%30.20f\n", rokko_localized_vector_get(eigval, i));
+      printf("%30.20f\n", rokko_eigen_vector_get(eigval, i));
   }
   printf("Computed Eigenvectors:\n");
   rokko_distributed_matrix_print(eigvec);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   rokko_distributed_matrix_destruct(&A);
   rokko_distributed_matrix_destruct(&B);
   rokko_distributed_matrix_destruct(&eigvec);
-  rokko_localized_vector_destruct(&eigval);
+  rokko_eigen_vector_destruct(&eigval);
   rokko_parallel_dense_ev_destruct(&solver);
   rokko_grid_destruct(&grid);
 

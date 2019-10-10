@@ -32,7 +32,7 @@ void rokko_parallel_dense_ev_destruct(struct rokko_parallel_dense_ev* solver) {
 }
 
 struct rokko_parameters rokko_parallel_dense_ev_diagonalize(struct rokko_parallel_dense_ev solver,
-  struct rokko_distributed_matrix mat, struct rokko_localized_vector eigvals,
+  struct rokko_distributed_matrix mat, struct rokko_eigen_vector eigvals,
   struct rokko_distributed_matrix eigvecs, struct rokko_parameters params) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
@@ -53,7 +53,7 @@ struct rokko_parameters rokko_parallel_dense_ev_diagonalize(struct rokko_paralle
 }
 
 struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(struct rokko_parallel_dense_ev solver,
-  struct rokko_distributed_matrix mat, struct rokko_localized_vector eigvals,
+  struct rokko_distributed_matrix mat, struct rokko_eigen_vector eigvals,
   struct rokko_distributed_matrix eigvecs) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
@@ -74,7 +74,7 @@ struct rokko_parameters rokko_parallel_dense_ev_diagonalize_distributed_matrix(s
 // For Fortran binding
 // eigenvalues/eigenvectors, parameters
 void rokko_parallel_dense_ev_diagonalize_f(struct rokko_parallel_dense_ev* solver,
-					   struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
+					   struct rokko_distributed_matrix* mat, struct rokko_eigen_vector* eigvals,
 					   struct rokko_distributed_matrix* eigvecs,
 					   struct rokko_parameters* params, struct rokko_parameters* params_out) {
   rokko_parameters_construct(params_out);
@@ -91,7 +91,7 @@ void rokko_parallel_dense_ev_diagonalize_f(struct rokko_parallel_dense_ev* solve
 }
 
 void rokko_parallel_dense_ev_diagonalize_no_params_out_f(struct rokko_parallel_dense_ev* solver,
-						       struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
+						       struct rokko_distributed_matrix* mat, struct rokko_eigen_vector* eigvals,
 						       struct rokko_distributed_matrix* eigvecs,
 						       struct rokko_parameters* params) {
   if (mat->major == rokko_matrix_col_major)
@@ -108,7 +108,7 @@ void rokko_parallel_dense_ev_diagonalize_no_params_out_f(struct rokko_parallel_d
 
 
 void rokko_parallel_dense_ev_diagonalize_no_params_inout_f(struct rokko_parallel_dense_ev* solver,
-							 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
+							 struct rokko_distributed_matrix* mat, struct rokko_eigen_vector* eigvals,
 							 struct rokko_distributed_matrix* eigvecs) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
@@ -121,7 +121,7 @@ void rokko_parallel_dense_ev_diagonalize_no_params_inout_f(struct rokko_parallel
 }
 
 void rokko_parallel_dense_ev_diagonalize_eigvals_f(struct rokko_parallel_dense_ev* solver,
-						 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
+						 struct rokko_distributed_matrix* mat, struct rokko_eigen_vector* eigvals,
 						 struct rokko_parameters* params, struct rokko_parameters* params_out) {
   rokko_parameters_construct(params_out);
   if (mat->major == rokko_matrix_col_major)
@@ -135,7 +135,7 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_f(struct rokko_parallel_dense_e
 }
 
 void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out_f(struct rokko_parallel_dense_ev* solver,
-							       struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals,
+							       struct rokko_distributed_matrix* mat, struct rokko_eigen_vector* eigvals,
 							       struct rokko_parameters* params) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
@@ -148,7 +148,7 @@ void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_out_f(struct rokko_pa
 }
 
 void rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout_f(struct rokko_parallel_dense_ev* solver,
-								 struct rokko_distributed_matrix* mat, struct rokko_localized_vector* eigvals) {
+								 struct rokko_distributed_matrix* mat, struct rokko_eigen_vector* eigvals) {
   if (mat->major == rokko_matrix_col_major)
     static_cast<rokko::parallel_dense_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(mat->ptr),
 								   *static_cast<Eigen::VectorXd*>(eigvals->ptr));

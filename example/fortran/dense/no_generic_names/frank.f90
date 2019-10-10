@@ -14,8 +14,8 @@ program frank_matrix
   implicit none
   integer :: dim
   type(rokko_serial_dense_ev) :: solver
-  type(rokko_localized_matrix) :: mat, Z
-  type(rokko_localized_vector) :: w
+  type(rokko_eigen_matrix) :: mat, Z
+  type(rokko_eigen_vector) :: w
   type(rokko_parameters) :: params, params_out
   character(len=20) :: library, routine
   character(len=20) :: solver_name, tmp_str
@@ -43,13 +43,13 @@ program frank_matrix
 
   call rokko_serial_dense_ev_construct(solver, library)
 
-  call rokko_localized_matrix_construct(mat, dim, dim, rokko_matrix_col_major)
-  call rokko_localized_matrix_construct(Z, dim, dim, rokko_matrix_col_major)
-  call rokko_localized_vector_construct(w, dim)
+  call rokko_eigen_matrix_construct(mat, dim, dim, rokko_matrix_col_major)
+  call rokko_eigen_matrix_construct(Z, dim, dim, rokko_matrix_col_major)
+  call rokko_eigen_vector_construct(w, dim)
 
   ! generate frank matrix
-  call rokko_frank_matrix_generate_localized_matrix(mat)
-  call rokko_localized_matrix_print(mat)
+  call rokko_frank_matrix_generate_eigen_matrix(mat)
+  call rokko_eigen_matrix_print(mat)
 
   call rokko_parameters_construct(params)
 
@@ -73,12 +73,12 @@ program frank_matrix
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
-     write(*,"(f30.20)") rokko_localized_vector_get(w ,i)
+     write(*,"(f30.20)") rokko_eigen_vector_get(w ,i)
   enddo
 
-  call rokko_localized_matrix_destruct(mat)
-  call rokko_localized_matrix_destruct(Z)
-  call rokko_localized_vector_destruct(w)
+  call rokko_eigen_matrix_destruct(mat)
+  call rokko_eigen_matrix_destruct(Z)
+  call rokko_eigen_vector_destruct(w)
   call rokko_serial_dense_ev_destruct(solver)
 
 end program frank_matrix
