@@ -13,7 +13,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(localized_matrix, 123) {
+TEST(eigen_matrix, 123) {
 
   // M = 1 4 7
   //     2 5 8

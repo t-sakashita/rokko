@@ -57,7 +57,7 @@ TEST(product_mpi, product_mpi) {
   for (int i = 0; i < dim; ++i) {
     sum += lmatC(i, i);
   }
-  if (rank == 0) std::cout << "trace of localized matrix = " << sum << std::endl;
+  if (rank == 0) std::cout << "trace of eigen matrix = " << sum << std::endl;
 
   if (rank == 0) EXPECT_NEAR(sum_global, sum, 10e-12);
 }

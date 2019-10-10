@@ -165,9 +165,9 @@ int main(int argc, char *argv[]) {
     std:: cout << "lmat:" << std::endl << lmat << std::endl;
     std:: cout << "lmat_gather:" << std::endl << lmat_gather << std::endl;
     if (lmat_gather == lmat) {
-      std::cout << "OK: distributed_matrix by 'generate' equals to a localized_matrix by 'generate'." << std::endl;
+      std::cout << "OK: distributed_matrix by 'generate' equals to a eigen_matrix by 'generate'." << std::endl;
     } else {
-      std::cout << "ERROR: distributed_matrix by 'generate' is differnet from a localized_matrix by 'generate'."<< std::endl;
+      std::cout << "ERROR: distributed_matrix by 'generate' is differnet from a eigen_matrix by 'generate'."<< std::endl;
       exit(1);
     }
   }
