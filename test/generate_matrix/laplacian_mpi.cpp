@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
-  delete(recv_buffer);
+  delete[] recv_buffer;
   MPI_Finalize();
   return 0;
 }
