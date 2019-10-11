@@ -23,7 +23,7 @@ program frank_matrix
   double precision :: val
   double precision, pointer, dimension(:,:) :: array_ptr
 
-  integer :: m, n, i, j, info
+  integer :: i, j, info
 
   if (command_argument_count() >= 1) then
      call get_command_argument(1, solver_name, arg_len, status)
@@ -50,13 +50,9 @@ program frank_matrix
   call rokko_construct(w, dim)
 
   ! generate frank matrix
-  m = rokko_get_m(mat)
-  n = rokko_get_n(mat)
-  print *,"m=", m, " n=", n
-
   call rokko_get_array_pointer(mat, array_ptr)
-  do i = 0, m-1
-     do j = 0, n-1
+  do i = 0, dim-1
+     do j = 0, dim-1
         val = dble(dim - max(i, j))
         array_ptr(i+1, j+1) = val
    enddo
