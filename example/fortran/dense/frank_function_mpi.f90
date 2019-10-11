@@ -67,19 +67,19 @@ program frank_function
   print *,"routine = ", routine
   print *,"dimension = ", dim
   
-  call rokko_parallel_dense_ev_construct(solver, library)
-  call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
-  call rokko_parallel_dense_ev_default_mapping(solver, dim, grid, map)
-  call rokko_distributed_matrix_construct(mat, map)
-  call rokko_distributed_matrix_construct(Z, map)
-  call rokko_eigen_vector_construct(w, dim)
+  call rokko_construct(solver, library)
+  call rokko_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
+  call rokko_default_mapping(solver, dim, grid, map)
+  call rokko_construct(mat, map)
+  call rokko_construct(Z, map)
+  call rokko_construct(w, dim)
 
   ! generate frank matrix from frank_matrix_element function
   call frank_matrix_set_dimension(dim)
-  call rokko_distributed_matrix_generate_function(mat, frank_matrix_element)
-  call rokko_distributed_matrix_print(mat)
+  call rokko_generate(mat, frank_matrix_element)
+  call rokko_print(mat)
 
-  call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)
+  call rokko_diagonalize(solver, mat, w, Z)
 
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
@@ -88,11 +88,11 @@ program frank_function
      enddo
   endif
 
-  call rokko_distributed_matrix_destruct(mat)
-  call rokko_distributed_matrix_destruct(Z)
-  call rokko_eigen_vector_destruct(w)
-  call rokko_parallel_dense_ev_destruct(solver)
-  call rokko_grid_destruct(grid)
+  call rokko_destruct(mat)
+  call rokko_destruct(Z)
+  call rokko_destruct(w)
+  call rokko_destruct(solver)
+  call rokko_destruct(grid)
 
   call MPI_finalize(ierr)
 end program frank_function
