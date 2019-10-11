@@ -75,7 +75,7 @@ int rokko_eigen_matrix_get_n(struct rokko_eigen_matrix matrix) {
 
 double* rokko_eigen_matrix_get_array_pointer(struct rokko_eigen_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
-    return &(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr))(0,0);
+    return storage(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr));
   else
-    return &(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(0,0);
+    return storage(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr));
 }
