@@ -12,7 +12,7 @@ include_directories(${PROJECT_BINARY_DIR}/rokko)
 
 set(EXAMPLE frank_array)
 foreach(name ${EXAMPLE})
-  set(target_name example_fortran_dense_${name})
+  set(target_name example_fortran_dense_generate_matrix_${name})
   add_executable(${target_name} ${name}.f90)
   set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
   target_link_libraries(${target_name} rokko)
