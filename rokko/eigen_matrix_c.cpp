@@ -22,6 +22,16 @@ void rokko_eigen_matrix_construct(rokko_eigen_matrix* matrix, int dim1, int dim2
   matrix->major = matrix_major;
 }
 
+void rokko_eigen_matrix_construct_array_pointer(struct rokko_eigen_matrix* matrix,
+                                                int dim1, int dim2, double* ptr, int matrix_major) {
+  if (matrix_major == rokko_matrix_col_major) {
+    matrix->ptr = new Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>(ptr, dim1, dim2);
+  } else {
+    matrix->ptr = new Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>(ptr, dim1, dim2);
+  }
+  matrix->major = matrix_major;
+}
+
 void rokko_eigen_matrix_destruct(rokko_eigen_matrix* matrix) {
   if (matrix->major == rokko_matrix_col_major)
     delete static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix->ptr);

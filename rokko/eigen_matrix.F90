@@ -25,6 +25,7 @@ module rokko_eigen_matrix_mod
   ! generic names
   interface rokko_construct
      procedure rokko_eigen_matrix_construct
+     procedure rokko_eigen_matrix_construct_array_pointer
   end interface rokko_construct
 
   interface rokko_destruct
@@ -69,7 +70,17 @@ module rokko_eigen_matrix_mod
        integer(c_int), value, intent(in) :: dim1, dim2
        integer(c_int), value, intent(in) :: matrix_major
      end subroutine rokko_eigen_matrix_construct
-     
+
+     subroutine rokko_eigen_matrix_construct_array_pointer(matrix, dim1, dim2, ptr, matrix_major) bind(c)
+       use iso_c_binding
+       import rokko_eigen_matrix
+       implicit none
+       type(rokko_eigen_matrix), intent(out) :: matrix
+       integer(c_int), value, intent(in) :: dim1, dim2
+       double precision, intent(in) :: ptr(dim1, dim2)
+       integer(c_int), value, intent(in) :: matrix_major
+     end subroutine rokko_eigen_matrix_construct_array_pointer
+
      subroutine rokko_eigen_matrix_destruct(matrix) bind(c)
        use iso_c_binding
        import rokko_eigen_matrix

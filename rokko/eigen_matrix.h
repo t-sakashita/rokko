@@ -23,6 +23,8 @@ struct rokko_eigen_matrix {
 
 void rokko_eigen_matrix_construct(struct rokko_eigen_matrix* matrix, int dim1, int dim2,
   int matrix_major);
+void rokko_eigen_matrix_construct_array_pointer(struct rokko_eigen_matrix* matrix,
+                                                int dim1, int dim2, double* ptr, int matrix_major);
 void rokko_eigen_matrix_destruct(struct rokko_eigen_matrix* matrix);
 void rokko_eigen_matrix_print(struct rokko_eigen_matrix matrix);
 void rokko_eigen_matrix_generate_function(struct rokko_eigen_matrix matrix,
