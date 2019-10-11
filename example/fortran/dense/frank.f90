@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -30,7 +30,7 @@ program frank_matrix
   endif
   call rokko_split_solver_name(solver_name, library, routine)
 
-  if (command_argument_count() == 2) then  
+  if (command_argument_count() == 2) then
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
