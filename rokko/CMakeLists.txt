@@ -20,7 +20,7 @@ if(BUILD_SERIAL_DENSE_SOLVER)
 
   if(BUILD_C_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen_vector_c.cpp eigen_matrix_c.cpp
-      serial_dense_ev_c.cpp utility/frank_matrix_c.cpp parameters_c.cpp solver_name_c.cpp)
+      serial_dense_ev_c.cpp utility/minij_matrix_c.cpp utility/frank_matrix_c.cpp parameters_c.cpp solver_name_c.cpp)
   endif(BUILD_C_BINDING)
   if(BUILD_Fortran_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_dense.F90 rokko.F90)
