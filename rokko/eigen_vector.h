@@ -22,6 +22,7 @@ struct rokko_eigen_vector {
 
 void rokko_eigen_vector_construct(struct rokko_eigen_vector* vec, int dim1);
 void rokko_eigen_vector_destruct(struct rokko_eigen_vector* vec);
+int rokko_eigen_vector_get_dim(rokko_eigen_vector vec);
 double* rokko_eigen_vector_get_array_pointer(struct rokko_eigen_vector vec);
 double rokko_eigen_vector_get(struct rokko_eigen_vector vec, int i);
 double rokko_eigen_vector_get_f(struct rokko_eigen_vector vec, int i);

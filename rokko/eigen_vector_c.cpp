@@ -21,6 +21,10 @@ void rokko_eigen_vector_destruct(rokko_eigen_vector* vec) {
   vec->ptr = nullptr;
 }
 
+int rokko_eigen_vector_get_dim(rokko_eigen_vector vec) {
+  return static_cast<Eigen::VectorXd*>(vec.ptr)->size();
+}
+
 double* rokko_eigen_vector_get_array_pointer(rokko_eigen_vector vec) {
   return static_cast<Eigen::VectorXd*>(vec.ptr)->data();
 }
