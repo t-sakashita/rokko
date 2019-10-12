@@ -70,7 +70,7 @@ program frank_matrix
   endif
   call rokko_split_solver_name(library_routine, library, routine)
 
-  if (command_argument_count() == 2) then  
+  if (command_argument_count() == 2) then
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
