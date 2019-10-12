@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -27,4 +27,3 @@ void rokko_frank_matrix_generate_eigen_matrix(rokko_eigen_matrix matrix) {
   else
     rokko::frank_matrix::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr));
 }
-
