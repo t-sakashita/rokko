@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   rokko_eigen_matrix_construct(&mat, dim, dim, rokko_matrix_col_major);
   array_ptr = rokko_eigen_matrix_get_array_pointer(mat);
 
-  /* generate frank matrix */
+  /* generate minij matrix */
   for(i=0; i<dim; ++i) {
     for(j=0; j<dim; ++j) {
       array_ptr[i + j*dim] = MIN(i, j) + 1;
