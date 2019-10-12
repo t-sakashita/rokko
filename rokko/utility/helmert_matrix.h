@@ -23,6 +23,7 @@ void rokko_helmert_matrix_generate_for_given_eigenvalues_eigen_matrix(struct rok
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 void rokko_helmert_matrix_generate_distributed_matrix(struct rokko_distributed_matrix matrix);
+void rokko_helmert_matrix_generate_for_given_eigenvalues_distributed_matrix(struct rokko_distributed_matrix matrix, struct rokko_eigen_vector diag);
 #endif /* defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) */
 
 #ifdef __cplusplus

@@ -19,6 +19,15 @@ void rokko_helmert_matrix_generate_distributed_matrix(rokko_distributed_matrix m
   else
     rokko::helmert_matrix::generate(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr));
 }
+
+void rokko_helmert_matrix_generate_for_given_eigenvalues_distributed_matrix(rokko_distributed_matrix matrix, struct rokko_eigen_vector diag) {
+  if (matrix.major == rokko_matrix_col_major)
+    rokko::helmert_matrix::generate_for_given_eigenvalues(*static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr),
+                                                          *static_cast<Eigen::VectorXd*>(diag.ptr));
+  else
+    rokko::helmert_matrix::generate_for_given_eigenvalues(*static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr),
+                                                          *static_cast<Eigen::VectorXd*>(diag.ptr));
+}
 #endif
 
 void rokko_helmert_matrix_generate_eigen_matrix(rokko_eigen_matrix matrix) {
