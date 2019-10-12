@@ -99,6 +99,13 @@ int rokko_distributed_matrix_get_n_global(struct rokko_distributed_matrix matrix
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_n_global();
 }
 
+int rokko_distributed_matrix_get_lld(struct rokko_distributed_matrix matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_lld();
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_lld();
+}
+
 int rokko_distributed_matrix_get_nprocs(struct rokko_distributed_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_nprocs();
