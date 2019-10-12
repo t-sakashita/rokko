@@ -32,6 +32,7 @@ endif(BUILD_SERIAL_DENSE_SOLVER)
 if(BUILD_PARALLEL_DENSE_SOLVER)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp matrix_major.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_ev.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_helmert_matrix.F90)
 
   # PBLAS, ScaLAPACK
   if(ROKKO_HAVE_SCALAPACK)

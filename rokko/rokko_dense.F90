@@ -18,6 +18,7 @@ module rokko_dense
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   use rokko_parallel_dense_mod
   use collective
+  use rokko_parallel_helmert_matrix_mod
 #endif
   implicit none
 end module rokko_dense
