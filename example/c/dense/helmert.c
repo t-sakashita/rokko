@@ -40,12 +40,12 @@ int main(int argc, char *argv[]) {
   rokko_parameters_construct(&params);
   rokko_parameters_set_string(params, "routine", routine);
   
-  /* generate helmert matrix */
+  /* generate matrix whose eigenvectors are helmert matrix */
   rokko_helmert_matrix_generate_eigen_matrix(mat);
   rokko_eigen_vector_construct(&diag, dim);
   diag_ptr = rokko_eigen_vector_get_array_pointer(diag);
   for (i=0; i<dim; ++i)
-    diag_ptr[i] = i;
+    diag_ptr[i] = i + 1;
   rokko_helmert_matrix_generate_for_given_eigenvalues_eigen_matrix(mat, diag);
   rokko_eigen_matrix_print(mat);
 
