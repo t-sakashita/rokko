@@ -12,6 +12,14 @@
 #ifndef ROKKO_UTILITY_MATRIX012_HPP
 #define ROKKO_UTILITY_MATRIX012_HPP
 
+#include <cmath>
+#include <stdexcept>
+#include <rokko/config.h>
+#include <rokko/eigen3.hpp>
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
+# include <rokko/distributed_matrix.hpp>
+#endif
+
 namespace rokko {
 
 class matrix012 {
