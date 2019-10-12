@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(SAMPLE frank)
+set(SAMPLE minij frank)
 foreach(name ${SAMPLE})
   set(target_name example_c_dense_${name})
   add_executable(${target_name} ${name}.c)

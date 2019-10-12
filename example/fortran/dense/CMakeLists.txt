@@ -10,7 +10,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE frank frank_function frank_set_by_array_ptr)
+set(EXAMPLE minij frank frank_function frank_set_by_array_ptr)
 foreach(name ${EXAMPLE})
   set(target_name example_fortran_dense_${name})
   add_executable(${target_name} ${name}.f90)
