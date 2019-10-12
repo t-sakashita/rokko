@@ -165,24 +165,6 @@ module rokko_parallel_dense_ev_mod
      procedure rokko_parallel_dense_ev_diagonalize_eigvals_no_params_inout
   end interface rokko_diagonalize
 
-  !
-  ! rokko_frank_matrix for parallel dense solvers
-  !
-
-  ! generic name
-  interface rokko_frank_matrix_generate
-     procedure rokko_frank_matrix_generate_distributed_matrix
-  end interface rokko_frank_matrix_generate
-  
-  interface
-     subroutine rokko_frank_matrix_generate_distributed_matrix(matrix) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-     end subroutine rokko_frank_matrix_generate_distributed_matrix
-  end interface
-
 contains
 
   subroutine rokko_parallel_dense_ev_default_solver(name)
