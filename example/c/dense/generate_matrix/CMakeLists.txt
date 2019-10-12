@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-set(SAMPLE frank_get_array_pointer frank_array)
+set(SAMPLE minij_get_array_pointer frank_get_array_pointer frank_array)
 foreach(name ${SAMPLE})
   set(target_name example_c_dense_generate_matrix_${name})
   add_executable(${target_name} ${name}.c)
