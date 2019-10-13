@@ -21,7 +21,7 @@ program eigen_vector_construct_by_array
   print *,"dimension = ", dim
 
   allocate( array(dim) )
-  call rokko_construct(vector, dim, array)
+  call rokko_construct(vector, array)
   do i=1, dim
      array(i) = i
   enddo

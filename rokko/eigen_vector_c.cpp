@@ -16,8 +16,8 @@ void rokko_eigen_vector_construct(rokko_eigen_vector* vec, int dim) {
   vec->ptr = new Eigen::VectorXd(dim);
 }
 
-void rokko_eigen_vector_construct_array_sizes(struct rokko_eigen_vector* vector,
-                                              int dim, double* ptr) {
+void rokko_eigen_vector_construct_array_size(struct rokko_eigen_vector* vector,
+                                             int dim, double* ptr) {
   vector->ptr = new Eigen::Map<Eigen::VectorXd>(ptr, dim);
 }
 
