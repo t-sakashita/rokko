@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
   double array_ptr[DIM*DIM];
   int i, j;
 
-  rokko_eigen_matrix_construct_array_pointer(&mat, DIM, DIM, array_ptr, rokko_matrix_col_major);
+  rokko_eigen_matrix_construct_array_sizes(&mat, DIM, DIM, array_ptr, rokko_matrix_col_major);
 
   /* generate frank matrix */
   for(i=0; i<DIM; ++i) {
