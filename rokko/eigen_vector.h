@@ -21,8 +21,8 @@ struct rokko_eigen_vector {
 };
 
 void rokko_eigen_vector_construct(struct rokko_eigen_vector* vec, int dim1);
-void rokko_eigen_vector_construct_by_array(struct rokko_eigen_vector* vector,
-                                           int dim, double* ptr);
+void rokko_eigen_vector_construct_array_sizes(struct rokko_eigen_vector* vector,
+                                              int dim, double* ptr);
 void rokko_eigen_vector_destruct(struct rokko_eigen_vector* vec);
 int rokko_eigen_vector_get_dim(struct rokko_eigen_vector vec);
 double* rokko_eigen_vector_get_array_pointer(struct rokko_eigen_vector vec);
