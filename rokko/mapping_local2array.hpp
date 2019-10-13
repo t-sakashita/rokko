@@ -51,7 +51,7 @@ public:
     return std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
   }
   bool is_col_major() const {
-    return !std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+    return std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
   }
 
 private:
