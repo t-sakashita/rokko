@@ -43,6 +43,9 @@ public:
 
   int get_default_length_array() const;
 
+  int get_m_size() const;
+  int get_n_size() const;
+
   void set_default_length_array() { set_length_array(get_default_length_array()); }
 
   int get_array_index(int local_i, int local_j) const;
@@ -88,6 +91,26 @@ inline int mapping_local2array<rokko::matrix_row_major>::get_array_index(int loc
 template<>
 inline int mapping_local2array<rokko::matrix_col_major>::get_array_index(int local_i, int local_j) const {
   return  local_i + local_j * lld;
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_row_major>::get_m_size() const {
+  return get_m_local();
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_col_major>::get_m_size() const {
+  return get_lld();
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_row_major>::get_n_size() const {
+  return get_lld();
+}
+
+template<>
+inline int mapping_local2array<rokko::matrix_col_major>::get_n_size() const {
+  return get_n_local();
 }
 
 } // namespace rokko

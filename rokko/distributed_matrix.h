@@ -39,6 +39,8 @@ int rokko_distributed_matrix_get_n_local(struct rokko_distributed_matrix matrix)
 int rokko_distributed_matrix_get_m_global(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_n_global(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_lld(struct rokko_distributed_matrix matrix);
+int rokko_distributed_matrix_get_m_size(struct rokko_distributed_matrix matrix);
+int rokko_distributed_matrix_get_n_size(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_nprocs(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_myrank(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_nprow(struct rokko_distributed_matrix matrix);

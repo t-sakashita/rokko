@@ -132,6 +132,8 @@ public:
   int get_n_global() const { return map.get_n_global(); }
   int get_m_local() const { return map.get_m_local(); }
   int get_n_local() const { return map.get_n_local(); }
+  int get_m_size() const { return map.get_m_size(); }
+  int get_n_size() const { return map.get_n_size(); }
   int translate_l2g_row(const int& local_i) const { return map.translate_l2g_row(local_i); }
   int translate_l2g_col(const int& local_j) const { return map.translate_l2g_col(local_j); }
   int translate_g2l_row(const int& global_i) const { return map.translate_g2l_row(global_i); }
