@@ -30,9 +30,6 @@ public:
   explicit mapping_local2array(int lld_in, int lld2) : lld(lld_in) {
     set_length_array(lld * lld2);
   }
-  //explicit mapping_local2array(int lld_in, int length_array_in) : lld(lld_in), length_array(length_array_in) {
-  //  is_row = std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
-  //}
 
   void set_length_array(int value) { length_array = value; }
   int get_length_array() const { return length_array; }
@@ -58,7 +55,6 @@ public:
   }
 
 private:
-  //bool is_row;
   int length_array;
   int lld;
 };
