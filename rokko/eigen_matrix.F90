@@ -25,7 +25,8 @@ module rokko_eigen_matrix_mod
   ! generic names
   interface rokko_construct
      procedure rokko_eigen_matrix_construct
-     procedure rokko_eigen_matrix_construct_array_pointer
+     procedure rokko_eigen_matrix_construct_array_sizes
+     procedure rokko_eigen_matrix_construct_array
   end interface rokko_construct
 
   interface rokko_destruct
@@ -71,15 +72,15 @@ module rokko_eigen_matrix_mod
        integer(c_int), value, intent(in) :: matrix_major
      end subroutine rokko_eigen_matrix_construct
 
-     subroutine rokko_eigen_matrix_construct_array_pointer(matrix, dim1, dim2, ptr, matrix_major) bind(c)
+     subroutine rokko_eigen_matrix_construct_array_sizes(matrix, dim1, dim2, array, matrix_major) bind(c)
        use iso_c_binding
        import rokko_eigen_matrix
        implicit none
        type(rokko_eigen_matrix), intent(out) :: matrix
        integer(c_int), value, intent(in) :: dim1, dim2
-       double precision, intent(in) :: ptr(dim1, dim2)
+       double precision, intent(in) :: array(dim1, dim2)
        integer(c_int), value, intent(in) :: matrix_major
-     end subroutine rokko_eigen_matrix_construct_array_pointer
+     end subroutine rokko_eigen_matrix_construct_array_sizes
 
      subroutine rokko_eigen_matrix_destruct(matrix) bind(c)
        use iso_c_binding
@@ -224,6 +225,18 @@ contains
        enddo
     enddo
   end subroutine rokko_eigen_matrix_generate_from_array
+
+  subroutine rokko_eigen_matrix_construct_array(matrix, array, matrix_major) bind(c)
+    use iso_c_binding
+    implicit none
+    type(rokko_eigen_matrix), intent(out) :: matrix
+    double precision, intent(in) :: array(:, :)
+    integer(c_int), value, intent(in) :: matrix_major
+    integer :: sizes(2)
+
+    sizes = shape(array)
+    call rokko_eigen_matrix_construct_array_sizes(matrix, sizes(1), sizes(2), array, matrix_major)
+  end subroutine rokko_eigen_matrix_construct_array
 
   subroutine rokko_eigen_matrix_get_array_pointer(matrix, f_array_ptr)
     type(rokko_eigen_matrix), value, intent(in) :: matrix

@@ -22,7 +22,7 @@ program frank_matrix
   print *,"dimension = ", dim
   allocate( array(dim, dim) )
 
-  call rokko_construct(mat, dim, dim, array, rokko_matrix_col_major)
+  call rokko_construct(mat, array, rokko_matrix_col_major)
 
   ! generate frank matrix
   do i = 1, dim
