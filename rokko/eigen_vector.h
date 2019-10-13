@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,6 +21,8 @@ struct rokko_eigen_vector {
 };
 
 void rokko_eigen_vector_construct(struct rokko_eigen_vector* vec, int dim1);
+void rokko_eigen_vector_construct_by_array(struct rokko_eigen_vector* vector,
+                                           int dim, double* ptr);
 void rokko_eigen_vector_destruct(struct rokko_eigen_vector* vec);
 int rokko_eigen_vector_get_dim(struct rokko_eigen_vector vec);
 double* rokko_eigen_vector_get_array_pointer(struct rokko_eigen_vector vec);

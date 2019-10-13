@@ -16,6 +16,11 @@ void rokko_eigen_vector_construct(rokko_eigen_vector* vec, int dim) {
   vec->ptr = new Eigen::VectorXd(dim);
 }
 
+void rokko_eigen_vector_construct_by_array(struct rokko_eigen_vector* vector,
+                                                int dim, double* ptr) {
+  vector->ptr = new Eigen::Map<Eigen::VectorXd>(ptr, dim);
+}
+
 void rokko_eigen_vector_destruct(rokko_eigen_vector* vec) {
   delete static_cast<Eigen::VectorXd*>(vec->ptr);
   vec->ptr = nullptr;

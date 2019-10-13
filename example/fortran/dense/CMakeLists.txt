@@ -36,4 +36,5 @@ if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 endif(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 
 add_subdirectory(generate_matrix)
+add_subdirectory(generate_vector)
 add_subdirectory(no_generic_names)

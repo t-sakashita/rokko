@@ -20,6 +20,7 @@ module rokko_eigen_vector_mod
   ! generic names
   interface rokko_construct
      procedure rokko_eigen_vector_construct
+     procedure rokko_eigen_vector_construct_by_array
   end interface rokko_construct
 
   interface rokko_destruct
@@ -42,6 +43,15 @@ module rokko_eigen_vector_mod
        type(rokko_eigen_vector), intent(out) :: vec
        integer(c_int), value, intent(in) :: dim
      end subroutine rokko_eigen_vector_construct
+
+     subroutine rokko_eigen_vector_construct_by_array(vector, dim, ptr) bind(c)
+       use iso_c_binding
+       import rokko_eigen_vector
+       implicit none
+       type(rokko_eigen_vector), intent(out) :: vector
+       integer(c_int), value, intent(in) :: dim
+       double precision, intent(in) :: ptr(dim)
+     end subroutine rokko_eigen_vector_construct_by_array
 
      subroutine rokko_eigen_vector_destruct(vec) bind(c)
        use iso_c_binding
