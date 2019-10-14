@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,22 +11,23 @@
 
 program frank_matrix
   use rokko
+  use mpi
   implicit none
-  include 'mpif.h'
   integer :: dim
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid
   type(rokko_mapping_bc) :: map
   type(rokko_distributed_matrix) :: mat, Z
-  type(rokko_eigen_vector) w
+  type(rokko_eigen_vector) :: w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
   integer arg_len, status
  
   double precision, allocatable, dimension(:,:) :: array
-
   integer :: provided,ierr, myrank, nprocs
-  integer :: i, j
+  integer :: m_size, n_size, m_local, n_local
+  integer :: local_i, local_j, global_i, global_j
+  integer :: i
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
@@ -45,10 +46,13 @@ program frank_matrix
   else
      dim = 10
   endif
-  
-  write(*,*) "solver name = ", trim(library)
-  write(*,*) "matrix dimension = ", dim
-  
+
+  if (myrank == 0) then
+     print *,"library = ", library
+     print *,"routine = ", routine
+     print *,"dimension = ", dim
+  endif
+
   call rokko_construct(solver, library)
   call rokko_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)
   call rokko_default_mapping(solver, dim, grid, map)
@@ -56,15 +60,21 @@ program frank_matrix
   call rokko_construct(Z, map)
   call rokko_construct(w, dim)
 
-  ! generate frank matrix as a eigen matrix
-  allocate(array(dim, dim))
-  do i=1, dim
-     do j=1, dim
-        array(i,j) = dble(dim + 1 - max(i, j))
-     end do
-  end do
+  m_size = rokko_get_m_size(map)
+  n_size = rokko_get_n_size(map)
+  allocate(array(m_size, n_size))
+  call rokko_construct(mat, map, array)
 
-  call rokko_generate(mat,array)
+  ! generate frank matrix
+  m_local = rokko_get_m_local(mat)
+  n_local = rokko_get_n_local(mat)
+  do local_i = 0, m_local-1
+     do local_j = 0, n_local-1
+        global_i = rokko_translate_l2g_row(mat, local_i);
+        global_j = rokko_translate_l2g_col(mat, local_j);
+        array(local_i+1, local_j+1) = dim - max(global_i, global_j)
+     enddo
+  enddo
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)
@@ -76,16 +86,12 @@ program frank_matrix
      enddo
   endif
 
-!  if (myrank.eq.0) then
-!     print*, "array=", array
-!  endif
-
+  deallocate(array)
   call rokko_destruct(mat)
   call rokko_destruct(Z)
   call rokko_destruct(w)
   call rokko_destruct(solver)
   call rokko_destruct(grid)
-  deallocate(array)
 
   call MPI_finalize(ierr)
 end program frank_matrix
