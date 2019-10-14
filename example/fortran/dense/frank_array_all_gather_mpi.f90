@@ -45,9 +45,11 @@ program frank_matrix
      dim = 10
   endif
 
-  print *,"library = ", library
-  print *,"routine = ", routine
-  print *,"matrix dimension = ", dim
+  if (myrank == 0) then
+     print *,"library = ", library
+     print *,"routine = ", routine
+     print *,"matrix dimension = ", dim
+  endif
 
   call rokko_parallel_dense_ev_construct(solver, library)
   call rokko_grid_construct(grid, MPI_COMM_WORLD, rokko_grid_row_major)

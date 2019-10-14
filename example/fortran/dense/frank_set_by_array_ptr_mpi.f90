@@ -47,11 +47,13 @@ program frank_matrix
   else
      dim = 10
   endif
-  
-  print *,"library = ", library
-  print *,"routine = ", routine
-  print *,"dimension = ", dim
-  
+
+  if (myrank == 0) then
+     print *,"library = ", library
+     print *,"routine = ", routine
+     print *,"dimension = ", dim
+  endif
+
   call rokko_construct(solver, library)
   call rokko_construct(grid, MPI_COMM_WORLD, rokko_grid_col_major)
   call rokko_default_mapping(solver, dim, grid, map)
