@@ -26,8 +26,8 @@ program frank_matrix_array_mpi
   use omp_lib
   use rokko
   use mod_frank
+  use mpi
   implicit none
-  include 'mpif.h'
   integer :: dim
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid

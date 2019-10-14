@@ -11,8 +11,8 @@
 
 program frank_matrix
   use rokko
+  use mpi
   implicit none
-  include 'mpif.h'
   integer :: dim
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid

@@ -11,8 +11,8 @@
 
 program heisenberg_crs_mpi
   use rokko
+  use mpi
   implicit none
-  include 'mpif.h'
   integer :: provided, ierr, myrank, nprocs
   integer :: L, k
   integer :: dim

@@ -31,8 +31,8 @@ end module frank_mod
 program frank_function
   use rokko
   use frank_mod
+  use mpi
   implicit none
-  include 'mpif.h'
   integer :: dim
   type(rokko_parallel_dense_ev) :: solver
   type(rokko_grid) :: grid
