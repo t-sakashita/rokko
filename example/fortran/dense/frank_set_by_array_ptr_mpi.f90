@@ -73,7 +73,7 @@ program frank_matrix
         global_j = rokko_translate_l2g_col(mat, local_j);
         val = dble(dim - max(global_i, global_j))
         array_ptr(local_i+1, local_j+1) = val
-   enddo
+     enddo
   enddo
  
   call rokko_print(mat)
