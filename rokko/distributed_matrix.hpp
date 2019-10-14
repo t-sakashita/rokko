@@ -41,8 +41,10 @@ public:
   }
 
   ~distributed_matrix() {
-    delete[] array;
-    array = nullptr;
+    if (!array) {
+      delete[] array;
+      array = nullptr;
+    }
   }
 
   void allocate_array() {
