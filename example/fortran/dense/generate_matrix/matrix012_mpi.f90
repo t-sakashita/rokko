@@ -9,7 +9,7 @@
 !
 !*****************************************************************************
 
-program matrix012
+program generate_matrix012_mpi
   use rokko
   use mpi
   implicit none
@@ -43,4 +43,4 @@ program matrix012
   call rokko_destruct(grid)
 
   call MPI_finalize(ierr)
-end program matrix012
+end program generate_matrix012_mpi
