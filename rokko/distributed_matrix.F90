@@ -86,6 +86,14 @@ module rokko_distributed_matrix_mod
      procedure  rokko_distributed_matrix_translate_g2l_col
   end interface rokko_translate_g2l_col
 
+  interface rokko_is_row_major
+     procedure rokko_distributed_matrix_is_row_major
+  end interface rokko_is_row_major
+
+  interface rokko_is_col_major
+     procedure rokko_distributed_matrix_is_col_major
+  end interface rokko_is_col_major
+
   interface rokko_generate
      module procedure rokko_distributed_matrix_generate_function
      module procedure rokko_distributed_matrix_generate_from_array

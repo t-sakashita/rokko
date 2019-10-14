@@ -52,6 +52,54 @@ module rokko_mapping_bc_mod
      procedure rokko_mapping_bc_get_n_size
   end interface rokko_get_n_size
 
+  interface rokko_translate_l2g_row
+     procedure rokko_mapping_bc_translate_l2g_row
+  end interface rokko_translate_l2g_row
+
+  interface rokko_translate_l2g_col
+     procedure rokko_mapping_bc_translate_l2g_col
+  end interface rokko_translate_l2g_col
+
+  interface rokko_translate_g2l_row
+     procedure rokko_mapping_bc_translate_g2l_row
+  end interface rokko_translate_g2l_row
+
+  interface rokko_translate_g2l_col
+     procedure rokko_mapping_bc_translate_g2l_col
+  end interface rokko_translate_g2l_col
+
+  interface rokko_is_row_major
+     procedure rokko_mapping_bc_is_row_major
+  end interface rokko_is_row_major
+
+  interface rokko_is_col_major
+     procedure rokko_mapping_bc_is_col_major
+  end interface rokko_is_col_major
+
+  interface rokko_get_myrank
+     procedure rokko_mapping_bc_get_myrank
+  end interface rokko_get_myrank
+
+  interface rokko_get_nprocs
+     procedure rokko_mapping_bc_get_nprocs
+  end interface rokko_get_nprocs
+
+  interface rokko_get_myrow
+     procedure rokko_mapping_bc_get_myrow
+  end interface rokko_get_myrow
+
+  interface rokko_get_mycol
+     procedure rokko_mapping_bc_get_mycol
+  end interface rokko_get_mycol
+
+  interface rokko_get_nprow
+     procedure rokko_mapping_bc_get_nprow
+  end interface rokko_get_nprow
+
+  interface rokko_get_npcol
+     procedure rokko_mapping_bc_get_npcol
+  end interface rokko_get_npcol
+
   interface
 
      subroutine rokko_mapping_bc_construct_block_size(map, global_dim, block_size, grid) &
@@ -120,6 +168,106 @@ module rokko_mapping_bc_mod
        type(rokko_mapping_bc), value, intent(in) :: map
      end function rokko_mapping_bc_get_n_size
 
+     function rokko_mapping_bc_translate_l2g_row(map, local_i) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_l2g_row
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int),value,intent(in) :: local_i
+     end function rokko_mapping_bc_translate_l2g_row
+
+     function rokko_mapping_bc_translate_l2g_col(map, local_j) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_l2g_col
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in)::local_j
+     end function rokko_mapping_bc_translate_l2g_col
+
+     function rokko_mapping_bc_translate_g2l_row(map, global_i) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_g2l_row
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in)::global_i
+     end function rokko_mapping_bc_translate_g2l_row
+
+     function rokko_mapping_bc_translate_g2l_col(map, global_j) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_g2l_col
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in) :: global_j
+     end function rokko_mapping_bc_translate_g2l_col
+
+     function rokko_mapping_bc_is_row_major(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       logical(c_bool) :: rokko_mapping_bc_is_row_major
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_is_row_major
+
+     function rokko_mapping_bc_is_col_major(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       logical(c_bool) :: rokko_mapping_bc_is_col_major
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_is_col_major
+
+     function rokko_mapping_bc_get_myrank(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_myrank
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_myrank
+
+     function rokko_mapping_bc_get_nprocs(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_nprocs
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_nprocs
+
+     function rokko_mapping_bc_get_myrow(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_myrow
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_myrow
+
+     function rokko_mapping_bc_get_mycol(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_mycol
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_mycol
+
+     function rokko_mapping_bc_get_nprow(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_nprow
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_nprow
+
+     function rokko_mapping_bc_get_npcol(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_npcol
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_npcol
+
   end interface
-  
+
 end module rokko_mapping_bc_mod

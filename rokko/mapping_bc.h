@@ -28,6 +28,18 @@ int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc matrix);
 int rokko_mapping_bc_get_m_size(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_n_size(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_length_array(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_nprocs(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_myrank(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_nprow(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_npcol(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_myrow(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_mycol(struct rokko_mapping_bc map);
+int rokko_mapping_bc_translate_l2g_row(struct rokko_mapping_bc map, int local_i);
+int rokko_mapping_bc_translate_l2g_col(struct rokko_mapping_bc map, int local_j);
+int rokko_mapping_bc_translate_g2l_row(struct rokko_mapping_bc map, int global_i);
+int rokko_mapping_bc_translate_g2l_col(struct rokko_mapping_bc map, int global_j);
+bool rokko_mapping_bc_is_row_major(struct rokko_mapping_bc map);
+bool rokko_mapping_bc_is_col_major(struct rokko_mapping_bc map);
 
 #ifdef __cplusplus
 }
