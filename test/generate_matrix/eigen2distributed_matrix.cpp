@@ -43,7 +43,7 @@ TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
     solver.initialize(global_argc, global_argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> lmat(dim, dim);
+    Eigen::MatrixXd lmat(dim, dim);
     rokko::frank_matrix::generate(lmat);
     eigen_2_distributed(lmat, mat);
     rokko::frank_matrix::generate(mat);

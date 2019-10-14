@@ -30,12 +30,12 @@ int main(int argc, char *argv[]) {
             << "solver = " << solver_name << std::endl
             << "dimension = " << dim << std::endl;
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
+  Eigen::MatrixXd mat(dim, dim);
   rokko::laplacian_matrix::generate(mat);
   std::cout << "Laplacian matrix:\n" << mat << std::endl;
 
   Eigen::VectorXd eigval(dim);
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
+  Eigen::MatrixXd eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

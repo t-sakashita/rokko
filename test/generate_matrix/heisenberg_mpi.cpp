@@ -152,13 +152,13 @@ int main(int argc, char *argv[]) {
   }
 
   // test for generate function
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> lmat(N_seq, N_seq);
+  Eigen::MatrixXd lmat(N_seq, N_seq);
   rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
 
   rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
   rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> lmat_gather(N_seq, N_seq);
+  Eigen::MatrixXd lmat_gather(N_seq, N_seq);
   rokko::gather(mat, lmat_gather, root);
 
   if (myrank == root) {

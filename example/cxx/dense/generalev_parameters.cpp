@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
   rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mata(dim, dim), matb(dim, dim);
+  Eigen::MatrixXd mata(dim, dim), matb(dim, dim);
   mata << 0.24, 0.39, 0.42, -0.16,
           0.39, -0.11, 0.79, 0.63,
           0.42, 0.79, -0.25, 0.48,
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   //std::cout << "matb:\n" << matb << std::endl;
 
   Eigen::VectorXd eigval(dim);
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
+  Eigen::MatrixXd eigvec(dim, dim);
   rokko::parameters params;
   params.set("routine", routine);
   //params.set("upper_value", 1.2);

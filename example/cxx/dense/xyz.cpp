@@ -55,11 +55,11 @@ int main(int argc, char *argv[]) {
             << "number of bonds = " << num_bonds << std::endl
             << "matrix dimension = " << dim << std::endl;
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
+  Eigen::MatrixXd mat(dim, dim);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
 
   Eigen::VectorXd eigval(dim);
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
+  Eigen::MatrixXd eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);
   }

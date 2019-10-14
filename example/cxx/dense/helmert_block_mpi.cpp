@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
   mat.print();
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat_loc(dim, dim);
+  Eigen::MatrixXd mat_loc(dim, dim);
   rokko::gather(mat, mat_loc, 0);
 
   Eigen::VectorXd eigval(dim);
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec_loc(dim, dim);
+  Eigen::MatrixXd eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
   if (myrank == 0) {
     std::cout << "largest eigenvalues:";

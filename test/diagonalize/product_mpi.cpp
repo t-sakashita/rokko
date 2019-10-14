@@ -48,9 +48,9 @@ TEST(product_mpi, product_mpi) {
   MPI_Allreduce(&sum_local, &sum_global, 1, MPI_DOUBLE, MPI_SUM, comm);
   if (rank == 0) std::cout << "trace of distributed matrix = " << sum_global << std::endl;
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> lmatA(dim, dim);
+  Eigen::MatrixXd lmatA(dim, dim);
   rokko::frank_matrix::generate(lmatA);
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> lmatC = lmatA * lmatA;
+  Eigen::MatrixXd lmatC = lmatA * lmatA;
   if (rank == 0) std::cout << lmatC << std::endl;
   // calculate trace
   double sum = 0;

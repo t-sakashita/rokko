@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> locA(dim, dim), locB(dim, dim);
+  Eigen::MatrixXd locA(dim, dim), locB(dim, dim);
   set_A_B(locA, locB);
   if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;  
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 
   diagonalize_fixedB(solver, A, B, eigval, eigvec);
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec_loc(dim, dim);
+  Eigen::MatrixXd eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);
 
   set_A_B(locA, locB);

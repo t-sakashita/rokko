@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
-  //  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat_loc(dim, dim);
+  //  Eigen::MatrixXd mat_loc(dim, dim);
   //  rokko::gather(mat, mat_loc, 0);
 
   diag_tick = MPI_Wtime();

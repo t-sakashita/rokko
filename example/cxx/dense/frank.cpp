@@ -36,12 +36,12 @@ int main(int argc, char *argv[]) {
   rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> mat(dim, dim);
+  Eigen::MatrixXd mat(dim, dim);
   rokko::frank_matrix::generate(mat);
   std::cout << "Frank matrix:\n" << mat << std::endl;
 
   Eigen::VectorXd eigval(dim);
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> eigvec(dim, dim);
+  Eigen::MatrixXd eigvec(dim, dim);
   rokko::parameters params;
   params.set("routine", routine);
   params.set("upper_value", 1.2);

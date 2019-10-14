@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   rokko::frank_matrix::generate(mat);
   mat.print();
 
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<matrix_major>> lmat(dim, dim);
+  Eigen::MatrixXd lmat(dim, dim);
   for (int proc = 0; proc < g.get_nprocs(); ++proc) {
     rokko::gather(mat, lmat, proc);
     if (g.get_myrank() == proc) {

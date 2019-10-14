@@ -60,10 +60,10 @@ TEST(diagonalize, xyz_file) {
     std::cout << "solver=" << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> mat(dim, dim);
+    Eigen::MatrixXd mat(dim, dim);
     rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
     Eigen::VectorXd w(dim);
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> Z(dim, dim);
+    Eigen::MatrixXd Z(dim, dim);
     std::cout << "mat=" << mat << std::endl;
     solver.diagonalize(mat, w, Z);
     
