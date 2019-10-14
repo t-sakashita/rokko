@@ -33,6 +33,6 @@ program frank_matrix
   enddo
   call rokko_print(mat)
 
-  !call rokko_destruct(mat)
+  call rokko_destruct(mat)
 
 end program frank_matrix

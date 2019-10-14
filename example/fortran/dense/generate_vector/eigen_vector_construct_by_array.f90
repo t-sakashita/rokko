@@ -28,6 +28,6 @@ program eigen_vector_construct_by_array
 
   call rokko_print(vector)
 
-  !call rokko_destruct(vector)
+  call rokko_destruct(vector)
 
 end program eigen_vector_construct_by_array
