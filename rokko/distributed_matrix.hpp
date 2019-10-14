@@ -42,12 +42,12 @@ public:
 
   ~distributed_matrix() {
     delete[] array;
-    array = 0;
+    array = nullptr;
   }
 
   void allocate_array() {
     array = new value_type[map.get_length_array()];
-    if (array == 0) {
+    if (array == nullptr) {
       std::cerr << "failed to allocate array." << std::endl;
       MPI_Abort(map.get_comm(), 3);
     }
