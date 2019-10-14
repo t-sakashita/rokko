@@ -40,6 +40,14 @@ public:
     allocate_array();
   }
 
+  distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in, value_type *const array_in) : map(map_in) {
+    bool is_col_major = std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    if (is_col_major != map.is_col_major()) {
+      throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
+    }
+    array = array_in;
+  }
+
   ~distributed_matrix() {
     if (!array) {
       delete[] array;

@@ -22,6 +22,8 @@ struct rokko_distributed_matrix {
 };
 
 void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map);
+void rokko_distributed_matrix_construct_array(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map, double *array);
+void rokko_distributed_matrix_construct_array_sizes(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map, int dim1, int dim2, double *array);
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,
   double (*func)(int i, int j));

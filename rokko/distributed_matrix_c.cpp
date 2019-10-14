@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,6 +17,22 @@ void rokko_distributed_matrix_construct(struct rokko_distributed_matrix* matrix,
     matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(*static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr));
   else
     matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_row_major>(*static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr));
+  matrix->major = map.major;
+}
+
+void rokko_distributed_matrix_construct_array(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map, double *array) {
+  if (map.major == rokko_matrix_col_major)
+    matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(*static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr), array);
+  else
+    matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_row_major>(*static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr), array);
+  matrix->major = map.major;
+}
+
+void rokko_distributed_matrix_construct_array_sizes(struct rokko_distributed_matrix* matrix, struct rokko_mapping_bc map, int dim1, int dim2, double *array) {
+  if (map.major == rokko_matrix_col_major)
+    matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_col_major>(*static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr), array);
+  else
+    matrix->ptr = new rokko::distributed_matrix<double, rokko::matrix_row_major>(*static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr), array);
   matrix->major = map.major;
 }
 

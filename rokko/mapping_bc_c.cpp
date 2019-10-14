@@ -25,3 +25,51 @@ void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map) {
   map->ptr = nullptr;
 }
 
+int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_m_local();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_m_local();
+}
+
+int rokko_mapping_bc_get_n_local(struct rokko_mapping_bc matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_n_local();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_n_local();
+}
+
+int rokko_mapping_bc_get_m_global(struct rokko_mapping_bc matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_m_global();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_m_global();
+}
+
+int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_n_global();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_n_global();
+}
+
+int rokko_mapping_bc_get_m_size(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_m_size();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_m_size();
+}
+
+int rokko_mapping_bc_get_n_size(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_n_size();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_n_size();
+}
+
+int rokko_mapping_bc_get_length_array(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_length_array();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_length_array();
+}
