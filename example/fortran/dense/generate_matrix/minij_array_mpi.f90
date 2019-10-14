@@ -46,7 +46,7 @@ program generate_minij_array_mpi
      do local_j = 0, n_local-1
         global_i = rokko_translate_l2g_row(mat, local_i);
         global_j = rokko_translate_l2g_col(mat, local_j);
-        array(local_i+1, local_j+1) = mun(global_i, global_j) + 1
+        array(local_i+1, local_j+1) = min(global_i, global_j) + 1
      enddo
   enddo
   call rokko_print(mat)
