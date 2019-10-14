@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -23,6 +23,7 @@ module rokko_distributed_matrix_mod
   ! generic names
   interface rokko_construct
      procedure rokko_distributed_matrix_construct
+     procedure rokko_distributed_matrix_construct_array_f
   end interface rokko_construct
 
   interface rokko_destruct
@@ -60,6 +61,14 @@ module rokko_distributed_matrix_mod
   interface rokko_get_n_local
      procedure rokko_distributed_matrix_get_n_local
   end interface rokko_get_n_local
+
+  interface rokko_get_m_size
+     procedure rokko_distributed_matrix_get_m_size
+  end interface rokko_get_m_size
+
+  interface rokko_get_n_size
+     procedure rokko_distributed_matrix_get_n_size
+  end interface rokko_get_n_size
 
   interface rokko_translate_l2g_row
      procedure  rokko_distributed_matrix_translate_l2g_row
@@ -99,7 +108,18 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), intent(out) :: matrix
        type(rokko_mapping_bc), value, intent(in) :: map
      end subroutine rokko_distributed_matrix_construct
-     
+
+     subroutine rokko_distributed_matrix_construct_array_sizes(matrix, map, dim1, dim2, array) &
+          bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc, rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), intent(out) :: matrix
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in) :: dim1, dim2
+       double precision, intent(in) :: array(dim1, dim2)
+     end subroutine rokko_distributed_matrix_construct_array_sizes
+
      subroutine rokko_distributed_matrix_destruct(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
@@ -368,7 +388,19 @@ module rokko_distributed_matrix_mod
   end interface
 
 contains
-  
+
+  subroutine rokko_distributed_matrix_construct_array_f(matrix, map, array) bind(c)
+    use iso_c_binding
+    implicit none
+    type(rokko_distributed_matrix), intent(out) :: matrix
+    type(rokko_mapping_bc), value, intent(in) :: map
+    double precision, intent(in) :: array(:,:)
+    integer :: sizes(2)
+
+    sizes = shape(array)
+    call rokko_distributed_matrix_construct_array_sizes(matrix, map, sizes(1), sizes(2), array)
+  end subroutine rokko_distributed_matrix_construct_array_f
+
   subroutine rokko_distributed_matrix_generate_from_array(matrix, array)
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     double precision, intent(in) :: array(:,:)

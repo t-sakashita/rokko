@@ -27,7 +27,31 @@ module rokko_mapping_bc_mod
   interface rokko_destruct
      procedure rokko_mapping_bc_destruct
   end interface rokko_destruct
-  
+
+  interface rokko_get_m_global
+     procedure rokko_mapping_bc_get_m_global
+  end interface rokko_get_m_global
+
+  interface rokko_get_n_global
+     procedure rokko_mapping_bc_get_n_global
+  end interface rokko_get_n_global
+
+  interface rokko_get_m_local
+     procedure rokko_mapping_bc_get_m_local
+  end interface rokko_get_m_local
+
+  interface rokko_get_n_local
+     procedure rokko_mapping_bc_get_n_local
+  end interface rokko_get_n_local
+
+  interface rokko_get_m_size
+     procedure rokko_mapping_bc_get_m_size
+  end interface rokko_get_m_size
+
+  interface rokko_get_n_size
+     procedure rokko_mapping_bc_get_n_size
+  end interface rokko_get_n_size
+
   interface
 
      subroutine rokko_mapping_bc_construct_block_size(map, global_dim, block_size, grid) &
@@ -47,6 +71,54 @@ module rokko_mapping_bc_mod
        implicit none
        type(rokko_mapping_bc), intent(inout) :: map
      end subroutine rokko_mapping_bc_destruct
+
+     function rokko_mapping_bc_get_m_local(matrix) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_m_local
+       type(rokko_mapping_bc), value, intent(in) :: matrix
+     end function rokko_mapping_bc_get_m_local
+
+     function rokko_mapping_bc_get_n_local(matrix) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_n_local
+       type(rokko_mapping_bc), value, intent(in) :: matrix
+     end function rokko_mapping_bc_get_n_local
+
+     function rokko_mapping_bc_get_m_global(matrix) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_m_global
+       type(rokko_mapping_bc), value, intent(in) :: matrix
+     end function rokko_mapping_bc_get_m_global
+
+     function rokko_mapping_bc_get_n_global(matrix) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_n_global
+       type(rokko_mapping_bc), value, intent(in) :: matrix
+     end function rokko_mapping_bc_get_n_global
+
+     function rokko_mapping_bc_get_m_size(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_m_size
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_m_size
+
+     function rokko_mapping_bc_get_n_size(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_n_size
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_n_size
 
   end interface
   
