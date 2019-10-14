@@ -15,7 +15,6 @@
 #include <iostream>
 #include <fstream>
 
-using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
   std::string solver_name(rokko::serial_dense_ev::default_solver());
