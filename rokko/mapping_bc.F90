@@ -28,6 +28,14 @@ module rokko_mapping_bc_mod
      procedure rokko_mapping_bc_destruct
   end interface rokko_destruct
 
+  interface rokko_get_mb
+     procedure rokko_mapping_bc_get_mb
+  end interface rokko_get_mb
+
+  interface rokko_get_nb
+     procedure rokko_mapping_bc_get_nb
+  end interface rokko_get_nb
+
   interface rokko_get_m_global
      procedure rokko_mapping_bc_get_m_global
   end interface rokko_get_m_global
@@ -119,6 +127,22 @@ module rokko_mapping_bc_mod
        implicit none
        type(rokko_mapping_bc), intent(inout) :: map
      end subroutine rokko_mapping_bc_destruct
+
+     function rokko_mapping_bc_get_mb(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_mb
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_mb
+
+     function rokko_mapping_bc_get_nb(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_nb
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_nb
 
      function rokko_mapping_bc_get_m_local(matrix) bind(c)
        use iso_c_binding

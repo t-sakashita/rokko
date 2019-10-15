@@ -25,6 +25,20 @@ void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map) {
   map->ptr = nullptr;
 }
 
+int rokko_mapping_bc_get_mb(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_mb();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_mb();
+}
+
+int rokko_mapping_bc_get_nb(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_nb();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_nb();
+}
+
 int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc matrix) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_m_local();

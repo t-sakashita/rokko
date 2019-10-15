@@ -36,6 +36,8 @@ void rokko_distributed_matrix_set_global(struct rokko_distributed_matrix matrix,
   int global_i, int global_j, double value);
 double rokko_distributed_matrix_get_global(struct rokko_distributed_matrix matrix,
   int global_i, int global_j);
+int rokko_distributed_matrix_get_mb(struct rokko_distributed_matrix matrix);
+int rokko_distributed_matrix_get_nb(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_m_local(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_n_local(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_m_global(struct rokko_distributed_matrix matrix);

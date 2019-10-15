@@ -46,6 +46,14 @@ module rokko_distributed_matrix_mod
      procedure rokko_distributed_matrix_set_local
   end interface rokko_set_local
 
+  interface rokko_get_mb
+     procedure rokko_distributed_matrix_get_mb
+  end interface rokko_get_mb
+
+  interface rokko_get_nb
+     procedure rokko_distributed_matrix_get_nb
+  end interface rokko_get_nb
+
   interface rokko_get_m_global
      procedure rokko_distributed_matrix_get_m_global
   end interface rokko_get_m_global
@@ -186,7 +194,23 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in):: global_i, global_j
      end function rokko_distributed_matrix_get_global
-     
+
+     function rokko_distributed_matrix_get_mb(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_get_mb
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_mb
+
+     function rokko_distributed_matrix_get_nb(matrix) bind(c)
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_get_nb
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+     end function rokko_distributed_matrix_get_nb
+
      function rokko_distributed_matrix_get_m_local(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix

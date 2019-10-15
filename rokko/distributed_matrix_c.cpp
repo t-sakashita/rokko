@@ -87,6 +87,20 @@ double rokko_distributed_matrix_get_global(rokko_distributed_matrix matrix, int 
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_global(global_i,global_j);
 }
 
+int rokko_distributed_matrix_get_mb(struct rokko_distributed_matrix matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_mb();
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_mb();
+}
+
+int rokko_distributed_matrix_get_nb(struct rokko_distributed_matrix matrix) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_nb();
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_nb();
+}
+
 int rokko_distributed_matrix_get_m_local(struct rokko_distributed_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_m_local();
