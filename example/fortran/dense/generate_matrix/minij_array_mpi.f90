@@ -42,10 +42,10 @@ program generate_minij_array_mpi
   ! generate minij matrix
   m_local = rokko_get_m_local(mat)
   n_local = rokko_get_n_local(mat)
-  do local_i = 0, m_local-1
-     do local_j = 0, n_local-1
-        global_i = rokko_translate_l2g_row(mat, local_i);
-        global_j = rokko_translate_l2g_col(mat, local_j);
+  do local_j = 0, n_local-1
+     global_j = rokko_translate_l2g_col(mat, local_j)
+     do local_i = 0, m_local-1
+        global_i = rokko_translate_l2g_row(mat, local_i)
         array(local_i+1, local_j+1) = min(global_i, global_j) + 1
      enddo
   enddo

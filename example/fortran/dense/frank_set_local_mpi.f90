@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -65,15 +65,15 @@ program frank_matrix
   n_local = rokko_get_n_local(mat)
   print *,"m_local=", m_local, " n_local=", n_local
 
-  do local_i = 0, m_local-1
-     do local_j = 0, n_local-1
-      global_i = rokko_translate_l2g_row(mat, local_i);
-      global_j = rokko_translate_l2g_col(mat, local_j);
-      val = dble(dim - max(global_i, global_j))
-      call rokko_set_local(mat, local_i, local_j, val);
-   enddo
+  do local_j = 0, n_local-1
+     global_j = rokko_translate_l2g_col(mat, local_j)
+     do local_i = 0, m_local-1
+        global_i = rokko_translate_l2g_row(mat, local_i)
+        val = dble(dim - max(global_i, global_j))
+        call rokko_set_local(mat, local_i, local_j, val)
+     enddo
   enddo
- 
+
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)

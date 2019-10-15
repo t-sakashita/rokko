@@ -43,10 +43,10 @@ int main(int argc, char *argv[]) {
   m_local = rokko_distributed_matrix_get_m_local(mat);
   n_local = rokko_distributed_matrix_get_n_local(mat);
   lld = rokko_distributed_matrix_get_lld(mat);
-  for(local_i=0; local_i<m_local; ++local_i) {
-    for(local_j=0; local_j<n_local; ++local_j) {
+  for(local_j=0; local_j<n_local; ++local_j) {
+    global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
+    for(local_i=0; local_i<m_local; ++local_i) {
       global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
-      global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
       array_ptr[local_i + local_j*lld] = MIN(global_i, global_j) + 1;
     }
   }

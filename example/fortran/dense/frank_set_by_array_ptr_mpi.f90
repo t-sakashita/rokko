@@ -67,10 +67,10 @@ program frank_matrix
   print *,"m_local=", m_local, " n_local=", n_local
 
   call rokko_get_array_pointer(mat, array_ptr)
-  do local_i = 0, m_local-1
-     do local_j = 0, n_local-1
-        global_i = rokko_translate_l2g_row(mat, local_i);
-        global_j = rokko_translate_l2g_col(mat, local_j);
+  do local_j = 0, n_local-1
+     global_j = rokko_translate_l2g_col(mat, local_j)
+     do local_i = 0, m_local-1
+        global_i = rokko_translate_l2g_row(mat, local_i)
         val = dble(dim - max(global_i, global_j))
         array_ptr(local_i+1, local_j+1) = val
      enddo

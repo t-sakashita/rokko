@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -58,9 +58,8 @@ program frank_matrix
   call rokko_construct(w, dim)
 
   ! generate frank matrix
-!  call rokko_frank_matrix_generate_distributed_matrix(mat)
-  do i = 0, dim-1
-     do j = 0, dim-1
+  do j = 0, dim-1
+     do i = 0, dim-1
         value = dim - max(i,j)
         call rokko_set_global(mat, i, j, value)
      enddo

@@ -63,13 +63,13 @@ program frank_matrix
   n_local = rokko_distributed_matrix_get_n_local(mat)
   print *,"m_local=", m_local, " n_local=", n_local
 
-  do local_i = 0, m_local-1
-     do local_j = 0, n_local-1
-      global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
-      global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
-      val = dble(dim - max(global_i, global_j))
-      call rokko_distributed_matrix_set_local(mat, local_i, local_j, val);
-   enddo
+  do local_j = 0, n_local-1
+     global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j)
+     do local_i = 0, m_local-1
+        global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i)
+        val = dble(dim - max(global_i, global_j))
+        call rokko_distributed_matrix_set_local(mat, local_i, local_j, val)
+     enddo
   enddo
  
   call rokko_distributed_matrix_print(mat)
