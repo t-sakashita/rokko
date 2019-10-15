@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -23,10 +23,10 @@ void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int glo
 void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map);
 int rokko_mapping_bc_get_mb(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_nb(struct rokko_mapping_bc map);
-int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc matrix);
-int rokko_mapping_bc_get_n_local(struct rokko_mapping_bc matrix);
-int rokko_mapping_bc_get_m_global(struct rokko_mapping_bc matrix);
-int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc matrix);
+int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_n_local(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_m_global(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_m_size(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_n_size(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_length_array(struct rokko_mapping_bc map);

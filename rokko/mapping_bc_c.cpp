@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -39,32 +39,32 @@ int rokko_mapping_bc_get_nb(struct rokko_mapping_bc map) {
     return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_nb();
 }
 
-int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc matrix) {
-  if (matrix.major == rokko_matrix_col_major)
-    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_m_local();
+int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_m_local();
   else
-    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_m_local();
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_m_local();
 }
 
-int rokko_mapping_bc_get_n_local(struct rokko_mapping_bc matrix) {
-  if (matrix.major == rokko_matrix_col_major)
-    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_n_local();
+int rokko_mapping_bc_get_n_local(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_n_local();
   else
-    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_n_local();
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_n_local();
 }
 
-int rokko_mapping_bc_get_m_global(struct rokko_mapping_bc matrix) {
-  if (matrix.major == rokko_matrix_col_major)
-    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_m_global();
+int rokko_mapping_bc_get_m_global(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_m_global();
   else
-    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_m_global();
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_m_global();
 }
 
-int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc matrix) {
-  if (matrix.major == rokko_matrix_col_major)
-    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(matrix.ptr)->get_n_global();
+int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_n_global();
   else
-    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(matrix.ptr)->get_n_global();
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_n_global();
 }
 
 int rokko_mapping_bc_get_m_size(struct rokko_mapping_bc map) {
