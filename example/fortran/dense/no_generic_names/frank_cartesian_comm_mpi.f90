@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -33,13 +33,13 @@ program frank_matrix
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
-  dims(1) = int(sqrt(real(nprocs)));
+  dims(1) = int(sqrt(real(nprocs)))
   do while (.true.)
      if ( dims(1) == 1 ) exit
      if ( mod(nprocs, dims(1)) == 0 ) exit
      dims(1) = dims(1) - 1
   enddo
-  dims(2) = nprocs / dims(1);
+  dims(2) = nprocs / dims(1)
   periods(1) = .false.;  periods(2) = .false.
   reorder = .false.
   call mpi_cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, comm, ierr)

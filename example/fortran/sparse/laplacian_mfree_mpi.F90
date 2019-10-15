@@ -184,7 +184,7 @@ program main
 
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
   if (num_conv == 0) then
-     call MPI_Abort(MPI_COMM_WORLD, -1, ierr);
+     call MPI_Abort(MPI_COMM_WORLD, -1, ierr)
   endif
 
   if (myrank == 0) then

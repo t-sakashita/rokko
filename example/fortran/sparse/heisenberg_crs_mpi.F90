@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -69,8 +69,8 @@ program heisenberg_crs_mpi
 
   call rokko_construct(mat, dim, dim, solver)
 
-  start_row = rokko_distributed_crs_matrix_start_row_c(mat);
-  end_row = rokko_distributed_crs_matrix_end_row_c(mat);
+  start_row = rokko_distributed_crs_matrix_start_row_c(mat)
+  end_row = rokko_distributed_crs_matrix_end_row_c(mat)
 
   allocate( cols(dim) )
   allocate( values(dim) )
@@ -105,15 +105,15 @@ program heisenberg_crs_mpi
   call rokko_set(params, "routine", routine)
   call rokko_diagonalize(solver, mat, params)
   
-  num_conv = rokko_num_conv(solver);
+  num_conv = rokko_num_conv(solver)
   num_conv = rokko_num_conv(solver)
   if ((num_conv >= 1) .and. (myrank == 0)) then
      eig_val = rokko_eigenvalue(solver, 0)
      print *, "eigval=", eig_val
   endif
 
-  eig_val = rokko_eigenvalue(solver, 0);
-  num_local_rows = rokko_num_local_rows(mat);
+  eig_val = rokko_eigenvalue(solver, 0)
+  num_local_rows = rokko_num_local_rows(mat)
   print*, "num_local_rows=", num_local_rows
   allocate( eig_vec(num_local_rows) )
   call rokko_eigenvector(solver, 0, eig_vec)

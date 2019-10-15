@@ -41,7 +41,7 @@ contains
        if ( myrank == 0 ) then
           write(0,*) "Error: This program can be run only for powers of 2"
        endif
-       call mpi_abort(comm, 1, ierr);
+       call mpi_abort(comm, 1, ierr)
     endif
 
     dim = 2 ** L
@@ -62,7 +62,7 @@ contains
     find_power_of_two = 0
     n = n_in
     do while (mod(n,2) == 0)
-       n = n / 2;
+       n = n / 2
        find_power_of_two = find_power_of_two + 1
     enddo
   end function find_power_of_two
@@ -125,7 +125,7 @@ contains
                    if (and(k,m1) == m1) then
                       y(k) = y(k) + 0.25 * x(k)
                    else
-                      y(k) = y(k) + 0.5 * buffer(xor(k,m1)) - 0.25 * x(k);
+                      y(k) = y(k) + 0.5 * buffer(xor(k,m1)) - 0.25 * x(k)
                    endif
                 enddo
              else
@@ -176,7 +176,7 @@ contains
              if ((and(myrank,m) /= m) .and. (and(myrank,m) /= 0)) then
                 call MPI_Sendrecv(x, N, MPI_DOUBLE, xor(myrank,m), 0, &
                      &            buffer, N, MPI_DOUBLE, xor(myrank,m), 0, &
-                     &            comm, status, ierr);
+                     &            comm, status, ierr)
 #ifdef _OPENMP
 !$omp do
 #endif
@@ -269,7 +269,7 @@ program main
 
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
   if (num_conv == 0) then
-     call MPI_Abort(MPI_COMM_WORLD, -1, ierr);
+     call MPI_Abort(MPI_COMM_WORLD, -1, ierr)
   endif
 
   if (myrank == 0) then

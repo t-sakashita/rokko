@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -82,7 +82,7 @@ program frank_matrix_array_mpi
   allocate(eigen_array(dim,dim))
   do i = 1, m_global
      do j = 1, n_global
-        eigen_array(j, i) = dim + 1 - max(i, j);
+        eigen_array(j, i) = dim + 1 - max(i, j)
      end do
   end do
   call rokko_generate(mat, func)
