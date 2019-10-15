@@ -67,6 +67,13 @@ int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc map) {
     return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_n_global();
 }
 
+int rokko_mapping_bc_get_lld(struct rokko_mapping_bc map) {
+  if (map.major == rokko_matrix_col_major)
+    return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_lld();
+  else
+    return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->get_lld();
+}
+
 int rokko_mapping_bc_get_m_size(struct rokko_mapping_bc map) {
   if (map.major == rokko_matrix_col_major)
     return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->get_m_size();

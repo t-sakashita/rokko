@@ -26,6 +26,7 @@ int rokko_mapping_bc_get_m_local(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_n_local(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_m_global(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_n_global(struct rokko_mapping_bc map);
+int rokko_mapping_bc_get_lld(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_m_size(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_n_size(struct rokko_mapping_bc map);
 int rokko_mapping_bc_get_length_array(struct rokko_mapping_bc map);

@@ -52,6 +52,10 @@ module rokko_mapping_bc_mod
      procedure rokko_mapping_bc_get_n_local
   end interface rokko_get_n_local
 
+  interface rokko_get_lld
+     procedure rokko_mapping_bc_get_lld
+  end interface rokko_get_lld
+
   interface rokko_get_m_size
      procedure rokko_mapping_bc_get_m_size
   end interface rokko_get_m_size
@@ -175,6 +179,14 @@ module rokko_mapping_bc_mod
        integer(c_int) :: rokko_mapping_bc_get_n_global
        type(rokko_mapping_bc), value, intent(in) :: map
      end function rokko_mapping_bc_get_n_global
+
+     function rokko_mapping_bc_get_lld(map) bind(c)
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_get_lld
+       type(rokko_mapping_bc), value, intent(in) :: map
+     end function rokko_mapping_bc_get_lld
 
      function rokko_mapping_bc_get_m_size(map) bind(c)
        use iso_c_binding
