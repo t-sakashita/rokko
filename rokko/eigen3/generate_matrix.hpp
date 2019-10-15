@@ -17,8 +17,8 @@
 
 namespace rokko {
 
-template<typename T, int ROWS, int COLS, int MATRIX_MAJOR, class FUNC>
-void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {
+template<typename T, int ROWS, int COLS, class FUNC>
+void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat, FUNC func) {
   for(int i = 0; i < mat.rows(); ++i) {
     for(int j = 0; j < mat.cols(); ++j) {
       mat(i, j) = func(i, j);
@@ -26,10 +26,28 @@ void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, FUNC func) {
   }
 }
 
-template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
-void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, std::function<T(int, int)> const& func) {
+template<typename T, int ROWS, int COLS, class FUNC>
+void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat, FUNC func) {
+  for(int j = 0; j < mat.cols(); ++j) {
+    for(int i = 0; i < mat.rows(); ++i) {
+      mat(i, j) = func(i, j);
+    }
+  }
+}
+
+template<typename T, int ROWS, int COLS>
+void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat, std::function<T(int, int)> const& func) {
   for(int i = 0; i < mat.rows(); ++i) {
     for(int j = 0; j < mat.cols(); ++j) {
+      mat(i, j) = func(i, j);
+    }
+  }
+}
+
+template<typename T, int ROWS, int COLS>
+void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat, std::function<T(int, int)> const& func) {
+  for(int j = 0; j < mat.cols(); ++j) {
+    for(int i = 0; i < mat.rows(); ++i) {
       mat(i, j) = func(i, j);
     }
   }
