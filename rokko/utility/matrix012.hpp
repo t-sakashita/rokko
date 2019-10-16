@@ -40,7 +40,6 @@ public:
   
   template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
-    int n = mat.rows();
     for(int j = 0; j < mat.cols(); ++j) {
       for(int i = 0; i < mat.rows(); ++i) {
         mat(i,j) = get_index(mat, i, j);
@@ -50,7 +49,6 @@ public:
 
   template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
-    int n = mat.rows();
     for(int i = 0; i < mat.rows(); ++i) {
       for(int j = 0; j < mat.cols(); ++j) {
         mat(i,j) = get_index(mat, i, j);
