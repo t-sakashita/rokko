@@ -13,7 +13,7 @@ foreach( pattern_file ${PATTERN_FILES} )
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${pattern_file} ${CMAKE_CURRENT_BINARY_DIR}/${pattern_file} COPYONLY)
 endforeach( pattern_file )
 
-set(TESTS frank helmert heisenberg xyz xyz_file)
+set(TESTS frank minij laplacian helmert heisenberg xyz xyz_file)
 foreach(name ${TESTS})
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} rokko gtest_main)
