@@ -104,8 +104,8 @@ public:
   }
 
   void set_zeros() {
-    for (int local_i=0; local_i<map.get_m_local(); ++local_i) {
-      for (int local_j=0; local_j<map.get_n_local(); ++local_j) {
+    for (int local_j=0; local_j<map.get_n_local(); ++local_j) {
+      for (int local_i=0; local_i<map.get_m_local(); ++local_i) {
         set_local(local_i, local_j, 0);
       }
     }
@@ -113,20 +113,20 @@ public:
 
   template<class FUNC>
   void generate(FUNC func) {
-    for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-      for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+    for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+      int global_j = map.translate_l2g_col(local_j);
+      for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
         int global_i = map.translate_l2g_row(local_i);
-        int global_j = map.translate_l2g_col(local_j);
         set_local(local_i, local_j, func(global_i, global_j));
       }
     }
   }
 
   void generate(std::function<value_type(int, int)> func) {
-    for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-      for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+    for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+      int global_j = map.translate_l2g_col(local_j);
+      for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
         int global_i = map.translate_l2g_row(local_i);
-        int global_j = map.translate_l2g_col(local_j);
         set_local(local_i, local_j, func(global_i, global_j));
       }
     }
