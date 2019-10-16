@@ -38,8 +38,18 @@ public:
     return mat.cols() * global_i + global_j;
   }
   
-  template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
-  static void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat) {
+  template<typename T, int ROWS, int COLS>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
+    int n = mat.rows();
+    for(int j = 0; j < mat.cols(); ++j) {
+      for(int i = 0; i < mat.rows(); ++i) {
+        mat(i,j) = get_index(mat, i, j);
+      }
+    }
+  }
+
+  template<typename T, int ROWS, int COLS>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
     int n = mat.rows();
     for(int i = 0; i < mat.rows(); ++i) {
       for(int j = 0; j < mat.cols(); ++j) {
@@ -61,11 +71,22 @@ public:
     return mat.get_n_global() * global_i + global_j;
   }
 
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
-    for (int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-      for (int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
+  template<typename T>
+  static void generate(rokko::distributed_matrix<T, matrix_col_major>& mat) {
+    for (int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
+      int global_j = mat.translate_l2g_col(local_j);
+      for (int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
         int global_i = mat.translate_l2g_row(local_i);
+        mat.set_local(local_i, local_j, get_index(mat, global_i, global_j));
+      }
+    }
+  }
+
+  template<typename T>
+  static void generate(rokko::distributed_matrix<T, matrix_row_major>& mat) {
+    for (int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
+      int global_i = mat.translate_l2g_row(local_i);
+      for (int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
         int global_j = mat.translate_l2g_col(local_j);
         mat.set_local(local_i, local_j, get_index(mat, global_i, global_j));
       }

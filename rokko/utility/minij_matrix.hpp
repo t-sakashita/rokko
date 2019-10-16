@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -24,8 +24,20 @@ namespace rokko {
 
 class minij_matrix {
 public:
-  template<typename T, int ROWS, int COLS, int MAJOR>
-  static void generate(Eigen::Matrix<T,ROWS,COLS,MAJOR>& mat) {
+  template<typename T, int ROWS, int COLS>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
+    if (mat.rows() != mat.cols())
+      throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
+    int n = mat.rows();
+    for(int j = 0; j < n; ++j) {
+      for(int i = 0; i < n; ++i) {
+        mat(i,j) = std::min(i, j) + 1;
+      }
+    }
+  }
+
+  template<typename T, int ROWS, int COLS>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
     int n = mat.rows();
@@ -37,22 +49,46 @@ public:
   }
 
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
+  template<typename T>
+  static void generate(rokko::distributed_matrix<T, matrix_col_major>& mat) {
+    if (mat.get_m_global() != mat.get_n_global())
+      throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
+    for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
+      int global_j = mat.translate_l2g_col(local_j);
+      for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
+        int global_i = mat.translate_l2g_row(local_i);
+        mat.set_local(local_i, local_j, std::min(global_i, global_j) + 1);
+      }
+    }
+  }
+
+  template<typename T>
+  static void generate(rokko::distributed_matrix<T, matrix_row_major>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
     for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
+      int global_i = mat.translate_l2g_row(local_i);
       for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-        int global_i = mat.translate_l2g_row(local_i);
         int global_j = mat.translate_l2g_col(local_j);
         mat.set_local(local_i, local_j, std::min(global_i, global_j) + 1);
       }
     }
   }
-  
+
   // another (slower) implementation using set_global function
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate_global(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
+  template<typename T>
+  static void generate_global(rokko::distributed_matrix<T, matrix_col_major>& mat) {
+    if (mat.m_global != mat.n_global)
+      throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
+    for(int global_j=0; global_j<mat.n_global; ++global_j) {
+      for(int global_i=0; global_i<mat.m_global; ++global_i) {
+        mat.set_global(global_i, global_j, std::min(global_i, global_j) + 1);
+      }
+    }
+  }
+
+  template<typename T>
+  static void generate_global(rokko::distributed_matrix<T, matrix_row_major>& mat) {
     if (mat.m_global != mat.n_global)
       throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
     for(int global_i=0; global_i<mat.m_global; ++global_i) {
