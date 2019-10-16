@@ -43,12 +43,8 @@ TEST(diagonalize, frank_mpi) {
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
 
       solver.diagonalize(mat, w, Z);
-      
-      double sum = 0;
-      for(int i=0; i<dim; ++i) {
-        sum += w[i];
-      }
-      EXPECT_NEAR(sum, dim * (dim+1) * 0.5, 10e-5);
+
+      EXPECT_NEAR(w.sum(), dim * (dim+1) * 0.5, 10e-5);
       
       solver.finalize();
     }
@@ -68,12 +64,8 @@ TEST(diagonalize, frank_mpi) {
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
       
       solver.diagonalize(mat, w, Z);
-      
-      double sum = 0;
-      for(int i=0; i<dim; ++i) {
-        sum += w[i];
-      }
-      EXPECT_NEAR(sum, dim * (dim+1) * 0.5, 10e-5);
+
+      EXPECT_NEAR(w.sum(), dim * (dim+1) * 0.5, 10e-5);
 
       solver.finalize();
     }
