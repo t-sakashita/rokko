@@ -28,7 +28,7 @@ public:
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
-    int n = mat.rows();
+    const int n = mat.rows();
     for(int j = 0; j < n; ++j) {
       for(int i = 0; i < n; ++i) {
         mat(i,j) = std::min(i, j) + 1;
@@ -40,7 +40,7 @@ public:
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("minij_matrix::generate() : non-square matrix");
-    int n = mat.rows();
+    const int n = mat.rows();
     for(int i = 0; i < n; ++i) {
       for(int j = 0; j < n; ++j) {
         mat(i,j) = std::min(i, j) + 1;

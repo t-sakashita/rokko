@@ -28,7 +28,7 @@ public:
   static void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
-    int n = mat.rows();
+    const int n = mat.rows();
     mat.setZero();
     mat.row(0).fill( 1 / sqrt(n) );
     for (int i=1; i < mat.rows(); ++i) {
@@ -41,7 +41,7 @@ public:
   static void generate_for_given_eigenvalues(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, Eigen::Vector<T, SIZE> const& diag) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate_for_given_eigenvalues() : non-square matrix");
-    int n = mat.rows();
+    const int n = mat.rows();
     for (int i=0; i<n; ++i) {
       double common_elem = diag(0) / n;
       for (int k=i+1; k<n; ++k)

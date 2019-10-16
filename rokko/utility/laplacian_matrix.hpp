@@ -42,7 +42,7 @@ public:
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
-    int n = mat.cols();
+    const int n = mat.cols();
     mat(0, 0) = 1; mat(1, 0) = -1;
     mat(n-2, n-1) = -1;  mat(n-1, n-1) = 2;
     for(int i = 1; i < n-1; ++i) {
@@ -57,7 +57,7 @@ public:
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
-    int n = mat.rows();
+    const int n = mat.rows();
     mat(0, 0) = 1; mat(0, 1) = -1;
     mat(n-1, n-2) = -1;  mat(n-1, n-1) = 2;
     for(int i = 1; i < n-1; ++i) {
@@ -72,7 +72,7 @@ public:
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.set_zeros();
-    int n = mat.get_n_global();
+    const int n = mat.get_n_global();
     mat.set_global(0, 0, 1);  mat.set_global(1, 0, -1);
     mat.set_global(n-2, n-1, -1);  mat.set_global(n-1, n-1, 2);
     for(int i = 1; i < n-1; ++i) {
@@ -87,7 +87,7 @@ public:
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.set_zeros();
-    int n = mat.get_m_global();
+    const int n = mat.get_m_global();
     mat.set_global(0, 0, 1);  mat.set_global(0, 1, -1);
     mat.set_global(n-1, n-2, -1);  mat.set_global(n-1, n-1, 2);
     for(int i = 1; i < n-1; ++i) {
