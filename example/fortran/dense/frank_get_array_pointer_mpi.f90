@@ -27,7 +27,6 @@ program frank_matrix
   integer :: i
   integer :: local_i, local_j
   integer :: global_i, global_j
-  double precision :: val
   double precision, pointer, dimension(:,:) :: array_ptr
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
@@ -71,8 +70,7 @@ program frank_matrix
      global_j = rokko_translate_l2g_col(mat, local_j)
      do local_i = 0, m_local-1
         global_i = rokko_translate_l2g_row(mat, local_i)
-        val = dble(dim - max(global_i, global_j))
-        array_ptr(local_i+1, local_j+1) = val
+        array_ptr(local_i+1, local_j+1) = dble(dim - max(global_i, global_j))
      enddo
   enddo
  
