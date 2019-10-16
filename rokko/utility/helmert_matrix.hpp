@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -78,20 +78,6 @@ public:
       }
     }
   }
-
-  /*
-  // another (slower) implementation using set_global function
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate_global(rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
-    if (mat.m_global != mat.n_global)
-      throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
-    for(int global_i=0; global_i<mat.m_global; ++global_i) {
-      for(int global_j=0; global_j<mat.n_global; ++global_j) {
-        mat.set_global(global_i, global_j, mat.m_global - std::max(global_i, global_j) );
-      }
-    }
-  }
-  */
 
   template<typename T, typename MATRIX_MAJOR, int SIZE>
   static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, SIZE> const& diag) {
