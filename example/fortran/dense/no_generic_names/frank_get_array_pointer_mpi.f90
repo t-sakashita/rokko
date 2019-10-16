@@ -61,7 +61,6 @@ program frank_matrix
   ! generate frank matrix
   m_local = rokko_distributed_matrix_get_m_local(mat)
   n_local = rokko_distributed_matrix_get_n_local(mat)
-  print *,"m_local=", m_local, " n_local=", n_local
 
   call rokko_distributed_matrix_get_array_pointer(mat, array_ptr)
   do local_j = 0, n_local-1
@@ -71,7 +70,7 @@ program frank_matrix
         array_ptr(local_i+1, local_j+1) = dble(dim - max(global_i, global_j))
      enddo
   enddo
- 
+
   call rokko_distributed_matrix_print(mat)
 
   call rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z)
