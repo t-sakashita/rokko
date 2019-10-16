@@ -10,7 +10,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE minij frank frank_function frank_set_by_array_ptr helmert)
+set(EXAMPLE minij frank frank_function frank_get_array_pointer helmert)
 foreach(name ${EXAMPLE})
   set(target_name example_fortran_dense_${name})
   add_executable(${target_name} ${name}.f90)
@@ -23,7 +23,7 @@ endforeach(name)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   include_directories(${MPI_Fortran_INCLUDE_PATH})
-  set(EXAMPLE minij_mpi frank_array_all_gather_mpi frank_array_mpi frank_function_array_mpi frank_function_mpi frank_mpi frank_set_global_mpi frank_set_local_mpi frank_set_by_array_ptr_mpi frank_2groups_comm_mpi frank_group_comm_null_mpi frank_cartesian_comm_mpi helmert_mpi)
+  set(EXAMPLE minij_mpi frank_array_all_gather_mpi frank_array_mpi frank_function_array_mpi frank_function_mpi frank_mpi frank_set_global_mpi frank_set_local_mpi frank_get_array_pointer_mpi frank_2groups_comm_mpi frank_group_comm_null_mpi frank_cartesian_comm_mpi helmert_mpi)
   foreach(name ${EXAMPLE})
     set(target_name example_fortran_dense_${name})
     add_executable(${target_name} ${name}.f90)
