@@ -37,8 +37,23 @@ public:
     multiply(dim, &v[0], &w[0]);
   }
 
-  template<typename T, int ROWS, int COLS, int MAJOR>
-  static void generate(Eigen::Matrix<T,ROWS,COLS,MAJOR>& mat) {
+  template<typename T, int ROWS, int COLS>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
+    if (mat.rows() != mat.cols())
+      throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
+    mat.setZero();
+    int n = mat.cols();
+    mat(0, 0) = 1; mat(1, 0) = -1;
+    mat(n-2, n-1) = -1;  mat(n-1, n-1) = 2;
+    for(int i = 1; i < n-1; ++i) {
+      mat(i-1, i) = -1;
+      mat(i,   i) = 2;
+      mat(i+1, i) = -1;
+    }
+  }
+
+  template<typename T, int ROWS, int COLS>
+  static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
@@ -52,8 +67,23 @@ public:
     }
   }
 
-  template<typename T, typename MATRIX_MAJOR>
-  static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
+  template<typename T>
+  static void generate(rokko::distributed_matrix<T, matrix_col_major>& mat) {
+    if (mat.get_m_global() != mat.get_n_global())
+      throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
+    mat.set_zeros();
+    int n = mat.get_n_global();
+    mat.set_global(0, 0, 1);  mat.set_global(1, 0, -1);
+    mat.set_global(n-2, n-1, -1);  mat.set_global(n-1, n-1, 2);
+    for(int i = 1; i < n-1; ++i) {
+      mat.set_global(i-1, i, -1);
+      mat.set_global(i,   i, 2);
+      mat.set_global(i+1, i, -1);
+    }
+  }
+
+  template<typename T>
+  static void generate(rokko::distributed_matrix<T, matrix_row_major>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.set_zeros();
