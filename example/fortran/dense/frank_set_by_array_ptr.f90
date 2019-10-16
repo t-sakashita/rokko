@@ -51,8 +51,8 @@ program frank_matrix
 
   ! generate frank matrix
   call rokko_get_array_pointer(mat, array_ptr)
-  do i = 1, dim
-     do j = 1, dim
+  do j = 1, dim
+     do i = 1, dim
         val = dble(dim+1 - max(i, j))
         array_ptr(i, j) = val
    enddo
