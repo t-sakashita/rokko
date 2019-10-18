@@ -62,11 +62,25 @@ double rokko_eigen_matrix_get(struct rokko_eigen_matrix matrix, int i, int j) {
     return (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(i, j);
 }
 
+double rokko_eigen_matrix_get_f(struct rokko_eigen_matrix matrix, int i, int j) {
+  if (matrix.major == rokko_matrix_col_major)
+    return (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr))(i-1, j-1);
+  else
+    return (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(i-1, j-1);
+}
+
 void rokko_eigen_matrix_set(struct rokko_eigen_matrix matrix, int i, int j, double value) {
   if (matrix.major == rokko_matrix_col_major)
     (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr))(i, j) = value;
   else
     (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(i, j) = value;
+}
+
+void rokko_eigen_matrix_set_f(struct rokko_eigen_matrix matrix, int i, int j, double value) {
+  if (matrix.major == rokko_matrix_col_major)
+    (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr))(i-1, j-1) = value;
+  else
+    (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(i-1, j-1) = value;
 }
 
 int rokko_eigen_matrix_get_m(struct rokko_eigen_matrix matrix) {

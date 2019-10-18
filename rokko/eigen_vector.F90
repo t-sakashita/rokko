@@ -28,6 +28,22 @@ module rokko_eigen_vector_mod
      procedure rokko_eigen_vector_destruct
   end interface rokko_destruct
 
+  interface rokko_get_elem
+     procedure rokko_eigen_vector_get
+  end interface rokko_get_elem
+
+  interface rokko_get_elem_f
+     procedure rokko_eigen_vector_get_f
+  end interface rokko_get_elem_f
+
+  interface rokko_set_elem
+     procedure rokko_eigen_vector_set
+  end interface rokko_set_elem
+
+  interface rokko_set_elem_f
+     procedure rokko_eigen_vector_set_f
+  end interface rokko_set_elem_f
+
   interface rokko_print
      procedure rokko_eigen_vector_print
   end interface rokko_print
@@ -85,9 +101,33 @@ module rokko_eigen_vector_mod
        type(c_ptr) :: c_array_ptr
      end function rokko_eigen_vector_get_array_pointer_c
 
-  end interface
+     subroutine rokko_eigen_vector_set(vec, i, value) bind(c)
+       use iso_c_binding
+       import rokko_eigen_vector
+       implicit none
+       type(rokko_eigen_vector), value, intent(in) :: vec
+       integer(c_int), value, intent(in) :: i
+       real(c_double), value, intent(in) :: value
+     end subroutine rokko_eigen_vector_set
 
-  interface rokko_eigen_vector_get
+     subroutine rokko_eigen_vector_set_f(vec, i, value) bind(c)
+       use iso_c_binding
+       import rokko_eigen_vector
+       implicit none
+       type(rokko_eigen_vector), value, intent(in) :: vec
+       integer(c_int), value, intent(in) :: i
+       real(c_double), value, intent(in) :: value
+     end subroutine rokko_eigen_vector_set_f
+
+     function rokko_eigen_vector_get(vec, i) bind(c)
+       use iso_c_binding
+       import rokko_eigen_vector
+       implicit none
+       real(c_double) :: rokko_eigen_vector_get
+       type(rokko_eigen_vector), value, intent(in) :: vec
+       integer(c_int), value, intent(in) :: i
+     end function rokko_eigen_vector_get
+
      function rokko_eigen_vector_get_f(vec, i) bind(c)
        use iso_c_binding
        import rokko_eigen_vector
@@ -96,7 +136,8 @@ module rokko_eigen_vector_mod
        type(rokko_eigen_vector), value, intent(in) :: vec
        integer(c_int), value, intent(in) :: i
      end function rokko_eigen_vector_get_f
-  end interface rokko_eigen_vector_get
+
+  end interface
 
 contains
 

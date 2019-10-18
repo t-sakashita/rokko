@@ -33,13 +33,21 @@ module rokko_eigen_matrix_mod
      procedure rokko_eigen_matrix_destruct
   end interface rokko_destruct
 
-  ! interface rokko_get
-  !    procedure rokko_eigen_matrix_get
-  ! end interface rokko_get
+  interface rokko_get_elem
+     procedure rokko_eigen_matrix_get
+  end interface rokko_get_elem
 
-  interface rokko_set
+  interface rokko_get_elem_f
+     procedure rokko_eigen_matrix_get_f
+  end interface rokko_get_elem_f
+
+  interface rokko_set_elem
      procedure rokko_eigen_matrix_set
-  end interface rokko_set
+  end interface rokko_set_elem
+
+  interface rokko_set_elem_f
+     procedure rokko_eigen_matrix_set_f
+  end interface rokko_set_elem_f
 
   interface rokko_get_m
      procedure rokko_eigen_matrix_get_m
@@ -105,6 +113,15 @@ module rokko_eigen_matrix_mod
        real(c_double), value, intent(in) :: value
      end subroutine rokko_eigen_matrix_set
 
+     subroutine rokko_eigen_matrix_set_f(matrix, i, j, value) bind(c)
+       use iso_c_binding
+       import rokko_eigen_matrix
+       implicit none
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in) :: i, j
+       real(c_double), value, intent(in) :: value
+     end subroutine rokko_eigen_matrix_set_f
+
      function rokko_eigen_matrix_get(matrix, i, j) bind(c)
        use iso_c_binding
        import rokko_eigen_matrix
@@ -113,6 +130,15 @@ module rokko_eigen_matrix_mod
        type(rokko_eigen_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in) :: i, j
      end function rokko_eigen_matrix_get
+
+     function rokko_eigen_matrix_get_f(matrix, i, j) bind(c)
+       use iso_c_binding
+       import rokko_eigen_matrix
+       implicit none
+       real(c_double) :: rokko_eigen_matrix_get_f
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in) :: i, j
+     end function rokko_eigen_matrix_get_f
 
      function rokko_eigen_matrix_get_m(matrix) bind(c)
        use iso_c_binding

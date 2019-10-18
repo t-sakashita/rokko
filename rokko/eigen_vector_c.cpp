@@ -43,6 +43,15 @@ double rokko_eigen_vector_get_f(rokko_eigen_vector vec, int i) {
   return (*static_cast<Eigen::VectorXd*>(vec.ptr))[i-1];
 }
 
+void rokko_eigen_vector_set(rokko_eigen_vector vec, int i, double val) {
+  (*static_cast<Eigen::VectorXd*>(vec.ptr))[i] = val;
+}
+
+/* offset by one */
+void rokko_eigen_vector_set_f(rokko_eigen_vector vec, int i, double val) {
+  (*static_cast<Eigen::VectorXd*>(vec.ptr))[i-1] = val;
+}
+
 void rokko_eigen_vector_print(rokko_eigen_vector vec) {
   std::cout << *static_cast<Eigen::VectorXd*>(vec.ptr) << std::endl;
 }
