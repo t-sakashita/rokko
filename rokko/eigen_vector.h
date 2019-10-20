@@ -26,8 +26,8 @@ void rokko_eigen_vector_construct_array_size(struct rokko_eigen_vector* vector,
 void rokko_eigen_vector_destruct(struct rokko_eigen_vector* vec);
 int rokko_eigen_vector_get_dim(struct rokko_eigen_vector vec);
 double* rokko_eigen_vector_get_array_pointer(struct rokko_eigen_vector vec);
-void rokko_eigen_vector_set(rokko_eigen_vector vec, int i, double val);
-void rokko_eigen_vector_set_f(rokko_eigen_vector vec, int i, double val);
+void rokko_eigen_vector_set(struct rokko_eigen_vector vec, int i, double val);
+void rokko_eigen_vector_set_f(struct rokko_eigen_vector vec, int i, double val);
 double rokko_eigen_vector_get(struct rokko_eigen_vector vec, int i);
 double rokko_eigen_vector_get_f(struct rokko_eigen_vector vec, int i);
 void rokko_eigen_vector_print(struct rokko_eigen_vector vec);
