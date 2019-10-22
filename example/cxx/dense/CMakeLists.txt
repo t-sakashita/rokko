@@ -40,3 +40,5 @@ if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   endforeach(name)
   unset(SAMPLE)
 endif(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
+
+add_subdirectory(generate_vector)
