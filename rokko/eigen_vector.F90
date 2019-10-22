@@ -21,7 +21,7 @@ module rokko_eigen_vector_mod
   interface rokko_construct
      procedure rokko_eigen_vector_construct
      procedure rokko_eigen_vector_construct_array_size
-     procedure rokko_eigen_vector_construct_array
+     module procedure rokko_eigen_vector_construct_array
   end interface rokko_construct
 
   interface rokko_destruct
@@ -49,7 +49,7 @@ module rokko_eigen_vector_mod
   end interface rokko_print
 
   interface rokko_get_array_pointer
-     procedure rokko_eigen_vector_get_array_pointer
+     module procedure rokko_eigen_vector_get_array_pointer
   end interface rokko_get_array_pointer
 
   interface
