@@ -26,7 +26,7 @@ module rokko_eigen_matrix_mod
   interface rokko_construct
      procedure rokko_eigen_matrix_construct
      procedure rokko_eigen_matrix_construct_array_sizes
-     procedure rokko_eigen_matrix_construct_array
+     module procedure rokko_eigen_matrix_construct_array
   end interface rokko_construct
 
   interface rokko_destruct
