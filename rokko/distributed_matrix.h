@@ -38,6 +38,15 @@ void rokko_distributed_matrix_set_global(struct rokko_distributed_matrix matrix,
   int global_i, int global_j, double value);
 double rokko_distributed_matrix_get_global(struct rokko_distributed_matrix matrix,
   int global_i, int global_j);
+/* offset by one for Fortran */
+void rokko_distributed_matrix_set_local_f(struct rokko_distributed_matrix matrix,
+  int local_i, int local_j, double value);
+double rokko_distributed_matrix_get_local_f(struct rokko_distributed_matrix matrix,
+  int local_i, int local_j);
+void rokko_distributed_matrix_set_global_f(struct rokko_distributed_matrix matrix,
+  int global_i, int global_j, double value);
+double rokko_distributed_matrix_get_global_f(struct rokko_distributed_matrix matrix,
+  int global_i, int global_j);
 int rokko_distributed_matrix_get_mb(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_nb(struct rokko_distributed_matrix matrix);
 int rokko_distributed_matrix_get_m_local(struct rokko_distributed_matrix matrix);
@@ -60,6 +69,15 @@ int rokko_distributed_matrix_translate_l2g_col(struct rokko_distributed_matrix m
 int rokko_distributed_matrix_translate_g2l_row(struct rokko_distributed_matrix matrix,
   int global_i);
 int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix matrix,
+  int global_j);
+/* offset by one for Fortran */
+int rokko_distributed_matrix_translate_l2g_row_f(struct rokko_distributed_matrix matrix,
+  int local_i);
+int rokko_distributed_matrix_translate_l2g_col_f(struct rokko_distributed_matrix matrix,
+  int local_j);
+int rokko_distributed_matrix_translate_g2l_row_f(struct rokko_distributed_matrix matrix,
+  int global_i);
+int rokko_distributed_matrix_translate_g2l_col_f(struct rokko_distributed_matrix matrix,
   int global_j);
 double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matrix matrix);
 

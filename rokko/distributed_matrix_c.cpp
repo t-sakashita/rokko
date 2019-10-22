@@ -97,6 +97,34 @@ double rokko_distributed_matrix_get_global(rokko_distributed_matrix matrix, int 
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_global(global_i,global_j);
 }
 
+void rokko_distributed_matrix_set_local_f(rokko_distributed_matrix matrix, int local_i, int local_j, double value) {
+  if (matrix.major == rokko_matrix_col_major)
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->set_local(local_i-1,local_j-1,value);
+  else
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->set_local(local_i-1,local_j-1,value);
+}
+
+double rokko_distributed_matrix_get_local_f(rokko_distributed_matrix matrix, int local_i, int local_j) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_local(local_i-1,local_j-1);
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_local(local_i-1,local_j-1);
+}
+
+void rokko_distributed_matrix_set_global_f(rokko_distributed_matrix matrix, int global_i, int global_j, double value) {
+  if (matrix.major == rokko_matrix_col_major)
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->set_global(global_i-1,global_j-1,value);
+  else
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->set_global(global_i-1,global_j-1,value);
+}
+
+double rokko_distributed_matrix_get_global_f(rokko_distributed_matrix matrix, int global_i, int global_j) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_global(global_i-1,global_j-1);
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->get_global(global_i-1,global_j-1);
+}
+
 int rokko_distributed_matrix_get_mb(struct rokko_distributed_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_mb();
@@ -228,6 +256,34 @@ int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix m
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_g2l_col(global_j);
   else
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_col(global_j);
+}
+
+int rokko_distributed_matrix_translate_l2g_row_f(struct rokko_distributed_matrix matrix, int local_i) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_l2g_row(local_i - 1) + 1;
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_l2g_row(local_i - 1) + 1;
+}
+
+int rokko_distributed_matrix_translate_l2g_col_f(struct rokko_distributed_matrix matrix, int local_j) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_l2g_col(local_j - 1) + 1;
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_l2g_col(local_j - 1) + 1;
+}
+
+int rokko_distributed_matrix_translate_g2l_row_f(struct rokko_distributed_matrix matrix, int global_i) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_g2l_row(global_i - 1) + 1;
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_row(global_i - 1) + 1;
+}
+
+int rokko_distributed_matrix_translate_g2l_col_f(struct rokko_distributed_matrix matrix, int global_j) {
+  if (matrix.major == rokko_matrix_col_major)
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_g2l_col(global_j - 1) + 1;
+  else
+    return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_col(global_j - 1) + 1;
 }
 
 bool rokko_distributed_matrix_is_row_major(struct rokko_distributed_matrix matrix) {
