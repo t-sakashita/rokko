@@ -10,6 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/eigen3.hpp>
+#include <rokko/eigen3/generate_vector.hpp>
 #include <rokko/dense.h>
 
 void rokko_eigen_vector_construct(rokko_eigen_vector* vec, int dim) {
@@ -54,4 +55,16 @@ void rokko_eigen_vector_set_f(rokko_eigen_vector vec, int i, double val) {
 
 void rokko_eigen_vector_print(rokko_eigen_vector vec) {
   std::cout << *static_cast<Eigen::VectorXd*>(vec.ptr) << std::endl;
+}
+
+void rokko_eigen_vector_generate_function(rokko_eigen_vector vec,
+					      double (*func)(int i)) {
+  rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr), func);
+}
+
+void rokko_eigen_vector_generate_function_f(rokko_eigen_vector vec,
+					      double (*func)(int i)) {
+  const auto g = [&func](int i) { return func(i+1); };
+
+  rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr), g);
 }

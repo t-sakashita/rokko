@@ -31,6 +31,10 @@ void rokko_eigen_vector_set_f(struct rokko_eigen_vector vec, int i, double val);
 double rokko_eigen_vector_get(struct rokko_eigen_vector vec, int i);
 double rokko_eigen_vector_get_f(struct rokko_eigen_vector vec, int i);
 void rokko_eigen_vector_print(struct rokko_eigen_vector vec);
+void rokko_eigen_vector_generate_function(struct rokko_eigen_vector vec,
+                                          double (*func)(int i));
+void rokko_eigen_vector_generate_function_f(struct rokko_eigen_vector vec,
+                                            double (*func)(int i));
 
 #ifdef __cplusplus
 }
