@@ -15,7 +15,7 @@ program generate_eigen_vector
   integer :: dim
   type(rokko_eigen_vector) :: vec
 
-  integer :: i, j
+  integer :: i
 
   dim = 10
   print *,"dimension = ", dim
@@ -23,9 +23,7 @@ program generate_eigen_vector
   call rokko_construct(vec, dim)
 
   do i = 1, dim
-     do j = 1, dim
-        call rokko_set_elem_f(vec, i, dble(i))
-     enddo
+     call rokko_set_elem_f(vec, i, dble(i))
   enddo
   call rokko_print(vec)
 
