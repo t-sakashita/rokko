@@ -73,7 +73,7 @@ program helmert_matrix
      write(*,'(A)') "Computed Eigenvalues = "
      call rokko_print(w)
      !     do i = 1, dim
-     !        write(*,"(f30.20)") rokko_eigen_vector_get(w, i)
+     !        write(*,"(f30.20)") rokko_get_elem_f(w, i)
      !     enddo
   endif
 

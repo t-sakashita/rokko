@@ -77,8 +77,8 @@ program minij_matrix
 
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
-     do i = 0, dim-1
-        write(*,"(f30.20)") rokko_eigen_vector_get(w ,i)
+     do i = 1, dim
+        write(*,"(f30.20)") rokko_get_elem_f(w ,i)
      enddo
   endif
 
