@@ -37,7 +37,7 @@ module rokko_distributed_matrix_mod
   interface rokko_get_local
      procedure rokko_distributed_matrix_get_local
   end interface rokko_get_local
-  
+
   interface rokko_set_global
      procedure rokko_distributed_matrix_set_global
   end interface rokko_set_global
@@ -162,16 +162,16 @@ module rokko_distributed_matrix_mod
        implicit none
        type(rokko_distributed_matrix), value, intent(in) :: matrix
      end subroutine rokko_distributed_matrix_print
-     
+
      subroutine rokko_distributed_matrix_set_local(matrix, local_i, local_j, value) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix       
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in) :: local_i, local_j
        real(c_double), value, intent(in) :: value
      end subroutine rokko_distributed_matrix_set_local
-     
+
      function rokko_distributed_matrix_get_local(matrix, local_i,local_j) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
@@ -180,7 +180,7 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in) :: local_i,local_j
      end function rokko_distributed_matrix_get_local
-     
+
      subroutine rokko_distributed_matrix_set_global(matrix, global_i, global_j, value) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
