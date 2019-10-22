@@ -62,6 +62,10 @@ module rokko_eigen_matrix_mod
      module procedure rokko_eigen_matrix_generate_from_array
   end interface rokko_generate
 
+  interface rokko_generate_f
+     module procedure rokko_eigen_matrix_generate_function_f
+  end interface rokko_generate_f
+
   interface rokko_get_array_pointer
      module procedure rokko_eigen_matrix_get_array_pointer
   end interface rokko_get_array_pointer
@@ -156,14 +160,23 @@ module rokko_eigen_matrix_mod
        type(rokko_eigen_matrix), value, intent(in) :: matrix
      end function rokko_eigen_matrix_get_n
 
-     subroutine rokko_eigen_matrix_generate_function_c(matrix, cproc) &
+     subroutine rokko_eigen_matrix_generate_function_orig(matrix, cproc) &
           bind(c,name='rokko_eigen_matrix_generate_function')
        use iso_c_binding
        import rokko_eigen_matrix
        implicit none
        type(rokko_eigen_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_matrix_generate_function_c
+     end subroutine rokko_eigen_matrix_generate_function_orig
+
+     subroutine rokko_eigen_matrix_generate_function_f_orig(matrix, cproc) &
+          bind(c,name='rokko_eigen_matrix_generate_function_f')
+       use iso_c_binding
+       import rokko_eigen_matrix
+       implicit none
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+       type(c_funptr), value, intent(in) :: cproc
+     end subroutine rokko_eigen_matrix_generate_function_f_orig
 
      type(c_ptr) function rokko_eigen_matrix_get_array_pointer_c(matrix) &
           bind(c,name='rokko_eigen_matrix_get_array_pointer')
@@ -236,8 +249,24 @@ contains
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_eigen_matrix_generate_function_c(matrix, cproc)
+    call rokko_eigen_matrix_generate_function_orig(matrix, cproc)
   end subroutine rokko_eigen_matrix_generate_function
+
+  subroutine rokko_eigen_matrix_generate_function_f(matrix, func_in)
+    type(rokko_eigen_matrix), value, intent(in) :: matrix
+    type(c_funptr) :: cproc
+    interface
+       function func_in (i, j) bind(c)
+         use, intrinsic :: iso_c_binding
+         real(c_double) :: func_in
+         integer(c_int), value, intent(in) :: i, j
+       end function func_in
+    end interface
+    ! get c procedure pointer.
+    cproc = c_funloc(func_in)
+    ! call wrapper written in c.
+    call rokko_eigen_matrix_generate_function_f_orig(matrix, cproc)
+  end subroutine rokko_eigen_matrix_generate_function_f
 
   subroutine rokko_eigen_matrix_generate_from_array(matrix, array)
     type(rokko_eigen_matrix), value, intent(in) :: matrix
