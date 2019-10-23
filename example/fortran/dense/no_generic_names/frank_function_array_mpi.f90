@@ -10,19 +10,20 @@
 !*****************************************************************************
 
 module mod_frank
-  use iso_c_binding
-  real(c_double), allocatable, dimension(:,:) :: eigen_array
-  contains
-    function func(i, j) bind(c)
-      use iso_c_binding
-      real(c_double) :: func
-      integer(c_int), value, intent(in) :: i, j
-      func = eigen_array(i+1,j+1)
-    end function func
+  double precision, allocatable, dimension(:,:) :: eigen_array
+
+contains
+
+  function func(i, j)
+    implicit none
+    double precision :: func
+    integer, value, intent(in) :: i, j
+    func = eigen_array(i+1,j+1)
+  end function func
+
 end module mod_frank
 
 program frank_matrix_array_mpi
-  use iso_c_binding
   use omp_lib
   use rokko
   use mod_frank

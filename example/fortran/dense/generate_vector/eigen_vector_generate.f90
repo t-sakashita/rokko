@@ -31,19 +31,17 @@ program generate_eigen_vector
 
 contains
 
-  function func(i) bind(c)
-    use iso_c_binding
+  function func(i)
     implicit none
-    real(c_double) :: func
-    integer(c_int), value, intent(in) :: i
+    double precision :: func
+    integer, value, intent(in) :: i
     func = dble(2*(i+1))
   end function func
 
-  function func_f(i) bind(c)
-    use iso_c_binding
+  function func_f(i)
     implicit none
-    real(c_double) :: func_f
-    integer(c_int), value, intent(in) :: i
+    double precision :: func_f
+    integer, value, intent(in) :: i
     func_f = dble(2*i)
   end function func_f
 

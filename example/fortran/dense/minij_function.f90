@@ -83,10 +83,9 @@ program minij_matrix
 
 contains
 
-  function minij_matrix_element(i, j) bind(c)
-    use iso_c_binding
-    real(c_double) :: minij_matrix_element
-    integer(c_int), value, intent(in) :: i, j
+  function minij_matrix_element(i, j)
+    double precision :: minij_matrix_element
+    integer, value, intent(in) :: i, j
     minij_matrix_element = dble(min(i, j))
   end function minij_matrix_element
 

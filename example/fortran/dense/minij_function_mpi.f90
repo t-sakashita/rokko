@@ -79,8 +79,7 @@ program minij_matrix
 
 contains
 
-  function minij_matrix_element(i, j) bind(c)
-    use iso_c_binding
+  function minij_matrix_element(i, j)
     implicit none
     double precision :: minij_matrix_element
     integer, value, intent(in) :: i, j
