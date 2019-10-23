@@ -9,21 +9,8 @@
 !
 !*****************************************************************************
 
-module minij_mod
-  implicit none
-  public minij_matrix_element
-contains
-  function minij_matrix_element(i, j) bind(c)
-    use iso_c_binding
-    real(c_double) :: minij_matrix_element
-    integer(c_int), value, intent(in) :: i, j
-    minij_matrix_element = dble(min(i, j))
-  end function minij_matrix_element
-end module minij_mod
-
 program minij_matrix
   use rokko
-  use minij_mod
   use mpi
   implicit none
   integer :: dim
@@ -89,4 +76,15 @@ program minij_matrix
   call rokko_destruct(grid)
 
   call MPI_finalize(ierr)
+
+contains
+
+  function minij_matrix_element(i, j) bind(c)
+    use iso_c_binding
+    implicit none
+    real(c_double) :: minij_matrix_element
+    integer(c_int), value, intent(in) :: i, j
+    minij_matrix_element = dble(min(i, j))
+  end function minij_matrix_element
+
 end program minij_matrix
