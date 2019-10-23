@@ -57,7 +57,7 @@ program minij_matrix
   call rokko_construct(w, dim)
 
   ! generate minij matrix
-  call rokko_generate(mat, minij_matrix_element)
+  call rokko_generate_f(mat, minij_matrix_element)
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)
@@ -83,7 +83,7 @@ contains
     implicit none
     double precision :: minij_matrix_element
     integer, value, intent(in) :: i, j
-    minij_matrix_element = dble(min(i, j)) + 1
+    minij_matrix_element = dble(min(i, j))
   end function minij_matrix_element
 
 end program minij_matrix
