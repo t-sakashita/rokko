@@ -24,7 +24,6 @@ program minij_matrix
   integer arg_len, status
   integer :: provided, ierr, myrank, nprocs
   integer :: i
-  integer :: local_i, local_j
   integer :: global_i, global_j
 
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
