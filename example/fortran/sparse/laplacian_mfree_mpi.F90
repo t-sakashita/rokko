@@ -12,13 +12,12 @@
 module laplacian
   use mpi
   use rokko
-  use, intrinsic :: iso_c_binding
   implicit none
   integer :: comm
   integer :: nprocs, myrank
-  integer(c_int), private :: dim, local_offset, num_local_rows
-  integer(c_int), private :: start_row, end_row
-  integer(c_int), private :: start_k, end_k
+  integer, private :: dim, local_offset, num_local_rows
+  integer, private :: start_row, end_row
+  integer, private :: start_k, end_k
   logical, private :: is_first_proc, is_last_proc
   double precision, private :: buf_p = 0, buf_m = 0
   integer, private :: status_m(mpi_status_size), status_p(mpi_status_size)
@@ -27,7 +26,7 @@ contains
 
   subroutine initialize (mat, dim_in)
     type(rokko_distributed_mfree), intent(inout) :: mat
-    integer(c_int), intent(in) :: dim_in
+    integer, intent(in) :: dim_in
     integer :: ierr
     integer :: tmp, rem
 
@@ -56,9 +55,9 @@ contains
   
   ! subroutine passed to c function.
   ! it must be interoperable!
-  subroutine multiply (n, x, y) bind(c)
+  subroutine multiply (n, x, y)
     implicit none
-    integer(c_int), intent(in), value :: n
+    integer, intent(in), value :: n
     double precision, intent(in) :: x(n)
     double precision, intent(out) :: y(n)
     integer :: ierr

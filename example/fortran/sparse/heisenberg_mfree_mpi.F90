@@ -12,11 +12,10 @@
 module heisenberg
   use mpi
   use rokko
-  use, intrinsic :: iso_c_binding
   implicit none
   integer :: comm
   integer :: nprocs, myrank
-  integer(c_int), private :: dim, local_offset, num_local_rows
+  integer, private :: dim, local_offset, num_local_rows
   double precision, allocatable, private :: buffer(:)
   integer, private :: L, lattice_size, p
   integer, allocatable, private :: lattice(:,:)
@@ -25,8 +24,8 @@ contains
 
   subroutine initialize (mat, L_in, lattice_size_in, lattice_in)
     type(rokko_distributed_mfree), intent(inout) :: mat
-    integer(c_int), intent(in) :: L_in, lattice_size_in
-    integer(c_int) :: lattice_in(2,lattice_size_in)
+    integer, intent(in) :: L_in, lattice_size_in
+    integer :: lattice_in(2,lattice_size_in)
     integer :: ierr
 
     L = L_in
@@ -56,7 +55,7 @@ contains
   end subroutine initialize
 
   integer function find_power_of_two(n_in)
-    integer(c_int), intent(in) :: n_in
+    integer, intent(in) :: n_in
     integer :: n
 
     find_power_of_two = 0
@@ -77,9 +76,9 @@ contains
 
   ! subroutine passed to c function.
   ! it must be interoperable!
-  subroutine multiply (n, x, y) bind(c)
+  subroutine multiply (n, x, y)
     implicit none
-    integer(c_int), intent(in), value :: n
+    integer, intent(in), value :: n
     double precision, intent(in) :: x(0:n-1)
     double precision, intent(out) :: y(0:n-1)
     integer :: ierr
