@@ -69,11 +69,10 @@ contains
     integer(c_int), intent(in) :: dim, num_local_rows
     type(c_funptr) :: cproc
     interface
-       subroutine multiply_in (n, x, y) bind(c)
-         use, intrinsic :: iso_c_binding
-         integer(c_int), intent(in), value :: n
-         real(c_double), intent(in) :: x(n)
-         real(c_double), intent(out) :: y(n)
+       subroutine multiply_in (n, x, y)
+         integer, intent(in), value :: n
+         double precision, intent(in) :: x(n)
+         double precision, intent(out) :: y(n)
        end subroutine multiply_in
     end interface
     ! get c procedure pointer.
