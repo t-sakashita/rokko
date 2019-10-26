@@ -586,10 +586,10 @@ contains
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     type(c_funptr) :: cproc
     interface
-       function func_in (i, j) bind(c)
+       function func_in (i, j)
          use, intrinsic :: iso_c_binding
-         real(c_double) :: func_in
-         integer(c_int), value, intent(in) :: i, j
+         double precision :: func_in
+         integer, value, intent(in) :: i, j
        end function func_in
     end interface
     ! get c procedure pointer.
@@ -602,10 +602,10 @@ contains
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     type(c_funptr) :: cproc
     interface
-       function func_in (i, j) bind(c)
-         use, intrinsic :: iso_c_binding
-         real(c_double) :: func_in
-         integer(c_int), value, intent(in) :: i, j
+       function func_in (i, j)
+         implicit none
+         double precision :: func_in
+         integer, value, intent(in) :: i, j
        end function func_in
     end interface
     ! get c procedure pointer.
