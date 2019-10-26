@@ -171,10 +171,9 @@ contains
     type(rokko_eigen_vector), value, intent(in) :: vector
     type(c_funptr) :: cproc
     interface
-       function func_in (i) bind(c)
-         use, intrinsic :: iso_c_binding
-         real(c_double) :: func_in
-         integer(c_int), value, intent(in) :: i
+       function func_in(i)
+         double precision :: func_in
+         integer, value, intent(in) :: i
        end function func_in
     end interface
     ! get c procedure pointer.
@@ -187,10 +186,9 @@ contains
     type(rokko_eigen_vector), value, intent(in) :: vector
     type(c_funptr) :: cproc
     interface
-       function func_in (i) bind(c)
-         use, intrinsic :: iso_c_binding
-         real(c_double) :: func_in
-         integer(c_int), value, intent(in) :: i
+       function func_in(i)
+         double precision :: func_in
+         integer, value, intent(in) :: i
        end function func_in
     end interface
     ! get c procedure pointer.
