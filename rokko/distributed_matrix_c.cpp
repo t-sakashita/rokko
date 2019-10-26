@@ -287,17 +287,11 @@ int rokko_distributed_matrix_translate_g2l_col_f(struct rokko_distributed_matrix
 }
 
 bool rokko_distributed_matrix_is_row_major(struct rokko_distributed_matrix matrix) {
-  if (matrix.major == rokko_matrix_row_major)
-    return true;
-  else
-    return false;
+  return matrix.major == rokko_matrix_row_major;
 }
 
 bool rokko_distributed_matrix_is_col_major(struct rokko_distributed_matrix matrix) {
-  if (matrix.major == rokko_matrix_col_major)
-    return true;
-  else
-    return false;
+  return matrix.major == rokko_matrix_col_major;
 }
 
 double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matrix matrix) { 
