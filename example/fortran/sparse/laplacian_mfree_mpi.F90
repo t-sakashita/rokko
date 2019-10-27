@@ -57,7 +57,7 @@ contains
   ! it must be interoperable!
   subroutine multiply (n, x, y)
     implicit none
-    integer, intent(in), value :: n
+    integer, intent(in) :: n
     double precision, intent(in) :: x(n)
     double precision, intent(out) :: y(n)
     integer :: ierr

@@ -70,7 +70,7 @@ contains
     type(c_funptr) :: cproc
     interface
        subroutine multiply_in (n, x, y)
-         integer, intent(in), value :: n
+         integer, intent(in) :: n
          double precision, intent(in) :: x(n)
          double precision, intent(out) :: y(n)
        end subroutine multiply_in
