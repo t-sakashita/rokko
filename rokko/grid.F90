@@ -54,7 +54,15 @@ module rokko_grid_mod
   interface rokko_get_npcol
      procedure rokko_grid_get_npcol
   end interface rokko_get_npcol
-  
+
+  interface rokko_is_row_major
+     procedure rokko_grid_is_row_major
+  end interface rokko_is_row_major
+
+  interface rokko_is_col_major
+     procedure rokko_grid_is_col_major
+  end interface rokko_is_col_major
+
   interface
      subroutine rokko_grid_destruct(grid) bind(c)
        import rokko_grid
