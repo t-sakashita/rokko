@@ -185,23 +185,21 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_matrix_destruct
      
-     subroutine rokko_distributed_matrix_generate_function_orig(matrix, cproc) &
-          bind(c,name='rokko_distributed_matrix_generate_function')
+     subroutine rokko_distributed_matrix_generate_function_p(matrix, cproc) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_distributed_matrix_generate_function_orig
+     end subroutine rokko_distributed_matrix_generate_function_p
 
-     subroutine rokko_distributed_matrix_generate_function_f_orig(matrix, cproc) &
-          bind(c,name='rokko_distributed_matrix_generate_function_f')
+     subroutine rokko_distributed_matrix_generate_function_f_p(matrix, cproc) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_distributed_matrix_generate_function_f_orig
+     end subroutine rokko_distributed_matrix_generate_function_f_p
 
      subroutine rokko_distributed_matrix_print(matrix) bind(c)
        use iso_c_binding
@@ -589,13 +587,13 @@ contains
        function func_in (i, j)
          use, intrinsic :: iso_c_binding
          double precision :: func_in
-         integer, value, intent(in) :: i, j
+         integer, intent(in) :: i, j
        end function func_in
     end interface
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_distributed_matrix_generate_function_orig(matrix, cproc)
+    call rokko_distributed_matrix_generate_function_p(matrix, cproc)
   end subroutine rokko_distributed_matrix_generate_function
 
   subroutine rokko_distributed_matrix_generate_function_f(matrix, func_in)
@@ -605,13 +603,13 @@ contains
        function func_in (i, j)
          implicit none
          double precision :: func_in
-         integer, value, intent(in) :: i, j
+         integer, intent(in) :: i, j
        end function func_in
     end interface
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_distributed_matrix_generate_function_f_orig(matrix, cproc)
+    call rokko_distributed_matrix_generate_function_f_p(matrix, cproc)
   end subroutine rokko_distributed_matrix_generate_function_f
 
   subroutine rokko_distributed_matrix_get_array_pointer(matrix, f_array_ptr)

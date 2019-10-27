@@ -52,10 +52,33 @@ void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix 
     static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->generate(func);
 }
 
+void rokko_distributed_matrix_generate_function_p(struct rokko_distributed_matrix matrix,
+						double (*func)(const int* i, const int* j)) {
+  const auto g = [&func](int i, int j) { return func(&i, &j); };
+
+  if (matrix.major == rokko_matrix_col_major)
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->generate(g);
+  else
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->generate(g);
+}
+
 void rokko_distributed_matrix_generate_function_f(struct rokko_distributed_matrix matrix,
 						double (*func)(int i, int j)) {
   auto const g = [&func](int i, int j) { return func(i+1, j+1); };
 
+  if (matrix.major == rokko_matrix_col_major)
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->generate(g);
+  else
+    static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->generate(g);
+}
+
+void rokko_distributed_matrix_generate_function_f_p(struct rokko_distributed_matrix matrix,
+						double (*func)(const int* i, const int* j)) {
+  const auto g = [&func](int i, int j) {
+    const int i1 = i+1, j1 = j+1;
+    return func(&i1, &j1);
+  };
+  
   if (matrix.major == rokko_matrix_col_major)
     static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->generate(g);
   else

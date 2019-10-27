@@ -18,7 +18,7 @@ contains
 
   function frank_matrix_element(i, j)
     double precision :: frank_matrix_element
-    integer, value, intent(in) :: i, j
+    integer, intent(in) :: i, j
     frank_matrix_element = dble(dim - max(i, j))
   end function frank_matrix_element
 

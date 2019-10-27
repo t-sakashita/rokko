@@ -82,7 +82,7 @@ contains
   function minij_matrix_element(i, j)
     implicit none
     double precision :: minij_matrix_element
-    integer, value, intent(in) :: i, j
+    integer, intent(in) :: i, j
     minij_matrix_element = dble(min(i, j))
   end function minij_matrix_element
 

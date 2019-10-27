@@ -18,7 +18,7 @@ contains
   function func(i, j)
     implicit none
     double precision :: func
-    integer, value, intent(in) :: i, j
+    integer, intent(in) :: i, j
     func = eigen_array(i+1,j+1)
   end function func
 

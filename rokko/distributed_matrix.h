@@ -27,8 +27,12 @@ void rokko_distributed_matrix_construct_array_sizes(struct rokko_distributed_mat
 void rokko_distributed_matrix_destruct(struct rokko_distributed_matrix* matrix);
 void rokko_distributed_matrix_generate_function(struct rokko_distributed_matrix matrix,
   double (*func)(int i, int j));
+void rokko_distributed_matrix_generate_function_p(struct rokko_distributed_matrix matrix,
+  double (*func)(const int* i, const int* j));
 void rokko_distributed_matrix_generate_function_f(struct rokko_distributed_matrix matrix,
   double (*func)(int i, int j));
+void rokko_distributed_matrix_generate_function_f_p(struct rokko_distributed_matrix matrix,
+  double (*func)(const int* i, const int* j));
 void rokko_distributed_matrix_print(struct rokko_distributed_matrix matrix);
 void rokko_distributed_matrix_set_local(struct rokko_distributed_matrix matrix,
   int local_i, int local_j, double value);

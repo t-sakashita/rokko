@@ -19,13 +19,13 @@ contains
   function frank_matrix_element(i, j)
     implicit none
     double precision :: frank_matrix_element
-    integer, value, intent(in) :: i, j
+    integer, intent(in) :: i, j
     frank_matrix_element = dble(dim - max(i, j))
   end function frank_matrix_element
   
   subroutine frank_matrix_set_dimension(dim_in)
     implicit none
-    integer, value, intent(in) :: dim_in
+    integer, intent(in) :: dim_in
     dim = dim_in
   end subroutine frank_matrix_set_dimension
 
