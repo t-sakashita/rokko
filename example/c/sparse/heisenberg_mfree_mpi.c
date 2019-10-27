@@ -53,7 +53,7 @@ void heisenberg_initialize(int L, int lattice_size, int lattice_first[], int lat
   vars->buffer = (double*) malloc(sizeof(double) * vars->num_local_rows);
 }
 
-void heisenberg_multiply(const double* x, double* y, void* vars) {
+void heisenberg_multiply(const double *const x, double *const y, void* vars) {
   struct heisenberg_vars* p = (struct heisenberg_vars*)vars;
   multiply(p->comm, p->lattice_size, p->L, p->lattice_first, p->lattice_second, x, y, p->buffer);
 }

@@ -15,7 +15,7 @@
 
 class distributed_mfree_c : public rokko::distributed_mfree {
 public:
-  distributed_mfree_c(void (*multiply)(const double*, double*, void*), void* vars, int dim, int num_local_rows)
+  distributed_mfree_c(void (*multiply)(const double *const, double *const, void*), void* vars, int dim, int num_local_rows)
     : multiply_(multiply), vars_(vars), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
   }
   ~distributed_mfree_c() {}
@@ -31,7 +31,7 @@ public:
 public:
 
 private:
-  void (*multiply_)(const double*, double*, void*);
+  void (*multiply_)(const double *const, double *const, void*);
   mutable void* vars_;
   int dim_;
   int num_local_rows_;
@@ -39,7 +39,7 @@ private:
 };
 
 void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
-				       void (*multiply)(const double*, double*, void*),
+				       void (*multiply)(const double *const, double *const, void*),
 				       void* vars,
 				       int dim, int num_local_rows) {
   matrix->ptr = new distributed_mfree_c(multiply, vars, dim, num_local_rows);

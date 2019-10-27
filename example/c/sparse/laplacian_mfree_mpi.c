@@ -50,7 +50,7 @@ void laplacian_initialize(int dim, struct laplacian_vars* vars) {
   vars->end_k = vars->num_local_rows - 1;
 }
 
-void laplacian_multiply(const double* x, double* y, void* vars) {
+void laplacian_multiply(const double *const x, double *const y, void* vars) {
   struct laplacian_vars* p = (struct laplacian_vars*)vars;
   
   if (p->num_local_rows == 0) return;

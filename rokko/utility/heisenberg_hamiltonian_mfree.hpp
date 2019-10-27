@@ -41,7 +41,7 @@ public:
     return p;
   }
 
-  void multiply(const double* x, double* y) const {
+  void multiply(const double *const x, double *const y) const {
     rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
   }
   int get_dim() const { return dim_; }

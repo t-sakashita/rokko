@@ -21,12 +21,12 @@ struct rokko_distributed_mfree {
 };
 
 void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
-				       void (*multiply)(const double*, double*, void*),
+				       void (*multiply)(const double *const, double *const, void*),
 				       void* vars,
 				       int dim, int num_local_rows);
 void rokko_distributed_mfree_destruct(struct rokko_distributed_mfree* matrix);
 void rokko_distributed_mfree_f_construct(struct rokko_distributed_mfree* matrix,
-					 void (*multiply)(int, const double*, double*),
+					 void (*multiply)(int, const double *const, double *const),
 					 int dim, int num_local_rows);
 void rokko_distributed_mfree_f_destruct(struct rokko_distributed_mfree* matrix);
 int rokko_distributed_mfree_dim(struct rokko_distributed_mfree matrix);

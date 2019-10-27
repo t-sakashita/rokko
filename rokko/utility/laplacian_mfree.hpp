@@ -35,7 +35,7 @@ public:
   }
   ~laplacian_mfree() {}
 
-  void multiply(const double* x, double* y) const {
+  void multiply(const double *const x, double *const y) const {
     if (num_local_rows_ == 0) return;
 
     if ((!is_first_proc) && (nprocs != 1)) {
