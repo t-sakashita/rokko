@@ -55,9 +55,33 @@ void rokko_eigen_matrix_generate_function(struct rokko_eigen_matrix matrix,
     rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr), func);
 }
 
+void rokko_eigen_matrix_generate_function_p(struct rokko_eigen_matrix matrix,
+					      double (*func)(const int* i, const int* j)) {
+
+  const auto g = [&func](int i, int j) { return func(&i, &j); };
+
+  if (matrix.major == rokko_matrix_col_major)
+    rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr), g);
+  else
+    rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr), g);
+}
+
 void rokko_eigen_matrix_generate_function_f(struct rokko_eigen_matrix matrix,
 					      double (*func)(int i, int j)) {
   const auto g = [&func](int i, int j) { return func(i+1, j+1); };
+
+  if (matrix.major == rokko_matrix_col_major)
+    rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr), g);
+  else
+    rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr), g);
+}
+
+void rokko_eigen_matrix_generate_function_f_p(struct rokko_eigen_matrix matrix,
+					      double (*func)(const int* i, const int* j)) {
+  const auto g = [&func](int i, int j) {
+    const int i1 = i+1, j1 = j+1;
+    return func(&i1, &j1);
+  };
 
   if (matrix.major == rokko_matrix_col_major)
     rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr), g);

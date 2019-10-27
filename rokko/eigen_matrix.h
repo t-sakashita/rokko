@@ -29,8 +29,12 @@ void rokko_eigen_matrix_destruct(struct rokko_eigen_matrix* matrix);
 void rokko_eigen_matrix_print(struct rokko_eigen_matrix matrix);
 void rokko_eigen_matrix_generate_function(struct rokko_eigen_matrix matrix,
   double (*func)(int i, int j));
+void rokko_eigen_matrix_generate_function_p(struct rokko_eigen_matrix matrix,
+  double (*func)(const int* i, const int* j));
 void rokko_eigen_matrix_generate_function_f(struct rokko_eigen_matrix matrix,
   double (*func)(int i, int j));
+void rokko_eigen_matrix_generate_function_f_p(struct rokko_eigen_matrix matrix,
+  double (*func)(const int* i, const int* j));
 void rokko_eigen_matrix_set(struct rokko_eigen_matrix matrix,
   int i, int j, double value);
 void rokko_eigen_matrix_set_f(struct rokko_eigen_matrix matrix,

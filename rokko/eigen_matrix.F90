@@ -160,23 +160,21 @@ module rokko_eigen_matrix_mod
        type(rokko_eigen_matrix), value, intent(in) :: matrix
      end function rokko_eigen_matrix_get_n
 
-     subroutine rokko_eigen_matrix_generate_function_orig(matrix, cproc) &
-          bind(c,name='rokko_eigen_matrix_generate_function')
+     subroutine rokko_eigen_matrix_generate_function_p(matrix, cproc) bind(c)
        use iso_c_binding
        import rokko_eigen_matrix
        implicit none
        type(rokko_eigen_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_matrix_generate_function_orig
+     end subroutine rokko_eigen_matrix_generate_function_p
 
-     subroutine rokko_eigen_matrix_generate_function_f_orig(matrix, cproc) &
-          bind(c,name='rokko_eigen_matrix_generate_function_f')
+     subroutine rokko_eigen_matrix_generate_function_f_p(matrix, cproc) bind(c)
        use iso_c_binding
        import rokko_eigen_matrix
        implicit none
        type(rokko_eigen_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_matrix_generate_function_f_orig
+     end subroutine rokko_eigen_matrix_generate_function_f_p
 
      type(c_ptr) function rokko_eigen_matrix_get_array_pointer_c(matrix) &
           bind(c,name='rokko_eigen_matrix_get_array_pointer')
@@ -242,13 +240,13 @@ contains
     interface
        function func_in (i, j)
          double precision :: func_in
-         integer, value, intent(in) :: i, j
+         integer, intent(in) :: i, j
        end function func_in
     end interface
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_eigen_matrix_generate_function_orig(matrix, cproc)
+    call rokko_eigen_matrix_generate_function_p(matrix, cproc)
   end subroutine rokko_eigen_matrix_generate_function
 
   subroutine rokko_eigen_matrix_generate_function_f(matrix, func_in)
@@ -257,13 +255,13 @@ contains
     interface
        function func_in (i, j)
          double precision :: func_in
-         integer, value, intent(in) :: i, j
+         integer, intent(in) :: i, j
        end function func_in
     end interface
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_eigen_matrix_generate_function_f_orig(matrix, cproc)
+    call rokko_eigen_matrix_generate_function_f_p(matrix, cproc)
   end subroutine rokko_eigen_matrix_generate_function_f
 
   subroutine rokko_eigen_matrix_generate_from_array(matrix, array)
