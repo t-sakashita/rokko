@@ -131,6 +131,14 @@ int rokko_eigen_matrix_get_n(struct rokko_eigen_matrix matrix) {
     return static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr)->cols();
 }
 
+bool rokko_eigen_matrix_is_row_major(struct rokko_eigen_matrix matrix) {
+  return matrix.major == rokko_matrix_row_major;
+}
+
+bool rokko_eigen_matrix_is_col_major(struct rokko_eigen_matrix matrix) {
+  return matrix.major == rokko_matrix_col_major;
+}
+
 double* rokko_eigen_matrix_get_array_pointer(struct rokko_eigen_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
     return storage(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr));

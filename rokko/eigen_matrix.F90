@@ -57,6 +57,14 @@ module rokko_eigen_matrix_mod
      procedure rokko_eigen_matrix_get_n
   end interface rokko_get_n
 
+  interface rokko_is_row_major
+     procedure rokko_eigen_matrix_is_row_major
+  end interface rokko_is_row_major
+
+  interface rokko_is_col_major
+     procedure rokko_eigen_matrix_is_col_major
+  end interface rokko_is_col_major
+
   interface rokko_generate
      module procedure rokko_eigen_matrix_generate_function
      module procedure rokko_eigen_matrix_generate_from_array
@@ -159,6 +167,22 @@ module rokko_eigen_matrix_mod
        integer(c_int) :: rokko_eigen_matrix_get_n
        type(rokko_eigen_matrix), value, intent(in) :: matrix
      end function rokko_eigen_matrix_get_n
+
+     function rokko_eigen_matrix_is_row_major(matrix) bind(c)
+       use iso_c_binding
+       import rokko_eigen_matrix
+       implicit none
+       logical(c_bool) :: rokko_eigen_matrix_is_row_major
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+     end function rokko_eigen_matrix_is_row_major
+
+     function rokko_eigen_matrix_is_col_major(matrix) bind(c)
+       use iso_c_binding
+       import rokko_eigen_matrix
+       implicit none
+       logical(c_bool) :: rokko_eigen_matrix_is_col_major
+       type(rokko_eigen_matrix), value, intent(in) :: matrix
+     end function rokko_eigen_matrix_is_col_major
 
      subroutine rokko_eigen_matrix_generate_function_p(matrix, cproc) bind(c)
        use iso_c_binding
