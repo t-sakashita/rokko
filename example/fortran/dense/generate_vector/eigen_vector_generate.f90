@@ -34,14 +34,14 @@ contains
   function func(i)
     implicit none
     double precision :: func
-    integer, value, intent(in) :: i
+    integer, intent(in) :: i
     func = dble(2*(i+1))
   end function func
 
   function func_f(i)
     implicit none
     double precision :: func_f
-    integer, value, intent(in) :: i
+    integer, intent(in) :: i
     func_f = dble(2*i)
   end function func_f
 

@@ -62,8 +62,23 @@ void rokko_eigen_vector_generate_function(rokko_eigen_vector vec,
   rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr), func);
 }
 
+void rokko_eigen_vector_generate_function_p(rokko_eigen_vector vec,
+                                            double (*func)(const int* i)) {
+  rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr),
+                  [&func](int i) { return func(&i); } );
+}
+
 void rokko_eigen_vector_generate_function_f(rokko_eigen_vector vec,
-					      double (*func)(int i)) {
+                                            double (*func)(int i)) {
   rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr),
                   [&func](int i) { return func(i+1); });
+}
+
+void rokko_eigen_vector_generate_function_f_p(rokko_eigen_vector vec,
+                                              double (*func)(const int* i)) {
+  rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr),
+                  [&func](int i) {
+                    int i1 = i+1;
+                    return func(&i1);
+                  } );
 }

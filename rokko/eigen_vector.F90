@@ -145,23 +145,21 @@ module rokko_eigen_vector_mod
        integer(c_int), value, intent(in) :: i
      end function rokko_eigen_vector_get_f
 
-     subroutine rokko_eigen_vector_generate_function_orig(vec, cproc) &
-          & bind(c,name='rokko_eigen_vector_generate_function')
+     subroutine rokko_eigen_vector_generate_function_p(vec, cproc) bind(c)
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
        type(rokko_eigen_vector), value, intent(in) :: vec
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_vector_generate_function_orig
+     end subroutine rokko_eigen_vector_generate_function_p
 
-     subroutine rokko_eigen_vector_generate_function_f_orig(vec, cproc) &
-          & bind(c,name='rokko_eigen_vector_generate_function_f')
+     subroutine rokko_eigen_vector_generate_function_f_p(vec, cproc) bind(c)
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
        type(rokko_eigen_vector), value, intent(in) :: vec
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_vector_generate_function_f_orig
+     end subroutine rokko_eigen_vector_generate_function_f_p
 
   end interface
 
@@ -173,13 +171,13 @@ contains
     interface
        function func_in(i)
          double precision :: func_in
-         integer, value, intent(in) :: i
+         integer, intent(in) :: i
        end function func_in
     end interface
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_eigen_vector_generate_function_orig(vector, cproc)
+    call rokko_eigen_vector_generate_function_p(vector, cproc)
   end subroutine rokko_eigen_vector_generate_function
 
   subroutine rokko_eigen_vector_generate_function_f(vector, func_in)
@@ -188,13 +186,13 @@ contains
     interface
        function func_in(i)
          double precision :: func_in
-         integer, value, intent(in) :: i
+         integer, intent(in) :: i
        end function func_in
     end interface
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_eigen_vector_generate_function_f_orig(vector, cproc)
+    call rokko_eigen_vector_generate_function_f_p(vector, cproc)
   end subroutine rokko_eigen_vector_generate_function_f
 
   subroutine rokko_eigen_vector_construct_array(vector, array) bind(c)
