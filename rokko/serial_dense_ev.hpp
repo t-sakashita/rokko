@@ -22,9 +22,9 @@ namespace rokko {
 
 namespace detail {
 
-class sd_solver_base {
+class sd_ev_base {
 public:
-  virtual ~sd_solver_base() {}
+  virtual ~sd_ev_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
   // -------------- standard eigenvalue probelm ---------------
@@ -61,11 +61,11 @@ public:
 };
   
 template<typename SOLVER>
-class sd_solver_wrapper : public sd_solver_base {
+class sd_ev_wrapper : public sd_ev_base {
   using solver_type = SOLVER;
 public:
-  sd_solver_wrapper() : solver_impl_() {}
-  virtual ~sd_solver_wrapper() {}
+  sd_ev_wrapper() : solver_impl_() {}
+  virtual ~sd_ev_wrapper() {}
   void initialize(int& argc, char**& argv) {
     solver_impl_.initialize(argc, argv);
   }
@@ -118,7 +118,7 @@ private:
   solver_type solver_impl_;
 };
     
-using sd_solver_factory = factory<sd_solver_base>;
+using sd_solver_factory = factory<sd_ev_base>;
   
 } // end namespace detail
   
@@ -181,8 +181,8 @@ private:
 #define ROKKO_REGISTER_SERIAL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::sd_solver_base>; \
-  using product = rokko::detail::sd_solver_wrapper<solver>; \
+  using factory = rokko::factory<rokko::detail::sd_ev_base>; \
+  using product = rokko::detail::sd_ev_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

@@ -23,9 +23,9 @@ namespace rokko {
 
 namespace detail {
     
-class ps_solver_base {
+class ps_ev_base {
 public:
-  virtual ~ps_solver_base() {}
+  virtual ~ps_ev_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
   virtual parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) = 0;
@@ -43,11 +43,11 @@ public:
 };
 
 template<typename SOLVER>
-class ps_solver_wrapper : public ps_solver_base {
+class ps_ev_wrapper : public ps_ev_base {
   using solver_type = SOLVER;
 public:
-  ps_solver_wrapper() : solver_impl_() {}
-  virtual ~ps_solver_wrapper() {}
+  ps_ev_wrapper() : solver_impl_() {}
+  virtual ~ps_ev_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
@@ -73,7 +73,7 @@ private:
   solver_type solver_impl_;
 };
 
-using ps_solver_factory = factory<ps_solver_base>;
+using ps_solver_factory = factory<ps_ev_base>;
   
 } // end namespace detail
   
@@ -125,8 +125,8 @@ private:
 #define ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::ps_solver_base>;  \
-  using product = rokko::detail::ps_solver_wrapper<solver>; \
+  using factory = rokko::factory<rokko::detail::ps_ev_base>;  \
+  using product = rokko::detail::ps_ev_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

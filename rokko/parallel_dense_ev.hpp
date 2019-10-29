@@ -24,9 +24,9 @@ namespace rokko {
 
 namespace detail {
     
-class pd_solver_base {
+class pd_ev_base {
 public:
-  virtual ~pd_solver_base() {}
+  virtual ~pd_ev_base() {}
   virtual bool is_available_grid_major(grid_row_major_t const& grid_major) = 0;
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
   virtual void initialize(int& argc, char**& argv) = 0;
@@ -61,11 +61,11 @@ public:
 };
   
 template<typename SOLVER>
-class pd_solver_wrapper : public pd_solver_base {
+class pd_ev_wrapper : public pd_ev_base {
   using solver_type = SOLVER;
 public:
-  pd_solver_wrapper() : solver_impl_() {}
-  virtual ~pd_solver_wrapper() {}
+  pd_ev_wrapper() : solver_impl_() {}
+  virtual ~pd_ev_wrapper() {}
   bool is_available_grid_major(grid_row_major_t const& grid_major) {
     return solver_impl_.is_available_grid_major(grid_major);
   }
@@ -126,7 +126,7 @@ private:
   solver_type solver_impl_;
 };
 
-using pd_solver_factory = factory<pd_solver_base>;
+using pd_solver_factory = factory<pd_ev_base>;
   
 } // end namespace detail
   
@@ -196,8 +196,8 @@ private:
 #define ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace BOOST_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::pd_solver_base>; \
-  using product = rokko::detail::pd_solver_wrapper<solver>; \
+  using factory = rokko::factory<rokko::detail::pd_ev_base>; \
+  using product = rokko::detail::pd_ev_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
