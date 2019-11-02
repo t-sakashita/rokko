@@ -28,10 +28,8 @@ public:
 			 VEC& eigvals,
 			 Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 rokko::parameters const& params) {
-    std::string routine = "";
-    if(params.defined("routine")) {
-      routine = params.get_string("routine");
-    }
+    std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
     if ((routine == "") || (routine == "qr")) {
       return rokko::eigen3::diagonalize(mat, eigvals, eigvecs, params);
     } else {
@@ -43,10 +41,8 @@ public:
   parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 rokko::parameters const& params) {
-    std::string routine = "";
-    if(params.defined("routine")) {
-      routine = params.get_string("routine");
-    }
+    std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
     if ((routine == "") || (routine == "qr")) {
       return rokko::eigen3::diagonalize(mat, eigvals, params);
     } else {

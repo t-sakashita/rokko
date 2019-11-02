@@ -47,10 +47,8 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    std::string routine = "";
-    if(params.defined("routine")) {
-      routine = params.get_string("routine");
-    }
+    std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
     if (routine=="elpa1") {
       return rokko::elpa::diagonalize_elpa1(mat, eigvals, eigvecs, params);
     } else if (routine=="elpa2") {
@@ -64,10 +62,8 @@ public:
   template <typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    std::string routine = "";
-    if(params.defined("routine")) {
-      routine = params.get_string("routine");
-    }
+    std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
     if (routine=="elpa1") {
       return rokko::elpa::diagonalize_elpa1(mat, eigvals, params);
     } else if (routine=="elpa2") {

@@ -36,10 +36,8 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    std::string routine = "";
-    if(params.defined("routine")) {
-      routine = params.get_string("routine");
-    }
+    std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
     if ((routine == "") || (routine == "pmrrr")) {
       return rokko::elemental::diagonalize(mat, eigvals, eigvecs, params);
     } else {
@@ -51,10 +49,8 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 parameters const& params) {
-    std::string routine = "";
-    if(params.defined("routine")) {
-      routine = params.get_string("routine");
-    }
+    std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
     if ((routine == "") || (routine == "pmrrr")) {
       return rokko::elemental::diagonalize(mat, eigvals, params);
     } else {

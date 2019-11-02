@@ -48,10 +48,8 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  std::string routine = "";
-  if(params.defined("routine")) {
-    routine = params.get_string("routine");
-  }
+  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
   if ((routine=="tri") || (routine=="eigen_s")) {
     return rokko::eigenexa::diagonalize_eigen_s(mat, eigvals, eigvecs, params);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {
@@ -65,10 +63,8 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  std::string routine = "";
-  if(params.defined("routine")) {
-    routine = params.get_string("routine");
-  }
+  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
   if ((routine=="tri") || (routine=="eigen_s")) {
     return rokko::eigenexa::diagonalize_eigen_s(mat, eigvals, params);
   } else if ((routine=="") || (routine=="penta") || (routine=="eigen_sx")) {

@@ -61,10 +61,8 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 			       double* eigvals,
 			       parameters const& params) {
   parameters params_out;
-  std::string routine = "";
-  if(params.defined("routine")) {
-    routine = params.get_string("routine");
-  }
+  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
   if ((routine=="dsyev") || (routine=="qr")) {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
@@ -102,10 +100,8 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 			       double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
-  std::string routine = "";
-  if(params.defined("routine")) {
-    routine = params.get_string("routine");
-  }
+  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+
   if ((routine=="dsyev") || (routine=="qr")) {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
