@@ -56,7 +56,7 @@ public:
     } else if (routine=="elpa2") {
       return rokko::elpa::diagonalize_elpa2(mat, eigvals, eigvecs, params);
     } else if (routine=="") {  // default
-      return rokko::elpa::diagonalize_elpa1(mat, eigvals, eigvecs, params);
+      return rokko::elpa::diagonalize_elpa2(mat, eigvals, eigvecs, params);
     } else {
       throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
@@ -73,7 +73,7 @@ public:
     } else if (routine=="elpa2") {
       return rokko::elpa::diagonalize_elpa2(mat, eigvals, params);
     } else if (routine=="") {  // default
-      return rokko::elpa::diagonalize_elpa1(mat, eigvals, params);
+      return rokko::elpa::diagonalize_elpa2(mat, eigvals, params);
     } else {
       throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
