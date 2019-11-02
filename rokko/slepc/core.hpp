@@ -120,9 +120,7 @@ public:
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-    PetscInt nev2, ncv2, mpd2;
-    PetscReal tol2;
-    PetscInt maxits2;
+
     if (params.get_bool("verbose") && (myrank == 0)) {
       info_verbose();
     }
