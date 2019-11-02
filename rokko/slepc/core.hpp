@@ -80,20 +80,12 @@ public:
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
 
-    PetscInt max_block_size;
-    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = PETSC_DECIDE;
-    PetscReal tol;
-    if (params.defined("conv_tol")) tol = params.get<double>("conv_tol");
-    else tol = (PetscReal)PETSC_DEFAULT;
-    PetscInt max_iters;
-    if (params.defined("max_iters")) max_iters = params.get<int>("max_iters");
-    else max_iters = PETSC_DECIDE;
+    PetscInt max_block_size = params.defined("max_block_size") ? params.get<int>("max_block_size") : PETSC_DECIDE;
+    PetscReal tol = params.defined("conv_tol") ? params.get<double>("conv_tol") : (PetscReal)PETSC_DEFAULT;
+    PetscInt max_iters = params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
+    PetscInt num_evals = params.defined("num_eigvals") ? (PetscInt) params.get<int>("num_eigvals") : 1;
 
     A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
-    PetscInt num_evals;
-    if (params.defined("num_eigvals")) num_evals = (PetscInt) params.get<int>("num_eigvals");
-    else num_evals = 1;
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
@@ -101,12 +93,12 @@ public:
     ierr = EPSSetProblemType(eps, EPS_HEP);
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
+        throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
       routine_ = params.get_string("routine");
       if (!routine_.empty()) {
-	ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+        ierr = EPSSetType(eps, (EPSType)routine_.c_str());
       } else {
-	ierr = EPSSetType(eps, "krylovschur");
+        ierr = EPSSetType(eps, "krylovschur");
       }
     }
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
@@ -155,18 +147,10 @@ public:
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
 
-    PetscInt max_block_size;
-    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = PETSC_DECIDE;
-    PetscReal tol;
-    if (params.defined("conv_tol")) tol = params.get<double>("conv_tol");
-    else tol = (PetscReal)PETSC_DEFAULT;
-    PetscInt max_iters;
-    if (params.defined("max_iters")) max_iters = params.get<int>("max_iters");
-    else max_iters = PETSC_DECIDE;
-    PetscInt num_evals;
-    if (params.defined("num_eigvals")) num_evals = (PetscInt) params.get<int>("num_eigvals");
-    else num_evals = 1;
+    PetscInt max_block_size = params.defined("max_block_size") ? params.get<int>("max_block_size") : PETSC_DECIDE;
+    PetscReal tol = params.defined("conv_tol") ? params.get<double>("conv_tol") : (PetscReal)PETSC_DEFAULT;
+    PetscInt max_iters = params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
+    PetscInt num_evals = params.defined("num_eigvals") ? (PetscInt) params.get<int>("num_eigvals") : 1;
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetProblemType(eps, EPS_HEP);
