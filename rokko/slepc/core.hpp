@@ -31,7 +31,7 @@ PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
   rokko::distributed_mfree_slepc *op_ctx;
   ierr = MatShellGetContext(A, &op_ctx); CHKERRQ(ierr);
   
-  PetscScalar const * px;
+  PetscScalar const* px;
   PetscScalar * py;
 
   ierr = VecGetArrayRead(x, &px);  CHKERRQ(ierr);
@@ -129,7 +129,7 @@ public:
 
   parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
     parameters params_out;
-    rokko::distributed_mfree* mat = &mat_in;
+    rokko::distributed_mfree *const mat = &mat_in;
     // define matrix-free type operator
     dimension_ = mat->get_dim();
     offset_local_ = mat->get_local_offset();
@@ -210,7 +210,7 @@ public:
     return eval_r;
   }
 
-  void eigenvector(int k, double* vec) const {
+  void eigenvector(int k, double *const vec) const {
     Vec evec_r, evec_i;
     MatCreateVecs(*A, NULL, &evec_r);
     MatCreateVecs(*A, NULL, &evec_i);
