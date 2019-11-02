@@ -84,11 +84,11 @@ public:
   solvermanager_t* create_solver_manager(std::string const& routine) {
     if ((routine == "LOBPCG") || (routine == ""))
       return new Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
-    if (routine == "BlockKrylovSchur")
+    else if (routine == "BlockKrylovSchur")
       return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
-    if (routine == "BlockDavidson")
+    else if (routine == "BlockDavidson")
       return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
-    if (routine == "RTR")
+    else if (routine == "RTR")
       return new Anasazi::RTRSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
     else {
       std::stringstream msg;
@@ -105,18 +105,14 @@ public:
     std::list<std::string> keys = params.keys();
     for(auto const& key : keys) {
       if (!is_rokko_solver_key(key)) {
-	if (params.type(key) == typeid(int)) {
-	  pl_.set(key, params.get<int>(key));
-	}
-	if (params.type(key) == typeid(double)) {
-	  pl_.set(key, params.get<double>(key));
-	}
-	if (params.type(key) == typeid(std::string)) {
-	  pl_.set(key, params.get<std::string>(key));
-	}
-	if (params.type(key) == typeid(const char*)) {
-	  pl_.set(key, params.get<const char*>(key));
-	}
+        if (params.type(key) == typeid(int))
+          pl_.set(key, params.get<int>(key));
+        else if (params.type(key) == typeid(double))
+          pl_.set(key, params.get<double>(key));
+        else if (params.type(key) == typeid(std::string))
+          pl_.set(key, params.get<std::string>(key));
+        else if (params.type(key) == typeid(const char*))
+          pl_.set(key, params.get<const char*>(key));
       }
     }
   }
@@ -152,7 +148,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
+        throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";
