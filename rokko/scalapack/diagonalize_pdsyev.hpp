@@ -27,8 +27,8 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			      VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = lapack::get_matrix_part(params);
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const char uplow = lapack::get_matrix_part(params);
   int info = psyev(jobz, uplow, mat, eigvals, eigvecs);
   params_out.set("info", info);
   if (info) {
@@ -47,8 +47,8 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			      VEC& eigvals,
 			      parameters const& params) {
   parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  char uplow = lapack::get_matrix_part(params);
+  const char jobz = 'N';  // only eigenvalues
+  const char uplow = lapack::get_matrix_part(params);
   const int* desc = mat.get_mapping().get_blacs_descriptor();
   int info = cscalapack_pdsyev(jobz, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
                                &eigvals[0], NULL, 0, 0, desc);

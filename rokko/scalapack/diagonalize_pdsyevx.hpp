@@ -29,12 +29,12 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = lapack::get_matrix_part(params);
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const char uplow = lapack::get_matrix_part(params);
   double vl, vu;
   int il, iu;
-  char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
-  int ictxt = mat.get_grid().get_blacs_context();
+  const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
+  const int ictxt = mat.get_grid().get_blacs_context();
   const int* desc = mat.get_mapping().get_blacs_descriptor();
   double abstol = cscalapack_pdlamch(ictxt, 'U');
   //get_key(params, "abstol", abstol);
@@ -65,12 +65,12 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  char uplow = lapack::get_matrix_part(params);
+  const char jobz = 'N';  // only eigenvalues
+  const char uplow = lapack::get_matrix_part(params);
   double vl, vu;
   int il, iu;
-  char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
-  int ictxt = mat.get_grid().get_blacs_context();
+  const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
+  const int ictxt = mat.get_grid().get_blacs_context();
   const int* desc = mat.get_mapping().get_blacs_descriptor();
   double abstol = cscalapack_pdlamch(ictxt, 'U');
   //get_key(params, "abstol", abstol);
