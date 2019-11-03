@@ -36,8 +36,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
   const int* desc = mat.get_mapping().get_blacs_descriptor();
-  double abstol = cscalapack_pdlamch(ictxt, 'U');
-  //get_key(params, "abstol", abstol);
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   int orfac = -1;  // default value 10^{-3} is used.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
@@ -72,8 +71,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
   const int* desc = mat.get_mapping().get_blacs_descriptor();
-  double abstol = cscalapack_pdlamch(ictxt, 'U');
-  //get_key(params, "abstol", abstol);
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   int orfac = -1;  // default value 10^{-3} is used.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
