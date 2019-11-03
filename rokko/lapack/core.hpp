@@ -60,7 +60,6 @@ template<int MATRIX_MAJOR>
 parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       double* eigvals,
 			       parameters const& params) {
-  parameters params_out;
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="dsyev") || (routine=="qr")) {
@@ -82,7 +81,6 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
   } else {
     throw std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine");
   }
-  return params_out;
 }
 
 template<int MATRIX_MAJOR, typename VEC>
@@ -99,7 +97,6 @@ template<int MATRIX_MAJOR>
 parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  parameters params_out;
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="dsyev") || (routine=="qr")) {
@@ -121,7 +118,6 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
   } else {
     throw std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine");
   }
-  return params_out;
 }
 
 template<int MATRIX_MAJOR, typename VEC>
