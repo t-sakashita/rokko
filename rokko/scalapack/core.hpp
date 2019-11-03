@@ -55,7 +55,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="pdsyev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, eigvecs, params);
@@ -91,7 +91,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="pdsyev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_pdsyev(mat, eigvals, params);
