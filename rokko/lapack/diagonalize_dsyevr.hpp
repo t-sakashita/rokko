@@ -29,8 +29,7 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const char jobz = 'N';  // only eigenvalues
   const int dim = mat.outerSize();
   const int ld_mat = mat.innerSize();
-  double abstol = 0.;  // defalut value = 0
-  get_key(params, "abstol", abstol);
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -77,8 +76,7 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const int ld_mat = mat.innerSize();
   const int ld_eigvecs = eigvecs.innerSize();
 
-  double abstol = 0.;  // defalut value = 0
-  get_key(params, "abstol", abstol);
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il = 0, iu = 0;
