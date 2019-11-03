@@ -58,7 +58,6 @@ parameters diagonalize_dsygvx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
       std::cerr << "This means that ";
       std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
     }
-    exit(1);
   }
   params_out.set("m", m);
   params_out.set("ifail", ifail);
@@ -121,7 +120,6 @@ parameters diagonalize_dsygvx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 	std::cerr << std::endl;
       }
     }
-    exit(1);
   }
   params_out.set("m", m);
   params_out.set("ifail", ifail);

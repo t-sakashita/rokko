@@ -41,7 +41,6 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
-    exit(1);
   }
   if (params.get_bool("verbose")) {
     print_verbose("dsyev", jobz, uplow);
@@ -72,7 +71,6 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at dsyev function. info=" << info  << std::endl;
-    exit(1);
   }
   if (params.get_bool("verbose")) {
     print_verbose("dsyev", jobz, uplow);

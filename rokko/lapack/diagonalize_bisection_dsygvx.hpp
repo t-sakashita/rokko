@@ -68,7 +68,6 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
       std::cerr << "This means that ";
       std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
     }
-    exit(1);
   }
   params_out.set("m", m);
   params_out.set("ifail", ifail);
@@ -142,7 +141,6 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
 	std::cerr << std::endl;
       }
     }
-    exit(1);
   }
   params_out.set("m", m);
   params_out.set("ifail", ifail);

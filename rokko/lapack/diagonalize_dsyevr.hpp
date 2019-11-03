@@ -52,7 +52,6 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
-    //exit(1);
   }
   params_out.set("info", info);
   params_out.set("m", m);
@@ -102,7 +101,6 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
-    exit(1);
   }
   params_out.set("info", info);
   params_out.set("m", m);
