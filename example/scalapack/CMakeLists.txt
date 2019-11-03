@@ -21,7 +21,7 @@ endforeach(name)
 unset(PROG)
 
 if(BUILD_Fortran_BINDING)
-  set(PROG pdsyev_f pdsyevd_f)
+  set(PROG pdsyev_f pdsyevd_f pdsyevx_f)
   foreach(name ${PROG})
     set(target_name example_lapack_${name})
     add_executable(${target_name} ${name}.f90)
