@@ -13,6 +13,7 @@
 #define ROKKO_COLLECTIVE_HPP
 
 #include <mpi.h>
+#include <stdexcept>
 #include <rokko/blacs.hpp>
 #include <rokko/scalapack.hpp>
 #include <rokko/cpblas.h>
@@ -24,9 +25,7 @@ namespace rokko {
 template<typename T, typename MATRIX_MAJOR>
 void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int root) {
   if (!from.is_col_major()) {
-    std::cerr << "Error (gather): matrix_row_major is not supported\n";
-    MPI_Abort(MPI_COMM_WORLD,67);
-    exit(67);
+    throw std::invalid_argument("gather: matrix_row_major is not supported");
   }
   int ictxt = from.get_grid().get_blacs_context();
   int m = from.get_m_global();
@@ -51,9 +50,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from,
 template<typename T, typename MATRIX_MAJOR>
 void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   if (!to.is_col_major()) {
-    std::cerr << "Error (scatter): matrix_row_major is not supported\n";
-    MPI_Abort(MPI_COMM_WORLD,67);
-    exit(67);
+    throw std::invalid_argument("scatter: matrix_row_major is not supported");
   }
   int ictxt = to.get_grid().get_blacs_context();
   int m = to.get_m_global();
