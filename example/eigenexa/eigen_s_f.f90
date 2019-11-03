@@ -1,7 +1,7 @@
 program main
   use eigen_libs_mod
+  use mpi
   implicit none
-  include 'mpif.h'
   integer, parameter :: n = 8
   integer :: provided, ierr, myrank, nprocs, nprow, npcol
   integer :: inod, x_inod, y_inod

@@ -1,6 +1,6 @@
 program main
+  use mpi
   implicit none
-  include 'mpif.h'
   integer, parameter :: n = 8, nb = 1
   integer :: provided, ierr, myrank, nprocs
   integer :: icontxt, npcol, nprow, desc(50)
