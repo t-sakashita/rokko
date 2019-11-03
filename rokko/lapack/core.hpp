@@ -61,7 +61,7 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 			       double* eigvals,
 			       parameters const& params) {
   parameters params_out;
-  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="dsyev") || (routine=="qr")) {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
@@ -89,7 +89,7 @@ template<int MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  std::size_t dim = mat.rows();
+  const std::size_t dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
   return solver::diagonalize(mat, &eigvals[0], params);
 }
@@ -100,7 +100,7 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 			       double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
-  std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="dsyev") || (routine=="qr")) {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params);
@@ -128,7 +128,7 @@ template<int MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       VEC& eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  std::size_t dim = mat.rows();
+  const std::size_t dim = mat.rows();
   if (eigvals.size() < dim) eigvals.resize(dim);
   return solver::diagonalize(mat, &eigvals[0], eigvecs, params);
 }

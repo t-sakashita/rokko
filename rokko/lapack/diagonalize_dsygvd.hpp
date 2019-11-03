@@ -24,14 +24,14 @@ namespace lapack {
 // dsygvd only eigenvalues
 template<int MATRIX_MAJOR>
 parameters diagonalize_dsygvd(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
-			      double* eigvals,
+			      double *const eigvals,
 			      parameters const& params) {
   parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  char uplow = lapack::get_matrix_part(params);
-  int dim = mata.innerSize();
-  int lda = mata.outerSize();
-  int ldb = matb.outerSize();
+  const char jobz = 'N';  // only eigenvalues
+  const char uplow = lapack::get_matrix_part(params);
+  const int dim = mata.innerSize();
+  const int lda = mata.outerSize();
+  const int ldb = matb.outerSize();
   int info;
 
   if(mata.is_col_major())
@@ -56,12 +56,12 @@ parameters diagonalize_dsygvd(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 			      double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = get_matrix_part(params);
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const char uplow = get_matrix_part(params);
 
-  int dim = mata.innerSize();
-  int lda = mata.outerSize();
-  int ldb = matb.outerSize();
+  const int dim = mata.innerSize();
+  const int lda = mata.outerSize();
+  const int ldb = matb.outerSize();
   int info;
 
   if(mata.is_col_major())

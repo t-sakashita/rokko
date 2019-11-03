@@ -26,11 +26,11 @@ template<int MATRIX_MAJOR>
 parameters diagonalize_dsyevd(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 			      parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  char uplow = lapack::get_matrix_part(params);
+  const char jobz = 'N';  // only eigenvalues
+  const char uplow = lapack::get_matrix_part(params);
 
-  int dim = mat.outerSize();
-  int ldim = mat.innerSize();
+  const int dim = mat.outerSize();
+  const int ldim = mat.innerSize();
   int info;
 
   if(MATRIX_MAJOR == Eigen::ColMajor)
@@ -56,10 +56,10 @@ parameters diagonalize_dsyevd(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 			      Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = get_matrix_part(params);
-  int dim = mat.outerSize();
-  int ldim = mat.innerSize();
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const char uplow = get_matrix_part(params);
+  const int dim = mat.outerSize();
+  const int ldim = mat.innerSize();
   int info;
 
   if(MATRIX_MAJOR == Eigen::ColMajor)

@@ -24,15 +24,15 @@ namespace lapack {
 // dsygv only eigenvalues
 template<int MATRIX_MAJOR>
 parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
-			     double* eigvals,
+			     double *const eigvals,
 			     parameters const& params) {
   parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  char uplow = get_matrix_part(params);
+  const char jobz = 'N';  // only eigenvalues
+  const char uplow = get_matrix_part(params);
 
-  int dim = mata.innerSize();
-  int lda = mata.outerSize();
-  int ldb = matb.outerSize();
+  const int dim = mata.innerSize();
+  const int lda = mata.outerSize();
+  const int ldb = matb.outerSize();
   int info;
 
   if(mata.is_col_major())
@@ -54,16 +54,16 @@ parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
 // dsygv eigenvalues / eigenvectors
 template<int MATRIX_MAJOR>
 parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
-			     double* eigvals,
+			     double *const eigvals,
 			     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = get_matrix_part(params);
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const char uplow = get_matrix_part(params);
 
-  int dim = mata.innerSize();
-  int lda = mata.outerSize();
-  int ldb = matb.outerSize();
+  const int dim = mata.innerSize();
+  const int lda = mata.outerSize();
+  const int ldb = matb.outerSize();
   int info;
 
   if(mata.is_col_major())

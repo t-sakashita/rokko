@@ -26,10 +26,10 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
 			  double* eigvals,
 			  rokko::parameters const& params, timer& timer) {
   rokko::parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  int dim = mata.innerSize();
-  int lda = mata.outerSize();
-  int ldb = matb.outerSize();
+  const char jobz = 'N';  // only eigenvalues
+  const int dim = mata.innerSize();
+  const int lda = mata.outerSize();
+  const int ldb = matb.outerSize();
   lapack_int m;  // output: found eigenvalues
   double abstol;
   get_key(params, "abstol", abstol);
@@ -43,11 +43,11 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
     abstol = 2 * LAPACKE_dlamch('S');
   }
   params_out.set("abstol", abstol);
-  char uplow = get_matrix_part(params);
+  const char uplow = get_matrix_part(params);
 
   lapack_int il, iu;
   double vl, vu;
-  char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  const char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
   std::vector<lapack_int> ifail(dim);
   timer.start(timer_id::diagonalize_diagonalize);
@@ -88,11 +88,11 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
 			  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			  parameters const& params, timer& timer) {
   rokko::parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  int dim = mata.innerSize();
-  int lda = mata.outerSize();
-  int ldb = matb.outerSize();
-  int ldim_eigvec = eigvecs.innerSize();
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const int dim = mata.innerSize();
+  const int lda = mata.outerSize();
+  const int ldb = matb.outerSize();
+  const int ldim_eigvec = eigvecs.innerSize();
   std::vector<lapack_int> ifail(dim);
 
   lapack_int m;  // output: found eigenvalues
@@ -108,11 +108,11 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
     abstol = 2 * LAPACKE_dlamch('S');
   }
   params_out.set("abstol", abstol);
-  char uplow = get_matrix_part(params);
+  const char uplow = get_matrix_part(params);
 
   lapack_int il, iu;
   double vl, vu;
-  char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  const char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
   timer.start(timer_id::diagonalize_diagonalize);
   int info;

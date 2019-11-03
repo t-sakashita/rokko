@@ -25,9 +25,9 @@ template<int MATRIX_MAJOR>
 parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 				 rokko::parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'N';  // only eigenvalues
-  int dim = mat.outerSize();
-  int ldim_mat = mat.innerSize();
+  const char jobz = 'N';  // only eigenvalues
+  const int dim = mat.outerSize();
+  const int ldim_mat = mat.innerSize();
   lapack_int m;  // output: found eigenvalues
   double abstol;
   get_key(params, "abstol", abstol);
@@ -42,11 +42,11 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
     abstol = 2 * LAPACKE_dlamch('S');
   }
   params_out.set("abstol", abstol);
-  char uplow = get_matrix_part(params);
+  const char uplow = get_matrix_part(params);
 
   lapack_int il, iu;
   double vl, vu;
-  char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  const char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
   std::vector<lapack_int> ifail(dim);
   int info;
@@ -82,10 +82,10 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
 				 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 				 parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
-  int dim = mat.outerSize();
-  int ldim_mat = mat.innerSize();
-  int ldim_eigvec = eigvecs.innerSize();
+  const char jobz = 'V';  // eigenvalues / eigenvectors
+  const int dim = mat.outerSize();
+  const int ldim_mat = mat.innerSize();
+  const int ldim_eigvec = eigvecs.innerSize();
   std::vector<lapack_int> ifail(dim);
 
   lapack_int m;  // output: found eigenvalues
@@ -106,7 +106,7 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
 
   lapack_int il, iu;
   double vl, vu;
-  char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  const char range = get_eigenvalues_range(params, vl, vu, il, iu);
 
   int info;
   if(MATRIX_MAJOR == Eigen::ColMajor)

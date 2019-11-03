@@ -26,7 +26,7 @@ template<int MATRIX_MAJOR>
 parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 			     parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'N';  // only eigenvalues
+  const char jobz = 'N';  // only eigenvalues
   char uplow = get_matrix_part(params);
 
   int dim = mat.outerSize();
@@ -56,7 +56,7 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
 			     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   rokko::parameters params_out;
-  char jobz = 'V';  // eigenvalues / eigenvectors
+  const char jobz = 'V';  // eigenvalues / eigenvectors
   char uplow = get_matrix_part(params);
 
   int dim = mat.outerSize();
