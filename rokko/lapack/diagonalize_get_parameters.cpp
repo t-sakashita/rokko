@@ -49,12 +49,11 @@ char get_eigenvalues_range(parameters const& params, T& vl, T& vu, int& il, int&
   bool is_upper_index = get_key(params, "upper_index", iu);
 
   if (is_lower_index && is_upper_index)   return 'I';
-  if (is_lower_value && is_upper_value)   return 'V';
+  else if (is_lower_value && is_upper_value)   return 'V';
   else if (!(is_lower_index && is_lower_value && is_upper_index && is_upper_value))
     return 'A';
-  else {
+  else
     throw std::invalid_argument("error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index");
-  }
 }
 
 void print_verbose(std::string const& routine, char const& jobz, char const& uplow) {
