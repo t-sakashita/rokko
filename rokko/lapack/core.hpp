@@ -18,6 +18,7 @@
 #include <rokko/lapack/diagonalize_dsyevr.hpp>
 #include <rokko/lapack/diagonalize_dsyevx.hpp>
 #include <rokko/lapack/diagonalize_bisection.hpp>
+#include <rokko/lapack/diagonalize_qr.hpp>
 #include <rokko/lapack/diagonalize_dsygv.hpp>
 #include <rokko/lapack/diagonalize_dsygvd.hpp>
 #include <rokko/lapack/diagonalize_dsygvx.hpp>
@@ -62,7 +63,7 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
-  if ((routine=="dsyev") || (routine=="qr")) {
+  if (routine=="dsyev") {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
     return rokko::lapack::diagonalize_dsyevr(mat, eigvals, params);
@@ -72,6 +73,8 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
     return rokko::lapack::diagonalize_dsyevx(mat, eigvals, params);
   } else if (routine=="bisection") {
     return rokko::lapack::diagonalize_bisection(mat, eigvals, params);
+  } else if (routine=="qr") {
+    return rokko::lapack::diagonalize_qr(mat, eigvals, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
       return rokko::lapack::diagonalize_dsyevr(mat, eigvals, params);
@@ -99,7 +102,7 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
-  if ((routine=="dsyev") || (routine=="qr")) {
+  if (routine=="dsyev") {
     return rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
     return rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params);
@@ -109,6 +112,8 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
     return rokko::lapack::diagonalize_dsyevx(mat, eigvals, eigvecs, params);
   } else if (routine=="bisection") {
     return rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
+  } else if (routine=="qr") {
+    return rokko::lapack::diagonalize_qr(mat, eigvals, eigvecs, params);
   } else if (routine=="") {
     if (is_interval(params)) {
       return rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params);
