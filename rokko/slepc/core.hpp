@@ -190,7 +190,7 @@ public:
     return params_out;
   }
 
-  void info_verbose() {
+  void info_verbose() const {
     PetscErrorCode ierr;
     PetscInt nev2, ncv2, mpd2;
     PetscReal tol2;
