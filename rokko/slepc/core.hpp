@@ -156,12 +156,12 @@ public:
     ierr = EPSSetProblemType(eps, EPS_HEP);
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-	throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
+        throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
       routine_ = params.get_string("routine");
       if (!routine_.empty()) {
-	ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+        ierr = EPSSetType(eps, (EPSType)routine_.c_str());
       } else {
-	ierr = EPSSetType(eps, "krylovschur");
+        ierr = EPSSetType(eps, "krylovschur");
       }
     }
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
