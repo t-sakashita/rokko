@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -27,6 +27,7 @@ struct comp{
     return v[a]<v[b];
   }
   comp(const int *p) : v(p) {}
+
 private:
   const int *v;
 };
@@ -54,7 +55,7 @@ public:
     num_local_rows_ = end_row_ - start_row_;// + 1;
   }
   #undef __FUNCT__
-    #define __FUNCT__ "distributed_crs_matrix/initialize with num_entries_per_row"
+  #define __FUNCT__ "distributed_crs_matrix/initialize with num_entries_per_row"
   void initialize(int row_dim, int col_dim, int num_entries_per_row) {
     ierr = MatCreate(PETSC_COMM_WORLD, &matrix_);  //CHKERRQ(ierr);
     ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
@@ -118,18 +119,19 @@ public:
     MPI_Barrier(PETSC_COMM_WORLD);
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if ((global_row >= start_row()) && (global_row < end_row())) {
-	MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
-	idx.resize(num_cols);
-	for (int i=0; i<num_cols; ++i) idx[i] = i;
-	std::sort(&idx[0], &idx[num_cols], comp(cols));
-	for (int i=0; i<num_cols; ++i) {
-	  std::cout << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
-	}
-	MatRestoreRow(matrix_, global_row, &num_cols, &cols, &values);
+        MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
+        idx.resize(num_cols);
+        for (int i=0; i<num_cols; ++i) idx[i] = i;
+        std::sort(&idx[0], &idx[num_cols], comp(cols));
+        for (int i=0; i<num_cols; ++i) {
+          std::cout << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
+        }
+        MatRestoreRow(matrix_, global_row, &num_cols, &cols, &values);
       }
       MPI_Barrier(PETSC_COMM_WORLD);
     }
   }
+
 private:
   int dim_;
   int num_local_rows_;

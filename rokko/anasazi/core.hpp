@@ -59,6 +59,7 @@ public:
   virtual const Epetra_Comm & Comm() const { return ep_comm; }
   virtual const Epetra_Map & OperatorDomainMap() const { return ep_map; }
   virtual const Epetra_Map & OperatorRangeMap() const { return ep_map; }
+
 private:
   distributed_mfree* op_;
   MPI_Comm comm_;
@@ -95,7 +96,7 @@ public:
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
       msg << "list of Anasazi solvers:" << std::endl;
       for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
-	std::cerr << anasazi_solvers[i] << " " << std::endl;
+        std::cerr << anasazi_solvers[i] << " " << std::endl;
       }
       throw std::invalid_argument(msg.str());
     }

@@ -104,15 +104,15 @@ public:
     map_->get_epetra_comm().Barrier();
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if (local_row < NumMyElements) {
-	if (global_row == MyGlobalElements[local_row]) {
-	  matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
-	  for (int i=0; i<num_cols; ++i) idx[i] = i;
-	  std::sort(&idx[0], &idx[num_cols], comp(cols, matrix_));
-	  for (int i=0; i<num_cols; ++i) {
-	    std::cout << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
-	  }
-	  ++local_row;
-	}
+        if (global_row == MyGlobalElements[local_row]) {
+          matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
+          for (int i=0; i<num_cols; ++i) idx[i] = i;
+          std::sort(&idx[0], &idx[num_cols], comp(cols, matrix_));
+          for (int i=0; i<num_cols; ++i) {
+            std::cout << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
+          }
+          ++local_row;
+        }
       }
       map_->get_epetra_comm().Barrier();
     }
