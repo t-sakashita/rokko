@@ -24,7 +24,7 @@ namespace lapack {
 // bisection (dsyevx) only eigenvalues
 template<int MATRIX_MAJOR>
 parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
-				 rokko::parameters const& params) {
+                 rokko::parameters const& params) {
   if (params.defined("abstol")) {
     if (params.get<double>("abstol") < 0) {
       std::stringstream msg;
@@ -49,7 +49,7 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
 template<int MATRIX_MAJOR>
 parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 				 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
-				 parameters const& params) {
+                 rokko::parameters const& params) {
   if (params.defined("abstol")) {
     if (params.get<double>("abstol") < 0) {
       std::stringstream msg;
