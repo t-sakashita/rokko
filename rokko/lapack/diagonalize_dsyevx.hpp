@@ -105,15 +105,15 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
     if (params.get_bool("verbose")) {
       std::cerr << "This means that ";
       if (info < 0) {
-	std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+        std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
       } else {
-	std::cerr << "This means that "	<< info << " eigenvectors failed to converge." << std::endl;
-	std::cerr << "The indices of the eigenvectors that failed to converge:" << std::endl;
-	for (std::size_t i = 0; i < ifail.size(); ++i) {
-	  if (ifail[i] == 0) break;
-	  std::cerr << ifail[i] << " ";
-	}
-	std::cerr << std::endl;
+        std::cerr << "This means that "	<< info << " eigenvectors failed to converge." << std::endl;
+        std::cerr << "The indices of the eigenvectors that failed to converge:" << std::endl;
+        for (std::size_t i = 0; i < ifail.size(); ++i) {
+          if (ifail[i] == 0) break;
+          std::cerr << ifail[i] << " ";
+        }
+        std::cerr << std::endl;
       }
     }
   }
