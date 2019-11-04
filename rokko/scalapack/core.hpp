@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,6 +16,8 @@
 #include <rokko/scalapack/diagonalize_pdsyev.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevx.hpp>
 #include <rokko/scalapack/diagonalize_pdsyevd.hpp>
+#include <rokko/scalapack/diagonalize_qr.hpp>
+#include <rokko/scalapack/diagonalize_bisection.hpp>
 #ifdef ROKKO_HAVE_PDSYEVR
 #include <rokko/scalapack/diagonalize_pdsyevr.hpp>
 #endif
@@ -69,8 +71,10 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     return rokko::scalapack::diagonalize_pdsyevd(mat, eigvals, eigvecs, params);
   } else if (routine=="pdsyevx") {
     return rokko::scalapack::diagonalize_pdsyevx(mat, eigvals, eigvecs, params);
-    //} else if (routine=="bisection") {
-    //rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
+  } else if (routine=="bisection") {
+    rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
+  } else if (routine=="qr") {
+    rokko::scalapack::diagonalize_qr(mat, eigvals, eigvecs, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
 #ifdef ROKKO_HAVE_PDSYEVR
@@ -105,8 +109,10 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     throw std::invalid_argument("scalapack::diagonalize() : " + routine + " does not support computing only eigenvalues");
   } else if (routine=="pdsyevx") {
     return rokko::scalapack::diagonalize_pdsyevx(mat, eigvals, params);
-    //} else if (routine=="bisection") {
-    //rokko::scalapack::diagonalize_bisection(mat, eigvals, params);
+  } else if (routine=="bisection") {
+    return rokko::scalapack::diagonalize_bisection(mat, eigvals, params);
+  } else if (routine=="qr") {
+    return rokko::scalapack::diagonalize_qr(mat, eigvals, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
 #ifdef ROKKO_HAVE_PDSYEVR
