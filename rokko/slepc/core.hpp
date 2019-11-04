@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -75,6 +75,7 @@ public:
   void finalize() { SlepcFinalize(); }
   
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    PetscErrorCode ierr;
     parameters params_out;
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
@@ -128,6 +129,7 @@ public:
   }
 
   parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
+    PetscErrorCode ierr;
     parameters params_out;
     rokko::distributed_mfree *const mat = &mat_in;
     // define matrix-free type operator
@@ -189,6 +191,7 @@ public:
   }
 
   void info_verbose() {
+    PetscErrorCode ierr;
     PetscInt nev2, ncv2, mpd2;
     PetscReal tol2;
     PetscInt maxits2, its2;
@@ -248,7 +251,6 @@ private:
   int dimension_, offset_local_, num_local_rows_;
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
-  PetscErrorCode ierr;
   std::string routine_;
   EPSType routine_type;
   int num_conv_;
