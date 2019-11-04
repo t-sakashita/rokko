@@ -53,10 +53,10 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
   if (info) {
     std::stringstream msg;
     msg << "lapack::diagonalize_bisection() : " << std::endl
-	<< "error at dsyevx function. info=" << info << std::endl;
+        << "error at dsyevx function. info=" << info << std::endl;
     if (info < 0) {
       msg << "This means that "
-	  << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+          << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
     }
     throw std::invalid_argument(msg.str());
   }
@@ -109,19 +109,19 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
   if (info) {
     std::stringstream msg;
     msg << "lapack::diagonalize_bisection() : "
-	<< "error at dsyevx function. info=" << info << std::endl;
+        << "error at dsyevx function. info=" << info << std::endl;
     if (params.get_bool("verbose")) {
       msg << "This means that ";
       if (info < 0) {
-	msg << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
+        msg << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
       } else {
-	msg << "This means that " << info << " eigenvectors failed to converge." << std::endl;
-	msg << "The indices of the eigenvectors that failed to converge:" << std::endl;
-	for (std::size_t i = 0; i < ifail.size(); ++i) {
-	  if (ifail[i] == 0) break;
-	  msg << ifail[i] << " ";
-	}
-	msg << std::endl;
+        msg << "This means that " << info << " eigenvectors failed to converge." << std::endl;
+        msg << "The indices of the eigenvectors that failed to converge:" << std::endl;
+        for (std::size_t i = 0; i < ifail.size(); ++i) {
+          if (ifail[i] == 0) break;
+          msg << ifail[i] << " ";
+        }
+        msg << std::endl;
       }
     }
     throw std::invalid_argument(msg.str());
