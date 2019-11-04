@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,7 +21,7 @@
 namespace rokko {
 namespace lapack {
 
-// dsyevx only eigenvalues
+// bisection (dsyevx) only eigenvalues
 template<int MATRIX_MAJOR>
 parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 				 rokko::parameters const& params) {
@@ -45,7 +45,7 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
 }
 
 
-// dsyevx eigenvalues / eigenvectors
+// bisection (dsyevx) eigenvalues / eigenvectors
 template<int MATRIX_MAJOR>
 parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 				 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
