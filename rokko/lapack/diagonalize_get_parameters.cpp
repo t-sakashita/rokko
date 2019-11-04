@@ -43,18 +43,17 @@ std::string get_matrix_part(char const& uplow) {
 
 template<typename T>
 char get_eigenvalues_range(parameters const& params, T& vl, T& vu, int& il, int& iu) {
-  bool is_lower_value, is_lower_index, is_upper_value, is_upper_index;
-  is_lower_value = get_key(params, "lower_value", vl);
-  is_lower_index = get_key(params, "lower_index", il);
-  is_upper_value = get_key(params, "upper_value", vu);
-  is_upper_index = get_key(params, "upper_index", iu);
+  bool is_lower_value = get_key(params, "lower_value", vl);
+  bool is_lower_index = get_key(params, "lower_index", il);
+  bool is_upper_value = get_key(params, "upper_value", vu);
+  bool is_upper_index = get_key(params, "upper_index", iu);
+
   if (is_lower_index && is_upper_index)   return 'I';
   if (is_lower_value && is_upper_value)   return 'V';
   else if (!(is_lower_index && is_lower_value && is_upper_index && is_upper_value))
     return 'A';
   else {
-    std::cerr << "error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index";
-    throw;
+    throw std::invalid_argument("error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index");
   }
 }
 
