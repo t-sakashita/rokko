@@ -30,7 +30,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const int dim = mat.outerSize();
   const int ld_mat = mat.innerSize();
   lapack_int m;  // output: found eigenvalues
-  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 0.;
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -82,7 +82,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   std::vector<lapack_int> ifail(dim);
 
   lapack_int m;  // output: found eigenvalues
-  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 0.;
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;

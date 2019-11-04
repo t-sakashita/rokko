@@ -29,17 +29,13 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
   const int dim = mat.outerSize();
   const int ldim_mat = mat.innerSize();
   lapack_int m;  // output: found eigenvalues
-  double abstol;
-  get_key(params, "abstol", abstol);
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
   if (abstol < 0) {
     std::stringstream msg;
     msg << "lapack::diagonalize_bisection() : " << std::endl
 	<< "abstol is negative value, which means QR method." << std::endl
 	<< "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
     throw std::invalid_argument(msg.str());
-  }
-  if (!params.defined("abstol")) {  // default: optimal value for bisection method
-    abstol = 2 * LAPACKE_dlamch('S');
   }
   params_out.set("abstol", abstol);
   const char uplow = get_matrix_part(params);
@@ -89,17 +85,13 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
   std::vector<lapack_int> ifail(dim);
 
   lapack_int m;  // output: found eigenvalues
-  double abstol;
-  get_key(params, "abstol", abstol);
+  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
   if (abstol < 0) {
     std::stringstream msg;
     msg << "lapack::diagonalize_bisection() : " << std::endl
 	<< "abstol is negative value, which means QR method." << std::endl
 	<< "To use dsyevx as bisection solver, set abstol a positive value" << std::endl;
     throw std::invalid_argument(msg.str());
-  }
-  if (!params.defined("abstol")) {  // default: optimal value for bisection method
-    abstol = 2 * LAPACKE_dlamch('S');
   }
   params_out.set("abstol", abstol);
   char uplow = get_matrix_part(params);
