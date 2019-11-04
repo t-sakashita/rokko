@@ -16,13 +16,14 @@ namespace lapack {
 
 char get_matrix_part(parameters const& params) {
   std::string matrix_part;
-  char matrix_part_letter;
-  if (params.defined("uplow"))
-    matrix_part = params.get_string("uplow");
+
   if (params.defined("matrix_part"))
     matrix_part = params.get_string("matrix_part");
+  else if (params.defined("uplow"))
+    matrix_part = params.get_string("uplow");
+
   if (!matrix_part.empty()) {
-    matrix_part_letter = matrix_part[0];
+    char matrix_part_letter = matrix_part[0];
     if ((matrix_part_letter == 'u') || (matrix_part_letter == 'U'))
       return 'U';
     if ((matrix_part_letter == 'l') || (matrix_part_letter == 'L'))
