@@ -27,5 +27,4 @@ target_link_libraries(ScaLAPACK ${ROKKO_SCALAPACK_LIBRARIES})
 
 
 add_executable(Rokko Rokko.f90)
-target_link_libraries(Rokko ${ROKKO_LIBRARIES}
-  ${ROKKO_LIBRARIES_Fortran})
+target_link_libraries(Rokko ${ROKKO_LIBRARIES})
