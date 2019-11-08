@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -23,8 +23,30 @@
 // matrix elements
 //
 
-template<typename MATRIX>
-void elm3(hamiltonian const& hop, MATRIX& elemnt) {
+void elm3(hamiltonian const& hop, Eigen::MatrixXd& elemnt) {
+  elemnt.setZero();
+  for (int k = 0; k < hop.num_bonds(); ++k) {
+    int isite1, isite2;
+    std::tie(isite1, isite2) = hop.site_pair(k);
+    int is = (1 << isite1) + (1 << isite2);
+    double wght = hop.bond_weight(k);
+    double diag = 0.5 * wght * hop.z_ratio(k);
+    #pragma omp parallel for schedule(static)
+    for (int i = 0; i < hop.dimension(); ++i) {
+      int ibit = hop.config(i) & is;
+      if (ibit == 0 || ibit == is) {
+        elemnt(i,i) -= diag;
+      } else {
+        elemnt(i, i) += diag;
+        int newcfg = hop.config2index(hop.config(i) ^ is);
+        elemnt(i, newcfg) -= wght;
+      }
+    }
+  }
+}
+
+template<typename T, typename MAJOR>
+void elm3(hamiltonian const& hop, rokko::distributed_matrix<T, MAJOR>& elemnt) {
   elemnt.set_zeros();
   for (int k = 0; k < hop.num_bonds(); ++k) {
     int isite1, isite2;
@@ -48,8 +70,25 @@ void elm3(hamiltonian const& hop, MATRIX& elemnt) {
   }
 }
 
-template<typename MATRIX>
-void elm3_sx(subspace const& ss, int i1, int i2, MATRIX& elemnt) {
+void elm3_sx(subspace const& ss, int i1, int i2, Eigen::MatrixXd& elemnt) {
+  elemnt.setZero();
+  if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
+    std::cerr << " #(W01)# Wrong site number given to xcorr\n";
+    return;
+  }
+  int is = (1 << i1) + (1 << i2);
+  #pragma omp parallel for schedule(static)
+  for (int i = 0; i < ss.dimension(); ++i) {
+    int ibit = ss.config(i) & is;
+    if (ibit != 0 && ibit != is) {
+      int newcfg = ss.config2index(ss.config(i) ^ is);
+      elemnt(i, newcfg) += 0.25;
+    }
+  }
+}
+
+template<typename T, typename MAJOR>
+void elm3_sx(subspace const& ss, int i1, int i2, rokko::distributed_matrix<T, MAJOR>& elemnt) {
   elemnt.set_zeros();
   if (i1 < 0 || i1 >= ss.num_sites() || i2 < 0 || i2 >= ss.num_sites() || i1 == i2) {
     std::cerr << " #(W01)# Wrong site number given to xcorr\n";
