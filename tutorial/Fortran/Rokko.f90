@@ -13,8 +13,8 @@
 
 program frank_matrix
   use rokko
+  use mpi
   implicit none
-  include 'mpif.h'
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
   type(rokko_grid) :: grid
