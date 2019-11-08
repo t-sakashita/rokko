@@ -1,15 +1,13 @@
 /*****************************************************************************
- *
- * Rokko: Integrated Interface for libraries of eigenvalue decomposition
- *
- * Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
- *                            Synge Todo <wistaria@comp-phys.org>,
- *                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
- *    
- * Distributed under the Boost Software License, Version 1.0. (See accompanying
- * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
- *
- *****************************************************************************/
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
 
 #include <mpi.h>
 #include <rokko/rokko.h>
@@ -21,6 +19,7 @@ int main(int argc, char *argv[]) {
   struct rokko_parallel_dense_ev solver;
   struct rokko_distributed_matrix frank, eigvecs;
   struct rokko_grid grid;
+  struct rokko_mapping_bc map;
   struct rokko_eigen_vector eigvals;
   char* solver_name;
 
@@ -43,23 +42,23 @@ int main(int argc, char *argv[]) {
 
   rokko_parallel_dense_ev_construct(&solver, solver_name, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
-
-  rokko_distributed_matrix_construct(&frank, dim, dim, grid, solver, rokko_matrix_col_major);
-  rokko_distributed_matrix_construct(&eigvecs, dim, dim, grid, solver, rokko_matrix_col_major);
+  map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
+  rokko_distributed_matrix_construct(&frank, map);
+  rokko_distributed_matrix_construct(&eigvecs, map);
   rokko_eigen_vector_construct(&eigvals, dim);
 
   /* generate frank matrix */
   for(i = 0; i<dim; ++i){
     for(j = 0; j<dim; ++j){
       double val = dim - (i>j?i:j);
-      rokko_distributed_matrix_set_global(&frank, i, j, val);
+      rokko_distributed_matrix_set_global(frank, i, j, val);
     }
   }
   rokko_distributed_matrix_print(frank);
 
   MPI_Barrier(MPI_COMM_WORLD);
 
-  rokko_parallel_dense_ev_diagonalize_distributed_matrix(&solver, &frank, &eigvals, &eigvecs);
+  rokko_parallel_dense_ev_diagonalize_distributed_matrix(solver, frank, eigvals, eigvecs);
 
   MPI_Barrier(MPI_COMM_WORLD);
 
