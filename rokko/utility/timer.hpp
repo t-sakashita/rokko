@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2010-2014 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2010-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,12 +37,12 @@
 namespace rokko {
 
 struct timer_id {
-  BOOST_STATIC_CONSTANT(int, solver_construct = 1);
-  BOOST_STATIC_CONSTANT(int, solver_initialize = 2);
-  BOOST_STATIC_CONSTANT(int, solver_finalize = 3);
-  BOOST_STATIC_CONSTANT(int, diagonalize_initialize = 4);
-  BOOST_STATIC_CONSTANT(int, diagonalize_diagonalize = 5);
-  BOOST_STATIC_CONSTANT(int, diagonalize_finalize = 6);
+  constexpr static int solver_construct = 1;
+  constexpr static int solver_initialize = 2;
+  constexpr static int solver_finalize = 3;
+  constexpr static int diagonalize_initialize = 4;
+  constexpr static int diagonalize_diagonalize = 5;
+  constexpr static int diagonalize_finalize = 6;
 };
 
 namespace detail {
@@ -60,7 +60,7 @@ class timer_base {
 private:
   using clock_t = CLOCK;
 public:
-  BOOST_STATIC_CONSTANT(int, detailed = (1 << 0));
+  constexpr static int detailed = 1 << 0;
   timer_base() {
     #ifdef ROKKO_ENABLE_TIMER_DETAILED
     d_count_ = 0;
