@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,12 +17,11 @@
 ******************************************************/
 
 #include "titpack.hpp"
-#include <boost/timer.hpp>
+#include <chrono>
 
 int main() {
   std::cout.precision(10);
-  boost::timer tm;
-  double t1 = tm.elapsed();
+  std::chrono::system_clock::time_point t1 = std::chrono::system_clock::now();
 
   // lattice structure
   int n = 8;
@@ -49,13 +48,13 @@ int main() {
   // Hamiltonian matrix
   matrix_type elemnt;
   elm3(n, ipair, bondwt, zrtio, elemnt, list1, list2);
-  double t2 = tm.elapsed();
+  std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
   
   std::vector<double> E;
   matrix_type v;
   int nvec = 1;
   diag(elemnt, E, v, nvec);
-  double t3 = tm.elapsed();
+  std::chrono::system_clock::time_point t3 = std::chrono::system_clock::now();
 
   int ne = 4;
   std::cout << "[Eigenvalues]\n";
@@ -65,7 +64,7 @@ int main() {
   // // Do not forget to call elm3 again before calling check3
   elm3(n, ipair, bondwt, zrtio, elemnt, list1, list2);
   check3(elemnt, v, 0);
-  double t4 = tm.elapsed();
+  std::chrono::system_clock::time_point t4 = std::chrono::system_clock::now();
   
   std::vector<int> npair;
   npair.push_back(1);
@@ -76,9 +75,9 @@ int main() {
   std::vector<double> szz(1);
   zcorr(n, npair, v, 0, szz, list1);
   std::cout << "szz: " << szz[0] << std::endl;
-  double t5 = tm.elapsed();
-  std::cerr << "initialize      " << (t2-t1) << " sec\n"
-            << "diagonalization " << (t3-t2) << " sec\n"
-            << "check           " << (t4-t3) << " sec\n"
-            << "correlation     " << (t5-t4) << " sec\n";
+  std::chrono::system_clock::time_point t5 = std::chrono::system_clock::now();
+  std::cerr << "initialize      " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() << " sec\n"
+            << "diagonalization " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count() << " sec\n"
+            << "check           " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t4-t3).count() << " sec\n"
+            << "correlation     " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t5-t4).count() << " sec\n";
 }
