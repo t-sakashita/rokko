@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -18,8 +18,8 @@
 
 #include <mpi.h>
 #include <iostream>
+#include <chrono>
 #include <rokko/rokko.hpp>
-#include <boost/timer.hpp>
 #include "titpack.hpp"
 #include "options.hpp"
 
@@ -35,9 +35,8 @@ int main(int argc, char** argv) {
   std::cout.precision(10);
   options opt(argc, argv, 8, solver_type::default_solver(), g.get_myrank() == 0);
   if (!opt.valid) MPI_Abort(MPI_COMM_WORLD, 1);
-  boost::timer tm;
   MPI_Barrier(g.get_comm());
-  double t1 = tm.elapsed();
+  std::chrono::system_clock::time_point t1 = std::chrono::system_clock::now();
 
   // lattice structure
   int n = opt.N;
@@ -64,12 +63,12 @@ int main(int argc, char** argv) {
   matrix_type elemnt(map);
   elm3(hop, elemnt);
   MPI_Barrier(g.get_comm());
-  double t2 = tm.elapsed();
+  std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
   
   Eigen::VectorXd E(hop.dimension());
   matrix_type v(map);
   solver.diagonalize(elemnt, E, v);
-  double t3 = tm.elapsed();
+  std::chrono::system_clock::time_point t3 = std::chrono::system_clock::now();
 
   if (g.get_myrank() == 0) {
     int ne = 4;
@@ -85,7 +84,7 @@ int main(int argc, char** argv) {
   check3_mpi(elemnt, v, 0, w);
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
-  double t4 = tm.elapsed();
+  std::chrono::system_clock::time_point t4 = std::chrono::system_clock::now();
   
   std::vector<int> npair;
   npair.push_back(1);
@@ -101,13 +100,13 @@ int main(int argc, char** argv) {
   if (g.get_myrank() == 0) std::cout << "szz: " << szz[0] << std::endl;
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
-  double t5 = tm.elapsed();
+  std::chrono::system_clock::time_point t5 = std::chrono::system_clock::now();
 
   if (g.get_myrank() == 0) {
-    std::cerr << "initialize      " << (t2-t1) << " sec\n"
-              << "diagonalization " << (t3-t2) << " sec\n"
-              << "check           " << (t4-t3) << " sec\n"
-              << "correlation     " << (t5-t4) << " sec\n";
+    std::cerr << "initialize      " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() << " sec\n"
+              << "diagonalization " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count() << " sec\n"
+              << "check           " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t4-t3).count() << " sec\n"
+              << "correlation     " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t5-t4).count() << " sec\n";
   }
   MPI_Finalize();
 }
