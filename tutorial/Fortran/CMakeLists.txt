@@ -15,8 +15,8 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 find_package(Rokko REQUIRED PATHS ${ROKKO_ROOT_DIR} $ENV{ROKKO_HOME}
   NO_SYSTEM_ENVIRONMENT_PATH)
 message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
+message(STATUS "Found path to use-rokko.cmake: ${ROKKO_USE_FILE}")
 include(${ROKKO_USE_FILE})
-message(STATUS ${ROKKO_USE_FILE})
 
 add_executable(LAPACK LAPACK.f)
 target_link_libraries(LAPACK ${ROKKO_LAPACK_LIBRARIES})

@@ -22,8 +22,8 @@ endif(OPENMP_FOUND)
 find_package(Rokko REQUIRED PATHS ${ROKKO_ROOT_DIR} $ENV{ROKKO_HOME}
   NO_SYSTEM_ENVIRONMENT_PATH)
 message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
+message(STATUS "Found path to use-rokko.cmake: ${ROKKO_USE_FILE}")
 include(${ROKKO_USE_FILE})
-message(STATUS ${ROKKO_USE_FILE})
 
 add_library(titpack common.cpp large.cpp medium.cpp small.cpp)
 
