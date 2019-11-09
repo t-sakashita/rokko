@@ -243,7 +243,7 @@ protected:
 
 class timer_dumb {
 public:
-  BOOST_STATIC_CONSTANT(int, detailed = 0);
+  constexpr static int detailed = 0;
   timer_dumb() {}
   void clear() {}
   void registrate(std::size_t, std::string const&, int = 0) {}
@@ -269,7 +269,7 @@ using timer = detail::timer_dumb;
 
 class global_timer : private boost::noncopyable {
 public:
-  BOOST_STATIC_CONSTANT(int, detailed = rokko::timer::detailed);
+  constexpr static int detailed = rokko::timer::detailed;
   static void clear() { instance()->clear(); }
   static void registrate(std::size_t id, std::string const& label, int option = 0) {
     instance()->registrate(id, label, option);
