@@ -25,7 +25,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
-#include <sys/time.h> /* gettimeofday */
+#include <chrono>
 #include <valarray>
 #include <vector>
 
@@ -47,18 +47,7 @@ struct timer_id {
 
 namespace detail {
 
-struct clock {
-  static double get_time() {
-    struct timeval tm;
-    gettimeofday(&tm, NULL);
-    return tm.tv_sec + tm.tv_usec * 1.0e-6;
-  }
-};
-
-template<class CLOCK>
 class timer_base {
-private:
-  using clock_t = CLOCK;
 public:
   constexpr static int detailed = 1 << 0;
   timer_base() {
@@ -86,7 +75,7 @@ public:
       std::size_t old_size = labels_.size();
       std::size_t new_size = std::max(2 * labels_.size(), id + 1);
       labels_.resize(new_size);
-      std::valarray<double> starts_old = starts_;
+      std::valarray<std::chrono::system_clock::time_point> starts_old = starts_;
       std::valarray<double> counts_old = counts_;
       std::valarray<double> sums_old = sums_;
       starts_.resize(new_size);
@@ -119,11 +108,12 @@ public:
     #ifdef ROKKO_ENABLE_TIMER_TRACE
     std::clog << "rokko::timer: starting timer with id = " << id << std::endl;
     #endif
-    starts_[id] = clock_t::get_time();
+    starts_[id] = std::chrono::system_clock::now();
   }
 
   void stop(std::size_t id) {
-    double t = clock_t::get_time() - starts_[id];
+    std::chrono::system_clock::time_point end_ = std::chrono::system_clock::now();
+    double t = 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(end_ - starts_[id]).count();
     counts_[id] += 1;
     sums_[id] += t;
     #ifdef ROKKO_ENABLE_TIMER_DETAILED
@@ -231,7 +221,8 @@ public:
 
 protected:
   std::vector<std::string> labels_;
-  std::valarray<double> starts_, counts_, sums_;
+  std::valarray<std::chrono::system_clock::time_point> starts_;
+  std::valarray<double> counts_, sums_;
   #ifdef ROKKO_ENABLE_TIMER_DETAILED
   mutable int d_count_;
   std::vector<int> d_mapping_;
@@ -262,7 +253,7 @@ public:
 } // namespace detail
 
 #ifndef ROKKO_DISABLE_TIMER
-using timer = detail::timer_base<detail::clock>;
+using timer = detail::timer_base;
 #else
 using timer = detail::timer_dumb;
 #endif
