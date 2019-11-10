@@ -64,16 +64,20 @@ program EigenExa
      stop
   endif
   
+  call mpi_barrier(mpi_comm_world, ierr)
   init_tick = mpi_wtime()
   call mpi_comm_rank( mpi_comm_world, i_inod, ierr )
   call eigen_init()
+  call mpi_barrier(mpi_comm_world, ierr)
   gen_tick = mpi_wtime()
   call eigen_get_matdims( n, nm, ny )
   allocate( a(nm, ny), z(nm, ny), w(n))
   call mat_set( n, a, nm )
 
+  call mpi_barrier(mpi_comm_world, ierr)
   diag_tick = mpi_wtime()
   call eigen_sx( n, n, a, nm, w, z, nm, 48, 128, 'A')
+  call mpi_barrier(mpi_comm_world, ierr)
   end_tick = mpi_wtime()
   if ( i_inod == 0 ) then
      print *, "Matrix dimension = ", n
