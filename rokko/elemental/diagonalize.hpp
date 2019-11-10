@@ -88,8 +88,8 @@ El::SortType get_sort(parameters const& params) {
   if (params.defined("sort")) {
     std::string str_sort = params.get<std::string>("sort");    
     if (str_sort == "ascending") elem_sort =  El::ASCENDING;
-    if (str_sort == "descending") elem_sort =  El::DESCENDING;
-    if (str_sort == "unsorted") elem_sort =  El::UNSORTED;
+    else if (str_sort == "descending") elem_sort =  El::DESCENDING;
+    else if (str_sort == "unsorted") elem_sort =  El::UNSORTED;
   }
   return elem_sort;
 }
