@@ -21,11 +21,10 @@ namespace rokko {
 template <typename T, size_t N>
 char (*ARRAY_SIZE_(T (*)[N]))[N];
 
-static const char* const rokko_solver_keys[] =  { "num_eigenvalues", "routine" };
+static const std::vector<std::string> rokko_solver_keys{ "num_eigenvalues", "routine" };
 
 bool is_rokko_solver_key(std::string const& key) {
-  std::vector<std::string> vec(&rokko_solver_keys[0], ARRAY_END(rokko_solver_keys));
-  if (std::find(vec.begin(), vec.end(), key) != vec.end()) {
+  if (std::find(rokko_solver_keys.begin(), rokko_solver_keys.end(), key) != rokko_solver_keys.end()) {
     //std::cout << key << " is rokko key" << std::endl;
     return true;
   } else {
