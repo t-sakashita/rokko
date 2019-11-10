@@ -90,8 +90,8 @@ int main( int argc, char* argv[] ) {
     
     if( El::mpi::Rank() == 0 ) {
       std::cout << "init_time = " << initend_tick - init_tick << std::endl
-		<< "gen_time = " << diag_tick - gen_tick << std::endl
-		<< "diag_time = " << end_tick - diag_tick << std::endl;
+                << "gen_time = " << diag_tick - gen_tick << std::endl
+                << "diag_time = " << end_tick - diag_tick << std::endl;
       rokko::machine_info();
       //bool sorted = true;
       //for (unsigned int i = 1; i < dim; ++i) sorted &= (eigvals[i-1] <= eigvals[i]);
