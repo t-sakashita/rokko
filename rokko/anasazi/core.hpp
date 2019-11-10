@@ -96,7 +96,7 @@ public:
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
       msg << "list of Anasazi solvers:" << std::endl;
       for (int i=0; i<names.size(); ++i) {
-        std::cerr << names[i] << " " << std::endl;
+        msg << names[i] << " " << std::endl;
       }
       throw std::invalid_argument(msg.str());
     }
@@ -157,8 +157,8 @@ public:
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
     bool boolret = problem_->setProblem();
-    if (boolret != true) {
-      std::cout << "setProblem()_error" << std::endl;
+    if (!boolret) {
+      std::cerr << "setProblem()_error" << std::endl;
     }
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
@@ -213,8 +213,8 @@ public:
     solvermanager_t* solvermanager = create_solver_manager(routine_);
     
     bool boolret = problem_->setProblem();
-    if (boolret != true) {
-      std::cout << "setProblem()_error" << std::endl;
+    if (!boolret) {
+      std::cerr << "setProblem()_error" << std::endl;
     }
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
