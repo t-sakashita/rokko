@@ -123,13 +123,16 @@ program test_real_example
    np_rows = nprocs/np_cols
 
    ! initialise BLACS
+   call mpi_barrier(mpi_comm_world, mpierr)
    init_tick = mpi_wtime()
    my_blacs_ctxt = mpi_comm_world
    call BLACS_Gridinit(my_blacs_ctxt, 'C', np_rows, np_cols)
    call BLACS_Gridinfo(my_blacs_ctxt, nprow, npcol, my_prow, my_pcol)
 
+   call mpi_barrier(mpi_comm_world, mpierr)
    initend_tick = mpi_wtime()
 
+   call mpi_barrier(mpi_comm_world, mpierr)
    gen_tick = mpi_wtime()
 
    ! determine the neccessary size of the distributed matrices,
@@ -145,6 +148,7 @@ program test_real_example
    call prepare_matrix_minij(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
    
    !-------------------------------------------------------------------------------
+  call mpi_barrier(mpi_comm_world, mpierr)
    diag_tick = mpi_wtime()
 
    if (elpa_init(20190524) /= elpa_ok) then
@@ -170,6 +174,7 @@ program test_real_example
 
    ! Calculate eigenvalues/eigenvectors
    call e%eigenvectors(a, ev, z, success)
+   call mpi_barrier(mpi_comm_world, mpierr)
    end_tick = mpi_wtime()
 
    if (success /= 0) then
