@@ -66,8 +66,8 @@ int main( int argc, char* argv[] ) {
       //           and the columns rowShift:rowStride:n
       const El::Int j = H.GlobalCol(jLoc);
       for( El::Int iLoc=0; iLoc<localHeight; ++iLoc ) {
-	const El::Int i = H.GlobalRow(iLoc);
-	H.SetLocal( iLoc, jLoc, std::min(i, j) + 1 );
+        const El::Int i = H.GlobalRow(iLoc);
+        H.SetLocal( iLoc, jLoc, std::min(i, j) + 1 );
       }
     }
     
@@ -98,7 +98,7 @@ int main( int argc, char* argv[] ) {
       //if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       std::cout << "largest eigenvalues:";
       for (int i = 0; i < std::min(dim, 10); ++i)
-	std::cout << ' ' << eigvals[i];
+        std::cout << ' ' << eigvals[i];
       std::cout << std::endl;
     }
 
