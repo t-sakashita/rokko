@@ -260,7 +260,6 @@ private:
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<double>> evals_;
   Teuchos::ParameterList pl_;
-  int max_block_size;
   std::string routine_;
   int num_conv_;
 };
