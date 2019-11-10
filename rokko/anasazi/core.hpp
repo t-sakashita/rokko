@@ -71,7 +71,6 @@ private:
 class solver {
 public:
   using eigenproblem_t = Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator>;
-  using solvermanager_lobpcg_t = Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>;
   using solvermanager_t = Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator>;
 
   static const std::vector<std::string> anasazi_solvers;
