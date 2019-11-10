@@ -14,13 +14,6 @@
 
 namespace rokko {
 
-#define ARRAY_SIZE(array) (sizeof *ARRAY_SIZE_(&(array)))
-
-#define ARRAY_END(array) &array[(sizeof *ARRAY_SIZE_(&(array)))]
-
-template <typename T, size_t N>
-char (*ARRAY_SIZE_(T (*)[N]))[N];
-
 static const std::vector<std::string> rokko_solver_keys{ "num_eigenvalues", "routine" };
 
 bool is_rokko_solver_key(std::string const& key) {

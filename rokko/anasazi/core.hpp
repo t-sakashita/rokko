@@ -67,7 +67,6 @@ private:
   Epetra_Map ep_map;
 };
 
-static const char* const anasazi_solvers[] = { "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
 
 class solver {
 public:
@@ -75,6 +74,8 @@ public:
   using solvermanager_lobpcg_t = Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>;
   using solvermanager_t = Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator>;
 
+  static const std::vector<std::string> anasazi_solvers;
+  
   solver() {
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
   }
@@ -95,7 +96,7 @@ public:
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
       msg << "list of Anasazi solvers:" << std::endl;
-      for (int i=0; i<ARRAY_SIZE(anasazi_solvers); ++i) {
+      for (int i=0; i<anasazi_solvers.size(); ++i) {
         std::cerr << anasazi_solvers[i] << " " << std::endl;
       }
       throw std::invalid_argument(msg.str());
@@ -264,6 +265,8 @@ private:
   std::string routine_;
   int num_conv_;
 };
+
+const std::vector<std::string> solver::anasazi_solvers{ "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
 
 } // namespace anasazi
 
