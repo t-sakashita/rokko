@@ -43,11 +43,14 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl
 	      << "block_size = " << block_size << std::endl;
 
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
+  MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   rokko::mapping_bc<matrix_major> map(dim, block_size, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
@@ -55,6 +58,7 @@ int main(int argc, char *argv[]) {
   //  Eigen::MatrixXd mat_loc(dim, dim);
   //  rokko::gather(mat, mat_loc, 0);
 
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
@@ -67,6 +71,7 @@ int main(int argc, char *argv[]) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 22);
   }
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
   if (myrank == 0) {
