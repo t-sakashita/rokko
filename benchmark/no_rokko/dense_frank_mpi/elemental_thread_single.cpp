@@ -66,8 +66,8 @@ int main( int argc, char* argv[] ) {
       //           and the columns rowShift:rowStride:n
       const El::Int j = H.GlobalCol(jLoc);
       for( El::Int iLoc=0; iLoc<localHeight; ++iLoc ) {
-	const El::Int i = H.GlobalRow(iLoc);
-	H.SetLocal( iLoc, jLoc, dim - std::max(i, j) );
+        const El::Int i = H.GlobalRow(iLoc);
+        H.SetLocal( iLoc, jLoc, dim - std::max(i, j) );
       }
     }
     
@@ -90,15 +90,15 @@ int main( int argc, char* argv[] ) {
     
     if( El::mpi::Rank() == 0 ) {
       std::cout << "init_time = " << initend_tick - init_tick << std::endl
-		<< "gen_time = " << diag_tick - gen_tick << std::endl
-		<< "diag_time = " << end_tick - diag_tick << std::endl;
+                << "gen_time = " << diag_tick - gen_tick << std::endl
+                << "diag_time = " << end_tick - diag_tick << std::endl;
       rokko::machine_info();
       //bool sorted = true;
       //for (unsigned int i = 1; i < dim; ++i) sorted &= (eigvals[i-1] <= eigvals[i]);
       //if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
       std::cout << "largest eigenvalues:";
       for (int i = 0; i < std::min(dim, 10); ++i)
-	std::cout << ' ' << eigvals[i];
+        std::cout << ' ' << eigvals[i];
       std::cout << std::endl;
     }
 
@@ -110,4 +110,3 @@ int main( int argc, char* argv[] ) {
   MPI_Finalize();
   return 0;
 }
-
