@@ -66,9 +66,9 @@ int main(int argc, char *argv[]) {
   int dim = 1 << L;
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
-	      << "solver = " << name << std::endl
-	      << "L = " << L << std::endl
-	      << "dimension = " << dim << std::endl;
+              << "solver = " << name << std::endl
+              << "L = " << L << std::endl
+              << "dimension = " << dim << std::endl;
 
   init_tick = MPI_Wtime();
   rokko::parallel_sparse_ev solver(name);
@@ -96,10 +96,10 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < num_conv; ++i) std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
-	      << "gen_time = " << diag_tick - gen_tick << std::endl
-	      << "diag_time = " << end_tick - diag_tick << std::endl;
+              << "gen_time = " << diag_tick - gen_tick << std::endl
+              << "diag_time = " << end_tick - diag_tick << std::endl;
   }
 
-  solver.finalize();  
+  solver.finalize();
   MPI_Finalize();
 }

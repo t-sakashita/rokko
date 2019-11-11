@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -43,13 +43,13 @@ int main(int argc, char *argv[]) {
   int myrank = g.get_myrank();
   if (myrank == 0) {
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
-	      << "library = " << library << std::endl
-	      << "routine = " << routine << std::endl
+              << "library = " << library << std::endl
+              << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
     rokko::print_lattice(lattice);
   }
 
-  init_tick = MPI_Wtime();  
+  init_tick = MPI_Wtime();
   rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   initend_tick = MPI_Wtime();
@@ -77,8 +77,8 @@ int main(int argc, char *argv[]) {
 
   if (myrank == 0) {
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
-	      << "gen_time = " << diag_tick - gen_tick << std::endl
-	      << "diag_time = " << end_tick - diag_tick << std::endl;
+              << "gen_time = " << diag_tick - gen_tick << std::endl
+              << "diag_time = " << end_tick - diag_tick << std::endl;
     rokko::machine_info();
     bool sorted = true;
     for (unsigned int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));

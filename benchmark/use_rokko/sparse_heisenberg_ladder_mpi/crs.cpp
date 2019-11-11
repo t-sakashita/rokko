@@ -61,11 +61,11 @@ int main(int argc, char *argv[]) {
       int m2 = 1 << j;
       int m3 = m1 + m2;
       if (((row & m3) == m1) || ((row & m3) == m2)) {
-	cols.push_back(row^m3);
-	values.push_back(0.5);
-	diag += -0.25;
+        cols.push_back(row^m3);
+        values.push_back(0.5);
+        diag += -0.25;
       } else {
-	diag += 0.25;
+        diag += 0.25;
       }
     }
     if (diag != 0.) {
@@ -98,8 +98,8 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < num_conv; ++i) std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
-	      << "gen_time = " << diag_tick - gen_tick << std::endl
-	      << "diag_time = " << end_tick - diag_tick << std::endl;
+              << "gen_time = " << diag_tick - gen_tick << std::endl
+              << "diag_time = " << end_tick - diag_tick << std::endl;
     rokko::machine_info();
   }
 
