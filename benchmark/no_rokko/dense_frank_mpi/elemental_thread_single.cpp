@@ -18,8 +18,10 @@ int main( int argc, char* argv[] ) {
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   // This detects whether or not you have already initialized MPI and 
   // does so if necessary. The full routine is El::Initialize.
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   El::Initialize( argc, argv );
+  MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
   El::Int dim = 100; //30000;
@@ -36,6 +38,7 @@ int main( int argc, char* argv[] ) {
   // Surround the Elemental calls with try/catch statements in order to 
   // safely handle any exceptions that were thrown during execution.
   try {
+    MPI_Barrier(MPI_COMM_WORLD);
     gen_tick = MPI_Wtime();
 
     // Create a 2d process grid from a communicator. In our case, it is
@@ -76,10 +79,12 @@ int main( int argc, char* argv[] ) {
     //
     // Optional: set blocksizes and algorithmic choices here. See the 
     //           'Tuning' section of the README for details.
+    MPI_Barrier(MPI_COMM_WORLD);
     diag_tick = MPI_Wtime();
     El::DistMatrix<double,El::VR,El::STAR> w( g );
     El::DistMatrix<double> X( g );
     El::HermitianEig( El::LOWER, H, w, X );
+    MPI_Barrier(MPI_COMM_WORLD);
     end_tick = MPI_Wtime();
     
     double* eigvals;
