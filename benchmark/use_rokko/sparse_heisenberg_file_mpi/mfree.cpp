@@ -70,13 +70,17 @@ int main(int argc, char *argv[]) {
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   rokko::parallel_sparse_ev solver(name);
+  MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
   
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   heisenberg_op mat(L, lattice);
   
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   rokko::parameters params;
   //params.set("max_block_size", 5);
@@ -84,6 +88,7 @@ int main(int argc, char *argv[]) {
   //params.set("conv_tol", 1.0e-8);
   //params.set("num_eigvals", 1);
   rokko::parameters info = solver.diagonalize(mat, params);
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
   int num_conv = info.get<int>("num_conv");

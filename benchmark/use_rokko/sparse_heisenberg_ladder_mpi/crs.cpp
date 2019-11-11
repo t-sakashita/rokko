@@ -41,10 +41,13 @@ int main(int argc, char *argv[]) {
 	      << "L = " << L << std::endl
 	      << "dimension = " << dim << std::endl;
 
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   rokko::parallel_sparse_ev solver(library);
+  MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   int num_entries_per_row = 2 * L;
   rokko::distributed_crs_matrix mat(dim, dim, num_entries_per_row, solver);
@@ -78,6 +81,7 @@ int main(int argc, char *argv[]) {
   mat.complete();
   //mat.print();
   
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   rokko::parameters params;
   params.set("routine", routine);
@@ -86,6 +90,7 @@ int main(int argc, char *argv[]) {
   params.set("conv_tol", 1.0e-8);
   //params.set("num_eigvals", 1);
   rokko::parameters params_out = solver.diagonalize(mat, params);
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
   
   int num_conv = params_out.get<int>("num_conv");
