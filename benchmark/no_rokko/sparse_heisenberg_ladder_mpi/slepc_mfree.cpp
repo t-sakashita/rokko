@@ -174,7 +174,7 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
   model *m;
   ierr = MatShellGetContext(A, &m); CHKERRQ(ierr);
 
-  PetscScalar       *pd;
+  PetscScalar *pd;
 
   ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
   rokko::heisenberg_hamiltonian::fill_diagonal(m->comm, m->L, m->lattice, pd);

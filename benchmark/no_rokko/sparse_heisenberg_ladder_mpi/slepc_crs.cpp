@@ -60,9 +60,9 @@ int main(int argc,char **argv)
       if (((row & m3) == m1) || ((row & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         cols.push_back(row^m3);
         values.push_back(0.5);
-	diag += -0.25;
+        diag += -0.25;
       } else {
-	diag += 0.25;
+        diag += 0.25;
       }
     }
     if (diag != 0.) {
@@ -145,4 +145,3 @@ int main(int argc,char **argv)
   MPI_Finalize();
   return 0;
 }
-
