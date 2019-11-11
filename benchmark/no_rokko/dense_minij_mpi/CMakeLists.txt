@@ -38,7 +38,7 @@ endforeach(name)
 endif(ROKKO_HAVE_ELEMENTAL)
 
 if(ROKKO_HAVE_EIGENEXA)
-set(EXAMPLE eigen_exa)
+set(EXAMPLE eigen_exa eigen_s)
 foreach(name ${EXAMPLE})
   set(target_name benchmark_dense_no_rokko_minij_mpi_${name})
   file(GLOB SOURCE "${name}.f*" "${name}.F*")
