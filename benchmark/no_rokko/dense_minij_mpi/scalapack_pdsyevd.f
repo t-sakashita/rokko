@@ -60,6 +60,7 @@
          write(*,'(A)') "Error: argument dimension is needed"
       stop
       endif
+      call mpi_barrier(mpi_comm_world, ierr)
       INIT_TICK = MPI_WTIME()
       call MPI_Comm_Size(mpi_comm_world,nprocs,ierr)
       NPROW = INT(SQRT(NPROCS + 0.5))
@@ -76,6 +77,7 @@
 *     
 *     These are basic array descriptors
 *
+      call mpi_barrier(mpi_comm_world, ierr)
       GEN_TICK = MPI_WTIME()
       MB = N / NPROW
       IF( MB.EQ.0 ) THEN
@@ -97,6 +99,7 @@
 *     
 *     Ask PDSYEV to compute the entire eigendecomposition
 *
+      call mpi_barrier(mpi_comm_world, ierr)
       DIAG_TICK = MPI_WTIME()
       CALL PDSYEVD( 'V', 'U', N, A, 1, 1, DESC, W, Z, 1, 1,
      $             DESC, TMP_WORK, -1, TMP_IWORK, -1, INFO )
@@ -106,6 +109,7 @@
       allocate ( IWORK(LIWORK) )
       CALL PDSYEVD( 'V', 'U', N, A, 1, 1, DESC, W, Z, 1, 1,
      $             DESC, WORK, LWORK, IWORK, LIWORK, INFO )
+      call mpi_barrier(mpi_comm_world, ierr)
       END_TICK = MPI_WTIME()
 *     
 *     Print out the eigenvalues and eigenvectors
