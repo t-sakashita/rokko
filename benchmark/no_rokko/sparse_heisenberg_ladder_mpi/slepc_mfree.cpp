@@ -187,4 +187,3 @@ PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
 
   PetscFunctionReturn(0);
 }
-

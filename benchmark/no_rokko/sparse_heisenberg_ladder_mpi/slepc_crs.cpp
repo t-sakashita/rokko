@@ -36,7 +36,7 @@ int main(int argc,char **argv)
 
   // Create Hermitean matrix
   MPI_Barrier(MPI_COMM_WORLD);
-  gen_tick = MPI_Wtime();    
+  gen_tick = MPI_Wtime();
   ierr = MatCreate(PETSC_COMM_WORLD, &A); CHKERRQ(ierr);
   ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, dim, dim); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
