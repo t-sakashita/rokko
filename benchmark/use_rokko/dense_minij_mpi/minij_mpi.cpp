@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  init_tick = MPI_Wtime();  
+  init_tick = MPI_Wtime();
   rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   initend_tick = MPI_Wtime();
