@@ -31,10 +31,12 @@ int main(int argc,char **argv)
 
   int provided;
   //MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  //MPI_Barrier(MPI_COMM_WORLD);
   //init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
+  //MPI_Barrier(MPI_COMM_WORLD);
   //initend_tick = MPI_Wtime();
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,6 +54,7 @@ int main(int argc,char **argv)
   if (rank == 0)
     rokko::print_lattice(lattice);
   
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   PetscInt N_global = dim;
   PetscInt N_local = N_global / nproc;
@@ -74,6 +77,7 @@ int main(int argc,char **argv)
   /*
      Create eigensolver context
   */
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   ierr = EPSCreate(PETSC_COMM_WORLD,&eps); CHKERRQ(ierr);
 
@@ -94,6 +98,7 @@ int main(int argc,char **argv)
                       Solve the eigensystem
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ierr = EPSSolve(eps);CHKERRQ(ierr);
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
   /*
      Optional: Get some information from the solver and display it

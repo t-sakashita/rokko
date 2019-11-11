@@ -19,9 +19,11 @@ int main(int argc,char **argv)
 
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
+  MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
   int len_ladder = 5;
@@ -33,6 +35,7 @@ int main(int argc,char **argv)
   int dim = 1 << L;
 
   // Create Hermitean matrix
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();    
   ierr = MatCreate(PETSC_COMM_WORLD, &A); CHKERRQ(ierr);
   ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, dim, dim); CHKERRQ(ierr);
@@ -82,6 +85,7 @@ int main(int argc,char **argv)
   /*
      Create eigensolver context
   */
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   ierr = EPSCreate(PETSC_COMM_WORLD, &eps); CHKERRQ(ierr);
   /*
@@ -101,6 +105,7 @@ int main(int argc,char **argv)
                       Solve the eigensystem
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ierr = EPSSolve(eps); CHKERRQ(ierr);
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
   /*

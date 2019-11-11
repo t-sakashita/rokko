@@ -142,6 +142,7 @@ int main(int argc, char *argv[]) {
 #ifdef HAVE_MPI
   // Initialize MPI
   //
+  MPI_Barrier(MPI_COMM_WORLD);
   MPI_Init(&argc,&argv);
 #endif
   init_tick = MPI_Wtime();
@@ -152,6 +153,7 @@ int main(int argc, char *argv[]) {
 #else
   Epetra_SerialComm Comm;
 #endif
+  MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
   // Create an Anasazi output manager
@@ -166,6 +168,7 @@ int main(int argc, char *argv[]) {
   rokko::output_lattice(printer.stream(Anasazi::Errors), lattice);
   int N = 1 << L;
 
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
@@ -184,6 +187,7 @@ int main(int argc, char *argv[]) {
   // Call the LOBPCG solver manager
   //***********************************
   //  Variables used for the LOBPCG Method
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   std::string which("LM");
   const int    nev       = 1;
@@ -232,6 +236,7 @@ int main(int argc, char *argv[]) {
 
   // Solve the problem
   Anasazi::ReturnType returnCode = MySolverMan.solve();
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem

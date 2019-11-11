@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
   // Initialize MPI
   MPI_Init(&argc,&argv);
 #endif
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   // Create an Epetra communicator
 #ifdef HAVE_MPI
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
   rokko::read_lattice_file(lattice_file, L, lattice);
   int N = 1 << L;
 
+  MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
@@ -99,6 +101,7 @@ int main(int argc, char *argv[]) {
   // Call the LOBPCG solver manager
   //***********************************
   //  Variables used for the LOBPCG Method
+  MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   std::string which("LM");
   const int    nev       = 10;
@@ -147,6 +150,7 @@ int main(int argc, char *argv[]) {
 
   // Solve the problem
   ReturnType returnCode = MySolverMan.solve();
+  MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
