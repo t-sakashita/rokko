@@ -17,7 +17,7 @@
 //   #define ROKKO_ENABLE_TIMER_TRACE
 //   #define ROKKO_ENABLE_TIMER_DETAILED
 
-#include <boost/format.hpp>
+#include <rokko/utility/string_format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/noncopyable.hpp>
 #include <fstream>
@@ -193,8 +193,8 @@ public:
     // }
     for (std::size_t i = 0; i < labels_.size(); ++i) {
       if (counts_[i] > 0) {
-        os << boost::format("timer: %5d %-55s %12.3lf %10ld\n")
-          % i % labels_[i] % sums_[i] % counts_[i];
+        os << rokko::format("timer: %5d %-55s %12.3lf %10ld\n",
+                            i, labels_[i].c_str(), sums_[i], counts_[i]);
       }
     }
   }
@@ -207,8 +207,8 @@ public:
     if ((d_count_ + 1) % interval == 0) {
       for (std::size_t i = 0; i < labels_.size(); ++i) {
         if (d_mapping_[i] >= 0) {
-          os << boost::format("detail: %d %d %.3f %d\n")
-            % d_count_ % i % d_sums_[d_mapping_[i]] % d_counts_[d_mapping_[i]];
+          os << boost::format("detail: %d %d %.3f %d\n",
+                              d_count_, i, d_sums_[d_mapping_[i]], d_counts_[d_mapping_[i]]);
         }
       }
     }
