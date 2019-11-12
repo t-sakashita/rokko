@@ -15,8 +15,7 @@ for build_type in $BUILD_TYPES; do
   cd $BUILD_DIR
   mkdir -p EigenExa-$EIGENEXA_VERSION-build-$build_type
   cd EigenExa-$EIGENEXA_VERSION-build-$build_type
-  if [ `which mpicc > /dev/null 2>&1; echo $?` = 0 ]; then
-    check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
+  check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
       -DCMAKE_C_FLAGS="-mt" -DCMAKE_Fortran_FLAGS="-mt" \
       -DMPI_C_COMPILER=mpicc -DMPI_Fortran_COMPILER=mpif90 \
@@ -24,14 +23,6 @@ for build_type in $BUILD_TYPES; do
       -DMPI_C_LIBRARIES="-mt" -DMPI_Fortran_LIBRARIES="-mt" \
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_sgimpt_lp64 -mkl=parallel" \
       $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  else
-    check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
-      -DCMAKE_C_COMPILER=icc -DCMAKE_Fortran_COMPILER=ifort \
-      -DMPI_C_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" -DMPI_Fortran_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" \
-      -DMPI_C_LIBRARIES="-lmp_mt" -DMPI_Fortran_LIBRARIES="-lmpi_mt" \
-      -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_sgimpt_lp64 -mkl=parallel" \
-      $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
-  fi
   check make -j2
   $SUDO make install
 done
