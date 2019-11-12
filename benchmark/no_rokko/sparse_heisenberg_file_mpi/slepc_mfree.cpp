@@ -28,14 +28,14 @@ int main(int argc,char **argv)
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
   int provided;
-  //MPI_Barrier(MPI_COMM_WORLD);
-  //MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  //init_tick = MPI_Wtime();
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_size(PETSC_COMM_WORLD,&nproc); CHKERRQ(ierr);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
-  //MPI_Barrier(MPI_COMM_WORLD);
-  //initend_tick = MPI_Wtime();
+  MPI_Barrier(MPI_COMM_WORLD);
+  initend_tick = MPI_Wtime();
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      Compute the operator matrix that defines the eigensystem, Ax=kx
@@ -127,6 +127,8 @@ int main(int argc,char **argv)
   ierr = EPSDestroy(&eps); CHKERRQ(ierr);
   ierr = MatDestroy(&A); CHKERRQ(ierr);
   ierr = SlepcFinalize();
+
+  MPI_Finalize();
   return 0;
 }
 
