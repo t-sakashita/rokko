@@ -141,10 +141,9 @@ int main(int argc, char *argv[]) {
 
 #ifdef HAVE_MPI
   // Initialize MPI
-  //
-  MPI_Barrier(MPI_COMM_WORLD);
   MPI_Init(&argc,&argv);
 #endif
+  MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
   // Create an Epetra communicator
   //
