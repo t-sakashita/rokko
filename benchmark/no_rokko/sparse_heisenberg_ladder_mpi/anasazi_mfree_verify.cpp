@@ -141,8 +141,8 @@ int main(int argc, char *argv[]) {
 
 #ifdef HAVE_MPI
   // Initialize MPI
-  //
-  MPI_Init(&argc,&argv);
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 #endif
   init_tick = MPI_Wtime();
   // Create an Epetra communicator
