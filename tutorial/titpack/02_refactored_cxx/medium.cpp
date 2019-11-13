@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -187,12 +187,12 @@ double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex
 
 double check2(crs_matrix const& mat, matrix_type const& x, int xindex,
               matrix_type& v, int vindex) {
-  check2(mat, &x(0, xindex), v, vindex);
+  return check2(mat, &x(0, xindex), v, vindex);
 }
 
 double check2(crs_matrix const& mat, std::vector<double> const& x,
               matrix_type& v, int vindex) {
-  check2(mat, &x[0], v, vindex);
+  return check2(mat, &x[0], v, vindex);
 }
 
 void inv2(crs_matrix const& mat, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {
