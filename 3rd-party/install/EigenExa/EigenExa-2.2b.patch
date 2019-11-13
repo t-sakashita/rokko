@@ -4,7 +4,7 @@ diff -crN EigenExa-1.3.orig/CMakeLists.txt EigenExa-1.3/CMakeLists.txt
 ***************
 *** 0 ****
 --- 1,48 ----
-+ cmake_minimum_required(VERSION 2.8)
++ cmake_minimum_required(VERSION 3.1)
 + project(EigenExa NONE)
 + enable_language(C Fortran)
 + option(BUILD_SHARED_LIBS "Build shared libraries" ON)

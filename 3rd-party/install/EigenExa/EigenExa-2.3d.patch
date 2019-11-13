@@ -2,7 +2,7 @@ diff -uNr EigenExa-2.3d-orig/CMakeLists.txt EigenExa-2.3d/CMakeLists.txt
 --- EigenExa-2.3d-orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
 +++ EigenExa-2.3d/CMakeLists.txt	2015-12-02 18:54:52.526233224 +0900
 @@ -0,0 +1,48 @@
-+cmake_minimum_required(VERSION 2.8)
++cmake_minimum_required(VERSION 3.1)
 +project(EigenExa NONE)
 +enable_language(C Fortran)
 +option(BUILD_SHARED_LIBS "Build shared libraries" ON)

@@ -4,7 +4,7 @@ diff -crN elpa_lib-201305.orig/CMakeLists.txt elpa_lib-201305/CMakeLists.txt
 ***************
 *** 0 ****
 --- 1,19 ----
-+ cmake_minimum_required(VERSION 2.8)
++ cmake_minimum_required(VERSION 3.1)
 + project(ELPA C Fortran)
 + option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 + 
