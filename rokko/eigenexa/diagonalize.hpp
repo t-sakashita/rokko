@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN_EXA_DIAGONALIZE_HPP
-#define ROKKO_EIGEN_EXA_DIAGONALIZE_HPP
+#ifndef ROKKO_EIGENEXA_DIAGONALIZE_HPP
+#define ROKKO_EIGENEXA_DIAGONALIZE_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/eigen_exa/eigen_exa_wrap.h>
@@ -98,4 +98,4 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
 } // namespace eigen_exa
 } // namespace rokko
 
-#endif // ROKKO_EIGEN_EXA_DIAGONALIZE_HPP
+#endif // ROKKO_EIGENEXA_DIAGONALIZE_HPP
