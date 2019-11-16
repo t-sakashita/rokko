@@ -38,19 +38,20 @@ int main(int argc, char *argv[]) {
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
   rokko_mapping_bc_construct_block_size(&map, dim, 1, grid);
   array = (double*) malloc(rokko_mapping_bc_get_length_array(map) * sizeof(double));
-  rokko_distributed_matrix_construct_array(&mat, map, array);
 
   /* generate minij matrix */
-  m_local = rokko_distributed_matrix_get_m_local(mat);
-  n_local = rokko_distributed_matrix_get_n_local(mat);
-  lld = rokko_distributed_matrix_get_lld(mat);
+  m_local = rokko_mapping_bc_get_m_local(map);
+  n_local = rokko_mapping_bc_get_n_local(map);
+  lld = rokko_mapping_bc_get_lld(map);
   for(local_j=0; local_j<n_local; ++local_j) {
-    global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
+    global_j = rokko_mapping_bc_translate_l2g_col(map, local_j);
     for(local_i=0; local_i<m_local; ++local_i) {
-      global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
+      global_i = rokko_mapping_bc_translate_l2g_row(map, local_i);
       array[local_i + local_j*lld] = MIN(global_i, global_j) + 1;
     }
   }
+
+  rokko_distributed_matrix_construct_array(&mat, map, array);
   rokko_distributed_matrix_print(mat);
 
   rokko_distributed_matrix_destruct(&mat);

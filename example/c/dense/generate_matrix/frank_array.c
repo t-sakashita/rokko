@@ -22,14 +22,14 @@ int main(int argc, char *argv[]) {
   double array_ptr[DIM*DIM];
   int i, j;
 
-  rokko_eigen_matrix_construct_array_sizes(&mat, DIM, DIM, array_ptr, rokko_matrix_col_major);
-
   /* generate frank matrix */
   for(i=0; i<DIM; ++i) {
     for(j=0; j<DIM; ++j) {
       array_ptr[i + j*DIM] = DIM - MAX(i, j);
     }
   }
+
+  rokko_eigen_matrix_construct_array_sizes(&mat, DIM, DIM, array_ptr, rokko_matrix_col_major);
   rokko_eigen_matrix_print(mat);
 
   /*rokko_eigen_matrix_destruct(&mat);*/

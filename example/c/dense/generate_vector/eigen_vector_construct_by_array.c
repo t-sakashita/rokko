@@ -20,11 +20,10 @@ int main(int argc, char *argv[]) {
   double array[DIM];
   int i;
 
-  rokko_eigen_vector_construct_array_size(&vector, DIM, array);
-
   for(i=0; i<DIM; ++i)
     array[i] = i + 1;
 
+  rokko_eigen_vector_construct_array_size(&vector, DIM, array);
   rokko_eigen_vector_print(vector);
 
   /*rokko_eigen_vector_destruct(&vector);*/
