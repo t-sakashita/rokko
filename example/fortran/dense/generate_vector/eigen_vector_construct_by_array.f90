@@ -21,11 +21,11 @@ program eigen_vector_construct_by_array
   print *,"dimension = ", dim
 
   allocate( array(dim) )
-  call rokko_construct(vector, array)
   do i=1, dim
      array(i) = i
   enddo
 
+  call rokko_construct(vector, array)
   call rokko_print(vector)
 
   call rokko_destruct(vector)
