@@ -37,9 +37,7 @@ struct more {
 
 namespace rokko {
 
-// sort eivanvalue and eigenvectors 
-
-
+// sort eigenvalues and eigenvectors
 template<typename T, int SIZE, int ROWS, int COLS, int MATRIX_MAJOR>
 void sort_eigenpairs(const Eigen::Vector<T, SIZE>& eigval,
                      const Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& eigvec,
