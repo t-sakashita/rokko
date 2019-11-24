@@ -17,6 +17,11 @@
 int global_argc;
 char** global_argv;
 
+template <typename T>
+T sign(T a) {
+  return (a>0) - (a<0);
+}
+
 template<typename MATRIX_MAJOR>
 void test(int dim, std::string const& name) {
   rokko::serial_dense_ev solver(name);
@@ -38,9 +43,13 @@ void test(int dim, std::string const& name) {
   for (int i = 0; i < dim; ++i) {
     double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
     EXPECT_NEAR(w, eigval(i), 10e-5);
+
     EXPECT_NEAR(diag(i), eigval(i), 10e-5);
-    for (int j=0; j < dim; ++j)
-      EXPECT_NEAR(abs(u(j,i)), abs(eigvec(i,j)), 10e-5);
+
+    const auto& source = u.transpose().col(i);
+    const auto& target = eigvec.col(i);
+    const double norm = (source - sign(source(0) * target(0)) * target).norm();
+    EXPECT_NEAR(norm, 0, 1e-5);
   }
 
   solver.finalize();
