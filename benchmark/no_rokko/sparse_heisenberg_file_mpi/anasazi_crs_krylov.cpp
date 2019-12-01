@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   // Get update list and number of local equations from newly created Map.
   int NumMyElements = Map.NumMyElements();
   std::vector<int> MyGlobalElements(NumMyElements);
-  Map.MyGlobalElements(&MyGlobalElements[0]);
+  Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
   Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
         cols.push_back(k);
         values.push_back(0.25);
       }
-      int info = A->InsertGlobalValues(k, cols.size(), &values[0], &cols[0]);
+      int info = A->InsertGlobalValues(k, cols.size(), values.data(), cols.data());
       //cout << "info=" << info << endl;
       assert( info==0 );
     }

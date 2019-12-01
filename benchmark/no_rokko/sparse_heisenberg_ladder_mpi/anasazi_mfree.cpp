@@ -68,7 +68,7 @@ class HeisenbergOp : public Epetra_Operator {
     for (int i=0; i<numvectors; ++i) {
       const double* x = X[i];
       double* y = Y[i];
-      rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
+      rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, buffer_.data());
     }
     //std::cout << "X=" << X << std::endl;
     return 0;
@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
   int NumMyElements = Map.NumMyElements();
 
   std::vector<int> MyGlobalElements(NumMyElements);
-  Map.MyGlobalElements(&MyGlobalElements[0]);
+  Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
   Teuchos::RCP<HeisenbergOp> A = Teuchos::rcp( new HeisenbergOp(MPI_COMM_WORLD, L, lattice) );

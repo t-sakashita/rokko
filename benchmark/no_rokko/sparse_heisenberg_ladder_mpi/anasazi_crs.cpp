@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   // Get update list and number of local equations from newly created Map.
   int NumMyElements = Map.NumMyElements();
   std::vector<int> MyGlobalElements(NumMyElements);
-  Map.MyGlobalElements(&MyGlobalElements[0]);
+  Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
   int NumEntriesPerRow = 2 * L;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
       cols.push_back(row);
       values.push_back(diag);
     }
-    int info = A->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
+    int info = A->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
     //cout << "info=" << info << endl;
     assert( info==0 );
   }

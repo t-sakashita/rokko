@@ -67,7 +67,7 @@ int main(int argc,char **argv)
       cols.push_back(row);
       values.push_back(diag);
     }
-    ierr = MatSetValues(A, 1, &row, cols.size(), &cols[0], &values[0], ADD_VALUES); CHKERRQ(ierr);
+    ierr = MatSetValues(A, 1, &row, cols.size(), cols.data(), values.data(), ADD_VALUES); CHKERRQ(ierr);
   }
 
   ierr = MatAssemblyBegin(A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
