@@ -66,7 +66,7 @@ class HeisenbergOp : public Epetra_Operator {
     for (int i=0; i<numvectors; ++i) {
       const double* x = X[i];
       double* y = Y[i];
-      rokko::xyz_hamiltonian::multiply(comm_, L_, lattice_, coupling_, x, y, &(buffer_[0]));
+      rokko::xyz_hamiltonian::multiply(comm_, L_, lattice_, coupling_, x, y, buffer_.data());
     }
     //std::cout << "X=" << X << std::endl;
     return 0;
