@@ -19,6 +19,8 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
 
+#include <numeric>
+
 namespace rokko {
 namespace slepc {
 
@@ -121,7 +123,7 @@ public:
       if ((global_row >= start_row()) && (global_row < end_row())) {
         MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
         idx.resize(num_cols);
-        for (int i=0; i<num_cols; ++i) idx[i] = i;
+        std::iota(idx.begin(), idx.end(), 0);
         std::sort(idx.begin(), idx.end(), comp(cols));
         for (int i=0; i<num_cols; ++i) {
           std::cout << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
