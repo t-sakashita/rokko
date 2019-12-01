@@ -24,7 +24,7 @@ namespace slepc {
 
 struct comp{
   bool operator()(const int& a, const int& b) const {
-    return v[a]<v[b];
+    return v[a] < v[b];
   }
   comp(const int *p) : v(p) {}
 
