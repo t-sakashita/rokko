@@ -40,7 +40,7 @@ inline void gridinit(int& ConTxt, char order, int nprow, int npcol) {
 
 inline void gridmap(int& ConTxt, const std::vector<int>& usermap, int ldup,
                     int nprow0, int npcol0) {
-  Cblacs_gridmap(&ConTxt, const_cast<int*>(&usermap[0]), ldup, nprow0, npcol0);
+  Cblacs_gridmap(&ConTxt, const_cast<int*>(usermap.data()), ldup, nprow0, npcol0);
 }
   
 inline int sys2blacs_handle(const MPI_Comm& comm) {
