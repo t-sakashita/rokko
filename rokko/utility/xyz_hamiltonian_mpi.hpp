@@ -145,7 +145,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 }
 
 void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
-  multiply(comm, L, lattice, coupling, &v[0], &w[0], &buffer[0]);
+  multiply(comm, L, lattice, coupling, v.data(), w.data(), buffer.data());
 }
 
 void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, double* w) {
@@ -202,7 +202,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
 }
 
 void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, std::vector<double>& w) {
-  fill_diagonal(comm, L, lattice, coupling, &w[0]);
+  fill_diagonal(comm, L, lattice, coupling, w.data());
 }
 
 template<typename T, typename MATRIX_MAJOR>

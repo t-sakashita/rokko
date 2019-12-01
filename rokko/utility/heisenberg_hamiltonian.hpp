@@ -38,7 +38,7 @@ void multiply(int L, const std::vector<std::pair<int, int>>& lattice, const doub
 }
 
 void multiply(int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<double>& v, std::vector<double>& w) {
-  multiply(L, lattice, &v[0], &w[0]);
+  multiply(L, lattice, v.data(), w.data());
 }
 
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, double* w) {
@@ -65,12 +65,12 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, doubl
 }
 
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, std::vector<double>& w) {
-  fill_diagonal(L, lattice, &w[0]);
+  fill_diagonal(L, lattice, w.data());
 }
 
 template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, Eigen::Vector<T>& w) {
-  fill_diagonal(L, lattice, &w[0]);
+  fill_diagonal(L, lattice, w.data());
 }
 
 template<typename T, int MATRIX_MAJOR>

@@ -34,7 +34,7 @@ public:
 
   template<typename T>
   static void multiply(int dim, const std::vector<T>& v, std::vector<T>& w) {
-    multiply(dim, &v[0], &w[0]);
+    multiply(dim, v.data(), w.data());
   }
 
   template<typename T, int ROWS, int COLS>

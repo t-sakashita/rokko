@@ -42,7 +42,7 @@ public:
   }
 
   void multiply(const double *const x, double *const y) const {
-    rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, &(buffer_[0]));
+    rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, buffer_.data());
   }
   int get_dim() const { return dim_; }
   int get_local_offset() const { return local_offset_; }

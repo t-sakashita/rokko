@@ -54,7 +54,7 @@ template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, const std::vector<T>& v,
   std::vector<T>& w) {
-  multiply(L, lattice, coupling, &v[0], &w[0]);
+  multiply(L, lattice, coupling, v.data(), w.data());
 }
 
 template<typename T>
@@ -89,7 +89,7 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
 template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, std::vector<T>& w) {
-  fill_diagonal(L, lattice, coupling, &w[0]);
+  fill_diagonal(L, lattice, coupling, w.data());
 }
 
 template<typename T, int MATRIX_MAJOR>

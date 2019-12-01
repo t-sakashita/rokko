@@ -73,7 +73,7 @@ double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int
 }
 
 double magnetization(int L, std::vector<std::pair<int, int>>& lattice, int power, const std::vector<double>& v) {
-  return magnetization(L, lattice, power, &v[0]);
+  return magnetization(L, lattice, power, v.data());
 }
 
 //} // namespace heisenberg_hamiltonian
