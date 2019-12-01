@@ -107,7 +107,7 @@ public:
         if (global_row == MyGlobalElements[local_row]) {
           matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
           for (int i=0; i<num_cols; ++i) idx[i] = i;
-          std::sort(&idx[0], &idx[num_cols], comp(cols, matrix_));
+          std::sort(idx.begin(), idx.end(), comp(cols, matrix_));
           for (int i=0; i<num_cols; ++i) {
             std::cout << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
           }

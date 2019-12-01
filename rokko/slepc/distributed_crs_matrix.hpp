@@ -122,7 +122,7 @@ public:
         MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
         idx.resize(num_cols);
         for (int i=0; i<num_cols; ++i) idx[i] = i;
-        std::sort(&idx[0], &idx[num_cols], comp(cols));
+        std::sort(idx.begin(), idx.end(), comp(cols));
         for (int i=0; i<num_cols; ++i) {
           std::cout << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
         }
