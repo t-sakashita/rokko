@@ -34,7 +34,7 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
       x[global_row - op.get_local_offset()] = 1.;
     }
     MPI_Barrier(MPI_COMM_WORLD);
-    op.multiply(&x[0], &y[0]);
+    op.multiply(x.data(), y.data());
     MPI_Barrier(MPI_COMM_WORLD);
     for (int local_col=0; local_col<op.get_num_local_rows(); ++local_col) {
       if (y[local_col] != 0) {

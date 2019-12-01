@@ -28,8 +28,8 @@ public:
     if (storage_.size() < end_local - begin_local) storage_.resize(end_local - begin_local);
   }
 
-  value_type* get_storage() { return &storage_[0]; }
-  const value_type* get_storage() const { return &storage_[0]; }
+  value_type* get_storage() { return storage_.data(); }
+  const value_type* get_storage() const { return storage_.data(); }
   int size() const { return n_global_; }
   int size_local() const { return storage_.size(); }
 
