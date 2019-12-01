@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
     // MPI version
     std::vector<double> v, w;
     v.assign(N, -2.);
-    MPI_Scatter(&v_seq[0], N, MPI_DOUBLE, &v[0], N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     w.assign(N, 0);
     op.multiply(v.data(), w.data());
     for (int proc=0; proc<nprocs; ++proc) {
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(&w[0], N, MPI_DOUBLE, recv_buffer, N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer, N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == 0) {
       std::cout << "i=" << i << std::endl;
