@@ -106,6 +106,7 @@ public:
       if (local_row < NumMyElements) {
         if (global_row == MyGlobalElements[local_row]) {
           matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
+          idx.resize(num_cols);
           for (int i=0; i<num_cols; ++i) idx[i] = i;
           std::sort(idx.begin(), idx.end(), comp(cols, matrix_));
           for (int i=0; i<num_cols; ++i) {
