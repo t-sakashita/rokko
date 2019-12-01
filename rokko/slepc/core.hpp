@@ -225,7 +225,7 @@ public:
 
   void eigenvector(int k, std::vector<double>& vec) const {
     if (vec.size() < num_local_rows_) vec.resize(num_local_rows_);
-    eigenvector(k, &(vec[0]));
+    eigenvector(k, vec.data());
   }
 
   void eigenvector(int k, distributed_vector<double>& vec) const {

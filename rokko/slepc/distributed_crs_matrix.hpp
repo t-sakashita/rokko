@@ -71,7 +71,7 @@ public:
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    ierr = MatSetValues(matrix_, 1, &row, cols.size(), &cols[0], &values[0], INSERT_VALUES);  //CHKERRQ(ierr);
+    ierr = MatSetValues(matrix_, 1, &row, cols.size(), cols.data(), values.data(), INSERT_VALUES);  //CHKERRQ(ierr);
   }
   void insert(int row, int col_size, int* cols, double* const values) {
     ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);

@@ -59,7 +59,7 @@ public:
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    matrix_->InsertGlobalValues(row, cols.size(), &values[0], &cols[0]);
+    matrix_->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
   }
   void insert(int row, int col_size, int* cols, double* const values) {
     matrix_->InsertGlobalValues(row, col_size, values, cols);
@@ -97,7 +97,7 @@ public:
     double* values;
     int NumMyElements = map_->get_epetra_map().NumMyElements();
     std::vector<int> MyGlobalElements(NumMyElements);
-    map_->get_epetra_map().MyGlobalElements(&MyGlobalElements[0]);
+    map_->get_epetra_map().MyGlobalElements(MyGlobalElements.data());
     int local_row = 0;
     if (map_->get_epetra_comm().MyPID() == 0) {
       std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;

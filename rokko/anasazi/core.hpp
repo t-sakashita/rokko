@@ -238,7 +238,7 @@ public:
 
   void eigenvector(int k, std::vector<double>& vec) const {
     if (vec.size() < map_->get_num_local_rows()) vec.resize(map_->get_num_local_rows());
-    eigenvector(k, &(vec[0]));
+    eigenvector(k, vec.data());
   }
   void eigenvector(int k, double* vec) const {
     double* vec_pt = (*problem_->getSolution().Evecs)[k];
