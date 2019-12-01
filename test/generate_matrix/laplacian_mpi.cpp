@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
     v.assign(N, -2.);
     MPI_Scatter(&v_seq[0], N, MPI_DOUBLE, &v[0], N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     w.assign(N, 0);
-    op.multiply(&v[0], &w[0]);
+    op.multiply(v.data(), w.data());
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
         std::cout << "myrank=" << myrank << std::endl;
