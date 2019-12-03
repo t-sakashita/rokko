@@ -39,13 +39,13 @@ public:
     if (num_local_rows_ == 0) return;
 
     if ((!is_first_proc) && (nprocs != 1)) {
-      MPI_Send((double*)&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
+      MPI_Send(x, 1, MPI_DOUBLE, myrank-1, 0, comm_);
       MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status_m);
     }
 
     if ((!is_last_proc) && (nprocs != 1)) {
       MPI_Recv(&buf_p, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status_p);
-      MPI_Send((double*)&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
+      MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
     }
 
     if (is_first_proc) {

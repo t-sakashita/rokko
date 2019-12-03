@@ -51,7 +51,7 @@ public:
     MPI_Status status;
     if (!is_first_proc) {
       //std::cout << "recv myrank=" << myrank << std::endl;
-      MPI_Send(&x[0], 1, MPI_DOUBLE, myrank-1, 0, comm_);
+      MPI_Send(x, 1, MPI_DOUBLE, myrank-1, 0, comm_);
       MPI_Recv(&buf, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status);
       y[0] = - buf + 2 * x[0] - x[1];
     }
