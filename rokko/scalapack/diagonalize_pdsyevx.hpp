@@ -45,7 +45,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int info = cscalapack_pdsyevx(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc, vl, vu, il, iu,
 		       abstol, &m, &nz, &eigvals[0], orfac,
 		       eigvecs.get_array_pointer(), 0, 0, desc,
-		       &ifail[0], &iclustr[0], &gap[0]);
+		       ifail.data(), &iclustr[0], &gap[0]);
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
@@ -80,7 +80,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int info = cscalapack_pdsyevx(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc, vl, vu, il, iu,
 		       abstol, &m, &nz, &eigvals[0], orfac,
 		       NULL, 0, 0, desc,
-		       &ifail[0], &iclustr[0], &gap[0]);
+		       ifail.data(), &iclustr[0], &gap[0]);
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);

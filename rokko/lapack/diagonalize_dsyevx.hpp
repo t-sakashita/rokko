@@ -44,11 +44,11 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, &ifail[0]);
+			  abstol, &m, eigvals, NULL, ld_mat, ifail.data());
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, &ifail[0]);
+			  abstol, &m, eigvals, NULL, ld_mat, ifail.data());
 
   if (info) {
     std::cerr << "error at dsyevx function. info=" << info << std::endl;
@@ -94,11 +94,11 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &ifail[0]);
+			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, ifail.data());
   else
     info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &ifail[0]);
+			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, ifail.data());
 
   if (info) {
     std::cerr << "Error at dsyevx function. info=" << info << std::endl;
