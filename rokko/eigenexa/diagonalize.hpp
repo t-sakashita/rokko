@@ -32,7 +32,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   int lld = mat.get_lld();
   timer.stop(timer_id::diagonalize_initialize);
   timer.start(timer_id::diagonalize_diagonalize);
-  ROKKO_eigen_exa_s(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
+  ROKKO_eigen_exa_s(dim, dim, mat.get_array_pointer(), lld, eigvals.data(),
                     eigvecs.get_array_pointer(), lld, 8, 128, 'A');
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
@@ -51,7 +51,7 @@ void diagonalize_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
   timer_in.start(1);
-  ROKKO_eigen_exa_s(dim, dim, mat.get_array_pointer(), lld, &eigvals[0], NULL,
+  ROKKO_eigen_exa_s(dim, dim, mat.get_array_pointer(), lld, eigvals.data(), NULL,
 		    lld, 8, 128, 'N');
   timer_in.stop(1);
   ROKKO_eigen_exa_free(1);
@@ -71,7 +71,7 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   int lld = mat.get_lld();
   timer.stop(timer_id::diagonalize_initialize);
   timer.start(timer_id::diagonalize_diagonalize);
-  ROKKO_eigen_exa_sx(dim, dim, mat.get_array_pointer(), lld, &eigvals[0],
+  ROKKO_eigen_exa_sx(dim, dim, mat.get_array_pointer(), lld, eigvals.data(),
                      eigvecs.get_array_pointer(), lld, 8, 128, 'A');
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
@@ -90,7 +90,7 @@ void diagonalize_sx(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
   int dim = mat.get_m_global();
   int lld = mat.get_lld();
   timer_in.start(1);
-  ROKKO_eigen_exa_sx(dim, dim, mat.get_array_pointer(), lld, &eigvals[0], NULL, lld, 8, 128, 'N');
+  ROKKO_eigen_exa_sx(dim, dim, mat.get_array_pointer(), lld, eigvals.data(), NULL, lld, 8, 128, 'N');
   timer_in.stop(1);
   ROKKO_eigen_exa_free(1);
 }
