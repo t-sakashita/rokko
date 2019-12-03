@@ -65,7 +65,7 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
         int m = 1 << (j-(L-p));
         MPI_Sendrecv((void*)&v[0], N, MPI_DOUBLE,
                      myrank ^ m, 0,
-                     &buffer[0], N, MPI_DOUBLE,
+                     buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
         int m1 = 1 << i;
@@ -98,7 +98,7 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
         int m = 1 << (i-(L-p));
         MPI_Sendrecv((void*)&v[0], N, MPI_DOUBLE,
                      myrank ^ m, 0,
-                     &buffer[0], N, MPI_DOUBLE,
+                     buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
         int m1 = 1 << j;
@@ -130,7 +130,7 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
         if (((myrank & m) != m) && ((myrank & m) != 0)) {
           MPI_Sendrecv((void*)&v[0], N, MPI_DOUBLE,
                        myrank ^ m, 0,
-                       &buffer[0], N, MPI_DOUBLE,
+                       buffer, N, MPI_DOUBLE,
                        myrank ^ m, 0,
                        comm, &status);
 #ifdef _OPENMP

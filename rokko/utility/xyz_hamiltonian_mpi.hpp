@@ -75,7 +75,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
         int m = 1 << (j-(L-p));
         MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
                      myrank ^ m, 0,
-                     &buffer[0], N, MPI_DOUBLE, 
+                     buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
         int m1 = 1 << i;
@@ -102,7 +102,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
         int m = 1 << (i-(L-p));
         MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
                      myrank ^ m, 0,
-                     &buffer[0], N, MPI_DOUBLE,
+                     buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
         int m1 = 1 << j;
@@ -127,7 +127,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
         int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
         MPI_Sendrecv(const_cast<double*>(&v[0]), N, MPI_DOUBLE,
                      myrank ^ m, 0,
-                     &buffer[0], N, MPI_DOUBLE,
+                     buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
         if (((myrank & m) != m) && ((myrank & m) != 0)) {
