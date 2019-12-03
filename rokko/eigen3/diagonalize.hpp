@@ -55,7 +55,7 @@ parameters diagonalize(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, std::vector
   }
   std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
-  Eigen::Map<Eigen::Vector<T>> eigvals(&eigvals_in[0], eigvals_in.size());
+  Eigen::Map<Eigen::Vector<T>> eigvals(eigvals_in.data(), eigvals_in.size());
   Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   return params_out;
@@ -84,7 +84,7 @@ parameters diagonalize(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, std::vector
   }
   std::size_t dim = mat.rows();
   if (eigvals_in.size() < dim) eigvals_in.resize(dim);
-  Eigen::Map<Eigen::Vector<T>> eigvals(&eigvals_in[0], eigvals_in.size());
+  Eigen::Map<Eigen::Vector<T>> eigvals(eigvals_in.data(), eigvals_in.size());
   Eigen::SelfAdjointEigenSolver<Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>> ES(mat);
   eigvals = ES.eigenvalues();
   eigvecs = ES.eigenvectors();
