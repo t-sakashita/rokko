@@ -42,11 +42,11 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   int info;
   if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  mat.data(), ld_mat, vl, vu, il, iu,
 			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
   else
     info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  mat.data(), ld_mat, vl, vu, il, iu,
 			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
 
   if (info) {
@@ -90,11 +90,11 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   int info;
   if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  mat.data(), ld_mat, vl, vu, il, iu,
 			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);
   else
     info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  &mat(0,0), ld_mat, vl, vu, il, iu,
+			  mat.data(), ld_mat, vl, vu, il, iu,
 			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);
 
   if (info) {

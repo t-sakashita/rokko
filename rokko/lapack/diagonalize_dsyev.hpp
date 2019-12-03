@@ -34,9 +34,9 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
   int info;
 
   if(MATRIX_MAJOR == Eigen::ColMajor)
-    info = LAPACKE_dsyev(LAPACK_COL_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
+    info = LAPACKE_dsyev(LAPACK_COL_MAJOR, jobz, uplow, dim, mat.data(), ldim, eigvals);
   else
-    info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
+    info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, mat.data(), ldim, eigvals);
 
   params_out.set("info", info);
   if (info) {
@@ -63,9 +63,9 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
   int info;
 
   if(MATRIX_MAJOR == Eigen::ColMajor)
-    info = LAPACKE_dsyev(LAPACK_COL_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
+    info = LAPACKE_dsyev(LAPACK_COL_MAJOR, jobz, uplow, dim, mat.data(), ldim, eigvals);
   else
-    info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, &mat(0,0), ldim, eigvals);
+    info = LAPACKE_dsyev(LAPACK_ROW_MAJOR, jobz, uplow, dim, mat.data(), ldim, eigvals);
 
   eigvecs = mat;
   params_out.set("info", info);
