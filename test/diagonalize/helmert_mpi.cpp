@@ -17,11 +17,36 @@
 int global_argc;
 char** global_argv;
 
+template <typename GRID_MAJOR>
+void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& grid_major) {
+  std::cout << "solver=" << name << std::endl;
+  if (name == "eigenexa") {
+    std::cout << "warning: skipping test for eigenexa\n";
+  } else {
+    rokko::parallel_dense_ev solver(name);
+    if (solver.is_available_grid_major(grid_major)) {
+      solver.initialize(global_argc, global_argv);
+      rokko::grid g(comm, grid_major);
+      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
+      Eigen::VectorXd diag(dim);
+      diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
+      rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
+      Eigen::VectorXd w(dim);
+      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
+
+      solver.diagonalize(mat, w, Z);
+
+      EXPECT_NEAR(w.sum(), diag.sum(), 10e-5);
+
+      solver.finalize();
+    }
+  }
+}
+
 TEST(diagonalize, helmert_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
   const int dim = 100;
-  Eigen::VectorXd diag(dim);
-  diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
 
   std::vector<std::string> names;
   if (global_argc == 1) {
@@ -31,54 +56,13 @@ TEST(diagonalize, helmert_mpi) {
       names.push_back(global_argv[num]);
     }
   }
-  
-  for(auto name : names) {
-    std::cout << "solver=" << name << std::endl;
-    if (name == "eigenexa") {
-      std::cout << "warning: skipping test for eigenexa\n";
-    } else {
-    rokko::parallel_dense_ev solver(name);
-    if (solver.is_available_grid_major(rokko::grid_col_major)) {
-      solver.initialize(global_argc, global_argv);
-      rokko::grid g(comm, rokko::grid_col_major);
-      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
-      rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
-      Eigen::VectorXd w(dim);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
 
-      solver.diagonalize(mat, w, Z);
-      
-      EXPECT_NEAR(w.sum(), diag.sum(), 10e-5);
-      
-      solver.finalize();
-    }
-    }
+  for(auto name : names) {
+    test(comm, dim, name, rokko::grid_col_major);
   }
 
-
   for(auto name : names) {
-    std::cout << "solver=" << name << std::endl;
-    if (name == "eigenexa") {
-      std::cout << "warning: skipping test for eigenexa\n";
-    } else {
-    rokko::parallel_dense_ev solver(name);
-    if (solver.is_available_grid_major(rokko::grid_row_major)) {
-      solver.initialize(global_argc, global_argv);
-      rokko::grid g(comm, rokko::grid_row_major);
-      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
-      rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
-      Eigen::VectorXd w(dim);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
-      
-      solver.diagonalize(mat, w, Z);
-      
-      EXPECT_NEAR(w.sum(), diag.sum(), 10e-5);
-
-      solver.finalize();
-    }
-    }
+    test(comm, dim, name, rokko::grid_row_major);
   }
 }
 
