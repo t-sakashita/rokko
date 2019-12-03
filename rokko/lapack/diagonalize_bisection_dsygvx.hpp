@@ -110,11 +110,11 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
   if(mata.is_col_major())
     info = LAPACKE_dsygvx(LAPACK_COL_MAJOR, 1, jobz, range, uplow, dim,
 			  &mata(0,0), lda, &matb(0,0), ldb, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, ifail.data());
+			  abstol, &m, eigvals, eigvecs.data(), ldim_eigvec, ifail.data());
   else
     info = LAPACKE_dsygvx(LAPACK_ROW_MAJOR, 1, jobz, range, uplow, dim,
 			  &mata(0,0), lda, &matb(0,0), ldb, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ldim_eigvec, ifail.data());
+			  abstol, &m, eigvals, eigvecs.data(), ldim_eigvec, ifail.data());
   timer.stop(timer_id::diagonalize_diagonalize);
   timer.start(timer_id::diagonalize_finalize);
   if (info) {
