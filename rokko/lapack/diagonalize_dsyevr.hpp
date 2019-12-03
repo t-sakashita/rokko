@@ -43,11 +43,11 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
+			  abstol, &m, eigvals, NULL, ld_mat, isuppz.data());
   else
     info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, &isuppz[0]);
+			  abstol, &m, eigvals, NULL, ld_mat, isuppz.data());
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
@@ -91,11 +91,11 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   if(MATRIX_MAJOR == Eigen::ColMajor)
     info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);
+			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, isuppz.data());
   else
     info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
 			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, &isuppz[0]);
+			  abstol, &m, eigvals, &eigvecs(0,0), ld_eigvecs, isuppz.data());
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
