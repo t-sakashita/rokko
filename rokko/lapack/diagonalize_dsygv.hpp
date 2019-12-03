@@ -36,9 +36,9 @@ parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
   int info;
 
   if(mata.is_col_major())
-    info = LAPACKE_dsygv(LAPACK_COL_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
+    info = LAPACKE_dsygv(LAPACK_COL_MAJOR, 1, jobz, uplow, dim, mata.data(), lda, matb.data(), ldb, eigvals);
   else
-    info = LAPACKE_dsygv(LAPACK_ROW_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
+    info = LAPACKE_dsygv(LAPACK_ROW_MAJOR, 1, jobz, uplow, dim, mata.data(), lda, matb.data(), ldb, eigvals);
 
   if (info) {
     std::cerr << "error at dsygv function. info=" << info  << std::endl;
@@ -66,9 +66,9 @@ parameters diagonalize_dsygv(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
   int info;
 
   if(mata.is_col_major())
-    info = LAPACKE_dsygv(LAPACK_COL_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
+    info = LAPACKE_dsygv(LAPACK_COL_MAJOR, 1, jobz, uplow, dim, mata.data(), lda, matb.data(), ldb, eigvals);
   else
-    info = LAPACKE_dsygv(LAPACK_ROW_MAJOR, 1, jobz, uplow, dim, &mata(0,0), lda, &matb(0,0), ldb, eigvals);
+    info = LAPACKE_dsygv(LAPACK_ROW_MAJOR, 1, jobz, uplow, dim, mata.data(), lda, matb.data(), ldb, eigvals);
 
   eigvecs = mata;
   if (info) {
