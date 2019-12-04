@@ -11,11 +11,15 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/helmert_matrix.hpp>
+#include <rokko/collective.hpp>
+#include <rokko/utility/compare_vectors.hpp>
 
 #include <gtest/gtest.h>
 
 int global_argc;
 char** global_argv;
+
+constexpr double eps = 1e-5;
 
 template <typename GRID_MAJOR>
 void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& grid_major) {
@@ -37,7 +41,21 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
 
       solver.diagonalize(mat, w, Z);
 
-      EXPECT_NEAR(w.sum(), diag.sum(), 10e-5);
+      EXPECT_NEAR(w.sum(), diag.sum(), eps);
+
+      Eigen::MatrixXd locZ(dim,dim);
+      constexpr int root = 0;
+      rokko::gather(Z, locZ, root);
+
+      Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<rokko::matrix_col_major>> u(dim, dim);
+      rokko::helmert_matrix::generate(u);
+      for (int i = 0; i < dim; ++i) {
+        EXPECT_NEAR(diag(i), w(i), eps);
+
+        // The following test utilizes that the fact that all these eigenvectors have freedom of minus sign at most, because all these eigenvalues are simple.
+        if (g.get_myrank() == root)
+          EXPECT_NEAR(rokko::norm_diff(u.transpose().col(i), locZ.col(i)), 0, eps);
+      }
 
       solver.finalize();
     }
