@@ -18,6 +18,8 @@
 int global_argc;
 char** global_argv;
 
+constexpr double eps = 1e-5;
+
 template<typename MATRIX_MAJOR>
 void test(int dim, std::string const& name) {
   rokko::serial_dense_ev solver(name);
@@ -37,12 +39,12 @@ void test(int dim, std::string const& name) {
 
   for (int i = 0; i < dim; ++i) {
     double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
-    EXPECT_NEAR(w, eigval(i), 10e-5);
+    EXPECT_NEAR(w, eigval(i), eps);
 
-    EXPECT_NEAR(diag(i), eigval(i), 10e-5);
+    EXPECT_NEAR(diag(i), eigval(i), eps);
 
     // The following test utilizes that the fact that all these eigenvectors have freedom of minus sign at most, because all these eigenvalues are simple.
-    EXPECT_NEAR(rokko::norm_diff(u.transpose().col(i), eigvec.col(i)), 0, 1e-5);
+    EXPECT_NEAR(rokko::norm_diff(u.transpose().col(i), eigvec.col(i)), 0, eps);
   }
 
   solver.finalize();
