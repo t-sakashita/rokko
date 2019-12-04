@@ -35,13 +35,13 @@ void test(int dim, std::string const& name) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> u(dim, dim);
   rokko::helmert_matrix::generate(u);
 
-  // The following test utilizes that the fact that all these eigenvectors have freedom of minus sign at most, because all these eigenvalues are simple.
   for (int i = 0; i < dim; ++i) {
     double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
     EXPECT_NEAR(w, eigval(i), 10e-5);
 
     EXPECT_NEAR(diag(i), eigval(i), 10e-5);
 
+    // The following test utilizes that the fact that all these eigenvectors have freedom of minus sign at most, because all these eigenvalues are simple.
     EXPECT_NEAR(rokko::norm_diff(u.transpose().col(i), eigvec.col(i)), 0, 1e-5);
   }
 
