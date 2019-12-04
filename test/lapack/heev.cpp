@@ -13,6 +13,8 @@
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack.hpp>
 
+constexpr double eps = 1e-10;
+
 TEST(SyevTest, SyevTest) {
   int n = 10;
 
@@ -29,11 +31,11 @@ TEST(SyevTest, SyevTest) {
   // orthogonality check
   Eigen::MatrixXcd check1 = u.adjoint() * u - Eigen::MatrixXcd::Identity(n, n);
   double norm1 = rokko::lapack::lange('F', check1);
-  EXPECT_NEAR(0.0, norm1, 1e-10);
+  EXPECT_NEAR(0.0, norm1, eps);
 
   // eigenvalue check
   Eigen::MatrixXcd check2 = u.adjoint() * a * u;
   for (int i = 0; i < n; ++i) check2(i, i) -= w(i);
   double norm2 = rokko::lapack::lange('F', check2);
-  EXPECT_NEAR(0.0, norm2, 1e-10);
+  EXPECT_NEAR(0.0, norm2, eps);
 }

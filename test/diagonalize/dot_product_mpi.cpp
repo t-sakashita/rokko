@@ -16,6 +16,8 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-11;
+
 int global_argc;
 char** global_argv;
 
@@ -57,7 +59,7 @@ TEST(dot_product_mpi, dot_product_mpi) {
     if (vecX.is_gindex(i, 0)) {
       std::cerr << i << ' ' << rank << ' ' << product_local << ' ' << product_global << std::endl;
       std::cerr.flush();
-      if (std::abs(product_local - product_global) >  10e-12) {
+      if (std::abs(product_local - product_global) >  eps) {
         success_local = 0;
       }
     }

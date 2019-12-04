@@ -13,6 +13,8 @@
 #include <rokko/eigen3.hpp>
 #include <rokko/blas.hpp>
 
+constexpr double eps = 1e-12;
+
 TEST(GemmTest, GemmTest) {
   std::size_t n = 16;
   Eigen::MatrixXd a = Eigen::MatrixXd::Random(n, n);
@@ -31,7 +33,7 @@ TEST(GemmTest, GemmTest) {
       for (std::size_t k = 0; k < n; ++k) {
         cc(i, j) += alpha * a(i, k) * b(k, j);
       }
-      EXPECT_NEAR(cc(i, j), cr(i, j), 1.0e-12);
+      EXPECT_NEAR(cc(i, j), cr(i, j), eps);
     }
   }
 }

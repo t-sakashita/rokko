@@ -17,6 +17,8 @@
 #include <rokko/lapack.hpp>
 #include <rokko/collective.hpp>
 
+constexpr double eps = 1e-10;
+
 TEST(lange, pdlange) {
   rokko::grid grid(MPI_COMM_WORLD);
 
@@ -38,28 +40,28 @@ TEST(lange, pdlange) {
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('M', a);
     std::cout << "max norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-    EXPECT_NEAR(expect, norm, 1.0e-10);
+    EXPECT_NEAR(expect, norm, eps);
   }
   
   norm = rokko::scalapack::plange('1', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('1', a);
     std::cout << "1-norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-    EXPECT_NEAR(expect, norm, 1.0e-10);
+    EXPECT_NEAR(expect, norm, eps);
   }
   
   norm = rokko::scalapack::plange('I', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('I', a);
     std::cout << "infinity norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-    EXPECT_NEAR(expect, norm, 1.0e-10);
+    EXPECT_NEAR(expect, norm, eps);
   }
   
   norm = rokko::scalapack::plange('F', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('F', a);
     std::cout << "Frobenius norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-    EXPECT_NEAR(expect, norm, 1.0e-10);
+    EXPECT_NEAR(expect, norm, eps);
   }
 }
 

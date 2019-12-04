@@ -14,6 +14,7 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-5;
 
 template<typename T, typename MATRIX_MAJOR>
 void test(int dim) {
@@ -21,7 +22,7 @@ void test(int dim) {
   Eigen::VectorXd diag(dim);
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
   rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);  
-  EXPECT_NEAR(mat.trace(), diag.sum(), 10e-5);
+  EXPECT_NEAR(mat.trace(), diag.sum(), eps);
 }
 
 TEST(generate_matrix, helmert_matrix) {

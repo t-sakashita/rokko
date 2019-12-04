@@ -16,6 +16,8 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-11;
+
 int global_argc;
 char** global_argv;
 
@@ -60,7 +62,7 @@ TEST(product_v_mpi, product_v_mpi) {
 
   int success_local = 1;
   for (int i = 0; i < dim; ++i) {
-    if (vecY.is_gindex(i, 0) && std::abs(vecY.get_global(i, 0) - locY(i, 0)) >  10e-12)
+    if (vecY.is_gindex(i, 0) && std::abs(vecY.get_global(i, 0) - locY(i, 0)) >  eps)
       success_local = 0;
   }
   int success;

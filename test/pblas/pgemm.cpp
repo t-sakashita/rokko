@@ -19,6 +19,8 @@
 #include <rokko/scalapack.hpp>
 #include <rokko/collective.hpp>
 
+constexpr double eps = 1e-12;
+
 TEST(pgemm, pdgemm) {
   rokko::grid grid(MPI_COMM_WORLD);
   std::mt19937 engine(123lu);
@@ -56,7 +58,7 @@ TEST(pgemm, pdgemm) {
   double dr = rokko::scalapack::plange('F', dc);
   
   if (grid.get_myrank() == 0) {
-    EXPECT_NEAR(r, dr, 1.0e-12);
+    EXPECT_NEAR(r, dr, eps);
   }
 }
 

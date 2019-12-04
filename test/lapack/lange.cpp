@@ -14,6 +14,9 @@
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack.hpp>
 
+constexpr double eps = 1e-10;
+constexpr double eps_float = 1e-5;
+
 TEST(lange, dlange) {
   int m = 5;
   int n = 3;
@@ -31,7 +34,7 @@ TEST(lange, dlange) {
     for (int i = 0; i < m; ++i)
       expect = std::max(expect, std::abs(a(i, j)));
   std::cout << "max norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-10);
+  EXPECT_NEAR(expect, norm, eps);
 
   norm = rokko::lapack::lange('1', a);
   expect = 0.0;
@@ -41,7 +44,7 @@ TEST(lange, dlange) {
     expect = std::max(expect, sum);
   }
   std::cout << "1-norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-10);
+  EXPECT_NEAR(expect, norm, eps);
 
   norm = rokko::lapack::lange('I', a);
   expect = 0.0;
@@ -51,7 +54,7 @@ TEST(lange, dlange) {
     expect = std::max(expect, std::abs(sum));
   }
   std::cout << "infinity norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-10);
+  EXPECT_NEAR(expect, norm, eps);
 
   norm = rokko::lapack::lange('F', a);
   expect = 0.0;
@@ -59,7 +62,7 @@ TEST(lange, dlange) {
     for (int i = 0; i < m; ++i) expect += a(i, j) * a(i, j);
   expect = std::sqrt(expect);
   std::cout << "Frobenius norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-10);
+  EXPECT_NEAR(expect, norm, eps);
 }
 
 TEST(lange, slange) {
@@ -79,7 +82,7 @@ TEST(lange, slange) {
     for (int i = 0; i < m; ++i)
       expect = std::max(expect, std::abs(a(i, j)));
   std::cout << "max norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-5);
+  EXPECT_NEAR(expect, norm, eps_float);
 
   norm = rokko::lapack::lange('1', a);
   expect = 0.0;
@@ -89,7 +92,7 @@ TEST(lange, slange) {
     expect = std::max(expect, sum);
   }
   std::cout << "1-norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-5);
+  EXPECT_NEAR(expect, norm, eps_float);
 
   norm = rokko::lapack::lange('I', a);
   expect = 0.0;
@@ -99,7 +102,7 @@ TEST(lange, slange) {
     expect = std::max(expect, std::abs(sum));
   }
   std::cout << "infinity norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-5);
+  EXPECT_NEAR(expect, norm, eps_float);
 
   norm = rokko::lapack::lange('F', a);
   expect = 0.0;
@@ -107,5 +110,5 @@ TEST(lange, slange) {
     for (int i = 0; i < m; ++i) expect += a(i, j) * a(i, j);
   expect = std::sqrt(expect);
   std::cout << "Frobenius norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
-  EXPECT_NEAR(expect, norm, 1.0e-5);
+  EXPECT_NEAR(expect, norm, eps_float);
 }

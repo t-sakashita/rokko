@@ -15,6 +15,8 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-11;
+
 int global_argc;
 char** global_argv;
 
@@ -59,7 +61,7 @@ TEST(product_mpi, product_mpi) {
   }
   if (rank == 0) std::cout << "trace of eigen matrix = " << sum << std::endl;
 
-  if (rank == 0) EXPECT_NEAR(sum_global, sum, 10e-12);
+  if (rank == 0) EXPECT_NEAR(sum_global, sum, eps);
 }
 
 int main(int argc, char** argv) {

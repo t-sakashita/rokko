@@ -14,6 +14,8 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-5;
+
 int global_argc;
 char** global_argv;
 
@@ -44,7 +46,7 @@ TEST(diagonalize, frank_mpi) {
 
       solver.diagonalize(mat, w, Z);
 
-      EXPECT_NEAR(w.sum(), dim * (dim+1) * 0.5, 10e-5);
+      EXPECT_NEAR(w.sum(), dim * (dim+1) * 0.5, eps);
       
       solver.finalize();
     }
@@ -65,7 +67,7 @@ TEST(diagonalize, frank_mpi) {
       
       solver.diagonalize(mat, w, Z);
 
-      EXPECT_NEAR(w.sum(), dim * (dim+1) * 0.5, 10e-5);
+      EXPECT_NEAR(w.sum(), dim * (dim+1) * 0.5, eps);
 
       solver.finalize();
     }

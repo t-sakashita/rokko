@@ -17,6 +17,8 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-11;
+
 int global_argc;
 char** global_argv;
 
@@ -58,7 +60,7 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   }
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
-      if (mat.is_gindex(i, j) && std::abs(mat.get_global(i, j) - lmat(i, j)) >  10e-12)
+      if (mat.is_gindex(i, j) && std::abs(mat.get_global(i, j) - lmat(i, j)) >  eps)
           success_local = 0;
     }
   }

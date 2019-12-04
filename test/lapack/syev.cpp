@@ -13,6 +13,9 @@
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack.hpp>
 
+constexpr double eps = 1e-10;
+constexpr double eps_float = 1e-4;
+
 TEST(syev, dsyev) {
   int n = 32;
 
@@ -29,13 +32,13 @@ TEST(syev, dsyev) {
   // orthogonality check
   Eigen::MatrixXd check1 = u.adjoint() * u - Eigen::MatrixXd::Identity(n, n);
   double norm1 = rokko::lapack::lange('F', check1);
-  EXPECT_NEAR(0.0, norm1, 1e-10);
+  EXPECT_NEAR(0.0, norm1, eps);
 
   // eigenvalue check
   Eigen::MatrixXd check2 = u.adjoint() * a * u;
   for (int i = 0; i < n; ++i) check2(i, i) -= w(i);
   double norm2 = rokko::lapack::lange('F', check2);
-  EXPECT_NEAR(0.0, norm2, 1e-10);
+  EXPECT_NEAR(0.0, norm2, eps);
 }
 
 TEST(syev, ssyev) {
@@ -54,11 +57,11 @@ TEST(syev, ssyev) {
   // orthogonality check
   Eigen::MatrixXf check1 = u.adjoint() * u - Eigen::MatrixXf::Identity(n, n);
   float norm1 = rokko::lapack::lange('F', check1);
-  EXPECT_NEAR(0.0, norm1, 1e-4);
+  EXPECT_NEAR(0.0, norm1, eps_float);
 
   // eigenvalue check
   Eigen::MatrixXf check2 = u.adjoint() * a * u;
   for (int i = 0; i < n; ++i) check2(i, i) -= w(i);
   float norm2 = rokko::lapack::lange('F', check2);
-  EXPECT_NEAR(0.0, norm2, 1e-4);
+  EXPECT_NEAR(0.0, norm2, eps_float);
 }

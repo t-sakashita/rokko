@@ -14,11 +14,13 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-5;
+
 template<typename T, typename MATRIX_MAJOR>
 void test(int dim) {
   Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> mat(dim, dim);
   rokko::frank_matrix::generate(mat);  
-  EXPECT_NEAR(mat.trace(), dim * (dim+1) * 0.5, 10e-5);
+  EXPECT_NEAR(mat.trace(), dim * (dim+1) * 0.5, eps);
 }
 
 TEST(generate_matrix, frank_matrix) {

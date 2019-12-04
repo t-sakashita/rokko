@@ -14,6 +14,8 @@
 
 #include <gtest/gtest.h>
 
+constexpr double eps = 1e-5;
+
 int global_argc;
 char** global_argv;
 
@@ -28,12 +30,12 @@ void test(int dim, std::string const& name) {
 
   solver.diagonalize(mat, eigval, eigvec);
 
-  EXPECT_NEAR(eigval.sum(), dim * (dim+1) * 0.5, 10e-5);
+  EXPECT_NEAR(eigval.sum(), dim * (dim+1) * 0.5, eps);
 
   rokko::minij_matrix::generate(mat);
   for (int i = 0; i < dim; ++i) {
     double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
-    EXPECT_NEAR(w, eigval[i], 10e-5);
+    EXPECT_NEAR(w, eigval[i], eps);
   }
 
   solver.finalize();
