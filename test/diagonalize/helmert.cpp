@@ -11,16 +11,12 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/helmert_matrix.hpp>
+#include <rokko/utility/compare_vectors.hpp>
 
 #include <gtest/gtest.h>
 
 int global_argc;
 char** global_argv;
-
-template <typename T>
-T sign(T a) {
-  return (a>0) - (a<0);
-}
 
 template<typename MATRIX_MAJOR>
 void test(int dim, std::string const& name) {
@@ -46,10 +42,7 @@ void test(int dim, std::string const& name) {
 
     EXPECT_NEAR(diag(i), eigval(i), 10e-5);
 
-    const auto& source = u.transpose().col(i);
-    const auto& target = eigvec.col(i);
-    const double norm = (source - sign(source(0) * target(0)) * target).norm();
-    EXPECT_NEAR(norm, 0, 1e-5);
+    EXPECT_NEAR(rokko::norm_diff(u.transpose().col(i), eigvec.col(i)), 0, 1e-5);
   }
 
   solver.finalize();

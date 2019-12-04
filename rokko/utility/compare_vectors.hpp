@@ -16,14 +16,15 @@
 
 namespace rokko {
 
-template<typename T, int SIZE>
-bool is_equal_signed(Eigen::Ref<Eigen::Vector<T, SIZE>> source, Eigen::Ref<Eigen::Vector<T, SIZE>> target) {
-  int sign;
-  if (source(0) - target(0) < EPSS_QR)  sign = 1;
-  else if (source(0) + target(0) < EPSS_QR)  sign = -1;
-  else return false;
-  
-  return source.all() == sign*target.all();
+template <typename T>
+T sign(T a) {
+  return (a>0) - (a<0);
+}
+
+template <typename MAT1, typename MAT2>
+auto norm_diff(const MAT1 source, const MAT2 target) {
+  const auto sign_diff = sign(source(0,0) * target(0,0));
+  return (source - sign_diff * target).norm();
 }
 
 } // namespace rokko
