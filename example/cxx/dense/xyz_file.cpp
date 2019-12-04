@@ -49,8 +49,7 @@ int main(int argc, char *argv[]) {
   Eigen::MatrixXd eigvec(dim, dim);
   try {
     solver.diagonalize(mat, eigval, eigvec);
-  }
-  catch (const char *e) {
+  } catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }

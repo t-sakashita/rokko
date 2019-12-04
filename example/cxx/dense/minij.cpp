@@ -52,8 +52,7 @@ int main(int argc, char *argv[]) {
   try {
     solver.diagonalize(mat, eigval, eigvec, params);
     //solver.diagonalize(mat, eigval, params);
-  }
-  catch (const char *e) {
+  } catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }

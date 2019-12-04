@@ -72,8 +72,7 @@ int main(int argc, char *argv[]) {
   try {
     default_diagonalize(mat, eigval, eigvec, params);
     //default_diagonalize(mat, eigval, params);
-  }
-  catch (const char *e) {
+  } catch (const char *e) {
     std::cout << "Exception : " << e << std::endl;
     exit(22);
   }

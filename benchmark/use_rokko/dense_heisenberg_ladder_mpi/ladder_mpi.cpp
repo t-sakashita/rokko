@@ -72,8 +72,7 @@ int main(int argc, char *argv[]) {
   params.set("routine", "tri");
   try {
     solver.diagonalize(mat, eigval, eigvec); //, params);
-  }
-  catch (const char *e) {
+  } catch (const char *e) {
     if (myrank == 0) std::cout << "Exception : " << e << std::endl;
     MPI_Abort(MPI_COMM_WORLD, 22);
   }

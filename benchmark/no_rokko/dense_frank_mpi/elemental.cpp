@@ -108,8 +108,7 @@ int main( int argc, char* argv[] ) {
     }
 
     delete []eigvals;
-  }
-  catch( std::exception& e ) { El::ReportException(e); }
+  } catch( std::exception& e ) { El::ReportException(e); }
   
   El::Finalize();
   MPI_Finalize();
