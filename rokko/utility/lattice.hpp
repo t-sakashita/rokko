@@ -74,7 +74,7 @@ void read_offset_info(std::ifstream& ifs, bool& offset1) {
     if (detect_offset_info(str_line, offset1)) {
       return;
     }
-   } while (str_line.empty());
+  } while (str_line.empty());
   ifs.seekg(file_pos);  // resotre file position
 }
 
@@ -100,13 +100,13 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
       else  lattice.push_back(std::make_pair(j, k));
       //std::cout << "back()=" << lattice.back().first << ", " << lattice.back().second << std::endl;
       if ((lattice.back().first < 0) || (lattice.back().first >= num_sites)) {
-	std::stringstream msg;
-	msg << "read_lattice_stream() : first index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
-	throw std::invalid_argument(msg.str());
+        std::stringstream msg;
+        msg << "read_lattice_stream() : first index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
+        throw std::invalid_argument(msg.str());
       } else if ((lattice.back().second < 0) || (lattice.back().second >= num_sites)) {
-	std::stringstream msg;
-	msg << "read_lattice_stream() : second index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
-	throw std::invalid_argument(msg.str());
+        std::stringstream msg;
+        msg << "read_lattice_stream() : second index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
+        throw std::invalid_argument(msg.str());
       }
     }
   } while (lattice.size() < num_bonds);
