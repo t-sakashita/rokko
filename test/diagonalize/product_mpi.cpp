@@ -54,7 +54,6 @@ TEST(product_mpi, product_mpi) {
   rokko::frank_matrix::generate(lmatA);
   Eigen::MatrixXd lmatC = lmatA * lmatA;
   if (rank == 0) std::cout << lmatC << std::endl;
-  // calculate trace
   double sum = lmatC.trace();
   if (rank == 0) std::cout << "trace of eigen matrix = " << sum << std::endl;
 
