@@ -60,8 +60,7 @@ bool detect_offset_info(std::string const& str_line, bool& offset1) {
     } else
       throw std::invalid_argument("detail::detect_offset_info() : give 0 or 1 after 'offset='");
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
