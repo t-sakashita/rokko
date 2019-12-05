@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
-  std::ifstream ifs(lattice_file.c_str());
+  std::ifstream ifs(lattice_file);
   if (!ifs) {
     std::cout << "can't open file" << std::endl;
     exit(1);

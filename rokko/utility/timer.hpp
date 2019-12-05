@@ -150,7 +150,7 @@ public:
 //       "/status";
 
 //     // open file
-//     std::ifstream fin(filename.c_str());
+//     std::ifstream fin(filename);
 //     if (fin.fail()) {
 //       std::cerr << "Can't open the file" << std::endl;
 //       return vm_info;
