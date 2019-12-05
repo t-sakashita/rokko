@@ -23,7 +23,7 @@ int global_argc;
 char** global_argv;
 
 template<typename GRID_MAJOR, typename DIST_MAT_MAJOR, typename LOC_MAT_MAJOR>
-bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJOR const&, LOC_MAT_MAJOR const&) {
+void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJOR const&, LOC_MAT_MAJOR const&) {
   int size, rank;
   MPI_Comm_size(comm, &size);
   MPI_Comm_rank(comm, &rank);
@@ -42,7 +42,6 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   if (rank == 0) std::cout << lmat << std::endl;
 #endif
   
-  int success_local = 1;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm, grid_major);
   rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);
@@ -54,15 +53,11 @@ bool run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #endif
     for (int i = 0; i < dim; ++i) {
       for (int j = 0; j < dim; ++j) {
-        if (mat.is_gindex(i, j) && std::abs(mat.get_global(i, j) - lmat(i, j)) >  eps)
-          success_local = 0;
+        if (mat.is_gindex(i, j))
+          EXPECT_NEAR(mat.get_global(i, j), lmat(i, j), eps);
       }
     }
   }
-
-  int success;
-  MPI_Allreduce(&success_local, &success, 1, MPI_INT, MPI_PROD, comm);
-  return success;
 }
 
 TEST(mpi_communication, scatter) {
@@ -77,7 +72,7 @@ TEST(mpi_communication, scatter) {
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
 
   if (rank == 0) std::cout << "test for grid = col, dist = col, loc = col\n";
-  ASSERT_TRUE( run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_col_major()) );
+  run_test(comm, dim, rokko::grid_col_major, rokko::matrix_col_major(), rokko::matrix_col_major());
 
   /*
   if (rank == 0) std::cout << "test for grid = col, dist = col, loc = row\n";
@@ -91,7 +86,7 @@ TEST(mpi_communication, scatter) {
   */
 
   if (rank == 0) std::cout << "test for grid = row, dist = col, loc = col\n";
-  ASSERT_TRUE( run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_col_major()) );
+  run_test(comm, dim, rokko::grid_row_major, rokko::matrix_col_major(), rokko::matrix_col_major());
 
   /*
   if (rank == 0) std::cout << "test for grid = row, dist = col, loc = row\n";

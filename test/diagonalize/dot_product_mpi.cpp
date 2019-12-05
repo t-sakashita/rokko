@@ -54,20 +54,14 @@ TEST(dot_product_mpi, dot_product_mpi) {
   // global calculation
   double product_global = rokko::dot_product(vecX, false, 0, vecY, false, 0);
 
-  int success_local = 1;
   for (int i = 0; i < dim; ++i) {
     if (vecX.is_gindex(i, 0)) {
       std::cerr << i << ' ' << rank << ' ' << product_local << ' ' << product_global << std::endl;
       std::cerr.flush();
-      if (std::abs(product_local - product_global) >  eps) {
-        success_local = 0;
-      }
+      EXPECT_NEAR(product_local, product_global, eps);
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
-  int success;
-  MPI_Allreduce(&success_local, &success, 1, MPI_INT, MPI_PROD, comm);
-  ASSERT_TRUE(success);
 }
 
 int main(int argc, char** argv) {

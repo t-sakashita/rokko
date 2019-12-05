@@ -60,14 +60,10 @@ TEST(product_v_mpi, product_v_mpi) {
   // global calculation
   rokko::product_v(1.0, matA, false, vecX, false, 0, 1, vecY, false, 0);
 
-  int success_local = 1;
   for (int i = 0; i < dim; ++i) {
-    if (vecY.is_gindex(i, 0) && std::abs(vecY.get_global(i, 0) - locY(i, 0)) >  eps)
-      success_local = 0;
+    if (vecY.is_gindex(i, 0))
+      EXPECT_NEAR(vecY.get_global(i, 0), locY(i, 0), eps);
   }
-  int success;
-  MPI_Allreduce(&success_local, &success, 1, MPI_INT, MPI_PROD, comm);
-  ASSERT_TRUE(success);
 }
 
 int main(int argc, char** argv) {
