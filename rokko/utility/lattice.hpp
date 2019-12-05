@@ -37,7 +37,7 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   is.str(trimed_str);
   //std::cout << "string:" << trimed_str << std::endl;
   //std::cout << "comment:" << list_string.back() << std::endl;
-  if (!trimed_str.empty()) { // the sentece is not just comment
+  if (!trimed_str.empty()) { // the sentence is not just comment
     return true;
   } else { // the sentence is just comment
     return false;
