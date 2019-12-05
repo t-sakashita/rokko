@@ -20,7 +20,7 @@ namespace rokko {
 void split_solver_name(std::string const& str, std::string& library, std::string& routine) {
   std::regex separator{":"};
   auto it = std::sregex_token_iterator{str.begin(), str.end(), separator, -1};
-  auto end_it = std::sregex_token_iterator{};
+  const auto end_it = std::sregex_token_iterator{};
   if (it != end_it)
     library = *it++;
 
