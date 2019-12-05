@@ -16,7 +16,7 @@ foreach(name ${TESTS})
   add_rokko_test(${name})
 endforeach(name)
 
-set(TESTS sort_eigenpairs)
+set(TESTS sort_eigenpairs solver_name)
 foreach(name ${TESTS})
   set(target_name test_${name})
   add_executable(${target_name} ${name}.cpp)
