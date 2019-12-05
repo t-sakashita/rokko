@@ -55,10 +55,7 @@ TEST(product_mpi, product_mpi) {
   Eigen::MatrixXd lmatC = lmatA * lmatA;
   if (rank == 0) std::cout << lmatC << std::endl;
   // calculate trace
-  double sum = 0;
-  for (int i = 0; i < dim; ++i) {
-    sum += lmatC(i, i);
-  }
+  double sum = lmatC.trace();
   if (rank == 0) std::cout << "trace of eigen matrix = " << sum << std::endl;
 
   if (rank == 0) EXPECT_NEAR(sum_global, sum, eps);
