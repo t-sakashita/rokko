@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2013-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -36,11 +36,7 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   is.str(trimed_str);
   //std::cout << "string:" << trimed_str << std::endl;
   //std::cout << "comment:" << list_string.back() << std::endl;
-  if (!trimed_str.empty()) { // the sentece is not just comment
-    return true;
-  } else { // the sentence is just comment
-    return false;
-  }
+  return !trimed_str.empty(); // empty means the sentence is just comment
 }
 
 
