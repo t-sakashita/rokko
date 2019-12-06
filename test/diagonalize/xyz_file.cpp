@@ -28,10 +28,10 @@ TEST(diagonalize, xyz_file) {
     }
   }
 
-  std::ifstream ifs("./heisenberg.ip"); //str);
+  const std::string filename("./heisenberg.ip");
+  std::ifstream ifs(filename);
   if (!ifs) {
-    std::cout << "can't open file" << std::endl;
-    exit(1);
+    throw std::runtime_error("can't open file \"" + filename + "\"");
   }
 
   int L, num_bonds;
