@@ -30,7 +30,7 @@ TEST(diagonalize, heisenberg) {
   for(auto name : names) {
     int L = 5;
     int dim = 1 << L;
-    std::vector<std::pair<int, int> > lattice;
+    std::vector<std::pair<int, int>> lattice;
     for (int i=0; i<L-1; ++i) {
       lattice.push_back(std::make_pair(i, i+1));
     }

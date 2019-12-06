@@ -28,8 +28,8 @@ TEST(diagonalize, xyz) {
   }
 
   for(auto name : names) {
-    std::vector<std::pair<int, int> > lattice;
-    std::vector<std::tuple<double, double, double> > coupling;
+    std::vector<std::pair<int, int>> lattice;
+    std::vector<std::tuple<double, double, double>> coupling;
     int L = 5;
     int num_bonds = L-1;
     int dim = 1 << L;

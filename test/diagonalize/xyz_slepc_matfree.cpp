@@ -7,8 +7,8 @@
 
 struct model {
   int L;
-  std::vector<std::pair<int, int> > lattice;
-  std::vector<std::tuple<double, double, double> > coupling;
+  std::vector<std::pair<int, int>> lattice;
+  std::vector<std::tuple<double, double, double>> coupling;
 };
 
 /*

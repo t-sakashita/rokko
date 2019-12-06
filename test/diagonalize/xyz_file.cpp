@@ -35,8 +35,8 @@ TEST(diagonalize, xyz_file) {
   }
 
   int L, num_bonds;
-  std::vector<std::pair<int, int> > lattice;
-  std::vector<std::tuple<double, double, double> > coupling;
+  std::vector<std::pair<int, int>> lattice;
+  std::vector<std::tuple<double, double, double>> coupling;
   ifs >> L >> num_bonds;
   for (int i=0; i<num_bonds; ++i) {
     int j, k;
