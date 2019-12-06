@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
       rokko::laplacian_matrix::multiply(N_seq, v_seq, w_seq);
       std::cout << "sequential version:" << std::endl;
       for (int j=0; j<N_seq; ++j) {
-	std::cout << w_seq[j] << " ";
+        std::cout << w_seq[j] << " ";
       }
       std::cout << std::endl;
     }
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
       std::cout << "i=" << i << std::endl;
       std::cout << "recv=";
       for (int j=0; j<N_seq; ++j) {
-	std::cout << recv_buffer[j] << " ";
+        std::cout << recv_buffer[j] << " ";
       }
       std::cout << std::endl;
     }
