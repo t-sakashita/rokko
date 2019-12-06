@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  const int root = 0;
+  constexpr int root = 0;
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 20;
