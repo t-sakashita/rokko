@@ -102,19 +102,19 @@ int main(int argc, char *argv[]) {
     if (myrank == 0) {
       std::cout << "seq=";
       for (int j=0; j<N_seq; ++j) {
-	std::cout << w_seq[j] << " ";
+        std::cout << w_seq[j] << " ";
       }
       std::cout << std::endl;
       std::cout << "recv=";
       for (int j=0; j<N_seq; ++j) {
-	std::cout << recv_buffer[j] << " ";
+        std::cout << recv_buffer[j] << " ";
       }
       std::cout << std::endl;
       for (int j=0; j<N_seq; ++j) {
-	if (w_seq[j] != recv_buffer[j]) {
-	  std::cout << "j=" << j << "  w_seq[j]=" << w_seq[j] << "  recv[j]=" << recv_buffer[j] << std::endl;
-	  exit(1);
-	}
+        if (w_seq[j] != recv_buffer[j]) {
+          std::cout << "j=" << j << "  w_seq[j]=" << w_seq[j] << "  recv[j]=" << recv_buffer[j] << std::endl;
+          exit(1);
+        }
       }
     }
     MPI_Barrier(MPI_COMM_WORLD);
