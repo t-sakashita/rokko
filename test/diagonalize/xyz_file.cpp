@@ -28,35 +28,35 @@ TEST(diagonalize, xyz_file) {
     }
   }
 
+  std::ifstream ifs("./heisenberg.ip"); //str);
+  if (!ifs) {
+    std::cout << "can't open file" << std::endl;
+    exit(1);
+  }
+
+  int L, num_bonds;
+  std::vector<std::pair<int, int> > lattice;
+  std::vector<std::tuple<double, double, double> > coupling;
+  ifs >> L >> num_bonds;
+  for (int i=0; i<num_bonds; ++i) {
+    int j, k;
+    ifs >> j >> k;
+    lattice.push_back(std::make_pair(j, k));
+  }
+
+  for (int i=0; i<num_bonds; ++i) {
+    double jx, jy, jz;
+    ifs >> jx >> jy >> jz;
+    coupling.push_back(std::make_tuple(jx, jy, jz));
+  }
+
+  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
+  for (int i=0; i<num_bonds; ++i) {
+    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
+  }
+  int dim = 1 << L;
+
   for(auto name : names) {
-    std::ifstream ifs("./heisenberg.ip"); //str);
-    if (!ifs) {
-      std::cout << "can't open file" << std::endl;
-      exit(1);
-    }
-
-    int L, num_bonds;
-    std::vector<std::pair<int, int> > lattice;
-    std::vector<std::tuple<double, double, double> > coupling;
-    ifs >> L >> num_bonds;
-    for (int i=0; i<num_bonds; ++i) {
-      int j, k;
-      ifs >> j >> k;
-      lattice.push_back(std::make_pair(j, k));
-    }
-
-    for (int i=0; i<num_bonds; ++i) {
-      double jx, jy, jz;
-      ifs >> jx >> jy >> jz;
-      coupling.push_back(std::make_tuple(jx, jy, jz));
-    }
-
-    std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-    for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-    }
-    int dim = 1 << L;
-
     std::cout << "solver=" << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
