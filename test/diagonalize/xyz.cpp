@@ -54,11 +54,7 @@ TEST(diagonalize, xyz) {
     std::cout << "mat=" << mat << std::endl;
     solver.diagonalize(mat, w, Z);
     
-    double sum = 0;
-    for(int i=0; i<dim; ++i) {
-      sum += w[i];
-    }
-
+    double sum = w.trace();
     std::cout << "w=" << w.transpose() << std::endl;
     
     solver.finalize();
