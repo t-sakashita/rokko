@@ -58,6 +58,13 @@ void multiply(int L, const std::vector<std::pair<int, int>>& lattice,
 }
 
 template<typename T>
+void multiply(int L, const std::vector<std::pair<int, int>>& lattice,
+  const std::vector<std::tuple<double, double, double>>& coupling, const Eigen::Vector<T>& v,
+  Eigen::Vector<T>& w) {
+  multiply(L, lattice, coupling, v.data(), w.data());
+}
+
+template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, T* w) {
   int N = 1 << L;
@@ -89,6 +96,12 @@ void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
 template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, std::vector<T>& w) {
+  fill_diagonal(L, lattice, coupling, w.data());
+}
+
+template<typename T>
+void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
+  const std::vector<std::tuple<double, double, double>>& coupling, Eigen::Vector<T>& w) {
   fill_diagonal(L, lattice, coupling, w.data());
 }
 

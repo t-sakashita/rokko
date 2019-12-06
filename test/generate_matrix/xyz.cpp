@@ -36,31 +36,22 @@ TEST(generate_matrix, xyz_hamiltonian) {
     std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
   }
 
-
   Eigen::MatrixXd mat1(N, N);
+  Eigen::VectorXd v(N), w(N);
   std::cout << "multiply:" << std::endl;
   for (int i=0; i<N; ++i) {
-    std::vector<double> v, w;
-    v.assign(N, 0);
-    v[i] = 1;
-    w.assign(N, 0);
+    v.setZero();
+    v(i) = 1;
+    w.setZero();
     rokko::xyz_hamiltonian::multiply(L, lattice, coupling, v, w);
-    for (int j=0; j<N; ++j) {
-      mat1(j,i) = w[j];
-      std::cout << w[j] << " ";
-    }
-    std::cout << std::endl;
+    mat1.col(i) = w;
+    std::cout << "w = " << w.transpose() << std::endl;
   }
 
   std::cout << "fill_diagonal:" << std::endl;
   Eigen::VectorXd diagonal(N);
-  std::vector<double> v(N);
-  rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, v);
-  for (int j=0; j<N; ++j) {
-    diagonal(j) = v[j];
-    std::cout << v[j] << " ";
-  }
-  std::cout << std::endl;
+  rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, diagonal);
+  std::cout << "diagonal = " << diagonal.transpose() << std::endl;
 
   std::cout << "fill_matrix:" << std::endl;
   Eigen::MatrixXd mat2(N, N);
