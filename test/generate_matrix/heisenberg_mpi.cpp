@@ -53,55 +53,40 @@ int main(int argc, char *argv[]) {
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
-  double* recv_buffer = new double[N_seq];
-  std::vector<double> buffer(N);
+  Eigen::VectorXd recv_buffer(N_seq);
+  Eigen::VectorXd buffer(N);
+  Eigen::VectorXd v_seq(N_seq), w_seq(N_seq);
+  Eigen::VectorXd v(N), w(N);
   for (int i=0; i<N; ++i) {
     // sequential version
-    std::vector<double> v_seq, w_seq;
-    v_seq.assign(N_seq, 0);
-    v_seq[i] = 1;
-    w_seq.assign(N_seq, 0);
+    v_seq.setZero();
+    w_seq.setZero();
+    v_seq(i) = 1;
     if (myrank == root) {
-      rokko::heisenberg_hamiltonian::multiply(L, lattice, v_seq, w_seq);
+      rokko::heisenberg_hamiltonian::multiply(L, lattice, v_seq.data(), w_seq.data());
       std::cout << "sequential version:" << std::endl;
-      for (int j=0; j<N_seq; ++j) {
-        std::cout << w_seq[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << w_seq.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
-    std::vector<double> v, w;
-    v.assign(N, -2.);
     MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    w.assign(N, 0);
-    rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v, w, buffer);
+    w.setZero();
+    rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v.data(), w.data(), buffer.data());
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
         std::cout << "myrank=" << myrank << std::endl;
-        for (int j=0; j<N; ++j) {
-          std::cout << w[j] << " ";
-        }
-        std::cout << std::endl;
+        std::cout << w.transpose() << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer, N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == 0) {
-      std::cout << "seq=";
-      for (int j=0; j<N_seq; ++j) {
-        std::cout << w_seq[j] << " ";
-      }
-      std::cout << std::endl;
-      std::cout << "recv=";
-      for (int j=0; j<N_seq; ++j) {
-        std::cout << recv_buffer[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << "seq = " << w_seq.transpose() << std::endl;
+      std::cout << "recv = " << recv_buffer.transpose() << std::endl;
       for (int j=0; j<N_seq; ++j) {
         if (w_seq[j] != recv_buffer[j]) {
           std::cout << "j=" << j << "  w_seq[j]=" << w_seq[j] << "  recv[j]=" << recv_buffer[j] << std::endl;
@@ -114,31 +99,21 @@ int main(int argc, char *argv[]) {
 
   // test fill_diagonal of quantum heisenberg hamiltonian.
   // sequential version
-  std::vector<double> w_seq;
-  w_seq.assign(N_seq, 0);
   if (myrank == root) {
-    rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, w_seq);
+    rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, w_seq.data());
     std::cout << "fill_diagonal sequential version:" << std::endl;
-    for (int j=0; j<N_seq; ++j) {
-      std::cout << w_seq[j] << " ";
-    }
-    std::cout << std::endl;
+    std::cout << "seq = " << w_seq.transpose() << std::endl;
   }
   MPI_Barrier(MPI_COMM_WORLD);    
   // MPI version
-  std::vector<double> w;
-  w.assign(N, 0);
   if (myrank == root) {  
     std::cout << "fill_diagonal MPI version:" << std::endl;
   }
-  rokko::heisenberg_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, w);
+  rokko::heisenberg_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, w.data());
   for (int proc=0; proc<nprocs; ++proc) {
     if (proc == myrank) {
       std::cout << "myrank=" << myrank << std::endl;
-      for (int j=0; j<N; ++j) {
-        std::cout << w[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << w.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
@@ -163,7 +138,7 @@ int main(int argc, char *argv[]) {
       exit(1);
     }
   }
-  delete[] recv_buffer;
+
   MPI_Finalize();
   return 0;
 }
