@@ -27,10 +27,10 @@ int main(int argc, char *argv[]) {
   solver.initialize(argc, argv);
   rokko::grid g(MPI_COMM_WORLD);
 
-  int L = 8;
-  int num_bonds = L - 1;
+  std::size_t L = 8;
+  std::size_t num_bonds = L - 1;
   std::vector<std::pair<int, int>> lattice;
-  for (int i=0; i<L-1; ++i) lattice.push_back(std::make_pair(i, i+1));
+  for (std::size_t i=0; i<L-1; ++i) lattice.push_back(std::make_pair(i, i+1));
 
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
   if (myrank == root) {
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-    for (int i=0; i < num_bonds; ++i) {
+    for (std::size_t i=0; i < num_bonds; ++i) {
       std::cout << lattice[i].first << " " << lattice[i].second << std::endl;
     }
   }
