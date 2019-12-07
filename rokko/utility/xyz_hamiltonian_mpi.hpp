@@ -25,6 +25,15 @@ namespace rokko {
 
 namespace xyz_hamiltonian {
 
+int find_power_of_two(int n) {
+  int p = -1;
+  do {
+    n /= 2;
+    ++p;
+  } while (n > 0);
+  return p;
+}
+
 void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, const double* v, double* w, double* buffer) {
   int myrank, nproc;
   MPI_Status status;
@@ -32,13 +41,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  int n = nproc;
-  int p = -1;
-  do {
-    n /= 2;
-    ++p;
-  } while (n > 0);
-
+  const int p = find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
@@ -154,13 +157,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  int n = nproc;
-  int p = -1;
-  do {
-    n /= 2;
-    ++p;
-  } while (n > 0);
-
+  const int p = find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
