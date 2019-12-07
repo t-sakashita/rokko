@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,19 +16,11 @@
 #include <vector>
 #include <iostream>
 #include <rokko/distributed_matrix.hpp>
+#include <rokko/utility/math.hpp>
 
 namespace rokko {
 
 namespace heisenberg_hamiltonian {
-
-int find_power_of_two(int n) {
-  int p = -1;
-  do {
-    n /= 2;
-    ++p;
-  } while (n > 0);
-  return p;
-}
 
 void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const double* v, double* w, double* buffer) {
   int myrank, nproc;
@@ -37,7 +29,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  const int p = find_power_of_two(nproc);
+  const int p = rokko::find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
@@ -173,7 +165,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  const int p = find_power_of_two(nproc);
+  const int p = rokko::find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
