@@ -50,13 +50,7 @@ int main(int argc, char *argv[]) {
   }
   MPI_Barrier(MPI_COMM_WORLD);
 
-  int n = nprocs;
-  int p = -1;
-  do {
-    n /= 2;
-    ++p;
-  } while (n > 0);
-
+  const int p = rokko::find_power_of_two(nprocs);
   if (nprocs != (1 << p)) {    
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
