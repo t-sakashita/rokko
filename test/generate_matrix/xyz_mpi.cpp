@@ -58,37 +58,31 @@ int main(int argc, char *argv[]) {
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
-  std::vector<double> buffer(N);
+  int N_seq_proc = (myrank == root) ? N_seq : 0;
+  Eigen::VectorXd buffer(N);
+  Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc);
+  Eigen::VectorXd v(N), w(N);
   for (int i=0; i<N; ++i) {
-    // sequential version
-    std::vector<double> v_seq, w_seq;
-    v_seq.assign(N_seq, 0);
-    v_seq[i] = 1;
-    w_seq.assign(N_seq, 0);
     if (myrank == root) {
+      // sequential version
+      v_seq.setZero();
+      v_seq(i) = 1;
+      w_seq.setZero();
       rokko::xyz_hamiltonian::multiply(L, lattice, coupling, v_seq, w_seq);
       std::cout << "sequential version:" << std::endl;
-      for (int j=0; j<N_seq; ++j) {
-        std::cout << w_seq[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << w_seq.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
-    std::vector<double> v, w;
-    v.assign(N, 0);
-    if (myrank == (i / N))
-      v[i % N] = 1;
-    w.assign(N, 0);
-    rokko::xyz_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, coupling, v, w, buffer);
+    v.setZero();
+    if (myrank == (i / N))  v(i % N) = 1;
+    w.setZero();
+    rokko::xyz_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, coupling, v.data(), w.data(), buffer.data());
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
         std::cout << "myrank=" << myrank << std::endl;
-        for (int j=0; j<N; ++j) {
-          std::cout << w[j] << " ";
-        }
-        std::cout << std::endl;
+        std::cout << w.transpose() << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
@@ -99,31 +93,23 @@ int main(int argc, char *argv[]) {
 
   // test fill_diagonal of quantum heisenberg hamiltonian.
   // sequential version
-  std::vector<double> w_seq;
-  w_seq.assign(N_seq, 0);
+  w_seq.setZero();
   if (myrank == root) {
-    rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, w_seq);
+    rokko::xyz_hamiltonian::fill_diagonal(L, lattice, coupling, w_seq.data());
     std::cout << "fill_diagonal sequential version:" << std::endl;
-    for (int j=0; j<N_seq; ++j) {
-      std::cout << w_seq[j] << " ";
-    }
-    std::cout << std::endl;
+    std::cout << w_seq.transpose() << std::endl;
   }
   MPI_Barrier(MPI_COMM_WORLD);    
   // MPI version
-  std::vector<double> w;
-  w.assign(N, 0);
+  w.setZero();
   if (myrank == root) {  
     std::cout << "fill_diagonal MPI version:" << std::endl;
   }
-  rokko::xyz_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, coupling, w);
+  rokko::xyz_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, coupling, w.data());
   for (int proc=0; proc<nprocs; ++proc) {
     if (proc == myrank) {
       std::cout << "myrank=" << myrank << std::endl;
-      for (int j=0; j<N; ++j) {
-        std::cout << w[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << w.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
