@@ -173,13 +173,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  int n = nproc;
-  int p = -1;
-  do {
-    n /= 2;
-    ++p;
-  } while (n > 0);
-
+  const int p = find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     if ( myrank == 0 ) {
       std::cout << "This program can be run only for powers of 2" << std::endl;
