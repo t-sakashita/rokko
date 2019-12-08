@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
   constexpr int root = 0;
 
   // creating column vectors which forms a heisenberg hamiltonian.
-  int N_seq = 20;
+  constexpr int N_seq = 20;
   int N = N_seq / nprocs;
   Eigen::VectorXd v_seq(N_seq), w_seq(N_seq), recv_buffer(N_seq);
   Eigen::VectorXd v(N), w(N);
