@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
   
   std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
   for (int i=0; i<num_bonds; ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << coupling[i].get<0>() << " " << coupling[i].get<1>() << " " << coupling[i].get<2>() << std::endl;
+    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
   }
   int dim = 1 << L;
   int N = dim;
