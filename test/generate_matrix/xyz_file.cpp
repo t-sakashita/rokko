@@ -19,8 +19,7 @@
 
 int main(int argc, char *argv[]) {
   if (argc <= 1) {
-    std::cerr << "error: " << argv[0] << " xyz.ip" << std::endl;
-    exit(1);
+    throw std::invalid_argument("Specify input file name by command line argument");
   }
 
   std::ifstream ifs(argv[1]);
