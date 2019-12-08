@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
-    MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
     w.setZero();
     rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, v.data(), w.data(), buffer.data());
     for (int proc=0; proc<nprocs; ++proc) {
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == 0) {
       std::cout << "seq = " << w_seq.transpose() << std::endl;
