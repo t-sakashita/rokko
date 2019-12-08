@@ -53,16 +53,16 @@ int main(int argc, char *argv[]) {
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
-  Eigen::VectorXd recv_buffer(N_seq);
+  int N_seq_proc = (myrank == root) ? N_seq : 0;
   Eigen::VectorXd buffer(N);
-  Eigen::VectorXd v_seq(N_seq), w_seq(N_seq);
+  Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), recv_buffer(N_seq_proc);
   Eigen::VectorXd v(N), w(N);
   for (int i=0; i<N; ++i) {
-    // sequential version
-    v_seq.setZero();
-    w_seq.setZero();
-    v_seq(i) = 1;
     if (myrank == root) {
+      // sequential version
+      v_seq.setZero();
+      w_seq.setZero();
+      v_seq(i) = 1;
       rokko::heisenberg_hamiltonian::multiply(L, lattice, v_seq.data(), w_seq.data());
       std::cout << "sequential version:" << std::endl;
       std::cout << w_seq.transpose() << std::endl;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
       std::cout << "seq = " << w_seq.transpose() << std::endl;
       std::cout << "recv = " << recv_buffer.transpose() << std::endl;
       for (int j=0; j<N_seq; ++j) {
-        if (w_seq[j] != recv_buffer[j]) {
+        if (w_seq(j) != recv_buffer(j)) {
           std::cout << "j=" << j << "  w_seq[j]=" << w_seq[j] << "  recv[j]=" << recv_buffer[j] << std::endl;
           exit(1);
         }
@@ -119,18 +119,18 @@ int main(int argc, char *argv[]) {
   }
 
   // test for generate function
-  Eigen::MatrixXd lmat(N_seq, N_seq);
-  rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
-
   rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
   rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
-  Eigen::MatrixXd lmat_gather(N_seq, N_seq);
+  Eigen::MatrixXd lmat_gather(N_seq_proc, N_seq_proc);
   rokko::gather(mat, lmat_gather, root);
 
   if (myrank == root) {
-    std:: cout << "lmat:" << std::endl << lmat << std::endl;
-    std:: cout << "lmat_gather:" << std::endl << lmat_gather << std::endl;
+    Eigen::MatrixXd lmat(N_seq, N_seq);
+    rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
+
+    std::cout << "lmat:" << std::endl << lmat << std::endl;
+    std::cout << "lmat_gather:" << std::endl << lmat_gather << std::endl;
     if (lmat_gather == lmat) {
       std::cout << "OK: distributed_matrix by 'generate' equals to a eigen_matrix by 'generate'." << std::endl;
     } else {
