@@ -103,56 +103,45 @@ int main(int argc, char *argv[]) {
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 20;
   int N = N_seq / nprocs;
-  double* recv_buffer = new double[N_seq];
-  std::vector<double> buffer(N);
+  Eigen::VectorXd recv_buffer(N_seq);
+  Eigen::VectorXd buffer(N);
   laplacian_op op(N_seq);
   for (int i=0; i<N_seq; ++i) {
     // sequential version
-    std::vector<double> v_seq, w_seq;
-    v_seq.assign(N_seq, 0);
-    v_seq[i] = 1;
-    w_seq.assign(N_seq, 0);
+    Eigen::VectorXd v_seq(N_seq), w_seq(N_seq);
+    v_seq.setZero();
+    v_seq(i) = 1;
+    w_seq.setZero();
     if (myrank == root) {
-      rokko::laplacian_matrix::multiply(N_seq, v_seq, w_seq);
+      rokko::laplacian_matrix::multiply(N_seq, v_seq.data(), w_seq.data());
       std::cout << "sequential version:" << std::endl;
-      for (int j=0; j<N_seq; ++j) {
-        std::cout << w_seq[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << w_seq.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
-    std::vector<double> v, w;
-    v.assign(N, -2.);
+    Eigen::VectorXd v(N), w(N);
     MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    w.assign(N, 0);
+    w.setZero();
     op.multiply(v.data(), w.data());
     for (int proc=0; proc<nprocs; ++proc) {
       if (proc == myrank) {
         std::cout << "myrank=" << myrank << std::endl;
-        for (int j=0; j<N; ++j) {
-          std::cout << w[j] << " ";
-        }
-        std::cout << std::endl;
+        std::cout << w.transpose() << std::endl;
       }
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer, N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == 0) {
       std::cout << "i=" << i << std::endl;
-      std::cout << "recv=";
-      for (int j=0; j<N_seq; ++j) {
-        std::cout << recv_buffer[j] << " ";
-      }
-      std::cout << std::endl;
+      std::cout << "recv=" << recv_buffer.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
-  delete[] recv_buffer;
+
   MPI_Finalize();
   return 0;
 }
