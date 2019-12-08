@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2013 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -27,8 +26,7 @@ int main(int argc, char *argv[])
 
   std::ifstream ifs(argv[1]);
   if (!ifs) {
-    std::cout << "can't open file" << std::endl;
-    exit(2);
+    throw std::runtime_error("can't open file \"" + std::string(argv[1]) + "\"");
   }
 
   int L, num_bonds;

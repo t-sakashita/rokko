@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -26,8 +26,7 @@ int main(int argc, char *argv[]) {
 
   std::ifstream ifs(lattice_file);
   if (!ifs) {
-    std::cout << "can't open file" << std::endl;
-    exit(1);
+    throw std::runtime_error("can't open file \"" + lattice_file + "\"");
   }
   int num_sites, num_bonds;
   std::vector<std::pair<int, int>> lattice;
