@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -103,16 +103,14 @@ int main(int argc, char *argv[]) {
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 20;
   int N = N_seq / nprocs;
-  Eigen::VectorXd recv_buffer(N_seq);
-  Eigen::VectorXd buffer(N);
+  Eigen::VectorXd v_seq(N_seq), w_seq(N_seq), recv_buffer(N_seq);
+  Eigen::VectorXd v(N), w(N);
   laplacian_op op(N_seq);
   for (int i=0; i<N_seq; ++i) {
-    // sequential version
-    Eigen::VectorXd v_seq(N_seq), w_seq(N_seq);
-    v_seq.setZero();
-    v_seq(i) = 1;
-    w_seq.setZero();
     if (myrank == root) {
+      v_seq.setZero();
+      v_seq(i) = 1;
+      w_seq.setZero();
       rokko::laplacian_matrix::multiply(N_seq, v_seq.data(), w_seq.data());
       std::cout << "sequential version:" << std::endl;
       std::cout << w_seq.transpose() << std::endl;
@@ -120,7 +118,6 @@ int main(int argc, char *argv[]) {
     MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
-    Eigen::VectorXd v(N), w(N);
     MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
     w.setZero();
     op.multiply(v.data(), w.data());
