@@ -25,7 +25,7 @@ public:
 
     int tmp = dim_ / nprocs;
     int rem = dim % nprocs;
-    num_local_rows_ = (dim + nprocs - myrank - 1) / nprocs;
+    set_num_local_rows(dim);
     start_row_ = tmp * myrank + std::min(rem, myrank);
     end_row_ = start_row_ + num_local_rows_ - 1;
 
@@ -83,6 +83,15 @@ public:
   }
   int get_dim() const { return dim_; }
   int get_local_offset() const { return local_offset_; }
+
+  int get_num_local_rows(int dim, int rank) const {
+    return (dim + nprocs - rank - 1) / nprocs;
+  }
+
+  void set_num_local_rows(int dim) {
+    num_local_rows_ = get_num_local_rows(dim, myrank);
+  }
+
   int get_num_local_rows() const { return num_local_rows_; }
   int get_start_row() const { return start_row_; }
   int get_end_row() const { return end_row_; }
