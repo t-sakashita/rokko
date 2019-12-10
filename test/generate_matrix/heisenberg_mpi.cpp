@@ -47,7 +47,6 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
       std::cout << lattice[i].first << " " << lattice[i].second << std::endl;
     }
   }
-  MPI_Barrier(MPI_COMM_WORLD);
 
   const int p = rokko::find_power_of_two(nprocs);
   if (nprocs != (1 << p)) {

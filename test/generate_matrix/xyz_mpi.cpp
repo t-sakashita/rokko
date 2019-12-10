@@ -52,7 +52,6 @@ TEST(xyz_hamiltonian, serial_mpi) {
                 << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
     }
   }
-  MPI_Barrier(MPI_COMM_WORLD);
 
   const int p = rokko::find_power_of_two(nprocs);
   if (nprocs != (1 << p)) {    
