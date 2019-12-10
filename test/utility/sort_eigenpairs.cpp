@@ -26,12 +26,10 @@ void test(bool ascending) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvecs(num, num), eigvecs_sorted(num, num);
   for(int i=0; i<num; ++i) {
     eigvals(i) = 1.0*index[i];
-    for(int j=0; j<num; ++j) {
-      if (MAJOR == Eigen::RowMajor) {
-        eigvecs(i,j) = eigvals(i);
-      } else {
-        eigvecs(j,i) = eigvals(i);
-      }
+    if (MAJOR == Eigen::RowMajor) {
+      eigvecs.row(i).setConstant(eigvals(i));
+    } else {
+      eigvecs.col(i).setConstant(eigvals(i));
     }
   }
   rokko::sort_eigenpairs(eigvals, eigvecs, eigvals_sorted, eigvecs_sorted, ascending);
