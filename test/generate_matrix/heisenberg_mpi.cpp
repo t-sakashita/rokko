@@ -31,8 +31,8 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   solver.initialize(global_argc, global_argv);
   rokko::grid g(MPI_COMM_WORLD);
 
-  std::size_t L = 8;
-  std::size_t num_bonds = L - 1;
+  constexpr std::size_t L = 8;
+  constexpr std::size_t num_bonds = L - 1;
   std::vector<std::pair<int, int>> lattice;
   for (std::size_t i=0; i<L-1; ++i) lattice.push_back(std::make_pair(i, i+1));
 
@@ -53,7 +53,7 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   if (nprocs != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
-  int N = 1 << (L-p);
+  const int N = 1 << (L-p);
 
   // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
