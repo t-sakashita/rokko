@@ -12,7 +12,7 @@
 #include <rokko/utility/sort_eigenpairs.hpp>
 
 #include <numeric>
-#include <algorithm>
+#include <random>
 
 #include <gtest/gtest.h>
 
@@ -21,7 +21,9 @@ void test(bool ascending) {
   constexpr int num = 10;
   std::vector<int> index(num);
   std::iota(index.begin(), index.end(), 0);
-  std::random_shuffle(index.begin(), index.end());
+  std::random_device seed_gen;
+  std::mt19937 engine(seed_gen());
+  std::shuffle(index.begin(), index.end(), engine);
   Eigen::VectorXd eigvals(num), eigvals_sorted(num);
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvecs(num, num), eigvecs_sorted(num, num);
   for(int i=0; i<num; ++i) {
