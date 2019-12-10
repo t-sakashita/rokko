@@ -61,7 +61,7 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
   Eigen::VectorXd v(N), w(N);
 
-  // creating column vectors which form a heisenberg hamiltonian
+  // testing multiply
   for (int i=0; i<N; ++i) {
     if (myrank == root) {
       // sequential version
@@ -69,10 +69,7 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
       w_seq.setZero();
       v_seq(i) = 1;
       rokko::heisenberg_hamiltonian::multiply(L, lattice, v_seq.data(), w_seq.data());
-      std::cout << "sequential version:" << std::endl;
-      std::cout << w_seq.transpose() << std::endl;
     }
-
     // MPI version
     MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
     w.setZero();
@@ -86,25 +83,16 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
     }
 
     MPI_Gather(w.data(), N, MPI_DOUBLE, w_gather.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
-    if (myrank == 0) {
+    if (myrank == root) {
+      std::cout << "multiply: i=" << i << std::endl;
       std::cout << "seq = " << w_seq.transpose() << std::endl;
       std::cout << "recv = " << w_gather.transpose() << std::endl;
       ASSERT_TRUE(w_seq == w_gather);
     }
   }
 
-  // test fill_diagonal of quantum heisenberg hamiltonian.
-  // sequential version
-  if (myrank == root) {
-    rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, w_seq.data());
-    std::cout << "fill_diagonal sequential version:" << std::endl;
-    std::cout << "seq = " << w_seq.transpose() << std::endl;
-  }
-  MPI_Barrier(MPI_COMM_WORLD);    
+  // testing fill_diagonal of quantum heisenberg hamiltonian
   // MPI version
-  if (myrank == root) {  
-    std::cout << "fill_diagonal MPI version:" << std::endl;
-  }
   rokko::heisenberg_hamiltonian::fill_diagonal(MPI_COMM_WORLD, L, lattice, w.data());
   for (int proc=0; proc<nprocs; ++proc) {
     if (proc == myrank) {
@@ -116,6 +104,10 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
 
   MPI_Gather(w.data(), N, MPI_DOUBLE, w_gather.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
   if (myrank == root) {
+    rokko::heisenberg_hamiltonian::fill_diagonal(L, lattice, w_seq.data());
+    std::cout << "fill_diagonal:" << std::endl;
+    std::cout << "seq = " << w_seq.transpose() << std::endl;
+    std::cout << "gather = " << w_gather.transpose() << std::endl;
     ASSERT_TRUE(w_seq == w_gather);
   }
 
@@ -129,15 +121,10 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   if (myrank == root) {
     Eigen::MatrixXd lmat(N_seq, N_seq);
     rokko::heisenberg_hamiltonian::generate(L, lattice, lmat);
-
+    std::cout << "generate:" << std::endl;
     std::cout << "lmat:" << std::endl << lmat << std::endl;
     std::cout << "lmat_gather:" << std::endl << lmat_gather << std::endl;
-    if (lmat_gather == lmat) {
-      std::cout << "OK: distributed_matrix by 'generate' equals to a eigen_matrix by 'generate'." << std::endl;
-    } else {
-      std::cout << "ERROR: distributed_matrix by 'generate' is differnet from a eigen_matrix by 'generate'."<< std::endl;
-      exit(1);
-    }
+    ASSERT_TRUE(lmat_gather == lmat);
   }
 }
 
