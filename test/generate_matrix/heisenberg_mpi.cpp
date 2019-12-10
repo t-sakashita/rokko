@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
       std::cout << "recv = " << recv_buffer.transpose() << std::endl;
       for (int j=0; j<N_seq; ++j) {
         if (w_seq(j) != recv_buffer(j)) {
-          std::cout << "j=" << j << "  w_seq[j]=" << w_seq[j] << "  recv[j]=" << recv_buffer[j] << std::endl;
+          std::cout << "j=" << j << "  w_seq(j)=" << w_seq(j) << "  recv(j)=" << recv_buffer(j) << std::endl;
           exit(1);
         }
       }
