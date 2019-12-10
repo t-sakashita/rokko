@@ -62,7 +62,7 @@ TEST(laplacian_mfree, serial_mpi) {
     MPI_Barrier(MPI_COMM_WORLD);
     mpi.gather(w, recv_buffer);
     MPI_Barrier(MPI_COMM_WORLD);
-    if (myrank == 0) {
+    if (myrank == root) {
       std::cout << "i=" << i << std::endl;
       std::cout << "w_seq=" << w_seq.transpose() << std::endl;
       std::cout << "recv=" << recv_buffer.transpose() << std::endl;
