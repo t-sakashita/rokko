@@ -30,7 +30,7 @@ TEST(laplacian_mfree, serial_mpi) {
 
   constexpr int N_seq = 20;
   const int N_seq_proc = (myrank == root) ? N_seq : 0;
-  Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), recv_buffer(N_seq_proc);
+  Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
 
   rokko::laplacian_mfree op(N_seq);
   const int N = op.get_num_local_rows();
@@ -60,13 +60,13 @@ TEST(laplacian_mfree, serial_mpi) {
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    mpi.gather(w, recv_buffer);
+    mpi.gather(w, w_gather);
     MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == root) {
       std::cout << "i=" << i << std::endl;
       std::cout << "w_seq=" << w_seq.transpose() << std::endl;
-      std::cout << "recv=" << recv_buffer.transpose() << std::endl;
-      ASSERT_TRUE(w_seq == recv_buffer);
+      std::cout << "w_gather=" << w_gather.transpose() << std::endl;
+      ASSERT_TRUE(w_seq == w_gather);
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
