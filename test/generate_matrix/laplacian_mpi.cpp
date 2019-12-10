@@ -17,8 +17,12 @@
 #include <rokko/utility/laplacian_mfree.hpp>
 #include <rokko/utility/mpi_vector.hpp>
 
-int main(int argc, char *argv[]) {
-  MPI_Init(&argc, &argv);
+#include <gtest/gtest.h>
+
+int global_argc;
+char** global_argv;
+
+TEST(laplacian_mfree, serial_mpi) {
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
@@ -62,15 +66,20 @@ int main(int argc, char *argv[]) {
       std::cout << "i=" << i << std::endl;
       std::cout << "w_seq=" << w_seq.transpose() << std::endl;
       std::cout << "recv=" << recv_buffer.transpose() << std::endl;
-      if (w_seq != recv_buffer) {
-        std::cout << "ERROR: w_seq != recv_buffer" << std::endl;
-        MPI_Abort(MPI_COMM_WORLD, 22);
-        exit(1);
-      }
+      ASSERT_TRUE(w_seq == recv_buffer);
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
+}
 
+int main(int argc, char** argv) {
+  int result = 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  global_argc = argc;
+  global_argv = argv;
+  result = RUN_ALL_TESTS();
   MPI_Finalize();
-  return 0;
+  return result;
 }
