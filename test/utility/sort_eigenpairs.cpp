@@ -16,58 +16,58 @@
 
 #include <gtest/gtest.h>
 
-#define make_test(major, ascending) \
-  int num = 10;\
-  std::vector<int> index(num);                  \
-  std::iota(index.begin(), index.end(), 0);\
-  std::random_shuffle(index.begin(), index.end());\
-  Eigen::VectorXd eigvals(num), eigvals_sorted(num);   \
-  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,major> eigvecs(num, num), eigvecs_sorted(num, num); \
-  for(int i=0; i<num; ++i){\
-    eigvals(i) = 1.0*index[i];\
-    for(int j=0; j<num; ++j){\
-      if(major == Eigen::RowMajor){\
-        eigvecs(i,j) = eigvals(i);\
-      }else{\
-        eigvecs(j,i) = eigvals(i);\
-      }\
-    }\
-  }\
-  rokko::sort_eigenpairs(eigvals, eigvecs, eigvals_sorted, eigvecs_sorted, ascending);\
-  for(int i=0; i<num; ++i){\
-    std::cout << "dim: " << i << std::endl;\
-    double e = ascending ? 1.0 * i : 1.0*(num-i-1);\
-    if(major == Eigen::RowMajor){\
-      ASSERT_EQ( eigvals_sorted(i), e);\
-      ASSERT_EQ( eigvecs_sorted(i,0), e);\
-      ASSERT_EQ( eigvecs_sorted(i,1), e);\
-    }else{\
-      ASSERT_EQ( eigvals_sorted(i), e);\
-      ASSERT_EQ( eigvecs_sorted(0,i), e);\
-      ASSERT_EQ( eigvecs_sorted(1,i), e);\
-    }\
+template <int MAJOR>
+void test(bool ascending) {
+  constexpr int num = 10;
+  std::vector<int> index(num);
+  std::iota(index.begin(), index.end(), 0);
+  std::random_shuffle(index.begin(), index.end());
+  Eigen::VectorXd eigvals(num), eigvals_sorted(num);
+  Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvecs(num, num), eigvecs_sorted(num, num);
+  for(int i=0; i<num; ++i) {
+    eigvals(i) = 1.0*index[i];
+    for(int j=0; j<num; ++j) {
+      if (MAJOR == Eigen::RowMajor) {
+        eigvecs(i,j) = eigvals(i);
+      } else {
+        eigvecs(j,i) = eigvals(i);
+      }
+    }
   }
+  rokko::sort_eigenpairs(eigvals, eigvecs, eigvals_sorted, eigvecs_sorted, ascending);
+  for(int i=0; i<num; ++i){
+    std::cout << "dim: " << i << std::endl;
+    const double e = ascending ? 1.0 * i : 1.0*(num-i-1);
+    if (MAJOR == Eigen::RowMajor) {
+      ASSERT_EQ( eigvals_sorted(i), e);
+      ASSERT_EQ( eigvecs_sorted(i,0), e);
+      ASSERT_EQ( eigvecs_sorted(i,1), e);
+    } else {
+      ASSERT_EQ( eigvals_sorted(i), e);
+      ASSERT_EQ( eigvecs_sorted(0,i), e);
+      ASSERT_EQ( eigvecs_sorted(1,i), e);
+    }
+  }
+}
 
 TEST(sort_eigenpairs, matrix_majors) {
   {
     std::cout << "row_major, ascending order\n";
-    make_test(Eigen::RowMajor, true)
+    test<Eigen::RowMajor>(true);
   }
   {
     std::cout << "row_major, descending order\n";
-    make_test(Eigen::RowMajor, false)
+    test<Eigen::RowMajor>(false);
   }
   {
     std::cout << "col_major, ascending order\n";
-    make_test(Eigen::ColMajor, true)
+    test<Eigen::ColMajor>(true);
   }
   {
     std::cout << "col_major, descending order\n";
-    make_test(Eigen::ColMajor, false)
+    test<Eigen::ColMajor>(false);
   }
 }
-
-#undef make_test
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
