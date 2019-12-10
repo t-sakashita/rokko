@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     throw std::runtime_error("can't open file \"" + std::string(argv[1]) + "\"");
   }
 
-  int L, num_bonds;
+  std::size_t L, num_bonds;
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
   ifs >> L >> num_bonds;
