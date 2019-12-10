@@ -21,10 +21,14 @@
 #include <rokko/utility/xyz_hamiltonian_mpi.hpp>
 #include <rokko/collective.hpp>
 
-int main(int argc, char *argv[]) {
-  MPI_Init(&argc, &argv);
+#include <gtest/gtest.h>
+
+int global_argc;
+char** global_argv;
+
+TEST(xyz_hamiltonian, serial_mpi) {
   rokko::parallel_dense_ev solver;
-  solver.initialize(argc, argv);
+  solver.initialize(global_argc, global_argv);
   rokko::grid g(MPI_COMM_WORLD);
 
   std::size_t L = 4;
@@ -134,7 +138,16 @@ int main(int argc, char *argv[]) {
       exit(1);
     }
   }
+}
 
+int main(int argc, char** argv) {
+  int result = 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  int provided;
+  MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+  global_argc = argc;
+  global_argv = argv;
+  result = RUN_ALL_TESTS();
   MPI_Finalize();
-  return 0;
+  return result;
 }
