@@ -45,7 +45,6 @@ TEST(laplacian_mfree, serial_mpi) {
       w_seq.setZero();
       rokko::laplacian_matrix::multiply(N_seq, v_seq.data(), w_seq.data());
     }
-    MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
     mpi.scatter(v_seq, v);
@@ -59,16 +58,13 @@ TEST(laplacian_mfree, serial_mpi) {
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    MPI_Barrier(MPI_COMM_WORLD);
     mpi.gather(w, w_gather);
-    MPI_Barrier(MPI_COMM_WORLD);
     if (myrank == root) {
       std::cout << "i=" << i << std::endl;
       std::cout << "w_seq=" << w_seq.transpose() << std::endl;
       std::cout << "w_gather=" << w_gather.transpose() << std::endl;
       ASSERT_TRUE(w_seq == w_gather);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
   }
 }
 
