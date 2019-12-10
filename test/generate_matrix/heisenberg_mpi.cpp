@@ -55,12 +55,13 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   }
   const int N = 1 << (L-p);
 
-  // creating column vectors which forms a heisenberg hamiltonian.
   int N_seq = 1 << L;
   int N_seq_proc = (myrank == root) ? N_seq : 0;
   Eigen::VectorXd buffer(N);
   Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
   Eigen::VectorXd v(N), w(N);
+
+  // creating column vectors which form a heisenberg hamiltonian
   for (int i=0; i<N; ++i) {
     if (myrank == root) {
       // sequential version
