@@ -59,7 +59,7 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   int N_seq = 1 << L;
   int N_seq_proc = (myrank == root) ? N_seq : 0;
   Eigen::VectorXd buffer(N);
-  Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), recv_buffer(N_seq_proc);
+  Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
   Eigen::VectorXd v(N), w(N);
   for (int i=0; i<N; ++i) {
     if (myrank == root) {
@@ -71,7 +71,6 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
       std::cout << "sequential version:" << std::endl;
       std::cout << w_seq.transpose() << std::endl;
     }
-    MPI_Barrier(MPI_COMM_WORLD);
 
     // MPI version
     MPI_Scatter(v_seq.data(), N, MPI_DOUBLE, v.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
@@ -85,20 +84,12 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(w.data(), N, MPI_DOUBLE, recv_buffer.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Gather(w.data(), N, MPI_DOUBLE, w_gather.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
     if (myrank == 0) {
       std::cout << "seq = " << w_seq.transpose() << std::endl;
-      std::cout << "recv = " << recv_buffer.transpose() << std::endl;
-      for (int j=0; j<N_seq; ++j) {
-        if (w_seq(j) != recv_buffer(j)) {
-          std::cout << "j=" << j << "  w_seq(j)=" << w_seq(j) << "  recv(j)=" << recv_buffer(j) << std::endl;
-          exit(1);
-        }
-      }
+      std::cout << "recv = " << w_gather.transpose() << std::endl;
+      ASSERT_TRUE(w_seq == w_gather);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
   }
 
   // test fill_diagonal of quantum heisenberg hamiltonian.
@@ -120,6 +111,11 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
       std::cout << w.transpose() << std::endl;
     }
     MPI_Barrier(MPI_COMM_WORLD);
+  }
+
+  MPI_Gather(w.data(), N, MPI_DOUBLE, w_gather.data(), N, MPI_DOUBLE, root, MPI_COMM_WORLD);
+  if (myrank == root) {
+    ASSERT_TRUE(w_seq == w_gather);
   }
 
   // test for generate function
