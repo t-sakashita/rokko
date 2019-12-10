@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
   int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
-  rokko::ladder_lattice_1dim(len_ladder, lattice);
+  rokko::create_ladder_lattice_1dim(len_ladder, lattice);
   if (rank == 0)
     rokko::print_lattice(lattice);
   int dim = 1 << L;

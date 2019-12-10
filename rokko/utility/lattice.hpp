@@ -120,7 +120,7 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
   return read_lattice_stream(ifs, num_sites, lattice);
 }
 
-void ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int>>& lattice) {
+void create_ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int>>& lattice) {
   int L = 2 * len_ladder;
   for (std::size_t i = 0; i < (len_ladder-1); ++i) {
     lattice.push_back(std::make_pair(i, i+1));
