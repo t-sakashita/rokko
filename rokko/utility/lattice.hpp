@@ -28,7 +28,7 @@ namespace detail {
 
 bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   std::string str_line;
-  getline(ifs, str_line);
+  std::getline(ifs, str_line);
   std::list<std::string> list_string;
   boost::split(list_string, str_line, boost::is_any_of("#"));
   std::string trimed_str = list_string.front();
