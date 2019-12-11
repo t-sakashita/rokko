@@ -20,7 +20,7 @@
 #include <iomanip>
 #include <fstream>
 #include <tuple>
-#include <boost/algorithm/string.hpp>
+#include <rokko/utility/string_trim.hpp>
 #include <boost/tokenizer.hpp>
 
 namespace rokko {
@@ -40,7 +40,7 @@ std::string retrieve_before_comment(std::string const& str) {
 bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   std::string str_line;
   std::getline(ifs, str_line);
-  std::string trimed_str = boost::trim_copy(retrieve_before_comment(str_line));
+  std::string trimed_str = trim_copy(retrieve_before_comment(str_line));
   is.clear();
   is.str(trimed_str);
   //std::cout << "string:" << trimed_str << std::endl;
