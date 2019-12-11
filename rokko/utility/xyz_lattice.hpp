@@ -21,65 +21,9 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <rokko/utility/lattice.hpp>
+
 namespace rokko {
-
-namespace detail {
-
-bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
-  std::string str_line;
-  getline(ifs, str_line);
-  std::list<std::string> list_string;
-  boost::split(list_string, str_line, boost::is_any_of("#"));
-  std::string trimed_str = list_string.front();
-  boost::trim(trimed_str);
-  is.clear();
-  is.str(trimed_str);
-  //std::cout << "string:" << trimed_str << std::endl;
-  //std::cout << "comment:" << list_string.back() << std::endl;
-  return !trimed_str.empty(); // empty means the sentence is just comment
-}
-
-
-bool detect_offset_info(std::string const& str_line, bool& offset1) {
-  boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
-  boost::tokenizer<boost::char_separator<char>>  tokens0(str_line, sep);
-  std::vector<std::string> tokens;
-  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string>>(tokens));
-  if (tokens.size() < 3) {
-    return false;
-  }
-
-  if (tokens[0]=="offset" && tokens[1]=="=") {
-    if (tokens[2]=="1") {
-      offset1 = true;
-      std::cout << "offset = 1" << std::endl;
-    } else if (tokens[2]=="0") {
-      offset1 = false;
-      std::cout << "offset = 0" << std::endl;
-    } else
-      throw std::invalid_argument("detail::detect_offset_info() : give 0 or 1 after 'offset='");
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool read_offset_info(std::ifstream& ifs) {
-  bool offset1 = false;
-  std::string str_line;
-  std::ifstream::pos_type file_pos;
-  do {
-    file_pos = ifs.tellg();
-    getline(ifs, str_line);
-    if (detect_offset_info(str_line, offset1)) {
-      return offset1;
-    }
-  } while (str_line.empty());
-  ifs.seekg(file_pos);  // resotre file position
-  return offset1;
-}
-
-} // namespace detail
 
 void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int>>& lattice, std::vector<std::tuple<double, double, double>>& coupling) {
   std::size_t num_bonds;
