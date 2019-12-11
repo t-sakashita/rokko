@@ -68,15 +68,16 @@ bool detect_offset_info(std::string const& str_line, bool& offset1) {
 bool read_offset_info(std::ifstream& ifs) {
   bool offset1 = false;
   std::string str_line;
-  std::ifstream::pos_type file_pos;
-  do {
-    file_pos = ifs.tellg();
-    getline(ifs, str_line);
-    if (detect_offset_info(str_line, offset1)) {
-      return offset1;
+  while(true) {
+    std::ifstream::pos_type file_pos = ifs.tellg();
+    std::getline(ifs, str_line);
+    if (str_line.empty()) {
+      ifs.seekg(file_pos);  // resotre file position
+      break;
+    } else if (detect_offset_info(str_line, offset1)) {
+      break;
     }
-  } while (str_line.empty());
-  ifs.seekg(file_pos);  // resotre file position
+  }
   return offset1;
 }
 
