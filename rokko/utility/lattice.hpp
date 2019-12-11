@@ -43,17 +43,21 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   std::string trimed_str = trim_copy(retrieve_before_comment(str_line));
   is.clear();
   is.str(trimed_str);
-  //std::cout << "string:" << trimed_str << std::endl;
-  //std::cout << "comment:" << list_string.back() << std::endl;
+  //std::cout << "no_comment:" << trimed_str << std::endl;
+  //std::cout << "str_line:" << str_line << std::endl;
   return !trimed_str.empty(); // empty means the sentence is just comment
 }
 
+std::vector<std::string> split_by_symbol(std::string const& str_line) {
+  boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
+  boost::tokenizer<boost::char_separator<char>>  tokens(str_line, sep);
+  std::vector<std::string> vec;
+  std::copy(tokens.begin(), tokens.end(), std::back_inserter<std::vector<std::string>>(vec));
+  return vec;
+}
 
 bool detect_offset_info(std::string const& str_line, bool& offset1) {
-  boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
-  boost::tokenizer<boost::char_separator<char>>  tokens0(str_line, sep);
-  std::vector<std::string> tokens;
-  std::copy(tokens0.begin(), tokens0.end(), std::back_inserter<std::vector<std::string>>(tokens));
+  auto tokens = split_by_symbol(str_line);
   if (tokens.size() < 3) {
     return false;
   }
