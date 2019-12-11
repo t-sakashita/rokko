@@ -64,17 +64,19 @@ bool detect_offset_info(std::string const& str_line, bool& offset1) {
   }
 }
 
-void read_offset_info(std::ifstream& ifs, bool& offset1) {
+bool read_offset_info(std::ifstream& ifs) {
+  bool offset1 = false;
   std::string str_line;
   std::ifstream::pos_type file_pos;
   do {
     file_pos = ifs.tellg();
     getline(ifs, str_line);
     if (detect_offset_info(str_line, offset1)) {
-      return;
+      return offset1;
     }
   } while (str_line.empty());
   ifs.seekg(file_pos);  // resotre file position
+  return offset1;
 }
 
 } // namespace detail
@@ -87,8 +89,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   }
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
-  bool offset1 = false;
-  detail::read_offset_info(ifs, offset1);
+  bool offset1 = detail::read_offset_info(ifs);
 
   do {
     int j, k;
