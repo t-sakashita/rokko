@@ -134,16 +134,14 @@ void create_ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int>>
   }
 }
 
-void print_lattice(std::vector<std::pair<int, int>>& lattice) {
-  for (std::size_t i=0; i<lattice.size(); ++i) {
-    std::cout << "no=" << i << " <" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
-  }
-}
-
 void output_lattice(std::ostream& os, std::vector<std::pair<int, int>>& lattice) {
   for (std::size_t i=0; i<lattice.size(); ++i) {
     os << "no=" << i << " <" << lattice[i].first << ", " << lattice[i].second << ">" << std::endl;
   }
+}
+
+void print_lattice(std::vector<std::pair<int, int>>& lattice) {
+  output_lattice(std::cout, lattice);
 }
 
 } // namespace rokko
