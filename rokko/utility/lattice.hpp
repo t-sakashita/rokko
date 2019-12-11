@@ -12,6 +12,7 @@
 #ifndef ROKKO_UTILITY_LATTICE_HPP
 #define ROKKO_UTILITY_LATTICE_HPP
 
+#include <regex>
 #include <string>
 #include <sstream>      // for std::istringstream
 #include <list>
@@ -26,13 +27,20 @@ namespace rokko {
 
 namespace detail {
 
+std::string retrieve_before_comment(std::string const& str) {
+  std::regex separator{"#"};
+  auto it = std::sregex_token_iterator{str.begin(), str.end(), separator, -1};
+  const auto end_it = std::sregex_token_iterator{};
+  if (it != end_it)
+    return *it;
+  else
+    return str;
+}
+
 bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   std::string str_line;
   std::getline(ifs, str_line);
-  std::list<std::string> list_string;
-  boost::split(list_string, str_line, boost::is_any_of("#"));
-  std::string trimed_str = list_string.front();
-  boost::trim(trimed_str);
+  std::string trimed_str = boost::trim_copy(retrieve_before_comment(str_line));
   is.clear();
   is.str(trimed_str);
   //std::cout << "string:" << trimed_str << std::endl;
