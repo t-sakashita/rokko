@@ -120,7 +120,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
         throw std::invalid_argument(msg.str());
       } else if ((lattice.back().second < 0) || (lattice.back().second >= num_sites)) {
         std::stringstream msg;
-        msg << "read_lattice_stream() : second index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().first << "\" is out of range";
+        msg << "read_lattice_stream() : second index of " << lattice.size() - 1 << "-th bond \"" << lattice.back().second << "\" is out of range";
         throw std::invalid_argument(msg.str());
       }
     }
