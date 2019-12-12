@@ -21,7 +21,6 @@
 #include <fstream>
 #include <tuple>
 #include <rokko/utility/string_trim.hpp>
-#include <boost/tokenizer.hpp>
 
 namespace rokko {
 
@@ -49,24 +48,26 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
 }
 
 std::vector<std::string> split_by_symbol(std::string const& str_line) {
-  boost::char_separator<char>  sep(" ", "=", boost::drop_empty_tokens);
-  boost::tokenizer<boost::char_separator<char>>  tokens(str_line, sep);
+  const std::regex separator{"="};
   std::vector<std::string> vec;
-  std::copy(tokens.begin(), tokens.end(), std::back_inserter<std::vector<std::string>>(vec));
+  for (std::sregex_token_iterator it{str_line.begin(), str_line.end(), separator, -1}, end; it != end; ++it) {
+    vec.push_back(trim_copy(*it));
+  }
+
   return vec;
 }
 
 bool detect_offset_info(std::string const& str_line, bool& offset1) {
   auto tokens = split_by_symbol(str_line);
-  if (tokens.size() < 3) {
+  if (tokens.size() < 2) {
     return false;
   }
 
-  if (tokens[0]=="offset" && tokens[1]=="=") {
-    if (tokens[2]=="1") {
+  if (tokens[0]=="offset") {
+    if (tokens[1]=="1") {
       offset1 = true;
       std::cout << "offset = 1" << std::endl;
-    } else if (tokens[2]=="0") {
+    } else if (tokens[1]=="0") {
       offset1 = false;
       std::cout << "offset = 0" << std::endl;
     } else
