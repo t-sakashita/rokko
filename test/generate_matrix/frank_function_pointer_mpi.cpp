@@ -19,14 +19,14 @@
 int global_argc;
 char** global_argv;
 
-unsigned int dim_global;
+int dim_global;
 
 double frank_calculate_matrix_element(int i, int j) {
   return dim_global - std::max(i, j);
 }
 
 TEST(distributed_matrix, frank_functor_mpi) {
-  unsigned int dim = 10;
+  constexpr int dim = 10;
   dim_global = dim;
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);

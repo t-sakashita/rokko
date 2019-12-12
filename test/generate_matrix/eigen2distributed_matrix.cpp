@@ -35,7 +35,7 @@ void eigen_2_distributed(const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rok
 }
 
 TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
-  unsigned int dim = 10;
+  constexpr int dim = 10;
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
   for(auto name : rokko::parallel_dense_ev::solvers()) {

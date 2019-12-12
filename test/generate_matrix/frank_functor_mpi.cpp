@@ -30,7 +30,7 @@ private:
 };
 
 TEST(distributed_matrix, frank_functor_mpi) {
-  unsigned int dim = 10;
+  constexpr int dim = 10;
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
   for(auto name : rokko::parallel_dense_ev::solvers()) {

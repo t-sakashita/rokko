@@ -20,7 +20,7 @@ int global_argc;
 char** global_argv;
 
 TEST(generate_matrix, frank_mpi) {
-  unsigned int dim = 1000;
+  constexpr int dim = 1000;
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
   for(auto name : rokko::parallel_dense_ev::solvers()) {
