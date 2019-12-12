@@ -72,9 +72,9 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   } else if (routine=="pdsyevx") {
     return rokko::scalapack::diagonalize_pdsyevx(mat, eigvals, eigvecs, params);
   } else if (routine=="bisection") {
-    rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
+    return rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
   } else if (routine=="qr") {
-    rokko::scalapack::diagonalize_qr(mat, eigvals, eigvecs, params);
+    return rokko::scalapack::diagonalize_qr(mat, eigvals, eigvecs, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
 #ifdef ROKKO_HAVE_PDSYEVR
