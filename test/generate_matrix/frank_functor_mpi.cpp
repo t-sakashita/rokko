@@ -13,6 +13,7 @@
 #include <rokko/solver.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/collective.hpp>
 
 #include <gtest/gtest.h>
 
@@ -31,14 +32,26 @@ private:
 
 TEST(distributed_matrix, frank_functor_mpi) {
   constexpr int dim = 10;
-  MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
+  rokko::grid g(MPI_COMM_WORLD);
+
   for(auto name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
     mat.generate(frank(dim));
+
+    constexpr int root_proc = 0;
+    const int dim_proc = (g.get_myrank() == root_proc) ? dim : 0;
+    Eigen::MatrixXd lmat_gather(dim_proc, dim_proc);
+    rokko::gather(mat, lmat_gather, root_proc);
+
+    if (g.get_myrank() == root_proc) {
+      Eigen::MatrixXd lmat(dim, dim);
+      rokko::frank_matrix::generate(lmat);
+      ASSERT_TRUE(lmat_gather == lmat);
+    }
+
     mat.print();
     solver.finalize();
   }
