@@ -82,12 +82,12 @@ bool read_offset_info(std::ifstream& ifs) {
   bool offset1 = false;
   std::string str_line;
   while(true) {
-    std::ifstream::pos_type file_pos = ifs.tellg();
+    std::ifstream::pos_type file_pos = ifs.tellg();  // save file position
     std::getline(ifs, str_line);
-    if (str_line.empty()) {
-      ifs.seekg(file_pos);  // resotre file position
+    if (detect_offset_info(str_line, offset1)) {
       break;
-    } else if (detect_offset_info(str_line, offset1)) {
+    } else if (!str_line.empty()) {  // if str_line is first sentence
+      ifs.seekg(file_pos);  // resotre file position
       break;
     }
   }
