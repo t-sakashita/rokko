@@ -15,6 +15,7 @@
 #include <rokko/eigen3.hpp>
 
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/collective.hpp>
 
 #include <gtest/gtest.h>
 
@@ -36,8 +37,8 @@ void eigen_2_distributed(const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rok
 
 TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
   constexpr int dim = 10;
-  MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid g(comm);
+  rokko::grid g(MPI_COMM_WORLD);
+
   for(auto name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
@@ -47,6 +48,18 @@ TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
     rokko::frank_matrix::generate(lmat);
     eigen_2_distributed(lmat, mat);
     rokko::frank_matrix::generate(mat);
+
+    constexpr int root_proc = 0;
+    const int dim_proc = (g.get_myrank() == root_proc) ? dim : 0;
+    Eigen::MatrixXd lmat_gather(dim_proc, dim_proc);
+    rokko::gather(mat, lmat_gather, root_proc);
+
+    if (g.get_myrank() == root_proc) {
+      Eigen::MatrixXd lmat(dim, dim);
+      rokko::frank_matrix::generate(lmat);
+      ASSERT_TRUE(lmat_gather == lmat);
+    }
+
     mat.print();
     solver.finalize();
   }
