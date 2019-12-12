@@ -25,14 +25,30 @@ extern struct grid_col_major_t {} grid_col_major;
 
 class grid {
 public:
-  explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : comm(comm_in) {
-    initialize(grid_row_major, 0);
-  }
   template <typename GRID_MAJOR>
   grid(MPI_Comm& comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
     : comm(comm_in) {
-    initialize(grid_major, lld);
+    if (comm == MPI_COMM_NULL) {
+      myrank = -1;
+      myrow = -1;
+      mycol = -1;
+      nprocs = 0;
+      nprow = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
+      npcol = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
+      return;
+    }
+    MPI_Comm_size(comm, &nprocs);
+    MPI_Comm_rank(comm, &myrank);
+
+    if (is_MPI_2dim_Cart(comm))
+      calculate_sizes_cart(grid_major);
+    else
+      calculate_sizes_default(grid_major, lld);
+
+    set_blacs_grid();
   }
+
+  explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major, 0) {}
 
   MPI_Comm get_comm() const { return comm; }
   int get_nprocs() const { return nprocs; }
@@ -54,28 +70,6 @@ public:
   }
 
 protected:
-  template <typename GRID_MAJOR>
-  void initialize(GRID_MAJOR const& major, int lld) {
-    if (comm == MPI_COMM_NULL) {
-      myrank = -1;
-      myrow = -1;
-      mycol = -1;
-      nprocs = 0;
-      nprow = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
-      npcol = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
-      return;
-    }
-    MPI_Comm_size(comm, &nprocs);
-    MPI_Comm_rank(comm, &myrank);
-
-    if (is_MPI_2dim_Cart(comm))
-      calculate_sizes_cart(major);
-    else
-      calculate_sizes_default(major, lld);
-
-    set_blacs_grid();
-  }
-
   template <typename GRID_MAJOR>
   void calculate_sizes_default(GRID_MAJOR, int lld) {
     is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value;
