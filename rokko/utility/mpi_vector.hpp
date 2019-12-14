@@ -51,6 +51,14 @@ public:
     }
   }
 
+  int get_count() const {
+    return counts[myrank];
+  }
+
+  int get_displacement() const {
+    return displacements[myrank];
+  }
+
   template<int SIZE>
   void scatter(const Eigen::Vector<double, SIZE>& source,
                Eigen::Vector<double, SIZE>& target) const {
@@ -73,6 +81,31 @@ public:
       MPI_Gatherv(source.data(), num_local_rows, MPI_DOUBLE,
                   target.data(), counts.data(), displacements.data(), MPI_DOUBLE,
                   root, comm);
+  }
+
+  // for distributed_vector
+  void gather(const rokko::distributed_vector<double>& source, double* target,
+              int root) const {
+    MPI_Gatherv(source.get_storage(), source.size_local(), MPI_DOUBLE,
+                target, counts.data(), displacements.data(), MPI_DOUBLE,
+                root, comm);
+  }
+
+  template<int SIZE>
+  void gather(const rokko::distributed_vector<double>& source, Eigen::Vector<double, SIZE>& target, int root) const {
+    gather(source, target.data(), root);
+  }
+
+  void scatter(const double* source, rokko::distributed_vector<double>& target,
+               int root) const {
+    MPI_Scatterv(source, counts.data(), displacements.data(), MPI_DOUBLE,
+                 target.get_storage(), target.size_local(), MPI_DOUBLE,
+                 root, comm);
+  }
+
+  template<int SIZE>
+  void scatter(const Eigen::Vector<double, SIZE>& source, rokko::distributed_vector<double>& target, int root) const {
+    scatter(source.data(), target, root);
   }
 
 private:
