@@ -27,17 +27,17 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
   MPI_Group group_world, even_group;;
-  int p, Neven, members[8];
-
+  int p;
   MPI_Comm_size(MPI_COMM_WORLD, &p);
   MPI_Comm_group(MPI_COMM_WORLD, &group_world);
 
-  Neven = (p+1)/2;
+  int Neven = (p+1)/2;
+  std::vector<int> members(Neven);
   for (int i = 0; i < Neven; ++i) {
     members[i] = 2*i;
   };
 
-  MPI_Group_incl(group_world, Neven, members, &even_group);
+  MPI_Group_incl(group_world, Neven, members.data(), &even_group);
   MPI_Comm_create(MPI_COMM_WORLD, group_world, &comm);
   
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);

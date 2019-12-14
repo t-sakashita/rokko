@@ -26,20 +26,21 @@ int main(int argc, char *argv[]) {
   
   MPI_Group group_world, even_group;;
   MPI_Comm comm;
-  int rank, p, members[8];
+  int rank, p;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &p);
   MPI_Comm_group(MPI_COMM_WORLD, &group_world);
 
   int Neven = (p + 1) / 2;
+  std::vector<int> members(Neven);
   for (int i=0; i<Neven; ++i) {
     members[i] = 2 * i;
   };
   //Neven = 4;
   //members[0] = 0; members[1] = 1; members[2] = 2; members[3] = 3;
   
-  MPI_Group_incl(group_world, Neven, members, &even_group);
+  MPI_Group_incl(group_world, Neven, members.data(), &even_group);
   MPI_Comm_create(MPI_COMM_WORLD, even_group, &comm);
   MPI_Group_free(&group_world);
   MPI_Group_free(&even_group);
