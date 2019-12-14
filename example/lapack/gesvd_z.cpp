@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 int main(int argc, char** argv) {
+  constexpr double eps = 1e-10;
   int m = 3;
   int n = 5;
   if (argc > 2) {
@@ -45,19 +46,19 @@ int main(int argc, char** argv) {
   Eigen::MatrixXcd check1 = u.adjoint() * u - Eigen::MatrixXcd::Identity(r, r);
   double norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| U^t U - I || = " << norm1 << std::endl;
-  if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
+  if (norm1 > eps) throw std::runtime_error("Error: orthogonality check");
 
   Eigen::MatrixXcd check2 = vt * vt.adjoint() - Eigen::MatrixXcd::Identity(r, r);
   double norm2 = rokko::lapack::lange('F', check2);
   std::cout << "|| V^t V - I || = " << norm2 << std::endl;
-  if (norm2 > 1e-10) throw std::runtime_error("Error: orthogonality check");
+  if (norm2 > eps) throw std::runtime_error("Error: orthogonality check");
 
   // solution check
   Eigen::MatrixXcd check3 = u.adjoint() * a * vt.adjoint();
   for (int i = 0; i < r; ++i) check3(i, i) -= s(i);
   double norm3 = rokko::lapack::lange('F', check3);
   std::cout << "|| U^t A V - diag(S) || = " << norm3 << std::endl;
-  if (norm3 > 1e-10) throw std::runtime_error("Error: solution check");
+  if (norm3 > eps) throw std::runtime_error("Error: solution check");
 
   return 0;
 }

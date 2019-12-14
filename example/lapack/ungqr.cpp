@@ -19,6 +19,7 @@
 #include <stdexcept>
 
 int main(int argc, char** argv) {
+  constexpr double eps = 1e-10;
   int m = 10;
   int n = 6;
   if (argc > 2) {
@@ -51,13 +52,14 @@ int main(int argc, char** argv) {
   Eigen::MatrixXcd check1 = q.adjoint() * q - Eigen::MatrixXcd::Identity(k, k);
   double norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| Q^t Q - I || = " << norm1 << std::endl;
-  if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
+  if (norm1 > eps) throw std::runtime_error("Error: orthogonality check");
 
   // solution check
   Eigen::MatrixXcd check2 = q * r - a;
   double norm2 = rokko::lapack::lange('F', check2);
+  std::cout << "|| A || = " << a.norm() << std::endl;
   std::cout << "|| Q R - A || = " << norm2 << std::endl;
-  if (norm2 > 1e-10) throw std::runtime_error("Error: solution check");
+  if (norm2 > eps) throw std::runtime_error("Error: solution check");
 
   return 0;
 }

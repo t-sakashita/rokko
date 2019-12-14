@@ -16,6 +16,7 @@
 #include <boost/lexical_cast.hpp>
 
 int main(int argc, char** argv) {
+  constexpr double eps = 1e-10;
   int n = 5;
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
@@ -36,7 +37,7 @@ int main(int argc, char** argv) {
   Eigen::MatrixXcd check1 = u.adjoint() * u - Eigen::MatrixXcd::Identity(n, n);
   double norm1 = rokko::lapack::lange('F', check1);
   std::cout << "|| U^t U - I || = " << norm1 << std::endl;
-  if (norm1 > 1e-10) throw std::runtime_error("Error: orthogonality check");
+  if (norm1 > eps) throw std::runtime_error("Error: orthogonality check");
 
   // eigenvalue check
   Eigen::MatrixXcd check2 = u.adjoint() * a * u;
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
   double norm2 = rokko::lapack::lange('F', check2);
   std::cout << check2 << std::endl;
   std::cout << "|| U^t A U - diag(w) || = " << norm2 << std::endl;
-  if (norm2 > 1e-10) throw std::runtime_error("Error: eigenvalue check");
+  if (norm2 > eps) throw std::runtime_error("Error: eigenvalue check");
 
   return 0;
 }

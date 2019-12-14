@@ -17,6 +17,7 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
+  constexpr double eps = 1e-10;
   int n = 5;
   if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
 
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
   Eigen::VectorXd check = a * x - b;
   double norm = check.norm();
   std::cout << "|| A x - b || = " << norm << std::endl;
-  if (norm > 1e-10) throw std::runtime_error("Error: solution check");
+  if (norm > eps) throw std::runtime_error("Error: solution check");
 
   return 0;
 }
