@@ -252,7 +252,7 @@ T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
     }
   }
 
-  value_type sum = 0;
+  value_type sum;
   MPI_Reduce(&local_sum, &sum, 1, MPI_DOUBLE,
              MPI_SUM, root_proc, map.get_grid().get_comm());
 
