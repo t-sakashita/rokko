@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
   int info = rokko::lapack::geqrf(mat, tau);
   if (info) throw std::runtime_error("Error: geqrf failed");
 
-  Eigen::VectorXcd r = mat;
+  Eigen::MatrixXcd r = mat;
   for (int i = 0; i < m; ++i)
     for (int j = 0; j < i; ++j)
       r(i, j) = 0;
