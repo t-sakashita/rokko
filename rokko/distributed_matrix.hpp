@@ -239,6 +239,26 @@ T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int 
   return pblas::pdot(n, vecX, ix, jx, incx, vecY, iy, jy, incy);
 }
 
+template <typename T, typename MAJOR>
+T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
+  using value_type = T;
+  constexpr int root_proc = 0;
+  const auto& map = mat.get_mapping();
+
+  value_type local_sum = 0;
+  for (int i=0; i<std::min(mat.get_m_global(), mat.get_n_global()); ++i) {
+    if (map.is_gindex(i, i)) {
+      local_sum += mat.get_global(i, i);
+    }
+  }
+
+  value_type sum = 0;
+  MPI_Reduce(&local_sum, &sum, 1, MPI_DOUBLE,
+             MPI_SUM, root_proc, map.get_grid().get_comm());
+
+  return sum;
+}
+
 } // namespace rokko
 
 #endif // ROKKO_DISTRIBUTED_MATRIX_HPP
