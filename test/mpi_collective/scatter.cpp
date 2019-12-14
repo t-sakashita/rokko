@@ -11,7 +11,6 @@
 
 #include <rokko/solver.hpp>
 #include <rokko/collective.hpp>
-#include <rokko/utility/frank_matrix.hpp>
 
 #include <random>
 
