@@ -38,16 +38,13 @@ int main(int argc, char** argv) {
   int info = rokko::lapack::geqrf(mat, tau);
   if (info) throw std::runtime_error("Error: geqrf failed");
 
-  Eigen::MatrixXcd r = mat;
-  for (int i = 0; i < m; ++i)
-    for (int j = 0; j < i; ++j)
+  Eigen::MatrixXcd r = mat.topLeftCorner(k, n);
+  for (int i = 0; i < k; ++i)  // Zeros out lower triangular part of r;
+    for (int j = 0; j < std::min(i,n); ++j)
       r(i, j) = 0;
   std::cout << "Upper triangle matrix R:" << std::endl << r << std::endl;
   info = rokko::lapack::orgqr(k, mat, tau);
-  Eigen::MatrixXcd q(m, k);
-  for (int i = 0; i < m; ++i)
-    for (int j = 0; j < k; ++j)
-      q(i, j) = mat(i, j);
+  Eigen::MatrixXcd q = mat.topLeftCorner(m, n);
   std::cout << "Orthonormalized column vectors Q:" << std::endl << q << std::endl;
   
   // orthogonality check
