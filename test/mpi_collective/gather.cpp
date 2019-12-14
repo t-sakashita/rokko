@@ -48,19 +48,21 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<LOC_MAT_MAJOR>> lmat(dim, dim);
   for (int r = 0; r < size; ++r) {
     rokko::gather(mat, lmat, r);
-#ifndef NDEBUG
     if (rank == r) { 
+#ifndef NDEBUG
       std::cout << lmat << std::endl;
       std::cout.flush();
+#endif
+      for (int i = 0; i < dim; ++i) {
+        for (int j = 0; j < dim; ++j) {
+          if (mat.is_gindex(i, j))
+            EXPECT_NEAR(mat.get_global(i, j), lmat(i, j), eps);
+        }
+      }
     }
+#ifndef NDEBUG
     MPI_Barrier(comm);
 #endif
-  }
-  for (int i = 0; i < dim; ++i) {
-    for (int j = 0; j < dim; ++j) {
-      if (mat.is_gindex(i, j))
-        EXPECT_NEAR(mat.get_global(i, j), lmat(i, j), eps);
-    }
   }
 }
 
