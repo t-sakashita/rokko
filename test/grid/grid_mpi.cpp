@@ -39,6 +39,8 @@ TEST(grid, grid_processes) {
     // Test local values
     ASSERT_EQ(g.get_myrow(), g.get_myrank() / g.get_npcol());
     ASSERT_EQ(g.get_mycol(), g.get_myrank() % g.get_npcol());
+    ASSERT_EQ(g.calculate_rank_form_coords(g.get_myrow(), g.get_mycol()),
+              g.get_myrank());
   }
   {
     rokko::grid g(comm, rokko::grid_col_major);
@@ -57,6 +59,8 @@ TEST(grid, grid_processes) {
     // Test local values
     ASSERT_EQ(g.get_myrow(), g.get_myrank() % g.get_nprow());
     ASSERT_EQ(g.get_mycol(), g.get_myrank() / g.get_nprow());
+    ASSERT_EQ(g.calculate_rank_form_coords(g.get_myrow(), g.get_mycol()),
+              g.get_myrank());
   }
 }
 

@@ -69,6 +69,11 @@ public:
     return is_row ? proc_rank % npcol : proc_rank / nprow;
   }
 
+  int calculate_rank_form_coords(int proc_row, int proc_col) const {
+    return is_row ? (proc_row * npcol + proc_col)
+      : (proc_col * nprow + proc_row);
+  }
+
 protected:
   template <typename GRID_MAJOR>
   void calculate_sizes_default(GRID_MAJOR, int lld) {
