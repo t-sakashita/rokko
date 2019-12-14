@@ -17,7 +17,7 @@ TEST(grid, grid_1process) {
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid g(comm);
   // Test public interfaces
-  ASSERT_EQ(g.get_comm(), (MPI_Comm)MPI_COMM_WORLD);
+  ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
   ASSERT_TRUE(g.is_row_major());
   ASSERT_FALSE(g.is_col_major());
 

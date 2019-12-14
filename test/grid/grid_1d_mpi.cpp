@@ -17,7 +17,7 @@ TEST(grid, grid_1d_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
   rokko::grid_1d g(comm);
   // Test public interfaces
-  ASSERT_EQ(g.get_comm(), (MPI_Comm)MPI_COMM_WORLD);
+  ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
 
   // Test global values
   ASSERT_EQ(g.get_nprocs(), 2);
