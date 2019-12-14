@@ -106,17 +106,17 @@ protected:
     is_row = true;
   }
 
-  void calculate_sizes_cart(grid_col_major_t) {
+  static void calculate_sizes_cart(grid_col_major_t) {
     throw std::invalid_argument("calculate_sizes_cart : MPI Cartesian doesn't support grid_col_major.  Use it with grid_row_major.");
   }
 
-  bool is_MPI_Cart(MPI_Comm comm) {
+  static bool is_MPI_Cart(MPI_Comm comm) {
     int topo_type;
     /* int ierr = */ MPI_Topo_test(comm, &topo_type);
     return topo_type == MPI_CART;
   }
 
-  bool is_MPI_2dim_Cart(MPI_Comm comm) {
+  static bool is_MPI_2dim_Cart(MPI_Comm comm) {
     if (is_MPI_Cart(comm)) {
       int cart_dim;
       /* int ierr = */ MPI_Cartdim_get(comm, &cart_dim);
