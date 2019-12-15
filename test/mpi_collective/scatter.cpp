@@ -16,8 +16,6 @@
 
 #include <gtest/gtest.h>
 
-constexpr double eps = 1e-11;
-
 int global_argc;
 char** global_argv;
 
@@ -53,7 +51,7 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
     for (int i = 0; i < dim; ++i) {
       for (int j = 0; j < dim; ++j) {
         if (mat.is_gindex(i, j))
-          EXPECT_NEAR(mat.get_global(i, j), lmat(i, j), eps);
+          ASSERT_EQ(mat.get_global(i, j), lmat(i, j));
       }
     }
   }

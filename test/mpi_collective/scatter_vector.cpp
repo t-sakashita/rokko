@@ -16,8 +16,6 @@
 
 #include <gtest/gtest.h>
 
-constexpr double eps = 1e-11;
-
 int global_argc;
 char** global_argv;
 
@@ -44,7 +42,7 @@ void run_test(MPI_Comm comm, int dim) {
     mpi.scatter(lvec, vec, r);
     for (int i = 0; i < dim; ++i) {
       if (vec.is_gindex(i))
-        EXPECT_NEAR(vec.get_global(i), lvec(i), eps);
+        ASSERT_EQ(vec.get_global(i), lvec(i));
     }
   }
 }
