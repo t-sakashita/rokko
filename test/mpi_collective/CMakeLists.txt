@@ -9,7 +9,7 @@
 
 if(BUILD_PARALLEL_DENSE_SOLVER OR BUILD_PARALLEL_SPARSE_SOLVER)
   # 2,3,4,5,6 processes
-  set(TESTS gather scatter gather_vector scatter_vector)
+  set(TESTS gather scatter gather_vector scatter_vector gather_distributed_vector scatter_distributed_vector)
   foreach(name ${TESTS})
     set(target_name test_${name})
     add_executable(${target_name} ${name}.cpp)
