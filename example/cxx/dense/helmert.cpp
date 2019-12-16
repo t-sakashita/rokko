@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   try {
     solver.diagonalize(mat, eigval, eigvec);
   } catch (const char *e) {
-    std::cout << "Exception : " << e << std::endl;
+    std::cerr << "Exception : " << e << std::endl;
     exit(22);
   }
   rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);

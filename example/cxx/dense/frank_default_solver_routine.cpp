@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
     default_diagonalize(mat, eigval, eigvec, params);
     //default_diagonalize(mat, eigval, params);
   } catch (const char *e) {
-    std::cout << "Exception : " << e << std::endl;
+    std::cerr << "Exception : " << e << std::endl;
     exit(22);
   }
   rokko::frank_matrix::generate(mat);

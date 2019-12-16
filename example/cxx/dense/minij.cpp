@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     solver.diagonalize(mat, eigval, eigvec, params);
     //solver.diagonalize(mat, eigval, params);
   } catch (const char *e) {
-    std::cout << "Exception : " << e << std::endl;
+    std::cerr << "Exception : " << e << std::endl;
     exit(22);
   }
   rokko::minij_matrix::generate(mat);
