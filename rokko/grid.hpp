@@ -81,8 +81,7 @@ protected:
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
         if ( myrank == 0 )
-          std::cerr << "Error: number of processes should be a multiple of lld\n";
-        MPI_Abort(comm, 127);
+          throw std::invalid_argument("The number of processes should be a multiple of lld.");
       }
       nprow = (is_row ? npcol / lld : lld);
     } else {
