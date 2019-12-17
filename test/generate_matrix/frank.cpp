@@ -25,10 +25,18 @@ TEST(generate_matrix, frank_matrix) {
   constexpr int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
 
-  std::cout << "  test for row major" << std::endl;
+  std::cout << "  test for double, row major" << std::endl;
   test<double, rokko::matrix_row_major>(dim);
-  std::cout << "  test for column major" << std::endl;
+  std::cout << "  test for double, column major" << std::endl;
   test<double, rokko::matrix_col_major>(dim);
+  std::cout << "  test for float, row major" << std::endl;
+  test<float, rokko::matrix_row_major>(dim);
+  std::cout << "  test for float, column major" << std::endl;
+  test<float, rokko::matrix_col_major>(dim);
+  std::cout << "  test for int, row major" << std::endl;
+  test<int, rokko::matrix_row_major>(dim);
+  std::cout << "  test for int, column major" << std::endl;
+  test<int, rokko::matrix_col_major>(dim);
 }
 
 int main(int argc, char** argv) {
