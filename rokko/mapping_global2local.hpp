@@ -76,11 +76,7 @@ public:
     int tmp = m_global / mb;
     int local_num_block_rows = (tmp - proc_row -1) / nprow + 1;
     int rest_block_row = tmp % nprow; // size of a residue block (< mb)
-    int local_rest_block_rows;
-    if (proc_row == rest_block_row)
-      local_rest_block_rows = m_global % mb;
-    else
-      local_rest_block_rows = 0;
+    int local_rest_block_rows = (proc_row == rest_block_row) ? m_global % mb : 0;
 
     return  local_num_block_rows * mb + local_rest_block_rows;
   }
@@ -93,12 +89,7 @@ public:
     int tmp = n_global / nb;
     int local_num_block_cols = (tmp - proc_col -1) / npcol + 1;
     int rest_block_col = tmp % npcol; // size of a residue block (< nb)
-    int local_rest_block_cols;
-    if (proc_col == rest_block_col) {
-      local_rest_block_cols = n_global % nb;
-    } else {
-      local_rest_block_cols = 0;
-    }
+    int local_rest_block_cols = (proc_col == rest_block_col) ? n_global % nb : 0;
     return local_num_block_cols * nb + local_rest_block_cols;
   }
 
