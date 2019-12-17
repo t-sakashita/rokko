@@ -14,13 +14,11 @@
 
 #include <gtest/gtest.h>
 
-constexpr double eps = 1e-5;
-
 template<typename T, typename MATRIX_MAJOR>
 void test(int dim) {
   Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> mat(dim, dim);
   rokko::minij_matrix::generate(mat);
-  EXPECT_NEAR(mat.trace(), dim * (dim+1) * 0.5, eps);
+  ASSERT_EQ(mat.trace(), dim * (dim+1) / 2);  // minij matrix consists of integer elements. Hence, its trace is also integer, and no rounding error occurs.
 }
 
 TEST(generate_matrix, minij_matrix) {
