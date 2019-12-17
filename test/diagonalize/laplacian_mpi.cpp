@@ -21,7 +21,7 @@ char** global_argv;
 
 TEST(diagonalize, laplacian_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
-  const int dim = 10;
+  constexpr int dim = 10;
 
   std::vector<std::string> names;
   if (global_argc == 1) {

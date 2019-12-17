@@ -64,7 +64,7 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
 
 TEST(diagonalize, helmert_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
-  const int dim = 100;
+  constexpr int dim = 100;
 
   std::vector<std::string> names;
   if (global_argc == 1) {

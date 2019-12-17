@@ -42,7 +42,7 @@ void test(int dim, std::string const& name) {
 }
 
 TEST(diagonalize, minij) {
-  const int dim = 100;
+  constexpr int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
 
   std::vector<std::string> names;
