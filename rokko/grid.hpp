@@ -85,11 +85,8 @@ protected:
       }
       nprow = (is_row ? npcol / lld : lld);
     } else {
-      nprow = int(std::sqrt((double)nprocs));
-      while (1) {
-        if ( nprow == 1 ) break;
+      for (nprow = int(std::sqrt((double)nprocs)); nprow >= 1; --nprow) {
         if ( (nprocs % nprow) == 0 ) break;
-        nprow = nprow - 1;
       }
     }
     npcol = nprocs / nprow;
