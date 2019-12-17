@@ -1,0 +1,60 @@
+/*****************************************************************************
+*
+* Rokko: Integrated Interface for libraries of eigenvalue decomposition
+*
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+*
+* Distributed under the Boost Software License, Version 1.0. (See accompanying
+* file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+*
+*****************************************************************************/
+
+#include <rokko/grid.hpp>
+#include <rokko/eigen3.hpp>
+#include <rokko/eigen3/matrix_major.hpp>
+#include <rokko/utility/matrix012.hpp>
+
+#include <gtest/gtest.h>
+
+template<typename MATRIX_MAJOR>
+struct eigen3_matrix_major;
+
+template<>
+struct eigen3_matrix_major<rokko::grid_row_major_t> {
+  static constexpr int value = Eigen::RowMajor;
+};
+
+template<>
+struct eigen3_matrix_major<rokko::grid_col_major_t> {
+  static constexpr int value = Eigen::ColMajor;
+};
+
+template<typename MATRIX_MAJOR>
+constexpr int eigen3_major = eigen3_matrix_major<MATRIX_MAJOR>::value;
+
+
+template<typename GRID_MAJOR>
+void run_test(GRID_MAJOR) {
+  MPI_Comm comm = MPI_COMM_WORLD;
+  rokko::grid g(comm, GRID_MAJOR{});
+  ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
+  ASSERT_EQ(g.get_nprow() * g.get_npcol(), g.get_nprocs());
+
+  Eigen::Matrix<int, Eigen::Dynamic,Eigen::Dynamic,eigen3_major<GRID_MAJOR>> mat(g.get_nprow(), g.get_npcol());
+  rokko::matrix012::generate(mat);
+  ASSERT_EQ(mat(g.get_myrow(), g.get_mycol()), g.get_myrank());
+}
+
+TEST(grid, grid_matrix) {
+  run_test(rokko::grid_row_major);
+  run_test(rokko::grid_col_major);
+}
+
+int main(int argc, char** argv) {
+  int result = 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  MPI_Init(&argc, &argv);
+  result = RUN_ALL_TESTS();
+  MPI_Finalize();
+  return result;
+}

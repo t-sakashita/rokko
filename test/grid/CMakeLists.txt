@@ -18,7 +18,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
   endforeach(name)
 
   # 2,3,4,5,6 processes
-  set(TESTS grid_mpi)
+  set(TESTS grid_mpi grid_matrix_mpi)
   foreach(name ${TESTS})
     set(target_name test_${name})
     add_executable(${target_name} ${name}.cpp)
