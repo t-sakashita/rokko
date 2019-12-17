@@ -23,6 +23,7 @@ void test(int dim) {
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
   rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);  
   EXPECT_NEAR(mat.trace(), diag.sum(), eps);
+  ASSERT_TRUE(mat.transpose() == mat);  // checking matrix symmetry
 }
 
 TEST(generate_matrix, helmert_matrix) {

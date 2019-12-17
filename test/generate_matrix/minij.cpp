@@ -19,6 +19,7 @@ void test(int dim) {
   Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> mat(dim, dim);
   rokko::minij_matrix::generate(mat);
   ASSERT_EQ(mat.trace(), static_cast<T>(dim * (dim+1) / 2));  // minij matrix consists of integer elements. Hence, its trace is also integer, and no rounding error occurs.
+  ASSERT_TRUE(mat.transpose() == mat);  // checking matrix symmetry
 }
 
 TEST(generate_matrix, minij_matrix) {
