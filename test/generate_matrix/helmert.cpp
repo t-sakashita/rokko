@@ -26,7 +26,7 @@ void test(int dim) {
 }
 
 TEST(generate_matrix, helmert_matrix) {
-  const int dim = 100;
+  constexpr int dim = 100;
   std::cout << "dimension = " << dim << std::endl;
 
   std::cout << "  test for row major" << std::endl;
