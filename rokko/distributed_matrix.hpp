@@ -18,6 +18,7 @@
 #include <rokko/blacs.hpp>
 #include <rokko/pblas.hpp>
 #include <rokko/scalapack.hpp>
+#include <rokko/mpi/mpi_type_traits.hpp>
 
 #include <iostream>
 #include <cstdlib>
@@ -253,7 +254,7 @@ T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
   }
 
   value_type sum;
-  MPI_Reduce(&local_sum, &sum, 1, MPI_DOUBLE,
+  MPI_Reduce(&local_sum, &sum, 1, rokko::mpi_type<T>,
              MPI_SUM, root_proc, map.get_grid().get_comm());
 
   return sum;

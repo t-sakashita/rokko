@@ -13,33 +13,39 @@
 #include <rokko/solver.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/utility/minij_matrix.hpp>
-#include <rokko/collective.hpp>
 
 #include <gtest/gtest.h>
-
-constexpr double eps = 1e-5;
 
 int global_argc;
 char** global_argv;
 
+template <typename T, typename MATRIX_MAJOR>
+void test_trace(rokko::mapping_bc<MATRIX_MAJOR> const& map) {
+  constexpr int root_proc = 0;
+  auto const& g = map.get_grid();
+  const int dim = map.get_m_global();
+
+  rokko::distributed_matrix<T,MATRIX_MAJOR> mat(map);
+  rokko::minij_matrix::generate(mat);
+  const T trace_mat = trace(mat);
+
+  if (g.get_myrank() == root_proc) {
+    ASSERT_EQ(trace_mat, static_cast<T>(dim * (dim+1) / 2));
+  }
+}
+
 TEST(generate_matrix, minij_mpi) {
   constexpr int dim = 1000;
-  constexpr int root_proc = 0;
   rokko::grid g(MPI_COMM_WORLD);
 
   for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
-    rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
-    rokko::minij_matrix::generate(mat);
-    double trace_mat = trace(mat);
 
-    if (g.get_myrank() == root_proc) {
-      constexpr double trace_th = dim * (dim+1) * 0.5;
-      std::cout << "trace = " << trace_mat << " sum_eigenvalues=" << trace_th << std::endl;
-      EXPECT_NEAR(trace_mat, trace_th, trace_th * eps);  // expect relative error < eps
-    }
+    test_trace<double>(map);
+    test_trace<float>(map);
+    test_trace<int>(map);
 
     solver.finalize();
   }
