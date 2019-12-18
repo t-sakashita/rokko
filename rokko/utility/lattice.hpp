@@ -28,7 +28,7 @@ namespace detail {
 
 std::string retrieve_before_comment(std::string const& str) {
   std::regex separator{"#"};
-  auto it = std::sregex_token_iterator{str.begin(), str.end(), separator, -1};
+  auto it = std::sregex_token_iterator{str.cbegin(), str.cend(), separator, -1};
   const auto end_it = std::sregex_token_iterator{};
   if (it != end_it)
     return *it;
@@ -50,7 +50,7 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
 std::vector<std::string> split_by_symbol(std::string const& str_line) {
   const std::regex separator{"="};
   std::vector<std::string> vec;
-  for (std::sregex_token_iterator it{str_line.begin(), str_line.end(), separator, -1}, end; it != end; ++it) {
+  for (std::sregex_token_iterator it{str_line.cbegin(), str_line.cend(), separator, -1}, end; it != end; ++it) {
     vec.push_back(trim_copy(*it));
   }
 

@@ -21,12 +21,12 @@ namespace rokko {
 
 // trim from start (in place)
 static inline void trim_left(std::string&& str) {
-  str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), isspace));
+  str.erase(str.begin(), std::find_if_not(str.cbegin(), str.cend(), isspace));
 }
 
 // trim from end (in place)
 inline void trim_right(std::string&& str) {
-  str.erase(std::find_if_not(str.rbegin(), str.rend(), isspace).base(), str.end());
+  str.erase(std::find_if_not(str.crbegin(), str.crend(), isspace).base(), str.end());
 }
 
 // trim from both ends (in place)
