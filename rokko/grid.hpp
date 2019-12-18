@@ -84,13 +84,19 @@ protected:
       }
       nprow = (is_row ? npcol / lld : lld);
     } else {
-      for (nprow = int(std::sqrt((double)nprocs)); nprow >= 1; --nprow) {
-        if ( (nprocs % nprow) == 0 ) break;
-      }
+      nprow = square_like_divisor(nprocs);
     }
     npcol = nprocs / nprow;
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
+  }
+
+  static int square_like_divisor(int n) {
+    int i = int(std::sqrt((double)n));
+    for (; i >= 1; --i) {
+      if ( (n % i) == 0 ) break;
+    }
+    return i;
   }
 
   void calculate_sizes_cart(grid_row_major_t) {
