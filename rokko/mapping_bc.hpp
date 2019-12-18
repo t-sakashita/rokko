@@ -80,6 +80,7 @@ public:
     }
   }
   const int* get_blacs_descriptor() const { return blacs_descriptor.data(); }
+
 private:
   std::vector<int> blacs_descriptor;
 };
