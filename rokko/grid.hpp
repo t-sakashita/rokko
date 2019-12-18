@@ -83,7 +83,7 @@ protected:
       if ((nprocs % lld) != 0) {
         throw std::invalid_argument("The number of processes should be a multiple of lld.");
       }
-      nprow = (is_row ? npcol / lld : lld);
+      nprow = (is_row ? nprocs / lld : lld);
     } else {
       nprow = find_square_root_like_divisor(nprocs);
     }
