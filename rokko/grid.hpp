@@ -93,7 +93,7 @@ protected:
 
   static int find_square_root_like_divisor(int n) {
     int i = int(std::sqrt((double)n));
-    for (; i >= 1; --i) {
+    for (; i > 1; --i) {
       if ( (n % i) == 0 ) break;
     }
     return i;
