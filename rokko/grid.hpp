@@ -84,14 +84,14 @@ protected:
       }
       nprow = (is_row ? npcol / lld : lld);
     } else {
-      nprow = square_like_divisor(nprocs);
+      nprow = find_square_root_like_divisor(nprocs);
     }
     npcol = nprocs / nprow;
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
   }
 
-  static int square_like_divisor(int n) {
+  static int find_square_root_like_divisor(int n) {
     int i = int(std::sqrt((double)n));
     for (; i >= 1; --i) {
       if ( (n % i) == 0 ) break;
