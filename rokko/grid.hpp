@@ -34,8 +34,7 @@ public:
       myrow = -1;
       mycol = -1;
       nprocs = 0;
-      nprow = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
-      npcol = 0; // to avoid zero dividing and blacs does not take (0,0) size grid
+      set_size({0, 0});  // to avoid zero dividing and blacs does not take (0,0) size grid
       return;
     }
     MPI_Comm_size(comm, &nprocs);
@@ -53,32 +52,36 @@ public:
 
   MPI_Comm get_comm() const { return comm; }
   int get_nprocs() const { return nprocs; }
-  int get_nprow() const { return nprow; }
-  int get_npcol() const { return npcol; }
+  int get_nprow() const { return std::get<0>(size); }
+  int get_npcol() const { return std::get<1>(size); }
+  std::pair<int,int> get_size() { return static_cast<std::pair<int,int>>(size); }
   int get_myrank() const { return myrank; }
   int get_myrow() const { return myrow; }
   int get_mycol() const { return mycol; }
   int get_blacs_context() const { return blacs_context; }
 
+  void set_size(std::array<int,2> size_in) { size = size_in; }
+
   bool is_row_major() const { return is_row; }
   bool is_col_major() const { return !is_row; }
 
   int calculate_grid_row(int proc_rank) const { 
-    return is_row ? proc_rank / npcol : proc_rank % nprow;
+    return is_row ? proc_rank / get_npcol() : proc_rank % get_nprow();
   }
   int calculate_grid_col(int proc_rank) const { 
-    return is_row ? proc_rank % npcol : proc_rank / nprow;
+    return is_row ? proc_rank % get_npcol() : proc_rank / get_nprow();
   }
 
   int calculate_rank_form_coords(int proc_row, int proc_col) const {
-    return is_row ? (proc_row * npcol + proc_col)
-      : (proc_col * nprow + proc_row);
+    return is_row ? (proc_row * get_npcol() + proc_col)
+      : (proc_col * get_nprow() + proc_row);
   }
 
 protected:
   template <typename GRID_MAJOR>
   void calculate_sizes_default(GRID_MAJOR, int lld) {
     is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value;
+    int nprow;
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
         throw std::invalid_argument("The number of processes should be a multiple of lld.");
@@ -87,7 +90,7 @@ protected:
     } else {
       nprow = find_square_root_like_divisor(nprocs);
     }
-    npcol = nprocs / nprow;
+    set_size({nprow, nprocs/nprow});
     myrow = calculate_grid_row(myrank);
     mycol = calculate_grid_col(myrank);
   }
@@ -104,8 +107,7 @@ protected:
     constexpr int cart_dim = 2;
     std::array<int,2> dims, periods, coords;
     /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
-    nprow = dims[0];
-    npcol = dims[1];
+    set_size({dims[0], dims[1]});
 
     myrow = coords[0];
     mycol = coords[1];
@@ -137,13 +139,13 @@ protected:
     blacs_handle = blacs::sys2blacs_handle(comm);
     blacs_context = blacs_handle;
     char char_grid_major = is_row ? 'R' : 'C';
-    blacs::gridinit(blacs_context, char_grid_major, nprow, npcol);
+    blacs::gridinit(blacs_context, char_grid_major, get_nprow(), get_npcol());
   }
 
 private:
   MPI_Comm comm;
   int nprocs, myrank;
-  int nprow, npcol;
+  std::array<int,2> size;
   int myrow, mycol;
   bool is_row;
   int blacs_handle, blacs_context;
