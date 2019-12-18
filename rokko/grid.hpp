@@ -12,6 +12,7 @@
 #ifndef ROKKO_GRID_HPP
 #define ROKKO_GRID_HPP
 
+#include <array>
 #include <iostream>
 #include <mpi.h>
 #include <cmath>
@@ -100,9 +101,9 @@ protected:
   }
 
   void calculate_sizes_cart(grid_row_major_t) {
-    int cart_dim = 2;
-    int dims[2], periods[2], coords[2];
-    /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims, periods, coords);
+    constexpr int cart_dim = 2;
+    std::array<int,2> dims, periods, coords;
+    /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
     nprow = dims[0];
     npcol = dims[1];
 
