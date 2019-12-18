@@ -64,13 +64,8 @@ int main(int argc, char *argv[]) {
   //params.set("useSDC", true);
   params.set("progress", true);
 
-  try {
-    solver.diagonalize(mat, eigval, eigvec, params);
-    //solver.diagonalize(mat, eigval, eigvec);
-  } catch (const char *e) {
-    if (myrank == 0) std::cerr << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
+  solver.diagonalize(mat, eigval, eigvec, params);
+  //solver.diagonalize(mat, eigval, eigvec);
 
   Eigen::MatrixXd eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);

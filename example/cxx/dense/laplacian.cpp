@@ -35,12 +35,7 @@ int main(int argc, char *argv[]) {
 
   Eigen::VectorXd eigval(dim);
   Eigen::MatrixXd eigvec(dim, dim);
-  try {
-    solver.diagonalize(mat, eigval, eigvec);
-  } catch (const char *e) {
-    std::cerr << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  solver.diagonalize(mat, eigval, eigvec);
   rokko::laplacian_matrix::generate(mat);
 
   bool sorted = true;

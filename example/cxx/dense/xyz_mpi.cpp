@@ -74,12 +74,7 @@ int main(int argc, char *argv[]) {
 
   Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
-  try {
-    solver.diagonalize(mat, eigval, eigvec);
-  } catch (const char *e) {
-    if (myrank == 0) std::cerr << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
+  solver.diagonalize(mat, eigval, eigvec);
 
   Eigen::MatrixXd eigvec_loc(dim, dim);
   rokko::gather(eigvec, eigvec_loc, 0);

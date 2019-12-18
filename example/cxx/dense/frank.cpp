@@ -50,13 +50,8 @@ int main(int argc, char *argv[]) {
   params.set("uplow", 'L');
   //params.set("uplow", 'lower');
   params.set("verbose", true);
-  try {
-    solver.diagonalize(mat, eigval, eigvec, params);
-    //solver.diagonalize(mat, eigval, params);
-  } catch (const char *e) {
-    std::cerr << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  solver.diagonalize(mat, eigval, eigvec, params);
+  //solver.diagonalize(mat, eigval, params);
   rokko::frank_matrix::generate(mat);
 
   bool sorted = true;

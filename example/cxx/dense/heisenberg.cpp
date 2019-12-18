@@ -40,12 +40,7 @@ int main(int argc, char *argv[]) {
 
   Eigen::VectorXd eigval(dim);
   Eigen::MatrixXd eigvec(dim, dim);
-  try {
-    solver.diagonalize(mat, eigval, eigvec);
-  } catch (const char *e) {
-    std::cerr << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  solver.diagonalize(mat, eigval, eigvec);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
 
   std::cout << "smallest eigenvalues:";

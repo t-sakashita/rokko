@@ -59,13 +59,8 @@ int main(int argc, char *argv[]) {
   params.set("uplow", 'L');
   //params.set("uplow", 'lower');
   params.set("verbose", true);
-  try {
-    solver.diagonalize(mata, matb, eigval, eigvec, params);
-    //solver.diagonalize(mata, matb, eigval, params);
-  } catch (const char *e) {
-    std::cerr << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  solver.diagonalize(mata, matb, eigval, eigvec, params);
+  //solver.diagonalize(mata, matb, eigval, params);
   mata << 0.24, 0.39, 0.42, -0.16,
           0.39, -0.11, 0.79, 0.63,
           0.42, 0.79, -0.25, 0.48,

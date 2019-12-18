@@ -47,12 +47,7 @@ int main(int argc, char *argv[]) {
 
   Eigen::VectorXd eigval(dim);
   Eigen::MatrixXd eigvec(dim, dim);
-  try {
-    solver.diagonalize(mat, eigval, eigvec);
-  } catch (const char *e) {
-    std::cerr << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  solver.diagonalize(mat, eigval, eigvec);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
 
   std::cout << "smallest eigenvalues:";

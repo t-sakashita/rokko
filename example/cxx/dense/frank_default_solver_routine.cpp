@@ -69,13 +69,8 @@ int main(int argc, char *argv[]) {
   params.set("uplow", 'L');
   //params.set("uplow", 'lower');
   params.set("verbose", true);
-  try {
-    default_diagonalize(mat, eigval, eigvec, params);
-    //default_diagonalize(mat, eigval, params);
-  } catch (const char *e) {
-    std::cerr << "Exception : " << e << std::endl;
-    exit(22);
-  }
+  default_diagonalize(mat, eigval, eigvec, params);
+  //default_diagonalize(mat, eigval, params);
   rokko::frank_matrix::generate(mat);
 
   bool sorted = true;

@@ -62,12 +62,7 @@ int main(int argc, char *argv[]) {
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
   rokko::parameters params;
   params.set("routine", routine);
-  try {
-    solver.diagonalize(mat, eigval, eigvec, params);
-  } catch (const char *e) {
-    if (myrank == 0) std::cerr << "Exception : " << e << std::endl;
-    MPI_Abort(MPI_COMM_WORLD, 22);
-  }
+  solver.diagonalize(mat, eigval, eigvec, params);
   MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
