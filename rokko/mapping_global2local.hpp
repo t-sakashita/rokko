@@ -59,9 +59,11 @@ public:
 
   int get_mb() const { return std::get<0>(block_size); }
   int get_nb() const { return std::get<1>(block_size); }
+  std::array<int,2> get_block_size() const { return block_size; }
 
   int get_m_global() const { return std::get<0>(global_size); }
   int get_n_global() const { return std::get<1>(global_size); }
+  std::array<int,2> get_global_size() const { return global_size; }
 
   void set_default_local_size() {
     set_local_size({calculate_row_size(), calculate_col_size()});

@@ -139,16 +139,16 @@ public:
       col_ver().is_gindex(global_i, global_j) : row_ver().is_gindex(global_i, global_j);
   }
   
-  py::tuple get_block_shape() const {
-    return py::make_tuple(get_mb(), get_nb());
+  std::tuple<int,int> get_block_shape() const {
+    return is_col ? col_ver().get_block_size() : row_ver().get_block_size();
   }
   
-  py::tuple get_global_shape() const {
-    return py::make_tuple(get_m_global(), get_n_global());
+  std::tuple<int,int> get_global_shape() const {
+    return is_col ? col_ver().get_global_size() : row_ver().get_global_size();
   }
   
-  py::tuple get_local_shape() const {
-    return py::make_tuple(get_m_local(), get_n_local());
+  std::tuple<int,int> get_local_shape() const {
+    return is_col ? col_ver().get_local_size() : row_ver().get_local_size();
   }
 
   std::tuple<int,int> translate_l2g(std::tuple<int,int> const& local) const {
