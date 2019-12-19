@@ -67,16 +67,16 @@ public:
   int get_nprow() const { return ptr->get_nprow(); }
   int get_npcol() const { return ptr->get_npcol(); }
 
-  py::tuple get_shape() const {
-    return py::make_tuple(get_nprow(), get_npcol());
+  std::pair<int,int> get_shape() const {
+    return ptr->get_size();
   }
   
   int get_myrank() const { return ptr->get_myrank(); }
   int get_myrow() const { return ptr->get_myrow(); }
   int get_mycol() const { return ptr->get_mycol(); }
 
-  py::tuple get_mine() const {
-    return py::make_tuple(get_myrow(), get_mycol());
+  std::pair<int,int> get_mine() const {
+    return ptr->get_my_coordinate();
   }
   
   bool is_row_major() const { return ptr->is_row_major(); }
