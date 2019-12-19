@@ -63,13 +63,8 @@ public:
   int get_m_global() const { return std::get<0>(global_size); }
   int get_n_global() const { return std::get<1>(global_size); }
 
-  void set_local_size(int m_local_in, int n_local_in) {
-    set_m_local(m_local_in);
-    set_n_local(n_local_in);
-  }
-
   void set_default_local_size() {
-    set_local_size(calculate_row_size(), calculate_col_size());
+    set_local_size({calculate_row_size(), calculate_col_size()});
   }
 
   int calculate_row_size(int proc_row) const {

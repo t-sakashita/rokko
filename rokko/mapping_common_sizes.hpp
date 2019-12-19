@@ -18,8 +18,11 @@ class mapping_common_sizes {
 public:
   int get_m_local() const { return std::get<0>(local_size); }
   int get_n_local() const { return std::get<1>(local_size); }
+  std::array<int,2> get_local_size() const { return local_size; }
+
   void set_m_local(int m_local) { std::get<0>(local_size) = m_local; }
   void set_n_local(int n_local) { std::get<1>(local_size) = n_local; }
+  void set_local_size(std::array<int,2> local_size_in) { local_size = local_size_in; }
 
 protected:
   explicit mapping_common_sizes() {}
