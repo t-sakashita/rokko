@@ -44,14 +44,14 @@ public:
   set_stride();
   }*/
 
-  int get_stride_myrow() const { return stride_myrow; }
-  int get_stride_mycol() const { return stride_mycol; }
+  int get_stride_myrow() const { return stride_mine[0]; }
+  int get_stride_mycol() const { return stride_mine[1]; }
 
   void set_stride() {
-    stride_myrow = myrow * get_mb();
-    stride_nprow = get_mb() * (nprow - 1);
-    stride_mycol = mycol * get_nb();
-    stride_npcol = get_nb() * (npcol - 1);
+    stride_mine[0] = myrow * get_mb();
+    stride_grid[0] = get_mb() * (nprow - 1);
+    stride_mine[1] = mycol * get_nb();
+    stride_grid[1] = get_nb() * (npcol - 1);
   }
   void set_block_size(std::array<int,2> block_size_in) {
     block_size = block_size_in;
@@ -98,11 +98,11 @@ public:
   }
 
   int translate_l2g_row(const int& local_i) const {
-    return stride_myrow + local_i + (local_i / get_mb()) * stride_nprow;
+    return stride_mine[0] + local_i + (local_i / get_mb()) * stride_grid[0];
   }
 
   int translate_l2g_col(const int& local_j) const {
-    return stride_mycol + local_j + (local_j / get_nb()) * stride_npcol;
+    return stride_mine[1] + local_j + (local_j / get_nb()) * stride_grid[1];
   }
 
   int translate_g2l_row(const int& global_i) const {
@@ -141,7 +141,7 @@ public:
 private:
   std::array<int,2> global_size;
   std::array<int,2> block_size;
-  int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
+  std::array<int,2> stride_mine, stride_grid;
   grid g;
   // common variables of class grid
   int myrank, nprocs;
