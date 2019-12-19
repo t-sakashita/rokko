@@ -48,6 +48,21 @@ public:
     set_blacs_grid();
   }
 
+  template <typename GRID_MAJOR>
+  grid(MPI_Comm& comm_in, std::array<int,2> size_in, GRID_MAJOR const& grid_major = grid_row_major) : comm(comm_in) {
+    MPI_Comm_size(comm, &nprocs);
+    if ((std::get<0>(size_in) * std::get<1>(size_in)) != nprocs) {
+      throw std::invalid_argument("grid::grid() : (rows * cols) != nprocs");
+    }
+    set_size(size_in);
+
+    set_major<GRID_MAJOR>();
+
+    myrow = calculate_grid_row(myrank);
+    mycol = calculate_grid_col(myrank);
+    set_blacs_grid();
+  }
+
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major, 0) {}
 
   MPI_Comm get_comm() const { return comm; }
