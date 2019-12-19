@@ -92,35 +92,35 @@ public:
     return calculate_col_size(my_coordinate[1]);
   }
 
-  int translate_l2g_row(const int& local_i) const {
+  int translate_l2g_row(int local_i) const {
     return stride_mine[0] + local_i + (local_i / block_size[0]) * stride_grid[0];
   }
 
-  int translate_l2g_col(const int& local_j) const {
+  int translate_l2g_col(int local_j) const {
     return stride_mine[1] + local_j + (local_j / block_size[1]) * stride_grid[1];
   }
 
-  int translate_g2l_row(const int& global_i) const {
+  int translate_g2l_row(int global_i) const {
     int local_offset_block = global_i / block_size[0];
     return (local_offset_block - my_coordinate[0]) / grid_size[0] * block_size[0] + global_i % block_size[0];
   }
 
-  int translate_g2l_col(const int& global_j) const {
+  int translate_g2l_col(int global_j) const {
     const int local_offset_block = global_j / block_size[1];
     return (local_offset_block - my_coordinate[1]) / grid_size[1] * block_size[1] + global_j % block_size[1];
   }
 
-  bool is_gindex_myrow(const int& global_i) const {
+  bool is_gindex_myrow(int global_i) const {
     int local_offset_block = global_i / block_size[0];
     return (local_offset_block % grid_size[0]) == my_coordinate[0];
   }
 
-  bool is_gindex_mycol(const int& global_j) const {
+  bool is_gindex_mycol(int global_j) const {
     int local_offset_block = global_j / block_size[1];
     return (local_offset_block % grid_size[1]) == my_coordinate[1];
   }
 
-  bool is_gindex(const int& global_i, const int& global_j) const {
+  bool is_gindex(int global_i, int global_j) const {
     return is_gindex_myrow(global_i) && is_gindex_mycol(global_j);
   }
 
