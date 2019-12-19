@@ -68,10 +68,10 @@ public:
   }
 
   int calculate_row_size(int proc_row) const {
-    int tmp = get_m_global() / get_mb();
+    int tmp = global_size[0] / get_mb();
     int local_num_block_rows = (tmp - proc_row -1) / grid_size[0] + 1;
     int rest_block_row = tmp % grid_size[0]; // size of a residue block (< mb)
-    int local_rest_block_rows = (proc_row == rest_block_row) ? get_m_global() % get_mb() : 0;
+    int local_rest_block_rows = (proc_row == rest_block_row) ? global_size[0] % get_mb() : 0;
 
     return  local_num_block_rows * get_mb() + local_rest_block_rows;
   }
@@ -81,10 +81,10 @@ public:
   }
 
   int calculate_col_size(int proc_col) const {
-    int tmp = get_n_global() / get_nb();
+    int tmp = global_size[1] / get_nb();
     int local_num_block_cols = (tmp - proc_col -1) / grid_size[1] + 1;
     int rest_block_col = tmp % grid_size[1]; // size of a residue block (< nb)
-    int local_rest_block_cols = (proc_col == rest_block_col) ? get_n_global() % get_nb() : 0;
+    int local_rest_block_cols = (proc_col == rest_block_col) ? global_size[1] % get_nb() : 0;
     return local_num_block_cols * get_nb() + local_rest_block_cols;
   }
 
