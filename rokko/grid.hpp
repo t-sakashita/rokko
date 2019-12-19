@@ -68,7 +68,7 @@ public:
   int get_nprocs() const { return nprocs; }
   int get_nprow() const { return std::get<0>(size); }
   int get_npcol() const { return std::get<1>(size); }
-  std::pair<int,int> get_size() { return static_cast<std::pair<int,int>>(size); }
+  std::array<int,2> get_size() const { return size; }
   int get_myrank() const { return myrank; }
   int get_myrow() const { return std::get<0>(my_coordinate); }
   int get_mycol() const { return std::get<1>(my_coordinate); }
