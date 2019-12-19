@@ -59,7 +59,7 @@ public:
   }
   
   explicit mapping_bc(int m_global_in, int n_global_in, grid const& g_in, int mb_in, int nb_in)
-    : mapping_global2local(m_global_in, n_global_in, {mb_in, nb_in}, g_in),
+    : mapping_global2local({m_global_in, n_global_in}, {mb_in, nb_in}, g_in),
       mapping_local2array<MATRIX_MAJOR>() {
     set_blacs_descriptor();
   }

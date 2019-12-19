@@ -22,8 +22,8 @@ class mapping_global2local : virtual public mapping_common_sizes {
 public:
   explicit mapping_global2local() {}
 
-  explicit mapping_global2local(int m_global_in, int n_global_in, std::array<int,2> block_size_in, grid const& g_in)
-    : m_global(m_global_in), n_global(n_global_in), block_size(block_size_in),
+  explicit mapping_global2local(std::array<int,2> global_size_in, std::array<int,2> block_size_in, grid const& g_in)
+    : global_size(global_size_in), block_size(block_size_in),
       g(g_in), myrank(g_in.get_myrank()), nprocs(g_in.get_nprocs()),
       myrow(g_in.get_myrow()), mycol(g_in.get_mycol()),
       nprow(g_in.get_nprow()), npcol(g_in.get_npcol()) {
@@ -32,7 +32,7 @@ public:
   }
 
   explicit mapping_global2local(int global_dim, int block_size, grid const& g_in)
-    : mapping_global2local(global_dim, global_dim, {block_size, block_size}, g_in) {}
+    : mapping_global2local({global_dim, global_dim}, {block_size, block_size}, g_in) {}
 
   /*explicit mapping_global2local(int m_global_in, int n_global_in, int m_local_in, int n_local_in, grid const& g_in) : mapping_common_sizes(g_in), m_global(m_global_in), n_global(n_global_in), m_local(m_local_in), n_local(n_local_in) {
   // get grid information
@@ -60,8 +60,8 @@ public:
   int get_mb() const { return std::get<0>(block_size); }
   int get_nb() const { return std::get<1>(block_size); }
 
-  int get_m_global() const { return m_global; }
-  int get_n_global() const { return n_global; }
+  int get_m_global() const { return std::get<0>(global_size); }
+  int get_n_global() const { return std::get<1>(global_size); }
 
   void set_local_size(int m_local_in, int n_local_in) {
     set_m_local(m_local_in);
@@ -73,10 +73,10 @@ public:
   }
 
   int calculate_row_size(int proc_row) const {
-    int tmp = m_global / get_mb();
+    int tmp = get_m_global() / get_mb();
     int local_num_block_rows = (tmp - proc_row -1) / nprow + 1;
     int rest_block_row = tmp % nprow; // size of a residue block (< mb)
-    int local_rest_block_rows = (proc_row == rest_block_row) ? m_global % get_mb() : 0;
+    int local_rest_block_rows = (proc_row == rest_block_row) ? get_m_global() % get_mb() : 0;
 
     return  local_num_block_rows * get_mb() + local_rest_block_rows;
   }
@@ -86,10 +86,10 @@ public:
   }
 
   int calculate_col_size(int proc_col) const {
-    int tmp = n_global / get_nb();
+    int tmp = get_n_global() / get_nb();
     int local_num_block_cols = (tmp - proc_col -1) / npcol + 1;
     int rest_block_col = tmp % npcol; // size of a residue block (< nb)
-    int local_rest_block_cols = (proc_col == rest_block_col) ? n_global % get_nb() : 0;
+    int local_rest_block_cols = (proc_col == rest_block_col) ? get_n_global() % get_nb() : 0;
     return local_num_block_cols * get_nb() + local_rest_block_cols;
   }
 
@@ -139,7 +139,7 @@ public:
   grid const& get_grid() const { return g; }
 
 private:
-  int m_global, n_global;
+  std::array<int,2> global_size;
   std::array<int,2> block_size;
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
   grid g;
