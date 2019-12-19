@@ -30,11 +30,10 @@ public:
   grid(MPI_Comm& comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
     : comm(comm_in) {
     if (comm == MPI_COMM_NULL) {
-      myrank = -1;
-      myrow = -1;
-      mycol = -1;
       nprocs = 0;
+      myrank = -1;
       set_size({0, 0});  // to avoid zero dividing and blacs does not take (0,0) size grid
+      set_my_coordinate({-1,-1});
       return;
     }
     MPI_Comm_size(comm, &nprocs);
@@ -58,8 +57,8 @@ public:
 
     set_major<GRID_MAJOR>();
 
-    myrow = calculate_grid_row(myrank);
-    mycol = calculate_grid_col(myrank);
+    set_my_coordinate({calculate_grid_row(myrank), calculate_grid_col(myrank)});
+
     set_blacs_grid();
   }
 
@@ -71,11 +70,13 @@ public:
   int get_npcol() const { return std::get<1>(size); }
   std::pair<int,int> get_size() { return static_cast<std::pair<int,int>>(size); }
   int get_myrank() const { return myrank; }
-  int get_myrow() const { return myrow; }
-  int get_mycol() const { return mycol; }
+  int get_myrow() const { return std::get<0>(my_coordinate); }
+  int get_mycol() const { return std::get<1>(my_coordinate); }
+  std::pair<int,int> get_my_coordinate() { return static_cast<std::pair<int,int>>(my_coordinate); }
   int get_blacs_context() const { return blacs_context; }
 
   void set_size(std::array<int,2> size_in) { size = size_in; }
+  void set_my_coordinate(std::array<int,2> my_coordinate_in) { my_coordinate = my_coordinate_in; }
 
   template <typename GRID_MAJOR>
   void set_major() { is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value; }
@@ -109,8 +110,7 @@ protected:
       nprow = find_square_root_like_divisor(nprocs);
     }
     set_size({nprow, nprocs/nprow});
-    myrow = calculate_grid_row(myrank);
-    mycol = calculate_grid_col(myrank);
+    set_my_coordinate({calculate_grid_row(myrank), calculate_grid_col(myrank)});
   }
 
   static int find_square_root_like_divisor(int n) {
@@ -125,10 +125,8 @@ protected:
     constexpr int cart_dim = 2;
     std::array<int,2> dims, periods, coords;
     /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
-    set_size({dims[0], dims[1]});
-
-    myrow = coords[0];
-    mycol = coords[1];
+    set_size(dims);
+    set_my_coordinate(coords);
 
     set_major<grid_row_major_t>();
   }
@@ -164,7 +162,7 @@ private:
   MPI_Comm comm;
   int nprocs, myrank;
   std::array<int,2> size;
-  int myrow, mycol;
+  std::array<int,2> my_coordinate;
   bool is_row;
   int blacs_handle, blacs_context;
 };
