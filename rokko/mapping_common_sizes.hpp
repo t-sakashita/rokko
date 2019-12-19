@@ -16,16 +16,16 @@ namespace rokko {
 
 class mapping_common_sizes {
 public:
-  int get_m_local() const { return m_local; }
-  int get_n_local() const { return n_local; }
-  void set_m_local(int m_local_in) { m_local = m_local_in; }
-  void set_n_local(int n_local_in) { n_local = n_local_in; }
+  int get_m_local() const { return std::get<0>(local_size); }
+  int get_n_local() const { return std::get<1>(local_size); }
+  void set_m_local(int m_local) { std::get<0>(local_size) = m_local; }
+  void set_n_local(int n_local) { std::get<1>(local_size) = n_local; }
 
 protected:
   explicit mapping_common_sizes() {}
 
 private:
-  int m_local, n_local;
+  std::array<int,2> local_size;
 };
 
 } // namespace rokko
