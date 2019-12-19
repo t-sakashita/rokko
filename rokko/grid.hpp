@@ -57,7 +57,7 @@ public:
 
     set_major<GRID_MAJOR>();
 
-    set_my_coordinate({calculate_grid_row(myrank), calculate_grid_col(myrank)});
+    set_my_coordinate();
 
     set_blacs_grid();
   }
@@ -77,6 +77,7 @@ public:
 
   void set_size(std::array<int,2> size_in) { size = size_in; }
   void set_my_coordinate(std::array<int,2> my_coordinate_in) { my_coordinate = my_coordinate_in; }
+  void set_my_coordinate() { set_my_coordinate(calculate_coordinate(myrank)); }
 
   template <typename GRID_MAJOR>
   void set_major() { is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value; }
@@ -89,6 +90,10 @@ public:
   }
   int calculate_grid_col(int proc_rank) const { 
     return is_row ? proc_rank % get_npcol() : proc_rank / get_nprow();
+  }
+
+  std::array<int,2> calculate_coordinate(int proc_rank) const {
+    return {calculate_grid_row(proc_rank), calculate_grid_col(proc_rank)};
   }
 
   int calculate_rank_form_coords(int proc_row, int proc_col) const {
@@ -110,7 +115,7 @@ protected:
       nprow = find_square_root_like_divisor(nprocs);
     }
     set_size({nprow, nprocs/nprow});
-    set_my_coordinate({calculate_grid_row(myrank), calculate_grid_col(myrank)});
+    set_my_coordinate();
   }
 
   static int find_square_root_like_divisor(int n) {
