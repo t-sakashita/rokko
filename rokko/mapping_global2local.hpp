@@ -46,10 +46,10 @@ public:
   int get_stride_mycol() const { return stride_mine[1]; }
 
   void set_stride() {
-    stride_mine[0] = my_coordinate[0] * get_mb();
-    stride_grid[0] = get_mb() * (grid_size[0] - 1);
-    stride_mine[1] = my_coordinate[1] * get_nb();
-    stride_grid[1] = get_nb() * (grid_size[1] - 1);
+    stride_mine[0] = my_coordinate[0] * block_size[0];
+    stride_grid[0] = block_size[0] * (grid_size[0] - 1);
+    stride_mine[1] = my_coordinate[1] * block_size[1];
+    stride_grid[1] = block_size[1] * (grid_size[1] - 1);
   }
   void set_block_size(std::array<int,2> block_size_in) {
     block_size = block_size_in;
@@ -68,12 +68,12 @@ public:
   }
 
   int calculate_row_size(int proc_row) const {
-    int tmp = global_size[0] / get_mb();
+    int tmp = global_size[0] / block_size[0];
     int local_num_block_rows = (tmp - proc_row -1) / grid_size[0] + 1;
     int rest_block_row = tmp % grid_size[0]; // size of a residue block (< mb)
-    int local_rest_block_rows = (proc_row == rest_block_row) ? global_size[0] % get_mb() : 0;
+    int local_rest_block_rows = (proc_row == rest_block_row) ? global_size[0] % block_size[0] : 0;
 
-    return  local_num_block_rows * get_mb() + local_rest_block_rows;
+    return  local_num_block_rows * block_size[0] + local_rest_block_rows;
   }
 
   int calculate_row_size() const {
@@ -81,11 +81,11 @@ public:
   }
 
   int calculate_col_size(int proc_col) const {
-    int tmp = global_size[1] / get_nb();
+    int tmp = global_size[1] / block_size[1];
     int local_num_block_cols = (tmp - proc_col -1) / grid_size[1] + 1;
     int rest_block_col = tmp % grid_size[1]; // size of a residue block (< nb)
-    int local_rest_block_cols = (proc_col == rest_block_col) ? global_size[1] % get_nb() : 0;
-    return local_num_block_cols * get_nb() + local_rest_block_cols;
+    int local_rest_block_cols = (proc_col == rest_block_col) ? global_size[1] % block_size[1] : 0;
+    return local_num_block_cols * block_size[1] + local_rest_block_cols;
   }
 
   int calculate_col_size() const {
@@ -93,30 +93,30 @@ public:
   }
 
   int translate_l2g_row(const int& local_i) const {
-    return stride_mine[0] + local_i + (local_i / get_mb()) * stride_grid[0];
+    return stride_mine[0] + local_i + (local_i / block_size[0]) * stride_grid[0];
   }
 
   int translate_l2g_col(const int& local_j) const {
-    return stride_mine[1] + local_j + (local_j / get_nb()) * stride_grid[1];
+    return stride_mine[1] + local_j + (local_j / block_size[1]) * stride_grid[1];
   }
 
   int translate_g2l_row(const int& global_i) const {
-    int local_offset_block = global_i / get_mb();
-    return (local_offset_block - my_coordinate[0]) / grid_size[0] * get_mb() + global_i % get_mb();
+    int local_offset_block = global_i / block_size[0];
+    return (local_offset_block - my_coordinate[0]) / grid_size[0] * block_size[0] + global_i % block_size[0];
   }
 
   int translate_g2l_col(const int& global_j) const {
-    const int local_offset_block = global_j / get_nb();
-    return (local_offset_block - my_coordinate[1]) / grid_size[1] * get_nb() + global_j % get_nb();
+    const int local_offset_block = global_j / block_size[1];
+    return (local_offset_block - my_coordinate[1]) / grid_size[1] * block_size[1] + global_j % block_size[1];
   }
 
   bool is_gindex_myrow(const int& global_i) const {
-    int local_offset_block = global_i / get_mb();
+    int local_offset_block = global_i / block_size[0];
     return (local_offset_block % grid_size[0]) == my_coordinate[0];
   }
 
   bool is_gindex_mycol(const int& global_j) const {
-    int local_offset_block = global_j / get_nb();
+    int local_offset_block = global_j / block_size[1];
     return (local_offset_block % grid_size[1]) == my_coordinate[1];
   }
 
