@@ -104,7 +104,6 @@ public:
 protected:
   template <typename GRID_MAJOR>
   void calculate_sizes_default(GRID_MAJOR, int lld) {
-    set_major<GRID_MAJOR>();
     int nprow;
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
@@ -115,6 +114,7 @@ protected:
       nprow = find_square_root_like_divisor(nprocs);
     }
     set_size({nprow, nprocs/nprow});
+    set_major<GRID_MAJOR>();
     set_my_coordinate();
   }
 
