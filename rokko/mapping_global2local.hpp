@@ -25,7 +25,7 @@ public:
   explicit mapping_global2local(std::array<int,2> global_size_in, std::array<int,2> block_size_in, grid const& g_in)
     : global_size(global_size_in), block_size(block_size_in),
       g(g_in),
-      myrow(g_in.get_myrow()), mycol(g_in.get_mycol()),
+      my_coordinate(g_in.get_my_coordinate()),
       nprow(g_in.get_nprow()), npcol(g_in.get_npcol()) {
     set_default_local_size();
     set_stride();
@@ -48,9 +48,9 @@ public:
   int get_stride_mycol() const { return stride_mine[1]; }
 
   void set_stride() {
-    stride_mine[0] = myrow * get_mb();
+    stride_mine[0] = my_coordinate[0] * get_mb();
     stride_grid[0] = get_mb() * (nprow - 1);
-    stride_mine[1] = mycol * get_nb();
+    stride_mine[1] = my_coordinate[1] * get_nb();
     stride_grid[1] = get_nb() * (npcol - 1);
   }
   void set_block_size(std::array<int,2> block_size_in) {
@@ -79,7 +79,7 @@ public:
   }
 
   int calculate_row_size() const {
-    return calculate_row_size(myrow);
+    return calculate_row_size(my_coordinate[0]);
   }
 
   int calculate_col_size(int proc_col) const {
@@ -91,7 +91,7 @@ public:
   }
 
   int calculate_col_size() const {
-    return calculate_col_size(mycol);
+    return calculate_col_size(my_coordinate[1]);
   }
 
   int translate_l2g_row(const int& local_i) const {
@@ -104,22 +104,22 @@ public:
 
   int translate_g2l_row(const int& global_i) const {
     int local_offset_block = global_i / get_mb();
-    return (local_offset_block - myrow) / nprow * get_mb() + global_i % get_mb();
+    return (local_offset_block - my_coordinate[0]) / nprow * get_mb() + global_i % get_mb();
   }
 
   int translate_g2l_col(const int& global_j) const {
     const int local_offset_block = global_j / get_nb();
-    return (local_offset_block - mycol) / npcol * get_nb() + global_j % get_nb();
+    return (local_offset_block - my_coordinate[1]) / npcol * get_nb() + global_j % get_nb();
   }
 
   bool is_gindex_myrow(const int& global_i) const {
     int local_offset_block = global_i / get_mb();
-    return (local_offset_block % nprow) == myrow;
+    return (local_offset_block % nprow) == my_coordinate[0];
   }
 
   bool is_gindex_mycol(const int& global_j) const {
     int local_offset_block = global_j / get_nb();
-    return (local_offset_block % npcol) == mycol;
+    return (local_offset_block % npcol) == my_coordinate[1];
   }
 
   bool is_gindex(const int& global_i, const int& global_j) const {
@@ -141,8 +141,9 @@ private:
   std::array<int,2> stride_mine, stride_grid;
   grid g;
   // common variables of class grid
-  int myrow, mycol;
   int nprow, npcol;
+  std::array<int,2> my_coordinate;
+
   // block_number is also needed?
 };
 
