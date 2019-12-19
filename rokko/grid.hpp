@@ -72,7 +72,7 @@ public:
   int get_myrank() const { return myrank; }
   int get_myrow() const { return std::get<0>(my_coordinate); }
   int get_mycol() const { return std::get<1>(my_coordinate); }
-  std::pair<int,int> get_my_coordinate() { return static_cast<std::pair<int,int>>(my_coordinate); }
+  std::array<int,2> get_my_coordinate() const { return my_coordinate; }
   int get_blacs_context() const { return blacs_context; }
 
   void set_size(std::array<int,2> size_in) { size = size_in; }
