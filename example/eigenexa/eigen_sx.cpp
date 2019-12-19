@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
   }
 
   auto nxy = rokko::eigenexa::get_matdims(grid, n);
-  rokko::mapping_bc<rokko::matrix_col_major> map(n, 1, nxy.first, nxy.second, grid);
+  rokko::mapping_bc<rokko::matrix_col_major> map(n, 1, {nxy.first, nxy.second}, grid);
   rokko::distributed_matrix<double> a(map);
   rokko::distributed_matrix<double> z(map);
   Eigen::VectorXd w(n);

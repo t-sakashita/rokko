@@ -27,8 +27,8 @@ public:
   explicit mapping_local2array(int lld_in) : lld(lld_in) {
     set_default_length_array();
   }
-  explicit mapping_local2array(int lld_in, int lld2) : lld(lld_in) {
-    set_length_array(lld * lld2);
+  explicit mapping_local2array(std::array<int,2> padded_size) : lld(padded_size[0]) {
+    set_length_array(padded_size[0] * padded_size[1]);
   }
 
   void set_length_array(int value) { length_array = value; }

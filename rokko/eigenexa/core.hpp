@@ -31,7 +31,7 @@ public:
   mapping_bc<matrix_col_major> default_mapping(int global_dim, grid const& g) const {
     int nx, ny;
     std::tie(nx, ny) = rokko::eigenexa::get_matdims(g, global_dim);
-    return mapping_bc<matrix_col_major>(global_dim, 1, nx, ny, g);  // block_size = 1
+    return mapping_bc<matrix_col_major>(global_dim, 1, {nx, ny}, g);  // block_size = 1
   }
 
   template<typename MATRIX_MAJOR, typename VEC>

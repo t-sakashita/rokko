@@ -39,10 +39,10 @@ public:
   }
   
   // default_mapping func of solver interface for eigen_exa
-  explicit mapping_bc(int global_dim, int block_size, int padded_row_size, int padded_col_size,
+  explicit mapping_bc(int global_dim, int block_size, std::array<int,2> padded_size,
                       grid const& g_in)
     : mapping_global2local(global_dim, block_size, g_in),
-      mapping_local2array<MATRIX_MAJOR>(padded_row_size, padded_col_size) {
+      mapping_local2array<MATRIX_MAJOR>(padded_size) {
     set_blacs_descriptor();
   }
   
