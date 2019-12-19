@@ -24,7 +24,7 @@ public:
 
   explicit mapping_global2local(std::array<int,2> global_size_in, std::array<int,2> block_size_in, grid const& g_in)
     : global_size(global_size_in), block_size(block_size_in),
-      g(g_in), myrank(g_in.get_myrank()), nprocs(g_in.get_nprocs()),
+      g(g_in),
       myrow(g_in.get_myrow()), mycol(g_in.get_mycol()),
       nprow(g_in.get_nprow()), npcol(g_in.get_npcol()) {
     set_default_local_size();
@@ -141,7 +141,6 @@ private:
   std::array<int,2> stride_mine, stride_grid;
   grid g;
   // common variables of class grid
-  int myrank, nprocs;
   int myrow, mycol;
   int nprow, npcol;
   // block_number is also needed?
