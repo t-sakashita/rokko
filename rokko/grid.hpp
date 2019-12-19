@@ -62,6 +62,9 @@ public:
 
   void set_size(std::array<int,2> size_in) { size = size_in; }
 
+  template <typename GRID_MAJOR>
+  void set_major() { is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value; }
+
   bool is_row_major() const { return is_row; }
   bool is_col_major() const { return !is_row; }
 
@@ -80,7 +83,7 @@ public:
 protected:
   template <typename GRID_MAJOR>
   void calculate_sizes_default(GRID_MAJOR, int lld) {
-    is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value;
+    set_major<GRID_MAJOR>();
     int nprow;
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
@@ -112,7 +115,7 @@ protected:
     myrow = coords[0];
     mycol = coords[1];
 
-    is_row = true;
+    set_major<grid_row_major_t>();
   }
 
   static void calculate_sizes_cart(grid_col_major_t) {
