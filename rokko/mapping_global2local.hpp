@@ -12,6 +12,7 @@
 #ifndef ROKKO_MAPPING_GLOBAL2LOCAL_HPP
 #define ROKKO_MAPPING_GLOBAL2LOCAL_HPP
 
+#include <array>
 #include <rokko/grid.hpp>
 #include <rokko/mapping_common_sizes.hpp>
 
@@ -22,7 +23,7 @@ public:
   explicit mapping_global2local() {}
 
   explicit mapping_global2local(int m_global_in, int n_global_in, int mb_in, int nb_in, grid const& g_in)
-    : m_global(m_global_in), n_global(n_global_in), mb(mb_in), nb(nb_in),
+    : m_global(m_global_in), n_global(n_global_in), block_size({mb_in,nb_in}),
       g(g_in), myrank(g_in.get_myrank()), nprocs(g_in.get_nprocs()),
       myrow(g_in.get_myrow()), mycol(g_in.get_mycol()),
       nprow(g_in.get_nprow()), npcol(g_in.get_npcol()) {
@@ -47,18 +48,17 @@ public:
   int get_stride_mycol() const { return stride_mycol; }
 
   void set_stride() {
-    stride_myrow = myrow * mb;
-    stride_nprow = mb * (nprow - 1);
-    stride_mycol = mycol * nb;
-    stride_npcol = nb * (npcol - 1);    
+    stride_myrow = myrow * get_mb();
+    stride_nprow = get_mb() * (nprow - 1);
+    stride_mycol = mycol * get_nb();
+    stride_npcol = get_nb() * (npcol - 1);
   }
   void set_block_size(int mb_in, int nb_in) {
-    mb = mb_in;
-    nb = nb_in;
+    block_size = {mb_in, nb_in};
   }
 
-  int get_mb() const { return mb; }
-  int get_nb() const { return nb; }
+  int get_mb() const { return std::get<0>(block_size); }
+  int get_nb() const { return std::get<1>(block_size); }
 
   int get_m_global() const { return m_global; }
   int get_n_global() const { return n_global; }
@@ -73,12 +73,12 @@ public:
   }
 
   int calculate_row_size(int proc_row) const {
-    int tmp = m_global / mb;
+    int tmp = m_global / get_mb();
     int local_num_block_rows = (tmp - proc_row -1) / nprow + 1;
     int rest_block_row = tmp % nprow; // size of a residue block (< mb)
-    int local_rest_block_rows = (proc_row == rest_block_row) ? m_global % mb : 0;
+    int local_rest_block_rows = (proc_row == rest_block_row) ? m_global % get_mb() : 0;
 
-    return  local_num_block_rows * mb + local_rest_block_rows;
+    return  local_num_block_rows * get_mb() + local_rest_block_rows;
   }
 
   int calculate_row_size() const {
@@ -86,11 +86,11 @@ public:
   }
 
   int calculate_col_size(int proc_col) const {
-    int tmp = n_global / nb;
+    int tmp = n_global / get_nb();
     int local_num_block_cols = (tmp - proc_col -1) / npcol + 1;
     int rest_block_col = tmp % npcol; // size of a residue block (< nb)
-    int local_rest_block_cols = (proc_col == rest_block_col) ? n_global % nb : 0;
-    return local_num_block_cols * nb + local_rest_block_cols;
+    int local_rest_block_cols = (proc_col == rest_block_col) ? n_global % get_nb() : 0;
+    return local_num_block_cols * get_nb() + local_rest_block_cols;
   }
 
   int calculate_col_size() const {
@@ -98,30 +98,30 @@ public:
   }
 
   int translate_l2g_row(const int& local_i) const {
-    return stride_myrow + local_i + (local_i / mb) * stride_nprow;
+    return stride_myrow + local_i + (local_i / get_mb()) * stride_nprow;
   }
 
   int translate_l2g_col(const int& local_j) const {
-    return stride_mycol + local_j + (local_j / nb) * stride_npcol;
+    return stride_mycol + local_j + (local_j / get_nb()) * stride_npcol;
   }
 
   int translate_g2l_row(const int& global_i) const {
-    int local_offset_block = global_i / mb;
-    return (local_offset_block - myrow) / nprow * mb + global_i % mb;
+    int local_offset_block = global_i / get_mb();
+    return (local_offset_block - myrow) / nprow * get_mb() + global_i % get_mb();
   }
 
   int translate_g2l_col(const int& global_j) const {
-    const int local_offset_block = global_j / nb;
-    return (local_offset_block - mycol) / npcol * nb + global_j % nb;
+    const int local_offset_block = global_j / get_nb();
+    return (local_offset_block - mycol) / npcol * get_nb() + global_j % get_nb();
   }
 
   bool is_gindex_myrow(const int& global_i) const {
-    int local_offset_block = global_i / mb;
+    int local_offset_block = global_i / get_mb();
     return (local_offset_block % nprow) == myrow;
   }
 
   bool is_gindex_mycol(const int& global_j) const {
-    int local_offset_block = global_j / nb;
+    int local_offset_block = global_j / get_nb();
     return (local_offset_block % npcol) == mycol;
   }
 
@@ -140,7 +140,7 @@ public:
 
 private:
   int m_global, n_global;
-  int mb, nb;
+  std::array<int,2> block_size;
   int stride_myrow, stride_nprow, stride_mycol, stride_npcol;
   grid g;
   // common variables of class grid
