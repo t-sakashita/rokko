@@ -109,32 +109,32 @@ public:
   }
 
   // local to global index
-  int translate_l2g_row(const int& local_i) const {
+  int translate_l2g_row(int local_i) const {
     return is_col ? col_ver().translate_l2g_row(local_i) : row_ver().translate_l2g_row(local_i);
   }
 
-  int translate_l2g_col(const int& local_j) const {
+  int translate_l2g_col(int local_j) const {
     return is_col ? col_ver().translate_l2g_col(local_j) : row_ver().translate_l2g_col(local_j);
   }
 
   // global to local index
-  int translate_g2l_row(const int& local_i) const {
+  int translate_g2l_row(int local_i) const {
     return is_col ? col_ver().translate_g2l_row(local_i) : row_ver().translate_g2l_row(local_i);
   }
 
-  int translate_g2l_col(const int& local_j) const {
+  int translate_g2l_col(int local_j) const {
     return is_col ? col_ver().translate_g2l_col(local_j) : row_ver().translate_g2l_col(local_j);
   }
 
-  bool is_gindex_myrow(const int& global_i) const {
+  bool is_gindex_myrow(int global_i) const {
     return is_col ? col_ver().is_gindex_myrow(global_i) : row_ver().is_gindex_myrow(global_i);
   }
 
-  bool is_gindex_mycol(const int& global_j) const {
+  bool is_gindex_mycol(int global_j) const {
     return is_col ? col_ver().is_gindex_mycol(global_j) : row_ver().is_gindex_mycol(global_j);
   }
 
-  bool is_gindex(const int& global_i, const int& global_j) const {
+  bool is_gindex(int global_i, int global_j) const {
     return is_col ?
       col_ver().is_gindex(global_i, global_j) : row_ver().is_gindex(global_i, global_j);
   }
