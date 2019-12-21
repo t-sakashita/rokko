@@ -42,8 +42,8 @@ public:
   set_stride();
   }*/
 
-  int get_stride_myrow() const { return stride_mine[0]; }
-  int get_stride_mycol() const { return stride_mine[1]; }
+  std::array<int,2> get_stride_mine() const { return stride_mine; }
+  std::array<int,2> get_stride_grid() const { return stride_grid; }
 
   void set_stride_mine() {
     stride_mine[0] = my_coordinate[0] * block_size[0];
