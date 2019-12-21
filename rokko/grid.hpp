@@ -88,10 +88,10 @@ public:
   bool is_col_major() const { return !is_row; }
 
   int calculate_grid_row(int proc_rank) const { 
-    return is_row ? proc_rank / get_npcol() : proc_rank % get_nprow();
+    return is_row ? proc_rank / size[1] : proc_rank % size[0];
   }
   int calculate_grid_col(int proc_rank) const { 
-    return is_row ? proc_rank % get_npcol() : proc_rank / get_nprow();
+    return is_row ? proc_rank % size[1] : proc_rank / size[0];
   }
 
   std::array<int,2> calculate_coordinate(int proc_rank) const {
@@ -99,8 +99,8 @@ public:
   }
 
   int calculate_rank_form_coords(int proc_row, int proc_col) const {
-    return is_row ? (proc_row * get_npcol() + proc_col)
-      : (proc_col * get_nprow() + proc_row);
+    return is_row ? (proc_row * size[1] + proc_col)
+      : (proc_col * size[0] + proc_row);
   }
 
 protected:
