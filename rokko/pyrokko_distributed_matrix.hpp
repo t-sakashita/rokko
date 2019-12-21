@@ -17,6 +17,7 @@
 
 #include <rokko/pyrokko_mapping_bc.hpp>
 #include <rokko/distributed_matrix.hpp>
+#include <rokko/utility/tuple_to_array.hpp>
 
 
 namespace rokko {
@@ -56,8 +57,8 @@ public:
     return is_col ? col_ver().get_nb() : row_ver().get_nb();
   }
   
-  py::tuple get_block_shape() const {
-    return py::make_tuple(get_mb(), get_nb());
+  std::tuple<int,int> get_block_shape() const {
+    return is_col ? col_ver().get_block_size() : row_ver().get_block_size();
   }
   
   int get_m_global() const {
@@ -107,22 +108,20 @@ public:
       col_ver().is_gindex(global_i, global_j) : row_ver().is_gindex(global_i, global_j);
   }
   
-  py::tuple get_global_shape() const {
-    return py::make_tuple(get_m_global(), get_n_global());
+  std::tuple<int,int> get_global_shape() const {
+    return is_col ? col_ver().get_global_size() : row_ver().get_global_size();
   }
   
-  py::tuple get_local_shape() const {
-    return py::make_tuple(get_m_local(), get_n_local());
+  std::tuple<int,int> get_local_shape() const {
+    return is_col ? col_ver().get_local_size() : row_ver().get_local_size();
   }
 
   std::tuple<int,int> translate_l2g(std::tuple<int,int> const& local) const {
-    return std::make_tuple(translate_l2g_row(std::get<0>(local)),
-                           translate_l2g_col(std::get<1>(local)));
+    return is_col ? col_ver().translate_l2g(to_array(local)) : row_ver().translate_l2g(to_array(local));
   }
 
   std::tuple<int,int> translate_g2l(std::tuple<int,int> const& global) const {
-    return std::make_tuple(translate_g2l_row(std::get<0>(global)),
-                           translate_g2l_col(std::get<1>(global)));
+    return is_col ? col_ver().translate_g2l(to_array(global)) : row_ver().translate_g2l(to_array(global));
   }
   
   void set_local(int local_i, int local_j, double value) {

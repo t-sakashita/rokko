@@ -138,17 +138,23 @@ public:
   // map member function
   int get_mb() const { return map.get_mb(); }
   int get_nb() const { return map.get_nb(); }
+  std::array<int,2> get_block_size() const { return map.get_block_size(); }
 
   int get_m_global() const { return map.get_m_global(); }
   int get_n_global() const { return map.get_n_global(); }
+  std::array<int,2> get_global_size() const { return map.get_global_size(); }
   int get_m_local() const { return map.get_m_local(); }
   int get_n_local() const { return map.get_n_local(); }
+  std::array<int,2> get_local_size() const { return map.get_local_size(); }
   int get_m_size() const { return map.get_m_size(); }
   int get_n_size() const { return map.get_n_size(); }
+
   int translate_l2g_row(int local_i) const { return map.translate_l2g_row(local_i); }
   int translate_l2g_col(int local_j) const { return map.translate_l2g_col(local_j); }
+  std::array<int,2> translate_l2g(std::array<int,2> local) const { return map.translate_l2g(local); }
   int translate_g2l_row(int global_i) const { return map.translate_g2l_row(global_i); }
   int translate_g2l_col(int global_j) const { return map.translate_g2l_col(global_j); }
+  std::array<int,2> translate_g2l(std::array<int,2> global) const { return map.translate_g2l(global); }
   bool is_gindex_myrow(int global_i) const { return map.is_gindex_myrow(global_i); }
   bool is_gindex_mycol(int global_j) const { return map.is_gindex_mycol(global_j); }
   bool is_gindex(int global_i, int global_j) const { return map.is_gindex(global_i, global_j); }
