@@ -32,16 +32,6 @@ public:
   explicit mapping_global2local(int global_dim, int block_size, grid const& g_in)
     : mapping_global2local({global_dim, global_dim}, {block_size, block_size}, g_in) {}
 
-  /*explicit mapping_global2local(int m_global_in, int n_global_in, int m_local_in, int n_local_in, grid const& g_in) : mapping_common_sizes(g_in), m_global(m_global_in), n_global(n_global_in), m_local(m_local_in), n_local(n_local_in) {
-  // get grid information
-  myrank = g.get_myrank(); nprocs = g.get_nprocs();
-  myrow = g.get_myrow(); mycol = g.get_mycol();
-  nprow = g.get_nprow(); npcol = g.get_npcol();
-  mb = m_global / m_local;
-  nb = n_global / n_local;
-  set_stride();
-  }*/
-
   std::array<int,2> get_stride_mine() const { return stride_mine; }
   std::array<int,2> get_stride_grid() const { return stride_grid; }
 
