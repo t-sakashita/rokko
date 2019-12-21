@@ -145,13 +145,13 @@ public:
   int get_n_local() const { return map.get_n_local(); }
   int get_m_size() const { return map.get_m_size(); }
   int get_n_size() const { return map.get_n_size(); }
-  int translate_l2g_row(const int& local_i) const { return map.translate_l2g_row(local_i); }
-  int translate_l2g_col(const int& local_j) const { return map.translate_l2g_col(local_j); }
-  int translate_g2l_row(const int& global_i) const { return map.translate_g2l_row(global_i); }
-  int translate_g2l_col(const int& global_j) const { return map.translate_g2l_col(global_j); }
-  bool is_gindex_myrow(const int& global_i) const { return map.is_gindex_myrow(global_i); }
-  bool is_gindex_mycol(const int& global_j) const { return map.is_gindex_mycol(global_j); }
-  bool is_gindex(const int& global_i, const int& global_j) const { return map.is_gindex(global_i, global_j); }
+  int translate_l2g_row(int local_i) const { return map.translate_l2g_row(local_i); }
+  int translate_l2g_col(int local_j) const { return map.translate_l2g_col(local_j); }
+  int translate_g2l_row(int global_i) const { return map.translate_g2l_row(global_i); }
+  int translate_g2l_col(int global_j) const { return map.translate_g2l_col(global_j); }
+  bool is_gindex_myrow(int global_i) const { return map.is_gindex_myrow(global_i); }
+  bool is_gindex_mycol(int global_j) const { return map.is_gindex_mycol(global_j); }
+  bool is_gindex(int global_i, int global_j) const { return map.is_gindex(global_i, global_j); }
 
   int get_length_array() const { return map.get_length_array(); }
   int get_lld() const { return map.get_lld(); };
