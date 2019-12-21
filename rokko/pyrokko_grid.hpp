@@ -67,7 +67,7 @@ public:
   int get_nprow() const { return ptr->get_nprow(); }
   int get_npcol() const { return ptr->get_npcol(); }
 
-  std::pair<int,int> get_shape() const {
+  std::tuple<int,int> get_shape() const {
     return ptr->get_size();
   }
   
@@ -75,7 +75,7 @@ public:
   int get_myrow() const { return ptr->get_myrow(); }
   int get_mycol() const { return ptr->get_mycol(); }
 
-  std::pair<int,int> get_mine() const {
+  std::tuple<int,int> get_mine() const {
     return ptr->get_my_coordinate();
   }
   
