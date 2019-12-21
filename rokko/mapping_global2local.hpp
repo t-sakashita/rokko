@@ -45,12 +45,21 @@ public:
   int get_stride_myrow() const { return stride_mine[0]; }
   int get_stride_mycol() const { return stride_mine[1]; }
 
-  void set_stride() {
+  void set_stride_mine() {
     stride_mine[0] = my_coordinate[0] * block_size[0];
-    stride_grid[0] = block_size[0] * (grid_size[0] - 1);
     stride_mine[1] = my_coordinate[1] * block_size[1];
+  }
+
+  void set_stride_grid() {
+    stride_grid[0] = block_size[0] * (grid_size[0] - 1);
     stride_grid[1] = block_size[1] * (grid_size[1] - 1);
   }
+
+  void set_stride() {
+    set_stride_mine();
+    set_stride_grid();
+  }
+
   void set_block_size(std::array<int,2> block_size_in) {
     block_size = block_size_in;
   }
