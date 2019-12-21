@@ -55,7 +55,7 @@ TEST(dot_product_mpi, dot_product_mpi) {
   double product_global = rokko::dot_product(vecX, false, 0, vecY, false, 0);
 
   for (int i = 0; i < dim; ++i) {
-    if (vecX.is_gindex(i, 0)) {
+    if (vecX.is_gindex({i, 0})) {
       std::cerr << i << ' ' << rank << ' ' << product_local << ' ' << product_global << std::endl;
       std::cerr.flush();
       EXPECT_NEAR(product_local, product_global, eps);

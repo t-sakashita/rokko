@@ -103,9 +103,8 @@ public:
     return is_col ? col_ver().is_gindex_mycol(global_j) : row_ver().is_gindex_mycol(global_j);
   }
 
-  bool is_gindex(int global_i, int global_j) const {
-    return is_col ?
-      col_ver().is_gindex(global_i, global_j) : row_ver().is_gindex(global_i, global_j);
+  bool is_gindex(std::tuple<int,int> const& global) const {
+    return is_col ? col_ver().is_gindex(to_array(global)) : row_ver().is_gindex(to_array(global));
   }
   
   std::tuple<int,int> get_global_shape() const {

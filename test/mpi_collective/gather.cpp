@@ -36,7 +36,7 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
       double d = dist(engine);
-      if (mat.is_gindex(i, j)) mat.set_global(i, j, d);
+      if (mat.is_gindex({i, j})) mat.set_global(i, j, d);
     }
   }
 #ifndef NDEBUG
@@ -53,7 +53,7 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #endif
       for (int i = 0; i < dim; ++i) {
         for (int j = 0; j < dim; ++j) {
-          if (mat.is_gindex(i, j))
+          if (mat.is_gindex({i, j}))
             ASSERT_EQ(mat.get_global(i, j), lmat(i, j));
         }
       }

@@ -44,7 +44,7 @@ TEST(product_mpi, product_mpi) {
   // calculate trace
   double sum_local = 0;
   for (int i = 0; i < dim; ++i) {
-    if (matC.is_gindex(i, i)) sum_local += matC.get_global(i, i);
+    if (matC.is_gindex({i, i})) sum_local += matC.get_global(i, i);
   }
   double sum_global = 0;
   MPI_Allreduce(&sum_local, &sum_global, 1, MPI_DOUBLE, MPI_SUM, comm);

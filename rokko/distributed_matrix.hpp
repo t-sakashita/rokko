@@ -157,7 +157,7 @@ public:
   std::array<int,2> translate_g2l(std::array<int,2> global) const { return map.translate_g2l(global); }
   bool is_gindex_myrow(int global_i) const { return map.is_gindex_myrow(global_i); }
   bool is_gindex_mycol(int global_j) const { return map.is_gindex_mycol(global_j); }
-  bool is_gindex(int global_i, int global_j) const { return map.is_gindex(global_i, global_j); }
+  bool is_gindex(std::array<int,2> global) const { return map.is_gindex(global); }
 
   int get_length_array() const { return map.get_length_array(); }
   int get_lld() const { return map.get_lld(); };
