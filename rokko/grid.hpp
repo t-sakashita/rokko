@@ -53,6 +53,8 @@ public:
     if ((std::get<0>(size_in) * std::get<1>(size_in)) != nprocs) {
       throw std::invalid_argument("grid::grid() : (rows * cols) != nprocs");
     }
+    MPI_Comm_rank(comm, &myrank);
+
     set_size(size_in);
 
     set_major<GRID_MAJOR>();
