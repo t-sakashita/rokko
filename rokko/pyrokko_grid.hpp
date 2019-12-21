@@ -17,6 +17,7 @@
 
 #include <rokko/pyrokko_communicator.hpp>
 #include <rokko/grid.hpp>
+#include <rokko/utility/tuple_to_array.hpp>
 
 namespace rokko {
 
@@ -40,7 +41,16 @@ public:
     MPI_Comm comm = wrap_comm.get_comm();
     ptr = new grid(comm, grid_major);
   }
-  
+
+  template <typename GRID_MAJOR>
+  wrap_grid(pybind11::handle const& comm_handle, std::tuple<int,int> const& size_in, GRID_MAJOR const& grid_major = grid_row_major) {
+    const int rc = import_mpi4py();
+    assert(rc==0);
+    wrap_communicator wrap_comm(*PyMPIComm_Get(comm_handle.ptr()));
+    MPI_Comm comm = wrap_comm.get_comm();
+    ptr = new grid(comm, to_array(size_in), grid_major);
+  }
+
   template <typename GRID_MAJOR>
   wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0) {
     const int rc = import_mpi4py();

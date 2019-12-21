@@ -100,6 +100,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def(py::init<>())
     .def(py::init<grid_row_major_t>())
     .def(py::init<grid_col_major_t>())
+    .def(py::init<pybind11::handle const&, std::tuple<int,int> const&, grid_row_major_t>())
+    .def(py::init<pybind11::handle const&, std::tuple<int,int> const&, grid_col_major_t>())
     .def(py::init<pybind11::handle const&, grid_row_major_t, int>())
     .def(py::init<pybind11::handle const&, grid_col_major_t, int>())
     .def("get_comm", &wrap_grid::get_comm)
