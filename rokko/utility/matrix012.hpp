@@ -29,12 +29,12 @@ public:
   static int get_index(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat);
 
   template<typename T, int ROWS, int COLS>
-  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat, int global_i, int global_j) {
+  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor> const& mat, int global_i, int global_j) {
     return global_i + mat.rows() * global_j;
   }
 
   template<typename T, int ROWS, int COLS>
-  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat, int global_i, int global_j) {
+  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor> const& mat, int global_i, int global_j) {
     return mat.cols() * global_i + global_j;
   }
   
