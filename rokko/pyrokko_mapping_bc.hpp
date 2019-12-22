@@ -47,7 +47,14 @@ public:
     else
       _map = *(new mapping_bc<matrix_row_major>(global_dim, block_size, lld, wrap_g.get_grid()));
   }
-  
+
+  wrap_mapping_bc(std::tuple<int,int> const& global_size, std::tuple<int,int> const& block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = col) : is_col(major == col) {
+    if (is_col)
+      _map = *(new mapping_bc<matrix_col_major>(to_array(global_size), to_array(block_size), wrap_g.get_grid()));
+    else
+      _map = *(new mapping_bc<matrix_row_major>(to_array(global_size), to_array(block_size), wrap_g.get_grid()));
+  }
+
   wrap_mapping_bc(mapping_bc<matrix_col_major> const& map) : is_col(true) {
     _map = *(new mapping_bc<matrix_col_major>(map));
   }
