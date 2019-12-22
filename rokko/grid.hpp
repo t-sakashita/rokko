@@ -37,9 +37,9 @@ public:
     }
 
     if (is_MPI_2dim_Cart(comm))
-      calculate_sizes_cart(grid_major);
+      set_sizes_cart(grid_major);
     else
-      calculate_sizes_default(grid_major, lld);
+      set_sizes_default(grid_major, lld);
 
     set_blacs_grid();
   }
@@ -97,7 +97,7 @@ public:
 
 protected:
   template <typename GRID_MAJOR>
-  void calculate_sizes_default(GRID_MAJOR, int lld) {
+  void set_sizes_default(GRID_MAJOR, int lld) {
     int nprow;
     if (lld > 0) {
       if ((nprocs % lld) != 0) {
@@ -120,7 +120,7 @@ protected:
     return i;
   }
 
-  void calculate_sizes_cart(grid_row_major_t) {
+  void set_sizes_cart(grid_row_major_t) {
     constexpr int cart_dim = 2;
     std::array<int,2> dims, periods, coords;
     /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
@@ -130,7 +130,7 @@ protected:
     set_major<grid_row_major_t>();
   }
 
-  static void calculate_sizes_cart(grid_col_major_t) {
+  static void set_sizes_cart(grid_col_major_t) {
     throw std::invalid_argument("calculate_sizes_cart : MPI Cartesian doesn't support grid_col_major.  Use it with grid_row_major.");
   }
 
