@@ -24,10 +24,6 @@ namespace rokko {
 
 class matrix012 {
 public:
-
-  template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
-  static int get_index(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat);
-
   template<typename T, int ROWS, int COLS>
   static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor> const& mat, int global_i, int global_j) {
     return global_i + mat.rows() * global_j;
