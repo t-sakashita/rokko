@@ -27,7 +27,7 @@ extern struct grid_col_major_t {} grid_col_major;
 class grid {
 public:
   template <typename GRID_MAJOR>
-  grid(MPI_Comm& comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
+  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
     : comm(comm_in) {
     if (comm == MPI_COMM_NULL) {
       nprocs = 0;
