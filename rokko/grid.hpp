@@ -16,6 +16,7 @@
 #include <iostream>
 #include <mpi.h>
 #include <cmath>
+#include <rokko/mpi_communicator.hpp>
 #include <rokko/blacs.hpp>
 
 namespace rokko {
@@ -24,20 +25,16 @@ extern struct grid_row_major_t {} grid_row_major;
 
 extern struct grid_col_major_t {} grid_col_major;
 
-class grid {
+class grid : public mpi_comm {
 public:
   template <typename GRID_MAJOR>
   grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
-    : comm(comm_in) {
+    : mpi_comm(comm_in) {
     if (comm == MPI_COMM_NULL) {
-      nprocs = 0;
-      myrank = -1;
       set_size({0, 0});  // to avoid zero dividing and blacs does not take (0,0) size grid
       set_my_coordinate({-1,-1});
       return;
     }
-    MPI_Comm_size(comm, &nprocs);
-    MPI_Comm_rank(comm, &myrank);
 
     if (is_MPI_2dim_Cart(comm))
       calculate_sizes_cart(grid_major);
@@ -48,12 +45,10 @@ public:
   }
 
   template <typename GRID_MAJOR>
-  grid(MPI_Comm comm_in, std::array<int,2> size_in, GRID_MAJOR const& grid_major = grid_row_major) : comm(comm_in) {
-    MPI_Comm_size(comm, &nprocs);
+  grid(MPI_Comm comm_in, std::array<int,2> size_in, GRID_MAJOR const& grid_major = grid_row_major) : mpi_comm(comm_in) {
     if ((std::get<0>(size_in) * std::get<1>(size_in)) != nprocs) {
       throw std::invalid_argument("grid::grid() : (rows * cols) != nprocs");
     }
-    MPI_Comm_rank(comm, &myrank);
 
     set_size(size_in);
 
@@ -66,12 +61,9 @@ public:
 
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major, 0) {}
 
-  MPI_Comm get_comm() const { return comm; }
-  int get_nprocs() const { return nprocs; }
   int get_nprow() const { return std::get<0>(size); }
   int get_npcol() const { return std::get<1>(size); }
   std::array<int,2> get_size() const { return size; }
-  int get_myrank() const { return myrank; }
   int get_myrow() const { return std::get<0>(my_coordinate); }
   int get_mycol() const { return std::get<1>(my_coordinate); }
   std::array<int,2> get_my_coordinate() const { return my_coordinate; }
@@ -142,22 +134,6 @@ protected:
     throw std::invalid_argument("calculate_sizes_cart : MPI Cartesian doesn't support grid_col_major.  Use it with grid_row_major.");
   }
 
-  static bool is_MPI_Cart(MPI_Comm comm) {
-    int topo_type;
-    /* int ierr = */ MPI_Topo_test(comm, &topo_type);
-    return topo_type == MPI_CART;
-  }
-
-  static bool is_MPI_2dim_Cart(MPI_Comm comm) {
-    if (is_MPI_Cart(comm)) {
-      int cart_dim;
-      /* int ierr = */ MPI_Cartdim_get(comm, &cart_dim);
-      return cart_dim == 2;
-    } else {
-      return false;
-    }
-  }
-
   void set_blacs_grid() {
     blacs_handle = blacs::sys2blacs_handle(comm);
     blacs_context = blacs_handle;
@@ -166,8 +142,6 @@ protected:
   }
 
 private:
-  MPI_Comm comm;
-  int nprocs, myrank;
   std::array<int,2> size;
   std::array<int,2> my_coordinate;
   bool is_row;
