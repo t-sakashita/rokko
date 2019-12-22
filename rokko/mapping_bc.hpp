@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +12,7 @@
 #ifndef ROKKO_MAPPING_BC_HPP
 #define ROKKO_MAPPING_BC_HPP
 
-#include <vector>
+#include <array>
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_global2local.hpp>
@@ -71,7 +71,6 @@ public:
     int nb = mapping_global2local::get_nb();
     int blacs_context = mapping_global2local::get_grid().get_blacs_context();
     int lld = mapping_local2array<matrix_major>::get_lld();
-    blacs_descriptor.resize(9);
     int info = scalapack::descinit(blacs_descriptor.data(), m, n, mb, nb, 0, 0, blacs_context, lld);
     if (info) {
       std::cerr << "error info=" << info << " at descinit function of descA " << "mA="
@@ -82,7 +81,7 @@ public:
   const int* get_blacs_descriptor() const { return blacs_descriptor.data(); }
 
 private:
-  std::vector<int> blacs_descriptor;
+  std::array<int,9> blacs_descriptor;
 };
 
 } // namespace rokko
