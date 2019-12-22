@@ -39,7 +39,7 @@ TEST(product_v_mpi, product_v_mpi) {
   rokko::grid g(comm);
   rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> matA(map);
-  rokko::mapping_bc<rokko::matrix_col_major> mapvec({dim, 1}, g, {1, 1});
+  rokko::mapping_bc<rokko::matrix_col_major> mapvec({dim, 1}, {1, 1}, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(mapvec);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(mapvec);
   Eigen::MatrixXd locA(dim, dim);

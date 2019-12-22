@@ -58,7 +58,7 @@ public:
     set_blacs_descriptor();
   }
   
-  explicit mapping_bc(std::array<int,2> global_size_in, grid const& g_in, std::array<int,2> block_size_in)
+  explicit mapping_bc(std::array<int,2> global_size_in, std::array<int,2> block_size_in, grid const& g_in)
     : mapping_global2local(global_size_in, block_size_in, g_in),
       mapping_local2array<MATRIX_MAJOR>() {
     set_blacs_descriptor();
