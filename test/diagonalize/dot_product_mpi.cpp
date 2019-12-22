@@ -36,7 +36,7 @@ TEST(dot_product_mpi, dot_product_mpi) {
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
   rokko::grid g(comm);
-  rokko::mapping_bc<rokko::matrix_col_major> map(dim, 1, g, 1, 1);
+  rokko::mapping_bc<rokko::matrix_col_major> map({dim, 1}, g, {1, 1});
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(map);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(map);
   Eigen::MatrixXd locX(dim, 1);

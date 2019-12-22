@@ -30,7 +30,7 @@ TEST(lange, pdlange) {
   if (grid.get_myrank() == 0) a = Eigen::MatrixXd::Random(m, n);
   
   // distributed matrix
-  rokko::mapping_bc<rokko::matrix_col_major> map(m, n, grid, 1, 1);
+  rokko::mapping_bc<rokko::matrix_col_major> map({m, n}, grid, {1, 1});
   rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
   rokko::scatter(a, mat, 0);
 
