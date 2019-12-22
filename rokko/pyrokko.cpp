@@ -119,6 +119,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def(py::init<matrix_major_enum>(), py::arg("major") = col)
     .def(py::init<int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"), py::arg("major") = col)
     .def(py::init<int, int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"), py::arg("major") = col)
+    .def(py::init<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid, matrix_major_enum>(), py::arg("global_size"), py::arg("block_size"), py::arg("grid"), py::arg("major") = col)
     .def("get_mb", &wrap_mapping_bc::get_mb)
     .def("get_nb", &wrap_mapping_bc::get_nb)
     .def_property_readonly("block_shape", &wrap_mapping_bc::get_block_shape)
