@@ -56,37 +56,36 @@ public:
     }
   }
 
-  template<typename T, typename MATRIX_MAJOR>
-  static int get_index(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat);
-
-  template<typename T>
-  static int get_index(rokko::distributed_matrix<T, rokko::matrix_col_major>& mat, int global_i, int global_j) {
-    return global_i + mat.get_m_global() * global_j;
+  static int get_index(rokko::mapping_bc<rokko::matrix_col_major> const& map, int global_i, int global_j) {
+    return global_i + map.get_m_global() * global_j;
   }
 
-  template<typename T>
-  static int get_index(rokko::distributed_matrix<T, rokko::matrix_row_major>& mat, int global_i, int global_j) {
-    return mat.get_n_global() * global_i + global_j;
+  static int get_index(rokko::mapping_bc<rokko::matrix_row_major> const& map, int global_i, int global_j) {
+    return map.get_n_global() * global_i + global_j;
   }
 
   template<typename T>
   static void generate(rokko::distributed_matrix<T, matrix_col_major>& mat) {
-    for (int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-      int global_j = mat.translate_l2g_col(local_j);
-      for (int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-        int global_i = mat.translate_l2g_row(local_i);
-        mat.set_local(local_i, local_j, get_index(mat, global_i, global_j));
+    const auto& map = mat.get_mapping();
+
+    for (int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+      int global_j = map.translate_l2g_col(local_j);
+      for (int local_i = 0; local_i < map.get_m_local(); ++local_i) {
+        int global_i = map.translate_l2g_row(local_i);
+        mat.set_local(local_i, local_j, get_index(map, global_i, global_j));
       }
     }
   }
 
   template<typename T>
   static void generate(rokko::distributed_matrix<T, matrix_row_major>& mat) {
-    for (int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-      int global_i = mat.translate_l2g_row(local_i);
-      for (int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-        int global_j = mat.translate_l2g_col(local_j);
-        mat.set_local(local_i, local_j, get_index(mat, global_i, global_j));
+    const auto& map = mat.get_mapping();
+
+    for (int local_i = 0; local_i < map.get_m_local(); ++local_i) {
+      int global_i = map.translate_l2g_row(local_i);
+      for (int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+        int global_j = map.translate_l2g_col(local_j);
+        mat.set_local(local_i, local_j, get_index(map, global_i, global_j));
       }
     }
   }
