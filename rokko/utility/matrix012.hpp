@@ -24,30 +24,28 @@ namespace rokko {
 
 class matrix012 {
 public:
-  template<typename T, int ROWS, int COLS>
-  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor> const& mat, int global_i, int global_j) {
-    return global_i + mat.rows() * global_j;
-  }
+
+  template<int MATRIX_MAJOR>
+  static int get_index(int lld, int global_i, int global_j);
 
   template<typename T, int ROWS, int COLS>
-  static int get_index(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor> const& mat, int global_i, int global_j) {
-    return mat.cols() * global_i + global_j;
-  }
-  
-  template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
+    const int ld = mat.rows();
+
     for(int j = 0; j < mat.cols(); ++j) {
       for(int i = 0; i < mat.rows(); ++i) {
-        mat(i,j) = get_index(mat, i, j);
+        mat(i,j) = get_index<Eigen::ColMajor>(ld, i, j);
       }
     }
   }
 
   template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
+    const int ld = mat.cols();
+
     for(int i = 0; i < mat.rows(); ++i) {
       for(int j = 0; j < mat.cols(); ++j) {
-        mat(i,j) = get_index(mat, i, j);
+        mat(i,j) = get_index<Eigen::RowMajor>(ld, i, j);
       }
     }
   }
@@ -86,6 +84,16 @@ public:
     }
   }
 };
+
+template<>
+int matrix012::get_index<Eigen::ColMajor>(int ld, int global_i, int global_j) {
+  return global_i + ld * global_j;
+}
+
+template<>
+int matrix012::get_index<Eigen::RowMajor>(int ld, int global_i, int global_j) {
+  return ld * global_i + global_j;
+}
 
 } // namespace rokko
 
