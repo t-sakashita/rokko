@@ -47,7 +47,7 @@ inline int sys2blacs_handle(const MPI_Comm& comm) {
   return Csys2blacs_handle(comm);
 }
 
-}
-}
+} // end namespace blacs
+} // end namespace rokko
 
 #endif // ROKKO_BLACS_HPP
