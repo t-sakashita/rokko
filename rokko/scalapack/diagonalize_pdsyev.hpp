@@ -48,7 +48,7 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
   parameters params_out;
   const char jobz = 'N';  // only eigenvalues
   const char uplow = lapack::get_matrix_part(params);
-  const int* desc = mat.get_mapping().get_blacs_descriptor();
+  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
   int info = cscalapack_pdsyev(jobz, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
                                &eigvals[0], NULL, 0, 0, desc);
   params_out.set("info", info);

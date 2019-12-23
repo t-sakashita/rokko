@@ -71,14 +71,14 @@ public:
     int nb = mapping_global2local::get_nb();
     int blacs_context = mapping_global2local::get_grid().get_blacs_context();
     int lld = mapping_local2array<matrix_major>::get_lld();
-    int info = scalapack::descinit(blacs_descriptor.data(), m, n, mb, nb, 0, 0, blacs_context, lld);
+    int info = scalapack::descinit(blacs_descriptor, m, n, mb, nb, 0, 0, blacs_context, lld);
     if (info) {
       std::cerr << "error info=" << info << " at descinit function of descA " << "mA="
               << m << "  nA=" << n << "  lld=" << lld << "." << std::endl;
       MPI_Abort(MPI_COMM_WORLD, info);
     }
   }
-  const int* get_blacs_descriptor() const { return blacs_descriptor.data(); }
+  const std::array<int,9>& get_blacs_descriptor() const { return blacs_descriptor; }
 
 private:
   std::array<int,9> blacs_descriptor;

@@ -35,7 +35,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  const int* desc = mat.get_mapping().get_blacs_descriptor();
+  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   double orfac = params.defined("orfac") ? params.get<double>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
@@ -70,7 +70,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  const int* desc = mat.get_mapping().get_blacs_descriptor();
+  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   double orfac = params.defined("orfac") ? params.get<double>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());

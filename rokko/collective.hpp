@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,6 +13,7 @@
 #define ROKKO_COLLECTIVE_HPP
 
 #include <mpi.h>
+#include <array>
 #include <stdexcept>
 #include <rokko/blacs.hpp>
 #include <rokko/scalapack.hpp>
@@ -34,11 +35,11 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
               (root % from.get_nprow()));
   int csrc = (from.get_grid().is_row_major() ? (root % from.get_npcol()) :
               (root / from.get_nprow()));
-  const int* descFrom = from.get_mapping().get_blacs_descriptor();
-  int descTo[9];
+  const std::array<int,9>& descFrom = from.get_mapping().get_blacs_descriptor();
+  std::array<int,9> descTo;
   scalapack::descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
-    cpblas_pdcopy(m, from.get_array_pointer(), 0, j, descFrom, 1, to, 0, j, descTo, 1);
+    cpblas_pdcopy(m, from.get_array_pointer(), 0, j, descFrom.data(), 1, to, 0, j, descTo.data(), 1);
 }
 
 template<typename T, typename MATRIX_MAJOR>
@@ -57,11 +58,11 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   int n = to.get_n_global();
   int rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
   int csrc = (to.get_grid().is_row_major() ? (root % to.get_npcol()) : (root / to.get_nprow()));
-  int descFrom[9];
+  std::array<int,9> descFrom;
   scalapack::descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
-  const int* descTo = to.get_mapping().get_blacs_descriptor();
+  const std::array<int,9>& descTo = to.get_mapping().get_blacs_descriptor();
   for (int j = 0; j < n; ++j)
-    cpblas_pdcopy(m, from, 0, j, descFrom, 1, to.get_array_pointer(), 0, j, descTo, 1);
+    cpblas_pdcopy(m, from, 0, j, descFrom.data(), 1, to.get_array_pointer(), 0, j, descTo.data(), 1);
 }
 
 template<typename T, typename MATRIX_MAJOR>
