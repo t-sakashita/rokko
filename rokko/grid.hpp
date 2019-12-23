@@ -142,8 +142,7 @@ protected:
   }
 
 private:
-  std::array<int,2> size;
-  std::array<int,2> my_coordinate;
+  std::array<int,2> size, my_coordinate;
   bool is_row;
   int blacs_handle, blacs_context;
 };
