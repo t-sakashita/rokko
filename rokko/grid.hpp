@@ -45,7 +45,7 @@ public:
   }
 
   template <typename GRID_MAJOR>
-  grid(MPI_Comm comm_in, std::array<int,2> size_in, GRID_MAJOR const& grid_major = grid_row_major) : mpi_comm(comm_in) {
+  grid(MPI_Comm comm_in, std::array<int,2> const& size_in, GRID_MAJOR const& grid_major = grid_row_major) : mpi_comm(comm_in) {
     if ((std::get<0>(size_in) * std::get<1>(size_in)) != nprocs) {
       throw std::invalid_argument("grid::grid() : (rows * cols) != nprocs");
     }
@@ -69,8 +69,8 @@ public:
   std::array<int,2> get_my_coordinate() const { return my_coordinate; }
   int get_blacs_context() const { return blacs_context; }
 
-  void set_size(std::array<int,2> size_in) { size = size_in; }
-  void set_my_coordinate(std::array<int,2> my_coordinate_in) { my_coordinate = my_coordinate_in; }
+  void set_size(std::array<int,2> const& size_in) { size = size_in; }
+  void set_my_coordinate(std::array<int,2> const& my_coordinate_in) { my_coordinate = my_coordinate_in; }
   void set_my_coordinate() { set_my_coordinate(calculate_coordinate(myrank)); }
 
   template <typename GRID_MAJOR>

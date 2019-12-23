@@ -22,7 +22,7 @@ class mapping_global2local : virtual public mapping_common_sizes {
 public:
   explicit mapping_global2local() {}
 
-  explicit mapping_global2local(std::array<int,2> global_size_in, std::array<int,2> block_size_in, grid const& g_in)
+  explicit mapping_global2local(std::array<int,2> const& global_size_in, std::array<int,2> const& block_size_in, grid const& g_in)
     : global_size(global_size_in), block_size(block_size_in),
       g(g_in), my_coordinate(g_in.get_my_coordinate()), grid_size(g_in.get_size()) {
     set_default_local_size();
@@ -50,7 +50,7 @@ public:
     set_stride_grid();
   }
 
-  void set_block_size(std::array<int,2> block_size_in) {
+  void set_block_size(std::array<int,2> const& block_size_in) {
     block_size = block_size_in;
   }
 
@@ -75,7 +75,7 @@ public:
     return local_num_block * block_size[IND] + remainder_size;
   }
 
-  std::array<int,2> calculate_default_local_size(std::array<int,2> proc) const {
+  std::array<int,2> calculate_default_local_size(std::array<int,2> const& proc) const {
     return {calculate_default_local_size<0>(proc[0]), calculate_default_local_size<1>(proc[1])};
   }
 
@@ -84,7 +84,7 @@ public:
     return stride_mine[IND] + local_ind + (local_ind / block_size[IND]) * stride_grid[IND];
   }
 
-  std::array<int,2> translate_l2g(std::array<int,2> local_indices) const {
+  std::array<int,2> translate_l2g(std::array<int,2> const& local_indices) const {
     return {translate_l2g<0>(local_indices[0]), translate_l2g<1>(local_indices[1])};
   }
 
@@ -102,7 +102,7 @@ public:
     return (local_offset_block - my_coordinate[IND]) / grid_size[IND] * block_size[IND] + global_index % block_size[IND];
   }
 
-  std::array<int,2> translate_g2l(std::array<int,2> global_indices) const {
+  std::array<int,2> translate_g2l(std::array<int,2> const& global_indices) const {
     return {translate_g2l<0>(global_indices[0]), translate_g2l<1>(global_indices[1])};
   }
 
@@ -128,7 +128,7 @@ public:
     return is_gindex<1>(global_j);
   }
 
-  bool is_gindex(std::array<int,2> global_indices) const {
+  bool is_gindex(std::array<int,2> const& global_indices) const {
     return is_gindex<0>(global_indices[0]) && is_gindex<1>(global_indices[1]);
   }
 
