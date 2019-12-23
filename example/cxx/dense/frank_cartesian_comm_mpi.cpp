@@ -15,6 +15,7 @@
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <boost/lexical_cast.hpp>
+#include <array>
 #include <iostream>
 
 
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]) {
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
   MPI_Comm comm;
-  int dims[2], periods[2];
+  std::array<int,2> dims, periods;
   dims[0] = int(std::sqrt((double)nprocs));
   while (1) {
     if ( dims[0] == 1 ) break;
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]) {
   dims[1] = nprocs / dims[0];
   periods[0] = 0;  periods[1] = 0;
   int reorder = 0;
-  MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, &comm);
+  MPI_Cart_create(MPI_COMM_WORLD, 2, dims.data(), periods.data(), reorder, &comm);
   rokko::grid g(comm);
   int myrank = g.get_myrank();
 
