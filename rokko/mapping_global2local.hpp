@@ -69,7 +69,7 @@ public:
   template <int IND>
   int calculate_default_local_size(int proc) const {
     const int quotient = global_size[IND] / block_size[IND];
-    const int local_num_block = (quotient - 1 - proc) / grid_size[IND] + 1;
+    const int local_num_block = (quotient + (grid_size[IND]-1 - proc)) / grid_size[IND];
     const int remainder_proc = quotient % grid_size[IND];
     const int remainder_size = (proc == remainder_proc) ? global_size[IND] % block_size[IND] : 0;  // size of the remainder block (< block_size)
     return local_num_block * block_size[IND] + remainder_size;
