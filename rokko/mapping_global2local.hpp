@@ -68,11 +68,11 @@ public:
 
   template <int IND>
   int calculate_default_local_size(int proc) const {
-    const int tmp = global_size[IND] / block_size[IND];
-    const int local_num_block_cols = (tmp - proc -1) / grid_size[IND] + 1;
-    const int rest_block_col = tmp % grid_size[IND]; // size of a residue block (< block_size)
-    const int local_rest_block_cols = (proc == rest_block_col) ? global_size[IND] % block_size[IND] : 0;
-    return local_num_block_cols * block_size[IND] + local_rest_block_cols;
+    const int quotient = global_size[IND] / block_size[IND];
+    const int local_num_block = (quotient - 1 - proc) / grid_size[IND] + 1;
+    const int remainder_block_proc = quotient % grid_size[IND];
+    const int local_remainder_block = (proc == remainder_block_proc) ? global_size[IND] % block_size[IND] : 0;  // size of a remainder block (< block_size)
+    return local_num_block * block_size[IND] + local_remainder_block;
   }
 
   std::array<int,2> calculate_default_local_size(std::array<int,2> proc) const {
