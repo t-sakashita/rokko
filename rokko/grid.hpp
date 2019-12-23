@@ -61,6 +61,14 @@ public:
 
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major, 0) {}
 
+  static int find_square_root_like_divisor(int n) {
+    int i = int(std::sqrt((double)n));
+    for (; i > 1; --i) {
+      if ( (n % i) == 0 ) break;
+    }
+    return i;
+  }
+
   int get_nprow() const { return std::get<0>(size); }
   int get_npcol() const { return std::get<1>(size); }
   std::array<int,2> get_size() const { return size; }
@@ -110,14 +118,6 @@ protected:
     set_size({nprow, nprocs/nprow});
     set_major<GRID_MAJOR>();
     set_my_coordinate();
-  }
-
-  static int find_square_root_like_divisor(int n) {
-    int i = int(std::sqrt((double)n));
-    for (; i > 1; --i) {
-      if ( (n % i) == 0 ) break;
-    }
-    return i;
   }
 
   void set_sizes_cart(grid_row_major_t) {

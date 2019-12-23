@@ -29,12 +29,7 @@ int main(int argc, char *argv[]) {
 
   MPI_Comm comm;
   std::array<int,2> dims, periods;
-  dims[0] = int(std::sqrt((double)nprocs));
-  while (1) {
-    if ( dims[0] == 1 ) break;
-    if ( (nprocs % dims[0]) == 0 ) break;
-    dims[0] = dims[0] - 1;
-  }
+  dims[0] = rokko::grid::find_square_root_like_divisor(nprocs);
   dims[1] = nprocs / dims[0];
   periods[0] = 0;  periods[1] = 0;
   int reorder = 0;
