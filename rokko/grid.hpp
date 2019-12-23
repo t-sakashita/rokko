@@ -135,8 +135,7 @@ protected:
   }
 
   void set_blacs_grid() {
-    blacs_handle = blacs::sys2blacs_handle(comm);
-    blacs_context = blacs_handle;
+    blacs_context = blacs::sys2blacs_handle(comm);
     char char_grid_major = is_row ? 'R' : 'C';
     blacs::gridinit(blacs_context, char_grid_major, get_nprow(), get_npcol());
   }
@@ -144,7 +143,7 @@ protected:
 private:
   std::array<int,2> size, my_coordinate;
   bool is_row;
-  int blacs_handle, blacs_context;
+  int blacs_context;
 };
 
 } // namespace rokko
