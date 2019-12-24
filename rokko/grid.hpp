@@ -17,7 +17,7 @@
 #include <mpi.h>
 #include <cmath>
 #include <rokko/mpi_communicator.hpp>
-#include <rokko/blacs.hpp>
+#include <rokko/blacs_grid.hpp>
 
 namespace rokko {
 
@@ -25,7 +25,7 @@ extern struct grid_row_major_t {} grid_row_major;
 
 extern struct grid_col_major_t {} grid_col_major;
 
-class grid : public mpi_comm {
+class grid : public mpi_comm, public blacs_grid {
 public:
   template <typename GRID_MAJOR>
   grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
@@ -41,7 +41,7 @@ public:
     else
       set_sizes_default(grid_major, lld);
 
-    set_blacs_grid();
+    set_blacs_grid(get_comm(), is_row_major(), get_size());
   }
 
   template <typename GRID_MAJOR>
@@ -56,7 +56,7 @@ public:
 
     set_my_coordinate();
 
-    set_blacs_grid();
+    set_blacs_grid(get_comm(), is_row_major(), get_size());
   }
 
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major, 0) {}
@@ -75,7 +75,6 @@ public:
   int get_myrow() const { return std::get<0>(my_coordinate); }
   int get_mycol() const { return std::get<1>(my_coordinate); }
   std::array<int,2> get_my_coordinate() const { return my_coordinate; }
-  int get_blacs_context() const { return blacs_context; }
 
   void set_size(std::array<int,2> const& size_in) { size = size_in; }
   void set_my_coordinate(std::array<int,2> const& my_coordinate_in) { my_coordinate = my_coordinate_in; }
@@ -134,16 +133,9 @@ protected:
     throw std::invalid_argument("calculate_sizes_cart : MPI Cartesian doesn't support grid_col_major.  Use it with grid_row_major.");
   }
 
-  void set_blacs_grid() {
-    blacs_context = blacs::sys2blacs_handle(comm);
-    char char_grid_major = is_row ? 'R' : 'C';
-    blacs::gridinit(blacs_context, char_grid_major, get_nprow(), get_npcol());
-  }
-
 private:
   std::array<int,2> size, my_coordinate;
   bool is_row;
-  int blacs_context;
 };
 
 } // namespace rokko
