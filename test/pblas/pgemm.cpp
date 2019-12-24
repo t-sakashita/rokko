@@ -22,6 +22,8 @@
 constexpr double eps = 1e-12;
 
 TEST(pgemm, pdgemm) {
+  constexpr int root_proc = 0;
+
   rokko::grid grid(MPI_COMM_WORLD);
   std::mt19937 engine(123lu);
   std::uniform_real_distribution<> dist(-1.0, 1.0);
@@ -33,7 +35,7 @@ TEST(pgemm, pdgemm) {
   Eigen::MatrixXd a(n, n);
   Eigen::MatrixXd b(n, n);
   Eigen::MatrixXd c(n, n);
-  if (grid.get_myrank() == 0) {
+  if (grid.get_myrank() == root_proc) {
     for (int j = 0; j < n; ++j) {
       for (int i = 0; i < n; ++i) {
         a(i, j) = dist(engine);
@@ -47,9 +49,9 @@ TEST(pgemm, pdgemm) {
   rokko::distributed_matrix<double> da(map);
   rokko::distributed_matrix<double> db(map);
   rokko::distributed_matrix<double> dc(map);
-  rokko::scatter(a, da, 0);
-  rokko::scatter(b, db, 0);
-  rokko::scatter(c, dc, 0);
+  rokko::scatter(a, da, root_proc);
+  rokko::scatter(b, db, root_proc);
+  rokko::scatter(c, dc, root_proc);
   
   rokko::blas::gemm(CblasNoTrans, CblasNoTrans, alpha, a, b, beta, c);
   rokko::pblas::pgemm('N', 'N', alpha, da, db, beta, dc);
@@ -57,7 +59,7 @@ TEST(pgemm, pdgemm) {
   double r = rokko::lapack::lange('F', c);
   double dr = rokko::scalapack::plange('F', dc);
   
-  if (grid.get_myrank() == 0) {
+  if (grid.get_myrank() == root_proc) {
     EXPECT_NEAR(r, dr, eps);
   }
 }
