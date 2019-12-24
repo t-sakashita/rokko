@@ -73,8 +73,8 @@ PBLAS_PDOT_IMPL(pdotc, pzdotc, std::complex<double>);
 template<typename VECTOR>
 typename VECTOR::value_type pdot(int n, const VECTOR& x, int ix, int jx, int incx,
                                  const VECTOR& y, int iy, int jy, int incy) {
-  const int* descx = x.get_mapping().get_blacs_descriptor();
-  const int* descy = y.get_mapping().get_blacs_descriptor();
+  const int* descx = x.get_mapping().get_blacs_descriptor().data();
+  const int* descy = y.get_mapping().get_blacs_descriptor().data();
   return pdot_dispatch(n, x.get_array_pointer(), ix, jx, descx, incx,
                        y.get_array_pointer(), iy, jy, descy, incy);
 }
@@ -82,8 +82,8 @@ typename VECTOR::value_type pdot(int n, const VECTOR& x, int ix, int jx, int inc
 template<typename VECTOR>
 typename VECTOR::value_type pdotc(int n, const VECTOR& x, int ix, int jx, int incx,
                                  const VECTOR& y, int iy, int jy, int incy) {
-  const int* descx = x.get_mapping().get_blacs_descriptor();
-  const int* descy = y.get_mapping().get_blacs_descriptor();
+  const int* descx = x.get_mapping().get_blacs_descriptor().data();
+  const int* descy = y.get_mapping().get_blacs_descriptor().data();
   return pdotc_dispatch(n, x.get_array_pointer(), ix, jx, descx, incx,
                         y.get_array_pointer(), iy, jy, descy, incy);
 }
@@ -91,8 +91,8 @@ typename VECTOR::value_type pdotc(int n, const VECTOR& x, int ix, int jx, int in
 template<typename VECTOR>
 typename VECTOR::value_type pdotu(int n, const VECTOR& x, int ix, int jx, int incx,
                                  const VECTOR& y, int iy, int jy, int incy) {
-  const int* descx = x.get_mapping().get_blacs_descriptor();
-  const int* descy = y.get_mapping().get_blacs_descriptor();
+  const int* descx = x.get_mapping().get_blacs_descriptor().data();
+  const int* descy = y.get_mapping().get_blacs_descriptor().data();
   return pdotu_dispatch(n, x.get_array_pointer(), ix, jx, descx, incx,
                         y.get_array_pointer(), iy, jy, descy, incy);
 }
@@ -118,9 +118,9 @@ PBLAS_PGEMV_IMPL(pzgemv, std::complex<double>);
 template<typename MATRIX, typename VECTOR, typename T>
 void pgemv(char trans, T alpha, const MATRIX& a, const VECTOR& x, int incx,
            T beta, VECTOR& y, int incy) {
-  const int* desca = a.get_mapping().get_blacs_descriptor();
-  const int* descx = x.get_mapping().get_blacs_descriptor();
-  const int* descy = y.get_mapping().get_blacs_descriptor();
+  const int* desca = a.get_mapping().get_blacs_descriptor().data();
+  const int* descx = x.get_mapping().get_blacs_descriptor().data();
+  const int* descy = y.get_mapping().get_blacs_descriptor().data();
   pgemv_dispatch(trans, a.get_m_global(), a.get_n_global(), alpha,
                  a.get_array_pointer(), 0, 0, desca,
                  x.get_array_pointer(), 0, 0, descx, incx, beta,
@@ -148,9 +148,9 @@ PBLAS_PGEMM_IMPL(pzgemm, std::complex<double>);
 template<typename MATRIX, typename T>
 void pgemm(char transa, char transb, T alpha, const MATRIX& a, const MATRIX& b,
            T beta, MATRIX& c) {
-  const int* desca = a.get_mapping().get_blacs_descriptor();
-  const int* descb = b.get_mapping().get_blacs_descriptor();
-  const int* descc = c.get_mapping().get_blacs_descriptor();
+  const int* desca = a.get_mapping().get_blacs_descriptor().data();
+  const int* descb = b.get_mapping().get_blacs_descriptor().data();
+  const int* descc = c.get_mapping().get_blacs_descriptor().data();
   pgemm_dispatch(transa, transb, a.get_m_global(), b.get_n_global(), a.get_n_global(), alpha,
                  a.get_array_pointer(), 0, 0, desca,
                  b.get_array_pointer(), 0, 0, descb, beta,
