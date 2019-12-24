@@ -71,6 +71,7 @@ public:
     int nb = mapping_global2local::get_nb();
     int blacs_context = mapping_global2local::get_grid().get_blacs_context();
     int lld = mapping_local2array<matrix_major>::get_lld();
+    if (lld == 0)  lld = 1;  // to avoid segmentation fault in descinit
     int info = scalapack::descinit(blacs_descriptor, m, n, mb, nb, 0, 0, blacs_context, lld);
     if (info) {
       std::cerr << "error info=" << info << " at descinit function of descA " << "mA="
