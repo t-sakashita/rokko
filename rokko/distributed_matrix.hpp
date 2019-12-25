@@ -59,8 +59,7 @@ public:
   void allocate_array() {
     array = new value_type[map.get_length_array()];
     if (array == nullptr) {
-      std::cerr << "failed to allocate array." << std::endl;
-      MPI_Abort(map.get_comm(), 3);
+      throw std::runtime_error("failed to allocate array.");
     }
   }
 
