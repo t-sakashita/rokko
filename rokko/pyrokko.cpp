@@ -105,6 +105,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def(py::init<pybind11::handle const&, grid_row_major_t, int>())
     .def(py::init<pybind11::handle const&, grid_col_major_t, int>())
     .def("get_comm", &wrap_grid::get_comm)
+    .def_property_readonly("comm", &wrap_grid::get_comm)
     .def_property_readonly("nprocs", &wrap_grid::get_nprocs)
     .def_property_readonly("nprow", &wrap_grid::get_nprow)
     .def_property_readonly("npcol", &wrap_grid::get_npcol)
