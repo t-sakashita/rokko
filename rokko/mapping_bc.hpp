@@ -74,9 +74,7 @@ public:
     if (lld == 0)  lld = 1;  // to avoid segmentation fault in descinit
     int info = scalapack::descinit(blacs_descriptor, m, n, mb, nb, 0, 0, blacs_context, lld);
     if (info) {
-      std::cerr << "error info=" << info << " at descinit function of descA " << "mA="
-              << m << "  nA=" << n << "  lld=" << lld << "." << std::endl;
-      MPI_Abort(MPI_COMM_WORLD, info);
+      throw std::invalid_argument("scalapack::descinit : info=" + std::to_string(info));
     }
   }
   const std::array<int,9>& get_blacs_descriptor() const { return blacs_descriptor; }
