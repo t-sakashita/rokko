@@ -80,7 +80,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   assert_elpa_ok(elpa_setup(handle));
 
   /* Set tunables */
-  const int solver_enum = ELPA_SOLVER_2STAGE;
+  constexpr int solver_enum = ELPA_SOLVER_2STAGE;
   elpa_set_integer(handle, "solver", solver_enum, &error);
   assert_elpa_ok(error);
 
@@ -154,7 +154,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   assert_elpa_ok(elpa_setup(handle));
 
   /* Set tunables */
-  const int solver_enum = ELPA_SOLVER_2STAGE;
+  constexpr int solver_enum = ELPA_SOLVER_2STAGE;
   elpa_set_integer(handle, "solver", solver_enum, &error);
   assert_elpa_ok(error);
 
