@@ -93,6 +93,8 @@ public:
 
   bool is_col_major() const { return ptr->is_col_major(); }
 
+  int calculate_rank_form_coords(int proc_row, int proc_col) const { return ptr->calculate_rank_form_coords(proc_row, proc_col); }
+
 private:
   grid* ptr;
 };
