@@ -167,6 +167,11 @@ public:
     return is_col ? col_ver().translate_g2l(to_array(global)) : row_ver().translate_g2l(to_array(global));
   }
 
+  wrap_grid get_grid() const {
+    const grid& g = is_col ? col_ver().get_grid() : row_ver().get_grid();
+    return wrap_grid(g);
+  }
+
 private:
   bool is_col;
   boost::variant<mapping_bc<matrix_row_major>, mapping_bc<matrix_col_major>> _map;

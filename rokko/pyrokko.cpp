@@ -140,6 +140,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("is_gindex_myrow", &wrap_mapping_bc::is_gindex_myrow)
     .def("is_gindex_mycol", &wrap_mapping_bc::is_gindex_mycol)
     .def("is_gindex", &wrap_mapping_bc::is_gindex)
+    .def("get_grid", &wrap_mapping_bc::get_grid)
     .def_property_readonly("major", &wrap_mapping_bc::get_major_string);
   
   py::class_<wrap_distributed_matrix>(m, "distributed_matrix")

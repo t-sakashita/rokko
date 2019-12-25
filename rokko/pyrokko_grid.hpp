@@ -51,6 +51,10 @@ public:
     ptr = new grid(comm, to_array(size_in), grid_major);
   }
 
+  wrap_grid(rokko::grid g) {
+    ptr = &g;
+  }
+
   template <typename GRID_MAJOR>
   wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0) {
     const int rc = import_mpi4py();
