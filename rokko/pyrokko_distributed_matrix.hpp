@@ -173,7 +173,7 @@ public:
     return is_col ? "col" : "row";
   }
 
-  wrap_mapping_bc& get_map() {
+  const wrap_mapping_bc& get_map() const {
     return map;
   }
 

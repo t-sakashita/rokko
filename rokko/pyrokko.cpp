@@ -174,6 +174,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("set_ndarray", &wrap_distributed_matrix::set_ndarray)
     .def("get_ndarray", &wrap_distributed_matrix::get_ndarray, py::return_value_policy::reference_internal)
     .def_property("ndarray", &wrap_distributed_matrix::get_ndarray, &wrap_distributed_matrix::set_ndarray)
+    .def_property_readonly("map", &wrap_distributed_matrix::get_map)
     .def_property_readonly("major", &wrap_distributed_matrix::get_major_string);
 
 
