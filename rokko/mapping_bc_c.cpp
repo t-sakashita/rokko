@@ -195,15 +195,9 @@ int rokko_mapping_bc_translate_g2l_col_f(struct rokko_mapping_bc map, int global
 }
 
 bool rokko_mapping_bc_is_row_major(struct rokko_mapping_bc map) {
-  if (map.major == rokko_matrix_row_major)
-    return true;
-  else
-    return false;
+  return map.major == rokko_matrix_row_major;
 }
 
 bool rokko_mapping_bc_is_col_major(struct rokko_mapping_bc map) {
-  if (map.major == rokko_matrix_col_major)
-    return true;
-  else
-    return false;
+  return map.major == rokko_matrix_col_major;
 }
