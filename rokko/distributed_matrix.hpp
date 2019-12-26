@@ -252,7 +252,7 @@ T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
   const auto& map = mat.get_mapping();
 
   value_type local_sum = 0;
-  for (int i=0; i<std::min(mat.get_m_global(), mat.get_n_global()); ++i) {
+  for (int i=0; i<std::min(map.get_m_global(), map.get_n_global()); ++i) {
     if (map.is_gindex(i, i)) {
       local_sum += mat.get_global(i, i);
     }
