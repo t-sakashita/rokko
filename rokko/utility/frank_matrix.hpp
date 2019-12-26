@@ -51,26 +51,30 @@ public:
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   template<typename T>
   static void generate(rokko::distributed_matrix<T, matrix_col_major>& mat) {
-    if (mat.get_m_global() != mat.get_n_global())
+    auto const& map = mat.get_mapping();
+    if (map.get_m_global() != map.get_n_global())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-      int global_j = mat.translate_l2g_col(local_j);
-      for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-        int global_i = mat.translate_l2g_row(local_i);
-        mat.set_local(local_i, local_j, mat.get_m_global() - std::max(global_i, global_j));
+
+    for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+      int global_j = map.translate_l2g_col(local_j);
+      for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
+        int global_i = map.translate_l2g_row(local_i);
+        mat.set_local(local_i, local_j, map.get_m_global() - std::max(global_i, global_j));
       }
     }
   }
 
   template<typename T>
   static void generate(rokko::distributed_matrix<T, matrix_row_major>& mat) {
-    if (mat.get_m_global() != mat.get_n_global())
+    auto const& map = mat.get_mapping();
+     if (map.get_m_global() != map.get_n_global())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-      int global_i = mat.translate_l2g_row(local_i);
-      for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-        int global_j = mat.translate_l2g_col(local_j);
-        mat.set_local(local_i, local_j, mat.get_m_global() - std::max(global_i, global_j));
+
+     for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
+      int global_i = map.translate_l2g_row(local_i);
+      for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+        int global_j = map.translate_l2g_col(local_j);
+        mat.set_local(local_i, local_j, map.get_m_global() - std::max(global_i, global_j));
       }
     }
   }
@@ -78,22 +82,26 @@ public:
   // another (slower) implementation using set_global function
   template<typename T>
   static void generate_global(rokko::distributed_matrix<T, matrix_col_major>& mat) {
-    if (mat.m_global != mat.n_global)
+    auto const& map = mat.get_mapping();
+    if (map.m_global() != map.n_global())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    for(int global_j=0; global_j<mat.n_global; ++global_j) {
-      for(int global_i=0; global_i<mat.m_global; ++global_i) {
-        mat.set_global(global_i, global_j, mat.m_global - std::max(global_i, global_j) );
+
+    for(int global_j=0; global_j<map.n_global(); ++global_j) {
+      for(int global_i=0; global_i<map.m_global(); ++global_i) {
+        mat.set_global(global_i, global_j, map.m_global() - std::max(global_i, global_j) );
       }
     }
   }
 
   template<typename T>
   static void generate_global(rokko::distributed_matrix<T, matrix_row_major>& mat) {
-    if (mat.m_global != mat.n_global)
+    auto const& map = mat.get_mapping();
+    if (map.m_global() != map.n_global())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    for(int global_i=0; global_i<mat.m_global; ++global_i) {
-      for(int global_j=0; global_j<mat.n_global; ++global_j) {
-        mat.set_global(global_i, global_j, mat.m_global - std::max(global_i, global_j) );
+
+    for(int global_i=0; global_i<map.m_global(); ++global_i) {
+      for(int global_j=0; global_j<map.n_global(); ++global_j) {
+        mat.set_global(global_i, global_j, map.m_global() - std::max(global_i, global_j) );
       }
     }
   }

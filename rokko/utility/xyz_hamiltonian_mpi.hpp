@@ -192,6 +192,8 @@ template<typename T, typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
+  const auto& map = mat.get_mapping();
+
   mat.set_zeros();
   int N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
@@ -210,21 +212,21 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice,
     int m3 = m1 + m2;
 
     for (int k = 0; k < N; ++k) {
-      if (mat.is_gindex_mycol(k)) {
-        int local_k = mat.translate_g2l_col(k);
+      if (map.is_gindex_mycol(k)) {
+        int local_k = map.translate_g2l_col(k);
         if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (mat.is_gindex_myrow(k^m3)) {
-            mat.update_local(mat.translate_g2l_row(k^m3), local_k, offdiag_plus);
+          if (map.is_gindex_myrow(k^m3)) {
+            mat.update_local(map.translate_g2l_row(k^m3), local_k, offdiag_plus);
           }
-          if (mat.is_gindex_myrow(k)) {
-            mat.update_local(mat.translate_g2l_row(k), local_k, diag_minus);
+          if (map.is_gindex_myrow(k)) {
+            mat.update_local(map.translate_g2l_row(k), local_k, diag_minus);
           }
         } else {
-          if (mat.is_gindex_myrow(k^m3)) {
-            mat.update_local(mat.translate_g2l_row(k^m3), local_k, offdiag_minus);
+          if (map.is_gindex_myrow(k^m3)) {
+            mat.update_local(map.translate_g2l_row(k^m3), local_k, offdiag_minus);
           }
-          if (mat.is_gindex_myrow(k)) {
-            mat.update_local(mat.translate_g2l_row(k), local_k, diag_plus);
+          if (map.is_gindex_myrow(k)) {
+            mat.update_local(map.translate_g2l_row(k), local_k, diag_plus);
           }
         }
       }
@@ -236,6 +238,8 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice,
 /*
 template <typename MATRIX_MAJOR>
 void generate(int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<std::tuple<double, double, double>>& coupling, rokko::distributed_matrix<MATRIX_MAJOR>& mat) {
+  const auto& map = mat.get_mapping();
+
   mat.set_zeros();
   int N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
@@ -252,10 +256,10 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice, const std:
     int m1 = 1 << i;
     int m2 = 1 << j;
     int m3 = m1 + m2;
-    for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-      int k1 = mat.translate_l2g_row(local_i);
-      for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-        int k2 = mat.translate_l2g_col(local_j);
+    for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
+      int k1 = map.translate_l2g_row(local_i);
+      for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
+        int k2 = map.translate_l2g_col(local_j);
         if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (k1 == (k2^m3)) {
             mat.update_local(local_i, local_j, offdiag_plus);
