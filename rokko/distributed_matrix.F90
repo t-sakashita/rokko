@@ -500,20 +500,6 @@ module rokko_distributed_matrix_mod
      end function rokko_distributed_matrix_get_array_pointer_c
   end interface
 
-  ! generic name
-  interface rokko_matrix012_generate
-     procedure rokko_matrix012_generate_distributed_matrix
-  end interface rokko_matrix012_generate
-
-  interface
-     subroutine rokko_matrix012_generate_distributed_matrix(matrix) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-     end subroutine rokko_matrix012_generate_distributed_matrix
-  end interface
-
 contains
 
   subroutine rokko_distributed_matrix_construct_array_f(matrix, map, array) bind(c)
