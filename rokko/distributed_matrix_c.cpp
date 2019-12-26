@@ -281,6 +281,7 @@ int rokko_distributed_matrix_translate_g2l_col(struct rokko_distributed_matrix m
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->translate_g2l_col(global_j);
 }
 
+// offset by one for Fortran
 int rokko_distributed_matrix_translate_l2g_row_f(struct rokko_distributed_matrix matrix, int local_i) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->translate_l2g_row(local_i - 1) + 1;

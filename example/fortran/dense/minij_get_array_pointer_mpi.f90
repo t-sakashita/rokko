@@ -61,14 +61,14 @@ program minij_get_array_pointer_mpi
   call rokko_construct(w, dim)
 
   ! generate minij matrix
-  m_local = rokko_get_m_local(mat)
-  n_local = rokko_get_n_local(mat)
+  m_local = rokko_get_m_local(map)
+  n_local = rokko_get_n_local(map)
 
   call rokko_get_array_pointer(mat, array_ptr)
   do local_j = 0, n_local-1
-     global_j = rokko_translate_l2g_col(mat, local_j)
+     global_j = rokko_translate_l2g_col(map, local_j)
      do local_i = 0, m_local-1
-        global_i = rokko_translate_l2g_row(mat, local_i)
+        global_i = rokko_translate_l2g_row(map, local_i)
         array_ptr(local_i+1, local_j+1) = min(global_i, global_j) + 1
      enddo
   enddo

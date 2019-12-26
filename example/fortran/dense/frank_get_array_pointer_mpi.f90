@@ -61,15 +61,15 @@ program frank_matrix
   call rokko_construct(w, dim)
 
   ! generate frank matrix
-  m_local = rokko_get_m_local(mat)
-  n_local = rokko_get_n_local(mat)
+  m_local = rokko_get_m_local(map)
+  n_local = rokko_get_n_local(map)
   print *,"m_local=", m_local, " n_local=", n_local
 
   call rokko_get_array_pointer(mat, array_ptr)
   do local_j = 0, n_local-1
-     global_j = rokko_translate_l2g_col(mat, local_j)
+     global_j = rokko_translate_l2g_col(map, local_j)
      do local_i = 0, m_local-1
-        global_i = rokko_translate_l2g_row(mat, local_i)
+        global_i = rokko_translate_l2g_row(map, local_i)
         array_ptr(local_i+1, local_j+1) = dble(dim - max(global_i, global_j))
      enddo
   enddo

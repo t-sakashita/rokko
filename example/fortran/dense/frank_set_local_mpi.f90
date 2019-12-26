@@ -61,14 +61,14 @@ program frank_matrix
   call rokko_construct(w, dim)
 
   ! generate frank matrix
-  m_local = rokko_get_m_local(mat)
-  n_local = rokko_get_n_local(mat)
+  m_local = rokko_get_m_local(map)
+  n_local = rokko_get_n_local(map)
   print *,"m_local=", m_local, " n_local=", n_local
 
   do local_j = 0, n_local-1
-     global_j = rokko_translate_l2g_col(mat, local_j)
+     global_j = rokko_translate_l2g_col(map, local_j)
      do local_i = 0, m_local-1
-        global_i = rokko_translate_l2g_row(mat, local_i)
+        global_i = rokko_translate_l2g_row(map, local_i)
         val = dble(dim - max(global_i, global_j))
         call rokko_set_local(mat, local_i, local_j, val)
      enddo
