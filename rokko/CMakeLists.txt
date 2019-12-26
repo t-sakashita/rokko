@@ -25,14 +25,14 @@ if(BUILD_SERIAL_DENSE_SOLVER)
   if(BUILD_Fortran_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_dense.F90 rokko.F90)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} string.F90 parameters.F90 solver_name.F90 eigen_vector.F90 eigen_matrix.F90 serial_dense_ev.F90)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} serial_helmert_matrix.F90)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} serial_frank_matrix.F90 serial_minij_matrix.F90 serial_helmert_matrix.F90)
   endif(BUILD_Fortran_BINDING)
 endif(BUILD_SERIAL_DENSE_SOLVER)
 
 if(BUILD_PARALLEL_DENSE_SOLVER)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp matrix_major.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_dense_ev.cpp)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_helmert_matrix.F90)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_frank_matrix.F90 parallel_minij_matrix.F90 parallel_helmert_matrix.F90)
 
   # PBLAS, ScaLAPACK
   if(ROKKO_HAVE_SCALAPACK)

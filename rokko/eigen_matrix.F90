@@ -211,37 +211,6 @@ module rokko_eigen_matrix_mod
 
   end interface
 
-  !
-  ! rokko_frank_matrix for eigen_matrix
-  !
-
-  interface rokko_frank_matrix_generate
-     procedure rokko_frank_matrix_generate_eigen_matrix
-  end interface rokko_frank_matrix_generate
-  
-  interface
-     subroutine rokko_frank_matrix_generate_eigen_matrix(matrix) bind(c)
-       use iso_c_binding
-       import rokko_eigen_matrix
-       implicit none
-       type(rokko_eigen_matrix), value, intent(in) :: matrix
-     end subroutine rokko_frank_matrix_generate_eigen_matrix
-  end interface
-
-  ! rokko_minij_matrix for eigen_matrix
-  interface rokko_minij_matrix_generate
-     procedure rokko_minij_matrix_generate_eigen_matrix
-  end interface rokko_minij_matrix_generate
-
-  interface
-     subroutine rokko_minij_matrix_generate_eigen_matrix(matrix) bind(c)
-       use iso_c_binding
-       import rokko_eigen_matrix
-       implicit none
-       type(rokko_eigen_matrix), value, intent(in) :: matrix
-     end subroutine rokko_minij_matrix_generate_eigen_matrix
-  end interface
-
   ! rokko_matrix012 for eigen_matrix
   interface rokko_matrix012_generate
      procedure rokko_matrix012_generate_eigen_matrix

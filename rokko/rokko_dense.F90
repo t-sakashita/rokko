@@ -14,10 +14,14 @@
 module rokko_dense
   use iso_c_binding
   use rokko_serial_dense_ev_mod
+  use rokko_serial_frank_matrix_mod
+  use rokko_serial_minij_matrix_mod
   use rokko_serial_helmert_matrix_mod
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   use rokko_parallel_dense_mod
   use collective
+  use rokko_parallel_frank_matrix_mod
+  use rokko_parallel_minij_matrix_mod
   use rokko_parallel_helmert_matrix_mod
 #endif
   implicit none

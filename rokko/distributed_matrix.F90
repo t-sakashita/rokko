@@ -500,42 +500,6 @@ module rokko_distributed_matrix_mod
      end function rokko_distributed_matrix_get_array_pointer_c
   end interface
 
-  !
-  ! rokko_frank_matrix for distributed_matrix
-  !
-
-  ! generic name
-  interface rokko_frank_matrix_generate
-     procedure rokko_frank_matrix_generate_distributed_matrix
-  end interface rokko_frank_matrix_generate
-
-  interface
-     subroutine rokko_frank_matrix_generate_distributed_matrix(matrix) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-     end subroutine rokko_frank_matrix_generate_distributed_matrix
-  end interface
-
-  !
-  ! rokko_minij_matrix for distributed_matrix
-  !
-
-  ! generic name
-  interface rokko_minij_matrix_generate
-     procedure rokko_minij_matrix_generate_distributed_matrix
-  end interface rokko_minij_matrix_generate
-
-  interface
-     subroutine rokko_minij_matrix_generate_distributed_matrix(matrix) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-     end subroutine rokko_minij_matrix_generate_distributed_matrix
-  end interface
-
   ! generic name
   interface rokko_matrix012_generate
      procedure rokko_matrix012_generate_distributed_matrix
