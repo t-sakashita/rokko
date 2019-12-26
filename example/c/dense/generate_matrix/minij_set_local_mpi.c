@@ -39,12 +39,12 @@ int main(int argc, char *argv[]) {
   rokko_distributed_matrix_construct(&mat, map);
 
   /* generate minij matrix */
-  m_local = rokko_distributed_matrix_get_m_local(mat);
-  n_local = rokko_distributed_matrix_get_n_local(mat);
+  m_local = rokko_mapping_bc_get_m_local(map);
+  n_local = rokko_mapping_bc_get_n_local(map);
   for(local_j=0; local_j<n_local; ++local_j) {
-    global_j = rokko_distributed_matrix_translate_l2g_col(mat, local_j);
+    global_j = rokko_mapping_bc_translate_l2g_col(map, local_j);
     for(local_i=0; local_i<m_local; ++local_i) {
-      global_i = rokko_distributed_matrix_translate_l2g_row(mat, local_i);
+      global_i = rokko_mapping_bc_translate_l2g_row(map, local_i);
       rokko_distributed_matrix_set_local(mat, local_i, local_j, MIN(global_i, global_j) + 1);
     }
   }
