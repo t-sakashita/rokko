@@ -73,9 +73,8 @@ struct getrs_dispatch<std::complex<double>> {
 template<typename MATRIX0, typename MATRIX1, typename VECTOR>
 lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
                  VECTOR const& ipiv, MATRIX1& b) {
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX0>::type,
-                      typename value_t<MATRIX1>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, lapack_int>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX0>, value_t<MATRIX1>>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
@@ -83,7 +82,7 @@ lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
     throw std::invalid_argument("vector ipiv size mismatch");
   if (rows(b) != n || cols(b) != nrhs)
     throw std::invalid_argument("matrix B size mismatch");
-  return getrs_dispatch<typename value_t<MATRIX0>::type>
+  return getrs_dispatch<value_t<MATRIX0>>
     ::getrs((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), trans, n, nrhs, a,
             ipiv, b);
 }

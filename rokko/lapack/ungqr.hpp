@@ -96,27 +96,25 @@ struct ungqr_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
-                      typename value_t<VECTOR>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   if (size(tau) != k)
     throw std::invalid_argument("vector tau size mismatch");
-  return ungqr_dispatch<typename value_t<MATRIX>::type>
+  return ungqr_dispatch<value_t<MATRIX>>
     ::ungqr((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), m, n, k, a, tau);
 }
 
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
-                      typename value_t<VECTOR>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   if (size(tau) != k)
     throw std::invalid_argument("vector tau size mismatch");
   if (size(work) < std::max(1, n))
     throw std::invalid_argument("vector work size mismatch");
-  return ungqr_dispatch<typename value_t<MATRIX>::type>
+  return ungqr_dispatch<value_t<MATRIX>>
     ::ungqr((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), m, n, k, a, tau, work);
 }
 

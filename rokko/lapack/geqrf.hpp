@@ -96,21 +96,19 @@ struct geqrf_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau) {
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
-                      typename value_t<VECTOR>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
   if (size(tau) != r)
     throw std::invalid_argument("vector tau size mismatch");
-  return geqrf_dispatch<typename value_t<MATRIX>::type>
+  return geqrf_dispatch<value_t<MATRIX>>
     ::geqrf((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), m, n, a, tau);
 }
 
 template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work) {
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
-                      typename value_t<VECTOR>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -118,7 +116,7 @@ lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work) {
     throw std::invalid_argument("vector tau size mismatch");
   if (size(work) < std::max(1, n))
     throw std::invalid_argument("vector work size mismatch");
-  return geqrf_dispatch<typename value_t<MATRIX>::type>
+  return geqrf_dispatch<value_t<MATRIX>>
     ::geqrf((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), m, n, a, tau, work);
 }
 

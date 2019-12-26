@@ -68,14 +68,13 @@ struct heev_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>,
-                      typename value_t<VECTOR>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
   if (size(w) != n)
     throw std::invalid_argument("vector w size mismatch");
-  return heev_dispatch<typename value_t<MATRIX>::type>::
+  return heev_dispatch<value_t<MATRIX>>::
     heev((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, uplo, n, a, w);
 }
   

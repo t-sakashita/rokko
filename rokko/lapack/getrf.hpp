@@ -72,10 +72,10 @@ template<typename MATRIX, typename VECTOR>
 lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<VECTOR>::type, lapack_int>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, lapack_int>::value);
   if (size(ipiv) < std::min(m, n))
     throw std::invalid_argument("vector ipiv size mismatch");
-  return getrf_dispatch<typename value_t<MATRIX>::type>
+  return getrf_dispatch<value_t<MATRIX>>
     ::getrf((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR),
             m, n, a, ipiv);
 }

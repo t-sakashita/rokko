@@ -12,24 +12,28 @@
 #ifndef ROKKO_TRAITS_VALUE_T_HPP
 #define ROKKO_TRAITS_VALUE_T_HPP
 
+#include <type_traits>
 #include <complex>
 
 namespace rokko {
 
 template<typename T>
-struct value_t {
+struct value_type_traits {
   using type = typename T::value_type;
 };
 
 template<typename T>
-struct value_t<T*> {
+struct value_type_traits<T*> {
   using type = T;
 };
 
 template<typename T>
-struct value_t<T**> {
+struct value_type_traits<T**> {
   using type = T;
 };
+
+template<typename T>
+using value_t = typename value_type_traits<T>::type;
 
 } // namespace rokko
 

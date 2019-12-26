@@ -68,7 +68,7 @@ template<typename MATRIX>
 norm_t<MATRIX> lange(char norm, MATRIX const& a) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
-  return lange_dispatch<typename value_t<MATRIX>::type>
+  return lange_dispatch<value_t<MATRIX>>
     ::lange((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), norm,
             m, n, a);
 }

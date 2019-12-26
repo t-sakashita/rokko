@@ -20,7 +20,7 @@ namespace rokko {
 
 template<typename T>
 struct norm_type_traits {
-  using value_type = typename value_t<T>::type;
+  using value_type = value_t<T>;
   using type = typename boost::numeric::ublas::type_traits<value_type>::real_type;
 };
 

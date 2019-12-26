@@ -116,8 +116,7 @@ struct gesvd_dispatch<std::complex<double>> {
 template<typename MATRIX, typename VECTOR>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX& vt,
                  VECTOR& work) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>,
-                      typename value_t<VECTOR>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -131,7 +130,7 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX&
     throw std::invalid_argument("matrix Vt size mismatch");
   if (jobvt == 'S' && (rows(vt) != r || cols(vt) != n))
     throw std::invalid_argument("matrix Vt size mismatch");
-  return gesvd_dispatch<typename value_t<MATRIX>::type>
+  return gesvd_dispatch<value_t<MATRIX>>
     ::gesvd((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR),
             jobu, jobvt, m, n, a, s, u, vt, work);
 }
@@ -139,10 +138,8 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX&
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX& vt,
                  VECTOR1& work, VECTOR0& rwork) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>,
-                      typename value_t<VECTOR0>::type>::value);
-  BOOST_STATIC_ASSERT(std::is_same<typename value_t<MATRIX>::type,
-                      typename value_t<VECTOR1>::type>::value);
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR0>>::value);
+  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR1>>::value);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -158,7 +155,7 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX
     throw std::invalid_argument("matrix Vt size mismatch");
   if (size(rwork) < 5 * r)
     throw std::invalid_argument("matrix rwork size mismatch");
-  return gesvd_dispatch<typename value_t<MATRIX>::type>
+  return gesvd_dispatch<value_t<MATRIX>>
     ::gesvd_work((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR),
                  jobu, jobvt, m, n, a, s, u, vt, work, rwork);
 }
