@@ -65,7 +65,7 @@ struct lange_dispatch<std::complex<double>> {
 }
 
 template<typename MATRIX>
-typename norm_t<MATRIX>::type lange(char norm, MATRIX const& a) {
+norm_t<MATRIX> lange(char norm, MATRIX const& a) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   return lange_dispatch<typename value_t<MATRIX>::type>

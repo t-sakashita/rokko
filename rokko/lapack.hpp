@@ -50,10 +50,10 @@ template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work);
   
 template<typename MATRIX>
-typename rokko::norm_t<MATRIX>::type lange(char norm, MATRIX const& a);
+rokko::norm_t<MATRIX> lange(char norm, MATRIX const& a);
 
 template<typename MATRIX, typename VECTOR>
-typename rokko::norm_t<MATRIX>::type lange(char norm, MATRIX const& a, VECTOR& work);
+rokko::norm_t<MATRIX> lange(char norm, MATRIX const& a, VECTOR& work);
   
 template<typename MATRIX, typename VECTOR>
 lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau);

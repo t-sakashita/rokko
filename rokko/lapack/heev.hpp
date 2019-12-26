@@ -68,7 +68,7 @@ struct heev_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
-  BOOST_STATIC_ASSERT(std::is_same<typename norm_t<MATRIX>::type,
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>,
                       typename value_t<VECTOR>::type>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
