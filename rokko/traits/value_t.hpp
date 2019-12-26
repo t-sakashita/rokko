@@ -16,6 +16,8 @@
 
 namespace rokko {
 
+namespace detail {
+
 template<typename T>
 struct value_type_traits {
   using type = typename T::value_type;
@@ -31,8 +33,10 @@ struct value_type_traits<T**> {
   using type = T;
 };
 
+} // end namespace detail
+
 template<typename T>
-using value_t = typename value_type_traits<T>::type;
+using value_t = typename detail::value_type_traits<T>::type;
 
 } // namespace rokko
 

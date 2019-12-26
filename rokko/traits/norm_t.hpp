@@ -18,14 +18,18 @@
 
 namespace rokko {
 
+namespace detail {
+
 template<typename T>
 struct norm_type_traits {
-  using value_type = value_t<T>;
+  using value_type = rokko::value_t<T>;
   using type = typename boost::numeric::ublas::type_traits<value_type>::real_type;
 };
 
+} // end namespace detail
+
 template<typename T>
-using norm_t = typename norm_type_traits<T>::type;
+using norm_t = typename detail::norm_type_traits<T>::type;
 
 } // namespace rokko
 
