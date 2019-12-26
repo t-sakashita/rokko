@@ -12,7 +12,6 @@
 #ifndef ROKKO_TRAITS_VALUE_T_HPP
 #define ROKKO_TRAITS_VALUE_T_HPP
 
-#include <type_traits>
 #include <complex>
 
 namespace rokko {
