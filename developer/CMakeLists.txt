@@ -10,4 +10,3 @@
 
 add_subdirectory(norokko_anasazi)
 add_subdirectory(norokko_slepc)
-add_subdirectory(try)
