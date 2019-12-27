@@ -12,7 +12,6 @@
 #include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <boost/lexical_cast.hpp>
-#include <random>
 
 #include <gtest/gtest.h>
 
@@ -32,9 +31,6 @@ TEST(product_v_mpi, product_v_mpi) {
     dim = boost::lexical_cast<int>(global_argv[1]);
   }
 
-  std::mt19937 engine(123lu);
-  std::uniform_real_distribution<> dist(-1.0, 1.0);
-
   if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm);
@@ -45,9 +41,9 @@ TEST(product_v_mpi, product_v_mpi) {
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(mapvec);
   Eigen::MatrixXd locA(dim, dim);
   Eigen::VectorXd locX(dim), locY(dim);
-  for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = dist(engine);
-  for (int i = 0; i < dim; ++i) locX(i) = dist(engine);
-  for (int i = 0; i < dim; ++i) locY(i) = dist(engine);
+  locA.setRandom();
+  locX.setRandom();
+  locY.setRandom();
   rokko::scatter(locA, matA, root_proc);
   rokko::scatter(locX, vecX, root_proc);
   rokko::scatter(locY, vecY, root_proc);
