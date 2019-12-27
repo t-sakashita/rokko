@@ -235,6 +235,19 @@ private:
   wrap_mapping_bc map;
 };
 
+
+void pyrokko_product(double alpha,
+                     wrap_distributed_matrix const& matA, bool transA,
+                     wrap_distributed_matrix const& matB, bool transB,
+                     double beta,
+                     wrap_distributed_matrix& matC) {
+  assert(matA.is_major_col());
+  assert(matB.is_major_col());
+  assert(matC.is_major_col());
+
+  product(alpha, matA.col_ver(), transA, matB.col_ver(), transB, beta, matC.col_ver());
+}
+
 } // end namespace rokko
 
 #endif // PYROKKO_DISTRIBUTED_MATRIX_HPP

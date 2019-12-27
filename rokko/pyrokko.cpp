@@ -178,6 +178,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_property_readonly("map", &wrap_distributed_matrix::get_map)
     .def_property_readonly("major", &wrap_distributed_matrix::get_major_string);
 
+  m.def("product", py::overload_cast<double, wrap_distributed_matrix const&, bool, wrap_distributed_matrix const&, bool, double, wrap_distributed_matrix&>(&pyrokko_product), py::arg("alpha"), py::arg("matA"), py::arg("transA"), py::arg("matB"), py::arg("transB"), py::arg("beta"), py::arg("matC"));
 
   py::class_<wrap_parallel_dense_ev>(m, "parallel_dense_ev")
     .def(py::init<std::string const&>())
