@@ -43,11 +43,10 @@ TEST(product_v_mpi, product_v_mpi) {
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(mapvec);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(mapvec);
   Eigen::MatrixXd locA(dim, dim);
-  Eigen::MatrixXd locX(dim, 1);
-  Eigen::MatrixXd locY(dim, 1);
+  Eigen::VectorXd locX(dim), locY(dim);
   for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = dist(engine);
-  for (int i = 0; i < dim; ++i) locX(i, 0) = dist(engine);
-  for (int i = 0; i < dim; ++i) locY(i, 0) = dist(engine);
+  for (int i = 0; i < dim; ++i) locX(i) = dist(engine);
+  for (int i = 0; i < dim; ++i) locY(i) = dist(engine);
   rokko::scatter(locA, matA, 0);
   rokko::scatter(locX, vecX, 0);
   rokko::scatter(locY, vecY, 0);
@@ -55,14 +54,14 @@ TEST(product_v_mpi, product_v_mpi) {
   // local calculation
   for (int i = 0; i < dim; ++i)
     for (int j = 0; j < dim; ++j)
-      locY(i, 0) += locA(i, j) * locX(j, 0);
+      locY(i) += locA(i, j) * locX(j);
 
   // global calculation
   rokko::product_v(1.0, matA, false, vecX, false, 0, 1, vecY, false, 0);
 
   for (int i = 0; i < dim; ++i) {
     if (vecY.is_gindex({i, 0}))
-      EXPECT_NEAR(vecY.get_global(i, 0), locY(i, 0), eps);
+      EXPECT_NEAR(vecY.get_global(i,0), locY(i), eps);
   }
 }
 
