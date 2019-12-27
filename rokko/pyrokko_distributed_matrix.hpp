@@ -122,7 +122,17 @@ public:
   std::tuple<int,int> translate_g2l(std::tuple<int,int> const& global) const {
     return is_col ? col_ver().translate_g2l(to_array(global)) : row_ver().translate_g2l(to_array(global));
   }
-  
+
+  double get_local(int local_i, int local_j) {
+    return is_col ?
+      col_ver().get_local(local_i, local_j) : row_ver().get_local(local_i, local_j);
+  }
+
+  double get_global(int global_i, int global_j) {
+    return is_col ?
+      col_ver().get_global(global_i, global_j) : row_ver().get_global(global_i, global_j);
+  }
+
   void set_local(int local_i, int local_j, double value) {
     if (is_col)
       col_ver().set_local(local_i, local_j, value);
@@ -135,6 +145,20 @@ public:
       col_ver().set_global(global_i, global_j, value);
     else
       row_ver().set_global(global_i, global_j, value);
+  }
+
+  void update_local(int local_i, int local_j, double value) {
+    if (is_col)
+      col_ver().update_local(local_i, local_j, value);
+    else
+      row_ver().update_local(local_i, local_j, value);
+  }
+
+  void update_global(int global_i, int global_j, double value) {
+    if (is_col)
+      col_ver().update_global(global_i, global_j, value);
+    else
+      row_ver().update_global(global_i, global_j, value);
   }
 
   int get_length_array() const {
