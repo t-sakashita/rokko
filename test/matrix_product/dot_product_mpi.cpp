@@ -22,6 +22,7 @@ int global_argc;
 char** global_argv;
 
 TEST(dot_product_mpi, dot_product_mpi) {
+  constexpr int root_proc = 0;
   MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
@@ -34,7 +35,7 @@ TEST(dot_product_mpi, dot_product_mpi) {
   std::mt19937 engine(123lu);
   std::uniform_real_distribution<> dist(-1.0, 1.0);
 
-  if (rank == 0) std::cout << "dimension = " << dim << std::endl;
+  if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;
   rokko::grid g(comm);
   rokko::mapping_bc<rokko::matrix_col_major> map({dim, 1}, {1, 1}, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(map);
@@ -42,8 +43,8 @@ TEST(dot_product_mpi, dot_product_mpi) {
   Eigen::VectorXd locX(dim), locY(dim);
   for (int i = 0; i < dim; ++i) locX(i) = dist(engine);
   for (int i = 0; i < dim; ++i) locY(i) = dist(engine);
-  rokko::scatter(locX, vecX, 0);
-  rokko::scatter(locY, vecY, 0);
+  rokko::scatter(locX, vecX, root_proc);
+  rokko::scatter(locY, vecY, root_proc);
 
   // local calculation
   double product_local = locX.dot(locY);

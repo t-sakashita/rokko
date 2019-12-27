@@ -22,6 +22,7 @@ int global_argc;
 char** global_argv;
 
 TEST(product_v_mpi, product_v_mpi) {
+  constexpr int root_proc = 0;
   MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
@@ -34,7 +35,7 @@ TEST(product_v_mpi, product_v_mpi) {
   std::mt19937 engine(123lu);
   std::uniform_real_distribution<> dist(-1.0, 1.0);
 
-  if (rank == 0) std::cout << "dimension = " << dim << std::endl;
+  if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   rokko::grid g(comm);
   rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
@@ -47,9 +48,9 @@ TEST(product_v_mpi, product_v_mpi) {
   for (int j = 0; j < dim; ++j) for (int i = 0; i < dim; ++i) locA(i, j) = dist(engine);
   for (int i = 0; i < dim; ++i) locX(i) = dist(engine);
   for (int i = 0; i < dim; ++i) locY(i) = dist(engine);
-  rokko::scatter(locA, matA, 0);
-  rokko::scatter(locX, vecX, 0);
-  rokko::scatter(locY, vecY, 0);
+  rokko::scatter(locA, matA, root_proc);
+  rokko::scatter(locX, vecX, root_proc);
+  rokko::scatter(locY, vecY, root_proc);
 
   // local calculation
   locY += locA * locX;
