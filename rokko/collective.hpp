@@ -42,9 +42,9 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
     cpblas_pdcopy(m, from.get_array_pointer(), 0, j, descFrom.data(), 1, to, 0, j, descTo.data(), 1);
 }
 
-template<typename T, typename MATRIX_MAJOR>
+template<typename T, int ROWS, int COLS, typename MATRIX_MAJOR>
 void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from,
-  Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>>& to, int root) {
+  Eigen::Matrix<T,ROWS,COLS,rokko::eigen3_major<MATRIX_MAJOR>>& to, int root) {
   gather(from, to.data(), root);
 }
 
@@ -65,8 +65,8 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
     cpblas_pdcopy(m, from, 0, j, descFrom.data(), 1, to.get_array_pointer(), 0, j, descTo.data(), 1);
 }
 
-template<typename T, typename MATRIX_MAJOR>
-void scatter(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> const& from,
+template<typename T, int ROWS, int COLS, typename MATRIX_MAJOR>
+void scatter(Eigen::Matrix<T,ROWS,COLS,rokko::eigen3_major<MATRIX_MAJOR>> const& from,
   distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   scatter(from.data(), to, root);
 }
