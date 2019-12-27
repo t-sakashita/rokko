@@ -38,20 +38,20 @@ TEST(product_mpi, product_mpi) {
   rokko::frank_matrix::generate(matA);
   rokko::product(1.0, matA, false, matA, false, 0, matC);
   matC.print();
-  double sum_global = rokko::trace(matC);
+  double trace_distributed = rokko::trace(matC);
   int dim_proc = (rank == 0) ? dim : 0;
   Eigen::MatrixXd g_matC(dim_proc, dim_proc);
   rokko::gather(matC, g_matC, 0);
 
   if (rank == 0) {
-    std::cout << "trace of distributed matrix = " << sum_global << std::endl;
+    std::cout << "trace of distributed matrix = " << trace_distributed << std::endl;
     Eigen::MatrixXd lmatA(dim, dim);
     rokko::frank_matrix::generate(lmatA);
     const Eigen::MatrixXd lmatC = lmatA * lmatA;
     std::cout << lmatC << std::endl;
-    const double sum = lmatC.trace();
-    std::cout << "trace of eigen matrix = " << sum << std::endl;
-    ASSERT_EQ(sum_global, sum);
+    const double trace = lmatC.trace();
+    std::cout << "trace of eigen matrix = " << trace << std::endl;
+    ASSERT_EQ(trace_distributed, trace);
     ASSERT_TRUE(g_matC == lmatC);
   }
 }
