@@ -15,8 +15,6 @@
 
 #include <gtest/gtest.h>
 
-constexpr double eps = 1e-11;
-
 int global_argc;
 char** global_argv;
 
@@ -49,7 +47,7 @@ TEST(product_mpi, product_mpi) {
     std::cout << lmatC << std::endl;
     const double sum = lmatC.trace();
     std::cout << "trace of eigen matrix = " << sum << std::endl;
-    EXPECT_NEAR(sum_global, sum, eps);
+    ASSERT_EQ(sum_global, sum);
   }
 }
 
