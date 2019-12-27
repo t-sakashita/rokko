@@ -11,6 +11,7 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/collective.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <gtest/gtest.h>
@@ -37,8 +38,11 @@ TEST(product_mpi, product_mpi) {
   rokko::frank_matrix::generate(matA);
   rokko::product(1.0, matA, false, matA, false, 0, matC);
   matC.print();
-  // calculate trace
   double sum_global = rokko::trace(matC);
+  int dim_proc = (rank == 0) ? dim : 0;
+  Eigen::MatrixXd g_matC(dim_proc, dim_proc);
+  rokko::gather(matC, g_matC, 0);
+
   if (rank == 0) {
     std::cout << "trace of distributed matrix = " << sum_global << std::endl;
     Eigen::MatrixXd lmatA(dim, dim);
@@ -48,6 +52,7 @@ TEST(product_mpi, product_mpi) {
     const double sum = lmatC.trace();
     std::cout << "trace of eigen matrix = " << sum << std::endl;
     ASSERT_EQ(sum_global, sum);
+    ASSERT_TRUE(g_matC == lmatC);
   }
 }
 
