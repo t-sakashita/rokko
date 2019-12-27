@@ -39,15 +39,14 @@ TEST(dot_product_mpi, dot_product_mpi) {
   rokko::mapping_bc<rokko::matrix_col_major> map({dim, 1}, {1, 1}, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(map);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(map);
-  Eigen::MatrixXd locX(dim, 1);
-  Eigen::MatrixXd locY(dim, 1);
-  for (int i = 0; i < dim; ++i) locX(i, 0) = dist(engine);
-  for (int i = 0; i < dim; ++i) locY(i, 0) = dist(engine);
+  Eigen::VectorXd locX(dim), locY(dim);
+  for (int i = 0; i < dim; ++i) locX(i) = dist(engine);
+  for (int i = 0; i < dim; ++i) locY(i) = dist(engine);
   rokko::scatter(locX, vecX, 0);
   rokko::scatter(locY, vecY, 0);
 
   // local calculation
-  double product_local = locX.col(0).dot(locY.col(0));
+  double product_local = locX.dot(locY);
 
   // global calculation
   double product_global = rokko::dot_product(vecX, false, 0, vecY, false, 0);
