@@ -47,9 +47,7 @@ TEST(dot_product_mpi, dot_product_mpi) {
   rokko::scatter(locY, vecY, 0);
 
   // local calculation
-  double product_local = 0;
-  for (int i = 0; i < dim; ++i)
-    product_local += locX(i, 0) * locY(i, 0);
+  double product_local = locX.col(0).dot(locY.col(0));
 
   // global calculation
   double product_global = rokko::dot_product(vecX, false, 0, vecY, false, 0);
