@@ -24,10 +24,8 @@ namespace anasazi {
 
 class mapping_1d {
 public:
-  explicit mapping_1d() : dim_(0), g_(), ep_comm_(Epetra_MpiComm(MPI_COMM_WORLD)), map_(dim_, 0, ep_comm_) {}
-  explicit mapping_1d(int dim) : dim_(dim), g_(), ep_comm_(Epetra_MpiComm(MPI_COMM_WORLD)), map_(dim_, 0, ep_comm_) {
-    num_local_rows_ = map_.NumMyElements();
-  }
+  explicit mapping_1d() : mapping_1d(0) {}
+  explicit mapping_1d(int dim) : mapping_1d(dim, grid_1d(MPI_COMM_WORLD)) {}
   explicit mapping_1d(int dim, grid_1d const& g_in) :
     dim_(dim), g_(g_in), ep_comm_(Epetra_MpiComm(g_.get_comm())), map_(dim_, 0, ep_comm_) {
     num_local_rows_ = map_.NumMyElements();
