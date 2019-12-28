@@ -90,7 +90,7 @@ public:
     std::cout << *matrix_ << std::endl;
   }
   void output_matrix_market() const {
-    int MaxNumIndices = matrix_->MaxNumEntries();
+    const int MaxNumIndices = matrix_->MaxNumEntries();
     std::vector<int> idx(MaxNumIndices);
     int num_cols;
     int* cols;
