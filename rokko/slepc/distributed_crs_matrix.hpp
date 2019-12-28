@@ -100,7 +100,7 @@ public:
   int get_nnz() const {
     MatInfo info;
     MatGetInfo(matrix_, MAT_GLOBAL_SUM, &info);
-    return (int)info.nz_used;
+    return static_cast<int>(info.nz_used);
   }
   void print() const {
     MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
