@@ -13,7 +13,6 @@
 #define ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_HPP
 
 #include <rokko/distributed_crs_matrix.hpp>
-#include <rokko/distributed_mfree.hpp>
 #include <rokko/utility/timer.hpp>
 
 #include <slepceps.h>
