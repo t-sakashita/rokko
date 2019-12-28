@@ -11,7 +11,7 @@ import mpi4py
 import pyrokko
 import numpy
 
-dim = 4
+dim = 10
 
 g = pyrokko.grid(pyrokko.grid_row_major)
 map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.col)
@@ -19,11 +19,11 @@ mat = pyrokko.distributed_matrix(map)
 pyrokko.matrix012.generate(mat)
 
 mat_loc = numpy.ndarray((dim, dim), order='F')
-
 pyrokko.gather(mat, mat_loc, 0)
 
 if (g.myrank == 0):
-    mat_ref = numpy.arange(dim**2, dtype='float').reshape(mat_loc.shape)
-    assert(mat_loc.all() == mat_ref.all())
+    mat_ref = numpy.ndarray((dim, dim), order='F')
+    pyrokko.matrix012.generate(mat_ref)
+    assert((mat_loc == mat_ref).all())
 
 mpi4py.MPI.Finalize()

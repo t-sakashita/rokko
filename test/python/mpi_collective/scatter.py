@@ -9,24 +9,25 @@
 
 import mpi4py
 import pyrokko
-import numpy as np
+import numpy
 
-dim = 4
-
-mat_loc = np.arange(dim**2, dtype='float').reshape((dim,dim), order='F')
-#mat_loc = np.arange(dim**2, dtype='float').reshape((dim,dim), order='C')
+dim = 10
 
 g = pyrokko.grid(pyrokko.grid_row_major)
 map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.col)
-#map = pyrokko.mapping_bc(dim, 2, g, pyrokko.matrix_major.row)
 mat = pyrokko.distributed_matrix(map)
+
+mat_loc = numpy.ndarray((dim, dim), order='F')
+pyrokko.matrix012.generate(mat_loc)
 
 pyrokko.scatter(mat_loc, mat, 0)
 
+mat_ref = pyrokko.distributed_matrix(map)
+pyrokko.matrix012.generate(mat_ref)
+
 if g.myrank == 0:
-    print("mat_loc=")
-    print(mat_loc)
-    print("mat=")
-mat.print()
+    for local_i in range(map.local_shape[0]):
+        for local_j in range(map.local_shape[1]):
+            assert(mat.get_local(local_i, local_j) == mat_ref.get_local(local_i, local_j))
 
 mpi4py.MPI.Finalize()
