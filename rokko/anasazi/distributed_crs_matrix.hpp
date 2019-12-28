@@ -38,15 +38,11 @@ class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base
 public:
   explicit distributed_crs_matrix(int row_dim, int col_dim) : dim_(row_dim) {
     initialize(row_dim, col_dim);
-    num_local_rows_ = map_->get_epetra_map().NumMyElements();
-    start_row_ = map_->get_epetra_map().MinMyGID();
-    end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to follow C++ convention
+    set_sizes();
   }
   explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) : dim_(row_dim) {
     initialize(row_dim, col_dim, num_entries_per_row);
-    num_local_rows_ = map_->get_epetra_map().NumMyElements();
-    start_row_ = map_->get_epetra_map().MinMyGID();
-    end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to follow C++ convention
+    set_sizes();
   }
   void initialize(int row_dim, int col_dim) {
     map_ = new mapping_1d(row_dim);
@@ -56,6 +52,12 @@ public:
     map_ = new mapping_1d(row_dim);
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
+  void set_sizes() {
+    num_local_rows_ = map_->get_epetra_map().NumMyElements();
+    start_row_ = map_->get_epetra_map().MinMyGID();
+    end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to follow C++ convention
+  }
+
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
   }
