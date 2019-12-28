@@ -240,8 +240,8 @@ public:
     if (vec.size() < map_->get_num_local_rows()) vec.resize(map_->get_num_local_rows());
     eigenvector(k, vec.data());
   }
-  void eigenvector(int k, double* vec) const {
-    double* vec_pt = (*problem_->getSolution().Evecs)[k];
+  void eigenvector(int k, double *const vec) const {
+    double const*const vec_pt = (*problem_->getSolution().Evecs)[k];
     std::copy(vec_pt, vec_pt + map_->get_num_local_rows(), vec);
   }
   void eigenvector(int k, distributed_vector<double>& vec) const {
