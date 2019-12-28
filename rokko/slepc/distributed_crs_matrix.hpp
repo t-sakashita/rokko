@@ -39,10 +39,10 @@ public:
   distributed_crs_matrix() {}
   ~distributed_crs_matrix() {}
 
-  explicit distributed_crs_matrix(int row_dim, int col_dim) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim) : dim_(row_dim) {
     initialize(row_dim, col_dim);
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) : dim_(row_dim) {
     initialize(row_dim, col_dim, num_entries_per_row);
   }
   #undef __FUNCT__
@@ -52,7 +52,6 @@ public:
     ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
-    dim_ = row_dim;
     ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
     num_local_rows_ = end_row_ - start_row_;// + 1;
   }
@@ -64,7 +63,6 @@ public:
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSeqAIJSetPreallocation(matrix_, num_entries_per_row, NULL);
     ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);
-    dim_ = row_dim;
     ierr = MatGetOwnershipRange(matrix_, &start_row_, &end_row_); //CHKERRQ(ierr);
     num_local_rows_ = end_row_ - start_row_;// + 1;
   }
