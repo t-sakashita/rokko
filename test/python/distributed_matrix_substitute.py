@@ -21,23 +21,20 @@ flattened_size = mat.local_shape[0] * mat.local_shape[1]
 # substitute row-major matrix to row-major distributed_matrix
 mat_r = np.arange(flattened_size, dtype='float').reshape(mat.local_shape)
 mat.ndarray = mat_r
-assert(mat.ndarray.all() == mat_r.all())
-assert(mat.ndarray.all() == mat_r.T.all())
+assert((mat.ndarray == mat_r).all())
 mat.print()
 if(g.myrank == 0): print("")
 
 # substitute col-major matrix to row-major distributed_matrix
 mat_c = np.arange(flattened_size, dtype='float').reshape(mat.local_shape, order='F')
 mat.ndarray = mat_c
-assert(mat.ndarray.all() == mat_c.all())
-assert(mat.ndarray.all() == mat_c.T.all())
+assert((mat.ndarray == mat_c).all())
 mpi4py.MPI.COMM_WORLD.barrier()
 mat.print();
 if(g.myrank == 0): print("")
 
 mat.ndarray = mat_r.T
-assert(mat.ndarray.all() == mat_c.all())
-assert(mat.ndarray.all() == mat_c.all())
+assert((mat.ndarray == mat_c).all())
 mpi4py.MPI.COMM_WORLD.barrier()
 mat.print()
 

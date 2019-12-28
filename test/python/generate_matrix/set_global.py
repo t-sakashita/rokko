@@ -27,6 +27,6 @@ pyrokko.gather(mat, mat_loc, 0)
 if g.myrank == 0:
     mat_ref = numpy.ndarray((dim, dim), order='F')
     pyrokko.minij_matrix.generate(mat_ref)
-    assert(mat_loc.all() == mat_ref.all())
+    assert((mat_loc == mat_ref).all())
 
 mpi4py.MPI.Finalize()
