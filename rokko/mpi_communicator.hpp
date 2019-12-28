@@ -12,6 +12,8 @@
 #ifndef ROKKO_MPI_COMMNUNICATOR_HPP
 #define ROKKO_MPI_COMMNUNICATOR_HPP
 
+#include <mpi.h>
+
 namespace rokko {
 
 class mpi_comm {
