@@ -36,16 +36,14 @@ private:
 
 class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
 public:
-  explicit distributed_crs_matrix(int row_dim, int col_dim) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim) : dim_(row_dim) {
     initialize(row_dim, col_dim);
-    dim_ = row_dim;
     num_local_rows_ = map_->get_epetra_map().NumMyElements();
     start_row_ = map_->get_epetra_map().MinMyGID();
     end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to follow C++ convention
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) : dim_(row_dim) {
     initialize(row_dim, col_dim, num_entries_per_row);
-    dim_ = row_dim;
     num_local_rows_ = map_->get_epetra_map().NumMyElements();
     start_row_ = map_->get_epetra_map().MinMyGID();
     end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to follow C++ convention
