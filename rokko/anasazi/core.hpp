@@ -62,7 +62,6 @@ public:
 
 private:
   distributed_mfree* op_;
-  MPI_Comm comm_;
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };
