@@ -16,6 +16,7 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
+#include <rokko/anasazi/distributed_mfree.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/solver_parameters.hpp>
 
@@ -34,38 +35,6 @@
 namespace rokko {
 
 namespace anasazi {
-
-class anasazi_mfree_operator : public Epetra_Operator {
-public:
-  anasazi_mfree_operator(rokko::distributed_mfree* const op, mapping_1d const* map) :
-    op_(op), ep_map(map->get_epetra_map()), ep_comm(map->get_epetra_comm()) {}
-  ~anasazi_mfree_operator() {}
-  virtual int SetUseTranspose(bool UseTranspose) { return 0; };
-  virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
-    const int numvectors = X.NumVectors();
-    Y.PutScalar(0);
-    for (int i=0; i<numvectors; ++i) {
-      const double* x = X[i];
-      double* y = Y[i];
-      op_->multiply(x, y);
-    }
-    return 0;
-  }
-  virtual int ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const { return 0; }
-  virtual double NormInf() const { return 0; }
-  virtual const char * Label() const { return "Anasazi matrix_free"; }
-  virtual bool UseTranspose() const { return false; }
-  virtual bool HasNormInf() const  { return false; }
-  virtual const Epetra_Comm & Comm() const { return ep_comm; }
-  virtual const Epetra_Map & OperatorDomainMap() const { return ep_map; }
-  virtual const Epetra_Map & OperatorRangeMap() const { return ep_map; }
-
-private:
-  distributed_mfree* op_;
-  Epetra_MpiComm ep_comm;
-  Epetra_Map ep_map;
-};
-
 
 class solver {
 public:
