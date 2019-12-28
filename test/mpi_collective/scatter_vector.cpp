@@ -12,8 +12,6 @@
 #include <rokko/solver.hpp>
 #include <rokko/utility/mpi_vector.hpp>
 
-#include <random>
-
 #include <gtest/gtest.h>
 
 int global_argc;
@@ -25,14 +23,8 @@ void run_test(MPI_Comm comm, int dim) {
   MPI_Comm_rank(comm, &rank);
   rokko::mpi_vector mpi(dim);
 
-  // same seed for all processes
-  std::mt19937 engine(123lu);
-  std::uniform_real_distribution<> dist(-1.0, 1.0);
-
- Eigen::VectorXd lvec(dim);
-  for (int i = 0; i < dim; ++i) {
-    lvec(i) = dist(engine);
-  }
+  Eigen::VectorXd lvec(dim);
+  lvec.setRandom();
 #ifndef NDEBUG
   if (rank == 0) std::cout << lvec.transpose() << std::endl;
 #endif
