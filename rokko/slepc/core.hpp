@@ -176,7 +176,7 @@ public:
     Vec evec_r, evec_i;
     MatCreateVecs(*A, NULL, &evec_r);
     MatCreateVecs(*A, NULL, &evec_i);
-    VecPlaceArray(evec_r, &vec[0]);
+    VecPlaceArray(evec_r, vec);
     EPSGetEigenvector(eps, k, evec_r, evec_i);
     VecDestroy(&evec_r);
     VecDestroy(&evec_i);
