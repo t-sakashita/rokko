@@ -29,6 +29,7 @@ struct comp{
     return matrix_->GCID(v[a]) < matrix_->GCID(v[b]);
   }
   comp(const int *p, Teuchos::RCP<Epetra_CrsMatrix> const& matrix) : v(p), matrix_(matrix) {}
+
 private:
   const int *v;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
