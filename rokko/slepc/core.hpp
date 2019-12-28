@@ -29,7 +29,13 @@ public:
     SlepcInitialize(NULL, NULL, (char*)0, 0);
     MPI_Comm_rank(PETSC_COMM_WORLD, &myrank);
   }
-  ~solver() {}
+  ~solver() {
+    if (!A) {
+      delete A;
+      A = nullptr;
+    }
+  }
+
   void initialize(int& argc, char**& argv) {}
   void finalize() { SlepcFinalize(); }
   
