@@ -18,7 +18,7 @@ namespace rokko {
 
 class mpi_comm {
 public:
-  explicit mpi_comm(MPI_Comm comm_in) : comm(comm_in) {
+  explicit mpi_comm(MPI_Comm comm_in = MPI_COMM_WORLD) : comm(comm_in) {
     if (comm != MPI_COMM_NULL) {
       MPI_Comm_size(comm, &nprocs);
       MPI_Comm_rank(comm, &myrank);
