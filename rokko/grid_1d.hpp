@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2013 by Ryo IGARASHI <rigarash@issp.u-tokyo.ac.jp>
+* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -24,11 +24,13 @@ public:
   MPI_Comm get_comm() const { return comm; }
   int get_nprocs() const { return nprocs; }
   int get_myrank() const { return myrank; }
+
 protected:
   void initialize(void) {
     MPI_Comm_size(comm, &nprocs);
     MPI_Comm_rank(comm, &myrank);
   }
+
 private:
   MPI_Comm comm;
   int nprocs, myrank;
