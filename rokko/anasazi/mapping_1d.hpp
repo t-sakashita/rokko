@@ -27,8 +27,7 @@ public:
   explicit mapping_1d() : mapping_1d(0) {}
   explicit mapping_1d(int dim) : mapping_1d(dim, grid_1d(MPI_COMM_WORLD)) {}
   explicit mapping_1d(int dim, grid_1d const& g_in) :
-    dim_(dim), g_(g_in), ep_comm_(Epetra_MpiComm(g_.get_comm())), map_(dim_, 0, ep_comm_) {
-    num_local_rows_ = map_.NumMyElements();
+    dim_(dim), g_(g_in), ep_comm_(Epetra_MpiComm(g_.get_comm())), map_(dim_, 0, ep_comm_), num_local_rows_(map_.NumMyElements()) {
     //num_rows = dim / g.get_nprocs();
     //rest_row = dim % g.get_nprocs();
     //if (g.get_myrank() < rest_row) {
@@ -43,10 +42,10 @@ public:
 
 private:
   int dim_;
-  int num_local_rows_;
   grid_1d g_;
   Epetra_MpiComm ep_comm_;
   Epetra_Map map_;
+  int num_local_rows_;
 };
 
 } // namespace anasazi
