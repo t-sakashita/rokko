@@ -205,7 +205,7 @@ public:
 
     if (params.defined("routine")) {
       if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
-	throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
+        throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine_ = params.get_string("routine");
     } else {
       routine_ = "LOBPCG";
