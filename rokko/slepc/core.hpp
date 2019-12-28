@@ -56,7 +56,7 @@ public:
         throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
       routine_ = params.get_string("routine");
       if (!routine_.empty()) {
-        ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+        ierr = EPSSetType(eps, static_cast<EPSType>(routine_.c_str()));
       } else {
         ierr = EPSSetType(eps, "krylovschur");
       }
@@ -118,7 +118,7 @@ public:
         throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
       routine_ = params.get_string("routine");
       if (!routine_.empty()) {
-        ierr = EPSSetType(eps, (EPSType)routine_.c_str());
+        ierr = EPSSetType(eps, static_cast<EPSType>(routine_.c_str()));
       } else {
         ierr = EPSSetType(eps, "krylovschur");
       }
