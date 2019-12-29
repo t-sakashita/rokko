@@ -215,7 +215,7 @@ public:
     eigenvector(k, vec.get_storage());
   }
 
-  int num_conv() const { return num_conv_; }
+  int get_num_conv() const { return num_conv_; }
 
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };

@@ -93,7 +93,7 @@ void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev solver
 }
 
 int rokko_parallel_sparse_ev_num_conv(struct rokko_parallel_sparse_ev solver) {
-  return static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->num_conv();
+  return static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->get_num_conv();
 }
 
 int rokko_parallel_sparse_ev_num_solvers() {

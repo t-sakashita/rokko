@@ -104,7 +104,7 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    num_conv_ = num_conv();
+    num_conv_ = get_num_conv();
     params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
@@ -157,7 +157,7 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    num_conv_ = num_conv();
+    num_conv_ = get_num_conv();
     params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
@@ -212,7 +212,7 @@ public:
     eigenvector(k, vec.get_storage());
   }
 
-  int num_conv() const {
+  int get_num_conv() const {
     PetscErrorCode ierr;
     PetscInt num_conv;
     ierr = EPSGetConverged(eps, &num_conv);
