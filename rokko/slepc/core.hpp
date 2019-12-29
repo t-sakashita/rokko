@@ -54,7 +54,23 @@ public:
       return EPSKRYLOVSCHUR;
     }
   }
-  
+
+  static PetscInt get_num_eigvals(rokko::parameters const& params) {
+    return params.defined("num_eigvals") ? (PetscInt) params.get<int>("num_eigvals") : 1;
+  }
+
+  static PetscInt get_max_block_size(rokko::parameters const& params) {
+    return params.defined("max_block_size") ? params.get<int>("max_block_size") : PETSC_DECIDE;
+  }
+
+  static PetscReal get_conv_tol(rokko::parameters const& params) {
+    return params.defined("conv_tol") ? params.get<double>("conv_tol") : (PetscReal)PETSC_DEFAULT;
+  }
+
+  static PetscInt get_max_iters(rokko::parameters const& params) {
+    return params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
+  }
+
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     PetscErrorCode ierr;
     parameters params_out;
@@ -62,10 +78,10 @@ public:
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
 
-    PetscInt max_block_size = params.defined("max_block_size") ? params.get<int>("max_block_size") : PETSC_DECIDE;
-    PetscReal tol = params.defined("conv_tol") ? params.get<double>("conv_tol") : (PetscReal)PETSC_DEFAULT;
-    PetscInt max_iters = params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
-    PetscInt num_evals = params.defined("num_eigvals") ? (PetscInt) params.get<int>("num_eigvals") : 1;
+    PetscInt num_evals = get_num_eigvals(params);
+    PetscInt max_block_size = get_max_block_size(params);
+    PetscReal tol = get_conv_tol(params);
+    PetscInt max_iters = get_max_iters(params);
 
     A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
@@ -119,10 +135,10 @@ public:
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
 
-    PetscInt max_block_size = params.defined("max_block_size") ? params.get<int>("max_block_size") : PETSC_DECIDE;
-    PetscReal tol = params.defined("conv_tol") ? params.get<double>("conv_tol") : (PetscReal)PETSC_DEFAULT;
-    PetscInt max_iters = params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
-    PetscInt num_evals = params.defined("num_eigvals") ? (PetscInt) params.get<int>("num_eigvals") : 1;
+    PetscInt num_evals = get_num_eigvals(params);
+    PetscInt max_block_size = get_max_block_size(params);
+    PetscReal tol = get_conv_tol(params);
+    PetscInt max_iters = get_max_iters(params);
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetProblemType(eps, EPS_HEP);
