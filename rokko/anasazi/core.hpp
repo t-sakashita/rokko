@@ -132,9 +132,9 @@ public:
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
     map_ = new mapping_1d(mat.get_dim());
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
-    multivector_->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
+    Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
+    multivector->Random();
+    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector));
     problem_->setHermitian(true);
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
@@ -165,9 +165,9 @@ public:
 
     map_ = new mapping_1d(mat->get_dim());
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
-    multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
-    multivector_->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
+    Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
+    multivector->Random();
+    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector));
     problem_->setHermitian(true);
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
@@ -220,7 +220,6 @@ private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
   int myrank;
   mapping_1d* map_;
-  Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<value_type>> evals_;
 };
