@@ -151,9 +151,9 @@ public:
       std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
 
-    num_conv_ = problem_->getSolution().numVecs;
+    int num_conv = get_num_conv();
     parameters params_out;
-    params_out.set("num_conv", num_conv_);
+    params_out.set("num_conv", num_conv);
     return params_out;
   }
 
@@ -185,9 +185,9 @@ public:
     if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
-    num_conv_ = problem_->getSolution().numVecs;
+    int num_conv = get_num_conv();
     parameters params_out;
-    params_out.set("num_conv", num_conv_);
+    params_out.set("num_conv", num_conv);
     return params_out;
   }
 
@@ -215,7 +215,9 @@ public:
     eigenvector(k, vec.get_storage());
   }
 
-  int get_num_conv() const { return num_conv_; }
+  int get_num_conv() const {
+    return problem_->getSolution().numVecs;
+  }
 
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
@@ -225,7 +227,6 @@ private:
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<double>> evals_;
   std::string routine_;
-  int num_conv_;
 };
 
 const std::vector<std::string> solver::names{ "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
