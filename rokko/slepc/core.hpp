@@ -159,7 +159,7 @@ public:
     int num_conv = get_num_conv();
     params_out.set("num_conv", num_conv);
     if (num_conv == 0) {
-      std::cout << "doesn't converge" << std::endl;
+      std::cerr << "doesn't converge" << std::endl;
     }
   }
 
