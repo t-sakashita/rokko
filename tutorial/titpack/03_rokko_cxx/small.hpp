@@ -151,7 +151,7 @@ double check3_mpi(MATRIX const& elemnt, MATRIX const& x, int xindex, MATRIX& y) 
   product_v(1.0, elemnt, false, x, false, xindex, 0.0, y, false, xindex);
   double prd = dot_product(x, false, xindex, y, false, xindex) / dnorm;
 
-  if (x.is_gindex(0, xindex)) {
+  if (x.is_gindex({0, xindex})) {
     std::cout << "---------------------------- Information from check3\n"
               << "<x*H*x> = "<< prd << std::endl
               << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";
@@ -160,14 +160,14 @@ double check3_mpi(MATRIX const& elemnt, MATRIX const& x, int xindex, MATRIX& y) 
   MPI_Barrier(elemnt.get_grid().get_comm());
   int count = 0;
   for (int i = std::min((int)(idim / 3), 13) - 1; i < idim; i += std::max(1,idim/20), ++count) {
-    if (x.is_gindex(i, xindex)) {
+    if (x.is_gindex({i, xindex})) {
       if (count % 4 == 0) std::cout << std::endl;
       std::cout << '\t' << y.get_global(i, xindex) / x.get_global(i, xindex);
     }
     std::cout << std::flush;
     MPI_Barrier(elemnt.get_grid().get_comm());
   }
-  if (x.is_gindex(0, xindex)) {
+  if (x.is_gindex({0, xindex})) {
     std::cout << std::endl << "---------------------------------------------------\n";
   }
   std::cout << std::flush;
