@@ -82,6 +82,19 @@ public:
     return {num_eigvals, max_block_size};
   }
 
+  static std::string get_routine(rokko::parameters const& params) {
+    std::string routine;
+
+    if (params.defined("routine")) {
+      if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
+        throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
+      routine = params.get_string("routine");
+    } else {  // default
+      routine = "LOBPCG";
+    }
+    return routine;
+  }
+
   static Teuchos::ParameterList set_anasazi_parameters(rokko::parameters const& params) {
     Teuchos::ParameterList pl;
 
@@ -129,13 +142,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    if (params.defined("routine")) {
-      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-        throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
-      routine_ = params.get_string("routine");
-    } else {
-      routine_ = "LOBPCG";
-    }
+    routine_ = get_routine(params);
     solvermanager_t* solvermanager = create_solver_manager(routine_, pl);
     
     bool boolret = problem_->setProblem();
@@ -170,13 +177,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    if (params.defined("routine")) {
-      if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
-        throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
-      routine_ = params.get_string("routine");
-    } else {
-      routine_ = "LOBPCG";
-    }
+    routine_ = get_routine(params);
     solvermanager_t* solvermanager = create_solver_manager(routine_, pl);
     
     bool boolret = problem_->setProblem();
