@@ -97,19 +97,8 @@ public:
 
     /* Solve the eigensystem */       
     ierr = EPSSolve(eps);
-    
-    /* Get some information from the solver and display it */
-    EPSType type;
-    ierr = EPSGetType(eps, &type);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
-    ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    int num_conv = get_num_conv();
-    params_out.set("num_conv", num_conv);
-    if (num_conv == 0) {
-      std::cout << "doesn't converge" << std::endl;
-    }
 
+    print_result(params_out);
     if (params.get_bool("verbose") && (myrank == 0)) {
       info_verbose();
     }
@@ -150,11 +139,21 @@ public:
 
     /* Solve the eigensystem */       
     ierr = EPSSolve(eps);
-    
+
+    print_result(params_out);
+    if (params.get_bool("verbose") && (myrank == 0)) {
+      info_verbose();
+    }
+    return params_out;
+  }
+
+  void print_result(rokko::parameters& params_out) const {
+    PetscErrorCode ierr;
     /* Get some information from the solver and display it */
     EPSType type;
     ierr = EPSGetType(eps, &type);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    PetscInt num_evals;
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
     int num_conv = get_num_conv();
@@ -162,11 +161,6 @@ public:
     if (num_conv == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
-
-    if (params.get_bool("verbose") && (myrank == 0)) {
-      info_verbose();
-    }
-    return params_out;
   }
 
   void info_verbose() const {
