@@ -16,6 +16,7 @@ if(ROKKO_HAVE_SCALAPACK)
 endif(ROKKO_HAVE_SCALAPACK)
 
 add_subdirectory(mpi_unit_test)
+add_subdirectory(mpi_communicator)
 add_subdirectory(solver_class)
 add_subdirectory(grid)
 add_subdirectory(mapping_bc)
