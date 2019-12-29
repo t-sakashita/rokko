@@ -86,7 +86,7 @@ public:
     A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
 
-    /* Set operators. In this case, it is a standard eigenvalue problem */
+    /* Set operators for a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
     ierr = EPSSetProblemType(eps, EPS_HEP);
     ierr = EPSSetType(eps, get_routine(params));
@@ -121,7 +121,7 @@ public:
     //ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
 
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
-    /* Set operators. In this case, it is a standard eigenvalue problem */
+    /* Set operators for a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
 
     PetscInt num_evals = get_num_eigvals(params);
@@ -129,7 +129,6 @@ public:
     PetscReal tol = get_conv_tol(params);
     PetscInt max_iters = get_max_iters(params);
 
-    /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetProblemType(eps, EPS_HEP);
     ierr = EPSSetType(eps, get_routine(params));
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
