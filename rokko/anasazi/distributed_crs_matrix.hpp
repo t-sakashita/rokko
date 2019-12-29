@@ -25,13 +25,13 @@ namespace rokko {
 namespace anasazi {
 
 struct comp{
-  bool operator()(const int& a, const int& b) const {
+  bool operator()(int a, int b) const {
     return matrix_->GCID(v[a]) < matrix_->GCID(v[b]);
   }
   comp(const int *p, Teuchos::RCP<Epetra_CrsMatrix> const& matrix) : v(p), matrix_(matrix) {}
 
 private:
-  const int *v;
+  const int *const v;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
 };
 
@@ -96,7 +96,7 @@ public:
     int num_cols;
     int* cols;
     double* values;
-    int NumMyElements = map_->get_epetra_map().NumMyElements();
+    const int NumMyElements = map_->get_epetra_map().NumMyElements();
     std::vector<int> MyGlobalElements(NumMyElements);
     map_->get_epetra_map().MyGlobalElements(MyGlobalElements.data());
     int local_row = 0;

@@ -24,13 +24,13 @@ namespace rokko {
 namespace slepc {
 
 struct comp{
-  bool operator()(const int& a, const int& b) const {
+  bool operator()(int a, int b) const {
     return v[a] < v[b];
   }
   comp(const int *p) : v(p) {}
 
 private:
-  const int *v;
+  const int *const v;
 };
 
 class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
