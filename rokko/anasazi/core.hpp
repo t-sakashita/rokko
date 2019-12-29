@@ -165,7 +165,7 @@ public:
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
     map_ = new mapping_1d(mat->get_dim());
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
+    Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op_, multivector_));
