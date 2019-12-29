@@ -143,7 +143,7 @@ public:
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
-      std::cerr << "setProblem()_error" << std::endl;
+      throw std::invalid_argument("anasazi::diagonalize : Return value from setProblem() is false");
     }
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
@@ -176,7 +176,7 @@ public:
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
-      std::cerr << "setProblem()_error" << std::endl;
+      throw std::invalid_argument("anasazi::diagonalize : Return value from setProblem() is false");
     }
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
