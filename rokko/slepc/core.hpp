@@ -104,7 +104,7 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    EPSGetConverged(eps, &num_conv_);
+    num_conv_ = num_conv();
     params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
@@ -157,7 +157,7 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    EPSGetConverged(eps, &num_conv_);
+    num_conv_ = num_conv();
     params_out.set("num_conv", num_conv_);
     if (num_conv_ == 0) {
       std::cout << "doesn't converge" << std::endl;
@@ -213,7 +213,10 @@ public:
   }
 
   int num_conv() const {
-    return num_conv_;
+    PetscErrorCode ierr;
+    PetscInt num_conv;
+    ierr = EPSGetConverged(eps, &num_conv);
+    return static_cast<int>(num_conv);
   }
 
   rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
