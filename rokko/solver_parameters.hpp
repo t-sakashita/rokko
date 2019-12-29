@@ -14,7 +14,7 @@
 
 namespace rokko {
 
-static const std::vector<std::string> rokko_solver_keys{ "num_eigenvalues", "routine" };
+static const std::vector<std::string> rokko_solver_keys{ "num_eigenvalues", "max_block_size", "routine", "block_size", "conv_tol", "max_iters", "verbose" };
 
 bool is_rokko_solver_key(std::string const& key) {
   return std::find(rokko_solver_keys.begin(), rokko_solver_keys.end(), key) != rokko_solver_keys.end();
