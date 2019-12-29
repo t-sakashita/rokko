@@ -38,6 +38,22 @@ public:
 
   void initialize(int& argc, char**& argv) {}
   void finalize() { SlepcFinalize(); }
+
+  static EPSType get_routine(rokko::parameters const& params) {
+    if (params.defined("routine")) {
+      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
+        throw std::invalid_argument("slepc::get_routine() : routine must be charatcters or string.");
+      std::string routine = params.get_string("routine");
+      if (!routine.empty()) {
+        return static_cast<EPSType>(routine.c_str());
+      } else {
+        return EPSKRYLOVSCHUR;
+      }
+    }
+    else {
+      return EPSKRYLOVSCHUR;
+    }
+  }
   
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     PetscErrorCode ierr;
@@ -57,16 +73,7 @@ public:
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
     ierr = EPSSetProblemType(eps, EPS_HEP);
-    if (params.defined("routine")) {
-      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-        throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
-      routine_ = params.get_string("routine");
-      if (!routine_.empty()) {
-        ierr = EPSSetType(eps, static_cast<EPSType>(routine_.c_str()));
-      } else {
-        ierr = EPSSetType(eps, "krylovschur");
-      }
-    }
+    ierr = EPSSetType(eps, get_routine(params));
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
     /* Set solver parameters at runtime */
@@ -119,16 +126,7 @@ public:
 
     /* Set operators. In this case, it is a standard eigenvalue problem */
     ierr = EPSSetProblemType(eps, EPS_HEP);
-    if (params.defined("routine")) {
-      if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
-        throw std::invalid_argument("slepc::diagonalize() : routine must be charatcters or string.");
-      routine_ = params.get_string("routine");
-      if (!routine_.empty()) {
-        ierr = EPSSetType(eps, static_cast<EPSType>(routine_.c_str()));
-      } else {
-        ierr = EPSSetType(eps, "krylovschur");
-      }
-    }
+    ierr = EPSSetType(eps, get_routine(params));
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
     /* Set solver parameters at runtime */
@@ -217,8 +215,6 @@ private:
   int dimension_, offset_local_, num_local_rows_;
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
-  std::string routine_;
-  EPSType routine_type;
   int num_conv_;
 };
 
