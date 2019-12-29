@@ -152,9 +152,8 @@ public:
       std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
 
-    int num_conv = get_num_conv();
     parameters params_out;
-    params_out.set("num_conv", num_conv);
+    params_out.set("num_conv", get_num_conv());
     return params_out;
   }
 
@@ -186,9 +185,8 @@ public:
     if (returnCode == Anasazi::Unconverged) {
       std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
-    int num_conv = get_num_conv();
     parameters params_out;
-    params_out.set("num_conv", num_conv);
+    params_out.set("num_conv", get_num_conv());
     return params_out;
   }
 
