@@ -12,6 +12,8 @@
 #ifndef ROKKO_ANASAZI_CORE_HPP
 #define ROKKO_ANASAZI_CORE_HPP
 
+#include <tuple>
+
 #include <rokko/distributed_vector.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/anasazi/mapping_1d.hpp>
@@ -70,7 +72,29 @@ public:
     }
   }
 
+  static std::tuple<int,int> retrieve_number_size(rokko::parameters const& params) {
+    int num_eigvals;
+    if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
+    else num_eigvals = 1;
+    int max_block_size;
+    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
+    else max_block_size = num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
+    return {num_eigvals, max_block_size};
+  }
+
   void set_anasazi_parameters(rokko::parameters const& params) {
+    if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
+      pl_.set("Block Size", params.get<int>("block_size"));
+    if (params.defined("conv_tol"))
+      pl_.set("Convergence Tolerance", params.get<double>("conv_tol"));
+    if (params.defined("max_iters"))
+      pl_.set("Maximum Iterations", params.get<int>("max_iters"));
+    //if (!params.defined("Which")) pl_.set("Which", "LM");
+
+    if (params.get_bool("verbose")) {
+      pl_.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
+    }
+
     std::list<std::string> keys = params.keys();
     for(auto const& key : keys) {
       if (!is_rokko_solver_key(key)) {
@@ -90,24 +114,10 @@ public:
     parameters params_out;
     map_ = new mapping_1d(mat.get_dim());
 
+    int num_eigvals, max_block_size;
+    std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
     set_anasazi_parameters(params);
-    if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<int>("block_size"));
-    int num_eigvals;
-    if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
-    else num_eigvals = 1;
-    int max_block_size;
-    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
-    if (params.defined("conv_tol"))
-      pl_.set("Convergence Tolerance", params.get<double>("conv_tol"));    
-    if (params.defined("max_iters"))
-      pl_.set("Maximum Iterations", params.get<int>("max_iters"));
-    //if (!params.defined("Which")) pl_.set("Which", "LM");
 
-    if (params.get_bool("verbose")) {
-      pl_.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
-    }
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
@@ -144,24 +154,9 @@ public:
     rokko::distributed_mfree* mat = &mat_in;
     map_ = new mapping_1d(mat->get_dim());
 
+    int num_eigvals, max_block_size;
+    std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
     set_anasazi_parameters(params);
-    if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<int>("block_size"));
-    int num_eigvals;
-    if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
-    else num_eigvals = 1;
-    int max_block_size;
-    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
-    if (params.defined("conv_tol"))
-      pl_.set("Convergence Tolerance", params.get<double>("conv_tol"));    
-    if (params.defined("max_iters"))
-      pl_.set("Maximum Iterations", params.get<int>("max_iters"));
-    //if (!params.defined("Which")) pl_.set("Which", "LM");
-
-    if (params.get_bool("verbose")) {
-      pl_.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
-    }
     
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
