@@ -52,15 +52,15 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  solvermanager_t* create_solver_manager(std::string const& routine) {
+  solvermanager_t* create_solver_manager(std::string const& routine, Teuchos::ParameterList& pl) {
     if ((routine == "LOBPCG") || (routine == ""))
-      return new Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+      return new Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else if (routine == "BlockKrylovSchur")
-      return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+      return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else if (routine == "BlockDavidson")
-      return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+      return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else if (routine == "RTR")
-      return new Anasazi::RTRSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl_);
+      return new Anasazi::RTRSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else {
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
@@ -82,32 +82,36 @@ public:
     return {num_eigvals, max_block_size};
   }
 
-  void set_anasazi_parameters(rokko::parameters const& params) {
+  static Teuchos::ParameterList set_anasazi_parameters(rokko::parameters const& params) {
+    Teuchos::ParameterList pl;
+
     if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
-      pl_.set("Block Size", params.get<int>("block_size"));
+      pl.set("Block Size", params.get<int>("block_size"));
     if (params.defined("conv_tol"))
-      pl_.set("Convergence Tolerance", params.get<double>("conv_tol"));
+      pl.set("Convergence Tolerance", params.get<double>("conv_tol"));
     if (params.defined("max_iters"))
-      pl_.set("Maximum Iterations", params.get<int>("max_iters"));
+      pl.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
 
     if (params.get_bool("verbose")) {
-      pl_.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
+      pl.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
     }
 
     std::list<std::string> keys = params.keys();
     for(auto const& key : keys) {
       if (!is_rokko_solver_key(key)) {
         if (params.type(key) == typeid(int))
-          pl_.set(key, params.get<int>(key));
+          pl.set(key, params.get<int>(key));
         else if (params.type(key) == typeid(double))
-          pl_.set(key, params.get<double>(key));
+          pl.set(key, params.get<double>(key));
         else if (params.type(key) == typeid(std::string))
-          pl_.set(key, params.get<std::string>(key));
+          pl.set(key, params.get<std::string>(key));
         else if (params.type(key) == typeid(const char*))
-          pl_.set(key, params.get<const char*>(key));
+          pl.set(key, params.get<const char*>(key));
       }
     }
+
+    return pl;
   }
 
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
@@ -116,7 +120,7 @@ public:
 
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
-    set_anasazi_parameters(params);
+    Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
@@ -132,7 +136,7 @@ public:
     } else {
       routine_ = "LOBPCG";
     }
-    solvermanager_t* solvermanager = create_solver_manager(routine_);
+    solvermanager_t* solvermanager = create_solver_manager(routine_, pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -156,7 +160,7 @@ public:
 
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
-    set_anasazi_parameters(params);
+    Teuchos::ParameterList pl = set_anasazi_parameters(params);
     
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
@@ -173,7 +177,7 @@ public:
     } else {
       routine_ = "LOBPCG";
     }
-    solvermanager_t* solvermanager = create_solver_manager(routine_);
+    solvermanager_t* solvermanager = create_solver_manager(routine_, pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -222,7 +226,6 @@ private:
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<double>> evals_;
-  Teuchos::ParameterList pl_;
   std::string routine_;
   int num_conv_;
 };
