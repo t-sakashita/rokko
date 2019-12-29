@@ -104,9 +104,9 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    num_conv_ = get_num_conv();
-    params_out.set("num_conv", num_conv_);
-    if (num_conv_ == 0) {
+    int num_conv = get_num_conv();
+    params_out.set("num_conv", num_conv);
+    if (num_conv == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
 
@@ -157,9 +157,9 @@ public:
     ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
     ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
-    num_conv_ = get_num_conv();
-    params_out.set("num_conv", num_conv_);
-    if (num_conv_ == 0) {
+    int num_conv = get_num_conv();
+    params_out.set("num_conv", num_conv);
+    if (num_conv == 0) {
       std::cout << "doesn't converge" << std::endl;
     }
 
@@ -234,7 +234,6 @@ private:
   int dimension_, offset_local_, num_local_rows_;
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
-  int num_conv_;
 };
 
 } // namespace slepc
