@@ -29,12 +29,12 @@ using solver_type = rokko::parallel_sparse_ev;
 int main(int argc, char** argv) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  rokko::grid_1d g;
+  rokko::mpi_comm comm(MPI_COMM_WORLD);
   
   std::cout.precision(10);
-  options opt(argc, argv, 16, solver_type::default_solver(), g.get_myrank() == 0);
-  if (!opt.valid) MPI_Abort(MPI_COMM_WORLD, 1);
-  MPI_Barrier(g.get_comm());
+  options opt(argc, argv, 16, solver_type::default_solver(), comm.get_myrank() == 0);
+  if (!opt.valid) MPI_Abort(comm.get_comm(), 1);
+  MPI_Barrier(comm.get_comm());
   std::chrono::system_clock::time_point t1 = std::chrono::system_clock::now();
 
   // lattice structure
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
   // Hamiltonian matrix
   rokko::distributed_crs_matrix mat(hop.dimension(), hop.dimension(), solver);
   elm2_mpi(hop, mat);
-  MPI_Barrier(g.get_comm());
+  MPI_Barrier(comm.get_comm());
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
   
   // Eigenvalues
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
   solver.diagonalize(mat, params);
   std::chrono::system_clock::time_point t3 = std::chrono::system_clock::now();
   
-  if (g.get_myrank() == 0) {
+  if (comm.get_myrank() == 0) {
     std::cout << "[Number of converged eigenpairs]\n\t" << solver.num_conv() << std::endl;
     // std::cout << "[Iteration number]\n\t" << itr << std::endl;
     std::cout << "[Eigenvalues]\n";
@@ -82,9 +82,9 @@ int main(int argc, char** argv) {
   // Ground-state eigenvector
   rokko::distributed_vector<double> eigvec;
   solver.eigenvector(0, eigvec);
-  if (g.get_myrank() == 0) std::cout << "[Eigenvector components (selected)]";
+  if (comm.get_myrank() == 0) std::cout << "[Eigenvector components (selected)]";
   std::cout << std::flush;
-  MPI_Barrier(g.get_comm());
+  MPI_Barrier(comm.get_comm());
   int count = 0;
   for (int i = 12; i < ss.dimension(); i += ss.dimension()/20, ++count) {
     if (eigvec.is_gindex(i)) {
@@ -92,11 +92,11 @@ int main(int argc, char** argv) {
       std::cout << '\t' << eigvec.get_global(i);
     }
     std::cout << std::flush;
-    MPI_Barrier(g.get_comm());
+    MPI_Barrier(comm.get_comm());
   }
-  if (g.get_myrank() == 0) std::cout << std::endl;
+  if (comm.get_myrank() == 0) std::cout << std::endl;
   std::cout << std::flush;
-  MPI_Barrier(g.get_comm());
+  MPI_Barrier(comm.get_comm());
 
   // Precision check and correlation functions
   // double Hexpec = check2(mat, x, 0, v, 0);
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
   //           << "sxx : " << sxx[0]
   //           << ", szz : " << szz[0] << std::endl;
 
-  if (g.get_myrank() == 0) {
+  if (comm.get_myrank() == 0) {
     std::cerr << "initialize      " <<  1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() << " sec\n"
               << "diagonalization " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count() << " sec\n";
     // << "check           " << 1.0e-6 * std::chrono::duration_cast<std::chrono::microseconds>(t4-t3).count() << " sec\n"

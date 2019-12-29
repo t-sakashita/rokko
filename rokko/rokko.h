@@ -15,7 +15,6 @@
 
 #include <rokko/solver.hpp>
 #if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-# include <rokko/grid_1d.hpp>
 # include <rokko/distributed_vector.hpp>
 #endif /* defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER) */
 
