@@ -139,8 +139,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    routine_ = get_routine(params);
-    solvermanager_t* solvermanager = create_solver_manager(routine_, pl);
+    solvermanager_t* solvermanager = create_solver_manager(get_routine(params), pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -173,8 +172,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    routine_ = get_routine(params);
-    solvermanager_t* solvermanager = create_solver_manager(routine_, pl);
+    solvermanager_t* solvermanager = create_solver_manager(get_routine(params), pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -225,7 +223,6 @@ private:
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<value_type>> evals_;
-  std::string routine_;
 };
 
 const std::vector<std::string> solver::names{ "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
