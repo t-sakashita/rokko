@@ -40,8 +40,9 @@ namespace anasazi {
 
 class solver {
 public:
-  using eigenproblem_t = Anasazi::BasicEigenproblem<double, Epetra_MultiVector, Epetra_Operator>;
-  using solvermanager_t = Anasazi::SolverManager<double, Epetra_MultiVector, Epetra_Operator>;
+  using value_type = double;
+  using eigenproblem_t = Anasazi::BasicEigenproblem<value_type, Epetra_MultiVector, Epetra_Operator>;
+  using solvermanager_t = Anasazi::SolverManager<value_type, Epetra_MultiVector, Epetra_Operator>;
 
   static const std::vector<std::string> names;
   
@@ -54,13 +55,13 @@ public:
 
   solvermanager_t* create_solver_manager(std::string const& routine, Teuchos::ParameterList& pl) {
     if ((routine == "LOBPCG") || (routine == ""))
-      return new Anasazi::LOBPCGSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return new Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else if (routine == "BlockKrylovSchur")
-      return new Anasazi::BlockKrylovSchurSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return new Anasazi::BlockKrylovSchurSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else if (routine == "BlockDavidson")
-      return new Anasazi::BlockDavidsonSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return new Anasazi::BlockDavidsonSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else if (routine == "RTR")
-      return new Anasazi::RTRSolMgr<double, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return new Anasazi::RTRSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
     else {
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
@@ -99,7 +100,7 @@ public:
     if (params.defined("block_size"))  // if block size is provided by common key name "block_size"
       pl.set("Block Size", params.get<int>("block_size"));
     if (params.defined("conv_tol"))
-      pl.set("Convergence Tolerance", params.get<double>("conv_tol"));
+      pl.set("Convergence Tolerance", params.get<value_type>("conv_tol"));
     if (params.defined("max_iters"))
       pl.set("Maximum Iterations", params.get<int>("max_iters"));
     //if (!params.defined("Which")) pl_.set("Which", "LM");
@@ -113,8 +114,8 @@ public:
       if (!is_rokko_solver_key(key)) {
         if (params.type(key) == typeid(int))
           pl.set(key, params.get<int>(key));
-        else if (params.type(key) == typeid(double))
-          pl.set(key, params.get<double>(key));
+        else if (params.type(key) == typeid(value_type))
+          pl.set(key, params.get<value_type>(key));
         else if (params.type(key) == typeid(std::string))
           pl.set(key, params.get<std::string>(key));
         else if (params.type(key) == typeid(const char*))
@@ -199,17 +200,17 @@ public:
     int col_dim, int num_entries_per_row) {
     return new anasazi::distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
-  double eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
+  value_type eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
 
-  void eigenvector(int k, std::vector<double>& vec) const {
+  void eigenvector(int k, std::vector<value_type>& vec) const {
     if (vec.size() < map_->get_num_local_rows()) vec.resize(map_->get_num_local_rows());
     eigenvector(k, vec.data());
   }
-  void eigenvector(int k, double *const vec) const {
-    double const*const vec_pt = (*problem_->getSolution().Evecs)[k];
+  void eigenvector(int k, value_type *const vec) const {
+    value_type const*const vec_pt = (*problem_->getSolution().Evecs)[k];
     std::copy(vec_pt, vec_pt + map_->get_num_local_rows(), vec);
   }
-  void eigenvector(int k, distributed_vector<double>& vec) const {
+  void eigenvector(int k, distributed_vector<value_type>& vec) const {
     vec.initialize(map_->get_dim(), map_->get_epetra_map().MinMyGID(),
                    map_->get_epetra_map().MaxMyGID() + 1);
     eigenvector(k, vec.get_storage());
@@ -225,7 +226,7 @@ private:
   mapping_1d* map_;
   Teuchos::RCP<Epetra_MultiVector> multivector_;
   Teuchos::RCP<eigenproblem_t> problem_;
-  //std::vector<Anasazi::Value<double>> evals_;
+  //std::vector<Anasazi::Value<value_type>> evals_;
   std::string routine_;
 };
 
