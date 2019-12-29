@@ -126,13 +126,11 @@ public:
   }
 
   parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
-    parameters params_out;
-    map_ = new mapping_1d(mat.get_dim());
-
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
+    map_ = new mapping_1d(mat.get_dim());
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
     problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector_));
@@ -154,19 +152,19 @@ public:
     }
 
     num_conv_ = problem_->getSolution().numVecs;
+    parameters params_out;
     params_out.set("num_conv", num_conv_);
     return params_out;
   }
 
   parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
-    parameters params_out;
     rokko::distributed_mfree* mat = &mat_in;
-    map_ = new mapping_1d(mat->get_dim());
 
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
-    
+
+    map_ = new mapping_1d(mat->get_dim());
     Teuchos::RCP<anasazi_mfree_operator> anasazi_op_ = Teuchos::rcp(new anasazi_mfree_operator(mat, map_));
     multivector_ = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector_->Random();
@@ -188,6 +186,7 @@ public:
       std::cout << "solvermanager.solve() does not converge." << std::endl;
     }
     num_conv_ = problem_->getSolution().numVecs;
+    parameters params_out;
     params_out.set("num_conv", num_conv_);
     return params_out;
   }
