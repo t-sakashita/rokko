@@ -73,12 +73,10 @@ public:
   }
 
   static std::tuple<int,int> retrieve_number_size(rokko::parameters const& params) {
-    int num_eigvals;
-    if (params.defined("num_eigvals")) num_eigvals = params.get<int>("num_eigvals");
-    else num_eigvals = 1;
-    int max_block_size;
-    if (params.defined("max_block_size")) max_block_size = params.get<int>("max_block_size");
-    else max_block_size = num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
+    int num_eigvals = params.defined("num_eigvals") ?
+      params.get<int>("num_eigvals") : 1;
+    int max_block_size = params.defined("max_block_size") ?
+      params.get<int>("max_block_size") : num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
     return {num_eigvals, max_block_size};
   }
 
