@@ -158,7 +158,7 @@ public:
   }
 
   parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
-    rokko::distributed_mfree* mat = &mat_in;
+    rokko::distributed_mfree const*const mat = &mat_in;
 
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
