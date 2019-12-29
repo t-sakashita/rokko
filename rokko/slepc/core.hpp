@@ -171,19 +171,19 @@ public:
 
   void info_verbose() const {
     PetscErrorCode ierr;
-    PetscInt nev2, ncv2, mpd2;
-    PetscReal tol2;
-    PetscInt maxits2, its2;
+    PetscInt nev, ncv, mpd;
+    PetscReal tol;
+    PetscInt maxits, its;
 
-    ierr = EPSGetDimensions(eps, &nev2, &ncv2, &mpd2);
-    ierr = EPSGetTolerances(eps, &tol2, &maxits2);
-    ierr = EPSGetIterationNumber(eps, &its2);
-    std::cout << "number of eigenvalues to compute=" << nev2 << std::endl;
-    std::cout << "maximum dimension of the subspace=" << ncv2 << std::endl;
-    std::cout << "maximum dimension allowed for the projected problem=" << mpd2 << std::endl;
-    std::cout << "convergence tolerance=" << tol2 << std::endl;
-    std::cout << "maximum number of iterations=" << maxits2 << std::endl;
-    std::cout << "number of iterations=" << its2 << std::endl;
+    ierr = EPSGetDimensions(eps, &nev, &ncv, &mpd);
+    ierr = EPSGetTolerances(eps, &tol, &maxits);
+    ierr = EPSGetIterationNumber(eps, &its);
+    std::cout << "number of eigenvalues to compute=" << nev << std::endl;
+    std::cout << "maximum dimension of the subspace=" << ncv << std::endl;
+    std::cout << "maximum dimension allowed for the projected problem=" << mpd << std::endl;
+    std::cout << "convergence tolerance=" << tol << std::endl;
+    std::cout << "maximum number of iterations=" << maxits << std::endl;
+    std::cout << "number of iterations=" << its << std::endl;
   }
   
   double eigenvalue(int i) const {
