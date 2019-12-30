@@ -92,7 +92,9 @@ int main(int argc, char *argv[]) {
   end_tick = MPI_Wtime();
 
   int num_conv = info.get<int>("num_conv");
-  if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
+  if (num_conv == 0) {
+    throw std::runtime_error("diagonalize : solver does not converge.");
+  }
   std::vector<double> eigvec;
   solver.eigenvector(0, eigvec);
   if (rank == 0) {
