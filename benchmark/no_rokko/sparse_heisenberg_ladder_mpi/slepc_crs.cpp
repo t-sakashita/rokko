@@ -29,10 +29,10 @@ int main(int argc,char **argv)
   int len_ladder = 5;
   if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
 
-  int L = 2 * len_ladder;
+  const int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   rokko::create_ladder_lattice_1dim(len_ladder, lattice);
-  int dim = 1 << L;
+  const int dim = 1 << L;
 
   // Create Hermitean matrix
   MPI_Barrier(MPI_COMM_WORLD);

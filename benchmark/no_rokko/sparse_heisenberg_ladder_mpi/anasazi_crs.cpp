@@ -43,11 +43,11 @@ int main(int argc, char *argv[]) {
 
   int len_ladder = 5;
   if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
-  int L = 2 * len_ladder;
+  const int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   rokko::create_ladder_lattice_1dim(len_ladder, lattice);
   rokko::output_lattice(printer.stream(Anasazi::Errors), lattice);
-  int N = 1 << L;
+  const int N = 1 << L;
 
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
-  int NumEntriesPerRow = 2 * L;
+  const int NumEntriesPerRow = 2 * L;
   Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, NumEntriesPerRow) );
 
   // Compute coefficients for hamiltonian matrix of quantum Heisenberg model

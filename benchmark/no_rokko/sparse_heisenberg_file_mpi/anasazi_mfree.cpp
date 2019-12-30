@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
   int L;
   std::vector<std::pair<int, int>> lattice;
   rokko::read_lattice_file(lattice_file, L, lattice);
-  int N = 1 << L;
+  const int N = 1 << L;
 
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
   Epetra_Map Map(N, 0, Comm);
 
   // Get update list and number of local equations from newly created Map.
-  int NumMyElements = Map.NumMyElements();
+  const int NumMyElements = Map.NumMyElements();
 
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(MyGlobalElements.data());

@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   int L;
   std::vector<std::pair<int, int>> lattice;
   rokko::read_lattice_file(lattice_file, L, lattice);
-  int N = 1 << L;
+  const int N = 1 << L;
 
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
