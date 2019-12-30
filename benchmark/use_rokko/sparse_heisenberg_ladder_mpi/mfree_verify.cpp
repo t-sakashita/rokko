@@ -62,12 +62,12 @@ int main(int argc, char *argv[]) {
   int len_ladder = 5;
   if (argc >= 3) len_ladder = boost::lexical_cast<int>(argv[2]);
 
-  int L = 2 * len_ladder;
+  const int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   rokko::create_ladder_lattice_1dim(len_ladder, lattice);
   if (rank == 0)
     rokko::print_lattice(lattice);
-  int dim = 1 << L;
+  const int dim = 1 << L;
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg 1D ladder lattice" << std::endl
               << "solver = " << name << std::endl
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
   MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
-  int num_conv = params_out.get<int>("num_conv");
+  const int num_conv = params_out.get<int>("num_conv");
   if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
   std::vector<double> eigvec;
   solver.eigenvector(0, eigvec);
