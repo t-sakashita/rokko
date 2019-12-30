@@ -105,10 +105,10 @@ int main(int argc, char *argv[]) {
   //  Variables used for the LOBPCG Method
   diag_tick = MPI_Wtime();
   std::string which("LM");
-  const int    nev       = 1;
-  const int    blockSize = nev;
-  //const int    maxIters  = 500;
-  //const double tol       = 1.0e-12;
+  constexpr int    nev       = 1;
+  constexpr int    blockSize = nev;
+  //constexpr int    maxIters  = 500;
+  //constexpr double tol       = 1.0e-12;
 
   using MV = Epetra_MultiVector;
   using OP = Epetra_Operator;

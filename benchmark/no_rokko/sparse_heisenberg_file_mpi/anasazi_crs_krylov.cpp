@@ -102,10 +102,10 @@ int main(int argc, char *argv[]) {
   MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
   std::string which("LM");
-  const int    nev       = 1;
-  const int    blockSize = 4; //40;
-  const int    maxIters  = 500;
-  const double tol       = 1.0e-8;
+  constexpr int    nev       = 1;
+  constexpr int    blockSize = 4; //40;
+  constexpr int    maxIters  = 500;
+  constexpr double tol       = 1.0e-8;
 
   using MV = Epetra_MultiVector;
   using OP = Epetra_Operator;
