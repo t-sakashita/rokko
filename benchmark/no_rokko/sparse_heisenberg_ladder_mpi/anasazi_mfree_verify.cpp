@@ -18,6 +18,7 @@
 #include <boost/lexical_cast.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <rokko/utility/lattice.hpp>
+#include <rokko/utility/math.hpp>
 #include <rokko/utility/machine_info.hpp>
 
 class HeisenbergOp : public Epetra_Operator {
@@ -29,12 +30,7 @@ class HeisenbergOp : public Epetra_Operator {
   HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
-    int n = nproc;
-    int p = -1;
-    do {
-      n /= 2;
-      ++p;
-    } while (n > 0);
+    const int p = rokko::find_power_of_two(nproc);
     int local_N = 1 << (L-p);
     buffer_.assign(local_N, 0);
   }

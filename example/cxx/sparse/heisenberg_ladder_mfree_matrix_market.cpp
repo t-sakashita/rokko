@@ -12,6 +12,7 @@
 #include <rokko/rokko.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <rokko/utility/lattice.hpp>
+#include <rokko/utility/math.hpp>
 #include <rokko/distributed_mfree_to_crs.hpp>
 
 class heisenberg_op : public rokko::distributed_mfree {
@@ -22,12 +23,7 @@ public:
     int size, rank;
     MPI_Comm_size(comm_, &size);
     MPI_Comm_rank(comm_, &rank);
-    int n = size;
-    int p = -1;
-    do {
-      n /= 2;
-      ++p;
-    } while (n > 0);
+    const int p = rokko::find_power_of_two(size);
     dim_ = 1 << L;
     num_local_rows_ = 1 << (L-p);
     local_offset_ = num_local_rows_ * rank;
