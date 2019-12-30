@@ -86,9 +86,8 @@ int main( int argc, char* argv[] ) {
     El::HermitianEig( El::LOWER, H, w, X );
     MPI_Barrier(MPI_COMM_WORLD);
     end_tick = MPI_Wtime();
-    
-    double* eigvals;
-    eigvals = new double[dim];
+
+    std::vector<double> eigvals(dim);
     for (int i = 0; i < dim; ++i) {
       eigvals[i] = w.Get(i,0);
     }
@@ -107,7 +106,6 @@ int main( int argc, char* argv[] ) {
       std::cout << std::endl;
     }
 
-    delete []eigvals;
   } catch( std::exception& e ) { El::ReportException(e); }
   
   El::Finalize();
