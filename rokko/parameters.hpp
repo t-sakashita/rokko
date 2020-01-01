@@ -90,10 +90,10 @@ public:
   bool get_bool(key_type const& key) const {
     if (defined(key)) {
       if (type(key) == typeid(bool)) {
-	return get<bool>(key);
+        return get<bool>(key);
       }
       else {
-	throw std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type");
+        throw std::invalid_argument("parameters::get_bool() : the key \"" + key + "\" is not bool type");
       }
     }
     return false;
