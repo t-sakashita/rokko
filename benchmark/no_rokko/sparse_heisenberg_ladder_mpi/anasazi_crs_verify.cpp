@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
-  const int NumEntriesPerRow = 2 * L;
+  const int NumEntriesPerRow = lattice.size() + 1;
   Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, NumEntriesPerRow) );
 
   // Compute coefficients for hamiltonian matrix of quantum Heisenberg model

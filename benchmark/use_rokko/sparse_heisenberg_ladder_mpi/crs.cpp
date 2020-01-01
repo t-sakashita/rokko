@@ -49,10 +49,10 @@ int main(int argc, char *argv[]) {
 
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
-  const int num_entries_per_row = 2 * L;
+  const int num_entries_per_row = lattice.size() + 1;
   rokko::distributed_crs_matrix mat(dim, dim, num_entries_per_row, solver);
-  std::vector<double> values;
-  std::vector<int> cols;
+  std::vector<double> values(num_entries_per_row);
+  std::vector<int> cols(num_entries_per_row);
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {
     cols.clear();
     values.clear();
