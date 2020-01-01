@@ -91,7 +91,7 @@ public:
 protected:
   creator_pointer_type make_creator(std::string const& name) const {
     typename creator_map_type::const_iterator itr = creators_.find(name);
-    if (itr == creators_.cend() || itr->second == 0) {
+    if (itr == creators_.cend() || itr->second == nullptr) {
       std::cerr << "Error: unknown product: \"" << name << "\" (registered products: ";
       for (typename creator_map_type::const_iterator itr = creators_.cbegin();
            itr != creators_.cend(); ++itr) {
