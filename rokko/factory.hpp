@@ -35,7 +35,7 @@ private:
   public:
     virtual ~creator() {}
     std::shared_ptr<BASE> create() const {
-      return std::shared_ptr<BASE>(new PRODUCT());
+      return std::shared_ptr<BASE>(std::make_shared<PRODUCT>());
     }
   };
 
@@ -63,7 +63,7 @@ public:
   template<typename PRODUCT>
   bool register_creator(std::string const& name, int priority = 0) {
     bool isnew = (creators_.find(name) == creators_.cend());
-    creators_[name] = creator_pointer_type(new creator<PRODUCT>());
+    creators_[name] = creator_pointer_type(std::make_shared<creator<PRODUCT>>());
     if (priority >= largest_priority_) {
       largest_priority_ = priority;
       default_product_ = name;
