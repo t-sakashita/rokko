@@ -62,7 +62,7 @@ public:
   }
   template<typename PRODUCT>
   bool register_creator(std::string const& name, int priority = 0) {
-    bool isnew = (creators_.find(name) == creators_.end());
+    bool isnew = (creators_.find(name) == creators_.cend());
     creators_[name] = creator_pointer_type(new creator<PRODUCT>());
     if (priority >= largest_priority_) {
       largest_priority_ = priority;
@@ -74,8 +74,8 @@ public:
   static std::vector<std::string> product_names() {
     factory* f = factory::instance();
     std::vector<std::string> retvec;
-    for (typename creator_map_type::const_iterator it = f->creators_.begin();
-         it != f->creators_.end(); ++it) {
+    for (typename creator_map_type::const_iterator it = f->creators_.cbegin();
+         it != f->creators_.cend(); ++it) {
       retvec.push_back(it->first);
     }
     return retvec;
@@ -91,11 +91,11 @@ public:
 protected:
   creator_pointer_type make_creator(std::string const& name) const {
     typename creator_map_type::const_iterator itr = creators_.find(name);
-    if (itr == creators_.end() || itr->second == 0) {
+    if (itr == creators_.cend() || itr->second == 0) {
       std::cerr << "Error: unknown product: \"" << name << "\" (registered products: ";
-      for (typename creator_map_type::const_iterator itr = creators_.begin();
-           itr != creators_.end(); ++itr) {
-        if (itr != creators_.begin()) std::cerr << ", ";
+      for (typename creator_map_type::const_iterator itr = creators_.cbegin();
+           itr != creators_.cend(); ++itr) {
+        if (itr != creators_.cbegin()) std::cerr << ", ";
         std::cerr << "\"" << itr->first << "\"";
       }
       std::cerr << ")\n";
