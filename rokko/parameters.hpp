@@ -46,7 +46,7 @@ public:
     map_[key] = std::string(value);
   }
   // returns if parameter with "key" is defined or not
-  bool defined(key_type const& key) const {return (map_.find(key) != map_.end()); }
+  bool defined(key_type const& key) const {return (map_.find(key) != map_.cend()); }
   // returns list of keys
   std::list<key_type> keys() const {
     std::list<key_type> keys;
