@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
   values.push_back(-1.);  values.push_back(2.);  values.push_back(-1.);
   for (int row = start_row; row < end_loop_row; ++row) {
     cols.clear();
-      cols.push_back(row-1);  cols.push_back(row);  cols.push_back(row+1);
-      mat.insert(row, cols, values);
+    cols.push_back(row-1);  cols.push_back(row);  cols.push_back(row+1);
+    mat.insert(row, cols, values);
   }
   cols.clear();
   values.clear();
