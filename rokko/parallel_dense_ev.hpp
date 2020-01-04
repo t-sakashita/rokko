@@ -132,15 +132,10 @@ using pd_solver_factory = factory<pd_ev_base>;
   
 class parallel_dense_ev {
 public:
-  void construct(std::string const& solver_name) {
-    solver_impl_ = detail::pd_solver_factory::instance()->make_product(solver_name);
-  }
-  parallel_dense_ev(std::string const& solver_name) : null_params() {
-    this->construct(solver_name);
-  }
-  parallel_dense_ev() : null_params() {
-    this->construct(this->default_solver());
-  }
+  parallel_dense_ev(std::string const& solver_name) : solver_impl_(detail::pd_solver_factory::instance()->make_product(solver_name)), null_params() {};
+
+  parallel_dense_ev() : parallel_dense_ev(default_solver()) {}
+
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) {
     return solver_impl_->is_available_grid_major(grid_major);
