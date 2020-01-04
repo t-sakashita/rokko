@@ -76,8 +76,8 @@ public:
   void output_matrix_market() const {
     mat->output_matrix_market();
   }
-  detail::distributed_crs_matrix_base* get_matrix() {
-    return mat;
+  detail::distributed_crs_matrix_base& get_matrix() {
+    return *mat;
   }
 
 private:

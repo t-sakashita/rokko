@@ -83,7 +83,7 @@ public:
     PetscReal tol = get_conv_tol(params);
     PetscInt max_iters = get_max_iters(params);
 
-    A = reinterpret_cast<slepc::distributed_crs_matrix*>(mat.get_matrix())->get_matrix();
+    A = static_cast<slepc::distributed_crs_matrix&>(mat.get_matrix()).get_matrix();
     ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
 
     /* Set operators for a standard eigenvalue problem */

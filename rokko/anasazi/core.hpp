@@ -134,7 +134,7 @@ public:
     map_ = new mapping_1d(mat.get_dim());
     Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(reinterpret_cast<anasazi::distributed_crs_matrix*>(mat.get_matrix())->get_matrix(), multivector));
+    problem_ = Teuchos::rcp(new eigenproblem_t(static_cast<anasazi::distributed_crs_matrix&>(mat.get_matrix()).get_matrix(), multivector));
     problem_->setHermitian(true);
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
