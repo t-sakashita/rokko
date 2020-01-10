@@ -107,7 +107,7 @@ public:
     int col_dim, int num_entries_per_row) {
     return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
-  std::string get_solver_name() { return solver_name_; }
+  std::string get_solver_name() const { return solver_name_; }
   static std::vector<std::string> solvers() { return detail::ps_solver_factory::product_names(); }
   static std::string default_solver() { return detail::ps_solver_factory::default_product_name(); }
 private:
