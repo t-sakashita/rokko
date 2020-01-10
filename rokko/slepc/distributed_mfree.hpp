@@ -14,9 +14,7 @@
 
 #include <rokko/distributed_mfree.hpp>
 
-#include <petscvec.h>
-#include <slepceps.h>
-#include <petscblaslapack.h>
+#include <rokko/slepc.hpp>
 
 namespace rokko {
 

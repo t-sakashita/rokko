@@ -12,12 +12,10 @@
 #ifndef ROKKO_SLEPC_CORE_HPP
 #define ROKKO_SLEPC_CORE_HPP
 
+#include <rokko/slepc.hpp>
+
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 #include <rokko/slepc/distributed_mfree.hpp>
-
-#include <petscvec.h>
-#include <slepceps.h>
-#include <petscblaslapack.h>
 
 namespace rokko {
 

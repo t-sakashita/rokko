@@ -15,8 +15,7 @@
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/utility/timer.hpp>
 
-#include <slepceps.h>
-#include <petscblaslapack.h>
+#include <rokko/slepc.hpp>
 
 #include <numeric>
 
