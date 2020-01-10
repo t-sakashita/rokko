@@ -105,16 +105,16 @@ public:
     return params_out;
   }
 
-  parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
     PetscErrorCode ierr;
     parameters params_out;
-    rokko::distributed_mfree *const mat = &mat_in;
+    rokko::distributed_mfree const*const mat = &mat_in;
     // define matrix-free type operator
     dimension_ = mat->get_dim();
     offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), mat, A);
+    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), const_cast<rokko::distributed_mfree*>(mat), A);
     ierr = MatSetFromOptions(*A);
     ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
     ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
