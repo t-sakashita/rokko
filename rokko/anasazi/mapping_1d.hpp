@@ -28,11 +28,6 @@ public:
   explicit mapping_1d(int dim) : mapping_1d(dim, mpi_comm(MPI_COMM_WORLD)) {}
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in) :
     dim_(dim), mpi_comm_(mpi_comm_in), ep_comm_(Epetra_MpiComm(mpi_comm_in.get_comm())), map_(dim_, 0, ep_comm_), num_local_rows_(map_.NumMyElements()) {
-    //num_rows = dim / g.get_nprocs();
-    //rest_row = dim % g.get_nprocs();
-    //if (g.get_myrank() < rest_row) {
-    //  ++num_rows;
-    //}
   }
   int get_dim() const { return dim_; }
   int get_num_local_rows() const { return num_local_rows_; }
