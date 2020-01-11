@@ -36,8 +36,6 @@ int main(int argc, char *argv[]) {
   rokko::distributed_crs_matrix mat(dim, dim, solver);
   std::vector<double> values(3);
   std::vector<int> cols(3);
-  cols.clear();
-  values.clear();
   int start_row = mat.start_row();
   if (start_row == 0) {
     values.push_back(1.);  values.push_back(-1.);
