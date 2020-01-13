@@ -45,10 +45,10 @@ public:
   explicit distributed_crs_matrix(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
     initialize(map, num_entries_per_row);
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim) : dim_(row_dim) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim) {
     initialize(row_dim, col_dim);
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) : dim_(row_dim) {
+  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
     initialize(row_dim, col_dim, num_entries_per_row);
   }
 
