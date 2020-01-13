@@ -23,7 +23,7 @@ public:
   virtual ~ps_crs_base() {}
   virtual void initialize(rokko::mapping_1d const& map, int num_entries_per_row) = 0;
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
-  virtual void insert(int row, int col_size, int* cols, double* const values) = 0;
+  virtual void insert(int row, int col_size, int const*const cols, double const*const values) = 0;
   virtual void complete() = 0;
   virtual int get_dim() const = 0;
   virtual int num_local_rows() const = 0;
@@ -45,8 +45,11 @@ public:
   virtual ~ps_crs_wrapper() {}
   void initialize(rokko::mapping_1d const& map, int num_entries_per_row) { crs_impl_.initialize(map, num_entries_per_row); }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    crs_impl_.insert(row, cols, values); }
-  void insert(int row, int col_size, int* cols, double* const values) { crs_impl_.insert(row, col_size, cols, values); }
+    crs_impl_.insert(row, cols, values);
+  }
+  void insert(int row, int col_size, int const*const cols, double const*const values) {
+    crs_impl_.insert(row, col_size, cols, values);
+  }
   void complete() { crs_impl_.complete(); }
   int get_dim() const { return crs_impl_.get_dim(); }
   int num_local_rows() const { return crs_impl_.num_local_rows(); }
@@ -86,7 +89,7 @@ public:
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
     crs_impl_->insert(row, cols, values);
   }
-  void insert(int row, int col_size, int* cols, double* const values) const {
+  void insert(int row, int col_size, int const*const cols, double const*const values) const {
     crs_impl_->insert(row, col_size, cols, values);
   }
   void complete() const {

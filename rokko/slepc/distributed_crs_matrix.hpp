@@ -92,7 +92,7 @@ public:
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     ierr = MatSetValues(matrix_, 1, &row, cols.size(), cols.data(), values.data(), INSERT_VALUES);  //CHKERRQ(ierr);
   }
-  void insert(int row, int col_size, int* cols, double* const values) {
+  void insert(int row, int col_size, int const*const cols, double const*const values) {
     ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);
   }
   #undef __FUNCT__

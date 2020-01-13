@@ -77,7 +77,7 @@ public:
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     matrix_->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
   }
-  void insert(int row, int col_size, int* cols, double* const values) {
+  void insert(int row, int col_size, int const*const cols, double const*const values) {
     matrix_->InsertGlobalValues(row, col_size, values, cols);
   }
   void complete() {
