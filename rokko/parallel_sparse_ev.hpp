@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014  Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,6 +13,7 @@
 #define ROKKO_PARALLEL_SPARSE_SOLVER_HPP
 
 #include <rokko/factory.hpp>
+#include <rokko/mapping_1d.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/distributed_vector.hpp>
@@ -28,18 +29,17 @@ public:
   virtual ~ps_ev_base() {}
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  virtual parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) = 0;
-  virtual parameters diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params) = 0;
+  virtual parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) = 0;
+  virtual parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) = 0;
   virtual double eigenvalue(int k) const = 0;
   virtual void eigenvector(int k, std::vector<double>& vec) const = 0;
   virtual void eigenvector(int k, double* vec) const = 0;
   virtual void eigenvector(int k, distributed_vector<double>& vec) const = 0;
   virtual int get_num_conv() const = 0;
-  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  virtual std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
 										    int col_dim) = 0;
-  virtual rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  virtual std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
 										  int col_dim, int num_entries_per_row) = 0;
-  
 };
 
 template<typename SOLVER>
@@ -50,10 +50,10 @@ public:
   virtual ~ps_ev_wrapper() {}
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
-  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     return solver_impl_.diagonalize(mat, params);
   }
-  parameters diagonalize(rokko::distributed_mfree& mat, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
     return solver_impl_.diagonalize(mat, params);
   }
   double eigenvalue(int k) const { return solver_impl_.eigenvalue(k); }
@@ -61,11 +61,11 @@ public:
   void eigenvector(int k, double* vec) const { solver_impl_.eigenvector(k, vec); }
   void eigenvector(int k, distributed_vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
   int get_num_conv() const { return solver_impl_.get_num_conv(); }
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim) {
     return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim);
   }
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim, int num_entries_per_row) {
     return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
@@ -90,8 +90,16 @@ public:
   void finalize() {
     solver_impl_->finalize();
   }
-  template<typename MAT>
-  parameters diagonalize(MAT& mat, rokko::parameters const& params) {
+  rokko::mapping_1d default_mapping(int dim, mpi_comm const& mpi_comm_in) {
+    return rokko::mapping_1d(dim, mpi_comm_in, get_solver_name());
+  }
+  parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    if(get_solver_name() != mat.get_solver_name())
+      throw std::invalid_argument(get_solver_name() + "'s diagonalize() : " + mat.get_solver_name() + "'s distributed_crs_matrix is given.");
+
+    return solver_impl_->diagonalize(mat, params);
+  }
+  parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
     return solver_impl_->diagonalize(mat, params);
   }
   double eigenvalue(int k) const { return solver_impl_->eigenvalue(k); }
@@ -99,11 +107,11 @@ public:
   void eigenvector(int k, double* vec) const { solver_impl_->eigenvector(k, vec); }
   void eigenvector(int k, distributed_vector<double>& vec) const { solver_impl_->eigenvector(k, vec); }
   int get_num_conv() const { return solver_impl_->get_num_conv(); }
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim) {
     return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim);
   }
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim, int num_entries_per_row) {
     return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }

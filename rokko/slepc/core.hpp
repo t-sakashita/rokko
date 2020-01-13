@@ -69,7 +69,7 @@ public:
     return params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
   }
 
-  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::slepc::distributed_crs_matrix& mat, rokko::parameters const& params) {
     PetscErrorCode ierr;
     parameters params_out;
     dimension_ = mat.get_dim();
@@ -81,8 +81,9 @@ public:
     PetscReal tol = get_conv_tol(params);
     PetscInt max_iters = get_max_iters(params);
 
-    A = static_cast<slepc::distributed_crs_matrix&>(mat.get_matrix()).get_matrix();
-    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
+    A = const_cast<Mat*>(mat.get_matrix());
+    comm_ = mat.get_map()->get_mpi_comm().get_comm();
+    ierr = EPSCreate(mat.get_map()->get_mpi_comm().get_comm(), &eps);
 
     /* Set operators for a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
@@ -101,6 +102,10 @@ public:
       info_verbose();
     }
     return params_out;
+  }
+
+  parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    return diagonalize(*static_cast<const rokko::slepc::distributed_crs_matrix*>(mat.get_ptr()->get_impl()), params);
   }
 
   parameters diagonalize(const rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
@@ -210,14 +215,14 @@ public:
     return static_cast<int>(num_conv);
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim) {
-    return new slepc::distributed_crs_matrix(row_dim, col_dim);
+    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<slepc::distributed_crs_matrix>(row_dim, col_dim));
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim, int num_entries_per_row) { // fix me: accepting different number of entries for diagonal and off-diagonal blocks in PETSc
-    return new slepc::distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<slepc::distributed_crs_matrix>(row_dim, col_dim, num_entries_per_row));
   }
 
 private:

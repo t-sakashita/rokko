@@ -35,28 +35,43 @@ private:
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
 };
 
-class distributed_crs_matrix : public rokko::detail::distributed_crs_matrix_base {
+class distributed_crs_matrix : public rokko::detail::ps_crs_base {
 public:
-  explicit distributed_crs_matrix(int row_dim, int col_dim) : dim_(row_dim) {
-    initialize(row_dim, col_dim);
-    set_sizes();
+  distributed_crs_matrix() {}
+  ~distributed_crs_matrix() {}
+
+  explicit distributed_crs_matrix(rokko::mapping_1d const& map, int num_entries_per_row) {
+    initialize(map, num_entries_per_row);
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) : dim_(row_dim) {
+
+  explicit distributed_crs_matrix(rokko::anasazi::mapping_1d const& map, int num_entries_per_row) {
+    initialize(map, num_entries_per_row);
+  }
+
+  explicit distributed_crs_matrix(int row_dim, int col_dim) {
+    initialize(row_dim, col_dim);
+  }
+  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
     initialize(row_dim, col_dim, num_entries_per_row);
-    set_sizes();
+  }
+  void initialize(rokko::mapping_1d const& map, int num_entries_per_row) {
+    if (map.get_solver_name() != "anasazi") {
+      throw std::invalid_argument("Anasazi's distributed_crs_matrix() : " + map.get_solver_name() + "'s mapping_1d is given.");
+    }
+    map_ = static_cast<const rokko::anasazi::mapping_1d*>(map.get_ptr()->get_impl());
+    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
+  }
+  void initialize(rokko::anasazi::mapping_1d const& map, int num_entries_per_row) {
+    map_ = &map;
+    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
   void initialize(int row_dim, int col_dim) {
-    map_ = new mapping_1d(row_dim);
+    map_ = new rokko::anasazi::mapping_1d(row_dim);
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), col_dim));
   }
   void initialize(int row_dim, int col_dim, int num_entries_per_row) {
-    map_ = new mapping_1d(row_dim);
+    map_ = new rokko::anasazi::mapping_1d(row_dim);
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
-  }
-  void set_sizes() {
-    num_local_rows_ = map_->get_epetra_map().NumMyElements();
-    start_row_ = map_->get_epetra_map().MinMyGID();
-    end_row_ = map_->get_epetra_map().MaxMyGID() + 1; // to follow C++ convention
   }
 
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
@@ -69,20 +84,20 @@ public:
     matrix_->FillComplete();
     matrix_->SetTracebackMode(1);
   }
-  Teuchos::RCP<Epetra_CrsMatrix> get_matrix() {
+  Teuchos::RCP<Epetra_CrsMatrix> get_matrix() const {
     return matrix_;
   }
   int get_dim() const {
-    return dim_;
+    return map_->get_dim();
   }
   int num_local_rows() const {
-    return num_local_rows_;
+    return map_->get_num_local_rows();
   }
   int start_row() const {
-    return start_row_;
+    return map_->start_row();
   }
   int end_row() const {
-    return end_row_;
+    return map_->end_row();
   }
   int get_nnz() const {
     return matrix_->NumGlobalNonzeros();
@@ -122,11 +137,14 @@ public:
     }
   }
 
+  const rokko::anasazi::mapping_1d* get_map() const { return map_; }
+
+  ps_crs_base* get_impl() { return this; }
+  const ps_crs_base* get_impl() const { return this; }
+
 private:
-  mapping_1d* map_;
+  const rokko::anasazi::mapping_1d* map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
-  int dim_;
-  int num_local_rows_, start_row_, end_row_;
 };
 
 } // namespace anasazi

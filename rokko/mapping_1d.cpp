@@ -9,13 +9,7 @@
 *
 *****************************************************************************/
 
-#include <rokko/parallel_sparse_ev.hpp>
-#include <rokko/anasazi/core.hpp>
-#include <rokko/anasazi/mapping_1d.hpp>
-#include <rokko/anasazi/distributed_crs_matrix.hpp>
+#include "mapping_1d.hpp"
 
-ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::anasazi::solver, "anasazi", 40)
-
-ROKKO_REGISTER_PARALLEL_SPARSE_MAPPING_1D(rokko::anasazi::mapping_1d, "anasazi", 40)
-
-ROKKO_REGISTER_PARALLEL_SPARSE_CRS(rokko::anasazi::distributed_crs_matrix, "anasazi", 40)
+template<>
+rokko::detail::ps_mapping_1d_factory *rokko::detail::ps_mapping_1d_factory::instance_ = nullptr;

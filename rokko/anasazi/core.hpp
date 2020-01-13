@@ -126,15 +126,19 @@ public:
     return pl;
   }
 
-  parameters diagonalize(rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    return diagonalize(*static_cast<const rokko::anasazi::distributed_crs_matrix*>(mat.get_ptr()->get_impl()), params);
+  }
+
+  parameters diagonalize(const rokko::anasazi::distributed_crs_matrix& mat, rokko::parameters const& params) {
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
-    map_ = new mapping_1d(mat.get_dim());
+    map_ = mat.get_map();
     Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(static_cast<anasazi::distributed_crs_matrix&>(mat.get_matrix()).get_matrix(), multivector));
+    problem_ = Teuchos::rcp(new eigenproblem_t(mat.get_matrix(), multivector));
     problem_->setHermitian(true);
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
@@ -156,7 +160,7 @@ public:
     return params_out;
   }
 
-  parameters diagonalize(rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
     rokko::distributed_mfree const*const mat = &mat_in;
 
     int num_eigvals, max_block_size;
@@ -188,13 +192,13 @@ public:
     return params_out;
   }
 
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim) {
-    return new anasazi::distributed_crs_matrix(row_dim, col_dim);
+    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(row_dim, col_dim));
   }
-  rokko::detail::distributed_crs_matrix_base* create_distributed_crs_matrix(int row_dim,
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
     int col_dim, int num_entries_per_row) {
-    return new anasazi::distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(row_dim, col_dim, num_entries_per_row));
   }
   value_type eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
 
@@ -219,7 +223,7 @@ public:
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
   int myrank;
-  mapping_1d* map_;
+  const rokko::anasazi::mapping_1d* map_;
   Teuchos::RCP<eigenproblem_t> problem_;
   //std::vector<Anasazi::Value<value_type>> evals_;
 };
