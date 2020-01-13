@@ -115,12 +115,12 @@ public:
     const int NumMyElements = map_->get_epetra_map().NumMyElements();
     std::vector<int> MyGlobalElements(NumMyElements);
     map_->get_epetra_map().MyGlobalElements(MyGlobalElements.data());
-    int local_row = 0;
     if (map_->get_epetra_comm().MyPID() == root_proc) {
       std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
       std::cout << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
     }
     map_->get_epetra_comm().Barrier();
+    int local_row = 0;
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if (local_row < NumMyElements) {
         if (global_row == MyGlobalElements[local_row]) {
