@@ -134,14 +134,14 @@ public:
     MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
   }
   void output_matrix_market() const {
+    constexpr int root_proc = 0;
     std::vector<int> idx;
 
     PetscInt num_cols;
     const PetscInt * cols;
     const PetscScalar * values;
-    const int myrank = map_->get_mpi_comm().get_myrank();
     int nnz = get_nnz();
-    if (myrank == 0) {
+    if (map_->get_mpi_comm().get_myrank() == root_proc) {
       std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
       std::cout << get_dim() << " " << get_dim() << " " << nnz << std::endl;
     }

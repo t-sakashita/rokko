@@ -106,6 +106,7 @@ public:
     std::cout << *matrix_ << std::endl;
   }
   void output_matrix_market() const {
+    constexpr int root_proc = 0;
     const int MaxNumIndices = matrix_->MaxNumEntries();
     std::vector<int> idx(MaxNumIndices);
     int num_cols;
@@ -115,7 +116,7 @@ public:
     std::vector<int> MyGlobalElements(NumMyElements);
     map_->get_epetra_map().MyGlobalElements(MyGlobalElements.data());
     int local_row = 0;
-    if (map_->get_epetra_comm().MyPID() == 0) {
+    if (map_->get_epetra_comm().MyPID() == root_proc) {
       std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
       std::cout << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
     }
