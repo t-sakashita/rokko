@@ -83,10 +83,10 @@ public:
     crs_impl_ = solver_in.create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
   }
   std::string get_solver_name() const { return solver_name_; }
-  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
+  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
     crs_impl_->insert(row, cols, values);
   }
-  void insert(int row, int col_size, int* cols, double* const values) {
+  void insert(int row, int col_size, int* cols, double* const values) const {
     crs_impl_->insert(row, col_size, cols, values);
   }
   void complete() const {
