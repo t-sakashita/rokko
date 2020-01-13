@@ -168,7 +168,6 @@ public:
 
 private:
   const rokko::slepc::mapping_1d* map_;
-  int dim_;
   PetscErrorCode ierr;
   Mat matrix_;
 };
