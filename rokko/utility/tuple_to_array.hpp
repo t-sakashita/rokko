@@ -12,11 +12,11 @@
 #ifndef ROKKO_UTIL_TUPLE_TO_ARRAY_HPP
 #define ROKKO_UTIL_TUPLE_TO_ARRAY_HPP
 
-namespace rokko {
-
 #include <array>
 #include <tuple>
 #include <utility>
+
+namespace rokko {
 
 template<typename T, std::size_t N, typename TUPLE, std::size_t... I>
 constexpr decltype(auto) to_array_impl(const TUPLE& a, std::index_sequence<I...>) {
