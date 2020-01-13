@@ -131,7 +131,7 @@ public:
     return static_cast<int>(info.nz_used);
   }
   void print() const {
-    MatView(matrix_, PETSC_VIEWER_STDOUT_WORLD);
+    MatView(matrix_, PETSC_VIEWER_STDOUT_(map_->get_mpi_comm().get_comm()));
   }
   void output_matrix_market() const {
     constexpr int root_proc = 0;
