@@ -90,6 +90,11 @@ public:
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
     crs_impl_->insert(row, cols, values);
   }
+  template <std::size_t N>
+  void insert(int row, std::array<int,N> const& cols, std::array<double,N> const& values) const {
+    assert(cols.size() == values.size());
+    crs_impl_->insert(row, cols.size(), cols.data(), values.data());
+  }
   void insert(int row, int col_size, int const*const cols, double const*const values) const {
     crs_impl_->insert(row, col_size, cols, values);
   }

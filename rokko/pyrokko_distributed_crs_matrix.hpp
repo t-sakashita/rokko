@@ -31,6 +31,10 @@ public:
   explicit wrap_distributed_crs_matrix(std::tuple<int,int> const& dims, SOLVER& solver_in)
     : distributed_crs_matrix(rokko::to_array(dims), solver_in) {}
 
+  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
+    rokko::distributed_crs_matrix::insert(row, cols, values);
+  }
+
   ~wrap_distributed_crs_matrix() {}
 
 };

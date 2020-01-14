@@ -34,33 +34,23 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
   rokko::parallel_sparse_ev solver(library);
   rokko::distributed_crs_matrix mat({dim, dim}, solver);
-  std::vector<double> values(3);
-  std::vector<int> cols(3);
   int start_row = mat.start_row();
   if (start_row == 0) {
-    values.push_back(1.);  values.push_back(-1.);
-    cols.push_back(0);  cols.push_back(1);
     ++start_row;
-    mat.insert(0, cols, values);
+    mat.insert(0, {0, 1}, {1., -1.});
   }
   int end_loop_row = mat.end_row();
   bool has_end_row = (mat.end_row() == dim);
   if (has_end_row) {
     --end_loop_row;
   }
-  values.clear();
-  values.push_back(-1.);  values.push_back(2.);  values.push_back(-1.);
+
   for (int row = start_row; row < end_loop_row; ++row) {
-    cols.clear();
-    cols.push_back(row-1);  cols.push_back(row);  cols.push_back(row+1);
-    mat.insert(row, cols, values);
+    mat.insert(row, {row-1, row, row+1}, {-1., 2., -1.});
   }
-  cols.clear();
-  values.clear();
+
   if (has_end_row) {
-    values.push_back(-1.);  values.push_back(2.);
-    cols.push_back(dim-2);  cols.push_back(dim-1);
-    mat.insert(dim-1, cols, values);
+    mat.insert(dim-1, {dim-2, dim-1}, {-1., 2.});
   }
   mat.complete();
   if (rank == 0)
