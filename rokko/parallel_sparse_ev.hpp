@@ -86,7 +86,7 @@ public:
   void finalize() {
     solver_impl_->finalize();
   }
-  rokko::mapping_1d default_mapping(int dim, mpi_comm const& mpi_comm_in) {
+  rokko::mapping_1d default_mapping(int dim, mpi_comm const& mpi_comm_in) const {
     return rokko::mapping_1d(dim, mpi_comm_in, get_solver_name());
   }
   parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {

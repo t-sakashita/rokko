@@ -31,7 +31,7 @@ public:
     parallel_sparse_ev::initialize(num, ptr);
   }
 
-  wrap_mapping_1d default_mapping(int dim, pybind11::handle const& comm_handle) {
+  wrap_mapping_1d default_mapping(int dim, pybind11::handle const& comm_handle) const {
     return static_cast<wrap_mapping_1d>(parallel_sparse_ev::default_mapping(dim, static_cast<mpi_comm>(wrap_communicator{comm_handle})));
   }
 
