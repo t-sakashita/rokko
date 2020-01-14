@@ -29,6 +29,7 @@ public:
   }
 
   MPI_Comm get_comm() const { return comm; }
+  void set_comm(MPI_Comm comm_in) { comm = comm_in; }
   int get_nprocs() const { return nprocs; }
   int get_myrank() const { return myrank; }
 
