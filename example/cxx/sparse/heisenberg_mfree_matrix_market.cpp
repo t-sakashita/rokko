@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
   rokko::parallel_sparse_ev solver(library);
   heisenberg_op op(L, lattice);
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_crs_matrix mat({dim, dim}, solver);
   rokko::distributed_mfree_to_crs(op, mat);
   mat.output_matrix_market();
   //mat.print();

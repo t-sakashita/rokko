@@ -13,7 +13,8 @@
 #define PYROKKO_PARALLEL_SPARSE_EV_HPP
 
 #include <rokko/parallel_sparse_ev.hpp>
-#include <rokko/distributed_crs_matrix.hpp>
+#include <rokko/pyrokko_mapping_1d.hpp>
+#include <rokko/pyrokko_distributed_crs_matrix.hpp>
 #include <rokko/pyrokko_distributed_mfree.hpp>
 
 namespace rokko {
@@ -30,7 +31,11 @@ public:
     parallel_sparse_ev::initialize(num, ptr);
   }
 
-  wrap_parameters diagonalize(distributed_crs_matrix& mat, wrap_parameters const& params) {
+  wrap_mapping_1d default_mapping(int dim, pybind11::handle const& comm_handle) {
+    return static_cast<wrap_mapping_1d>(parallel_sparse_ev::default_mapping(dim, static_cast<mpi_comm>(wrap_communicator{comm_handle})));
+  }
+
+  wrap_parameters diagonalize(wrap_distributed_crs_matrix& mat, wrap_parameters const& params) {
     return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }
 

@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 
   if (rank == 0) std::cout << "[solver = " << library << "]" << std::endl;
   rokko::parallel_sparse_ev solver(library);
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_crs_matrix mat({dim, dim}, solver);
   int current = 0;
   for (int row = 0; row < dim; ++row) {
     mat.insert(row, num_nonzero_cols[row], &nonzero_cols[current], &values[current]);

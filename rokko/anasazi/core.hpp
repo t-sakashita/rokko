@@ -192,13 +192,11 @@ public:
     return params_out;
   }
 
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-    int col_dim) {
-    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(row_dim, col_dim));
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) const {
+    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(dims));
   }
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-    int col_dim, int num_entries_per_row) {
-    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(row_dim, col_dim, num_entries_per_row));
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) const {
+    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(dims, num_entries_per_row));
   }
   value_type eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
 

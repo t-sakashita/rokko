@@ -36,10 +36,8 @@ public:
   virtual void eigenvector(int k, double* vec) const = 0;
   virtual void eigenvector(int k, distributed_vector<double>& vec) const = 0;
   virtual int get_num_conv() const = 0;
-  virtual std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-										    int col_dim) = 0;
-  virtual std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-										  int col_dim, int num_entries_per_row) = 0;
+  virtual std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) const = 0;
+  virtual std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) const = 0;
 };
 
 template<typename SOLVER>
@@ -61,13 +59,11 @@ public:
   void eigenvector(int k, double* vec) const { solver_impl_.eigenvector(k, vec); }
   void eigenvector(int k, distributed_vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
   int get_num_conv() const { return solver_impl_.get_num_conv(); }
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-    int col_dim) {
-    return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim);
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) const {
+    return solver_impl_.create_distributed_crs_matrix(dims);
   }
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-    int col_dim, int num_entries_per_row) {
-    return solver_impl_.create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) const {
+    return solver_impl_.create_distributed_crs_matrix(dims, num_entries_per_row);
   }
 private:
   solver_type solver_impl_;
@@ -107,13 +103,11 @@ public:
   void eigenvector(int k, double* vec) const { solver_impl_->eigenvector(k, vec); }
   void eigenvector(int k, distributed_vector<double>& vec) const { solver_impl_->eigenvector(k, vec); }
   int get_num_conv() const { return solver_impl_->get_num_conv(); }
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-    int col_dim) {
-    return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim);
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) const {
+    return solver_impl_->create_distributed_crs_matrix(dims);
   }
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(int row_dim,
-    int col_dim, int num_entries_per_row) {
-    return solver_impl_->create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) const {
+    return solver_impl_->create_distributed_crs_matrix(dims, num_entries_per_row);
   }
   std::string get_solver_name() const { return solver_name_; }
   static std::vector<std::string> solvers() { return detail::ps_solver_factory::product_names(); }

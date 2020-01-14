@@ -69,7 +69,7 @@ using ps_mapping_1d_factory = factory<ps_mapping_1d_base>;
 class mapping_1d {
 public:
   template<typename SOLVER>
-  mapping_1d(int dim, mpi_comm const& mpi_comm_in, SOLVER& solver_in)
+  mapping_1d(int dim, mpi_comm const& mpi_comm_in, SOLVER const& solver_in)
     : mapping_1d(dim, mpi_comm_in, solver_in.get_solver_name()) {
   }
 

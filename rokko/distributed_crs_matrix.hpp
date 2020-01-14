@@ -13,6 +13,7 @@
 #define ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
 
 #include <rokko/mapping_1d.hpp>
+#include <rokko/utility/tuple_to_array.hpp>
 #include <vector>
 
 namespace rokko {
@@ -78,12 +79,12 @@ public:
     crs_impl_->initialize(map, num_entries_per_row);
   }
   template<typename SOLVER>
-  explicit distributed_crs_matrix(int row_dim, int col_dim, SOLVER& solver_in) : solver_name_(solver_in.get_solver_name()) {
-    crs_impl_ = solver_in.create_distributed_crs_matrix(row_dim, col_dim);
+  explicit distributed_crs_matrix(std::array<int,2> const& dims, SOLVER const& solver_in) : solver_name_(solver_in.get_solver_name()) {
+    crs_impl_ = solver_in.create_distributed_crs_matrix(dims);
   }
   template<typename SOLVER>
-  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row, SOLVER& solver_in) : solver_name_(solver_in.get_solver_name()) {
-    crs_impl_ = solver_in.create_distributed_crs_matrix(row_dim, col_dim, num_entries_per_row);
+  explicit distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row, SOLVER const& solver_in) : solver_name_(solver_in.get_solver_name()) {
+    crs_impl_ = solver_in.create_distributed_crs_matrix(dims, num_entries_per_row);
   }
   std::string get_solver_name() const { return solver_name_; }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {

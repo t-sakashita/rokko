@@ -15,6 +15,8 @@
 #include <pybind11/numpy.h>
 #include <pybind11/eigen.h>
 
+#include <rokko/utility/tuple_to_array.hpp>
+
 #include <rokko/eigen3.hpp>
 #include <rokko/pyrokko_serial_dense_ev.hpp>
 #include <rokko/utility/pyrokko_generate_matrix.hpp>
@@ -33,7 +35,8 @@
 #include <rokko/utility/pyrokko_matrix012.hpp>
 
 #include <rokko/pyrokko_parallel_sparse_ev.hpp>
-#include <rokko/distributed_crs_matrix.hpp>
+#include <rokko/pyrokko_mapping_1d.hpp>
+#include <rokko/pyrokko_distributed_crs_matrix.hpp>
 #include <rokko/pyrokko_distributed_mfree.hpp>
 
 #include <rokko/utility/pyrokko_sort_eigenpairs.hpp>
@@ -241,26 +244,17 @@ PYBIND11_MODULE(pyrokko, m) {
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, int>());
   
   // sparse
-  py::class_<wrap_parallel_sparse_ev>(m, "parallel_sparse_ev")
-    .def(py::init<std::string const&>())
-    .def(py::init<>())
-    .def("initialize", &wrap_parallel_sparse_ev::initialize)
-    .def("finalize", &parallel_sparse_ev::finalize)
-    .def("eigenvalue", &parallel_sparse_ev::eigenvalue)
-    .def("eigenvector", &wrap_parallel_sparse_ev::python_eigenvector)
-    .def_property_readonly("num_conv", &parallel_sparse_ev::get_num_conv)
-    .def("diagonalize", py::overload_cast<distributed_crs_matrix&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
-         py::arg("mat"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<distributed_mfree*, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
-         py::arg("mat"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_distributed_mfree&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
-         py::arg("mat"), py::arg("params") = wrap_parameters())
-    .def_property_readonly_static("solvers", &parallel_sparse_ev::solvers)
-    .def_property_readonly_static("default_solver", &parallel_sparse_ev::default_solver);
-  
-  py::class_<distributed_crs_matrix>(m, "distributed_crs_matrix")
-    .def(py::init<int, int, wrap_parallel_sparse_ev&>())
-    .def(py::init<int, int, int, wrap_parallel_sparse_ev&>())
+  py::class_<wrap_mapping_1d>(m, "mapping_1d")
+    .def(py::init<int, pybind11::handle const&, wrap_parallel_sparse_ev&>())
+    .def_property_readonly("dim", &mapping_1d::get_dim)
+    .def_property_readonly("num_local_rows", &mapping_1d::num_local_rows)
+    .def_property_readonly("start_row", &mapping_1d::start_row)
+    .def_property_readonly("end_row", &mapping_1d::end_row)
+    .def_property_readonly("get_solver_name", &mapping_1d::get_solver_name);
+
+  py::class_<wrap_distributed_crs_matrix>(m, "distributed_crs_matrix")
+    .def(py::init<wrap_mapping_1d, int>())
+    .def(py::init<std::tuple<int,int>, wrap_parallel_sparse_ev const&>())
     .def("insert", py::overload_cast<int, std::vector<int> const&, std::vector<double> const&>(&distributed_crs_matrix::insert, py::const_))
     .def("complete", &distributed_crs_matrix::complete)
     .def_property_readonly("dim", &distributed_crs_matrix::get_dim)
@@ -272,6 +266,24 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("output_matrix_market", &distributed_crs_matrix::output_matrix_market)
     .def_property_readonly("solver_name", &distributed_crs_matrix::get_solver_name);
 
+  py::class_<wrap_parallel_sparse_ev>(m, "parallel_sparse_ev")
+    .def(py::init<std::string const&>())
+    .def(py::init<>())
+    .def("initialize", &wrap_parallel_sparse_ev::initialize)
+    .def("finalize", &parallel_sparse_ev::finalize)
+    .def("default_mapping", &wrap_parallel_sparse_ev::default_mapping)
+    .def("eigenvalue", &parallel_sparse_ev::eigenvalue)
+    .def("eigenvector", &wrap_parallel_sparse_ev::python_eigenvector)
+    .def_property_readonly("num_conv", &parallel_sparse_ev::get_num_conv)
+    .def("diagonalize", py::overload_cast<wrap_distributed_crs_matrix&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
+         py::arg("mat"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<distributed_mfree*, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
+         py::arg("mat"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_distributed_mfree&, wrap_parameters const&>(&wrap_parallel_sparse_ev::diagonalize),
+         py::arg("mat"), py::arg("params") = wrap_parameters())
+    .def_property_readonly_static("solvers", &parallel_sparse_ev::solvers)
+    .def_property_readonly_static("default_solver", &parallel_sparse_ev::default_solver);
+  
   // Eigen3 matrix
   m.def("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,std::function<double(int, int)>const&>(&pyrokko_generate<Eigen::ColMajor>));
   m.def("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,std::function<double(int, int)>const&>(&pyrokko_generate<Eigen::RowMajor>));

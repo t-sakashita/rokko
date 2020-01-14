@@ -45,11 +45,11 @@ public:
   explicit distributed_crs_matrix(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
     initialize(map, num_entries_per_row);
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim) {
-    initialize(row_dim, col_dim);
+  explicit distributed_crs_matrix(std::array<int,2> const& dims) {
+    initialize(dims);
   }
-  explicit distributed_crs_matrix(int row_dim, int col_dim, int num_entries_per_row) {
-    initialize(row_dim, col_dim, num_entries_per_row);
+  explicit distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) {
+    initialize(dims, num_entries_per_row);
   }
 
   void initialize(rokko::mapping_1d const& map, int num_entries_per_row) {
@@ -61,10 +61,9 @@ public:
 
   void initialize(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
     map_ = &map;
-    int row_dim = map_->get_dim();
-    int col_dim = row_dim;
+    int dim = map_->get_dim();
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dim, dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSeqAIJSetPreallocation(matrix_, num_entries_per_row, NULL);
     ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);
@@ -72,17 +71,17 @@ public:
 
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/initialize"
-  void initialize(int row_dim, int col_dim) {
+  void initialize(std::array<int,2> const& dims) {
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dims[0], dims[1]);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/initialize with num_entries_per_row"
-  void initialize(int row_dim, int col_dim, int num_entries_per_row) {
+  void initialize(std::array<int,2> const& dims, int num_entries_per_row) {
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, row_dim, col_dim);  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dims[0], dims[1]);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSeqAIJSetPreallocation(matrix_, num_entries_per_row, NULL);
     ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);

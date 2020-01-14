@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
 
   rokko::parallel_sparse_ev solver(library);
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_crs_matrix mat({dim, dim}, solver);
   std::vector<double> values;
   std::vector<int> cols;
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {
