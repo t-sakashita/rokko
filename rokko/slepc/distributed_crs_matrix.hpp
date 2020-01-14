@@ -72,6 +72,7 @@ public:
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/initialize"
   void initialize(std::array<int,2> const& dims) {
+    map_ = new rokko::slepc::mapping_1d(dims[0]);
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
     ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dims[0], dims[1]);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
@@ -80,6 +81,7 @@ public:
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/initialize with num_entries_per_row"
   void initialize(std::array<int,2> const& dims, int num_entries_per_row) {
+    map_ = new rokko::slepc::mapping_1d(dims[0]);
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
     ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dims[0], dims[1]);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
