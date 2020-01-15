@@ -34,24 +34,19 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
   rokko::parallel_sparse_ev solver(library);
   rokko::distributed_crs_matrix mat({dim, dim}, solver);
-  int start_row = mat.start_row();
-  if (start_row == 0) {
-    ++start_row;
+
+  if (mat.start_row() == 0) {
     mat.insert(0, {0, 1}, {1., -1.});
   }
-  int end_loop_row = mat.end_row();
-  bool has_end_row = (mat.end_row() == dim);
-  if (has_end_row) {
-    --end_loop_row;
-  }
 
-  for (int row = start_row; row < end_loop_row; ++row) {
+  for (int row = std::max(1,mat.start_row()); row < std::min(mat.end_row(),dim-1); ++row) {
     mat.insert(row, {row-1, row, row+1}, {-1., 2., -1.});
   }
 
-  if (has_end_row) {
+  if (mat.end_row() == dim) {
     mat.insert(dim-1, {dim-2, dim-1}, {-1., 2.});
   }
+
   mat.complete();
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
