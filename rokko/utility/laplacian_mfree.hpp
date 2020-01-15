@@ -12,7 +12,7 @@
 #ifndef ROKKO_UTILITY_LAPLACIAN_MFREE_HPP
 #define ROKKO_UTILITY_LAPLACIAN_MFREE_HPP
 
-#include "mpi.h"
+#include <rokko/distributed_mfree.hpp>
 
 namespace rokko {
 

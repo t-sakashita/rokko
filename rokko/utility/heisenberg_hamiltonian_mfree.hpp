@@ -13,6 +13,7 @@
 #define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MFREE_HPP
 
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+#include <rokko/distributed_mfree.hpp>
 #include <rokko/utility/math.hpp>
 
 namespace rokko {
