@@ -16,7 +16,7 @@ program heisenberg_crs_mpi
   integer :: provided, ierr, myrank, nprocs
 
   integer :: dim
-  integer :: row, start_row, end_row, end_loop_row
+  integer :: row, start_row, end_row
   integer, dimension(3) :: cols
   double precision, dimension(3) :: values
 
@@ -57,31 +57,27 @@ program heisenberg_crs_mpi
   call rokko_construct(solver, library)
 
   call rokko_construct(mat, dim, dim, solver)
-
   start_row = rokko_distributed_crs_matrix_start_row(mat)
   end_row = rokko_distributed_crs_matrix_end_row(mat)
+
   if (start_row == 1) then
      values(1) = 1d0;  values(2) = -1d0
      cols(1) = 1;   cols(2) = 2
-     start_row = start_row + 1
      call rokko_insert(mat, 1, 2, cols, values)
   endif
-  end_loop_row = end_row;
-  if (end_row == dim) then
-     end_loop_row = end_loop_row - 1
-  endif
+
   values(1) = -1d0;  values(2) = 2d0;  values(3) = -1d0
-  do row = start_row, end_loop_row
+  do row = max(2,start_row), min(end_row,dim-1)
      cols(1) = row-1;   cols(2) = row;   cols(3) = row+1
      call rokko_insert(mat, row, 3, cols, values)
   enddo
-  
+
   if (end_row == dim) then
      values(1) = -1d0;  values(2) = 2d0
      cols(1) = dim-1;   cols(2) = dim
      call rokko_insert(mat, dim, 2, cols, values)
   endif
-  
+
   call rokko_complete(mat)
 !  call rokko_distributed_crs_matrix_print(mat)
 

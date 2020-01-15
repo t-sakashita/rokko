@@ -16,6 +16,9 @@
 
 #include <rokko/utility/laplacian_matrix.h>
 
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -45,23 +48,21 @@ int main(int argc, char *argv[]) {
   if (row_start == 0) {
     values[0] = 1.;  values[1] = -1.;
     cols[0] = 0;   cols[1] = 1;
-    ++row_start;
     rokko_distributed_crs_matrix_insert(mat, 0, 2, cols, values);
   }
-  int row_loop_end = row_end;
-  if (row_end == dim) {
-    --row_loop_end;
-  }
+
   values[0] = -1.;  values[1] = 2.;  values[2] = -1.;
-  for (row = row_start; row < row_loop_end; ++row) {
+  for (row = MAX(1,row_start); row < MIN(row_end,dim-1); ++row) {
     cols[0] = row-1;   cols[1] = row;   cols[2] = row+1;
     rokko_distributed_crs_matrix_insert(mat, row, 3, cols, values);
   }
+
   if (row_end == dim) {
     values[0] = -1.;  values[1] = 2.;
     cols[0] = dim-2;   cols[1] = dim-1;
     rokko_distributed_crs_matrix_insert(mat, dim-1, 2, cols, values);
   }
+
   rokko_distributed_crs_matrix_complete(mat);
   if (rank == 0) {
     printf("Eigenvalue decomposition of Laplacian matrix\n");
