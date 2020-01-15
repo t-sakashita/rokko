@@ -13,6 +13,7 @@
 #define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MFREE_HPP
 
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
+#include <rokko/utility/math.hpp>
 
 namespace rokko {
 
@@ -24,22 +25,13 @@ public:
     int size, rank;
     MPI_Comm_size(comm_, &size);
     MPI_Comm_rank(comm_, &rank);
-    int p = find_power_of_two(size);
+    const int p = rokko::find_power_of_two(size);
     dim_ = 1 << L;
     num_local_rows_ = 1 << (L-p);
     local_offset_ = num_local_rows_ * rank;
     buffer_.assign(num_local_rows_, 0);
   }
   ~heisenberg_mfree() {}
-
-  int find_power_of_two(int n) {
-    int p = -1;
-    do {
-      n /= 2;
-      ++p;
-    } while (n > 0);
-    return p;
-  }
 
   void multiply(const double *const x, double *const y) const {
     rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, buffer_.data());
