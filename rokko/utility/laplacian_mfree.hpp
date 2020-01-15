@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -52,8 +52,7 @@ public:
       if (num_local_rows_ != 1) {
         y[0] = x[0] - x[1];
         if (nprocs != 1) y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
-      }
-      else {
+      } else {
         y[0] = x[0] - buf_p;
       }
     }
@@ -62,8 +61,7 @@ public:
       if (num_local_rows_ != 1) {
         if (nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
         y[end_k_] = 2 * x[end_k_] - x[end_k_ - 1];
-      }
-      else {
+      } else {
         y[end_k_] = 2 * x[end_k_] - buf_m;
       }
     }
@@ -71,8 +69,7 @@ public:
       if (num_local_rows_ != 1) {
         y[0] = - buf_m + 2 * x[0] - x[1];
         y[end_k_] = - x[end_k_ - 1] + 2 * x[end_k_] - buf_p;
-      }
-      else {
+      } else {
         y[0] = - buf_m + 2 * x[0] - buf_p;
       }
     }
