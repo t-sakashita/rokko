@@ -20,7 +20,7 @@ public:
   }
   ~distributed_mfree_c() {}
 
-  void multiply(const double* x, double* y) const {
+  void multiply(const double *const x, double *const y) const {
     multiply_(x, y, vars_);
   }
 
