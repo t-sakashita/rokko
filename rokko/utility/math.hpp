@@ -14,12 +14,13 @@
 
 namespace rokko {
 
+// Assume that n >= 1
 int find_power_of_two(int n) {
-  int p = -1;
-  do {
+  int p = 0;
+  while (n > 1) {
     n /= 2;
     ++p;
-  } while (n > 0);
+  };
   return p;
 }
 
