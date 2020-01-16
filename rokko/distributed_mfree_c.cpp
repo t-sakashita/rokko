@@ -28,8 +28,6 @@ public:
   int get_local_offset() const { return local_offset_; }
   int get_num_local_rows() const { return num_local_rows_; }
 
-public:
-
 private:
   void (*multiply_)(const double *const, double *const, void*);
   mutable void* vars_;
