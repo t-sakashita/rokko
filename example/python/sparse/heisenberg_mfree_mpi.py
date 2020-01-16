@@ -28,12 +28,11 @@ class heisenberg_op:
         self.__local_offset = self.__num_local_rows * self.myrank
 
     def get_pow_of_2(self, n):
-        p = -1
-        while True:
+        assert(n >= 1)
+        p = 0
+        while n > 1:
             n //= 2
             p += 1
-            if (n == 0):
-                break
         return p
 
     @property
