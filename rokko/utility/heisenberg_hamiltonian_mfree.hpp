@@ -30,7 +30,7 @@ public:
     dim_ = 1 << L;
     num_local_rows_ = 1 << (L-p);
     local_offset_ = num_local_rows_ * rank;
-    buffer_.assign(num_local_rows_, 0);
+    buffer_.resize(num_local_rows_);
   }
   ~heisenberg_mfree() {}
 
