@@ -38,6 +38,9 @@ public:
   void multiply(const double *const x, double *const y) const {
     if (num_local_rows_ == 0) return;
 
+    double buf_m, buf_p;
+    MPI_Status status_m, status_p;
+
     if ((!is_first_proc) && (nprocs != 1)) {
       MPI_Send(x, 1, MPI_DOUBLE, myrank-1, 0, comm_);
       MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status_m);
@@ -100,8 +103,6 @@ private:
   int start_row_, end_row_;
   int start_k_, end_k_;
   bool is_first_proc, is_last_proc;
-  mutable double buf_m, buf_p;
-  mutable MPI_Status status_m, status_p;
 };
 
 } // namespace rokko
