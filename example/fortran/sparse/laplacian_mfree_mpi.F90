@@ -186,9 +186,10 @@ program main
      call MPI_Abort(MPI_COMM_WORLD, -1, ierr)
   endif
 
+  call rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec)
+
   if (myrank == 0) then
      eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
-     call rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec)
      print *, "eigval=", eig_val
      print *, "Computed Eigenvector = "
      print *, eig_vec

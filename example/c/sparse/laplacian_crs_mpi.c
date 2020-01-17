@@ -84,6 +84,7 @@ int main(int argc, char *argv[]) {
   if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
   int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
   double eig_vec[num_local_rows];
+  rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
   int i, j;
   if (rank == 0) {
     printf("number of converged eigenpairs = %d\n", num_conv);
@@ -94,7 +95,6 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, i));
     //for (i = 0; i < num_conv; ++i) printf("%30.20f", rokko_laplacian_matrix_eigenvalue(dim, dim-1-i));
     printf("\n");
-    rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec);
     printf("smallest eigenvector: ");
     for (j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
