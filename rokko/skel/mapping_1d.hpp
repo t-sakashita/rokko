@@ -38,10 +38,9 @@ public:
     return (get_dim() + get_mpi_comm().get_nprocs() - proc - 1) / get_mpi_comm().get_nprocs();
   }
   int start_row() const {
-    int index = 0;
-    for (int proc=0; proc<get_mpi_comm().get_myrank(); ++proc)
-      index += calculate_num_local_rows(proc);
-    return index;
+    const int nprocs = get_mpi_comm().get_nprocs();
+    const int myrank = get_mpi_comm().get_myrank();
+    return get_dim() / nprocs * myrank + std::min(get_dim() % nprocs, myrank);
   }
   int end_row() const {
     return start_row() + get_num_local_rows();
