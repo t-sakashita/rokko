@@ -12,42 +12,13 @@
 #ifndef ROKKO_SLEPC_MAPPING_1D_HPP
 #define ROKKO_SLEPC_MAPPING_1D_HPP
 
-#include <rokko/mpi_communicator.hpp>
-#include <rokko/mapping_1d.hpp>
+#include <rokko/skel/mapping_1d.hpp>
 
 namespace rokko {
 
 namespace slepc {
 
-class mapping_1d : public detail::ps_mapping_1d_base {
-public:
-  explicit mapping_1d() : mapping_1d(0) {}
-  explicit mapping_1d(int dim) : mapping_1d(dim, mpi_comm{MPI_COMM_WORLD}) {}
-  explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
-    : detail::ps_mapping_1d_base(dim, mpi_comm_in) {}
-
-  void init(int dim, mpi_comm const& mpi_comm_in) {
-    set_dim(dim);
-    set_mpi_comm(mpi_comm_in);
-  }
-  int get_num_local_rows() const { return calculate_num_local_rows(); }
-  int calculate_num_local_rows() const {
-    return calculate_num_local_rows(get_mpi_comm().get_myrank());
-  }
-  int calculate_num_local_rows(int proc) const {
-    return (get_dim() + get_mpi_comm().get_nprocs() - proc - 1) / get_mpi_comm().get_nprocs();
-  }
-  int start_row() const {
-    int index = 0;
-    for (int proc=0; proc<get_mpi_comm().get_myrank(); ++proc)
-      index += calculate_num_local_rows(proc);
-    return index;
-  }
-  int end_row() const {
-    return start_row() + get_num_local_rows();
-  }
-  const ps_mapping_1d_base* get_impl() const { return this; }
-};
+using mapping_1d = rokko::skel::mapping_1d;
 
 } // namespace slepc
 
