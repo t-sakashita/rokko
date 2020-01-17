@@ -91,22 +91,18 @@ program heisenberg_crs_mpi
   call rokko_diagonalize(solver, mat, params)
   
   num_conv = rokko_parallel_sparse_ev_num_conv(solver)
-  if (num_conv >= 1) then
+  if (num_conv > 0) then
      eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
      num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat)
-     if (myrank == 0) then
-        print *, "eigval=", eig_val
-        print*, "num_local_rows=", num_local_rows
-     endif
      allocate( eig_vec(num_local_rows) )
      call rokko_eigenvector(solver, 0, eig_vec)
-  endif
-  
-  if (myrank.eq.0) then
-     print*, "number of converged eigenpairs=", num_conv
-     print*, "Computed Eigenvalues = ", eig_val
-     print*, "Computed Eigenvector = "
-     print '(8f10.4)', eig_vec
+
+     if (myrank == 0) then
+        print*, "number of converged eigenpairs=", num_conv
+        print*, "Computed Eigenvalues = ", eig_val
+        print*, "Computed Eigenvector = "
+        print '(8f10.4)', eig_vec
+     endif
   endif
 
   call rokko_destruct(mat)
