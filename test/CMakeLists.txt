@@ -22,6 +22,9 @@ add_subdirectory(grid)
 add_subdirectory(mapping_bc)
 add_subdirectory(generate_matrix)
 add_subdirectory(diagonalize)
+
+add_subdirectory(mapping_1d)
+
 add_subdirectory(matrix_product)
 add_subdirectory(mpi_collective)
 add_subdirectory(factory)
