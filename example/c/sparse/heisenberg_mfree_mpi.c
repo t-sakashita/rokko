@@ -29,16 +29,21 @@ struct heisenberg_vars {
   double *buffer;
 };
 
+// Assume that n >= 1
+int find_power_of_two(int n) {
+  int p = 0;
+  while (n > 1) {
+    n /= 2;
+    ++p;
+  };
+  return p;
+}
+
 void heisenberg_initialize(int L, int lattice_size, int lattice_first[], int lattice_second[], struct heisenberg_vars* vars) {
   vars->comm = MPI_COMM_WORLD;
   MPI_Comm_size(vars->comm, &vars->nprocs);
   MPI_Comm_rank(vars->comm, &vars->myrank);
-  int n = vars->nprocs;
-  int p = -1;
-  do {
-    n /= 2;
-    ++p;
-  } while (n > 0);
+  int p = find_power_of_two(vars->nprocs);
 
   vars->L = L;
   vars->lattice_size = lattice_size;
