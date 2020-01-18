@@ -51,7 +51,7 @@ contains
     allocate( lattice(2,lattice_size) )
     lattice = lattice_in
     allocate( buffer(0:num_local_rows-1) )
-    call rokko_distributed_mfree_construct(mat, multiply, dim, mpi_comm_world)
+    call rokko_construct(mat, multiply, dim, mpi_comm_world)
   end subroutine initialize
 
   integer function find_power_of_two(n_in)
