@@ -31,13 +31,14 @@ module rokko_distributed_mfree_mod
   end interface rokko_get_num_local_rows
 
   interface
-     subroutine rokko_distributed_mfree_f_construct(matrix, func, dim, num_local_rows) bind(c)
+     subroutine rokko_distributed_mfree_f_construct(matrix, func, dim, comm) bind(c)
        use iso_c_binding
        import rokko_distributed_mfree
        implicit none
        type(rokko_distributed_mfree), intent(out) :: matrix
        type(c_funptr), intent(in), value :: func
-       integer(c_int), value, intent(in) :: dim, num_local_rows
+       integer(c_int), value, intent(in) :: dim
+       integer(c_int), value, intent(in) :: comm
      end subroutine rokko_distributed_mfree_f_construct
     
      integer(c_int) function rokko_distributed_mfree_num_local_rows(matrix) bind(c)
@@ -64,9 +65,10 @@ module rokko_distributed_mfree_mod
 
 contains
 
-  subroutine rokko_distributed_mfree_construct(mat, multiply_in, dim, num_local_rows)
+  subroutine rokko_distributed_mfree_construct(mat, multiply_in, dim, comm)
     type(rokko_distributed_mfree), intent(inout) :: mat
-    integer(c_int), intent(in) :: dim, num_local_rows
+    integer(c_int), intent(in) :: dim
+    integer(c_int), value, intent(in) :: comm
     type(c_funptr) :: cproc
     interface
        subroutine multiply_in (n, x, y)
@@ -78,7 +80,7 @@ contains
     ! get c procedure pointer.
     cproc = c_funloc(multiply_in)
     ! call wrapper written in c.
-    call rokko_distributed_mfree_f_construct(mat, cproc, dim, num_local_rows)
+    call rokko_distributed_mfree_f_construct(mat, cproc, dim, comm)
   end subroutine rokko_distributed_mfree_construct
 
 end module rokko_distributed_mfree_mod

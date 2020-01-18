@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
   struct rokko_distributed_mfree mat;
   struct heisenberg_vars vars;
   heisenberg_initialize(L, lattice_size, lattice_first, lattice_second, &vars);
-  rokko_distributed_mfree_construct(&mat, heisenberg_multiply, &vars, vars.dim, vars.num_local_rows);
+  rokko_distributed_mfree_construct(&mat, heisenberg_multiply, &vars, vars.dim, MPI_COMM_WORLD);
   int dim = vars.dim;
   if (rank == 0) {
     printf("Eigenvalue decomposition of antiferromagnetic Heisenberg chain\n");

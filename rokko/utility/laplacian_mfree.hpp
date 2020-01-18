@@ -16,7 +16,7 @@
 
 namespace rokko {
 
-class laplacian_mfree : public rokko::distributed_mfree {
+class laplacian_mfree : public rokko::distributed_mfree_default {
 public:
   laplacian_mfree(int dim) : dim_(dim) {
     comm_ = MPI_COMM_WORLD;

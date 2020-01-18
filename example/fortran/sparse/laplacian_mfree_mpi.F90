@@ -46,7 +46,7 @@ contains
     !print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row,&
     !     "is_first_proc", is_first_proc, " is_last_proc", is_last_proc
     !print*, "myrank=", myrank, "num_local_rows=", num_local_rows
-    call rokko_distributed_mfree_construct(mat, multiply, dim, num_local_rows)
+    call rokko_distributed_mfree_construct(mat, multiply, dim, mpi_comm_world)
   end subroutine initialize
 
   integer function get_num_local_rows ()

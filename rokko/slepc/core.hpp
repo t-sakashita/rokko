@@ -117,13 +117,13 @@ public:
     offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
     A = new Mat();
-    ierr = MatCreateShell(PETSC_COMM_WORLD, mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), const_cast<rokko::distributed_mfree*>(mat), A);
+    ierr = MatCreateShell(mat->get_comm(), mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), const_cast<rokko::distributed_mfree*>(mat), A);
     ierr = MatSetFromOptions(*A);
     ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
     ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
     //ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
 
-    ierr = EPSCreate(PETSC_COMM_WORLD, &eps);
+    ierr = EPSCreate(mat->get_comm(), &eps);
     /* Set operators for a standard eigenvalue problem */
     ierr = EPSSetOperators(eps, *A, NULL);
 

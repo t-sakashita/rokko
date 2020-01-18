@@ -15,7 +15,7 @@
 #include <rokko/utility/math.hpp>
 #include <rokko/utility/machine_info.hpp>
 
-class heisenberg_op : public rokko::distributed_mfree {
+class heisenberg_op : public rokko::distributed_mfree_default {
 public:
   heisenberg_op(int L, const std::vector<std::pair<int, int>>& lattice)
     : L_(L), lattice_(lattice) {

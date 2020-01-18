@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2015-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2015-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -121,7 +121,7 @@ params.set("verbose", True)
 
 solver_name = "anasazi"
 solver = parallel_sparse_ev(solver_name)
-mat = distributed_mfree(op.multiply, op.dim, op.num_local_rows)
+mat = distributed_mfree(op.multiply, op.dim)
 params_out = solver.diagonalize(mat, params)
 num_conv = params_out.get("num_conv")
 

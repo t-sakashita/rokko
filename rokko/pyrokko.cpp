@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -241,7 +241,7 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<distributed_mfree>(m, "distributed_mfree_base");
 
   py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
-    .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, int>());
+    .def(py::init<std::function<void(ConstMapVec,MapVec)>, int>());
   
   // sparse
   py::class_<wrap_mapping_1d>(m, "mapping_1d")

@@ -13,10 +13,10 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/sparse.h>
 
-class distributed_mfree_c : public rokko::distributed_mfree {
+class distributed_mfree_c : public rokko::distributed_mfree_default {
 public:
-  distributed_mfree_c(void (*multiply)(const double *const, double *const, void*), void* vars, int dim, int num_local_rows)
-    : multiply_(multiply), vars_(vars), dim_(dim), num_local_rows_(num_local_rows), local_offset_(0) {
+  distributed_mfree_c(void (*multiply)(const double *const, double *const, void*), void* vars, int dim, MPI_Comm comm)
+    : rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}), multiply_(multiply), vars_(vars) {
   }
   ~distributed_mfree_c() {}
 
@@ -24,23 +24,16 @@ public:
     multiply_(x, y, vars_);
   }
 
-  int get_dim() const { return dim_; }
-  int get_local_offset() const { return local_offset_; }
-  int get_num_local_rows() const { return num_local_rows_; }
-
 private:
   void (*multiply_)(const double *const, double *const, void*);
   mutable void* vars_;
-  int dim_;
-  int num_local_rows_;
-  int local_offset_;
 };
 
 void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 				       void (*multiply)(const double *const, double *const, void*),
 				       void* vars,
-				       int dim, int num_local_rows) {
-  matrix->ptr = new distributed_mfree_c(multiply, vars, dim, num_local_rows);
+				       int dim, MPI_Comm comm = MPI_COMM_WORLD) {
+  matrix->ptr = new distributed_mfree_c(multiply, vars, dim, comm);
 }
 
 void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {

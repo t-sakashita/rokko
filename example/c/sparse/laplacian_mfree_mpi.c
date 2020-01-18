@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
   struct rokko_distributed_mfree mat;
   struct laplacian_vars vars;
   laplacian_initialize(dim, &vars);
-  rokko_distributed_mfree_construct(&mat, laplacian_multiply, &vars, vars.dim, vars.num_local_rows);
+  rokko_distributed_mfree_construct(&mat, laplacian_multiply, &vars, vars.dim, MPI_COMM_WORLD);
   if (rank == 0) {
     printf("Eigenvalue decomposition of Laplacian matrix\n");
     printf("solver = %s\n", library);
