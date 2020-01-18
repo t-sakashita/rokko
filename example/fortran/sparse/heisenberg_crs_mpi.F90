@@ -106,7 +106,6 @@ program heisenberg_crs_mpi
   call rokko_diagonalize(solver, mat, params)
   
   num_conv = rokko_num_conv(solver)
-  num_conv = rokko_num_conv(solver)
   if ((num_conv >= 1) .and. (myrank == 0)) then
      eig_val = rokko_eigenvalue(solver, 0)
      print *, "eigval=", eig_val
