@@ -103,6 +103,14 @@ module rokko_distributed_crs_matrix_mod
      module procedure rokko_distributed_crs_matrix_end_row
   end interface rokko_end_row
 
+  interface rokko_start_row_c
+     procedure rokko_distributed_crs_matrix_start_row_c
+  end interface rokko_start_row_c
+
+  interface rokko_end_row_c
+     procedure rokko_distributed_crs_matrix_end_row_c
+  end interface rokko_end_row_c
+
   interface rokko_num_local_rows
      procedure rokko_distributed_crs_matrix_num_local_rows
   end interface rokko_num_local_rows

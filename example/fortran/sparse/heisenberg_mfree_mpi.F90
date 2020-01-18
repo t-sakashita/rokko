@@ -266,15 +266,15 @@ program main
   call rokko_set(params, "verbose", .true.)
   call rokko_diagonalize(solver, mat, params, params_out)
 
-  num_conv = rokko_parallel_sparse_ev_num_conv(solver)
+  num_conv = rokko_num_conv(solver)
   if (num_conv == 0) then
      call MPI_Abort(MPI_COMM_WORLD, -1, ierr)
   endif
 
-  call rokko_parallel_sparse_ev_eigenvector(solver, 0, eig_vec)
+  call rokko_eigenvector(solver, 0, eig_vec)
 
   if (myrank == 0) then
-     eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
+     eig_val = rokko_eigenvalue(solver, 0)
      print *, "eigval=", eig_val
      print *, "Computed Eigenvector = "
      print *, eig_vec

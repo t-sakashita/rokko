@@ -69,8 +69,8 @@ program heisenberg_crs_mpi
 
   call rokko_construct(mat, dim, dim, solver)
 
-  start_row = rokko_distributed_crs_matrix_start_row_c(mat)
-  end_row = rokko_distributed_crs_matrix_end_row(mat)
+  start_row = rokko_start_row_c(mat) ! C sytle index
+  end_row = rokko_end_row(mat) ! Fortran sytle index
 
   allocate( cols(dim) )
   allocate( values(dim) )
@@ -99,7 +99,7 @@ program heisenberg_crs_mpi
      call rokko_insert_c(mat, row, count, cols, values)
   end do
   call rokko_complete(mat)
-!  call rokko_distributed_crs_matrix_print(mat)
+!  call rokko_print(mat)
 
   call rokko_construct(params)
   call rokko_set(params, "routine", routine)

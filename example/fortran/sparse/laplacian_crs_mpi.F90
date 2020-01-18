@@ -57,8 +57,8 @@ program heisenberg_crs_mpi
   call rokko_construct(solver, library)
 
   call rokko_construct(mat, dim, dim, solver)
-  start_row = rokko_distributed_crs_matrix_start_row(mat)
-  end_row = rokko_distributed_crs_matrix_end_row(mat)
+  start_row = rokko_start_row(mat)
+  end_row = rokko_end_row(mat)
 
   if (start_row == 1) then
      values(1) = 1d0;  values(2) = -1d0
@@ -79,7 +79,7 @@ program heisenberg_crs_mpi
   endif
 
   call rokko_complete(mat)
-!  call rokko_distributed_crs_matrix_print(mat)
+!  call rokko_print(mat)
 
   call rokko_construct(params)
   call rokko_set(params, "routine", routine)
@@ -90,10 +90,10 @@ program heisenberg_crs_mpi
   call rokko_set(params, "conv_tol", 1.0d-8)
   call rokko_diagonalize(solver, mat, params)
   
-  num_conv = rokko_parallel_sparse_ev_num_conv(solver)
+  num_conv = rokko_num_conv(solver)
   if (num_conv > 0) then
-     eig_val = rokko_parallel_sparse_ev_eigenvalue(solver, 0)
-     num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat)
+     eig_val = rokko_eigenvalue(solver, 0)
+     num_local_rows = rokko_num_local_rows(mat)
      allocate( eig_vec(num_local_rows) )
      call rokko_eigenvector(solver, 0, eig_vec)
 
