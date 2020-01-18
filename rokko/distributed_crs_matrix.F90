@@ -122,7 +122,7 @@ contains
   function rokko_distributed_crs_matrix_end_row(matrix) result(ind)  ! same with rokko_distributed_crs_matrix_end_row_c
     integer :: ind
     type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
-    ind = rokko_distributed_crs_matrix_end_row_c(matrix)
+    ind = rokko_distributed_crs_matrix_end_row_c(matrix) - 1
   end function rokko_distributed_crs_matrix_end_row
 
   subroutine rokko_distributed_crs_matrix_insert(matrix, row, col_size, cols, values)

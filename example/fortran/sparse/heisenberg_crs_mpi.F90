@@ -70,7 +70,7 @@ program heisenberg_crs_mpi
   call rokko_construct(mat, dim, dim, solver)
 
   start_row = rokko_distributed_crs_matrix_start_row_c(mat)
-  end_row = rokko_distributed_crs_matrix_end_row_c(mat)
+  end_row = rokko_distributed_crs_matrix_end_row(mat)
 
   allocate( cols(dim) )
   allocate( values(dim) )
