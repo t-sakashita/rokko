@@ -96,11 +96,8 @@ void laplacian_initialize(struct rokko_distributed_mfree* mat, int dim, struct l
   vars->start_row = rokko_distributed_mfree_start_row(*mat);
   vars->end_row = rokko_distributed_mfree_end_row(*mat) - 1;
 
-  if (vars->start_row == 0)  vars->is_first_proc = 1;
-  else vars->is_first_proc = 0;
-
-  if (vars->end_row == (vars->dim-1))  vars->is_last_proc = 1;
-  else vars->is_last_proc = 0;
+  vars->is_first_proc = (vars->start_row == 0);
+  vars->is_last_proc = (vars->end_row == (vars->dim-1));
 
   vars->end_k = vars->num_local_rows - 1;
 }
