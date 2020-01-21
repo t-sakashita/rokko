@@ -23,7 +23,7 @@ struct laplacian_vars {
   int nprocs, myrank;
   int dim, local_offset, num_local_rows;
   int start_row, end_row;
-  int start_k, end_k;
+  int end_k;
   int is_first_proc, is_last_proc;
 };
 
