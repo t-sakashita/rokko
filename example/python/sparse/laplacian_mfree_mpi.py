@@ -11,33 +11,19 @@ import mpi4py.MPI
 from pyrokko import *
 import numpy
 
-class laplacian_op:
+class laplacian_op(distributed_mfree):
     def __init__(self, dim):
-        self.__dim = dim
         self.comm = mpi4py.MPI.COMM_WORLD
         self.nprocs = self.comm.Get_size()
         self.myrank = self.comm.Get_rank()
-
-        tmp = dim // self.nprocs
-        rem = dim % self.nprocs
-        self.__num_local_rows = (dim + self.nprocs - self.myrank - 1) // self.nprocs
-        self.start_row = tmp * self.myrank + min(rem, self.myrank)
-        self.end_row = self.start_row + self.__num_local_rows - 1
+        distributed_mfree.__init__(self, self.multiply, dim, self.comm)
 
         self.is_first_proc = self.start_row == 0
-        self.is_last_proc = self.end_row == (dim-1)
-        self.end_k = self.__num_local_rows - 1
-
-    @property
-    def dim(self):
-        return self.__dim
-
-    @property
-    def num_local_rows(self):
-        return self.__num_local_rows
+        self.is_last_proc = self.end_row == dim
+        self.end_k = self.num_local_rows - 1
 
     def multiply(self, x, y):
-        if self.__num_local_rows == 0:
+        if self.num_local_rows == 0:
             return
 
         if (not self.is_first_proc) and (self.nprocs != 1):
@@ -49,7 +35,7 @@ class laplacian_op:
             self.comm.send(x[self.end_k], dest=self.myrank+1)
 
         if self.is_first_proc:
-            if self.__num_local_rows != 1:
+            if self.num_local_rows != 1:
                 y[0] = x[0] - x[1]
                 if self.nprocs != 1:
                     y[self.end_k] = - x[self.end_k - 1] + 2 * x[self.end_k] - self.buf_p
@@ -57,7 +43,7 @@ class laplacian_op:
                 y[0] = x[0] - self.buf_p
 
         if self.is_last_proc:
-            if self.__num_local_rows != 1:
+            if self.num_local_rows != 1:
                 if self.nprocs != 1:
                     y[0] = - self.buf_m + 2 * x[0] - x[1];
                 y[self.end_k] = 2 * x[self.end_k] - x[self.end_k - 1]
@@ -65,7 +51,7 @@ class laplacian_op:
                 y[self.end_k] = 2 * x[self.end_k] - self.buf_m
 
         if not(self.is_first_proc or self.is_last_proc):  # neither first or last process
-            if self.__num_local_rows != 1:
+            if self.num_local_rows != 1:
                 y[0] = - self.buf_m + 2 * x[0] - x[1]
                 y[self.end_k] = - x[self.end_k - 1] + 2 * x[self.end_k] - self.buf_p
             else:
@@ -77,11 +63,12 @@ class laplacian_op:
 
 
 # Main program
+dim = 100
+mat = laplacian_op(dim)
+
 solver_name = "anasazi"
 solver = parallel_sparse_ev(solver_name)
-dim = 100
-op = laplacian_op(dim)
-mat = distributed_mfree(op.multiply, op.dim)
+
 params = parameters()
 params.set("Block Size", 5);
 params.set("Maximum Iterations", 500);

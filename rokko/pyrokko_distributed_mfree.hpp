@@ -17,6 +17,8 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/eigen3.hpp>
 
+#include <rokko/mpi_communicator.hpp>
+#include <rokko/pyrokko_communicator.hpp>
 
 namespace rokko {
 
@@ -25,8 +27,12 @@ using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
 
 class wrap_distributed_mfree : public rokko::distributed_mfree_default {
 public:
-  wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim, MPI_Comm comm = MPI_COMM_WORLD)
-    : multiply_(multiply), rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}) {}
+  wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim)
+    : multiply_(multiply), rokko::distributed_mfree_default(dim, rokko::mpi_comm{MPI_COMM_WORLD}) {}
+
+  wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim, pybind11::handle const& comm_handle)
+    : multiply_(multiply), rokko::distributed_mfree_default(dim, wrap_communicator{comm_handle}) {}
+
   ~wrap_distributed_mfree() {}
 
   void multiply(const double* x, double* y) const {

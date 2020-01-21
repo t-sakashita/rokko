@@ -10,7 +10,7 @@
 import mpi4py.MPI
 from pyrokko import *
 
-class heisenberg_op:
+class heisenberg_op(distributed_mfree):
     def __init__(self, L, lattice):
         self.L = L
         self.lattice = lattice
@@ -18,14 +18,14 @@ class heisenberg_op:
         self.nprocs = self.comm.Get_size()
         self.myrank = self.comm.Get_rank()
 
-        self.p = self.get_pow_of_2(self.nprocs)
-        if self.nprocs != (1 << self.p):
+        p = self.get_pow_of_2(self.nprocs)
+        if self.nprocs != (1 << p):
             raise ValueError("This program can be run only for powers of 2")
+        self.local_pow = self.L - p
         
-        self.__dim = 1 << self.L
-        self.local_pow = self.L - self.p
-        self.__num_local_rows = 1 << self.local_pow
-        self.__local_offset = self.__num_local_rows * self.myrank
+        dim = 1 << L
+        distributed_mfree.__init__(self, self.multiply, dim, self.comm)
+
 
     def get_pow_of_2(self, n):
         assert(n >= 1)
@@ -34,14 +34,6 @@ class heisenberg_op:
             n //= 2
             p += 1
         return p
-
-    @property
-    def dim(self):
-        return self.__dim
-
-    @property
-    def num_local_rows(self):
-        return self.__num_local_rows
 
     def multiply(self, x, y):
         local_pow = self.local_pow
@@ -109,7 +101,7 @@ class heisenberg_op:
 # Main program
 L = 10
 lattice = [(i, (i+1) % L) for i in range(0, L)]
-op = heisenberg_op(L, lattice)
+mat = heisenberg_op(L, lattice)
 
 params = parameters()
 params.set("Block Size", 5);
@@ -121,7 +113,6 @@ params.set("verbose", True)
 
 solver_name = "anasazi"
 solver = parallel_sparse_ev(solver_name)
-mat = distributed_mfree(op.multiply, op.dim)
 params_out = solver.diagonalize(mat, params)
 num_conv = params_out.get("num_conv")
 
