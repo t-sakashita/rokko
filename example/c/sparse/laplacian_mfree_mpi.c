@@ -25,12 +25,13 @@ struct laplacian_vars {
   int start_row, end_row;
   int start_k, end_k;
   int is_first_proc, is_last_proc;
-  double buf_m, buf_p;
-  MPI_Status status_m, status_p;
 };
 
 
 void laplacian_multiply(const double *const x, double *const y, void* vars) {
+  double buf_m, buf_p;
+  MPI_Status status_m, status_p;
+
   struct laplacian_vars* p = (struct laplacian_vars*)vars;
   
   if (p->num_local_rows == 0) return;
@@ -38,13 +39,13 @@ void laplacian_multiply(const double *const x, double *const y, void* vars) {
   if ((!p->is_first_proc) && (p->nprocs != 1)) {
     //std::cout << "recv myrank=" << p->myrank << std::endl;
     MPI_Send(&x[0], 1, MPI_DOUBLE, p->myrank-1, 0, p->comm);
-    MPI_Recv(&p->buf_m, 1, MPI_DOUBLE, p->myrank-1, 0, p->comm, &p->status_m);
+    MPI_Recv(&buf_m, 1, MPI_DOUBLE, p->myrank-1, 0, p->comm, &status_m);
     //std::cout << "buffff=" << buf << std::endl;
   }
   
   if ((!p->is_last_proc) && (p->nprocs != 1)) {
     //std::cout << "send myrank=" << p->myrank << std::endl;
-    MPI_Recv(&p->buf_p, 1, MPI_DOUBLE, p->myrank+1, 0, p->comm, &p->status_p);
+    MPI_Recv(&buf_p, 1, MPI_DOUBLE, p->myrank+1, 0, p->comm, &status_p);
     MPI_Send(&x[p->end_k], 1, MPI_DOUBLE, p->myrank+1, 0, p->comm);
     //std::cout << "buffff=" << buf2 << std::endl;
   }
@@ -52,29 +53,29 @@ void laplacian_multiply(const double *const x, double *const y, void* vars) {
   if (p->is_first_proc) {
     if (p->num_local_rows != 1) {
       y[0] = x[0] - x[1];
-      if (p->nprocs != 1) y[p->end_k] = - x[p->end_k - 1] + 2 * x[p->end_k] - p->buf_p;
+      if (p->nprocs != 1) y[p->end_k] = - x[p->end_k - 1] + 2 * x[p->end_k] - buf_p;
     }
     else {
-      y[0] = x[0] - p->buf_p;
+      y[0] = x[0] - buf_p;
     }
   }
   
   if (p->is_last_proc) {
     if (p->num_local_rows != 1) {
-      if (p->nprocs != 1) y[0] = - p->buf_m + 2 * x[0] - x[1];
+      if (p->nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
       y[p->end_k] = 2 * x[p->end_k] - x[p->end_k - 1];
       }
     else {
-      y[p->end_k] = 2 * x[p->end_k] - p->buf_m;
+      y[p->end_k] = 2 * x[p->end_k] - buf_m;
     }
   }
   if (!(p->is_first_proc || p->is_last_proc)) { // neither first or last process
     if (p->num_local_rows != 1) {
-      y[0] = - p->buf_m + 2 * x[0] - x[1];
-      y[p->end_k] = - x[p->end_k - 1] + 2 * x[p->end_k] - p->buf_p;
+      y[0] = - buf_m + 2 * x[0] - x[1];
+      y[p->end_k] = - x[p->end_k - 1] + 2 * x[p->end_k] - buf_p;
     }
     else {
-      y[0] = - p->buf_m + 2 * x[0] - p->buf_p;
+      y[0] = - buf_m + 2 * x[0] - buf_p;
     }
   }
   // from 1 to end-1
