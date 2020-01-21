@@ -31,7 +31,15 @@ void rokko_distributed_mfree_f_construct(struct rokko_distributed_mfree* matrix,
 void rokko_distributed_mfree_f_destruct(struct rokko_distributed_mfree* matrix);
 int rokko_distributed_mfree_dim(struct rokko_distributed_mfree matrix);
 int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree matrix);
+int rokko_distributed_mfree_start_row(struct rokko_distributed_mfree matrix);
+int rokko_distributed_mfree_end_row(struct rokko_distributed_mfree matrix);
 int rokko_distributed_mfree_offset(struct rokko_distributed_mfree matrix);
+
+int rokko_distributed_mfree_f_dim(struct rokko_distributed_mfree* matrix);
+int rokko_distributed_mfree_f_num_local_rows(struct rokko_distributed_mfree* matrix);
+int rokko_distributed_mfree_f_start_row(struct rokko_distributed_mfree* matrix);
+int rokko_distributed_mfree_f_end_row(struct rokko_distributed_mfree* matrix);
+int rokko_distributed_mfree_f_offset(struct rokko_distributed_mfree* matrix);
 
 #ifdef __cplusplus
 }

@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -42,14 +42,21 @@ void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {
 }
 
 int rokko_distributed_mfree_dim(struct rokko_distributed_mfree matrix) {
-  return static_cast<rokko::distributed_mfree*>(matrix.ptr)->get_dim();
+  return static_cast<distributed_mfree_c*>(matrix.ptr)->get_dim();
 }
 
 int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree matrix) {
-  return static_cast<rokko::distributed_mfree*>(matrix.ptr)->get_num_local_rows();
+  return static_cast<distributed_mfree_c*>(matrix.ptr)->get_num_local_rows();
+}
+
+int rokko_distributed_mfree_start_row(struct rokko_distributed_mfree matrix) {
+  return static_cast<distributed_mfree_c*>(matrix.ptr)->start_row();
+}
+
+int rokko_distributed_mfree_end_row(struct rokko_distributed_mfree matrix) {
+  return static_cast<distributed_mfree_c*>(matrix.ptr)->end_row();
 }
 
 int rokko_distributed_mfree_offset(struct rokko_distributed_mfree matrix) {
-  return static_cast<rokko::distributed_mfree*>(matrix.ptr)->get_local_offset();
+  return static_cast<distributed_mfree_c*>(matrix.ptr)->get_local_offset();
 }
-

@@ -29,26 +29,6 @@ struct laplacian_vars {
   MPI_Status status_m, status_p;
 };
 
-void laplacian_initialize(int dim, struct laplacian_vars* vars) {
-  vars->comm = MPI_COMM_WORLD;
-  MPI_Comm_size(vars->comm, &vars->nprocs);
-  MPI_Comm_rank(vars->comm, &vars->myrank);
-
-  vars->dim = dim;
-  int tmp = vars->dim / vars->nprocs;
-  int rem = vars->dim % vars->nprocs;
-  vars->num_local_rows = (vars->dim + vars->nprocs - vars->myrank - 1) / vars->nprocs;
-  vars->start_row = tmp * vars->myrank + min(rem, vars->myrank);
-  vars->end_row = vars->start_row + vars->num_local_rows - 1;
-
-  if (vars->start_row == 0)  vars->is_first_proc = 1;
-  else vars->is_first_proc = 0;
-  
-  if (vars->end_row == (vars->dim-1))  vars->is_last_proc = 1;
-  else vars->is_last_proc = 0;
-    
-  vars->end_k = vars->num_local_rows - 1;
-}
 
 void laplacian_multiply(const double *const x, double *const y, void* vars) {
   struct laplacian_vars* p = (struct laplacian_vars*)vars;
@@ -104,6 +84,27 @@ void laplacian_multiply(const double *const x, double *const y, void* vars) {
   }
 }
 
+void laplacian_initialize(struct rokko_distributed_mfree* mat, int dim, struct laplacian_vars* vars) {
+  rokko_distributed_mfree_construct(mat, laplacian_multiply, vars, dim, MPI_COMM_WORLD);
+
+  vars->comm = MPI_COMM_WORLD;
+  MPI_Comm_size(vars->comm, &vars->nprocs);
+  MPI_Comm_rank(vars->comm, &vars->myrank);
+
+  vars->dim = dim;
+  vars->num_local_rows = rokko_distributed_mfree_num_local_rows(*mat);
+  vars->start_row = rokko_distributed_mfree_start_row(*mat);
+  vars->end_row = rokko_distributed_mfree_end_row(*mat) - 1;
+
+  if (vars->start_row == 0)  vars->is_first_proc = 1;
+  else vars->is_first_proc = 0;
+
+  if (vars->end_row == (vars->dim-1))  vars->is_last_proc = 1;
+  else vars->is_last_proc = 0;
+
+  vars->end_k = vars->num_local_rows - 1;
+}
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -124,8 +125,7 @@ int main(int argc, char *argv[]) {
   rokko_parallel_sparse_ev_construct(&solver, library, argc, argv);
   struct rokko_distributed_mfree mat;
   struct laplacian_vars vars;
-  laplacian_initialize(dim, &vars);
-  rokko_distributed_mfree_construct(&mat, laplacian_multiply, &vars, vars.dim, MPI_COMM_WORLD);
+  laplacian_initialize(&mat, dim, &vars);
   if (rank == 0) {
     printf("Eigenvalue decomposition of Laplacian matrix\n");
     printf("solver = %s\n", library);

@@ -22,7 +22,7 @@
 struct heisenberg_vars {
   MPI_Comm comm;
   int nprocs, myrank;
-  int dim, local_offset, num_local_rows;
+  int dim;
   int L;
   int lattice_size;
   int *lattice_first, *lattice_second;
@@ -39,29 +39,28 @@ int find_power_of_two(int n) {
   return p;
 }
 
-void heisenberg_initialize(int L, int lattice_size, int lattice_first[], int lattice_second[], struct heisenberg_vars* vars) {
+void heisenberg_multiply(const double *const x, double *const y, void* vars) {
+  struct heisenberg_vars* p = (struct heisenberg_vars*)vars;
+  multiply(p->comm, p->lattice_size, p->L, p->lattice_first, p->lattice_second, x, y, p->buffer);
+}
+
+void heisenberg_initialize(struct rokko_distributed_mfree* mat, int L, int lattice_size, int lattice_first[], int lattice_second[], struct heisenberg_vars* vars) {
   vars->comm = MPI_COMM_WORLD;
   MPI_Comm_size(vars->comm, &vars->nprocs);
   MPI_Comm_rank(vars->comm, &vars->myrank);
-  int p = find_power_of_two(vars->nprocs);
 
   vars->L = L;
   vars->lattice_size = lattice_size;
   vars->lattice_first = lattice_first;
   vars->lattice_second = lattice_second;
 
-  vars->dim = 1 << L;
-  int tmp = vars->dim / vars->nprocs;
-  int rem = vars->dim % vars->nprocs;
-  vars->num_local_rows = (vars->dim + vars->nprocs - vars->myrank - 1) / vars->nprocs;
+  int dim = 1 << L;
+  rokko_distributed_mfree_construct(mat, heisenberg_multiply, vars, dim, MPI_COMM_WORLD);
 
-  vars->buffer = (double*) malloc(sizeof(double) * vars->num_local_rows);
+  int num_local_rows = rokko_distributed_mfree_num_local_rows(*mat);
+  vars->buffer = (double*) malloc(sizeof(double) * num_local_rows);
 }
 
-void heisenberg_multiply(const double *const x, double *const y, void* vars) {
-  struct heisenberg_vars* p = (struct heisenberg_vars*)vars;
-  multiply(p->comm, p->lattice_size, p->L, p->lattice_first, p->lattice_second, x, y, p->buffer);
-}
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -91,9 +90,8 @@ int main(int argc, char *argv[]) {
   rokko_parallel_sparse_ev_construct(&solver, library, argc, argv);
   struct rokko_distributed_mfree mat;
   struct heisenberg_vars vars;
-  heisenberg_initialize(L, lattice_size, lattice_first, lattice_second, &vars);
-  rokko_distributed_mfree_construct(&mat, heisenberg_multiply, &vars, vars.dim, MPI_COMM_WORLD);
-  int dim = vars.dim;
+  heisenberg_initialize(&mat, L, lattice_size, lattice_first, lattice_second, &vars);
+  int dim = rokko_distributed_mfree_dim(mat);
   if (rank == 0) {
     printf("Eigenvalue decomposition of antiferromagnetic Heisenberg chain\n");
     printf("solver = %s\n", library);

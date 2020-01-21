@@ -18,34 +18,21 @@
 
 namespace rokko {
 
-class heisenberg_mfree : public rokko::distributed_mfree {
+class heisenberg_mfree : public rokko::distributed_mfree_default {
 public:
-  heisenberg_mfree(int L, const std::vector<std::pair<int, int>>& lattice)
-    : L_(L), lattice_(lattice) {
-    comm_ = MPI_COMM_WORLD;
-    int size, rank;
-    MPI_Comm_size(comm_, &size);
-    MPI_Comm_rank(comm_, &rank);
-    const int p = rokko::find_power_of_two(size);
-    dim_ = 1 << L;
-    num_local_rows_ = 1 << (L-p);
-    local_offset_ = num_local_rows_ * rank;
-    buffer_.resize(num_local_rows_);
+  heisenberg_mfree(int L, const std::vector<std::pair<int, int>>& lattice, MPI_Comm comm = MPI_COMM_WORLD)
+    : L_(L), lattice_(lattice), distributed_mfree_default{1 << L, rokko::mpi_comm{comm}} {
+    buffer_.resize(get_num_local_rows());
   }
   ~heisenberg_mfree() {}
 
   void multiply(const double *const x, double *const y) const {
-    rokko::heisenberg_hamiltonian::multiply(comm_, L_, lattice_, x, y, buffer_.data());
+    rokko::heisenberg_hamiltonian::multiply(get_comm(), L_, lattice_, x, y, buffer_.data());
   }
-  int get_dim() const { return dim_; }
-  int get_local_offset() const { return local_offset_; }
-  int get_num_local_rows() const { return num_local_rows_; }
 
 private:
-  MPI_Comm comm_;
   int L_;
   std::vector<std::pair<int, int>> lattice_;
-  int dim_, local_offset_, num_local_rows_;
   mutable std::vector<double> buffer_;
 };
 

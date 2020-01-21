@@ -18,21 +18,15 @@ namespace rokko {
 
 class laplacian_mfree : public rokko::distributed_mfree_default {
 public:
-  laplacian_mfree(int dim) : dim_(dim) {
-    comm_ = MPI_COMM_WORLD;
-    MPI_Comm_size(comm_, &nprocs);
-    MPI_Comm_rank(comm_, &myrank);
+  laplacian_mfree(int dim, MPI_Comm comm = MPI_COMM_WORLD)
+    : laplacian_mfree(dim, rokko::mpi_comm{comm}) {}
 
-    int tmp = dim_ / nprocs;
-    int rem = dim % nprocs;
-    set_num_local_rows(dim);
-    start_row_ = tmp * myrank + std::min(rem, myrank);
-    end_row_ = start_row_ + num_local_rows_ - 1;
+  laplacian_mfree(int dim, rokko::mpi_comm const& comm)
+    : distributed_mfree_default(dim, mpi_comm{comm}),
+      nprocs(get_mpi_comm().get_nprocs()), myrank(get_mpi_comm().get_myrank()),
+      num_local_rows_(get_num_local_rows()), end_k_(num_local_rows_ - 1),
+      is_first_proc(start_row() == 0), is_last_proc(end_row() == dim) {}
 
-    is_first_proc = start_row_ == 0;
-    is_last_proc = end_row_ == (dim-1);
-    end_k_ = num_local_rows_ - 1;
-  }
   ~laplacian_mfree() {}
 
   void multiply(const double *const x, double *const y) const {
@@ -42,13 +36,13 @@ public:
     MPI_Status status_m, status_p;
 
     if ((!is_first_proc) && (nprocs != 1)) {
-      MPI_Send(x, 1, MPI_DOUBLE, myrank-1, 0, comm_);
-      MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, comm_, &status_m);
+      MPI_Send(x, 1, MPI_DOUBLE, myrank-1, 0, get_comm());
+      MPI_Recv(&buf_m, 1, MPI_DOUBLE, myrank-1, 0, get_comm(), &status_m);
     }
 
     if ((!is_last_proc) && (nprocs != 1)) {
-      MPI_Recv(&buf_p, 1, MPI_DOUBLE, myrank+1, 0, comm_, &status_p);
-      MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, comm_);
+      MPI_Recv(&buf_p, 1, MPI_DOUBLE, myrank+1, 0, get_comm(), &status_p);
+      MPI_Send(&x[end_k_], 1, MPI_DOUBLE, myrank+1, 0, get_comm());
     }
 
     if (is_first_proc) {
@@ -81,27 +75,10 @@ public:
       y[k] = - x[k-1] + 2 * x[k] - x[k+1];
     }
   }
-  int get_dim() const { return dim_; }
-  int get_local_offset() const { return local_offset_; }
-
-  int get_num_local_rows(int dim, int rank) const {
-    return (dim + nprocs - rank - 1) / nprocs;
-  }
-
-  void set_num_local_rows(int dim) {
-    num_local_rows_ = get_num_local_rows(dim, myrank);
-  }
-
-  int get_num_local_rows() const { return num_local_rows_; }
-  int get_start_row() const { return start_row_; }
-  int get_end_row() const { return end_row_; }
 
 private:
-  MPI_Comm comm_;
   int nprocs, myrank;
-  int dim_, local_offset_, num_local_rows_;
-  int start_row_, end_row_;
-  int start_k_, end_k_;
+  int num_local_rows_, end_k_;
   bool is_first_proc, is_last_proc;
 };
 

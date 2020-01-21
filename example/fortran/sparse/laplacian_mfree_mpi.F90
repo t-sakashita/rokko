@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -15,9 +15,9 @@ module laplacian
   implicit none
   integer :: comm
   integer :: nprocs, myrank
-  integer, private :: dim, local_offset, num_local_rows
+  integer, private :: dim, num_local_rows
   integer, private :: start_row, end_row
-  integer, private :: start_k, end_k
+  integer, private :: end_k
   logical, private :: is_first_proc, is_last_proc
   double precision, private :: buf_p = 0, buf_m = 0
   integer, private :: status_m(mpi_status_size), status_p(mpi_status_size)
@@ -28,17 +28,17 @@ contains
     type(rokko_distributed_mfree), intent(inout) :: mat
     integer, intent(in) :: dim_in
     integer :: ierr
-    integer :: tmp, rem
 
     comm = mpi_comm_world
     call mpi_comm_rank(comm, myrank, ierr)
     call mpi_comm_size(comm, nprocs, ierr)
     dim = dim_in
-    tmp = dim / nprocs
-    rem = mod(dim, nprocs)
-    num_local_rows = (dim + nprocs - myrank - 1) / nprocs
-    start_row = tmp * myrank + min(rem, myrank) + 1  ! extra plus 1
-    end_row = start_row + num_local_rows - 1 ! extra plus 1
+
+    call rokko_construct(mat, multiply, dim, comm)
+
+    num_local_rows = rokko_get_num_local_rows(mat)
+    start_row = rokko_start_row(mat) + 1
+    end_row = rokko_end_row(mat)
     
     is_first_proc = start_row == 1
     is_last_proc = end_row == dim
@@ -46,13 +46,8 @@ contains
     !print*, "myrank=", myrank, "start_row=", start_row, "end_row=", end_row,&
     !     "is_first_proc", is_first_proc, " is_last_proc", is_last_proc
     !print*, "myrank=", myrank, "num_local_rows=", num_local_rows
-    call rokko_construct(mat, multiply, dim, mpi_comm_world)
   end subroutine initialize
 
-  integer function get_num_local_rows ()
-    get_num_local_rows = num_local_rows
-  end function get_num_local_rows
-  
   ! subroutine passed to c function.
   ! it must be interoperable!
   subroutine multiply (n, x, y)
@@ -163,7 +158,7 @@ program main
 
   call rokko_construct(solver, library)
   call initialize(mat, dim)
-  num_local_rows = get_num_local_rows()
+  num_local_rows = rokko_get_num_local_rows(mat)
   allocate( eig_vec(num_local_rows) )
 
   !do i=1, num_local_rows

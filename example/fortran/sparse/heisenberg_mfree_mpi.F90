@@ -15,7 +15,7 @@ module heisenberg
   implicit none
   integer :: comm
   integer :: nprocs, myrank
-  integer, private :: dim, local_offset, num_local_rows
+  integer, private :: dim, num_local_rows
   double precision, allocatable, private :: buffer(:)
   integer, private :: L, lattice_size, p
   integer, allocatable, private :: lattice(:,:)
@@ -44,14 +44,12 @@ contains
     endif
 
     dim = 2 ** L
-    num_local_rows = 2 ** (L-p)
-    local_offset = num_local_rows * myrank
-    !print*, "myrank=", myrank, "num_local_rows=", num_local_rows
 
     allocate( lattice(2,lattice_size) )
     lattice = lattice_in
-    allocate( buffer(0:num_local_rows-1) )
     call rokko_construct(mat, multiply, dim, mpi_comm_world)
+    num_local_rows = rokko_get_num_local_rows(mat)
+    allocate( buffer(0:num_local_rows-1) )
   end subroutine initialize
 
   integer function find_power_of_two(n_in)
@@ -65,14 +63,6 @@ contains
        find_power_of_two = find_power_of_two + 1
     enddo
   end function find_power_of_two
-
-  integer function get_num_local_rows ()
-    get_num_local_rows = num_local_rows
-  end function get_num_local_rows
-
-  integer function get_dim ()
-    get_dim = dim
-  end function get_dim
 
   ! subroutine passed to c function.
   ! it must be interoperable!
@@ -247,8 +237,8 @@ program main
 
   call rokko_construct(solver, library)
   call initialize(mat, L, L, lattice)
-  dim = get_dim()
-  num_local_rows = get_num_local_rows()
+  dim = rokko_get_dim(mat)
+  num_local_rows = rokko_get_num_local_rows(mat)
   allocate( eig_vec(num_local_rows) )
 
   if (myrank == 0) then
