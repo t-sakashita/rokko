@@ -35,12 +35,20 @@ module rokko_distributed_mfree_mod
   end interface rokko_get_num_local_rows
 
   interface rokko_start_row
-     procedure rokko_distributed_mfree_start_row
+     module procedure rokko_distributed_mfree_start_row
   end interface rokko_start_row
 
   interface rokko_end_row
-     procedure rokko_distributed_mfree_end_row
+     module procedure rokko_distributed_mfree_end_row
   end interface rokko_end_row
+
+  interface rokko_start_row_c
+     procedure rokko_distributed_mfree_start_row_c
+  end interface rokko_start_row_c
+
+  interface rokko_end_row_c
+     procedure rokko_distributed_mfree_end_row_c
+  end interface rokko_end_row_c
 
   interface
      subroutine rokko_distributed_mfree_f_construct(matrix, func, dim, comm) bind(c)
@@ -69,21 +77,21 @@ module rokko_distributed_mfree_mod
        type(rokko_distributed_mfree), intent(in) :: matrix
      end function rokko_distributed_mfree_num_local_rows
 
-     integer(c_int) function rokko_distributed_mfree_start_row(matrix) &
+     integer(c_int) function rokko_distributed_mfree_start_row_c(matrix) &
        & bind(c,name='rokko_distributed_mfree_f_start_row')
        use iso_c_binding
        import rokko_distributed_mfree
        implicit none
        type(rokko_distributed_mfree), intent(in) :: matrix
-     end function rokko_distributed_mfree_start_row
+     end function rokko_distributed_mfree_start_row_c
 
-     integer(c_int) function rokko_distributed_mfree_end_row(matrix) &
+     integer(c_int) function rokko_distributed_mfree_end_row_c(matrix) &
           & bind(c,name='rokko_distributed_mfree_f_end_row')
        use iso_c_binding
        import rokko_distributed_mfree
        implicit none
        type(rokko_distributed_mfree), intent(in) :: matrix
-     end function rokko_distributed_mfree_end_row
+     end function rokko_distributed_mfree_end_row_c
 
      integer(c_int) function rokko_distributed_mfree_dim(matrix) &
           & bind(c,name='rokko_distributed_mfree_f_dim')
@@ -121,5 +129,16 @@ contains
     call rokko_distributed_mfree_f_construct(mat, cproc, dim, comm)
   end subroutine rokko_distributed_mfree_construct
 
-end module rokko_distributed_mfree_mod
+  function rokko_distributed_mfree_start_row(matrix) result(ind)
+    integer :: ind
+    type(rokko_distributed_mfree), value, intent(in) :: matrix
+    ind = rokko_distributed_mfree_start_row_c(matrix) + 1
+  end function rokko_distributed_mfree_start_row
 
+  function rokko_distributed_mfree_end_row(matrix) result(ind)
+    integer :: ind
+    type(rokko_distributed_mfree), value, intent(in) :: matrix
+    ind = rokko_distributed_mfree_end_row_c(matrix) - 1
+  end function rokko_distributed_mfree_end_row
+
+end module rokko_distributed_mfree_mod

@@ -37,7 +37,7 @@ contains
     call rokko_construct(mat, multiply, dim, comm)
 
     num_local_rows = rokko_get_num_local_rows(mat)
-    start_row = rokko_start_row(mat) + 1
+    start_row = rokko_start_row(mat)
     end_row = rokko_end_row(mat)
     
     is_first_proc = start_row == 1
