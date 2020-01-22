@@ -127,7 +127,7 @@ contains
     ind = rokko_distributed_crs_matrix_start_row_c(matrix) + 1
   end function rokko_distributed_crs_matrix_start_row
   
-  function rokko_distributed_crs_matrix_end_row(matrix) result(ind)  ! same with rokko_distributed_crs_matrix_end_row_c
+  function rokko_distributed_crs_matrix_end_row(matrix) result(ind)
     integer :: ind
     type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
     ind = rokko_distributed_crs_matrix_end_row_c(matrix) - 1
