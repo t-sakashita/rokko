@@ -54,7 +54,7 @@ module rokko_distributed_crs_matrix_mod
      end function rokko_distributed_crs_matrix_start_row_c
      
      function rokko_distributed_crs_matrix_end_row_c(matrix) &
-       bind(c,name='rokko_distributed_crs_matrix_end_row')
+          & bind(c,name='rokko_distributed_crs_matrix_end_row')
        use iso_c_binding
        import rokko_distributed_crs_matrix
        implicit none
