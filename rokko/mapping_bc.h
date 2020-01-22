@@ -18,6 +18,11 @@
 extern "C" {
 #endif
 
+struct rokko_mapping_bc {
+  void* ptr;
+  int major;
+};
+
 void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int global_dim, int block_size, struct rokko_grid grid);
 void rokko_mapping_bc_destruct(struct rokko_mapping_bc* map);
 int rokko_mapping_bc_get_mb(struct rokko_mapping_bc map);

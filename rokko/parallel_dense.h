@@ -19,12 +19,6 @@ extern "C" {
 #endif
 
 #include <rokko/grid.h>
-
-struct rokko_mapping_bc {
-  void* ptr;
-  int major;
-};
-
 #include <rokko/parallel_dense_ev.h>
 #include <rokko/mapping_bc.h>
 #include <rokko/distributed_matrix.h>
