@@ -37,7 +37,7 @@ public:
     ptr = new grid(to_MPI_Comm(comm_handle), to_array(size_in), grid_major);
   }
 
-  wrap_grid(rokko::grid g) {
+  wrap_grid(rokko::grid const& g) {
     ptr = &g;
   }
 
@@ -81,7 +81,7 @@ public:
   int calculate_rank_form_coords(int proc_row, int proc_col) const { return ptr->calculate_rank_form_coords(proc_row, proc_col); }
 
 private:
-  grid* ptr;
+  const grid* ptr;
 };
 
 } // end namespace rokko
