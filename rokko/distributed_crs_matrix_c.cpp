@@ -10,8 +10,13 @@
 *****************************************************************************/
 
 #include <rokko/parallel_sparse_ev.hpp>
+#include <rokko/mapping_1d.h>
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/sparse.h>
+
+void rokko_distributed_crs_matrix_construct_new(struct rokko_distributed_crs_matrix* matrix, struct rokko_mapping_1d map, int num_entries_per_row) {
+  matrix->ptr = new rokko::distributed_crs_matrix(*static_cast<rokko::mapping_1d*>(map.ptr), num_entries_per_row);
+}
 
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix, int dim1, int dim2,
 					    struct rokko_parallel_sparse_ev solver) {

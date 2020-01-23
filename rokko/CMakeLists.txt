@@ -82,10 +82,10 @@ endif(BUILD_PARALLEL_DENSE_SOLVER)
 if(BUILD_PARALLEL_SPARSE_SOLVER)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_ev.cpp)
   if(BUILD_C_BINDING)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_ev_c.cpp distributed_crs_matrix_c.cpp distributed_mfree_c.cpp)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} mapping_1d_c.cpp parallel_sparse_ev_c.cpp distributed_crs_matrix_c.cpp distributed_mfree_c.cpp)
   endif(BUILD_C_BINDING)
   if(BUILD_Fortran_BINDING)
-    set(ROKKO_SOURCES ${ROKKO_SOURCES} rokko_parallel_sparse.F90 parallel_sparse_ev.F90 distributed_crs_matrix.F90 distributed_mfree.F90 distributed_mfree_f.cpp)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} mapping_1d.F90 rokko_parallel_sparse.F90 parallel_sparse_ev.F90 distributed_crs_matrix.F90 distributed_mfree.F90 distributed_mfree_f.cpp)
   endif(BUILD_Fortran_BINDING)
 
   # SLEPc

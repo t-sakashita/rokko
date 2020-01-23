@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2016 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,6 +11,7 @@
 
 module rokko_distributed_crs_matrix_mod
   use iso_c_binding
+  use rokko_mapping_1d_mod
   implicit none
 
   type, bind(c) :: rokko_distributed_crs_matrix
@@ -18,7 +19,17 @@ module rokko_distributed_crs_matrix_mod
   end type rokko_distributed_crs_matrix
 
   interface
-     
+
+     subroutine rokko_distributed_crs_matrix_construct(matrix, map, num_entries_per_row) &
+          & bind(c,name='rokko_distributed_crs_matrix_construct_new')
+       use iso_c_binding
+       import rokko_mapping_1d, rokko_distributed_crs_matrix
+       implicit none
+       type(rokko_distributed_crs_matrix), intent(out) :: matrix
+       type(rokko_mapping_1d), value, intent(in) :: map
+       integer(c_int), value, intent(in) :: num_entries_per_row
+     end subroutine rokko_distributed_crs_matrix_construct
+
      subroutine rokko_distributed_crs_matrix_destruct(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_crs_matrix
@@ -79,6 +90,10 @@ module rokko_distributed_crs_matrix_mod
   end interface
 
   ! generic names
+  interface rokko_construct
+     procedure rokko_distributed_crs_matrix_construct
+  end interface rokko_construct
+
   interface rokko_destruct
      procedure rokko_distributed_crs_matrix_destruct
   end interface rokko_destruct

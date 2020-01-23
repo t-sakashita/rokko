@@ -9,6 +9,8 @@
 *
 *****************************************************************************/
 
+#include <rokko/mpi_communicator.hpp>
+#include <rokko/mapping_1d.h>
 #include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/sparse.h>
 #include <rokko/parameters.h>
@@ -94,6 +96,17 @@ void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev solver
 
 int rokko_parallel_sparse_ev_num_conv(struct rokko_parallel_sparse_ev solver) {
   return static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->get_num_conv();
+}
+
+struct rokko_mapping_1d rokko_parallel_sparse_ev_default_mapping(struct rokko_parallel_sparse_ev solver, int dim, MPI_Comm comm) {
+  struct rokko_mapping_1d map;
+  map.ptr = new rokko::mapping_1d(static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->default_mapping(dim, rokko::mpi_comm{comm}));
+  return map;
+}
+
+void rokko_parallel_sparse_ev_default_mapping_f(struct rokko_parallel_sparse_ev solver, int dim, int comm_f, struct rokko_mapping_1d* map) {
+  MPI_Comm comm = MPI_Comm_f2c(comm_f);
+  map->ptr = new rokko::mapping_1d(static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->default_mapping(dim, rokko::mpi_comm{comm}));
 }
 
 int rokko_parallel_sparse_ev_num_solvers() {

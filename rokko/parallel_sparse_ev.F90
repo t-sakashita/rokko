@@ -11,6 +11,7 @@
 
 module rokko_parallel_sparse_ev_mod
   use iso_c_binding
+  use rokko_mapping_1d_mod
   use rokko_distributed_crs_matrix_mod, only : rokko_distributed_crs_matrix
   use rokko_distributed_mfree_mod, only : rokko_distributed_mfree
   use parameters
@@ -54,6 +55,17 @@ module rokko_parallel_sparse_ev_mod
        integer(c_int), value, intent(in) :: i
        real(c_double), dimension(*), intent(inout) :: eig_vec
      end subroutine rokko_parallel_sparse_ev_eigenvector
+
+     subroutine rokko_parallel_sparse_ev_default_mapping(solver, dim, comm, map) &
+          & bind(c,name="rokko_parallel_sparse_ev_default_mapping_f")
+       use iso_c_binding
+       import rokko_parallel_sparse_ev, rokko_mapping_1d
+       implicit none
+       type(rokko_parallel_sparse_ev), value, intent(in) :: solver
+       integer(c_int), value, intent(in) :: dim
+       integer(c_int), value, intent(in) :: comm
+       type(rokko_mapping_1d), intent(out) :: map
+     end subroutine rokko_parallel_sparse_ev_default_mapping
   end interface
 
   interface
@@ -129,25 +141,30 @@ module rokko_parallel_sparse_ev_mod
 
   ! constructor for CRS
   interface
-     subroutine rokko_distributed_crs_matrix_construct(matrix, dim1, dim2, solver) bind(c)
+     subroutine rokko_distributed_crs_matrix_construct_old(matrix, dim1, dim2, solver) &
+       & bind(c,name='rokko_distributed_crs_matrix_construct')
        use iso_c_binding
        import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
        implicit none
        type(rokko_distributed_crs_matrix), intent(out) :: matrix
        integer(c_int), value, intent(in) :: dim1, dim2
        type(rokko_parallel_sparse_ev), value, intent(in) :: solver
-     end subroutine rokko_distributed_crs_matrix_construct
+     end subroutine rokko_distributed_crs_matrix_construct_old
   end interface
 
   ! generic names
   interface rokko_construct
      procedure rokko_parallel_sparse_ev_construct
-     procedure rokko_distributed_crs_matrix_construct
+     procedure rokko_distributed_crs_matrix_construct_old
   end interface rokko_construct
 
   interface rokko_destruct
      procedure rokko_parallel_sparse_ev_destruct
   end interface rokko_destruct
+
+  interface rokko_default_mapping
+     procedure rokko_parallel_sparse_ev_default_mapping
+  end interface rokko_default_mapping
 
   interface rokko_diagonalize
      procedure rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix

@@ -13,6 +13,7 @@
 #define ROKKO_PARALLEL_SPARSE_EV_H
 
 #include <rokko/parameters.h>
+#include <rokko/mapping_1d.h>
 #include <rokko/distributed_crs_matrix.h>
 #include <rokko/distributed_mfree.h>
 
@@ -54,6 +55,9 @@ double rokko_parallel_sparse_ev_eigenvalue(struct rokko_parallel_sparse_ev solve
 void rokko_parallel_sparse_ev_eigenvector(struct rokko_parallel_sparse_ev solver, int i,
   double* vec);
 int rokko_parallel_sparse_ev_num_conv(struct rokko_parallel_sparse_ev solver);
+
+struct rokko_mapping_1d rokko_parallel_sparse_ev_default_mapping(struct rokko_parallel_sparse_ev solver, int dim, MPI_Comm comm);
+void rokko_parallel_sparse_ev_default_mapping_f(struct rokko_parallel_sparse_ev solver, int dim, int comm_f, struct rokko_mapping_1d* map);
 
 int rokko_parallel_sparse_ev_num_solvers();
 char** rokko_parallel_sparse_ev_solvers();
