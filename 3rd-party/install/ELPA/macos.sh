@@ -20,7 +20,7 @@ for build_type in $BUILD_TYPES; do
   fi
   check ./configure \
 	LDFLAGS="-L$SCALAPACK_ROOT/lib -L/opt/local/lib" \
-	--disable-sse-assembly --disable-avx --disable-avx2 \
+	--disable-sse-assembly --disable-avx --disable-avx2 --disable-avx512 \
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
   check make
