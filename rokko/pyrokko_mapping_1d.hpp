@@ -28,6 +28,9 @@ public:
   explicit wrap_mapping_1d(int dim, pybind11::handle const& comm_handle, SOLVER& solver_in)
     : mapping_1d(dim, wrap_communicator{comm_handle}, solver_in) {}
 
+  explicit wrap_mapping_1d(int dim, pybind11::handle const& comm_handle, std::string const& solver_name)
+    : mapping_1d(dim, wrap_communicator{comm_handle}, solver_name) {}
+
   explicit wrap_mapping_1d(int dim, pybind11::handle const& comm_handle)
     : mapping_1d(dim, wrap_communicator{comm_handle}) {}
 
