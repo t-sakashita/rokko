@@ -24,7 +24,7 @@ namespace slepc {
 class solver {
 public: 
   solver() {
-    SlepcInitialize(NULL, NULL, (char*)0, 0);
+    SlepcInitialize(NULL, NULL, (char*)NULL, NULL);
     MPI_Comm_rank(PETSC_COMM_WORLD, &myrank);
   }
   ~solver() {
