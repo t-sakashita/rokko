@@ -46,8 +46,7 @@ public:
       } else {
         return EPSKRYLOVSCHUR;
       }
-    }
-    else {
+    } else {
       return EPSKRYLOVSCHUR;
     }
   }
