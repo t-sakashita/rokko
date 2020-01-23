@@ -53,15 +53,15 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  solvermanager_t* create_solver_manager(std::string const& routine, Teuchos::ParameterList& pl) {
+  std::unique_ptr<solvermanager_t> create_solver_manager(std::string const& routine, Teuchos::ParameterList& pl) {
     if ((routine == "LOBPCG") || (routine == ""))
-      return new Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return std::make_unique<Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
     else if (routine == "BlockKrylovSchur")
-      return new Anasazi::BlockKrylovSchurSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return std::make_unique<Anasazi::BlockKrylovSchurSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
     else if (routine == "BlockDavidson")
-      return new Anasazi::BlockDavidsonSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return std::make_unique<Anasazi::BlockDavidsonSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
     else if (routine == "RTR")
-      return new Anasazi::RTRSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>(problem_, pl);
+      return std::make_unique<Anasazi::RTRSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
     else {
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
@@ -143,7 +143,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    solvermanager_t* solvermanager = create_solver_manager(get_routine(params), pl);
+    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -176,7 +176,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    solvermanager_t* solvermanager = create_solver_manager(get_routine(params), pl);
+    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
