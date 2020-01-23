@@ -51,8 +51,7 @@ public:
   }
 
   std::string get_major_string() const {
-    if (get_grid().is_row_major())  return "row";
-    else  return "col";
+    return get_grid().is_row_major() ? "row" : "col";
   }
 
   pybind11::handle get_comm() const {
