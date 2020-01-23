@@ -27,7 +27,7 @@ public:
 
   void initialize() {
     int num = 1;
-    char** ptr = NULL;
+    char** ptr = nullptr;
     parallel_sparse_ev::initialize(num, ptr);
   }
 
