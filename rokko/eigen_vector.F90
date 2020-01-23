@@ -101,7 +101,7 @@ module rokko_eigen_vector_mod
      end subroutine rokko_eigen_vector_print
 
      type(c_ptr) function rokko_eigen_vector_get_array_pointer_c(vector) &
-          bind(c,name='rokko_eigen_vector_get_array_pointer')
+          & bind(c,name='rokko_eigen_vector_get_array_pointer')
        use iso_c_binding
        import rokko_eigen_vector
        implicit none

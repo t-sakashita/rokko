@@ -491,7 +491,7 @@ module rokko_distributed_matrix_mod
      end function rokko_distributed_matrix_is_col_major
      
      type(c_ptr) function rokko_distributed_matrix_get_array_pointer_c(matrix) &
-          bind(c,name='rokko_distributed_matrix_get_array_pointer')
+          & bind(c,name='rokko_distributed_matrix_get_array_pointer')
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -525,7 +525,7 @@ contains
        do local_j = 0, n_local-1
           global_j = rokko_distributed_matrix_translate_l2g_col(matrix, local_j)
           call rokko_distributed_matrix_set_local(matrix, local_i, local_j, &
-               array(global_i+1, global_j+1))
+               & array(global_i+1, global_j+1))
        enddo
     enddo
   end subroutine rokko_distributed_matrix_generate_from_array

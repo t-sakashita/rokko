@@ -38,7 +38,7 @@ module rokko_distributed_crs_matrix_mod
      end subroutine rokko_distributed_crs_matrix_destruct
      
      subroutine rokko_distributed_crs_matrix_insert_c(matrix, row, col_size, cols, values) &
-          bind(c,name='rokko_distributed_crs_matrix_insert')
+          & bind(c,name='rokko_distributed_crs_matrix_insert')
        use iso_c_binding
        import rokko_distributed_crs_matrix
        implicit none

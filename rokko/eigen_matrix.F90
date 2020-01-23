@@ -201,7 +201,7 @@ module rokko_eigen_matrix_mod
      end subroutine rokko_eigen_matrix_generate_function_f_p
 
      type(c_ptr) function rokko_eigen_matrix_get_array_pointer_c(matrix) &
-          bind(c,name='rokko_eigen_matrix_get_array_pointer')
+          & bind(c,name='rokko_eigen_matrix_get_array_pointer')
        use iso_c_binding
        import rokko_eigen_matrix
        implicit none

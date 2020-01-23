@@ -19,7 +19,7 @@ module solver_name_utility
   interface
      
      subroutine rokko_split_solver_name_f (str, library, routine) &
-          bind(c,name='rokko_split_solver_name')
+          & bind(c,name='rokko_split_solver_name')
        use iso_c_binding
        implicit none
        character(c_char), intent(in) :: str(*)
