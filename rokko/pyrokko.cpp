@@ -251,6 +251,7 @@ PYBIND11_MODULE(pyrokko, m) {
   // sparse
   py::class_<wrap_mapping_1d>(m, "mapping_1d")
     .def(py::init<int, pybind11::handle const&, wrap_parallel_sparse_ev&>())
+    .def(py::init<int, pybind11::handle const&, std::string const&>())
     .def_property_readonly("dim", &mapping_1d::get_dim)
     .def_property_readonly("num_local_rows", &mapping_1d::num_local_rows)
     .def_property_readonly("start_row", &mapping_1d::start_row)
