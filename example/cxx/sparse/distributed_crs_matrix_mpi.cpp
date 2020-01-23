@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   std::string library(rokko::parallel_sparse_ev::default_solver());
   if (argc >= 2) library = argv[1];
   
-  int dim = 4;
+  constexpr int dim = 4;
   int num_nonzero_cols[] = {2, 1, 2, 1};
   int nonzero_cols[] = {0, 1, 3, 0, 3, 2};
   double values[] = {7.1, 5.2, 6.4, 0.2, 4.3, 0.5};
