@@ -27,7 +27,7 @@ public:
       num_local_rows_(get_num_local_rows()), end_k_(num_local_rows_ - 1),
       is_first_proc(start_row() == 0), is_last_proc(end_row() == dim) {}
 
-  ~laplacian_mfree() {}
+  ~laplacian_mfree() = default;
 
   void multiply(const double *const x, double *const y) const {
     if (num_local_rows_ == 0) return;

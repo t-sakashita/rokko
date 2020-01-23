@@ -24,7 +24,7 @@ public:
     : L_(L), lattice_(lattice), distributed_mfree_default{1 << L, rokko::mpi_comm{comm}} {
     buffer_.resize(get_num_local_rows());
   }
-  ~heisenberg_mfree() {}
+  ~heisenberg_mfree() = default;
 
   void multiply(const double *const x, double *const y) const {
     rokko::heisenberg_hamiltonian::multiply(get_comm(), L_, lattice_, x, y, buffer_.data());
