@@ -26,7 +26,7 @@ solver = parallel_sparse_ev(solver_name)
 
 mat = distributed_crs_matrix((dim, dim), solver)
 
-print("row_start={}, row_end={}".format(mat.start_row, mat.start_row))
+print("row_start={}, row_end={}".format(mat.start_row, mat.end_row))
 
 for row in range(mat.start_row, mat.end_row):
     cols = []

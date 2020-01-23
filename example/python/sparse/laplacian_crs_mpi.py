@@ -21,7 +21,7 @@ solver = parallel_sparse_ev(solver_name)
 map = solver.default_mapping(dim, mpi4py.MPI.COMM_WORLD)
 mat = distributed_crs_matrix(map, 3)
 
-print("row_start={}, row_end={}".format(mat.start_row, mat.start_row))
+print("row_start={}, row_end={}".format(mat.start_row, mat.end_row))
 
 if mat.start_row == 0:
     mat.insert(0, [0, 1], [1., -1.])
