@@ -25,7 +25,6 @@ class solver {
 public: 
   solver() {
     SlepcInitialize(NULL, NULL, (char*)NULL, NULL);
-    MPI_Comm_rank(PETSC_COMM_WORLD, &myrank);
   }
   ~solver() {
     if (!A) {
@@ -75,6 +74,7 @@ public:
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
+    comm_ = mat.get_map()->get_mpi_comm().get_comm();
 
     PetscInt num_evals = get_num_eigvals(params);
     PetscInt max_block_size = get_max_block_size(params);
@@ -98,6 +98,7 @@ public:
     ierr = EPSSolve(eps);
 
     print_result(params_out);
+    int myrank = mat.get_map()->get_mpi_comm().get_myrank();
     if (params.get_bool("verbose") && (myrank == 0)) {
       info_verbose();
     }
@@ -116,6 +117,7 @@ public:
     dimension_ = mat->get_dim();
     offset_local_ = mat->get_local_offset();
     num_local_rows_ = mat->get_num_local_rows();
+    comm_ = mat->get_comm();
     A = new Mat();
     ierr = MatCreateShell(mat->get_comm(), mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), const_cast<rokko::distributed_mfree*>(mat), A);
     ierr = MatSetFromOptions(*A);
@@ -143,6 +145,8 @@ public:
     ierr = EPSSolve(eps);
 
     print_result(params_out);
+    int myrank;
+    MPI_Comm_rank(comm_, &myrank);
     if (params.get_bool("verbose") && (myrank == 0)) {
       info_verbose();
     }
@@ -154,10 +158,10 @@ public:
     /* Get some information from the solver and display it */
     EPSType type;
     ierr = EPSGetType(eps, &type);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);
+    ierr = PetscPrintf(comm_, " Solution method: %s\n\n",type);
     PetscInt num_evals;
     ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
-    ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",num_evals);
+    ierr = PetscPrintf(comm_, " Number of requested eigenvalues: %D\n",num_evals);
     int num_conv = get_num_conv();
     params_out.set("num_conv", num_conv);
     if (num_conv == 0) {
@@ -224,10 +228,10 @@ public:
   }
 
 private:
-  int myrank;
   int dimension_, offset_local_, num_local_rows_;
   Mat*           A;
   EPS            eps;             /* eigenproblem solver context */
+  MPI_Comm comm_;
 };
 
 } // namespace slepc
