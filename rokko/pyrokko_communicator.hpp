@@ -23,13 +23,23 @@ namespace rokko {
 
 namespace py = pybind11;
 
+MPI_Comm to_MPI_Comm() {
+  const int rc = import_mpi4py();
+  assert(rc==0);
+  return MPI_COMM_WORLD;
+}
+
+MPI_Comm to_MPI_Comm(pybind11::handle const& comm_handle) {
+  const int rc = import_mpi4py();
+  assert(rc==0);
+  return *PyMPIComm_Get(comm_handle.ptr());
+}
+
 class wrap_communicator : public mpi_comm {
 public:
   using mpi_comm::mpi_comm;
   wrap_communicator(pybind11::handle const& comm_handle) {
-    const int rc = import_mpi4py();
-    assert(rc==0);
-    set_comm(*PyMPIComm_Get(comm_handle.ptr()));
+    set_comm(to_MPI_Comm(comm_handle));
   }
 };
 

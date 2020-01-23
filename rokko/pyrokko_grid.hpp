@@ -25,30 +25,16 @@ namespace py = pybind11;
 
 class wrap_grid {
 public:
-  wrap_grid() {
-    const int rc = import_mpi4py();
-    assert(rc==0);
-    wrap_communicator wrap_comm;
-    MPI_Comm comm = wrap_comm.get_comm();  // default: grid_row_major
-    ptr = new grid(comm);
-  }
+  wrap_grid() : wrap_grid{grid_row_major} {}
 
   template <typename GRID_MAJOR>
   wrap_grid(GRID_MAJOR const& grid_major = grid_row_major) {
-    const int rc = import_mpi4py();
-    assert(rc==0);
-    wrap_communicator wrap_comm;
-    MPI_Comm comm = wrap_comm.get_comm();
-    ptr = new grid(comm, grid_major);
+    ptr = new grid(to_MPI_Comm(), grid_major);
   }
 
   template <typename GRID_MAJOR>
   wrap_grid(pybind11::handle const& comm_handle, std::tuple<int,int> const& size_in, GRID_MAJOR const& grid_major = grid_row_major) {
-    const int rc = import_mpi4py();
-    assert(rc==0);
-    wrap_communicator wrap_comm(*PyMPIComm_Get(comm_handle.ptr()));
-    MPI_Comm comm = wrap_comm.get_comm();
-    ptr = new grid(comm, to_array(size_in), grid_major);
+    ptr = new grid(to_MPI_Comm(comm_handle), to_array(size_in), grid_major);
   }
 
   wrap_grid(rokko::grid g) {
@@ -57,11 +43,7 @@ public:
 
   template <typename GRID_MAJOR>
   wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0) {
-    const int rc = import_mpi4py();
-    assert(rc==0);
-    wrap_communicator wrap_comm(*PyMPIComm_Get(comm_handle.ptr()));
-    MPI_Comm comm = wrap_comm.get_comm();
-    ptr = new grid(comm, grid_major, lld);
+    ptr = new grid(to_MPI_Comm(comm_handle), grid_major, lld);
   }
 
   grid const& get_grid() const {
