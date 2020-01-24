@@ -44,12 +44,12 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < num_bonds; ++i) {
     int j, k;
     ifs >> j >> k;
-    lattice.push_back(std::make_pair(j, k));
+    lattice.emplace_back(std::make_pair(j, k));
   }
   for (int i = 0; i < num_bonds; ++i) {
     double jx, jy, jz;
     ifs >> jx >> jy >> jz;
-    coupling.push_back(std::make_tuple(jx, jy, jz));
+    coupling.emplace_back(std::make_tuple(jx, jy, jz));
   }
 
   rokko::parallel_dense_ev solver(solver_name);

@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   int dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) {
-    lattice.push_back(std::make_pair(i, (i+1) % L));
+    lattice.emplace_back(std::make_pair(i, (i+1) % L));
   }
 
   rokko::parallel_dense_ev solver(solver_name);
