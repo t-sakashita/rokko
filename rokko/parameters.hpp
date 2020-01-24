@@ -50,7 +50,7 @@ public:
   // returns list of keys
   std::list<key_type> keys() const {
     std::list<key_type> keys;
-    for(auto const& p : map_) { keys.push_back(p.first); }
+    for(auto const& p : map_) { keys.emplace_back(p.first); }
     return keys;
   }
   // returns value of parameter in type T

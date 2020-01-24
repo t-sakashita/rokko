@@ -40,8 +40,8 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
     if (detail::read_line_with_comment(ifs, is)) {
       is >> j >> k;
       std::cout << "j=" << j << " k=" << k << std::endl;
-      if (offset1)  lattice.push_back(std::make_pair(j-1, k-1));
-      else  lattice.push_back(std::make_pair(j, k));
+      if (offset1)  lattice.emplace_back(std::make_pair(j-1, k-1));
+      else  lattice.emplace_back(std::make_pair(j, k));
       //std::cout << "back()=" << lattice.back().first << ", " << lattice.back().second << std::endl;
       if ((lattice.back().first < 0) || (lattice.back().first >= num_sites)) {
         throw std::invalid_argument("read_lattice_stream() : first index of " + std::to_string(lattice.size() - 1) + "-th bond \"" + std::to_string(lattice.back().first) + "\" is out of range");
@@ -56,7 +56,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
     if (detail::read_line_with_comment(ifs, is)) {
       is >> jx >> jy >> jz;
       std::cout << "jx=" << jx << " jy=" << jy << " jz=" << jz << std::endl;
-      coupling.push_back(std::make_tuple(jx, jy, jz));
+      coupling.emplace_back(std::make_tuple(jx, jy, jz));
     }
   } while (coupling.size() < num_bonds);
 }

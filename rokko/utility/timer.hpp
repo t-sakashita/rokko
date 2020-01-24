@@ -94,8 +94,8 @@ public:
     if (option & detailed) {
       #ifdef ROKKO_ENABLE_TIMER_DETAILED
       d_mapping_[id] = d_counts_.size();
-      d_counts_.push_back(0);
-      d_sums_.push_back(0);
+      d_counts_.emplace_back(0);
+      d_sums_.emplace_back(0);
       #endif
     }
     #ifdef ROKKO_ENABLE_TIMER_TRACE

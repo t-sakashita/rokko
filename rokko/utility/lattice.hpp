@@ -51,7 +51,7 @@ std::vector<std::string> split_by_symbol(std::string const& str_line) {
   const std::regex separator{"="};
   std::vector<std::string> vec;
   for (std::sregex_token_iterator it{str_line.cbegin(), str_line.cend(), separator, -1}, end; it != end; ++it) {
-    vec.push_back(trim_copy(*it));
+    vec.emplace_back(trim_copy(*it));
   }
 
   return vec;
@@ -111,8 +111,8 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
     if (detail::read_line_with_comment(ifs, is)) {
       is >> j >> k;
       std::cout << "j=" << j << " k=" << k << std::endl;
-      if (offset1)  lattice.push_back(std::make_pair(j-1, k-1));
-      else  lattice.push_back(std::make_pair(j, k));
+      if (offset1)  lattice.emplace_back(std::make_pair(j-1, k-1));
+      else  lattice.emplace_back(std::make_pair(j, k));
       //std::cout << "back()=" << lattice.back().first << ", " << lattice.back().second << std::endl;
       if ((lattice.back().first < 0) || (lattice.back().first >= num_sites)) {
         throw std::invalid_argument("read_lattice_stream() : first index of " + std::to_string(lattice.size() - 1) + "-th bond \"" + std::to_string(lattice.back().first) + "\" is out of range");
@@ -134,13 +134,13 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
 void create_ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int>>& lattice) {
   int L = 2 * len_ladder;
   for (std::size_t i = 0; i < (len_ladder-1); ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
+    lattice.emplace_back(std::make_pair(i, i+1));
   }
   for (std::size_t i = len_ladder; i < (L-1); ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
+    lattice.emplace_back(std::make_pair(i, i+1));
   }
   for (std::size_t i = 0; i < len_ladder; ++i) {
-    lattice.push_back(std::make_pair(i, i+len_ladder));
+    lattice.emplace_back(std::make_pair(i, i+len_ladder));
   }
 }
 

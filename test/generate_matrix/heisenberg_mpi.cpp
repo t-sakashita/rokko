@@ -34,7 +34,7 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   constexpr std::size_t L = 8;
   constexpr std::size_t num_bonds = L - 1;
   std::vector<std::pair<int, int>> lattice;
-  for (std::size_t i=0; i<L-1; ++i) lattice.push_back(std::make_pair(i, i+1));
+  for (std::size_t i=0; i<L-1; ++i) lattice.emplace_back(std::make_pair(i, i+1));
 
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);

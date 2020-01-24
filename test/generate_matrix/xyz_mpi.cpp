@@ -36,8 +36,8 @@ TEST(xyz_hamiltonian, serial_mpi) {
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
   for (std::size_t i=0; i<L-1; ++i) {
-    lattice.push_back(std::make_pair(i, i+1));
-    coupling.push_back(std::make_tuple(1, 0.3, 0.2));
+    lattice.emplace_back(std::make_pair(i, i+1));
+    coupling.emplace_back(std::make_tuple(1, 0.3, 0.2));
   }
 
   int myrank, nprocs;

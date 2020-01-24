@@ -35,8 +35,8 @@ TEST(diagonalize, xyz) {
     int dim = 1 << L;
 
     for (int i=0; i<num_bonds; ++i) {
-      lattice.push_back(std::make_pair(i, i+1));
-      coupling.push_back(std::make_tuple(1, 1, 1));
+      lattice.emplace_back(std::make_pair(i, i+1));
+      coupling.emplace_back(std::make_tuple(1, 1, 1));
     }
 
     std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;

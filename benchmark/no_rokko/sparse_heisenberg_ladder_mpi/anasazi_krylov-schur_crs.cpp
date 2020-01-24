@@ -77,13 +77,13 @@ int main(int argc, char *argv[]) {
       int m2 = 1 << j;
       int m3 = m1 + m2;
       if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-        cols.push_back(k^m3);
-        values.push_back(0.5);
-        cols.push_back(k);
-        values.push_back(-0.25);
+        cols.emplace_back(k^m3);
+        values.emplace_back(0.5);
+        cols.emplace_back(k);
+        values.emplace_back(-0.25);
       } else {
-        cols.push_back(k);
-        values.push_back(0.25);
+        cols.emplace_back(k);
+        values.emplace_back(0.25);
       }
       int info = A->InsertGlobalValues(k, cols.size(), values.data(), cols.data());
       //cout << "info=" << info << endl;

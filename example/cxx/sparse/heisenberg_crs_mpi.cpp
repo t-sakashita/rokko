@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
   int dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
-  for (int i = 0; i < L; ++i) lattice.push_back(std::make_pair(i, (i+1) % L));
+  for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
   rokko::parameters params;
   params.set("routine", routine);
@@ -50,16 +50,16 @@ int main(int argc, char *argv[]) {
       int m2 = 1 << j;
       int m3 = m1 + m2;
       if (((row & m3) == m1) || ((row & m3) == m2)) {
-        cols.push_back(row^m3);
-        values.push_back(0.5);
+        cols.emplace_back(row^m3);
+        values.emplace_back(0.5);
         diag += -0.25;
       } else {
         diag += 0.25;
       }
     }
     if (diag != 0.) {
-      cols.push_back(row);
-      values.push_back(diag);
+      cols.emplace_back(row);
+      values.emplace_back(diag);
     }
     std::cout << "row=" << row << " size=" << cols.size() << std::endl;
     mat.insert(row, cols, values);

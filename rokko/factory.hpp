@@ -76,7 +76,7 @@ public:
     std::vector<std::string> retvec;
     for (typename creator_map_type::const_iterator it = f->creators_.cbegin();
          it != f->creators_.cend(); ++it) {
-      retvec.push_back(it->first);
+      retvec.emplace_back(it->first);
     }
     return retvec;
   }

@@ -32,7 +32,7 @@ TEST(diagonalize, heisenberg) {
     int dim = 1 << L;
     std::vector<std::pair<int, int>> lattice;
     for (int i=0; i<L-1; ++i) {
-      lattice.push_back(std::make_pair(i, i+1));
+      lattice.emplace_back(std::make_pair(i, i+1));
     }
 
     std::cout << "solver=" << name << std::endl;

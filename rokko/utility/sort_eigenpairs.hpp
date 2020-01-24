@@ -48,7 +48,7 @@ void sort_eigenpairs(const Eigen::Vector<T, SIZE>& eigval,
   std::vector<std::pair<T, std::size_t>> entries;
   entries.reserve(dim);
   for (int i = 0; i < dim; ++i) {
-    entries.push_back(std::make_pair(eigval(i), i));
+    entries.emplace_back(std::make_pair(eigval(i), i));
   }
   if (ascending)
     std::sort(entries.begin(), entries.end(), ::less<T>());

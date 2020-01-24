@@ -56,16 +56,16 @@ int main(int argc,char **argv)
       int m2 = 1 << j;
       int m3 = m1 + m2;
       if (((row & m3) == m1) || ((row & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-        cols.push_back(row^m3);
-        values.push_back(0.5);
+        cols.emplace_back(row^m3);
+        values.emplace_back(0.5);
         diag += -0.25;
       } else {
         diag += 0.25;
       }
     }
     if (diag != 0.) {
-      cols.push_back(row);
-      values.push_back(diag);
+      cols.emplace_back(row);
+      values.emplace_back(diag);
     }
     ierr = MatSetValues(A, 1, &row, cols.size(), cols.data(), values.data(), ADD_VALUES); CHKERRQ(ierr);
   }

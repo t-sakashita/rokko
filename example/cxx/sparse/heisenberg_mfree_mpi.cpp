@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
   int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
   std::vector<std::pair<int, int>> lattice;
-  for (int i = 0; i < L; ++i) lattice.push_back(std::make_pair(i, (i+1) % L));
+  for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
   rokko::parameters params;
   if (!routine.empty()) params.set("routine", routine);
