@@ -23,7 +23,7 @@ TEST(diagonalize, xyz) {
     names = rokko::serial_dense_ev::solvers();
   } else {
     for (int num=1; num < global_argc; ++num) {
-      names.push_back(global_argv[num]);
+      names.emplace_back(global_argv[num]);
     }
   }
 

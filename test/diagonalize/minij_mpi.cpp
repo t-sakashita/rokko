@@ -28,7 +28,7 @@ TEST(diagonalize, minij_mpi) {
     names = rokko::parallel_dense_ev::solvers();
   } else {
     for (int num=1; num < global_argc; ++num) {
-      names.push_back(global_argv[num]);
+      names.emplace_back(global_argv[num]);
     }
   }
 

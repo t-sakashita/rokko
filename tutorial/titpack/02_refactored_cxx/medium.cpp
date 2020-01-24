@@ -49,12 +49,12 @@ int lnc2z(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
   
   // alpha[0] and beta[0]
   double alpha0 = mat.multiply(v1, v0);
-  alpha.push_back(alpha0);
+  alpha.emplace_back(alpha0);
   double beta0 = 0;
   for (int i = 0; i < mat.dimension(); ++i)
     beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
-  beta.push_back(beta0);
+  beta.emplace_back(beta0);
   
   // iteration  
   for (int i = 1; i < 150; ++i) {
@@ -65,12 +65,12 @@ int lnc2z(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
       v1[j] = temp2;
     }
     alpha0 = mat.multiply(v1, v0);
-    alpha.push_back(alpha0);
+    alpha.emplace_back(alpha0);
     beta0 = 0;
     for (int j = 0; j < mat.dimension(); ++j)
       beta0 += (v0[j] - alpha0 * v1[j]) * (v0[j] - alpha0 * v1[j]);
     beta0 = std::sqrt(beta0);
-    beta.push_back(beta0);
+    beta.emplace_back(beta0);
     if (beta[i] < 0.5e-30) {
       std::cerr << " #(E09)# Tridiagonalization unsuccessful in lnc2\n"
                 << "         Beta(i) is too small at i=  " << i << std::endl;

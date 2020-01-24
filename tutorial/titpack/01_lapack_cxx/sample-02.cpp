@@ -27,8 +27,8 @@ int main() {
   int ibond = n;
   std::vector<int> ipair;
   for (int i = 0; i < ibond; ++i) {
-    ipair.push_back(i);
-    ipair.push_back((i + 1) % n);
+    ipair.emplace_back(i);
+    ipair.emplace_back((i + 1) % n);
   }
 
   // Hamiltonian parameters
@@ -73,8 +73,8 @@ int main() {
   double Hexpec = check1(n, ipair, bondwt, zrtio, x, v, 0, list1, list2);
 
   std::vector<int> npair;
-  npair.push_back(1);
-  npair.push_back(2);
+  npair.emplace_back(1);
+  npair.emplace_back(2);
   std::vector<double> sxx(1), szz(1);
   xcorr(n, npair, x, sxx, list1, list2);
   zcorr(n, npair, x, szz, list1);

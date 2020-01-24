@@ -42,7 +42,7 @@ int sz(int n, double szval, std::vector<int>& list1, std::vector<std::pair<int, 
       isz += (i >> j) & 1;
     }
     if (isz == iupspn) {
-      list1.push_back(i);
+      list1.emplace_back(i);
       int ia = i & irght;
       int ib = (i & ilft) / ihfbit;
       if (ib == ibpatn) {

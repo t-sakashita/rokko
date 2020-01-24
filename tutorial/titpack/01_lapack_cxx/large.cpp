@@ -59,11 +59,11 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
   // alpha[0] and beta[0]
   double prdct = mltply(n, ipair, bondwt, zrtio, v1, v0, list1, list2);
   double alpha0 = prdct;
-  alpha.push_back(alpha0);
+  alpha.emplace_back(alpha0);
   double beta0 = 0;
   for (int i = 0; i < idim; ++i) beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
-  beta.push_back(beta0);
+  beta.emplace_back(beta0);
   
   // iteration  
   for (int i = 1; i < 150; ++i) {
@@ -75,11 +75,11 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
     }
     prdct = mltply(n, ipair, bondwt, zrtio, v1, v0, list1, list2);
     alpha0 = prdct;
-    alpha.push_back(alpha0);
+    alpha.emplace_back(alpha0);
     beta0 = 0;
     for (int j = 0; j < idim; ++j) beta0 += (v0[j] - alpha0 * v1[j]) * (v0[j] - alpha0 * v1[j]);
     beta0 = std::sqrt(beta0);
-    beta.push_back(beta0);
+    beta.emplace_back(beta0);
     if (beta[i] < 0.5e-30) {
       std::cerr << " #(E07)# Tridiagonalization unsuccessful in lnc1\n"
                 << "         Beta(i) is too small at i=  " << i << std::endl;

@@ -39,7 +39,7 @@ subspace::subspace(int n, double szval) : n_(n), list1_(), list2_() {
       isz += (i >> j) & 1;
     }
     if (isz == iupspn) {
-      list1_.push_back(i);
+      list1_.emplace_back(i);
       int ia = i & irght_;
       int ib = (i & ilft_) / ihfbit_;
       if (ib == ibpatn) {

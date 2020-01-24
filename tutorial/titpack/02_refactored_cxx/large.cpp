@@ -52,11 +52,11 @@ int lnc1z(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
   // alpha[0] and beta[0]
   double prdct = hop.multiply(v1, v0);
   double alpha0 = prdct;
-  alpha.push_back(alpha0);
+  alpha.emplace_back(alpha0);
   double beta0 = 0;
   for (int i = 0; i < hop.dimension(); ++i) beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
-  beta.push_back(beta0);
+  beta.emplace_back(beta0);
   
   // iteration  
   for (int i = 1; i < 150; ++i) {
@@ -68,11 +68,11 @@ int lnc1z(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
     }
     prdct = hop.multiply(v1, v0);
     alpha0 = prdct;
-    alpha.push_back(alpha0);
+    alpha.emplace_back(alpha0);
     beta0 = 0;
     for (int j = 0; j < hop.dimension(); ++j) beta0 += (v0[j] - alpha0 * v1[j]) * (v0[j] - alpha0 * v1[j]);
     beta0 = std::sqrt(beta0);
-    beta.push_back(beta0);
+    beta.emplace_back(beta0);
     if (beta[i] < 0.5e-30) {
       std::cerr << " #(E07)# Tridiagonalization unsuccessful in lnc1\n"
                 << "         Beta(i) is too small at i=  " << i << std::endl;

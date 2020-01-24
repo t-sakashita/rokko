@@ -36,8 +36,8 @@ void elm2_mpi(hamiltonian const& hop, CRS_MATRIX& mat) {
       int ibit = hop.config(i) & is;
       diag += (ibit == 0 || ibit == is) ? wght : -wght;
     }
-    cols.push_back(i);
-    values.push_back(diag);
+    cols.emplace_back(i);
+    values.emplace_back(diag);
 
     // off-diagonal elements
     for (int k = 0; k < ibond; ++k) {
@@ -47,8 +47,8 @@ void elm2_mpi(hamiltonian const& hop, CRS_MATRIX& mat) {
       double wght = -hop.bond_weight(k);
       int ibit = hop.config(i) & is;
       if (ibit != 0 && ibit != is) {
-        cols.push_back(hop.config2index(hop.config(i) ^ is));
-        values.push_back(wght);
+        cols.emplace_back(hop.config2index(hop.config(i) ^ is));
+        values.emplace_back(wght);
       }
     }
     mat.insert(i, cols, values);

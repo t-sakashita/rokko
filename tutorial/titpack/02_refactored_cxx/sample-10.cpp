@@ -29,8 +29,8 @@ int main(int argc, char** argv) {
   int ibond = n;
   std::vector<int> ipair;
   for (int i = 0; i < ibond; ++i) {
-    ipair.push_back(i);
-    ipair.push_back((i + 1) % n);
+    ipair.emplace_back(i);
+    ipair.emplace_back((i + 1) % n);
   }
 
   // Hamiltonian parameters
