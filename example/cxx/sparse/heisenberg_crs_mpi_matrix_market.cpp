@@ -34,11 +34,11 @@ int main(int argc, char *argv[]) {
       int m2 = 1 << j;
       int m3 = m1 + m2;
       if (((row & m3) == m1) || ((row & m3) == m2)) {
-	cols.emplace_back(row^m3);
-	values.emplace_back(0.5);
-	diag += -0.25;
+        cols.emplace_back(row^m3);
+        values.emplace_back(0.5);
+        diag += -0.25;
       } else {
-	diag += 0.25;
+        diag += 0.25;
       }
     }
     cols.emplace_back(row);
