@@ -47,8 +47,10 @@ int main(int argc, char *argv[]) {
   gen_tick = MPI_Wtime();
   const int num_entries_per_row = lattice.size() + 1;
   rokko::distributed_crs_matrix mat({dim, dim}, num_entries_per_row, solver);
-  std::vector<double> values(num_entries_per_row);
-  std::vector<int> cols(num_entries_per_row);
+  std::vector<int> cols;
+  std::vector<double> values;
+  cols.reserve(num_entries_per_row);
+  values.reserve(num_entries_per_row);
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {
     cols.clear();
     values.clear();

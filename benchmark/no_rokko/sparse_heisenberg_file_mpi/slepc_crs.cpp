@@ -37,6 +37,9 @@ int main(int argc,char **argv)
   ierr = MatCreate(PETSC_COMM_WORLD, &A); CHKERRQ(ierr);
   ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, dim, dim); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
+  const int NumEntriesPerRow = lattice.size() + 1;
+  ierr = MatSeqAIJSetPreallocation(A, NumEntriesPerRow, NULL); CHKERRQ(ierr);
+  ierr = MatMPIAIJSetPreallocation(A, NumEntriesPerRow, NULL, NumEntriesPerRow, NULL); CHKERRQ(ierr);
   ierr = MatSetUp(A); CHKERRQ(ierr);
 
   PetscInt Istart, Iend;
@@ -44,6 +47,8 @@ int main(int argc,char **argv)
 
   std::vector<PetscInt> cols;
   std::vector<double> values;
+  cols.reserve(NumEntriesPerRow);
+  values.reserve(NumEntriesPerRow);
 
   for (int row=Istart; row<Iend; ++row) {
     cols.clear();

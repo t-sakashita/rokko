@@ -58,11 +58,14 @@ int main(int argc, char *argv[]) {
   Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
-  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow
+  const int NumEntriesPerRow = lattice.size() + 1;
+  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, NumEntriesPerRow) );
 
   // Compute coefficients for hamiltonian matrix of quantum Heisenberg model
-  std::vector<double> values;
   std::vector<int> cols;
+  std::vector<double> values;
+  cols.reserve(NumEntriesPerRow);
+  values.reserve(NumEntriesPerRow);
 
   for (int local_row=0; local_row<NumMyElements; ++local_row) {
     int row = MyGlobalElements[local_row];

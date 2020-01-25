@@ -37,8 +37,11 @@ int main(int argc, char *argv[]) {
 
   rokko::parallel_sparse_ev solver(library);
   rokko::distributed_crs_matrix mat({dim, dim}, solver);
-  std::vector<double> values;
   std::vector<int> cols;
+  std::vector<double> values;
+  cols.reserve(lattice.size()+1);
+  values.reserve(lattice.size()+1);
+
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {
     cols.clear();
     values.clear();

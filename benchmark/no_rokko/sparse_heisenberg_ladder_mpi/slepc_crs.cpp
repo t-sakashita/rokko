@@ -48,8 +48,10 @@ int main(int argc,char **argv)
   PetscInt Istart, Iend;
   ierr = MatGetOwnershipRange(A, &Istart, &Iend); CHKERRQ(ierr);
 
-  std::vector<PetscInt> cols(NumEntriesPerRow);
-  std::vector<double> values(NumEntriesPerRow);
+  std::vector<PetscInt> cols;
+  std::vector<double> values;
+  cols.reserve(NumEntriesPerRow);
+  values.reserve(NumEntriesPerRow);
 
   for (int row=Istart; row<Iend; ++row) {
     cols.clear();
