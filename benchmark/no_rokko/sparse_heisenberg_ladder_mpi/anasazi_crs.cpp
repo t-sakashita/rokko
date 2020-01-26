@@ -88,13 +88,12 @@ int main(int argc, char *argv[]) {
       } else {
         diag += 0.25;
       }
-    }
+    } // end for lattice
     if (diag != 0.) {
       cols.emplace_back(row);
       values.emplace_back(diag);
     }
     int info = A->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
-    //cout << "info=" << info << endl;
     assert( info==0 );
   }
 

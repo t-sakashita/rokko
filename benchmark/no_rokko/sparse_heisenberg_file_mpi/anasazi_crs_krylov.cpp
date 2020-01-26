@@ -59,35 +59,40 @@ int main(int argc, char *argv[]) {
   Map.MyGlobalElements(MyGlobalElements.data());
 
   // Create an Epetra_Matrix
-  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, N) );  // fix me: NumEntriesPerRow
+  const int NumEntriesPerRow = lattice.size() + 1;
+  Teuchos::RCP<Epetra_CrsMatrix> A = Teuchos::rcp( new Epetra_CrsMatrix(Copy, Map, NumEntriesPerRow) );
 
   // Compute coefficients for hamiltonian matrix of quantum Heisenberg model
-  std::vector<double> values;
   std::vector<int> cols;
+  std::vector<double> values;
+  cols.reserve(NumEntriesPerRow);
+  values.reserve(NumEntriesPerRow);
 
-  for (int l=0; l<lattice.size(); ++l) {
-    for (int row=0; row<NumMyElements; ++row) {
-      cols.clear();
-      values.clear();
-      int k = MyGlobalElements[row];
+  for (int local_row=0; local_row<NumMyElements; ++local_row) {
+    int row = MyGlobalElements[local_row];
+    cols.clear();
+    values.clear();
+    double diag = 0.;
+    for (int l=0; l<lattice.size(); ++l) {
       int i = lattice[l].first;
       int j = lattice[l].second;
       int m1 = 1 << i;
       int m2 = 1 << j;
       int m3 = m1 + m2;
-      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-        cols.emplace_back(k^m3);
+      if (((row & m3) == m1) || ((row & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        cols.emplace_back(row^m3);
         values.emplace_back(0.5);
-        cols.emplace_back(k);
-        values.emplace_back(-0.25);
+        diag += -0.25;
       } else {
-        cols.emplace_back(k);
-        values.emplace_back(0.25);
+        diag += 0.25;
       }
-      int info = A->InsertGlobalValues(k, cols.size(), values.data(), cols.data());
-      //cout << "info=" << info << endl;
-      assert( info==0 );
+    } // end for lattice
+    if (diag != 0.) {
+      cols.emplace_back(row);
+      values.emplace_back(diag);
     }
+    int info = A->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
+    assert( info==0 );
   }
 
   // Finish up
