@@ -19,7 +19,7 @@ namespace rokko {
 class distributed_mfree {
 public:
   distributed_mfree() {}
-  virtual ~distributed_mfree() {}
+  virtual ~distributed_mfree() = default;
 
   virtual void multiply(const double *const x, double *const y) const = 0;
   virtual int get_dim() const = 0;
@@ -35,7 +35,7 @@ public:
   distributed_mfree_default(int dim) : distributed_mfree_default(dim, rokko::mpi_comm{MPI_COMM_WORLD}) {}
   distributed_mfree_default(int dim, rokko::mpi_comm const& mpi_comm) : dim_(dim), mpi_comm_(mpi_comm) {}
 
-  virtual ~distributed_mfree_default() {}
+  virtual ~distributed_mfree_default() = default;
 
   virtual void multiply(const double *const x, double *const y) const = 0;
 

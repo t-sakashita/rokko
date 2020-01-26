@@ -33,7 +33,7 @@ public:
   wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim, pybind11::handle const& comm_handle)
     : multiply_(multiply), rokko::distributed_mfree_default(dim, wrap_communicator{comm_handle}) {}
 
-  ~wrap_distributed_mfree() {}
+  ~wrap_distributed_mfree() = default;
 
   void multiply(const double* x, double* y) const {
     int num_local_rows = get_num_local_rows();
