@@ -151,7 +151,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   }
 }
 
-void multiply(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
+void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice, const std::vector<double>& v, std::vector<double>& w, std::vector<double>& buffer) {
   multiply(comm, L, lattice, v.data(), w.data(), buffer.data());
 }
 
