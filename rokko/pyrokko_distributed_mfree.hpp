@@ -22,28 +22,15 @@
 
 namespace rokko {
 
-using MapVec = Eigen::Map<Eigen::Vector<double>>;
-using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
-
-class wrap_distributed_mfree : public rokko::distributed_mfree_default {
+class wrap_distributed_mfree : public distributed_mfree_holder {
 public:
   wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim)
-    : multiply_(multiply), rokko::distributed_mfree_default(dim, rokko::mpi_comm{MPI_COMM_WORLD}) {}
+    : distributed_mfree_holder(multiply, skel::mapping_1d(dim, rokko::mpi_comm{MPI_COMM_WORLD})) {}
 
   wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim, pybind11::handle const& comm_handle)
-    : multiply_(multiply), rokko::distributed_mfree_default(dim, wrap_communicator{comm_handle}) {}
+    : distributed_mfree_holder(multiply, skel::mapping_1d(dim, wrap_communicator{comm_handle})) {}
 
   ~wrap_distributed_mfree() = default;
-
-  void multiply(const double* x, double* y) const {
-    int num_local_rows = get_num_local_rows();
-    ConstMapVec  X(x, num_local_rows);
-    MapVec  Y(y, num_local_rows);
-    multiply_(X, Y);
-  }
-
-private:
-  std::function<void(ConstMapVec,MapVec)> multiply_;
 };
 
 

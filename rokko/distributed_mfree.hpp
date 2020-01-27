@@ -43,6 +43,31 @@ public:
   MPI_Comm get_comm() const override { return get_mpi_comm().get_comm(); }
 };
 
+using MapVec = Eigen::Map<Eigen::Vector<double>>;
+using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
+
+class distributed_mfree_holder : public rokko::distributed_mfree_default {
+public:
+  distributed_mfree_holder(std::function<void(const double* x, double* y)> const& multiply, rokko::skel::mapping_1d const& map)
+    : multiply_(multiply), rokko::distributed_mfree_default(map) {}
+
+  distributed_mfree_holder(std::function<void(ConstMapVec,MapVec)> const& multiply, rokko::skel::mapping_1d const& map)
+    : multiply_([this, multiply](const double* x, double* y) {
+        const int num_local_rows = get_num_local_rows();
+        ConstMapVec  X(x, num_local_rows);
+        MapVec  Y(y, num_local_rows);
+        multiply(X, Y);
+      }), rokko::distributed_mfree_default(map) {}
+
+  ~distributed_mfree_holder() = default;
+
+  void multiply(const double* x, double* y) const override {
+    multiply_(x, y);
+  }
+
+private:
+  std::function<void(const double* x, double* y)> multiply_;
+};
 
 class distributed_mfree_slepc : public rokko::distributed_mfree {
 public:
