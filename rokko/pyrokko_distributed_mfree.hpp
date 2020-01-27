@@ -30,6 +30,9 @@ public:
   wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, int dim, pybind11::handle const& comm_handle)
     : distributed_mfree_holder(multiply, skel::mapping_1d(dim, wrap_communicator{comm_handle})) {}
 
+  wrap_distributed_mfree(std::function<void(ConstMapVec,MapVec)> const& multiply, wrap_mapping_1d const& map)
+    : distributed_mfree_holder(multiply, skel::mapping_1d(map.get_dim(), map.get_mpi_comm())) {}
+
   ~wrap_distributed_mfree() = default;
 };
 

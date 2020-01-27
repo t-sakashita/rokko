@@ -245,6 +245,7 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int>())
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, pybind11::handle const&>())
+    .def(py::init<std::function<void(ConstMapVec,MapVec)>, wrap_mapping_1d const&>())
     .def_property_readonly("dim", &distributed_mfree_default::get_dim)
     .def_property_readonly("num_local_rows", &distributed_mfree_default::get_num_local_rows)
     .def_property_readonly("start_row", &distributed_mfree_default::start_row)
