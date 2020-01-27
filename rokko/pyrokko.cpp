@@ -240,6 +240,8 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<distributed_mfree>(m, "distributed_mfree_base");
 
+  py::class_<distributed_mfree_default, distributed_mfree>(m, "distributed_mfree_default");
+
   py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int>())
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, pybind11::handle const&>())

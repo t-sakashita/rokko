@@ -23,6 +23,6 @@ namespace py = pybind11;
 PYBIND11_MODULE(laplacian, m) {
   py::module::import("pyrokko");
 
-  py::class_<rokko::laplacian_mfree, rokko::distributed_mfree>(m, "mfree")
+  py::class_<rokko::laplacian_mfree, rokko::distributed_mfree_default, rokko::distributed_mfree>(m, "mfree")
     .def(py::init<int>());
 }

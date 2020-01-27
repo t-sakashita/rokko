@@ -23,6 +23,6 @@ namespace py = pybind11;
 PYBIND11_MODULE(heisenberg, m) {
   py::module::import("pyrokko");
 
-  py::class_<rokko::heisenberg_mfree, rokko::distributed_mfree>(m, "mfree")
+  py::class_<rokko::heisenberg_mfree, rokko::distributed_mfree_default, rokko::distributed_mfree>(m, "mfree")
     .def(py::init<int, const std::vector<std::pair<int, int>>&>());
 }
