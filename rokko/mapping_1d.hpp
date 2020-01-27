@@ -14,20 +14,20 @@
 
 #include <rokko/factory.hpp>
 #include <rokko/mpi_communicator.hpp>
+#include <rokko/mapping_1d_common.hpp>
 
 namespace rokko {
 
 namespace detail {
 
-class ps_mapping_1d_base {
+class ps_mapping_1d_base : virtual public mapping_1d_common {
 public:
   explicit ps_mapping_1d_base(int dim) : ps_mapping_1d_base(dim, mpi_comm(MPI_COMM_WORLD)) {}
   explicit ps_mapping_1d_base(int dim, mpi_comm const& mpi_comm_in) : dim_(dim), mpi_comm_(mpi_comm_in) {}
   ps_mapping_1d_base() = default;
   virtual ~ps_mapping_1d_base() = default;
   virtual void init(int dim, mpi_comm const& mpi_comm_in) = 0;
-  int get_dim() const { return dim_; }
-  virtual int get_num_local_rows() const = 0;
+  int get_dim() const override { return dim_; }
   virtual int start_row() const = 0;
   virtual int end_row() const = 0;
   virtual const ps_mapping_1d_base* get_impl() const = 0;

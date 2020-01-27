@@ -13,57 +13,34 @@
 #define ROKKO_DISTRIBUTED_MFREE_HPP
 
 #include <rokko/mapping_1d.hpp>
+#include <rokko/mapping_1d_common.hpp>
+#include <rokko/skel/mapping_1d.hpp>
+#include <rokko/eigen3.hpp>
 
 namespace rokko {
 
-class distributed_mfree {
+class distributed_mfree : virtual public detail::mapping_1d_common {
 public:
   distributed_mfree() = default;
   virtual ~distributed_mfree() = default;
 
   virtual void multiply(const double *const x, double *const y) const = 0;
-  virtual int get_dim() const = 0;
   virtual int get_local_offset() const = 0;
-  virtual int get_num_local_rows() const = 0;
   virtual MPI_Comm get_comm() const = 0;
 };
 
-
-class distributed_mfree_default : public distributed_mfree {
+class distributed_mfree_default : virtual public distributed_mfree, public skel::mapping_1d {
 public:
   distributed_mfree_default() = default;
   distributed_mfree_default(int dim) : distributed_mfree_default(dim, rokko::mpi_comm{MPI_COMM_WORLD}) {}
-  distributed_mfree_default(int dim, rokko::mpi_comm const& mpi_comm) : dim_(dim), mpi_comm_(mpi_comm) {}
+  distributed_mfree_default(int dim, rokko::mpi_comm const& mpi_comm) : skel::mapping_1d(dim, mpi_comm) {}
+  distributed_mfree_default(skel::mapping_1d const& map) : skel::mapping_1d(map) {}
 
   virtual ~distributed_mfree_default() = default;
 
-  virtual void multiply(const double *const x, double *const y) const = 0;
+  int get_local_offset() const override { return start_row(); }
 
-  int get_dim() const { return dim_; }
-  int get_num_local_rows() const { return calculate_num_local_rows(); }
-  int calculate_num_local_rows() const {
-    return calculate_num_local_rows(get_mpi_comm().get_myrank());
-  }
-  int calculate_num_local_rows(int proc) const {
-    return (get_dim() + get_mpi_comm().get_nprocs() - proc - 1) / get_mpi_comm().get_nprocs();
-  }
-  int get_local_offset() const { return start_row(); }
-  int start_row() const {
-    const int nprocs = get_mpi_comm().get_nprocs();
-    const int myrank = get_mpi_comm().get_myrank();
-    return get_dim() / nprocs * myrank + std::min(get_dim() % nprocs, myrank);
-  }
-  int end_row() const {
-    return start_row() + get_num_local_rows();
-  }
-
-  const rokko::mpi_comm& get_mpi_comm() const { return mpi_comm_; }
-
-  MPI_Comm get_comm() const { return get_mpi_comm().get_comm(); }
-
-protected:
-  int dim_;
-  rokko::mpi_comm mpi_comm_;
+  MPI_Comm get_comm() const override { return get_mpi_comm().get_comm(); }
 };
 
 
