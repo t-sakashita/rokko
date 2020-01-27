@@ -35,15 +35,15 @@ public:
     return static_cast<wrap_mapping_1d>(parallel_sparse_ev::default_mapping(dim, static_cast<mpi_comm>(wrap_communicator{comm_handle})));
   }
 
-  wrap_parameters diagonalize(wrap_distributed_crs_matrix& mat, wrap_parameters const& params) {
+  wrap_parameters diagonalize(wrap_distributed_crs_matrix const& mat, wrap_parameters const& params) {
     return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }
 
-  wrap_parameters diagonalize(distributed_mfree* mat, wrap_parameters const& params) {
-    return parallel_sparse_ev::diagonalize(*mat, parameters(params));
+  wrap_parameters diagonalize(distributed_mfree const& mat, wrap_parameters const& params) {
+    return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }
 
-  wrap_parameters diagonalize(wrap_distributed_mfree& mat, wrap_parameters const& params) {
+  wrap_parameters diagonalize(wrap_distributed_mfree const& mat, wrap_parameters const& params) {
     return parallel_sparse_ev::diagonalize(mat, parameters(params));
   }
 
