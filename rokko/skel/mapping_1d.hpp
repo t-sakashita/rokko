@@ -26,26 +26,26 @@ public:
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
     : detail::ps_mapping_1d_base(dim, mpi_comm_in) {}
 
-  void init(int dim, mpi_comm const& mpi_comm_in) {
+  void init(int dim, mpi_comm const& mpi_comm_in) override {
     set_dim(dim);
     set_mpi_comm(mpi_comm_in);
   }
-  int get_num_local_rows() const { return calculate_num_local_rows(); }
+  int get_num_local_rows() const override { return calculate_num_local_rows(); }
   int calculate_num_local_rows() const {
     return calculate_num_local_rows(get_mpi_comm().get_myrank());
   }
   int calculate_num_local_rows(int proc) const {
     return (get_dim() + get_mpi_comm().get_nprocs() - proc - 1) / get_mpi_comm().get_nprocs();
   }
-  int start_row() const {
+  int start_row() const override {
     const int nprocs = get_mpi_comm().get_nprocs();
     const int myrank = get_mpi_comm().get_myrank();
     return get_dim() / nprocs * myrank + std::min(get_dim() % nprocs, myrank);
   }
-  int end_row() const {
+  int end_row() const override {
     return start_row() + get_num_local_rows();
   }
-  const ps_mapping_1d_base* get_impl() const { return this; }
+  const ps_mapping_1d_base* get_impl() const override { return this; }
 };
 
 } // namespace skel
