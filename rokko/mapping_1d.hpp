@@ -23,8 +23,8 @@ class ps_mapping_1d_base {
 public:
   explicit ps_mapping_1d_base(int dim) : ps_mapping_1d_base(dim, mpi_comm(MPI_COMM_WORLD)) {}
   explicit ps_mapping_1d_base(int dim, mpi_comm const& mpi_comm_in) : dim_(dim), mpi_comm_(mpi_comm_in) {}
-  ps_mapping_1d_base() {}
-  virtual ~ps_mapping_1d_base() {}
+  ps_mapping_1d_base() = default;
+  virtual ~ps_mapping_1d_base() = default;
   virtual void init(int dim, mpi_comm const& mpi_comm_in) = 0;
   int get_dim() const { return dim_; }
   virtual int get_num_local_rows() const = 0;
