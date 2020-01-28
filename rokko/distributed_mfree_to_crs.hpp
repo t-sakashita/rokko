@@ -38,8 +38,8 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
     MPI_Barrier(MPI_COMM_WORLD);
     for (int local_col=0; local_col<op.get_num_local_rows(); ++local_col) {
       if (y[local_col] != 0) {
-	int global_col = local_col + op.get_local_offset();
-	mat.insert(global_row, 1, &global_col, &y[local_col]);
+        int global_col = local_col + op.get_local_offset();
+        mat.insert(global_row, 1, &global_col, &y[local_col]);
       }
     }
     MPI_Barrier(MPI_COMM_WORLD);
