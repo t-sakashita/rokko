@@ -17,8 +17,7 @@
 class heisenberg_op : public rokko::distributed_mfree {
 public:
   heisenberg_op(int L, const std::vector<std::pair<int, int>>& lattice)
-    : L_(L), lattice_(lattice) {
-    comm_ = MPI_COMM_WORLD;
+    : comm_(MPI_COMM_WORLD), L_(L), lattice_(lattice) {
     int size, rank;
     MPI_Comm_size(comm_, &size);
     MPI_Comm_rank(comm_, &rank);
@@ -26,7 +25,7 @@ public:
     dim_ = 1 << L;
     num_local_rows_ = 1 << (L-p);
     local_offset_ = num_local_rows_ * rank;
-    buffer_.assign(num_local_rows_, 0);
+    buffer_.resize(num_local_rows_);
   }
   ~heisenberg_op() {}
 
@@ -36,6 +35,7 @@ public:
   int get_dim() const { return dim_; }
   int get_local_offset() const { return local_offset_; }
   int get_num_local_rows() const { return num_local_rows_; }
+  MPI_Comm get_comm() const { return comm_; }
 
 private:
   MPI_Comm comm_;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
   rokko::parallel_sparse_ev solver(library);
   heisenberg_op op(L, lattice);
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
+  rokko::distributed_crs_matrix mat({dim, dim}, solver);
   rokko::distributed_mfree_to_crs(op, mat);
   mat.output_matrix_market();
   //mat.print();
