@@ -242,6 +242,15 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<distributed_mfree_default, distributed_mfree>(m, "distributed_mfree_default");
 
+  py::class_<distributed_mfree_inherit, wrap_distributed_mfree_inherit, distributed_mfree_default, distributed_mfree>(m, "distributed_mfree_inherit")
+    .def(py::init<int>())
+    .def(py::init<int, pybind11::handle const&>())
+    .def("multiply", py::overload_cast<const Eigen::VectorXd&,Eigen::Ref<Eigen::VectorXd>>(&distributed_mfree_inherit::multiply, py::const_))
+    .def_property_readonly("dim", &distributed_mfree_default::get_dim)
+    .def_property_readonly("num_local_rows", &distributed_mfree_default::get_num_local_rows)
+    .def_property_readonly("start_row", &distributed_mfree_default::start_row)
+    .def_property_readonly("end_row", &distributed_mfree_default::end_row);
+
   py::class_<wrap_distributed_mfree>(m, "distributed_mfree")
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int>())
     .def(py::init<std::function<void(ConstMapVec,MapVec)>, int, pybind11::handle const&>())
