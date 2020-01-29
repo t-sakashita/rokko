@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   rokko::parallel_sparse_ev solver(library);
   auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   rokko::distributed_crs_matrix mat(map, num_entries_per_row);
-  for (int row = 0; row < dim; ++row) {
+  for (int row = map.start_row(); row < map.end_row(); ++row) {
     mat.insert(row, nonzero_cols[row], values[row]);
   }
   mat.complete();
