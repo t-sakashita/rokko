@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -20,9 +20,13 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
   rokko::parallel_sparse_ev solver("anasazi");
-  rokko::distributed_crs_matrix mat(dim, dim, solver);
-  std::vector<double> values;
+  const int num_entries_per_row = lattice.size() + 1;
+  rokko::distributed_crs_matrix mat({dim, dim}, num_entries_per_row, solver);
   std::vector<int> cols;
+  std::vector<double> values;
+  cols.reserve(num_entries_per_row);
+  values.reserve(num_entries_per_row);
+
   for (int row = mat.start_row(); row < mat.end_row(); ++row) {
     cols.clear();
     values.clear();
