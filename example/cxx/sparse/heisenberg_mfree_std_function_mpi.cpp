@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   const int dim = 1 << L;
   rokko::skel::mapping_1d map{dim, rokko::mpi_comm{MPI_COMM_WORLD}};
   std::vector<double> buffer(map.get_num_local_rows());
-  std::function<void(const double *const x, double *const)> multiply = [&, L, lattice, buffer](const double *const x, double *const y) {
+  auto multiply = [&, L, lattice, buffer](const double *const x, double *const y) {
     rokko::heisenberg_hamiltonian::multiply(MPI_COMM_WORLD, L, lattice, x, y, const_cast<double*>(buffer.data()));
   };
 
