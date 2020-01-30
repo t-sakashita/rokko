@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   int myrank = g.get_myrank();
 
   auto f = [](int global_i, int global_j) {
-    return double(std::min(global_i, global_j) + 1);
+    return static_cast<double>(std::min(global_i, global_j) + 1);
   };
 
   std::cout.precision(5);
