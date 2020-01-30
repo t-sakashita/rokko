@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   rokko::grid g(comm);
   int myrank = g.get_myrank();
 
-  std::function<double(int,int)> f = [](int global_i, int global_j) {
+  auto f = [](int global_i, int global_j) {
     return double(std::min(global_i, global_j) + 1);
   };
 
