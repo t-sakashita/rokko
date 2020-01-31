@@ -18,7 +18,7 @@ public:
   distributed_mfree_f(void (*multiply)(const int*, const double *const, double *const), int dim, MPI_Comm comm = MPI_COMM_WORLD)
     : rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}), multiply_(multiply) {}
 
-  ~distributed_mfree_f() {}
+  ~distributed_mfree_f() = default;
 
   void multiply(const double* x, double *const y) const {
     int num_local_rows = get_num_local_rows();

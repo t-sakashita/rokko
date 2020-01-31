@@ -16,9 +16,9 @@
 class distributed_mfree_c : public rokko::distributed_mfree_default {
 public:
   distributed_mfree_c(void (*multiply)(const double *const, double *const, void*), void* vars, int dim, MPI_Comm comm)
-    : rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}), multiply_(multiply), vars_(vars) {
-  }
-  ~distributed_mfree_c() {}
+    : rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}), multiply_(multiply), vars_(vars) {}
+
+  ~distributed_mfree_c() = default;
 
   void multiply(const double *const x, double *const y) const {
     multiply_(x, y, vars_);
@@ -36,7 +36,7 @@ void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
   matrix->ptr = new distributed_mfree_c(multiply, vars, dim, comm);
 }
 
-void rokko_distributed_mfree_destruct(rokko_distributed_mfree* matrix) {
+void rokko_distributed_mfree_destruct(struct rokko_distributed_mfree* matrix) {
   delete static_cast<distributed_mfree_c*>(matrix->ptr);
   matrix->ptr = nullptr;
 }
