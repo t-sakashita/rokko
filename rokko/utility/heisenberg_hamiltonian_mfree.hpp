@@ -26,7 +26,7 @@ public:
   }
   ~heisenberg_mfree() = default;
 
-  void multiply(const double *const x, double *const y) const {
+  void multiply(const double *const x, double *const y) const override {
     rokko::heisenberg_hamiltonian::multiply(get_comm(), L_, lattice_, x, y, buffer_.data());
   }
 

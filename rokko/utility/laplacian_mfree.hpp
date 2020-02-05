@@ -29,7 +29,7 @@ public:
 
   ~laplacian_mfree() = default;
 
-  void multiply(const double *const x, double *const y) const {
+  void multiply(const double *const x, double *const y) const override {
     if (num_local_rows_ == 0) return;
 
     double buf_m, buf_p;
