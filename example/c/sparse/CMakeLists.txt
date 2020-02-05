@@ -8,7 +8,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(TESTS heisenberg_crs_mpi laplacian_crs_mpi heisenberg_mfree_mpi laplacian_mfree_mpi)
+  set(TESTS heisenberg_crs_mpi laplacian_crs_mpi heisenberg_mfree_mpi laplacian_mfree_mpi laplacian_mfree_no_context_mpi)
   foreach(name ${TESTS})
     set(target_name example_c_sparse_${name})
     add_executable(${target_name} ${name}.c)
