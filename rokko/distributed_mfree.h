@@ -24,6 +24,9 @@ void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 				       void (*multiply)(const double *const, double *const, void*),
 				       void* vars,
 				       int dim, MPI_Comm comm);
+void rokko_distributed_mfree_construct_no_context(struct rokko_distributed_mfree* matrix,
+				       void (*multiply)(const double *const, double *const),
+				       int dim, MPI_Comm comm);
 void rokko_distributed_mfree_destruct(struct rokko_distributed_mfree* matrix);
 void rokko_distributed_mfree_f_construct(struct rokko_distributed_mfree* matrix,
 					 void (*multiply)(const int*, const double *const, double *const),

@@ -13,50 +13,40 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/sparse.h>
 
-class distributed_mfree_c : public rokko::distributed_mfree_default {
-public:
-  distributed_mfree_c(void (*multiply)(const double *const, double *const, void*), void* vars, int dim, MPI_Comm comm)
-    : rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}), multiply_(multiply), vars_(vars) {}
-
-  ~distributed_mfree_c() = default;
-
-  void multiply(const double *const x, double *const y) const {
-    multiply_(x, y, vars_);
-  }
-
-private:
-  void (*multiply_)(const double *const, double *const, void*);
-  mutable void* vars_;
-};
-
 void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 				       void (*multiply)(const double *const, double *const, void*),
 				       void* vars,
 				       int dim, MPI_Comm comm = MPI_COMM_WORLD) {
-  matrix->ptr = new distributed_mfree_c(multiply, vars, dim, comm);
+  matrix->ptr = new rokko::distributed_mfree_holder(multiply, vars, rokko::skel::mapping_1d{dim, rokko::mpi_comm{comm}});
+}
+
+void rokko_distributed_mfree_construct_no_context(struct rokko_distributed_mfree* matrix,
+				       void (*multiply)(const double *const, double *const),
+				       int dim, MPI_Comm comm = MPI_COMM_WORLD) {
+  matrix->ptr = new rokko::distributed_mfree_holder(multiply, rokko::skel::mapping_1d{dim, rokko::mpi_comm{comm}});
 }
 
 void rokko_distributed_mfree_destruct(struct rokko_distributed_mfree* matrix) {
-  delete static_cast<distributed_mfree_c*>(matrix->ptr);
+  delete static_cast<rokko::distributed_mfree_holder*>(matrix->ptr);
   matrix->ptr = nullptr;
 }
 
 int rokko_distributed_mfree_dim(struct rokko_distributed_mfree matrix) {
-  return static_cast<distributed_mfree_c*>(matrix.ptr)->get_dim();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix.ptr)->get_dim();
 }
 
 int rokko_distributed_mfree_num_local_rows(struct rokko_distributed_mfree matrix) {
-  return static_cast<distributed_mfree_c*>(matrix.ptr)->get_num_local_rows();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix.ptr)->get_num_local_rows();
 }
 
 int rokko_distributed_mfree_start_row(struct rokko_distributed_mfree matrix) {
-  return static_cast<distributed_mfree_c*>(matrix.ptr)->start_row();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix.ptr)->start_row();
 }
 
 int rokko_distributed_mfree_end_row(struct rokko_distributed_mfree matrix) {
-  return static_cast<distributed_mfree_c*>(matrix.ptr)->end_row();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix.ptr)->end_row();
 }
 
 int rokko_distributed_mfree_offset(struct rokko_distributed_mfree matrix) {
-  return static_cast<distributed_mfree_c*>(matrix.ptr)->get_local_offset();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix.ptr)->get_local_offset();
 }

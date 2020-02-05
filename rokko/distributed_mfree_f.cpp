@@ -13,50 +13,34 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/sparse.h>
 
-class distributed_mfree_f : public rokko::distributed_mfree_default {
-public:
-  distributed_mfree_f(void (*multiply)(const int*, const double *const, double *const), int dim, MPI_Comm comm = MPI_COMM_WORLD)
-    : rokko::distributed_mfree_default(dim, rokko::mpi_comm{comm}), multiply_(multiply) {}
-
-  ~distributed_mfree_f() = default;
-
-  void multiply(const double* x, double *const y) const {
-    int num_local_rows = get_num_local_rows();
-    multiply_(&num_local_rows, x, y);
-  }
-
-private:
-  void (*multiply_)(const int*, const double *const, double *const);
-};
-
 void rokko_distributed_mfree_f_construct(struct rokko_distributed_mfree* matrix,
 					 void (*multiply)(const int*, const double *const, double *const),
 					 int dim, int comm_f) {
   MPI_Comm comm = MPI_Comm_f2c(comm_f);
-  matrix->ptr = new distributed_mfree_f(multiply, dim, comm);
+  matrix->ptr = new rokko::distributed_mfree_holder(multiply, rokko::skel::mapping_1d{dim, rokko::mpi_comm{comm}});
 }
 
 void rokko_distributed_mfree_f_destruct(struct rokko_distributed_mfree* matrix) {
-  delete static_cast<distributed_mfree_f*>(matrix->ptr);
+  delete static_cast<rokko::distributed_mfree_holder*>(matrix->ptr);
 }
 
 
 int rokko_distributed_mfree_f_dim(struct rokko_distributed_mfree* matrix) {
-  return static_cast<distributed_mfree_f*>(matrix->ptr)->get_dim();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix->ptr)->get_dim();
 }
 
 int rokko_distributed_mfree_f_num_local_rows(struct rokko_distributed_mfree* matrix) {
-  return static_cast<distributed_mfree_f*>(matrix->ptr)->get_num_local_rows();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix->ptr)->get_num_local_rows();
 }
 
 int rokko_distributed_mfree_f_start_row(struct rokko_distributed_mfree* matrix) {
-  return static_cast<distributed_mfree_f*>(matrix->ptr)->start_row();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix->ptr)->start_row();
 }
 
 int rokko_distributed_mfree_f_end_row(struct rokko_distributed_mfree* matrix) {
-  return static_cast<distributed_mfree_f*>(matrix->ptr)->end_row();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix->ptr)->end_row();
 }
 
 int rokko_distributed_mfree_f_offset(struct rokko_distributed_mfree* matrix) {
-  return static_cast<distributed_mfree_f*>(matrix->ptr)->get_local_offset();
+  return static_cast<rokko::distributed_mfree_holder*>(matrix->ptr)->get_local_offset();
 }

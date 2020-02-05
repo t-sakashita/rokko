@@ -11,6 +11,7 @@
 
 #include <rokko/mpi_communicator.hpp>
 #include <rokko/mapping_1d.h>
+#include <rokko/distributed_mfree.hpp>
 #include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/sparse.h>
 #include <rokko/parameters.h>
@@ -49,7 +50,7 @@ struct rokko_parameters rokko_parallel_sparse_ev_diagonalize_distributed_mfree(s
 									       struct rokko_parameters params) {
   struct rokko_parameters params_out;
   rokko_parameters_construct(&params_out);
-  *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat.ptr),
+  *static_cast<rokko::parameters*>(params_out.ptr) = static_cast<rokko::parallel_sparse_ev*>(solver.ptr)->diagonalize(*static_cast<rokko::distributed_mfree_holder*>(mat.ptr),
 														       *static_cast<rokko::parameters*>(params.ptr));
   return params_out;
 }
@@ -74,14 +75,14 @@ void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_f(struct rokko_paral
 							      struct rokko_distributed_mfree* mat,
 							      struct rokko_parameters* params, struct rokko_parameters* params_out) {
   rokko_parameters_construct(params_out);
-  *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat->ptr),
+  *static_cast<rokko::parameters*>(params_out->ptr) = static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree_holder*>(mat->ptr),
 															*static_cast<rokko::parameters*>(params->ptr));
 }
 
 void rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn_f(struct rokko_parallel_sparse_ev* solver,
 								       struct rokko_distributed_mfree* mat,
 								       struct rokko_parameters* params) {
-  static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree*>(mat->ptr),
+  static_cast<rokko::parallel_sparse_ev*>(solver->ptr)->diagonalize(*static_cast<rokko::distributed_mfree_holder*>(mat->ptr),
 								    *static_cast<rokko::parameters*>(params->ptr));
 }
 
