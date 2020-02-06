@@ -65,7 +65,7 @@ class sd_ev_wrapper : public sd_ev_base {
   using solver_type = SOLVER;
 public:
   sd_ev_wrapper() : solver_impl_() {}
-  virtual ~sd_ev_wrapper() {}
+  virtual ~sd_ev_wrapper() = default;
   void initialize(int& argc, char**& argv) {
     solver_impl_.initialize(argc, argv);
   }

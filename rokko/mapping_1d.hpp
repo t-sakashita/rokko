@@ -49,7 +49,7 @@ public:
   explicit ps_mapping_1d_wrapper(int dim) : map_impl_() {}
   explicit ps_mapping_1d_wrapper(int dim, mpi_comm const& mpi_comm_in) : map_impl_() {}
   ps_mapping_1d_wrapper() : map_impl_() {}
-  ~ps_mapping_1d_wrapper() {}
+  ~ps_mapping_1d_wrapper() = default;
   void init(int dim, mpi_comm const& mpi_comm_in) { map_impl_.init(dim, mpi_comm_in); }
   int get_dim() const { return map_impl_.get_dim(); }
   int get_num_local_rows() const { return map_impl_.get_num_local_rows(); }

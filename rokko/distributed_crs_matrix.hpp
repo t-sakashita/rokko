@@ -21,7 +21,7 @@ namespace detail {
 
 class ps_crs_base {
 public:
-  virtual ~ps_crs_base() {}
+  virtual ~ps_crs_base() = default;
   virtual void initialize(rokko::mapping_1d const& map, int num_entries_per_row) = 0;
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
   virtual void insert(int row, int col_size, int const*const cols, double const*const values) = 0;
@@ -43,7 +43,7 @@ class ps_crs_wrapper : public ps_crs_base {
   using crs_type = CRS;
 public:
   ps_crs_wrapper() : crs_impl_() {}
-  virtual ~ps_crs_wrapper() {}
+  virtual ~ps_crs_wrapper() = default;
   void initialize(rokko::mapping_1d const& map, int num_entries_per_row) { crs_impl_.initialize(map, num_entries_per_row); }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
     crs_impl_.insert(row, cols, values);

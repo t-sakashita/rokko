@@ -26,7 +26,7 @@ namespace detail {
     
 class ps_ev_base {
 public:
-  virtual ~ps_ev_base() {}
+  virtual ~ps_ev_base() = default;
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
   virtual parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) = 0;
@@ -45,7 +45,7 @@ class ps_ev_wrapper : public ps_ev_base {
   using solver_type = SOLVER;
 public:
   ps_ev_wrapper() : solver_impl_() {}
-  virtual ~ps_ev_wrapper() {}
+  virtual ~ps_ev_wrapper() = default;
   void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
   void finalize() { solver_impl_.finalize(); }
   parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {

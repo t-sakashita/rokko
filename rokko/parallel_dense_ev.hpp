@@ -26,7 +26,7 @@ namespace detail {
     
 class pd_ev_base {
 public:
-  virtual ~pd_ev_base() {}
+  virtual ~pd_ev_base() = default;
   virtual bool is_available_grid_major(grid_row_major_t const& grid_major) = 0;
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
   virtual void initialize(int& argc, char**& argv) = 0;
@@ -65,7 +65,7 @@ class pd_ev_wrapper : public pd_ev_base {
   using solver_type = SOLVER;
 public:
   pd_ev_wrapper() : solver_impl_() {}
-  virtual ~pd_ev_wrapper() {}
+  virtual ~pd_ev_wrapper() = default;
   bool is_available_grid_major(grid_row_major_t const& grid_major) {
     return solver_impl_.is_available_grid_major(grid_major);
   }
