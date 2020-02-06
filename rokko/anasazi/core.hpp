@@ -223,7 +223,6 @@ private:
   int myrank;
   const rokko::anasazi::mapping_1d* map_;
   Teuchos::RCP<eigenproblem_t> problem_;
-  //std::vector<Anasazi::Value<value_type>> evals_;
 };
 
 const std::vector<std::string> solver::names{ "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
