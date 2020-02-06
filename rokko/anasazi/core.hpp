@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -53,15 +53,15 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  std::unique_ptr<solvermanager_t> create_solver_manager(std::string const& routine, Teuchos::ParameterList& pl) {
+  static std::unique_ptr<solvermanager_t> create_solver_manager(std::string const& routine, Teuchos::RCP<eigenproblem_t> problem, Teuchos::ParameterList& pl) {
     if ((routine == "LOBPCG") || (routine == ""))
-      return std::make_unique<Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
+      return std::make_unique<Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
     else if (routine == "BlockKrylovSchur")
-      return std::make_unique<Anasazi::BlockKrylovSchurSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
+      return std::make_unique<Anasazi::BlockKrylovSchurSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
     else if (routine == "BlockDavidson")
-      return std::make_unique<Anasazi::BlockDavidsonSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
+      return std::make_unique<Anasazi::BlockDavidsonSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
     else if (routine == "RTR")
-      return std::make_unique<Anasazi::RTRSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem_, pl);
+      return std::make_unique<Anasazi::RTRSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
     else {
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
@@ -143,7 +143,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), pl);
+    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), problem_, pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -176,7 +176,7 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), pl);
+    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), problem_, pl);
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
@@ -192,10 +192,10 @@ public:
     return params_out;
   }
 
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) const {
+  static std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) {
     return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(dims));
   }
-  std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) const {
+  static std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) {
     return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(dims, num_entries_per_row));
   }
   value_type eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
