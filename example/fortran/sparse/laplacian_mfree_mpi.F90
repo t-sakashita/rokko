@@ -148,7 +148,7 @@ program main
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
-     dim = 10  ! default
+     dim = 100  ! default
   endif
   
   if (myrank == 0) then
@@ -173,7 +173,7 @@ program main
   call rokko_set(params, "num_evals", 1)
   call rokko_set(params, "block_size", 5)
   call rokko_set(params, "max_iters", 500)
-  call rokko_set(params, "conv_tol", 1.0d-3)
+  call rokko_set(params, "conv_tol", 1.0d-8)
   call rokko_diagonalize(solver, mat, params, params_out)
 
   num_conv = rokko_num_conv(solver)
