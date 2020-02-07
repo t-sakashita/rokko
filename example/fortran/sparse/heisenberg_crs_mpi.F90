@@ -27,6 +27,7 @@ program heisenberg_crs_mpi
   double precision, allocatable, dimension(:) :: eig_vec
 
   type(rokko_parallel_sparse_ev) :: solver
+  type(rokko_mapping_1d) :: map
   type(rokko_distributed_crs_matrix) :: mat
   character(len=50) :: library, routine
   character(len=100) :: library_routine, tmp_str
@@ -67,10 +68,11 @@ program heisenberg_crs_mpi
 
   call rokko_construct(solver, library)
 
-  call rokko_construct(mat, dim, dim, solver)
+  call rokko_default_mapping(solver, dim, mpi_comm_world, map)
+  call rokko_construct(mat, map, L+1)
 
-  start_row = rokko_start_row_c(mat) ! C sytle index
-  end_row = rokko_end_row(mat) ! Fortran sytle index
+  start_row = rokko_start_row_c(map) ! C sytle index
+  end_row = rokko_end_row(map) ! Fortran sytle index
 
   allocate( cols(dim) )
   allocate( values(dim) )
