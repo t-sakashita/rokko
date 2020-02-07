@@ -46,7 +46,7 @@ program heisenberg_crs_mpi
      call get_command_argument(2, tmp_str, arg_len, status)
      read(tmp_str, *) dim
   else
-     dim = 10
+     dim = 100
   endif
   
   if (myrank == 0) then
