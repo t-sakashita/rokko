@@ -24,7 +24,8 @@ if (mpi4py.MPI.COMM_WORLD.Get_rank() == 0):
 
 solver = parallel_sparse_ev(solver_name)
 
-mat = distributed_crs_matrix((dim, dim), solver)
+map = solver.default_mapping(dim, mpi4py.MPI.COMM_WORLD)
+mat = distributed_crs_matrix(map, len(lattice))
 
 print("row_start={}, row_end={}".format(mat.start_row, mat.end_row))
 
