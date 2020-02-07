@@ -130,47 +130,24 @@ public:
   }
 
   parameters diagonalize(const rokko::anasazi::distributed_crs_matrix& mat, rokko::parameters const& params) {
-    int num_eigvals, max_block_size;
-    std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
-    Teuchos::ParameterList pl = set_anasazi_parameters(params);
-
     map_ = mat.get_map();
-    Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
-    multivector->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(mat.get_matrix(), multivector));
-    problem_->setHermitian(true);
-    problem_->setNEV(num_eigvals);
-    problem_->setProblem();
-
-    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), problem_, pl);
-    
-    bool boolret = problem_->setProblem();
-    if (!boolret) {
-      throw std::invalid_argument("anasazi::diagonalize : Return value from setProblem() is false");
-    }
-
-    Anasazi::ReturnType returnCode = solvermanager->solve();
-    if (returnCode == Anasazi::Unconverged) {
-      std::cout << "solvermanager.solve() does not converge." << std::endl;
-    }
-
-    parameters params_out;
-    params_out.set("num_conv", get_num_conv());
-    return params_out;
+    return diagonalize_common(mat.get_matrix(), params);
   }
 
-  parameters diagonalize(const rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
-    rokko::distributed_mfree const*const mat = &mat_in;
+  parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
+    map_ = new mapping_1d(mat.get_dim());
+    Teuchos::RCP<const anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(&mat, *map_));
+    return diagonalize_common(anasazi_op, params);
+  }
 
+  parameters diagonalize_common(Teuchos::RCP<const Epetra_Operator> op, rokko::parameters const& params) {
     int num_eigvals, max_block_size;
     std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
-    map_ = new mapping_1d(mat->get_dim());
-    Teuchos::RCP<anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
     Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
     multivector->Random();
-    problem_ = Teuchos::rcp(new eigenproblem_t(anasazi_op, multivector));
+    problem_ = Teuchos::rcp(new eigenproblem_t(op, multivector));
     problem_->setHermitian(true);
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
