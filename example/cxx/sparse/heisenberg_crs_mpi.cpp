@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   cols.reserve(num_entries_per_row);
   values.reserve(num_entries_per_row);
 
-  for (int row = mat.start_row(); row < mat.end_row(); ++row) {
+  for (int row = map.start_row(); row < map.end_row(); ++row) {
     cols.clear();
     values.clear();
     double diag = 0;

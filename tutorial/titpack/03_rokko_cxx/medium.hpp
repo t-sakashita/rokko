@@ -22,7 +22,7 @@ void elm2_mpi(hamiltonian const& hop, CRS_MATRIX& mat) {
   int ibond = hop.num_bonds();
   std::vector<int> cols;
   std::vector<double> values;
-  for (int i = mat.start_row(); i <= mat.end_row(); ++i) {
+  for (int i = map.start_row(); i <= map.end_row(); ++i) {
     cols.clear();
     values.clear();
     double diag = 0;

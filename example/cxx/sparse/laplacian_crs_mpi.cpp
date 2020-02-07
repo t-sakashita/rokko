@@ -36,15 +36,15 @@ int main(int argc, char *argv[]) {
   auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   rokko::distributed_crs_matrix mat(map, 3);
 
-  if (mat.start_row() == 0) {
+  if (map.start_row() == 0) {
     mat.insert(0, {0, 1}, {1., -1.});
   }
 
-  for (int row = std::max(1,mat.start_row()); row < std::min(mat.end_row(),dim-1); ++row) {
+  for (int row = std::max(1,map.start_row()); row < std::min(map.end_row(),dim-1); ++row) {
     mat.insert(row, {row-1, row, row+1}, {-1., 2., -1.});
   }
 
-  if (mat.end_row() == dim) {
+  if (map.end_row() == dim) {
     mat.insert(dim-1, {dim-2, dim-1}, {-1., 2.});
   }
 
