@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *    
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
   struct rokko_distributed_crs_matrix mat;
   rokko_distributed_crs_matrix_construct(&mat, map, L+1);
   int row;
-  int row_start = rokko_distributed_crs_matrix_start_row(mat);
-  int row_end = rokko_distributed_crs_matrix_end_row(mat);
+  int row_start = rokko_mapping_1d_start_row(map);
+  int row_end = rokko_mapping_1d_end_row(map);
   int cols[dim];
   double values[dim];
   int count;
