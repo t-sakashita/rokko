@@ -130,7 +130,7 @@ contains
   function rokko_mapping_1d_end_row(matrix) result(ind)
     integer :: ind
     type(rokko_mapping_1d), value, intent(in) :: matrix
-    ind = rokko_mapping_1d_end_row_c(matrix) - 1
+    ind = rokko_mapping_1d_end_row_c(matrix)
   end function rokko_mapping_1d_end_row
 
 end module rokko_mapping_1d_mod

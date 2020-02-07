@@ -24,6 +24,7 @@ program heisenberg_crs_mpi
   double precision, allocatable, dimension(:) :: eig_vec
 
   type(rokko_parallel_sparse_ev) :: solver
+  type(rokko_mapping_1d) :: map
   type(rokko_distributed_crs_matrix) :: mat
   character(len=100) :: library_routine, tmp_str
   character(len=50) :: library, routine
@@ -55,10 +56,10 @@ program heisenberg_crs_mpi
   endif
 
   call rokko_construct(solver, library)
-
-  call rokko_construct(mat, dim, dim, solver)
-  start_row = rokko_start_row(mat)
-  end_row = rokko_end_row(mat)
+  call rokko_default_mapping(solver, dim, mpi_comm_world, map)
+  call rokko_construct(mat, map, 3)
+  start_row = rokko_start_row(map)
+  end_row = rokko_end_row(map)
 
   if (start_row == 1) then
      values(1) = 1d0;  values(2) = -1d0
