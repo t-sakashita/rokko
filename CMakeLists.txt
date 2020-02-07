@@ -322,8 +322,5 @@ endif(BUILD_TUTORIALS)
 if(BUILD_BENCHMARKS)
   add_subdirectory(benchmark)
 endif(BUILD_BENCHMARKS)
-if(BUILD_DEVELOPERS)
-  add_subdirectory(developer)
-endif(BUILD_DEVELOPERS)
 
 components_summary()
