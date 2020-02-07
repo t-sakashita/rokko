@@ -138,7 +138,7 @@ contains
   function rokko_distributed_mfree_end_row(matrix) result(ind)
     integer :: ind
     type(rokko_distributed_mfree), value, intent(in) :: matrix
-    ind = rokko_distributed_mfree_end_row_c(matrix) - 1
+    ind = rokko_distributed_mfree_end_row_c(matrix)
   end function rokko_distributed_mfree_end_row
 
 end module rokko_distributed_mfree_mod
