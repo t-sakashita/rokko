@@ -25,7 +25,7 @@ public:
   void set_local_size(std::array<int,2> local_size_in) { local_size = local_size_in; }
 
 protected:
-  explicit mapping_common_sizes() {}
+  explicit mapping_common_sizes() = default;
 
 private:
   std::array<int,2> local_size;

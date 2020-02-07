@@ -235,7 +235,7 @@ protected:
 class timer_dumb {
 public:
   constexpr static int detailed = 0;
-  timer_dumb() {}
+  timer_dumb() = default;
   void clear() {}
   void registrate(std::size_t, std::string const&, int = 0) {}
   void start(std::size_t) {}

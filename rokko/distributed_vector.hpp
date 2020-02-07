@@ -18,7 +18,7 @@ template<typename T>
 class distributed_vector {
 public:
   using value_type = T;
-  distributed_vector() {}
+  distributed_vector() = default;
   distributed_vector(int n_global, int begin_local, int end_local) {
     initialize(n_global, begin_local, end_local);
   }

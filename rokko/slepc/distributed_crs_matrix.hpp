@@ -35,8 +35,8 @@ private:
 
 class distributed_crs_matrix : public rokko::detail::ps_crs_base {
 public:
-  distributed_crs_matrix() {}
-  ~distributed_crs_matrix() {}
+  distributed_crs_matrix() = default;
+  ~distributed_crs_matrix() = default;
 
   explicit distributed_crs_matrix(rokko::mapping_1d const& map, int num_entries_per_row) {
     initialize(map, num_entries_per_row);

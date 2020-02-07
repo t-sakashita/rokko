@@ -49,7 +49,7 @@ public:
   solver() {
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
   }
-  ~solver() {}
+  ~solver() = default;
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 

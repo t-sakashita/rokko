@@ -20,7 +20,7 @@ namespace rokko {
 
 class mapping_global2local : virtual public mapping_common_sizes {
 public:
-  explicit mapping_global2local() {}
+  explicit mapping_global2local() = default;
 
   explicit mapping_global2local(std::array<int,2> const& global_size_in, std::array<int,2> const& block_size_in, grid const& g_in)
     : global_size(global_size_in), block_size(block_size_in),

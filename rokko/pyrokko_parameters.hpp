@@ -20,7 +20,7 @@ namespace py = pybind11;
 
 class wrap_parameters : public rokko::parameters {
 public:
-  wrap_parameters() {}
+  wrap_parameters() = default;
   wrap_parameters(rokko::parameters const& params_in) : parameters(params_in) {}
   py::object python_get(std::string const& key) const {
     if (type(key) == typeid(int)) {

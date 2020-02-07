@@ -31,9 +31,9 @@ public:
   using key_type = map_type::key_type;
   using value_type = map_type::value_type;
 
-  parameters() {}
+  parameters() = default;
   parameters(parameters const& map_in) : map_(map_in.get_map()) {}
-  ~parameters() {}
+  ~parameters() = default;
   
   void clear() { map_.clear(); }
   void clear(key_type const& key) { map_.erase(map_.find(key)); }

@@ -31,7 +31,7 @@ public:
     rokko::distributed_crs_matrix::insert(row, cols, values);
   }
 
-  ~wrap_distributed_crs_matrix() {}
+  ~wrap_distributed_crs_matrix() = default;
 
 };
 

@@ -34,7 +34,7 @@ public:
   explicit wrap_mapping_1d(int dim, pybind11::handle const& comm_handle)
     : mapping_1d(dim, wrap_communicator{comm_handle}) {}
 
-  ~wrap_mapping_1d() {}
+  ~wrap_mapping_1d() = default;
 
 };
 

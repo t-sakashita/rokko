@@ -20,7 +20,7 @@ namespace rokko {
 
 class blacs_grid {
 public:
-  blacs_grid() {}
+  blacs_grid() = default;
 
   void set_blacs_grid(MPI_Comm comm, bool is_row, std::array<int,2> const& grid_size) {
     blacs_context = blacs::sys2blacs_handle(comm);

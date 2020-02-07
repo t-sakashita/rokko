@@ -24,7 +24,7 @@ namespace detail {
 
 class sd_ev_base {
 public:
-  virtual ~sd_ev_base() {}
+  virtual ~sd_ev_base() = default;
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
   // -------------- standard eigenvalue probelm ---------------
