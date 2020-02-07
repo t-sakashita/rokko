@@ -18,8 +18,6 @@
 #include <iomanip>
 #include <fstream>
 #include <tuple>
-#include <boost/algorithm/string.hpp>
-#include <boost/tokenizer.hpp>
 
 #include <rokko/utility/lattice.hpp>
 

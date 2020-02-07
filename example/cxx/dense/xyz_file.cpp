@@ -16,7 +16,6 @@
 #include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <tuple>
-#include <boost/algorithm/string.hpp>
 
 
 int main(int argc, char *argv[]) {
