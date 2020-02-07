@@ -27,13 +27,13 @@ class factory : private rokko::noncopyable<factory<BASE>> {
 private:
   class abstract_creator {
   public:
-    virtual ~abstract_creator() {}
+    virtual ~abstract_creator() = default;
     virtual std::shared_ptr<BASE> create() const = 0;
   };
   template<typename PRODUCT>
   class creator : public abstract_creator {
   public:
-    virtual ~creator() {}
+    virtual ~creator() = default;
     std::shared_ptr<BASE> create() const {
       return std::static_pointer_cast<BASE>(std::make_shared<PRODUCT>());
     }
