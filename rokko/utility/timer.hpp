@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2010-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2010-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,7 +19,7 @@
 
 #include <rokko/utility/string_format.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/noncopyable.hpp>
+#include <rokko/noncopyable.hpp>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -258,7 +258,7 @@ using timer = detail::timer_base;
 using timer = detail::timer_dumb;
 #endif
 
-class global_timer : private boost::noncopyable {
+class global_timer : private rokko::noncopyable<global_timer> {
 public:
   constexpr static int detailed = rokko::timer::detailed;
   static void clear() { instance()->clear(); }

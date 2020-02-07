@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +12,7 @@
 #ifndef ROKKO_FACTORY_HPP
 #define ROKKO_FACTORY_HPP
 
-#include <boost/noncopyable.hpp>
+#include <rokko/noncopyable.hpp>
 #include <memory>
 #include <iostream>
 #include <stdexcept>
@@ -23,7 +23,7 @@
 namespace rokko {
 
 template<typename BASE>
-class factory : private boost::noncopyable {
+class factory : private rokko::noncopyable<factory<BASE>> {
 private:
   class abstract_creator {
   public:
