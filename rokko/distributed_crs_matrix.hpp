@@ -78,14 +78,6 @@ public:
     : solver_name_(map.get_solver_name()), crs_impl_(detail::ps_crs_factory::instance()->make_product(solver_name_)) {
     crs_impl_->initialize(map, num_entries_per_row);
   }
-  template<typename SOLVER>
-  explicit distributed_crs_matrix(std::array<int,2> const& dims, SOLVER const& solver_in) : solver_name_(solver_in.get_solver_name()) {
-    crs_impl_ = solver_in.create_distributed_crs_matrix(dims);
-  }
-  template<typename SOLVER>
-  explicit distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row, SOLVER const& solver_in) : solver_name_(solver_in.get_solver_name()) {
-    crs_impl_ = solver_in.create_distributed_crs_matrix(dims, num_entries_per_row);
-  }
   std::string get_solver_name() const { return solver_name_; }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
     crs_impl_->insert(row, cols, values);

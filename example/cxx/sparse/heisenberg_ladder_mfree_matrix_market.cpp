@@ -32,7 +32,9 @@ int main(int argc, char *argv[]) {
 
   rokko::parallel_sparse_ev solver(library);
   rokko::heisenberg_mfree op(L, lattice);
-  rokko::distributed_crs_matrix mat({dim, dim}, solver);
+  auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  const int num_entries_per_row = lattice.size() + 1;
+  rokko::distributed_crs_matrix mat(map, num_entries_per_row);
   rokko::distributed_mfree_to_crs(op, mat);
   mat.output_matrix_market();
   //mat.print();

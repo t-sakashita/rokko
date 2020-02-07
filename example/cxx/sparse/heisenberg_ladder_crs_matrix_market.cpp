@@ -29,8 +29,9 @@ int main(int argc, char *argv[]) {
   //  rokko::print_lattice(lattice);
 
   rokko::parallel_sparse_ev solver(name);
+  auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   const int num_entries_per_row = lattice.size() + 1;
-  rokko::distributed_crs_matrix mat({dim, dim}, num_entries_per_row, solver);
+  rokko::distributed_crs_matrix mat(map, num_entries_per_row);
   std::vector<int> cols;
   std::vector<double> values;
   cols.reserve(num_entries_per_row);

@@ -41,7 +41,9 @@ int main(int argc, char *argv[]) {
 
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
-  rokko::distributed_crs_matrix mat({dim, dim}, solver);
+  const int num_entries_per_row = lattice.size() + 1;
+  auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  rokko::distributed_crs_matrix mat(map, num_entries_per_row);
   std::vector<double> values;
   std::vector<int> cols;
   for (int row = mat.start_row(); row <= mat.end_row(); ++row) {

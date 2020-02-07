@@ -272,7 +272,6 @@ PYBIND11_MODULE(pyrokko, m) {
 
   py::class_<wrap_distributed_crs_matrix>(m, "distributed_crs_matrix")
     .def(py::init<wrap_mapping_1d, int>())
-    .def(py::init<std::tuple<int,int>, wrap_parallel_sparse_ev const&>())
     .def("insert", py::overload_cast<int, std::vector<int> const&, std::vector<double> const&>(&wrap_distributed_crs_matrix::insert, py::const_))
     .def("complete", &distributed_crs_matrix::complete)
     .def_property_readonly("dim", &distributed_crs_matrix::get_dim)

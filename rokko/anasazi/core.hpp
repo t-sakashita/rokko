@@ -192,12 +192,6 @@ public:
     return params_out;
   }
 
-  static std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims) {
-    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(dims));
-  }
-  static std::shared_ptr<rokko::detail::ps_crs_base> create_distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) {
-    return std::static_pointer_cast<rokko::detail::ps_crs_base>(std::make_shared<anasazi::distributed_crs_matrix>(dims, num_entries_per_row));
-  }
   value_type eigenvalue(int i) const { return problem_->getSolution().Evals[i].realpart; }
 
   void eigenvector(int k, std::vector<value_type>& vec) const {
