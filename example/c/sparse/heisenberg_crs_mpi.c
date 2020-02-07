@@ -40,8 +40,9 @@ int main(int argc, char *argv[]) {
 
   struct rokko_parallel_sparse_ev solver;
   rokko_parallel_sparse_ev_construct(&solver, library, argc, argv);
+  struct rokko_mapping_1d map = rokko_parallel_sparse_ev_default_mapping(solver, dim, MPI_COMM_WORLD);
   struct rokko_distributed_crs_matrix mat;
-  rokko_distributed_crs_matrix_construct(&mat, dim, dim, solver);
+  rokko_distributed_crs_matrix_construct(&mat, map, L+1);
   int row;
   int row_start = rokko_distributed_crs_matrix_start_row(mat);
   int row_end = rokko_distributed_crs_matrix_end_row(mat);

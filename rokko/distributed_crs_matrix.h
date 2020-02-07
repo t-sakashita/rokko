@@ -22,9 +22,7 @@ struct rokko_distributed_crs_matrix {
 
 struct rokko_parallel_sparse_ev;
 
-void rokko_distributed_crs_matrix_construct_new(struct rokko_distributed_crs_matrix* matrix, struct rokko_mapping_1d map, int num_entries_per_row);
-void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix,
-					    int dim1, int dim2, struct rokko_parallel_sparse_ev solver);
+void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix, struct rokko_mapping_1d map, int num_entries_per_row);
 void rokko_distributed_crs_matrix_destruct(struct rokko_distributed_crs_matrix* matrix);
 void rokko_distributed_crs_matrix_insert(struct rokko_distributed_crs_matrix matrix, int row,
 					 int col_size, int* cols, double* values);

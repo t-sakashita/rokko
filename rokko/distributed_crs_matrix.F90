@@ -21,7 +21,7 @@ module rokko_distributed_crs_matrix_mod
   interface
 
      subroutine rokko_distributed_crs_matrix_construct(matrix, map, num_entries_per_row) &
-          & bind(c,name='rokko_distributed_crs_matrix_construct_new')
+          & bind(c,name='rokko_distributed_crs_matrix_construct')
        use iso_c_binding
        import rokko_mapping_1d, rokko_distributed_crs_matrix
        implicit none
