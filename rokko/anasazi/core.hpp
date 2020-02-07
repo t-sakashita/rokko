@@ -46,9 +46,8 @@ public:
 
   static const std::vector<std::string> names;
   
-  solver() {
-    MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  }
+  solver() = default;
+
   ~solver() = default;
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
@@ -214,7 +213,6 @@ public:
 
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
-  int myrank;
   const rokko::anasazi::mapping_1d* map_;
   Teuchos::RCP<eigenproblem_t> problem_;
 };
