@@ -173,8 +173,7 @@ public:
 
   void eigenvector(int k, double *const vec) const {
     Vec evec_r;
-    MatCreateVecs(*A, NULL, &evec_r);
-    VecPlaceArray(evec_r, vec);
+    VecCreateMPIWithArray(comm_, PETSC_DECIDE, num_local_rows_, dimension_, vec, &evec_r);
     EPSGetEigenvector(eps, k, evec_r, NULL);
     VecDestroy(&evec_r);
   }
