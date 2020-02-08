@@ -68,71 +68,50 @@ public:
   }
 
   parameters diagonalize(const rokko::slepc::distributed_crs_matrix& mat, rokko::parameters const& params) {
-    PetscErrorCode ierr;
-    parameters params_out;
+    A = const_cast<Mat*>(mat.get_matrix());
+
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
     num_local_rows_ = mat.num_local_rows();
     comm_ = mat.get_map()->get_mpi_comm().get_comm();
 
-    PetscInt num_evals = get_num_eigvals(params);
-    PetscInt max_block_size = get_max_block_size(params);
-    PetscReal tol = get_conv_tol(params);
-    PetscInt max_iters = get_max_iters(params);
-
-    A = const_cast<Mat*>(mat.get_matrix());
-    comm_ = mat.get_map()->get_mpi_comm().get_comm();
-    ierr = EPSCreate(mat.get_map()->get_mpi_comm().get_comm(), &eps);
-
-    /* Set operators for a standard eigenvalue problem */
-    ierr = EPSSetOperators(eps, *A, NULL);
-    ierr = EPSSetProblemType(eps, EPS_HEP);
-    ierr = EPSSetType(eps, get_routine(params));
-    ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
-    ierr = EPSSetTolerances(eps, tol, max_iters);
-    /* Set solver parameters at runtime */
-    ierr = EPSSetFromOptions(eps);
-
-    /* Solve the eigensystem */       
-    ierr = EPSSolve(eps);
-
-    print_result(params_out);
-    int myrank = mat.get_map()->get_mpi_comm().get_myrank();
-    if (params.get_bool("verbose") && (myrank == 0)) {
-      info_verbose();
-    }
-    return params_out;
+    return diagonalize_common(params);
   }
 
   parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     return diagonalize(*static_cast<const rokko::slepc::distributed_crs_matrix*>(mat.get_ptr()->get_impl()), params);
   }
 
-  parameters diagonalize(const rokko::distributed_mfree& mat_in, rokko::parameters const& params) {
-    PetscErrorCode ierr;
-    parameters params_out;
-    rokko::distributed_mfree const*const mat = &mat_in;
-    // define matrix-free type operator
-    dimension_ = mat->get_dim();
-    offset_local_ = mat->get_local_offset();
-    num_local_rows_ = mat->get_num_local_rows();
-    comm_ = mat->get_comm();
+  parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
     A = new Mat();
-    ierr = MatCreateShell(mat->get_comm(), mat->get_num_local_rows(), mat->get_num_local_rows(), mat->get_dim(), mat->get_dim(), const_cast<rokko::distributed_mfree*>(mat), A);
+    PetscErrorCode ierr;
+    ierr = MatCreateShell(mat.get_comm(), mat.get_num_local_rows(), mat.get_num_local_rows(), mat.get_dim(), mat.get_dim(), const_cast<rokko::distributed_mfree*>(&mat), A);
     ierr = MatSetFromOptions(*A);
     ierr = MatShellSetOperation(*A, MATOP_MULT, (void(*)())MatMult_myMat);
     ierr = MatShellSetOperation(*A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
     //ierr = MatShellSetOperation(*A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
 
-    ierr = EPSCreate(mat->get_comm(), &eps);
-    /* Set operators for a standard eigenvalue problem */
-    ierr = EPSSetOperators(eps, *A, NULL);
+    dimension_ = mat.get_dim();
+    offset_local_ = mat.get_local_offset();
+    num_local_rows_ = mat.get_num_local_rows();
+    comm_ = mat.get_comm();
+
+    return diagonalize_common(params);
+  }
+
+  parameters diagonalize_common(rokko::parameters const& params) {
+    parameters params_out;
 
     PetscInt num_evals = get_num_eigvals(params);
     PetscInt max_block_size = get_max_block_size(params);
     PetscReal tol = get_conv_tol(params);
     PetscInt max_iters = get_max_iters(params);
 
+    PetscErrorCode ierr;
+    ierr = EPSCreate(comm_, &eps);
+
+    /* Set operators for a standard eigenvalue problem */
+    ierr = EPSSetOperators(eps, *A, NULL);
     ierr = EPSSetProblemType(eps, EPS_HEP);
     ierr = EPSSetType(eps, get_routine(params));
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
@@ -144,6 +123,7 @@ public:
     ierr = EPSSolve(eps);
 
     print_result(params_out);
+
     int myrank;
     MPI_Comm_rank(comm_, &myrank);
     if (params.get_bool("verbose") && (myrank == 0)) {
