@@ -172,13 +172,11 @@ public:
   }
 
   void eigenvector(int k, double *const vec) const {
-    Vec evec_r, evec_i;
+    Vec evec_r;
     MatCreateVecs(*A, NULL, &evec_r);
-    MatCreateVecs(*A, NULL, &evec_i);
     VecPlaceArray(evec_r, vec);
-    EPSGetEigenvector(eps, k, evec_r, evec_i);
+    EPSGetEigenvector(eps, k, evec_r, NULL);
     VecDestroy(&evec_r);
-    VecDestroy(&evec_i);
   }
 
   void eigenvector(int k, std::vector<double>& vec) const {
