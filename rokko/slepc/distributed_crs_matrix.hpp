@@ -102,11 +102,11 @@ public:
     ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
     ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
   }
-  Mat* get_matrix() {
-    return &matrix_;
+  Mat& get_matrix() {
+    return matrix_;
   }
-  const Mat* get_matrix() const {
-    return &matrix_;
+  const Mat& get_matrix() const {
+    return matrix_;
   }
   int get_dim() const {
     return map_->get_dim();
