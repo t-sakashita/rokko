@@ -110,16 +110,16 @@ public:
     PetscErrorCode ierr;
     ierr = EPSCreate(comm_, &eps);
 
-    /* Set operators for a standard eigenvalue problem */
+    // Set operators for a standard eigenvalue problem
     ierr = EPSSetOperators(eps, *A, NULL);
     ierr = EPSSetProblemType(eps, EPS_HEP);
     ierr = EPSSetType(eps, get_routine(params));
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
-    /* Set solver parameters at runtime */
+    // Set solver parameters at runtime
     ierr = EPSSetFromOptions(eps);
 
-    /* Solve the eigensystem */       
+    // Solve the eigensystem
     ierr = EPSSolve(eps);
 
     print_result(params_out);
@@ -134,7 +134,7 @@ public:
 
   void print_result(rokko::parameters& params_out) const {
     PetscErrorCode ierr;
-    /* Get some information from the solver and display it */
+    // Get some information from the solver and display it
     EPSType type;
     ierr = EPSGetType(eps, &type);
     ierr = PetscPrintf(comm_, " Solution method: %s\n\n",type);
@@ -200,8 +200,8 @@ public:
 
 private:
   int dimension_, offset_local_, num_local_rows_;
-  Mat*           A;
-  EPS            eps;             /* eigenproblem solver context */
+  Mat* A;
+  EPS eps;  // eigenproblem solver context
   MPI_Comm comm_;
 };
 
