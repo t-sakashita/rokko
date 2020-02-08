@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,27 +16,29 @@
 
 class test_base {
 public:
-  virtual ~test_base() {}
+  virtual ~test_base() = default;
   virtual void print() = 0;
 };
 
 template<typename SOLVER>
 class test_wrapper : public test_base {
   using solver_type = SOLVER;
+
 public:
-  test_wrapper() {}
-  virtual ~test_wrapper() {}
+  test_wrapper() = default;
+  virtual ~test_wrapper() = default;
   void print() {
     solver_impl_.print();
   }
+
 private:
   solver_type solver_impl_;
 };
 
 class test1 {
 public:
-  test1() {}
-  ~test1() {}
+  test1() = default;
+  ~test1() = default;
   void print() {
     std::cout << "print_test1" << std::endl;
   }
@@ -44,8 +46,8 @@ public:
 
 class test2 {
 public:
-  test2() {}
-  ~test2() {}
+  test2() = default;
+  ~test2() = default;
   void print() {
     std::cout << "print_test2" << std::endl;
   }
