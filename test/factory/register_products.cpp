@@ -12,6 +12,7 @@
 #include <rokko/factory.hpp>
 #include <iostream>
 #include <string>
+#include <boost/config/helper_macros.hpp>
 
 class test_base {
 public:
