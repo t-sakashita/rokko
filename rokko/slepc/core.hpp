@@ -190,8 +190,8 @@ public:
 
 private:
   int dimension_, offset_local_, num_local_rows_;
-  EPS eps;  // eigenproblem solver context
   MPI_Comm comm_;
+  EPS eps;  // eigenproblem solver context
 };
 
 } // namespace slepc
