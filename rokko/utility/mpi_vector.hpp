@@ -89,7 +89,7 @@ public:
   // for distributed_vector
   template<typename T>
   void gather(const rokko::distributed_vector<T>& source, T* target,
-              int root) const {std::vector<T> vec;
+              int root) const {
     MPI_Gatherv(source.get_storage(), source.size_local(), rokko::mpi_type<T>,
                 target, counts.data(), displacements.data(), rokko::mpi_type<T>,
                 root, comm);
