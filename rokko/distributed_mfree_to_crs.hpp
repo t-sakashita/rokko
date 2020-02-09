@@ -22,7 +22,6 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
   MPI_Comm comm = op.get_comm();
   rokko::mpi_comm mpi_comm(comm);
   const int nprocs = mpi_comm.get_nprocs();
-  const int myrank = mpi_comm.get_myrank();
   const int dim = op.get_dim();
   rokko::mpi_vector mpi(dim, comm);
   rokko::mapping_1d map(dim, mpi_comm);
