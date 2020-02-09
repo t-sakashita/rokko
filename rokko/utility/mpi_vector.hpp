@@ -34,7 +34,7 @@ public:
   }
 
   int get_num_local_rows(int dim) const {
-    return (dim + nprocs - myrank - 1) / nprocs;
+    return get_num_local_rows(dim, myrank);
   }
 
   void set_num_local_rows(int dim) {
