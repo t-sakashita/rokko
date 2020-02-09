@@ -20,6 +20,7 @@
 #include <Teuchos_RCPDecl.hpp>
 
 #include <numeric>
+#include <iostream>
 
 namespace rokko {
 namespace anasazi {
@@ -105,7 +106,7 @@ public:
   void print() const {
     std::cout << *matrix_ << std::endl;
   }
-  void output_matrix_market() const {
+  void output_matrix_market(std::ostream& os = std::cout) const {
     constexpr int root_proc = 0;
     const int MaxNumIndices = matrix_->MaxNumEntries();
     std::vector<int> idx(MaxNumIndices);
@@ -116,8 +117,8 @@ public:
     std::vector<int> MyGlobalElements(NumMyElements);
     map_->get_epetra_map().MyGlobalElements(MyGlobalElements.data());
     if (map_->get_epetra_comm().MyPID() == root_proc) {
-      std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
-      std::cout << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
+      os << "%%MatrixMarket matrix coordinate real general" << std::endl;
+      os << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
     }
     map_->get_epetra_comm().Barrier();
     int local_row = 0;
@@ -129,7 +130,7 @@ public:
           std::iota(idx.begin(), idx.end(), 0);
           std::sort(idx.begin(), idx.end(), comp(cols, matrix_));
           for (int i=0; i<num_cols; ++i) {
-            std::cout << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
+            os << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
           }
           ++local_row;
         }

@@ -32,7 +32,7 @@ public:
   virtual int end_row() const = 0;
   virtual int get_nnz() const = 0;
   virtual void print() const = 0;
-  virtual void output_matrix_market() const = 0;
+  virtual void output_matrix_market(std::ostream& os = std::cout) const = 0;
   virtual ps_crs_base* get_impl() = 0;
   virtual const ps_crs_base* get_impl() const = 0;
 };
@@ -58,7 +58,7 @@ public:
   int end_row() const { return crs_impl_.end_row(); }
   int get_nnz() const { return crs_impl_.get_nnz(); }
   void print() const { crs_impl_.print(); }
-  void output_matrix_market() const { crs_impl_.output_matrix_market(); }
+  void output_matrix_market(std::ostream& os = std::cout) const { crs_impl_.output_matrix_market(os); }
   MPI_Comm get_comm() const { return crs_impl_.get_comm(); }
   const ps_crs_base* get_impl() const { return &crs_impl_; }
   ps_crs_base* get_impl() { return &crs_impl_; }
@@ -111,8 +111,8 @@ public:
   void print() const {
     crs_impl_->print();
   }
-  void output_matrix_market() const {
-    crs_impl_->output_matrix_market();
+  void output_matrix_market(std::ostream& os = std::cout) const {
+    crs_impl_->output_matrix_market(os);
   }
   const detail::ps_crs_factory::product_pointer_type get_ptr() const { return crs_impl_; }
 

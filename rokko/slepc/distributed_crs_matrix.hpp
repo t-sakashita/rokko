@@ -19,6 +19,7 @@
 #include <rokko/slepc.hpp>
 
 #include <numeric>
+#include <iostream>
 
 namespace rokko {
 namespace slepc {
@@ -134,7 +135,7 @@ public:
   void print() const {
     MatView(matrix_, PETSC_VIEWER_STDOUT_(map_->get_mpi_comm().get_comm()));
   }
-  void output_matrix_market() const {
+  void output_matrix_market(std::ostream& os = std::cout) const {
     constexpr int root_proc = 0;
     std::vector<int> idx;
 
@@ -143,8 +144,8 @@ public:
     const PetscScalar * values;
     int nnz = get_nnz();
     if (map_->get_mpi_comm().get_myrank() == root_proc) {
-      std::cout << "%%MatrixMarket matrix coordinate real general" << std::endl;
-      std::cout << get_dim() << " " << get_dim() << " " << nnz << std::endl;
+      os << "%%MatrixMarket matrix coordinate real general" << std::endl;
+      os << get_dim() << " " << get_dim() << " " << nnz << std::endl;
     }
     MPI_Barrier(map_->get_mpi_comm().get_comm());
     for (int global_row=0; global_row<get_dim(); ++global_row) {
@@ -154,7 +155,7 @@ public:
         std::iota(idx.begin(), idx.end(), 0);
         std::sort(idx.begin(), idx.end(), comp(cols));
         for (int i=0; i<num_cols; ++i) {
-          std::cout << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
+          os << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
         }
         MatRestoreRow(matrix_, global_row, &num_cols, &cols, &values);
       }
