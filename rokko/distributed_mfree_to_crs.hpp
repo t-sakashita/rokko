@@ -2,8 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2014 by Tatsuya Sakashita <t-sakashita@issp.u-tokyo.ac.jp>,
-*                            Synge Todo <wistaria@comp-phys.org>
+* Copyright (C) 2013-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,36 +14,43 @@
 
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
+#include <rokko/utility/mpi_vector.hpp>
 
 namespace rokko {
 
 void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distributed_crs_matrix& mat) {
-  if (mat.get_solver_name() == "anasazi") {
-    throw std::invalid_argument("distributed_mfree_to_crs() : output_matrix_market is not available for Anasazi yet.");
-  }
+  MPI_Comm comm = op.get_comm();
+  rokko::mpi_comm mpi_comm(comm);
+  const int nprocs = mpi_comm.get_nprocs();
+  const int myrank = mpi_comm.get_myrank();
+  const int dim = op.get_dim();
+  rokko::mpi_vector mpi(dim, comm);
+  rokko::mapping_1d map(dim, mpi_comm);
 
-  std::vector<double> x(op.get_num_local_rows()), y(op.get_num_local_rows());
-  int myrank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  Eigen::Vector<double> x(op.get_num_local_rows()), y(op.get_num_local_rows());
+  Eigen::Vector<double> vec(dim);
 
-  for (int global_row=0; global_row<op.get_dim(); ++global_row) {
-    x.assign(op.get_num_local_rows(), 0.);
-    y.assign(op.get_num_local_rows(), 0.);
-    if ((global_row >= op.get_local_offset()) && (global_row < (op.get_local_offset() + op.get_num_local_rows()))) {
-      x[global_row - op.get_local_offset()] = 1.;
+  for (int row=0; row<dim; ++row) {
+    x.setZero();
+    y.setZero();
+    if ((row >= op.get_local_offset()) && (row < (op.get_local_offset() + op.get_num_local_rows()))) {
+      x[row - op.get_local_offset()] = 1.;
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(comm);
     op.multiply(x.data(), y.data());
-    MPI_Barrier(MPI_COMM_WORLD);
-    for (int local_col=0; local_col<op.get_num_local_rows(); ++local_col) {
-      if (y[local_col] != 0) {
-        int global_col = local_col + op.get_local_offset();
-        mat.insert(global_row, 1, &global_col, &y[local_col]);
+    MPI_Barrier(comm);
+    const int proc = (nprocs * row) / dim;
+    mpi.gather(y, vec, proc);
+    if ((row >= map.start_row()) && (row < map.end_row())) {
+      for (int col=0; col<dim; ++col) {
+        if (vec[col] != 0) {
+          mat.insert(row, 1, &col, &vec[col]);
+        }
       }
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(comm);
   }
-  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Barrier(comm);
   mat.complete();
 }
 

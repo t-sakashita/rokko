@@ -58,7 +58,7 @@ public:
   int end_row() const { return crs_impl_.end_row(); }
   int get_nnz() const { return crs_impl_.get_nnz(); }
   void print() const { crs_impl_.print(); }
-  void output_matrix_market() const { crs_impl_.print(); }
+  void output_matrix_market() const { crs_impl_.output_matrix_market(); }
   MPI_Comm get_comm() const { return crs_impl_.get_comm(); }
   const ps_crs_base* get_impl() const { return &crs_impl_; }
   ps_crs_base* get_impl() { return &crs_impl_; }
