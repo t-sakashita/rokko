@@ -26,6 +26,8 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
   const int dim = op.get_dim();
   rokko::mpi_vector mpi(dim, comm);
   rokko::mapping_1d map(dim, mpi_comm);
+  const int start_row = map.start_row();
+  const int end_row = map.end_row();
 
   Eigen::Vector<double> x(op.get_num_local_rows()), y(op.get_num_local_rows());
   Eigen::Vector<double> vec(dim);
@@ -33,13 +35,13 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
   for (int row=0; row<dim; ++row) {
     x.setZero();
     y.setZero();
-    if ((row >= op.get_local_offset()) && (row < (op.get_local_offset() + op.get_num_local_rows()))) {
-      x[row - op.get_local_offset()] = 1.;
+    if ((row >= start_row) && (row < end_row)) {
+      x[row - start_row] = 1.;
     }
     op.multiply(x.data(), y.data());
     const int proc = (nprocs * row) / dim;
     mpi.gather(y, vec, proc);
-    if ((row >= map.start_row()) && (row < map.end_row())) {
+    if ((row >= start_row) && (row < end_row)) {
       for (int col=0; col<dim; ++col) {
         if (vec[col] != 0) {
           mat.insert(row, 1, &col, &vec[col]);
