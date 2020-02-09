@@ -36,9 +36,7 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
     if ((row >= op.get_local_offset()) && (row < (op.get_local_offset() + op.get_num_local_rows()))) {
       x[row - op.get_local_offset()] = 1.;
     }
-    MPI_Barrier(comm);
     op.multiply(x.data(), y.data());
-    MPI_Barrier(comm);
     const int proc = (nprocs * row) / dim;
     mpi.gather(y, vec, proc);
     if ((row >= map.start_row()) && (row < map.end_row())) {
@@ -48,9 +46,7 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
         }
       }
     }
-    MPI_Barrier(comm);
   }
-  MPI_Barrier(comm);
   mat.complete();
 }
 
