@@ -20,7 +20,7 @@ namespace rokko {
 
 class mpi_vector {
 public:
-  mpi_vector(int dim, MPI_Comm comm_in = MPI_COMM_WORLD, int root_in = 0) : comm(comm_in), root(root_in) {
+  mpi_vector(int dim, MPI_Comm comm_in = MPI_COMM_WORLD) : comm(comm_in) {
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 
@@ -62,7 +62,7 @@ public:
 
   template<typename T, int SIZE>
   void scatter(const Eigen::Vector<T, SIZE>& source,
-               Eigen::Vector<T, SIZE>& target) const {
+               Eigen::Vector<T, SIZE>& target, int root) const {
     if (divisible)
       MPI_Scatter(source.data(), num_local_rows, rokko::mpi_type<T>,
                   target.data(), num_local_rows, rokko::mpi_type<T>,
@@ -75,7 +75,7 @@ public:
 
   template<typename T, int SIZE>
   void gather(const Eigen::Vector<T, SIZE>& source,
-              Eigen::Vector<T, SIZE>& target) const {
+              Eigen::Vector<T, SIZE>& target, int root) const {
     if (divisible)
       MPI_Gather(source.data(), num_local_rows, rokko::mpi_type<T>,
                  target.data(), num_local_rows, rokko::mpi_type<T>,
@@ -119,7 +119,6 @@ private:
   int num_local_rows;
   std::vector<int> counts, displacements;
   bool divisible;
-  int root;
 };
 
 } // namespace rokko
