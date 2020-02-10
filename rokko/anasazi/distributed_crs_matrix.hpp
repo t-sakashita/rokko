@@ -114,11 +114,8 @@ public:
   }
   void output_matrix_market(std::ostream& os = std::cout) const {
     constexpr int root_proc = 0;
-    const int MaxNumIndices = matrix_->MaxNumEntries();
-    std::vector<int> idx(MaxNumIndices);
-    int num_cols;
-    int* cols;
-    double* values;
+    std::vector<int> cols;
+    std::vector<double> values;
     if (map_->get_epetra_comm().MyPID() == root_proc) {
       os << "%%MatrixMarket matrix coordinate real general" << std::endl;
       os << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
@@ -126,12 +123,9 @@ public:
     map_->get_epetra_comm().Barrier();
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if ((global_row >= start_row()) && (global_row < end_row())) {
-        matrix_->ExtractMyRowView(matrix_->LRID(global_row), num_cols, values, cols);
-        idx.resize(num_cols);
-        std::iota(idx.begin(), idx.end(), 0);
-        std::sort(idx.begin(), idx.end(), [this,&cols](auto i, auto j) { return matrix_->GCID(cols[i]) < matrix_->GCID(cols[j]); });
-        for (int i=0; i<num_cols; ++i) {
-          os << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
+        extract(global_row, cols, values);
+        for (int i=0; i<cols.size(); ++i) {
+          os << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
         }
       }
       map_->get_epetra_comm().Barrier();

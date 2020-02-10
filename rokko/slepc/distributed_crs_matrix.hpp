@@ -144,30 +144,25 @@ public:
     MatRestoreRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
   }
   void output_matrix_market(std::ostream& os = std::cout) const {
+    const auto& comm = get_map()->get_mpi_comm();
     constexpr int root_proc = 0;
-    std::vector<int> idx;
+    std::vector<int> cols;
+    std::vector<double> values;
 
-    PetscInt num_cols;
-    const PetscInt * cols;
-    const PetscScalar * values;
     const int nnz = get_nnz();
-    if (map_->get_mpi_comm().get_myrank() == root_proc) {
+    if (comm.get_myrank() == root_proc) {
       os << "%%MatrixMarket matrix coordinate real general" << std::endl;
       os << get_dim() << " " << get_dim() << " " << nnz << std::endl;
     }
-    MPI_Barrier(map_->get_mpi_comm().get_comm());
+    comm.barrier();
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if ((global_row >= start_row()) && (global_row < end_row())) {
-        MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
-        idx.resize(num_cols);
-        std::iota(idx.begin(), idx.end(), 0);
-        std::sort(idx.begin(), idx.end(), [&cols](auto i, auto j) { return cols[i] < cols[j]; });
-        for (int i=0; i<num_cols; ++i) {
-          os << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
+        extract(global_row, cols, values);
+        for (int i=0; i<cols.size(); ++i) {
+          os << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
         }
-        MatRestoreRow(matrix_, global_row, &num_cols, &cols, &values);
       }
-      MPI_Barrier(map_->get_mpi_comm().get_comm());
+      comm.barrier();
     }
   }
 

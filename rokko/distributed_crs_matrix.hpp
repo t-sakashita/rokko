@@ -124,7 +124,26 @@ public:
     return crs_impl_->get_map();
   }
   void output_matrix_market(std::ostream& os = std::cout) const {
-    crs_impl_->output_matrix_market(os);
+    const auto& comm = get_map()->get_mpi_comm();
+    constexpr int root_proc = 0;
+    std::vector<int> cols;
+    std::vector<double> values;
+
+    const int nnz = get_nnz();
+    if (comm.get_myrank() == root_proc) {
+      os << "%%MatrixMarket matrix coordinate real general" << std::endl;
+      os << get_dim() << " " << get_dim() << " " << nnz << std::endl;
+    }
+    comm.barrier();
+    for (int global_row=0; global_row<get_dim(); ++global_row) {
+      if ((global_row >= start_row()) && (global_row < end_row())) {
+        extract(global_row, cols, values);
+        for (int i=0; i<cols.size(); ++i) {
+          os << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
+        }
+      }
+      comm.barrier();
+    }
   }
   const detail::ps_crs_factory::product_pointer_type get_ptr() const { return crs_impl_; }
 
