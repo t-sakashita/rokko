@@ -24,16 +24,6 @@
 namespace rokko {
 namespace slepc {
 
-struct comp{
-  bool operator()(int a, int b) const {
-    return v[a] < v[b];
-  }
-  comp(const int *p) : v(p) {}
-
-private:
-  const int *const v;
-};
-
 class distributed_crs_matrix : public rokko::detail::ps_crs_base {
 public:
   distributed_crs_matrix() = default;
@@ -153,7 +143,7 @@ public:
         MatGetRow(matrix_, global_row, &num_cols, &cols, &values);
         idx.resize(num_cols);
         std::iota(idx.begin(), idx.end(), 0);
-        std::sort(idx.begin(), idx.end(), comp(cols));
+        std::sort(idx.begin(), idx.end(), [&cols](auto i, auto j) { return cols[i] < cols[j]; });
         for (int i=0; i<num_cols; ++i) {
           os << global_row + 1 << " " << cols[idx[i]] + 1 << " " << values[idx[i]] << std::endl;
         }

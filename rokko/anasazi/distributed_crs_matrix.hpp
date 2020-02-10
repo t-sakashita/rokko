@@ -25,17 +25,6 @@
 namespace rokko {
 namespace anasazi {
 
-struct comp{
-  bool operator()(int a, int b) const {
-    return matrix_->GCID(v[a]) < matrix_->GCID(v[b]);
-  }
-  comp(const int *p, Teuchos::RCP<Epetra_CrsMatrix> const& matrix) : v(p), matrix_(matrix) {}
-
-private:
-  const int *const v;
-  Teuchos::RCP<Epetra_CrsMatrix> matrix_;
-};
-
 class distributed_crs_matrix : public rokko::detail::ps_crs_base {
 public:
   distributed_crs_matrix() = default;
@@ -123,7 +112,7 @@ public:
         matrix_->ExtractMyRowView(matrix_->LRID(global_row), num_cols, values, cols);
         idx.resize(num_cols);
         std::iota(idx.begin(), idx.end(), 0);
-        std::sort(idx.begin(), idx.end(), comp(cols, matrix_));
+        std::sort(idx.begin(), idx.end(), [this,&cols](auto i, auto j) { return matrix_->GCID(cols[i]) < matrix_->GCID(cols[j]); });
         for (int i=0; i<num_cols; ++i) {
           os << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
         }
