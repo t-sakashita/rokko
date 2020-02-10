@@ -125,6 +125,24 @@ public:
   void print() const {
     MatView(matrix_, PETSC_VIEWER_STDOUT_(map_->get_mpi_comm().get_comm()));
   }
+  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
+    PetscInt num_cols;
+    const PetscInt * cols_tmp;
+    const PetscScalar * values_tmp;
+    MatGetRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
+    cols.clear();
+    cols.reserve(num_cols);
+    values.clear();
+    values.reserve(num_cols);
+    std::vector<int> idx(num_cols);
+    std::iota(idx.begin(), idx.end(), 0);
+    std::sort(idx.begin(), idx.end(), [&cols_tmp](auto i, auto j) { return cols_tmp[i] < cols_tmp[j]; });
+    for (int i=0; i<num_cols; ++i) {
+      cols.emplace_back(cols_tmp[idx[i]]);
+      values.emplace_back(values_tmp[idx[i]]);
+    }
+    MatRestoreRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
+  }
   void output_matrix_market(std::ostream& os = std::cout) const {
     constexpr int root_proc = 0;
     std::vector<int> idx;

@@ -74,6 +74,23 @@ public:
     matrix_->FillComplete();
     matrix_->SetTracebackMode(1);
   }
+  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
+    int num_cols;
+    int* cols_tmp;
+    double* values_tmp;
+    matrix_->ExtractMyRowView(matrix_->LRID(row), num_cols, values_tmp, cols_tmp);
+    cols.clear();
+    cols.reserve(num_cols);
+    values.clear();
+    values.reserve(num_cols);
+    std::vector<int> idx(num_cols);
+    std::iota(idx.begin(), idx.end(), 0);
+    std::sort(idx.begin(), idx.end(), [this,cols_tmp](auto i, auto j) { return matrix_->GCID(cols_tmp[i]) < matrix_->GCID(cols_tmp[j]); });
+    for (int i=0; i<num_cols; ++i) {
+      cols.emplace_back(matrix_->GCID(cols_tmp[idx[i]]));
+      values.emplace_back(values_tmp[idx[i]]);
+    }
+  }
   Teuchos::RCP<Epetra_CrsMatrix> get_matrix() const {
     return matrix_;
   }

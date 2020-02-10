@@ -26,6 +26,7 @@ public:
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
   virtual void insert(int row, int col_size, int const*const cols, double const*const values) = 0;
   virtual void complete() = 0;
+  virtual void extract(int row, std::vector<int>& cols, std::vector<double>& values) const = 0;
   virtual int get_dim() const = 0;
   virtual int num_local_rows() const = 0;
   virtual int start_row() const = 0;
@@ -53,6 +54,9 @@ public:
     crs_impl_.insert(row, col_size, cols, values);
   }
   void complete() { crs_impl_.complete(); }
+  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
+    crs_impl_.extract(row, cols, values);
+  }
   int get_dim() const { return crs_impl_.get_dim(); }
   int num_local_rows() const { return crs_impl_.num_local_rows(); }
   int start_row() const { return crs_impl_.start_row(); }
@@ -94,6 +98,9 @@ public:
   }
   void complete() const {
     crs_impl_->complete();
+  }
+  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
+    crs_impl_->extract(row, cols, values);
   }
   int get_dim() const {
     return crs_impl_->get_dim();
