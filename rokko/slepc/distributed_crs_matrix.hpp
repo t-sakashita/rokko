@@ -132,10 +132,9 @@ public:
     PetscInt num_cols;
     const PetscInt * cols;
     const PetscScalar * values;
-    int nnz = get_nnz();
     if (map_->get_mpi_comm().get_myrank() == root_proc) {
       os << "%%MatrixMarket matrix coordinate real general" << std::endl;
-      os << get_dim() << " " << get_dim() << " " << nnz << std::endl;
+      os << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
     }
     MPI_Barrier(map_->get_mpi_comm().get_comm());
     for (int global_row=0; global_row<get_dim(); ++global_row) {
