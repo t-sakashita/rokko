@@ -113,26 +113,19 @@ public:
     int num_cols;
     int* cols;
     double* values;
-    const int NumMyElements = map_->get_epetra_map().NumMyElements();
-    std::vector<int> MyGlobalElements(NumMyElements);
-    map_->get_epetra_map().MyGlobalElements(MyGlobalElements.data());
     if (map_->get_epetra_comm().MyPID() == root_proc) {
       os << "%%MatrixMarket matrix coordinate real general" << std::endl;
       os << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
     }
     map_->get_epetra_comm().Barrier();
-    int local_row = 0;
     for (int global_row=0; global_row<get_dim(); ++global_row) {
-      if (local_row < NumMyElements) {
-        if (global_row == MyGlobalElements[local_row]) {
-          matrix_->ExtractMyRowView(local_row, num_cols, values, cols);
-          idx.resize(num_cols);
-          std::iota(idx.begin(), idx.end(), 0);
-          std::sort(idx.begin(), idx.end(), comp(cols, matrix_));
-          for (int i=0; i<num_cols; ++i) {
-            os << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
-          }
-          ++local_row;
+      if ((global_row >= start_row()) && (global_row < end_row())) {
+        matrix_->ExtractMyRowView(matrix_->LRID(global_row), num_cols, values, cols);
+        idx.resize(num_cols);
+        std::iota(idx.begin(), idx.end(), 0);
+        std::sort(idx.begin(), idx.end(), comp(cols, matrix_));
+        for (int i=0; i<num_cols; ++i) {
+          os << global_row + 1 << " " << matrix_->GCID(cols[idx[i]]) + 1 << " " << values[idx[i]] << std::endl;
         }
       }
       map_->get_epetra_comm().Barrier();
