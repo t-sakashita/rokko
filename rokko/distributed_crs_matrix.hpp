@@ -35,6 +35,7 @@ public:
   virtual void output_matrix_market(std::ostream& os = std::cout) const = 0;
   virtual ps_crs_base* get_impl() = 0;
   virtual const ps_crs_base* get_impl() const = 0;
+  virtual const ps_mapping_1d_base* get_map() const = 0;
 };
 
 
@@ -62,6 +63,7 @@ public:
   MPI_Comm get_comm() const { return crs_impl_.get_comm(); }
   const ps_crs_base* get_impl() const { return &crs_impl_; }
   ps_crs_base* get_impl() { return &crs_impl_; }
+  const ps_mapping_1d_base* get_map() const { return crs_impl_.get_map(); }
 
 private:
   crs_type crs_impl_;
@@ -110,6 +112,9 @@ public:
   }
   void print() const {
     crs_impl_->print();
+  }
+  const detail::ps_mapping_1d_base* get_map() const {
+    return crs_impl_->get_map();
   }
   void output_matrix_market(std::ostream& os = std::cout) const {
     crs_impl_->output_matrix_market(os);
