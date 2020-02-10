@@ -33,6 +33,10 @@ public:
   int get_nprocs() const { return nprocs; }
   int get_myrank() const { return myrank; }
 
+  void barrier() const {
+    MPI_Barrier(comm);
+  }
+
   static bool is_MPI_Cart(MPI_Comm comm) {
     int topo_type;
     /* int ierr = */ MPI_Topo_test(comm, &topo_type);
