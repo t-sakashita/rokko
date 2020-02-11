@@ -15,6 +15,7 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/utility/mpi_vector.hpp>
 #include <iostream>
+#include <sstream>
 
 namespace rokko {
 
@@ -35,12 +36,8 @@ void output_matrix_market(distributed_mfree const& op, std::ostream& os = std::c
   std::vector<int> cols;
   std::vector<double> values;
 
-  if (comm.get_myrank() == root_proc) {
-    os << "%%MatrixMarket matrix coordinate real general" << std::endl;
-    os << dim << " " << dim << " " << 100 << std::endl; // Fix: nnz = 100
-  }
-  comm.barrier();
-
+  std::ostringstream ss;
+  int nnz = 0;
   for (int row=0; row<dim; ++row) {
     x.setZero();
     y.setZero();
@@ -52,10 +49,17 @@ void output_matrix_market(distributed_mfree const& op, std::ostream& os = std::c
     if (myrank == root_proc) {
       for (int col=0; col<dim; ++col) {
         if (vec[col] != 0) {
-          os << row + 1 << " " << col+ 1 << " " << vec[col] << std::endl;
+          ss << row + 1 << " " << col+ 1 << " " << vec[col] << std::endl;
+          ++nnz;
         }
       }
     }
+  }
+
+  if (comm.get_myrank() == root_proc) {
+    os << "%%MatrixMarket matrix coordinate real general" << std::endl
+       << dim << " " << dim << " " << nnz << std::endl
+       << ss.str();
   }
 }
 
