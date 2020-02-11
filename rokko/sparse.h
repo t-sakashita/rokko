@@ -15,7 +15,6 @@
 #include <rokko/config.h>
 
 #if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-# include <mpi.h>
 #include <rokko/mapping_1d.h>
 #include <rokko/distributed_crs_matrix.h>
 #include <rokko/distributed_mfree.h>
