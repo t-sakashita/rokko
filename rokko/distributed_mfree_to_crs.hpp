@@ -19,11 +19,10 @@
 namespace rokko {
 
 void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distributed_crs_matrix& mat) {
-  MPI_Comm comm = op.get_comm();
-  rokko::mpi_comm mpi_comm(comm);
+  rokko::mpi_comm mpi_comm(op.get_comm());
   const int nprocs = mpi_comm.get_nprocs();
   const int dim = op.get_dim();
-  rokko::mpi_vector mpi(dim, comm);
+  rokko::mpi_vector mpi(dim, op.get_comm());
   rokko::mapping_1d map(dim, mpi_comm);
   const int start_row = map.start_row();
   const int end_row = map.end_row();
