@@ -47,7 +47,7 @@ TEST(laplacian_mfree, serial_mpi) {
     }
 
     // MPI version
-    mpi.scatter(v_seq, v);
+    mpi.scatter(v_seq, v, root);
     w.setZero();
     op.multiply(v.data(), w.data());
     for (int proc=0; proc<nprocs; ++proc) {
@@ -58,7 +58,7 @@ TEST(laplacian_mfree, serial_mpi) {
       MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    mpi.gather(w, w_gather);
+    mpi.gather(w, w_gather, root);
     if (myrank == root) {
       std::cout << "i=" << i << std::endl;
       std::cout << "w_seq=" << w_seq.transpose() << std::endl;
