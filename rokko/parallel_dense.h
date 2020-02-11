@@ -12,8 +12,6 @@
 #ifndef ROKKO_PARALLEL_DENSE_H
 #define ROKKO_PARALLEL_DENSE_H
 
-#include <mpi.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
