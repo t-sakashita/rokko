@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/grid.hpp>
 #include <rokko/grid.h>
+#include <rokko/grid.hpp>
 
 #ifdef __cplusplus
 extern "C" {

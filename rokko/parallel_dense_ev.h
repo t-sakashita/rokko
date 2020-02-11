@@ -15,6 +15,7 @@
 #include <rokko/grid.h>
 #include <rokko/mapping_bc.h>
 #include <rokko/distributed_matrix.h>
+#include <rokko/eigen_vector.h>
 #include <rokko/parameters.h>
 
 #ifdef __cplusplus

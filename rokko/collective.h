@@ -12,6 +12,9 @@
 #ifndef ROKKO_COLLECTIVE_H
 #define ROKKO_COLLECTIVE_H
 
+#include <rokko/eigen_matrix.h>
+#include <rokko/distributed_matrix.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

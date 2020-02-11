@@ -9,9 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/parallel_sparse_ev.hpp>
+#include <rokko/distributed_mfree.h>
 #include <rokko/distributed_mfree.hpp>
-#include <rokko/sparse.h>
 
 void rokko_distributed_mfree_construct(struct rokko_distributed_mfree* matrix,
 				       void (*multiply)(const double *const, double *const, void*),

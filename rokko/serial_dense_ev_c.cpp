@@ -9,9 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver.hpp>
-#include <rokko/dense.h>
-#include <rokko/parameters.h>
+#include <rokko/serial_dense_ev.h>
+#include <rokko/serial_dense_ev.hpp>
 
 void rokko_serial_dense_ev_construct(rokko_serial_dense_ev* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::serial_dense_ev(std::string(solver_name));

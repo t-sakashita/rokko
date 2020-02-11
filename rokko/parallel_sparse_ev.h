@@ -12,10 +12,10 @@
 #ifndef ROKKO_PARALLEL_SPARSE_EV_H
 #define ROKKO_PARALLEL_SPARSE_EV_H
 
-#include <rokko/parameters.h>
 #include <rokko/mapping_1d.h>
 #include <rokko/distributed_crs_matrix.h>
 #include <rokko/distributed_mfree.h>
+#include <rokko/parameters.h>
 
 #ifdef __cplusplus
 extern "C" {

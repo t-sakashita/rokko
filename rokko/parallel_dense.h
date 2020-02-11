@@ -19,9 +19,10 @@ extern "C" {
 #endif
 
 #include <rokko/grid.h>
-#include <rokko/parallel_dense_ev.h>
 #include <rokko/mapping_bc.h>
 #include <rokko/distributed_matrix.h>
+#include <rokko/parallel_dense_ev.h>
+
 #include <rokko/collective.h>
 
 #ifdef __cplusplus

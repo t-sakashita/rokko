@@ -9,12 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/mpi_communicator.hpp>
-#include <rokko/mapping_1d.h>
-#include <rokko/distributed_mfree.hpp>
+#include <rokko/parallel_sparse_ev.h>
 #include <rokko/parallel_sparse_ev.hpp>
-#include <rokko/sparse.h>
-#include <rokko/parameters.h>
 
 void rokko_parallel_sparse_ev_construct(struct rokko_parallel_sparse_ev* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::parallel_sparse_ev(std::string(solver_name));

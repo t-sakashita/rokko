@@ -12,6 +12,8 @@
 #ifndef ROKKO_SERIAL_DENSE_EV_H
 #define ROKKO_SERIAL_DENSE_EV_H
 
+#include <rokko/eigen_matrix.h>
+#include <rokko/eigen_vector.h>
 #include <rokko/parameters.h>
 
 #ifdef __cplusplus

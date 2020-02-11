@@ -9,10 +9,8 @@
 *
 *****************************************************************************/
 
-#include <rokko/solver.hpp>
-#include <rokko/mapping_bc.hpp>
-#include <rokko/dense.h>
 #include <rokko/mapping_bc.h>
+#include <rokko/mapping_bc.hpp>
 
 void rokko_mapping_bc_construct_block_size(struct rokko_mapping_bc* map, int global_dim, int block_size, struct rokko_grid grid) {
   // Fix me: All parallel dense solvers use matrix_col_major. So we omit its checking, so far...

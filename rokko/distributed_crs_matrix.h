@@ -12,6 +12,8 @@
 #ifndef ROKKO_DISTRIBUTED_CRS_MATRIX_H
 #define ROKKO_DISTRIBUTED_CRS_MATRIX_H
 
+#include <rokko/mapping_1d.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

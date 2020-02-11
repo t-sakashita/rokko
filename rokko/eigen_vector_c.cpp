@@ -9,9 +9,9 @@
 *
 *****************************************************************************/
 
+#include <rokko/eigen_vector.h>
 #include <rokko/eigen3.hpp>
 #include <rokko/eigen3/generate_vector.hpp>
-#include <rokko/dense.h>
 
 void rokko_eigen_vector_construct(rokko_eigen_vector* vec, int dim) {
   vec->ptr = new Eigen::VectorXd(dim);

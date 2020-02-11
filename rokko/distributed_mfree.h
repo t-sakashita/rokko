@@ -12,6 +12,8 @@
 #ifndef ROKKO_DISTRIBUTED_MFREE_H
 #define ROKKO_DISTRIBUTED_MFREE_H
 
+#include <mpi.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

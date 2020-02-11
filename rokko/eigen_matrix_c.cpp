@@ -9,9 +9,9 @@
  *
  *****************************************************************************/
 
+#include <rokko/eigen_matrix.h>
 #include <rokko/eigen3.hpp>
 #include <rokko/eigen3/generate_matrix.hpp>
-#include <rokko/dense.h>
 
 void rokko_eigen_matrix_construct(rokko_eigen_matrix* matrix, int dim1, int dim2,
 				      int matrix_major) {

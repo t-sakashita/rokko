@@ -12,6 +12,9 @@
 #ifndef ROKKO_DISTRIBUTED_MATRIX_H
 #define ROKKO_DISTRIBUTED_MATRIX_H
 
+#include <rokko/mapping_bc.h>
+#include <rokko/matrix_major.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

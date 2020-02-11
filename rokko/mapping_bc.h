@@ -12,7 +12,8 @@
 #ifndef ROKKO_MAPPING_BC_H
 #define ROKKO_MAPPING_BC_H
 
-#include <rokko/parallel_dense_ev.h>
+#include <rokko/grid.h>
+#include <rokko/matrix_major.h>
 
 #ifdef __cplusplus
 extern "C" {

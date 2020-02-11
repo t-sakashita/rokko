@@ -9,9 +9,9 @@
 *
 *****************************************************************************/
 
+#include <rokko/mapping_1d.h>
 #include <rokko/mpi_communicator.hpp>
 #include <rokko/mapping_1d.hpp>
-#include <rokko/mapping_1d.h>
 
 void rokko_mapping_1d_construct(struct rokko_mapping_1d* map, int dim, MPI_Comm comm) {
   map->ptr = new rokko::mapping_1d(dim, rokko::mpi_comm{comm});
