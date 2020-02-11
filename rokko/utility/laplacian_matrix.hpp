@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -21,6 +21,7 @@
 
 namespace rokko {
 
+// laplacian_matrix can be defined for n >= 2.
 class laplacian_matrix {
 public:
   template<typename T>
@@ -43,13 +44,13 @@ public:
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
     const int n = mat.cols();
-    mat(0, 0) = 1; mat(1, 0) = -1;
-    mat(n-2, n-1) = -1;  mat(n-1, n-1) = 2;
+    mat(0, 0) = 1;  mat(1, 0) = -1;
     for(int i = 1; i < n-1; ++i) {
       mat(i-1, i) = -1;
       mat(i,   i) = 2;
       mat(i+1, i) = -1;
     }
+    mat(n-2, n-1) = -1;  mat(n-1, n-1) = 2;
   }
 
   template<typename T, int ROWS, int COLS>
@@ -58,13 +59,13 @@ public:
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
     const int n = mat.rows();
-    mat(0, 0) = 1; mat(0, 1) = -1;
-    mat(n-1, n-2) = -1;  mat(n-1, n-1) = 2;
+    mat(0, 0) = 1;  mat(0, 1) = -1;
     for(int i = 1; i < n-1; ++i) {
       mat(i, i-1) = -1;
       mat(i, i) = 2;
       mat(i, i+1) = -1;
     }
+    mat(n-1, n-2) = -1;  mat(n-1, n-1) = 2;
   }
 
   template<typename T>
@@ -74,12 +75,12 @@ public:
     mat.set_zeros();
     const int n = mat.get_n_global();
     mat.set_global(0, 0, 1);  mat.set_global(1, 0, -1);
-    mat.set_global(n-2, n-1, -1);  mat.set_global(n-1, n-1, 2);
     for(int i = 1; i < n-1; ++i) {
       mat.set_global(i-1, i, -1);
       mat.set_global(i,   i, 2);
       mat.set_global(i+1, i, -1);
     }
+    mat.set_global(n-2, n-1, -1);  mat.set_global(n-1, n-1, 2);
   }
 
   template<typename T>
@@ -89,12 +90,12 @@ public:
     mat.set_zeros();
     const int n = mat.get_m_global();
     mat.set_global(0, 0, 1);  mat.set_global(0, 1, -1);
-    mat.set_global(n-1, n-2, -1);  mat.set_global(n-1, n-1, 2);
     for(int i = 1; i < n-1; ++i) {
       mat.set_global(i, i-1, -1);
       mat.set_global(i, i, 2);
       mat.set_global(i, i+1, -1);
     }
+    mat.set_global(n-1, n-2, -1);  mat.set_global(n-1, n-1, 2);
   }
 
   // calculate k-th smallest eigenvalue of dim-dimensional Laplacian matrix (k=0...dim-1)
