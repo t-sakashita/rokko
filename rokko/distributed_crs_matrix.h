@@ -22,8 +22,6 @@ struct rokko_distributed_crs_matrix {
   void* ptr;
 };
 
-struct rokko_parallel_sparse_ev;
-
 void rokko_distributed_crs_matrix_construct(struct rokko_distributed_crs_matrix* matrix, struct rokko_mapping_1d map, int num_entries_per_row);
 void rokko_distributed_crs_matrix_destruct(struct rokko_distributed_crs_matrix* matrix);
 void rokko_distributed_crs_matrix_insert(struct rokko_distributed_crs_matrix matrix, int row,
