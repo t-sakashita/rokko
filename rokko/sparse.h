@@ -16,10 +16,10 @@
 
 #if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 # include <mpi.h>
-#include <rokko/parallel_sparse_ev.h>
 #include <rokko/mapping_1d.h>
 #include <rokko/distributed_crs_matrix.h>
 #include <rokko/distributed_mfree.h>
+#include <rokko/parallel_sparse_ev.h>
 
 #endif /* defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER) */
 
