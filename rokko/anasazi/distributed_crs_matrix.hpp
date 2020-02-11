@@ -117,8 +117,8 @@ public:
     std::vector<int> cols;
     std::vector<double> values;
     if (map_->get_epetra_comm().MyPID() == root_proc) {
-      os << "%%MatrixMarket matrix coordinate real general" << std::endl;
-      os << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
+      os << "%%MatrixMarket matrix coordinate real general" << std::endl
+         << get_dim() << " " << get_dim() << " " << get_nnz() << std::endl;
     }
     map_->get_epetra_comm().Barrier();
     for (int global_row=0; global_row<get_dim(); ++global_row) {
