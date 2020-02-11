@@ -14,7 +14,6 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 
@@ -28,7 +27,7 @@ int main(int argc, char *argv[]) {
   std::string library, routine;
   std::size_t dim = 10;
   if (argc >= 2) library_routine = argv[1];
-  if (argc >= 3) dim = boost::lexical_cast<std::size_t>(argv[2]);
+  if (argc >= 3) dim = std::stoi(argv[2]);
   rokko::split_solver_name(library_routine, library, routine);
 
   rokko::grid g(comm);

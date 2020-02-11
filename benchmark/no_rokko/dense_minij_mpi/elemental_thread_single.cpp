@@ -8,7 +8,6 @@
 */
 #include "El.hpp"
 #include <rokko/utility/machine_info.hpp>
-#include <boost/lexical_cast.hpp>
 
 int main( int argc, char* argv[] ) {
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
@@ -25,7 +24,7 @@ int main( int argc, char* argv[] ) {
   initend_tick = MPI_Wtime();
 
   El::Int dim = 100; //30000;
-  if (argc >= 2) dim = boost::lexical_cast<int>(argv[1]);
+  if (argc >= 2) dim = std::stoi(argv[1]);
   
   if (El::mpi::Rank() == 0)
     std::cout << "Eigenvalue decomposition of minij matrix" << std::endl

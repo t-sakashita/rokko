@@ -14,7 +14,6 @@
 #include <rokko/lapack/ungqr.hpp>
 #include <rokko/lapack/lange.hpp>
 #include <rokko/eigen3.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,8 +22,8 @@ int main(int argc, char** argv) {
   int m = 10;
   int n = 6;
   if (argc > 2) {
-    m = boost::lexical_cast<int>(argv[1]);
-    n = boost::lexical_cast<int>(argv[2]);
+    m = std::stoi(argv[1]);
+    n = std::stoi(argv[2]);
   }
   int k = std::min(m, n);
   if (m < n) throw std::invalid_argument("Error: m < n");

@@ -14,7 +14,6 @@
 #include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#include <boost/lexical_cast.hpp>
 
 using matrix_major = rokko::matrix_col_major;
 // using matrix_major = rokko::matrix_row_major;
@@ -24,7 +23,7 @@ int main(int argc, char *argv[]) {
   unsigned int dim = 10;
   std::string solver_name(rokko::parallel_dense_ev::default_solver());
   if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
+  if (argc >= 3) dim = std::stoi(argv[2]);
 
   rokko::grid g;
   if (g.get_myrank() == 0) std::cout << "dimension = " << dim << std::endl;

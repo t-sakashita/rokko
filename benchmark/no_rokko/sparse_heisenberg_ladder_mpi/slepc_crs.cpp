@@ -1,7 +1,6 @@
 #include <slepceps.h>
 #include <petscblaslapack.h>
 //#include <vector>
-#include <boost/lexical_cast.hpp>
 #include <rokko/utility/lattice.hpp>
 #include <rokko/utility/machine_info.hpp>
 
@@ -27,7 +26,7 @@ int main(int argc,char **argv)
   initend_tick = MPI_Wtime();
 
   int len_ladder = 5;
-  if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
+  if (argc >= 2) len_ladder = std::stoi(argv[1]);
 
   const int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;

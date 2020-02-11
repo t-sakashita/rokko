@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   std::string name("anasazi");
   if (argc >= 2) name = argv[1];
   int len_ladder = 5;
-  if (argc >= 3) len_ladder = boost::lexical_cast<int>(argv[2]);
+  if (argc >= 3) len_ladder = std::stoi(argv[2]);
 
   const int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;

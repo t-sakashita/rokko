@@ -15,7 +15,6 @@
 #include "Epetra_Map.h"
 
 #include <rokko/utility/lattice.hpp>
-#include <boost/lexical_cast.hpp>
 
 using namespace Anasazi;
 
@@ -41,7 +40,7 @@ int main(int argc, char *argv[]) {
   printer.stream(Errors) << Anasazi_Version() << endl << endl;
 
   int len_ladder = 5;
-  if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
+  if (argc >= 2) len_ladder = std::stoi(argv[1]);
   int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   rokko::create_ladder_lattice_1dim(len_ladder, lattice);

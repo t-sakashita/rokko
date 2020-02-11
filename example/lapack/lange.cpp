@@ -11,7 +11,6 @@
 
 #include <rokko/lapack/lange.hpp>
 #include <rokko/eigen3.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 int main() {

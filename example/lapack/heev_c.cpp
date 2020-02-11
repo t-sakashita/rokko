@@ -13,12 +13,11 @@
 #include <rokko/lapack/heev.hpp>
 #include <rokko/lapack/lange.hpp>
 #include <rokko/eigen3.hpp>
-#include <boost/lexical_cast.hpp>
 
 int main(int argc, char** argv) {
   constexpr double eps = 1e-5;
   int n = 5;
-  if (argc > 1) n = boost::lexical_cast<int>(argv[1]);
+  if (argc > 1) n = std::stoi(argv[1]);
 
   // generate matrix
   Eigen::MatrixXcf a = Eigen::MatrixXcf::Random(n, n);

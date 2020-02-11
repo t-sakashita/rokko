@@ -63,7 +63,7 @@ TEST(mpi_communication, gather_vector) {
 
   int dim = 100;
   if (global_argc > 1) {
-    dim = boost::lexical_cast<int>(global_argv[1]);
+    dim = std::stoi(global_argv[1]);
   }
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
 

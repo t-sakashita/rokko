@@ -12,7 +12,6 @@
 #include <rokko/rokko.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 

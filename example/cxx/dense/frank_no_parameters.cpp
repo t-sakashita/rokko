@@ -11,7 +11,6 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 
@@ -19,7 +18,7 @@ int main(int argc, char *argv[]) {
   std::string solver_name(rokko::serial_dense_ev::default_solver());
   unsigned int dim = 10;
   if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) dim = boost::lexical_cast<unsigned int>(argv[2]);
+  if (argc >= 3) dim = std::stoi(argv[2]);
 
   std::cout.precision(5);
 

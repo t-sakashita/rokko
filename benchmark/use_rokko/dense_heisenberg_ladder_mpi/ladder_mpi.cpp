@@ -17,7 +17,6 @@
 #include <rokko/utility/lattice.hpp>
 #include <rokko/utility/machine_info.hpp>
 #include <iostream>
-#include <boost/lexical_cast.hpp>
 
 
 using matrix_major = rokko::matrix_col_major;
@@ -33,7 +32,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) library_routine = argv[1];
   rokko::split_solver_name(library_routine, library, routine);
   int len_ladder = 5;
-  if (argc >= 3) len_ladder = boost::lexical_cast<int>(argv[2]);
+  if (argc >= 3) len_ladder = std::stoi(argv[2]);
   int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   rokko::create_ladder_lattice_1dim(len_ladder, lattice);

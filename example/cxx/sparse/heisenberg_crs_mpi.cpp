@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) library_routine = argv[1];
   rokko::split_solver_name(library_routine, library, routine);
 
-  int L = (argc >= 3) ? boost::lexical_cast<int>(argv[2]) : 10;
+  int L = (argc >= 3) ? std::stoi(argv[2]) : 10;
   int dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));

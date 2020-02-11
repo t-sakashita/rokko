@@ -11,7 +11,6 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <gtest/gtest.h>
 
@@ -28,7 +27,7 @@ TEST(product_v_mpi, product_v_mpi) {
 
   int dim = 100;
   if (global_argc > 1) {
-    dim = boost::lexical_cast<int>(global_argv[1]);
+    dim = std::stoi(global_argv[1]);
   }
 
   if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;

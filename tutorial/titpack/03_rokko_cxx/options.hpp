@@ -13,7 +13,6 @@
 #define OPTIONS_HPP
 
 #include <iosfwd>
-#include <boost/lexical_cast.hpp>
 
 struct options {
   unsigned int N;
@@ -28,7 +27,7 @@ struct options {
         switch (argv[i][1]) {
         case 'N' :
           if (++i == argc) { usage(); return; }
-          N = boost::lexical_cast<unsigned int>(argv[i]); break;
+          N = std::stoi(argv[i]); break;
         case 's' :
           if (++i == argc) { usage(); return; }
           solver = argv[i]; break;

@@ -10,7 +10,6 @@
 *****************************************************************************/
 
 #include <iostream>
-#include <boost/lexical_cast.hpp>
 #include <rokko/eigen3.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/utility/timer.hpp>
@@ -18,7 +17,7 @@
 int main(int argc, char **argv) {
   int dim;
   if (argc > 1) {
-    dim = boost::lexical_cast<int>(argv[1]);
+    dim = std::stoi(argv[1]);
   } else {
     std::cin >> dim;
   }

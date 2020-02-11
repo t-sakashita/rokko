@@ -12,7 +12,6 @@
 #include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
 #include <rokko/collective.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <gtest/gtest.h>
 
@@ -26,7 +25,7 @@ TEST(product_mpi, product_mpi) {
 
   int dim = 100;
   if (global_argc > 1) {
-    dim = boost::lexical_cast<int>(global_argv[1]);
+    dim = std::stoi(global_argv[1]);
   }
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;

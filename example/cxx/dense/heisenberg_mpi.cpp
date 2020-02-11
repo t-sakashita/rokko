@@ -12,7 +12,6 @@
 #include <rokko/rokko.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 using matrix_major = rokko::matrix_col_major;
@@ -24,7 +23,7 @@ int main(int argc, char *argv[]) {
   std::string solver_name(rokko::parallel_dense_ev::default_solver());
   int L = 8;
   if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) L = boost::lexical_cast<int>(argv[2]);
+  if (argc >= 3) L = std::stoi(argv[2]);
 
   rokko::grid g(comm);
   int myrank = g.get_myrank();

@@ -15,7 +15,6 @@
 #endif
 #include "Epetra_Map.h"
 
-#include <boost/lexical_cast.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <rokko/utility/lattice.hpp>
 #include <rokko/utility/math.hpp>
@@ -155,7 +154,7 @@ int main(int argc, char *argv[]) {
   printer.stream(Anasazi::Errors) << Anasazi::Anasazi_Version() << std::endl << std::endl;
 
   int len_ladder = 5;
-  if (argc >= 2) len_ladder = boost::lexical_cast<int>(argv[1]);
+  if (argc >= 2) len_ladder = std::stoi(argv[1]);
   const int L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   rokko::create_ladder_lattice_1dim(len_ladder, lattice);

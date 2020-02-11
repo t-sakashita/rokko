@@ -166,7 +166,7 @@ public:
 //           for (std::string::size_type i = 0; i != source.size(); ++i) {
 //             if (isdigit(source[i])) mem_size += source[i];
 //           }
-//           ip->second = boost::lexical_cast<int>(mem_size);
+//           ip->second = std::stoi(mem_size);
 //         }
 //       }
 //     } while (fin.good());
