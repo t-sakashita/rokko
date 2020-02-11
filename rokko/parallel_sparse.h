@@ -9,13 +9,12 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SPARSE_H
-#define ROKKO_SPARSE_H
+#ifndef ROKKO_PARALLEL_SPARSE_H
+#define ROKKO_PARALLEL_SPARSE_H
 
-#include <rokko/config.h>
+#include <rokko/mapping_1d.h>
+#include <rokko/distributed_crs_matrix.h>
+#include <rokko/distributed_mfree.h>
+#include <rokko/parallel_sparse_ev.h>
 
-#if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-# include <rokko/parallel_sparse.h>
-#endif /* defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER) */
-
-#endif /* ROKKO_SPARSE_H */
+#endif /* ROKKO_PARALLEL_SPARSE_H */
