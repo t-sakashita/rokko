@@ -12,6 +12,8 @@
 #ifndef ROKKO_MAPPING_1D_H
 #define ROKKO_MAPPING_1D_H
 
+#include <mpi.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
