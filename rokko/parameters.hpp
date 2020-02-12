@@ -16,7 +16,6 @@
 #include <list>
 #include <map>
 #include <string>
-#include <boost/lexical_cast.hpp>
 #include <boost/any.hpp>
 
 #include <stdexcept>
@@ -72,10 +71,10 @@ public:
       return std::string(get<const char*>(key));
     }
     if (type(key) == typeid(int)) {
-      return boost::lexical_cast<std::string>(get<int>(key));
+      return std::to_string(get<int>(key));
     }
     if (type(key) == typeid(double)) {
-      return boost::lexical_cast<std::string>(get<double>(key));
+      return std::to_string(get<double>(key));
     }
     if (type(key) == typeid(bool)) {
       return get<bool>(key) ? "true" : "false";

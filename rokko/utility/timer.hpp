@@ -18,7 +18,6 @@
 //   #define ROKKO_ENABLE_TIMER_DETAILED
 
 #include <rokko/utility/string_format.hpp>
-#include <boost/lexical_cast.hpp>
 #include <rokko/noncopyable.hpp>
 #include <fstream>
 #include <iostream>
@@ -146,7 +145,7 @@ public:
 
 //     // process file name: /proc/${PID}/status
 //     int pid = static_cast<int>(getpid());
-//     std::string filename = std::string("/proc/") + boost::lexical_cast<std::string>(pid) +
+//     std::string filename = std::string("/proc/") + std::to_string(pid) +
 //       "/status";
 
 //     // open file
