@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -78,10 +78,10 @@ public:
       return boost::lexical_cast<std::string>(get<double>(key));
     }
     if (type(key) == typeid(bool)) {
-      return boost::lexical_cast<std::string>(get<bool>(key));
+      return get<bool>(key) ? "true" : "false";
     }
     if (type(key) == typeid(char)) {
-      return boost::lexical_cast<std::string>(get<char>(key));
+      return std::string{get<char>(key)};
     }
     else {
       throw std::invalid_argument("parameters::get_string() : value type given as template parameter must be char*, string, int, or double.");
