@@ -13,6 +13,8 @@
 #define ROKKO_VARIOUS_MPI_COMM_HPP
 
 #include <mpi.h>
+#include <array>
+#include <rokko/grid.hpp>
 
 MPI_Comm create_even_comm(MPI_Comm comm_in = MPI_COMM_WORLD) {
   MPI_Group group_world, even_group;
