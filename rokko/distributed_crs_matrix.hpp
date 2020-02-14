@@ -14,6 +14,7 @@
 
 #include <rokko/mapping_1d.hpp>
 #include <rokko/utility/tuple_to_array.hpp>
+#include <rokko/utility/macro_join.hpp>
 #include <vector>
 
 namespace rokko {
@@ -155,7 +156,7 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_PARALLEL_SPARSE_CRS(crs, name, priority) \
-namespace { namespace BOOST_JOIN(register, __LINE__) { \
+namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<rokko::detail::ps_crs_base>;  \
   using product = rokko::detail::ps_crs_wrapper<crs>; \

@@ -12,7 +12,7 @@
 #include <rokko/factory.hpp>
 #include <iostream>
 #include <string>
-#include <boost/config/helper_macros.hpp>
+#include <rokko/utility/macro_join.hpp>
 
 class test_base {
 public:
@@ -60,7 +60,7 @@ template<>
 test_factory *test_factory::instance_ = nullptr;
 
 #define ROKKO_REGISTER_TEST(solver, name, priority) \
-namespace { namespace BOOST_JOIN(register, __LINE__) { \
+namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<test_base>; \
   using product = test_wrapper<solver>; \

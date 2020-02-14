@@ -13,6 +13,7 @@
 #define ROKKO_FACTORY_HPP
 
 #include <rokko/noncopyable.hpp>
+#include <rokko/utility/macro_join.hpp>
 #include <memory>
 #include <iostream>
 #include <stdexcept>
@@ -114,6 +115,6 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_PRODUCT(base, product, name, priority) \
-  namespace { namespace BOOST_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance()->register_creator<product>(name, priority); } } caller; } }
+  namespace { namespace ROKKO_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance()->register_creator<product>(name, priority); } } caller; } }
 
 #endif // ROKKO_FACTORY_HPP

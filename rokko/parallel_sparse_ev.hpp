@@ -17,6 +17,7 @@
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/distributed_vector.hpp>
+#include <rokko/utility/macro_join.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/parameters.hpp>
 
@@ -107,7 +108,7 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(solver, name, priority) \
-namespace { namespace BOOST_JOIN(register, __LINE__) { \
+namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<rokko::detail::ps_ev_base>;  \
   using product = rokko::detail::ps_ev_wrapper<solver>; \

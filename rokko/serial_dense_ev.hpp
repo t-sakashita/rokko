@@ -15,6 +15,7 @@
 #include <string>
 #include <rokko/factory.hpp>
 #include <rokko/eigen3.hpp>
+#include <rokko/utility/macro_join.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/parameters.hpp>
 
@@ -175,7 +176,7 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_SERIAL_DENSE_SOLVER(solver, name, priority) \
-namespace { namespace BOOST_JOIN(register, __LINE__) { \
+namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<rokko::detail::sd_ev_base>; \
   using product = rokko::detail::sd_ev_wrapper<solver>; \

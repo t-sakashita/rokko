@@ -15,6 +15,7 @@
 #include <rokko/factory.hpp>
 #include <rokko/mpi_communicator.hpp>
 #include <rokko/mapping_1d_common.hpp>
+#include <rokko/utility/macro_join.hpp>
 
 namespace rokko {
 
@@ -100,7 +101,7 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_PARALLEL_SPARSE_MAPPING_1D(map, name, priority) \
-namespace { namespace BOOST_JOIN(register, __LINE__) { \
+namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<rokko::detail::ps_mapping_1d_base>;  \
   using product = rokko::detail::ps_mapping_1d_wrapper<map>; \
