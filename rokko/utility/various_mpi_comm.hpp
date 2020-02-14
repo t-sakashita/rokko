@@ -64,4 +64,13 @@ MPI_Comm create_even_odd_comm(MPI_Comm comm_in = MPI_COMM_WORLD) {
   return comm;
 }
 
+MPI_Comm create_even_odd_comm_by_split(MPI_Comm comm_in = MPI_COMM_WORLD) {
+  MPI_Comm comm;
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  int color = rank % 2;
+  MPI_Comm_split(MPI_COMM_WORLD, color, rank, &comm);
+  return comm;
+}
+
 #endif // ROKKO_VARIOUS_MPI_COMM_HPP

@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,6 +14,7 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/various_mpi_comm.hpp>
 #include <iostream>
 
 
@@ -21,27 +22,10 @@ using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
   int provided;
-  int rank;
-  MPI_Comm comm;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
-  MPI_Group group_world, even_group;;
-  int p;
-  MPI_Comm_size(MPI_COMM_WORLD, &p);
-  MPI_Comm_group(MPI_COMM_WORLD, &group_world);
-
-  int Neven = (p+1)/2;
-  std::vector<int> members(Neven);
-  for (int i = 0; i < Neven; ++i) {
-    members[i] = 2*i;
-  };
-
-  MPI_Group_incl(group_world, Neven, members.data(), &even_group);
-  MPI_Comm_create(MPI_COMM_WORLD, group_world, &comm);
+  MPI_Comm comm = create_even_odd_comm_by_split();
   
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  int color = rank % 2;
-  MPI_Comm_split( MPI_COMM_WORLD, color, rank, &comm );
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
   std::string library, routine;
   int dim = 10;
