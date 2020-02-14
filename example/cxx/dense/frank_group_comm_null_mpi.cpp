@@ -14,6 +14,7 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/various_mpi_comm.hpp>
 #include <iostream>
 
 
@@ -22,28 +23,10 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  
-  MPI_Group group_world, even_group;;
-  MPI_Comm comm;
-  int rank, p;
-
+  int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &p);
-  MPI_Comm_group(MPI_COMM_WORLD, &group_world);
+  MPI_Comm comm = create_even_comm();
 
-  int Neven = (p + 1) / 2;
-  std::vector<int> members(Neven);
-  for (int i=0; i<Neven; ++i) {
-    members[i] = 2 * i;
-  };
-  //Neven = 4;
-  //members[0] = 0; members[1] = 1; members[2] = 2; members[3] = 3;
-  
-  MPI_Group_incl(group_world, Neven, members.data(), &even_group);
-  MPI_Comm_create(MPI_COMM_WORLD, even_group, &comm);
-  MPI_Group_free(&group_world);
-  MPI_Group_free(&even_group);
-  
   if (comm == MPI_COMM_NULL) {
     std::cout << "orig_rank=" << rank << " is COMM_NULL" << std::endl;
   } else {
