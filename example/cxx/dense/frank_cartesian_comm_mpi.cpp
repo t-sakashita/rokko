@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,6 +14,7 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/various_mpi_comm.hpp>
 #include <array>
 #include <iostream>
 
@@ -23,22 +24,14 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  int nprocs;
-  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 
-  MPI_Comm comm;
-  std::array<int,2> dims, periods;
-  dims[0] = rokko::grid::find_square_root_like_divisor(nprocs);
-  dims[1] = nprocs / dims[0];
-  periods[0] = 0;  periods[1] = 0;
-  int reorder = 0;
-  MPI_Cart_create(MPI_COMM_WORLD, 2, dims.data(), periods.data(), reorder, &comm);
+  MPI_Comm comm = create_cart_comm();
   rokko::grid g(comm);
   int myrank = g.get_myrank();
 
   if (myrank == 0)
-    std::cout << "Created " << dims[0] << "x" << dims[1] << " size communicator with new cartesian topology" << std::endl;
-      
+    std::cout << "Created " << g.get_nprow() << "x" << g.get_npcol() << " size communicator with new cartesian topology" << std::endl;
+
   if (comm != MPI_COMM_NULL) {
     std::string library_routine(rokko::parallel_dense_ev::default_solver());
     std::string library, routine;
