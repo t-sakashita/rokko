@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2016 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -14,6 +14,7 @@
 #include <rokko/collective.hpp>
 #include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/various_mpi_comm.hpp>
 #include <iostream>
 
 
@@ -22,32 +23,10 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  
-  MPI_Group group_world, even_group, odd_group;
-  MPI_Comm even_comm, odd_comm;
-  int rank, p;
-
+  int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &p);
-  MPI_Comm_group(MPI_COMM_WORLD, &group_world);
+  MPI_Comm comm = create_even_odd_comm();
 
-  const int Neven = (p + 1) / 2;
-  const int Nodd = p - Neven;
-  std::vector<int> even_members(Neven), odd_members(Nodd);
-  for (int i=0; i<Neven; ++i)
-    even_members[i] = 2 * i;
-  for (int i=0; i<Nodd; ++i)
-    odd_members[i] = 2 * i + 1;
-  
-  MPI_Group_incl(group_world, Neven, even_members.data(), &even_group);
-  MPI_Group_incl(group_world, Nodd, odd_members.data(), &odd_group);
-  MPI_Comm_create(MPI_COMM_WORLD, even_group, &even_comm);
-  MPI_Comm_create(MPI_COMM_WORLD, odd_group, &odd_comm);
-  MPI_Comm comm = ((rank % 2) == 0) ? even_comm : odd_comm;
-  MPI_Group_free(&group_world);
-  MPI_Group_free(&even_group);
-  MPI_Group_free(&odd_group);
-  
   if (comm == MPI_COMM_NULL) {
     std::cout << "orig_rank=" << rank << " is COMM_NULL" << std::endl;
   } else {
@@ -110,4 +89,3 @@ int main(int argc, char *argv[]) {
   }
   MPI_Finalize();
 }
-
