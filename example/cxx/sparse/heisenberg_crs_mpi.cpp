@@ -12,6 +12,8 @@
 #include <rokko/rokko.hpp>
 #include <rokko/utility/solver_name.hpp>
 
+#include <stdexcept>
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -80,7 +82,8 @@ int main(int argc, char *argv[]) {
   rokko::parameters info = solver.diagonalize(mat, params);
   
   int num_conv = info.get<int>("num_conv");
-  if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
+  if (num_conv == 0)
+    throw std::runtime_error("num_conv=0: solver did not converge");
   std::vector<double> eigvec;
   solver.eigenvector(0, eigvec);
   if (rank == 0) {

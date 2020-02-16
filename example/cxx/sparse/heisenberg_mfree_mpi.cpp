@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -12,6 +12,8 @@
 #include <rokko/rokko.hpp>
 #include <rokko/utility/heisenberg_hamiltonian_mfree.hpp>
 #include <rokko/utility/solver_name.hpp>
+
+#include <stdexcept>
 
 int main(int argc, char *argv[]) {
   int provided;
@@ -47,7 +49,8 @@ int main(int argc, char *argv[]) {
   rokko::parameters info = solver.diagonalize(mat, params);
 
   int num_conv = info.get<int>("num_conv");
-  if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
+  if (num_conv == 0)
+    throw std::runtime_error("num_conv=0: solver did not converge");
   std::vector<double> eigvec;
   solver.eigenvector(0, eigvec);
   if (rank == 0) {
