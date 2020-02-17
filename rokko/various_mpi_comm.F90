@@ -40,15 +40,14 @@ contains
     implicit none
     integer :: comm_in
     integer :: world_group, odd_group
-    integer :: nprocs, num_even, num_odd
+    integer :: nprocs, num_odd
     integer, allocatable, dimension(:) :: odd_members
     integer :: i, ierr
 
     call mpi_comm_size(comm_in, nprocs, ierr)
 
-    num_even = (nprocs+1)/2
-    num_odd = nprocs - num_even
-    allocate( odd_members(num_even) )
+    num_odd = nprocs / 2
+    allocate( odd_members(num_odd) )
     do i=0, num_odd-1
        odd_members(i+1) = 2 * i + 1
     enddo

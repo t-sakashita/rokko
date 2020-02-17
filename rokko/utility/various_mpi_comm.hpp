@@ -45,8 +45,7 @@ MPI_Comm create_odd_comm(MPI_Comm comm_in = MPI_COMM_WORLD) {
   MPI_Comm_size(comm_in, &nprocs);
   MPI_Comm_group(comm_in, &group_world);
 
-  const int Neven = (nprocs + 1) / 2;
-  const int Nodd = nprocs - Neven;
+  const int Nodd = nprocs / 2;
   std::vector<int> odd_members(Nodd);
   for (int i=0; i<Nodd; ++i)
     odd_members[i] = 2 * i + 1;
