@@ -62,6 +62,22 @@ public:
     return params.defined("max_iters") ? params.get<int>("max_iters") : PETSC_DECIDE;
   }
 
+  static EPSWhich get_wanted_eigenvalues(std::string const& str) {
+    if ((str == "largest") || (str == "EPS_LARGEST_MAGNITUDE"))
+      return EPS_LARGEST_MAGNITUDE;
+    if ((str == "smallest") || (str == "EPS_SMALLEST_MAGNITUDE"))
+      return EPS_SMALLEST_MAGNITUDE;
+    else
+      throw std::invalid_argument("get_wanted_eigenvalues: invalid parameter");
+  }
+
+  void set_wanted_eigenvalues(rokko::parameters const& params) {
+    std::string str = params.defined("wanted_eigenvalues") ? params.get_string("wanted_eigenvalues") : std::string{};
+    if (!str.empty()) {
+      EPSSetWhichEigenpairs(eps, get_wanted_eigenvalues(str));
+    }
+  }
+
   parameters diagonalize(const rokko::slepc::distributed_crs_matrix& mat, rokko::parameters const& params) {
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
@@ -109,6 +125,7 @@ public:
     ierr = EPSSetType(eps, get_routine(params));
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
+    set_wanted_eigenvalues(params);
     // Set solver parameters at runtime
     ierr = EPSSetFromOptions(eps);
 

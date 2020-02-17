@@ -93,6 +93,15 @@ public:
     return routine;
   }
 
+  static std::string get_wanted_eigenvalues(std::string const& str) {
+    if ((str == "largest") || (str == "LM"))
+      return "LM";
+    if ((str == "smallest") || (str == " SM"))
+      return "SM";
+    else
+      throw std::invalid_argument("get_wanted_eigenvalues: invalid parameter");
+  }
+
   static Teuchos::ParameterList set_anasazi_parameters(rokko::parameters const& params) {
     Teuchos::ParameterList pl;
 
@@ -102,7 +111,10 @@ public:
       pl.set("Convergence Tolerance", params.get<value_type>("conv_tol"));
     if (params.defined("max_iters"))
       pl.set("Maximum Iterations", params.get<int>("max_iters"));
-    //if (!params.defined("Which")) pl_.set("Which", "LM");
+
+    if (params.defined("wanted_eigenvalues")) {
+      pl.set("Which", get_wanted_eigenvalues(params.get_string("wanted_eigenvalues")));
+    }
 
     if (params.get_bool("verbose")) {
       pl.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
