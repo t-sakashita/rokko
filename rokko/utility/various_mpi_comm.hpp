@@ -69,9 +69,9 @@ MPI_Comm create_even_odd_comm(MPI_Comm comm_in = MPI_COMM_WORLD) {
 MPI_Comm create_even_odd_comm_by_split(MPI_Comm comm_in = MPI_COMM_WORLD) {
   MPI_Comm comm;
   int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_rank(comm_in, &rank);
   int color = rank % 2;
-  MPI_Comm_split(MPI_COMM_WORLD, color, rank, &comm);
+  MPI_Comm_split(comm_in, color, rank, &comm);
   return comm;
 }
 
