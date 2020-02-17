@@ -2,7 +2,7 @@
 !
 ! Rokko: Integrated Interface for libraries of eigenvalue decomposition
 !
-! Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+! Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 !
 ! Distributed under the Boost Software License, Version 1.0. (See accompanying
 ! file LICENSE_1_0.txt or copy at http://www.boost.org/license_1_0.txt)
@@ -11,7 +11,7 @@
 
 program frank_matrix
   use rokko
-  use mpi
+  use various_mpi_comm_mod
   implicit none
   integer :: dim
   type(rokko_distributed_matrix) :: mat, Z
@@ -22,30 +22,14 @@ program frank_matrix
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
   integer arg_len, status
-
+  integer :: comm
   integer :: provided, ierr, myrank, nprocs
   integer :: i
-  integer :: comm
-  integer, dimension(2) :: dims
-  logical, dimension(2) :: periods 
-  logical :: reorder
   
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
-  dims(1) = int(sqrt(real(nprocs)))
-  do while (.true.)
-     if ( dims(1) == 1 ) exit
-     if ( mod(nprocs, dims(1)) == 0 ) exit
-     dims(1) = dims(1) - 1
-  enddo
-  dims(2) = nprocs / dims(1)
-  periods(1) = .false.;  periods(2) = .false.
-  reorder = .false.
-  call mpi_cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, comm, ierr)
-  if (myrank == 0) then
-     write(*,'("Created ", i0, "x", i0, " size communicator with new cartesian topology")') dims(1), dims(2)
-  endif
+  comm = create_cart_comm(mpi_comm_world)
 
   if (comm /= MPI_COMM_NULL) then
      if (command_argument_count() >= 1) then
@@ -74,7 +58,12 @@ program frank_matrix
      call rokko_construct(mat, map)
      call rokko_construct(Z, map)
      call rokko_construct(w, dim)
-     
+
+     if (myrank == 0) then
+        write(*,'("Created ", i0, "x", i0, " size communicator with new cartesian topology")') &
+             & rokko_get_nprow(grid), rokko_get_npcol(grid)
+     endif
+
      ! generate frank matrix
      call rokko_frank_matrix_generate(mat)
      call rokko_print(mat)
