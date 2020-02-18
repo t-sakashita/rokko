@@ -24,7 +24,7 @@ namespace anasazi {
 
 class mapping_1d : public detail::ps_mapping_1d_base {
 public:
-  explicit mapping_1d() : mapping_1d(0) {}
+  explicit mapping_1d() = default;
   explicit mapping_1d(int dim) : mapping_1d(dim, mpi_comm{MPI_COMM_WORLD}) {}
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
     : detail::ps_mapping_1d_base(dim, mpi_comm_in), ep_comm_(new Epetra_MpiComm(mpi_comm_in.get_comm())), map_(new Epetra_Map(dim, 0, *ep_comm_)) {
