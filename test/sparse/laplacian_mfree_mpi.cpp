@@ -13,6 +13,7 @@
 #include <rokko/utility/laplacian_matrix.hpp>
 #include <rokko/utility/laplacian_mfree.hpp>
 #include <rokko/utility/solver_name.hpp>
+#include <rokko/utility/various_mpi_comm.hpp>
 
 #include <gtest/gtest.h>
 
@@ -21,7 +22,7 @@ constexpr double eps = 1e-8;
 int global_argc;
 char** global_argv;
 
-TEST(laplacian_mfree, eigenvalue) {
+void run_test(MPI_Comm comm) {
   std::string library_routine(rokko::parallel_sparse_ev::default_solver());
   if (global_argc >= 2) library_routine = global_argv[1];
   std::string library, routine;
@@ -37,19 +38,27 @@ TEST(laplacian_mfree, eigenvalue) {
   params.set("conv_tol", eps);
   params.set("wanted_eigenvalues", "largest");
 
-  rokko::laplacian_mfree mat(dim);
   rokko::parallel_sparse_ev solver(library);
-  rokko::parameters info = solver.diagonalize(mat, params);
+  if (comm != MPI_COMM_NULL) {
+    rokko::laplacian_mfree mat(dim, comm);
+    rokko::parameters info = solver.diagonalize(mat, params);
 
-  int num_conv = info.get<int>("num_conv");
-  if (num_conv == 0)
-    throw std::runtime_error("num_conv=0: solver did not converge");
+    int num_conv = info.get<int>("num_conv");
+    if (num_conv == 0)
+      throw std::runtime_error("num_conv=0: solver did not converge");
 
-  double eigval = solver.eigenvalue(0);
-  double th_eigval = rokko::laplacian_matrix::eigenvalue(dim, dim-1);  // largest one
-  EXPECT_NEAR(eigval, th_eigval, eigval*eps);
-
+    double eigval = solver.eigenvalue(0);
+    double th_eigval = rokko::laplacian_matrix::eigenvalue(dim, dim-1);  // largest one
+    EXPECT_NEAR(eigval, th_eigval, eigval*eps);
+  }
   solver.finalize();
+}
+
+TEST(laplacian_mfree, eigenvalue) {
+  run_test(MPI_COMM_WORLD);
+  run_test(create_even_odd_comm_by_split());
+  run_test(create_even_odd_comm());
+  run_test(create_even_comm());
 }
 
 int main(int argc, char** argv) {
