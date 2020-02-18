@@ -53,13 +53,13 @@ public:
   void finalize() {}
 
   static std::unique_ptr<solvermanager_t> create_solver_manager(std::string const& routine, Teuchos::RCP<eigenproblem_t> problem, Teuchos::ParameterList& pl) {
-    if ((routine == "LOBPCG") || (routine == ""))
+    if ((routine == "lobpcg") || (routine == ""))
       return std::make_unique<Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
-    else if (routine == "BlockKrylovSchur")
+    else if (routine == "block_krylov_schur")
       return std::make_unique<Anasazi::BlockKrylovSchurSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
-    else if (routine == "BlockDavidson")
+    else if (routine == "block_davidson")
       return std::make_unique<Anasazi::BlockDavidsonSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
-    else if (routine == "RTR")
+    else if (routine == "rtr")
       return std::make_unique<Anasazi::RTRSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
     else {
       std::stringstream msg;
@@ -88,7 +88,7 @@ public:
         throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
       routine = params.get_string("routine");
     } else {  // default
-      routine = "LOBPCG";
+      routine = "lobpcg";
     }
     return routine;
   }
@@ -206,7 +206,7 @@ private:
   Teuchos::RCP<eigenproblem_t> problem_;
 };
 
-const std::vector<std::string> solver::names{ "LOBPCG", "BlockKrylovSchur", "BlockDavidson", "RTR" };
+const std::vector<std::string> solver::names{ "lobpcg", "block_krylov_schur", "block_davidson", "rtr" };
 
 } // namespace anasazi
 

@@ -108,7 +108,7 @@ params.set("Block Size", 5);
 params.set("Maximum Iterations", 500);
 params.set("Convergence Tolerance", 1.0e-8);
 params.set("num_eigenvalues", 10)
-params.set("routine", "LOBPCG");
+params.set("routine", "lobpcg");
 params.set("verbose", True)
 
 solver_name = "anasazi"
