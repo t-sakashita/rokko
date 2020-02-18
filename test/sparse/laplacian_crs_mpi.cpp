@@ -21,17 +21,11 @@ constexpr double eps = 1e-8;
 int global_argc;
 char** global_argv;
 
-void run_test(MPI_Comm comm) {
-  std::string library_routine(rokko::parallel_sparse_ev::default_solver());
-  if (global_argc >= 2) library_routine = global_argv[1];
-  std::string library, routine;
-  rokko::split_solver_name(library_routine, library, routine);
-  int dim = (global_argc >= 3) ? std::stoi(global_argv[2]) : 100;
-
-  std::cout << "library:routine = " << library_routine << std::endl;
+void run_test(std::string const& library, MPI_Comm comm) {
+  constexpr int dim = 20;
+  std::cout << "library = " << library << std::endl;
 
   rokko::parameters params;
-  if (!routine.empty()) params.set("routine", routine);
   params.set("block_size", 5);
   params.set("max_iters", 500);
   params.set("conv_tol", eps);
@@ -70,10 +64,12 @@ void run_test(MPI_Comm comm) {
 }
 
 TEST(laplacian_crs, eigenvalue) {
-  run_test(MPI_COMM_WORLD);
-  run_test(create_even_odd_comm_by_split());
-  run_test(create_even_odd_comm());
-  run_test(create_even_comm());
+  for(auto library : rokko::parallel_sparse_ev::solvers()) {
+    run_test(library, MPI_COMM_WORLD);
+    run_test(library, create_even_odd_comm_by_split());
+    run_test(library, create_even_odd_comm());
+    run_test(library, create_even_comm());  // MPI_COMM_NULL for odd rank number
+  }
 }
 
 int main(int argc, char** argv) {
