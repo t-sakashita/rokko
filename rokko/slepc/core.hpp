@@ -31,13 +31,13 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() { SlepcFinalize(); }
 
-  static EPSType get_routine(rokko::parameters const& params) {
+  static std::string get_routine(rokko::parameters const& params) {
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
         throw std::invalid_argument("slepc::get_routine() : routine must be charatcters or string.");
       std::string routine = params.get_string("routine");
       if (!routine.empty()) {
-        return static_cast<EPSType>(routine.c_str());
+        return routine;
       } else {
         return EPSKRYLOVSCHUR;
       }
@@ -122,7 +122,7 @@ public:
     // Set operators for a standard eigenvalue problem
     ierr = EPSSetOperators(eps, A, NULL);
     ierr = EPSSetProblemType(eps, EPS_HEP);
-    ierr = EPSSetType(eps, get_routine(params));
+    ierr = EPSSetType(eps, get_routine(params).c_str());
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
     set_wanted_eigenvalues(params);
