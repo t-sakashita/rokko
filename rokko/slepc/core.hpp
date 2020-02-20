@@ -67,6 +67,10 @@ public:
       return EPS_LARGEST_MAGNITUDE;
     if ((str == "smallest") || (str == "EPS_SMALLEST_MAGNITUDE"))
       return EPS_SMALLEST_MAGNITUDE;
+    if ((str == "largest_real") || (str == "EPS_LARGEST_REAL"))
+      return EPS_LARGEST_REAL;
+    if ((str == "smallest_real") || (str == "EPS_SMALLEST_REAL"))
+      return EPS_SMALLEST_REAL;
     else
       throw std::invalid_argument("get_wanted_eigenvalues: invalid parameter");
   }

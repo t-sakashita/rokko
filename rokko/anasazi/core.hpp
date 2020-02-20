@@ -98,6 +98,10 @@ public:
       return "LM";
     if ((str == "smallest") || (str == " SM"))
       return "SM";
+    if ((str == "largest_real") || (str == "LR"))
+      return "LR";
+    if ((str == "smallest_real") || (str == "SR"))
+      return "SR";
     else
       throw std::invalid_argument("get_wanted_eigenvalues: invalid parameter");
   }
