@@ -96,7 +96,7 @@ public:
   static std::string get_wanted_eigenvalues(std::string const& str) {
     if ((str == "largest") || (str == "LM"))
       return "LM";
-    if ((str == "smallest") || (str == " SM"))
+    if ((str == "smallest") || (str == "SM"))
       return "SM";
     if ((str == "largest_real") || (str == "LR"))
       return "LR";
