@@ -22,7 +22,7 @@ namespace rokko {
 namespace slepc {
 
 class solver {
-public: 
+public:
   solver() {
     SlepcInitialize(NULL, NULL, (char*)NULL, NULL);
   }
