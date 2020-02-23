@@ -11,7 +11,6 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/laplacian_matrix.hpp>
-#include <rokko/utility/solver_name.hpp>
 #include <rokko/utility/various_mpi_comm.hpp>
 
 #include <gtest/gtest.h>
@@ -29,7 +28,6 @@ void run_test(std::string const& library, MPI_Comm comm) {
   params.set("block_size", 5);
   params.set("max_iters", 500);
   params.set("conv_tol", eps);
-  params.set("wanted_eigenvalues", "largest");
 
   rokko::parallel_sparse_ev solver(library);
   if (comm != MPI_COMM_NULL) {
@@ -50,16 +48,28 @@ void run_test(std::string const& library, MPI_Comm comm) {
 
     mat.complete();
 
-    rokko::parameters info = solver.diagonalize(mat, params);
+    std::vector<std::array<std::string,2>> routines;
+    if (library=="anasazi")
+      routines = { {"lobpcg", "largest_real"}, {"block_krylov_schur", "largest"}, {"rtr", "largest_real"} };  // excludes not converging "block_davidson"
+    else if (library=="slepc")
+      routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"lobpcg", "largest_real"}, {"subspace", "largest"} };  // excludes not converging "power"
 
-    int num_conv = info.get<int>("num_conv");
-    if (num_conv == 0)
-      throw std::runtime_error("num_conv=0: solver did not converge");
+    for (auto routine : routines) {
+      std::cout << "routine=" << routine[0] << std::endl;
+      params.set("routine", routine[0]);
+      params.set("wanted_eigenvalues", routine[1]);
 
-    double eigval = solver.eigenvalue(0);
-    double th_eigval = rokko::laplacian_matrix::eigenvalue(dim, dim-1);  // largest one
-    EXPECT_NEAR(eigval, th_eigval, eigval*eps);
-  }
+      rokko::parameters info = solver.diagonalize(mat, params);
+
+      int num_conv = info.get<int>("num_conv");
+      if (num_conv == 0)
+        throw std::runtime_error("num_conv=0: solver did not converge");
+
+      double eigval = solver.eigenvalue(0);
+      double th_eigval = rokko::laplacian_matrix::eigenvalue(dim, dim-1);  // largest one
+      EXPECT_NEAR(eigval, th_eigval, eigval*eps);
+    }
+  } // end if comm != MPI_COMM_NULL
   solver.finalize();
 }
 
