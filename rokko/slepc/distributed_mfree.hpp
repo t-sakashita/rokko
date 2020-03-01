@@ -20,6 +20,11 @@ namespace rokko {
 
 namespace slepc {
 
+class distributed_mfree : public rokko::distributed_mfree {
+public:
+  virtual void diagonal(double* x) const = 0;
+};
+
 } // end namespace slepc
 
 } // end namespace rokko

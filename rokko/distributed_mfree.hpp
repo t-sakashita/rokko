@@ -89,11 +89,6 @@ private:
   std::function<void(const double *const, double *const)> multiply_;
 };
 
-class distributed_mfree_slepc : public rokko::distributed_mfree {
-public:
-  virtual void diagonal(double* x) const = 0;
-};
-
 } // end namespace rokko
 
 #endif // ROKKO_DISTRIBUTED_MFREE_HPP

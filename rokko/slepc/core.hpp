@@ -116,7 +116,7 @@ public:
     PetscFunctionBeginUser;
     PetscErrorCode ierr;
 
-    rokko::distributed_mfree_slepc *op_ctx;
+    rokko::slepc::distributed_mfree *op_ctx;
     ierr = MatShellGetContext(A, &op_ctx); CHKERRQ(ierr);
 
     PetscScalar const* px;
@@ -137,7 +137,7 @@ public:
     PetscFunctionBeginUser;
     PetscErrorCode ierr;
 
-    rokko::distributed_mfree_slepc *op_ctx;
+    rokko::slepc::distributed_mfree *op_ctx;
     ierr = MatShellGetContext(A, &op_ctx); CHKERRQ(ierr);
 
     PetscScalar *pd;
