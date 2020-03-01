@@ -57,14 +57,14 @@ public:
 
   // For C binding
   distributed_mfree_holder(std::function<void(const double *const, double *const, void*)> const& multiply_in, void* vars, rokko::skel::mapping_1d const& map)
-    : rokko::distributed_mfree_holder([multiply_in, vars](const double *const x, double *const y) {
+    : distributed_mfree_holder([multiply_in, vars](const double *const x, double *const y) {
         multiply_in(x, y, vars);
       },
       map) {}
 
   // For Fortran binding
   distributed_mfree_holder(std::function<void(const int*, const double *const, double *const)> const& multiply_in, rokko::skel::mapping_1d const& map)
-    : rokko::distributed_mfree_holder([this, multiply_in](const double *const x, double *const y) {
+    : distributed_mfree_holder([this, multiply_in](const double *const x, double *const y) {
         int num_local_rows = get_num_local_rows();
         multiply_in(&num_local_rows, x, y);
       },
