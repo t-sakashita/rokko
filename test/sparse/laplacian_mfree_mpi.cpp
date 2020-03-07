@@ -38,7 +38,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
     if (library=="anasazi")
       routines = { {"lobpcg", "largest_real"}, {"block_krylov_schur", "largest"}, {"rtr", "largest_real"} };  // excludes not converging "block_davidson"
     else if (library=="slepc")
-      routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"subspace", "largest"} };  // excludes not converging "power"
+      routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"lobpcg", "largest_real"}, {"subspace", "largest"} };  // excludes not converging "power"
 
     for (auto routine : routines) {
       std::cout << "routine=" << routine[0] << std::endl;

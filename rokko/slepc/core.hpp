@@ -102,7 +102,7 @@ public:
     ierr = MatSetFromOptions(A);
     ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())MatMult_myMat);
     ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
-    //ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
+    ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
 
     dimension_ = mat.get_dim();
     offset_local_ = mat.get_local_offset();
