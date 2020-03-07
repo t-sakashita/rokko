@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     cols.clear();
     values.clear();
     double diag = 0;
-    for (int l = 0;  l < lattice.size(); ++l) {
+    for (int l = 0; l < lattice.size(); ++l) {
       int i = lattice[l].first;
       int j = lattice[l].second;
       int m1 = 1 << i;
