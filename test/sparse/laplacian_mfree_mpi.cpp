@@ -35,9 +35,9 @@ void run_test(std::string const& library, MPI_Comm comm) {
     rokko::laplacian_mfree mat(dim, comm);
 
     std::vector<std::array<std::string,2>> routines;
-    if (library=="anasazi")
+    if (library == "anasazi")
       routines = { {"lobpcg", "largest_real"}, {"block_krylov_schur", "largest"}, {"rtr", "largest_real"} };  // excludes not converging "block_davidson"
-    else if (library=="slepc")
+    else if (library == "slepc")
       routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"lobpcg", "largest_real"}, {"subspace", "largest"} };  // excludes not converging "power"
 
     for (auto routine : routines) {
