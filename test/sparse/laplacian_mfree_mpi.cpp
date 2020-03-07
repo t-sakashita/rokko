@@ -26,6 +26,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
   std::cout << "library = " << library << std::endl;
 
   rokko::parameters params;
+  params.set("num_eigvals", 1);
   params.set("block_size", 5);
   params.set("max_iters", 500);
   params.set("conv_tol", eps);
