@@ -51,16 +51,18 @@ void run_test(std::string const& library, MPI_Comm comm) {
 
     std::vector<std::array<std::string,2>> routines;
     if (library=="anasazi")
-      routines = { {"lobpcg", "largest_real"}, {"block_krylov_schur", "largest"}, {"rtr", "largest_real"} };  // excludes not converging "block_davidson"
+      routines = { {"lobpcg", "largest_real"}, {"block_krylov_schur", "largest"}, {"block_davidson", "largest_real"}, {"rtr", "largest_real"} };
     else if (library=="slepc")
       routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"lobpcg", "largest_real"}, {"subspace", "largest"} };  // excludes not converging "power"
 
     for (auto routine : routines) {
       std::cout << "routine=" << routine[0] << std::endl;
-      params.set("routine", routine[0]);
-      params.set("wanted_eigenvalues", routine[1]);
+      auto params_tmp = params;
+      params_tmp.set("routine", routine[0]);
+      if (routine[0] == "block_davidson")  params_tmp.set("block_size", 10);
+      params_tmp.set("wanted_eigenvalues", routine[1]);
 
-      rokko::parameters info = solver.diagonalize(mat, params);
+      rokko::parameters info = solver.diagonalize(mat, params_tmp);
 
       int num_conv = info.get<int>("num_conv");
       if (num_conv == 0)
