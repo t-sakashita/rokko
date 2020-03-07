@@ -143,7 +143,7 @@ public:
     PetscScalar *pd;
 
     ierr = VecGetArray(diag, &pd); CHKERRQ(ierr);
-    op_ctx->diagonal(pd);
+    op_ctx->fill_diagonal(pd);
     ierr = VecRestoreArray(diag ,&pd); CHKERRQ(ierr);
 
     PetscFunctionReturn(0);

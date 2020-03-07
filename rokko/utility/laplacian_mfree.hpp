@@ -76,6 +76,15 @@ public:
     }
   }
 
+  void fill_diagonal(double *const x) const override {
+    if (num_local_rows_ == 0) return;
+
+    if (is_first_proc)  x[0] = 1.;
+
+    for(int k=is_first_proc ? 1 : 0; k<num_local_rows_; ++k)
+      x[k] = 2.;
+  }
+
 private:
   int nprocs, myrank;
   int num_local_rows_, end_k_;

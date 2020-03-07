@@ -38,6 +38,10 @@ public:
     rokko::heisenberg_hamiltonian::multiply(get_comm(), L_, lattice_, x, y, buffer_.data());
   }
 
+  void fill_diagonal(double *const x) const override {
+    rokko::heisenberg_hamiltonian::fill_diagonal(get_comm(), L_, lattice_, x);
+  }
+
 private:
   int L_;
   std::vector<std::pair<int, int>> lattice_;

@@ -25,6 +25,9 @@ public:
   virtual ~distributed_mfree() = default;
 
   virtual void multiply(const double *const x, double *const y) const = 0;
+  virtual void fill_diagonal(double* x) const {  // optional
+    throw std::runtime_error("distributed_mfree : fill_diagonal is not implemented");
+  }
   virtual int get_local_offset() const = 0;
   virtual MPI_Comm get_comm() const = 0;
 };
