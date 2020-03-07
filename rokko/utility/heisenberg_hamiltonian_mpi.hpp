@@ -158,7 +158,6 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 
 void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>> const& lattice, double* w) {
   int myrank, nproc;
-
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
@@ -166,37 +165,29 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   if (nproc != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
-
-  int N_seq = 1 << L;
-  int N = 1 << (L-p);
-  int myrank_shift = myrank * N;
-  int nproc_shift = (nproc-1) * N;
-  int mask = N - 1;
-
-  //std::cout << "myrank=" << myrank << " mask=" << mask << " nproc_shift=" << nproc_shift << " myrank_shift=" << myrank_shift << std::endl;
+  const int N = 1 << (L-p);
+  const int myrank_shift = myrank * N;
 
   for (int k=0; k<N; ++k) {
     w[k] = 0;
   }
 
-  for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
+  for (int local_k=0; local_k<N; ++local_k) {
+    const int k = local_k + myrank_shift;
+    for (std::size_t l = 0; l < lattice.size(); ++l) {
+      int i = lattice[l].first;
+      int j = lattice[l].second;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
-
-    for (int k=0; k<N_seq; ++k) {
-      if (myrank_shift == (k & nproc_shift)) {
-        if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          w[k & mask] -= 0.25;
-        } else {
-          w[k & mask] += 0.25;
-        }        
+      int m1 = 1 << i;
+      int m2 = 1 << j;
+      int m3 = m1 + m2;
+      if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
+        w[local_k] -= 0.25;
+      } else {
+        w[local_k] += 0.25;
       }
-    } // end for k
-  } // end for lattice
+    } // end for lattice
+  } // end for k
 }
 
 void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, std::vector<double>& w) {
