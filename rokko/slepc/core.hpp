@@ -23,6 +23,8 @@ namespace slepc {
 
 class solver {
 public:
+  static const std::map<std::string,EPSLanczosReorthogType> lanczos_reorthog_map;
+
   solver() {
     SlepcInitialize(NULL, NULL, (char*)NULL, NULL);
   }
@@ -73,6 +75,15 @@ public:
       return EPS_SMALLEST_REAL;
     else
       throw std::invalid_argument("get_wanted_eigenvalues: invalid parameter");
+  }
+
+  void set_lanczos_reorthog(rokko::parameters const& params) {
+    if (params.defined("reorthog")) {
+      std::string str = params.get<std::string>("reorthog");
+      if (lanczos_reorthog_map.find(str) == lanczos_reorthog_map.end())
+        throw std::invalid_argument(str + " is not lanczos reorthog in SLEPc");
+      PetscErrorCode ierr = EPSLanczosSetReorthog(eps, lanczos_reorthog_map.at(str));
+    }
   }
 
   void set_wanted_eigenvalues(rokko::parameters const& params) {
@@ -167,6 +178,10 @@ public:
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
     set_wanted_eigenvalues(params);
+
+    if (get_routine(params) == "lanczos")
+      set_lanczos_reorthog(params);
+
     // Set solver parameters at runtime
     ierr = EPSSetFromOptions(eps);
 
@@ -251,6 +266,11 @@ private:
   MPI_Comm comm_;
   EPS eps;  // eigenproblem solver context
 };
+
+const std::map<std::string,EPSLanczosReorthogType> solver::lanczos_reorthog_map{
+  {"local", EPS_LANCZOS_REORTHOG_LOCAL}, {"full", EPS_LANCZOS_REORTHOG_FULL},
+  {"selective", EPS_LANCZOS_REORTHOG_SELECTIVE}, {"periodic", EPS_LANCZOS_REORTHOG_PERIODIC},
+  {"partial", EPS_LANCZOS_REORTHOG_PARTIAL}, {"delayed", EPS_LANCZOS_REORTHOG_DELAYED} };
 
 } // namespace slepc
 
