@@ -86,6 +86,19 @@ public:
     }
   }
 
+  void set_block_size(rokko::parameters const& params) {
+    PetscErrorCode ierr;
+    if (params.defined("block_size")) {
+      int block_size = params.get<int>("block_size");
+      if (get_routine(params) == "lobpcg") {
+        //ierr = EPSLOBPCGSetBlockSize(eps, block_size);
+      }
+      if (get_routine(params) == "jd") {
+        ierr = EPSJDSetBlockSize(eps, block_size);
+      }
+    }
+  }
+
   void set_wanted_eigenvalues(rokko::parameters const& params) {
     std::string str = params.defined("wanted_eigenvalues") ? params.get_string("wanted_eigenvalues") : std::string{};
     if (!str.empty()) {
@@ -178,6 +191,8 @@ public:
     ierr = EPSSetDimensions(eps, num_evals, max_block_size, PETSC_DECIDE);
     ierr = EPSSetTolerances(eps, tol, max_iters);
     set_wanted_eigenvalues(params);
+
+    set_block_size(params);
 
     if (get_routine(params) == "lanczos")
       set_lanczos_reorthog(params);
