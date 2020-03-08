@@ -21,7 +21,7 @@ program frank_matrix
   type(rokko_eigen_vector) :: w
   character(len=20) :: library, routine
   character(len=100) :: library_routine, tmp_str
-  integer arg_len, status
+  integer :: arg_len, status
 
   integer :: provided, ierr, myrank, nprocs
 

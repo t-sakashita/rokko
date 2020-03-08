@@ -125,7 +125,7 @@ program main
   type(rokko_parallel_sparse_ev) :: solver
   character(len=100) :: library_routine, tmp_str
   character(len=50) :: library, routine
-  integer arg_len, status
+  integer :: arg_len, status
   type(rokko_distributed_mfree) :: mat
   integer :: dim, i
   integer :: num_evals, block_size, max_iters

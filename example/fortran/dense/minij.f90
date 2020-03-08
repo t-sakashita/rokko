@@ -19,8 +19,7 @@ program minij_matrix
   type(rokko_parameters) :: params, params_out
   character(len=20) :: library, routine
   character(len=20) :: solver_name, tmp_str
-  integer arg_len, status
-
+  integer :: arg_len, status
   integer :: i, info
 
   if (command_argument_count() >= 1) then
