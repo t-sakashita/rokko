@@ -92,8 +92,7 @@ public:
       int block_size = params.get<int>("block_size");
       if (get_routine(params) == "lobpcg") {
         //ierr = EPSLOBPCGSetBlockSize(eps, block_size);
-      }
-      if (get_routine(params) == "jd") {
+      } else if (get_routine(params) == "jd") {
         ierr = EPSJDSetBlockSize(eps, block_size);
       }
     }
