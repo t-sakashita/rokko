@@ -230,34 +230,27 @@ public:
     // Solve the eigensystem
     ierr = EPSSolve(eps);
 
-    print_result(params_out);
+    set_output_parameters(params_out);
 
     int myrank;
     MPI_Comm_rank(comm_, &myrank);
-    if (params.get_bool("verbose") && (myrank == 0)) {
+    if (params.get_bool("verbose") && (myrank == 0))
       info_verbose();
-    }
+
     return params_out;
   }
 
-  void print_result(rokko::parameters& params_out) const {
-    PetscErrorCode ierr;
-    // Get some information from the solver and display it
-    EPSType type;
-    ierr = EPSGetType(eps, &type);
-    ierr = PetscPrintf(comm_, " Solution method: %s\n\n",type);
-    PetscInt num_evals;
-    ierr = EPSGetDimensions(eps, &num_evals, NULL, NULL);
-    ierr = PetscPrintf(comm_, " Number of requested eigenvalues: %D\n",num_evals);
+  void set_output_parameters(rokko::parameters& params_out) const {
     int num_conv = get_num_conv();
     params_out.set("num_conv", num_conv);
-    if (num_conv == 0) {
-      std::cerr << "doesn't converge" << std::endl;
-    }
   }
 
   void info_verbose() const {
     PetscErrorCode ierr;
+
+    EPSType type;
+    ierr = EPSGetType(eps, &type);
+
     PetscInt nev, ncv, mpd;
     PetscReal tol;
     PetscInt maxits, its;
@@ -265,12 +258,17 @@ public:
     ierr = EPSGetDimensions(eps, &nev, &ncv, &mpd);
     ierr = EPSGetTolerances(eps, &tol, &maxits);
     ierr = EPSGetIterationNumber(eps, &its);
-    std::cout << "number of eigenvalues to compute=" << nev << std::endl;
-    std::cout << "maximum dimension of the subspace=" << ncv << std::endl;
-    std::cout << "maximum dimension allowed for the projected problem=" << mpd << std::endl;
-    std::cout << "convergence tolerance=" << tol << std::endl;
-    std::cout << "maximum number of iterations=" << maxits << std::endl;
-    std::cout << "number of iterations=" << its << std::endl;
+
+    std::cout << "input parameters:" << std::endl;
+    std::cout << "  solution method: " << type << std::endl;
+    std::cout << "  number of eigenvalues to compute=" << nev << std::endl;
+    std::cout << "  maximum dimension of the subspace=" << ncv << std::endl;
+    std::cout << "  maximum dimension allowed for the projected problem=" << mpd << std::endl;
+    std::cout << "  convergence tolerance=" << tol << std::endl;
+    std::cout << "  maximum number of iterations=" << maxits << std::endl;
+    std::cout << "results:" << std::endl;
+    std::cout << "  number of converged eigenpairs=" << get_num_conv() << std::endl;
+    std::cout << "  number of iterations=" << its << std::endl;
   }
   
   double eigenvalue(int i) const {
