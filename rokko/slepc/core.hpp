@@ -303,6 +303,14 @@ public:
     return static_cast<int>(num_conv);
   }
 
+  const EPS get_object() const {
+    return eps;
+  }
+
+  EPS get_object() {
+    return eps;
+  }
+
 private:
   int dimension_, offset_local_, num_local_rows_;
   MPI_Comm comm_;

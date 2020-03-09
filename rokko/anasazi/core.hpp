@@ -204,6 +204,14 @@ public:
     return problem_->getSolution().numVecs;
   }
 
+  const Teuchos::RCP<eigenproblem_t> get_object() const {
+    return problem_;
+  }
+
+  Teuchos::RCP<eigenproblem_t> get_object() {
+    return problem_;
+  }
+
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
   const rokko::anasazi::mapping_1d* map_;
