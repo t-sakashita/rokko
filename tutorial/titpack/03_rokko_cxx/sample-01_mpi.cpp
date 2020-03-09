@@ -71,10 +71,10 @@ int main(int argc, char** argv) {
   std::chrono::system_clock::time_point t3 = std::chrono::system_clock::now();
   
   if (comm.get_myrank() == 0) {
-    std::cout << "[Number of converged eigenpairs]\n\t" << solver.num_conv() << std::endl;
+    std::cout << "[Number of converged eigenpairs]\n\t" << solver.get_num_conv() << std::endl;
     // std::cout << "[Iteration number]\n\t" << itr << std::endl;
     std::cout << "[Eigenvalues]\n";
-    for (int i = 0; i < solver.num_conv(); ++i) std::cout << '\t' << solver.eigenvalue(i);
+    for (int i = 0; i < solver.get_num_conv(); ++i) std::cout << '\t' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 

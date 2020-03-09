@@ -57,7 +57,8 @@ int main(int argc, char** argv) {
   solver.initialize(argc, argv);
 
   // Hamiltonian matrix
-  rokko::distributed_crs_matrix mat(hop.dimension(), hop.dimension(), solver);
+  auto map = solver.default_mapping(hop.dimension(), rokko::mpi_comm{MPI_COMM_WORLD});
+  rokko::distributed_crs_matrix mat(map, hop.num_bonds() + 1);
   elm2_mpi(hop, mat);
   MPI_Barrier(comm.get_comm());
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
@@ -72,10 +73,10 @@ int main(int argc, char** argv) {
   std::chrono::system_clock::time_point t3 = std::chrono::system_clock::now();
   
   if (comm.get_myrank() == 0) {
-    std::cout << "[Number of converged eigenpairs]\n\t" << solver.num_conv() << std::endl;
+    std::cout << "[Number of converged eigenpairs]\n\t" << solver.get_num_conv() << std::endl;
     // std::cout << "[Iteration number]\n\t" << itr << std::endl;
     std::cout << "[Eigenvalues]\n";
-    for (int i = 0; i < solver.num_conv(); ++i) std::cout << '\t' << solver.eigenvalue(i);
+    for (int i = 0; i < solver.get_num_conv(); ++i) std::cout << '\t' << solver.eigenvalue(i);
     std::cout << std::endl;
   }
 

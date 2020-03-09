@@ -19,7 +19,7 @@
 // hamiltonian
 //
 
-class hamiltonian : public rokko::distributed_mfree {
+class hamiltonian : public rokko::distributed_mfree_default {
 public:
   hamiltonian(subspace const& ss, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio);
