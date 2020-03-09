@@ -1,7 +1,7 @@
 #
 # Rokko: Integrated Interface for libraries of eigenvalue decomposition
 #
-# Copyright (C) 2012-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+# Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,6 +13,7 @@ project(myproject NONE)
 find_package(Rokko REQUIRED HINTS ${ROKKO_ROOT_DIR} $ENV{ROKKO_ROOT})
 message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
 include(${ROKKO_USE_FILE})
+display_rokko_components()
 
 enable_testing()
 include(CTest)
