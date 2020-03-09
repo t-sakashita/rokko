@@ -172,12 +172,12 @@ public:
     
     bool boolret = problem_->setProblem();
     if (!boolret) {
-      throw std::invalid_argument("anasazi::diagonalize : Return value from setProblem() is false");
+      throw std::invalid_argument("anasazi::solver::diagonalize : Return value from setProblem() is false");
     }
 
     Anasazi::ReturnType returnCode = solvermanager->solve();
-    if (returnCode == Anasazi::Unconverged) {
-      std::cout << "solvermanager.solve() does not converge." << std::endl;
+    if (params.get_bool("verbose") && (returnCode == Anasazi::Unconverged)) {
+      std::cout << "anasazi::solver::diagonalize : solve() does not converge." << std::endl;
     }
     parameters params_out;
     params_out.set("num_conv", get_num_conv());
