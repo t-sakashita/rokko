@@ -161,6 +161,8 @@ public:
     return diagonalize_common(A, params);
   }
 
+  #undef __FUNCT__
+  #define __FUNCT__ "slepc::solver::MatMult_myMat"
   static PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
     PetscFunctionBeginUser;
     PetscErrorCode ierr;
@@ -182,6 +184,8 @@ public:
     PetscFunctionReturn(0);
   }
 
+  #undef __FUNCT__
+  #define __FUNCT__ "slepc::solver::MatGetDiagonal_myMat"
   static PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
     PetscFunctionBeginUser;
     PetscErrorCode ierr;
