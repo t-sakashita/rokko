@@ -146,7 +146,7 @@ public:
   }
 
   parameters diagonalize(const rokko::anasazi::distributed_crs_matrix& mat, rokko::parameters const& params) {
-    map_ = mat.get_map();
+    map_ = mat.get_map_ptr();
     return diagonalize_common(mat.get_matrix(), params);
   }
 

@@ -132,7 +132,8 @@ public:
     }
   }
 
-  const rokko::anasazi::mapping_1d* get_map() const { return map_; }
+  const rokko::anasazi::mapping_1d* get_map_ptr() const { return map_; }
+  const rokko::anasazi::mapping_1d& get_map() const { return *map_; }
 
   ps_crs_base* get_impl() { return this; }
   const ps_crs_base* get_impl() const { return this; }

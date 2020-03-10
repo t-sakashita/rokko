@@ -144,7 +144,7 @@ public:
     MatRestoreRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
   }
   void output_matrix_market(std::ostream& os = std::cout) const {
-    const auto& comm = get_map()->get_mpi_comm();
+    const auto& comm = get_map().get_mpi_comm();
     constexpr int root_proc = 0;
     std::vector<int> cols;
     std::vector<double> values;
@@ -166,7 +166,7 @@ public:
     }
   }
 
-  const rokko::slepc::mapping_1d* get_map() const { return map_; }
+  const rokko::slepc::mapping_1d& get_map() const { return *map_; }
 
   ps_crs_base* get_impl() { return this; }
   const ps_crs_base* get_impl() const { return this; }
