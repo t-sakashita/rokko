@@ -139,23 +139,9 @@ module rokko_parallel_sparse_ev_mod
 
   end interface rokko_parallel_sparse_ev_diagonalize
 
-  ! constructor for CRS
-  interface
-     subroutine rokko_distributed_crs_matrix_construct_old(matrix, dim1, dim2, solver) &
-       & bind(c,name='rokko_distributed_crs_matrix_construct')
-       use iso_c_binding
-       import rokko_parallel_sparse_ev, rokko_distributed_crs_matrix
-       implicit none
-       type(rokko_distributed_crs_matrix), intent(out) :: matrix
-       integer(c_int), value, intent(in) :: dim1, dim2
-       type(rokko_parallel_sparse_ev), value, intent(in) :: solver
-     end subroutine rokko_distributed_crs_matrix_construct_old
-  end interface
-
   ! generic names
   interface rokko_construct
      procedure rokko_parallel_sparse_ev_construct
-     procedure rokko_distributed_crs_matrix_construct_old
   end interface rokko_construct
 
   interface rokko_destruct
