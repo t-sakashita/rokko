@@ -14,6 +14,7 @@
 module rokko
   use iso_c_binding
   use solver_name_utility
+  use command_line_mod
   use parameters
   use rokko_dense
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER

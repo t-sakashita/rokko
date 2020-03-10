@@ -26,9 +26,8 @@ program heisenberg_crs_mpi
   type(rokko_parallel_sparse_ev) :: solver
   type(rokko_mapping_1d) :: map
   type(rokko_distributed_crs_matrix) :: mat
-  character(len=100) :: library_routine, tmp_str
-  character(len=50) :: library, routine
-  integer :: arg_len, status
+  character(len=:), allocatable :: library_routine, tmp_str
+  character(len=:), allocatable :: library, routine
   type(rokko_parameters) :: params, params_out
   integer :: num_local_rows, num_conv
 
@@ -37,14 +36,14 @@ program heisenberg_crs_mpi
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
   if (command_argument_count() >= 1) then
-     call get_command_argument(1, library_routine, arg_len, status)
+     call get_command_argument_deferred(1, library_routine)
   else
      call rokko_parallel_sparse_ev_default_solver(library_routine)
   endif
   call rokko_split_solver_name(library_routine, library, routine)
   
   if (command_argument_count() == 2) then  
-     call get_command_argument(2, tmp_str, arg_len, status)
+     call get_command_argument_deferred(2, tmp_str)
      read(tmp_str, *) dim
   else
      dim = 100

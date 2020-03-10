@@ -168,11 +168,18 @@ contains
   end subroutine rokko_serial_dense_ev_construct
 
   subroutine rokko_serial_dense_ev_default_solver(name)
+    character(len=:), allocatable, intent(out) :: name
+    type(c_ptr) :: name_ptr
+    name_ptr = rokko_serial_dense_ev_default_solver_c ()
+    call rokko_get_string(name_ptr, name)
+  end subroutine rokko_serial_dense_ev_default_solver
+
+  subroutine rokko_serial_dense_ev_default_solver_fixedsize(name)
     character(len=*), intent(out) :: name
     type(c_ptr) :: name_ptr
     name_ptr = rokko_serial_dense_ev_default_solver_c ()
     call rokko_get_string_fixedsize (name_ptr, name)
-  end subroutine rokko_serial_dense_ev_default_solver
+  end subroutine rokko_serial_dense_ev_default_solver_fixedsize
 
   subroutine rokko_serial_dense_ev_num_solvers(num)
     integer, intent(out) :: num

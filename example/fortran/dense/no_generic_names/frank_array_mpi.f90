@@ -19,9 +19,8 @@ program frank_matrix
   type(rokko_mapping_bc) :: map
   type(rokko_distributed_matrix) :: mat, Z
   type(rokko_eigen_vector) w
-  character(len=20) :: library, routine
-  character(len=100) :: library_routine, tmp_str
-  integer arg_len, status
+  character(len=:), allocatable :: library, routine
+  character(len=:), allocatable :: library_routine, tmp_str
  
   double precision, allocatable, dimension(:,:) :: array
 
@@ -33,14 +32,14 @@ program frank_matrix
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
 
   if (command_argument_count() >= 1) then
-     call get_command_argument(1, library_routine, arg_len, status)
+     call get_command_argument_deferred(1, library_routine)
   else
      call rokko_parallel_dense_ev_default_solver(library_routine)
   endif
   call rokko_split_solver_name(library_routine, library, routine)
 
   if (command_argument_count() == 2) then  
-     call get_command_argument(2, tmp_str, arg_len, status)
+     call get_command_argument_deferred(2, tmp_str)
      read(tmp_str, *) dim
   else
      dim = 10
