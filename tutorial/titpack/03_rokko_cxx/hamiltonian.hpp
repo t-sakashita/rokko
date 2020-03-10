@@ -19,7 +19,7 @@
 // hamiltonian
 //
 
-class hamiltonian : public rokko::distributed_mfree_default {
+class hamiltonian : public rokko::distributed_mfree {
 public:
   hamiltonian(subspace const& ss, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio);
@@ -35,10 +35,11 @@ public:
   double z_ratio (int k) const { return zrtio_[k]; }
   void multiply(const double *v1, double *v0) const;
 
-  // for rokko distributed_mfree
+  // for rokko distributed_mfree (It can be run only with 1 MPI proc.)
   int get_dim() const { return dimension(); }
   int get_local_offset() const { return 0; }
   int get_num_local_rows() const { return dimension(); }
+  MPI_Comm get_comm() const { return MPI_COMM_WORLD; }
   
 private:
   subspace const& ss_;
