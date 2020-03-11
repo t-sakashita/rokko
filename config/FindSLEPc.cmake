@@ -63,6 +63,7 @@ else(SLEPC_DIR)
     return()
   endif(SLEPC_DIR)
 endif(SLEPC_DIR)
+message(STATUS "SLEPc include directory: ${SLEPC_INCLUDE_DIR}")
 
 find_library(SLEPC_LIBRARIES
   NAMES slepc
@@ -73,7 +74,6 @@ find_library(SLEPC_LIBRARIES
 mark_as_advanced(SLEPC_LIBRARIES)
 
 set(SLEPC_FOUND TRUE)
-message(STATUS "SLEPc include directory: ${SLEPC_INCLUDE_DIR}")
 message(STATUS "SLEPc libraries: ${SLEPC_LIBRARIES}")
 
 return()

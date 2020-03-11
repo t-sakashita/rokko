@@ -58,6 +58,7 @@ else(PETSC_DIR)
     return()
   endif(PETSC_DIR)
 endif(PETSC_DIR)
+message(STATUS "PETSc include directory: ${PETSC_INCLUDE_DIR}")
 
 find_library(_PETSC_LIBRARY
   NAMES petsc
@@ -74,6 +75,5 @@ endif(_PETSC_LIBRARY)
 set(PETSC_DEFINITIONS "-D__INSDIR__=" CACHE STRING "PETSc definitions" FORCE)
 
 set(PETSC_FOUND TRUE)
-message(STATUS "PETSc include directory: ${PETSC_INCLUDE_DIR}")
 message(STATUS "PETSc libraries: ${PETSC_LIBRARIES}")
 message(STATUS "PETSc definitions: ${PETSC_DEFINITIONS}")

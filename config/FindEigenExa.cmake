@@ -43,6 +43,7 @@ find_path(EIGENEXA_DIR include/eigen_libs_mod.mod PATHS ${_PATHS} DOC "EigenExa 
 
 if(EIGENEXA_DIR)
   set(EIGENEXA_INCLUDE_DIR "${EIGENEXA_DIR}/include")
+  message(STATUS "EigenExa include directory: ${EIGENEXA_INCLUDE_DIR}")
 else(EIGENEXA_DIR)
   message(STATUS "EigenExa library: include file not found")
   return()
@@ -61,5 +62,4 @@ else(_EIGENEXA_LIBRARY)
 endif(_EIGENEXA_LIBRARY)
 
 set(EIGENEXA_FOUND TRUE)
-message(STATUS "EigenExa include directory: ${EIGENEXA_INCLUDE_DIR}")
 message(STATUS "EigenExa libraries: ${EIGENEXA_LIBRARIES}")

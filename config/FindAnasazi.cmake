@@ -44,6 +44,7 @@ find_path(ANASAZI_DIR include/Anasazi_config.h PATHS ${_PATHS} DOC "Anasazi dire
 
 if(ANASAZI_DIR)
   set(ANASAZI_INCLUDE_DIR "${ANASAZI_DIR}/include")
+  message(STATUS "Anasazi include directory: ${ANASAZI_INCLUDE_DIR}")
 else(ANASAZI_DIR)
   message(STATUS "Anasazi library: include file not found")
   return()
@@ -63,7 +64,6 @@ endforeach(name)
 # mark_as_advanced(ANASAZI_LIBRARIES)
 
 if(${ANASAZI_FOUND})
-  message(STATUS "Anasazi include directory: ${ANASAZI_INCLUDE_DIR}")
   message(STATUS "Anasazi libraries: ${ANASAZI_LIBRARIES}")
 else(${ANASAZI_FOUND})
   message(STATUS "Anasazi library: library file not found")
