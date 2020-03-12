@@ -36,12 +36,6 @@ public:
   explicit distributed_crs_matrix(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
     initialize(map, num_entries_per_row);
   }
-  explicit distributed_crs_matrix(std::array<int,2> const& dims) {
-    initialize(dims);
-  }
-  explicit distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) {
-    initialize(dims, num_entries_per_row);
-  }
 
   void initialize(rokko::mapping_1d const& map, int num_entries_per_row) {
     if (map.get_solver_name() != "slepc") {
@@ -60,25 +54,6 @@ public:
     ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);
   }
 
-  #undef __FUNCT__
-  #define __FUNCT__ "distributed_crs_matrix/initialize"
-  void initialize(std::array<int,2> const& dims) {
-    map_ = new rokko::slepc::mapping_1d(dims[0]);
-    ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dims[0], dims[1]);  //CHKERRQ(ierr);
-    ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetUp(matrix_);  //CHKERRQ(ierr);
-  }
-  #undef __FUNCT__
-  #define __FUNCT__ "distributed_crs_matrix/initialize with num_entries_per_row"
-  void initialize(std::array<int,2> const& dims, int num_entries_per_row) {
-    map_ = new rokko::slepc::mapping_1d(dims[0]);
-    ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dims[0], dims[1]);  //CHKERRQ(ierr);
-    ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
-    ierr = MatSeqAIJSetPreallocation(matrix_, num_entries_per_row, NULL);
-    ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);
-  }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {

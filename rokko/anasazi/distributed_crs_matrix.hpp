@@ -38,12 +38,6 @@ public:
     initialize(map, num_entries_per_row);
   }
 
-  explicit distributed_crs_matrix(std::array<int,2> const& dims) {
-    initialize(dims);
-  }
-  explicit distributed_crs_matrix(std::array<int,2> const& dims, int num_entries_per_row) {
-    initialize(dims, num_entries_per_row);
-  }
   void initialize(rokko::mapping_1d const& map, int num_entries_per_row) {
     if (map.get_solver_name() != "anasazi") {
       throw std::invalid_argument("Anasazi's distributed_crs_matrix() : " + map.get_solver_name() + "'s mapping_1d is given.");
@@ -53,14 +47,6 @@ public:
   }
   void initialize(rokko::anasazi::mapping_1d const& map, int num_entries_per_row) {
     map_ = &map;
-    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
-  }
-  void initialize(std::array<int,2> const& dims) {
-    map_ = new rokko::anasazi::mapping_1d(dims[0]);
-    matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), dims[1]));
-  }
-  void initialize(std::array<int,2> const& dims, int num_entries_per_row) { // ignoring dims[1]
-    map_ = new rokko::anasazi::mapping_1d(dims[0]);
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
 
