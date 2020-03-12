@@ -55,7 +55,7 @@ if(ELPA_INCLUDE_DIR)
 else(ELPA_INCLUDE_DIR)
   message(STATUS "ELPA library: include file not found")
   return()
-endif(NOT ELPA_INCLUDE_DIR)
+endif(ELPA_INCLUDE_DIR)
 
 foreach (_PATH ${_PATHS})
   list(APPEND _LIBPATHS "${_PATH}/lib")
