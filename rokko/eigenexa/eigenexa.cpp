@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/parallel_dense_ev.hpp>
-#include <rokko/eigenexa/core.hpp>
+#include <rokko/eigenexa/solver.hpp>
 
 ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::eigenexa::solver, "eigenexa", 40)

@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/parallel_sparse_ev.hpp>
-#include <rokko/slepc/core.hpp>
+#include <rokko/slepc/solver.hpp>
 #include <rokko/slepc/mapping_1d.hpp>
 #include <rokko/slepc/distributed_crs_matrix.hpp>
 

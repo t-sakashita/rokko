@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/serial_dense_ev.hpp>
-#include <rokko/eigen3/core.hpp>
+#include <rokko/eigen3/solver.hpp>
 
 ROKKO_REGISTER_SERIAL_DENSE_SOLVER(rokko::eigen3::solver, "eigen3", 10)

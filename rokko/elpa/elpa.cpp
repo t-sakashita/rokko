@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/parallel_dense_ev.hpp>
-#include <rokko/elpa/core.hpp>
+#include <rokko/elpa/solver.hpp>
 
 ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::elpa::solver, "elpa", 30)

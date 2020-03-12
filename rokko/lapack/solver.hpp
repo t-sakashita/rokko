@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_CORE_HPP
-#define ROKKO_LAPACK_CORE_HPP
+#ifndef ROKKO_LAPACK_SOLVER_HPP
+#define ROKKO_LAPACK_SOLVER_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/lapack/diagonalize_dsyev.hpp>
@@ -137,4 +137,4 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_CORE_HPP
+#endif // ROKKO_LAPACK_SOLVER_HPP

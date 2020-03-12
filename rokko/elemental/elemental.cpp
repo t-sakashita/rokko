@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/parallel_dense_ev.hpp>
-#include <rokko/elemental/core.hpp>
+#include <rokko/elemental/solver.hpp>
 
 ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::elemental::solver, "elemental", 10)

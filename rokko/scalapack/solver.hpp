@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_CORE_HPP
-#define ROKKO_SCALAPACK_CORE_HPP
+#ifndef ROKKO_SCALAPACK_SOLVER_HPP
+#define ROKKO_SCALAPACK_SOLVER_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/scalapack/diagonalize_pdsyev.hpp>
@@ -131,4 +131,4 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 } // namespace sclapack
 } // namespace rokko
 
-#endif // ROKKO_SCALAPACK_CORE_HPP
+#endif // ROKKO_SCALAPACK_SOLVER_HPP

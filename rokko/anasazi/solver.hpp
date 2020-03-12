@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_CORE_HPP
-#define ROKKO_ANASAZI_CORE_HPP
+#ifndef ROKKO_ANASAZI_SOLVER_HPP
+#define ROKKO_ANASAZI_SOLVER_HPP
 
 #include <tuple>
 
@@ -224,4 +224,4 @@ const std::vector<std::string> solver::names{ "lobpcg", "block_krylov_schur", "b
 
 } // namespace rokko
 
-#endif // ROKKO_ANASAZI_CORE_HPP
+#endif // ROKKO_ANASAZI_SOLVER_HPP

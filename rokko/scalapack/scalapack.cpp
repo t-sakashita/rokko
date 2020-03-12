@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/parallel_dense_ev.hpp>
-#include <rokko/scalapack/core.hpp>
+#include <rokko/scalapack/solver.hpp>
 
 ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(rokko::scalapack::solver, "scalapack", 20)

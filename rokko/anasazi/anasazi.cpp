@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/parallel_sparse_ev.hpp>
-#include <rokko/anasazi/core.hpp>
+#include <rokko/anasazi/solver.hpp>
 #include <rokko/anasazi/mapping_1d.hpp>
 #include <rokko/anasazi/distributed_crs_matrix.hpp>
 

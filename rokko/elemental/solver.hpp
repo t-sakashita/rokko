@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELEMENTAL_CORE_HPP
-#define ROKKO_ELEMENTAL_CORE_HPP
+#ifndef ROKKO_ELEMENTAL_SOLVER_HPP
+#define ROKKO_ELEMENTAL_SOLVER_HPP
 
 #include <El.hpp>
 #include <rokko/parameters.hpp>
@@ -62,4 +62,4 @@ public:
 } // namespace elemental
 } // namespace rokko
 
-#endif // ROKKO_ELEMENTAL_CORE_HPP
+#endif // ROKKO_ELEMENTAL_SOLVER_HPP

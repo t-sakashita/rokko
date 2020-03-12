@@ -10,6 +10,6 @@
 *****************************************************************************/
 
 #include <rokko/serial_dense_ev.hpp>
-#include <rokko/lapack/core.hpp>
+#include <rokko/lapack/solver.hpp>
 
 ROKKO_REGISTER_SERIAL_DENSE_SOLVER(rokko::lapack::solver, "lapack", 20)
