@@ -48,7 +48,7 @@ public:
     map_ = &map;
     int dim = map_->get_dim();
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
-    ierr = MatSetSizes(matrix_, PETSC_DECIDE, PETSC_DECIDE, dim, dim);  //CHKERRQ(ierr);
+    ierr = MatSetSizes(matrix_, map_->get_num_local_rows(), map_->get_num_local_rows(), dim, dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
     ierr = MatSeqAIJSetPreallocation(matrix_, num_entries_per_row, NULL);
     ierr = MatMPIAIJSetPreallocation(matrix_, num_entries_per_row, NULL, num_entries_per_row, NULL);
