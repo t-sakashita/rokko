@@ -134,7 +134,7 @@ public:
   parameters diagonalize(const rokko::slepc::distributed_crs_matrix& mat, rokko::parameters const& params) {
     dimension_ = mat.get_dim();
     offset_local_ = mat.start_row();
-    num_local_rows_ = mat.num_local_rows();
+    num_local_rows_ = mat.get_num_local_rows();
     comm_ = mat.get_map().get_mpi_comm().get_comm();
 
     return diagonalize_common(mat.get_matrix(), params);

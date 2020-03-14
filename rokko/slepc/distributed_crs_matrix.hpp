@@ -77,7 +77,7 @@ public:
   int get_dim() const {
     return map_->get_dim();
   }
-  int num_local_rows() const {
+  int get_num_local_rows() const {
     int start_row, end_row;
     PetscErrorCode ierr = MatGetOwnershipRange(matrix_, &start_row, &end_row); //CHKERRQ(ierr);
     return end_row - start_row;

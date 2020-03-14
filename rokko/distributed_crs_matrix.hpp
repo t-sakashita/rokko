@@ -29,7 +29,7 @@ public:
   virtual void complete() = 0;
   virtual void extract(int row, std::vector<int>& cols, std::vector<double>& values) const = 0;
   virtual int get_dim() const = 0;
-  virtual int num_local_rows() const = 0;
+  virtual int get_num_local_rows() const = 0;
   virtual int start_row() const = 0;
   virtual int end_row() const = 0;
   virtual int get_nnz() const = 0;
@@ -59,7 +59,7 @@ public:
     crs_impl_.extract(row, cols, values);
   }
   int get_dim() const { return crs_impl_.get_dim(); }
-  int num_local_rows() const { return crs_impl_.num_local_rows(); }
+  int get_num_local_rows() const { return crs_impl_.get_num_local_rows(); }
   int start_row() const { return crs_impl_.start_row(); }
   int end_row() const { return crs_impl_.end_row(); }
   int get_nnz() const { return crs_impl_.get_nnz(); }
@@ -106,8 +106,8 @@ public:
   int get_dim() const {
     return crs_impl_->get_dim();
   }
-  int num_local_rows() const {
-    return crs_impl_->num_local_rows();
+  int get_num_local_rows() const {
+    return crs_impl_->get_num_local_rows();
   }
   int start_row() const {
     return crs_impl_->start_row();

@@ -83,7 +83,7 @@ public:
   int get_dim() const {
     return map_->get_dim();
   }
-  int num_local_rows() const {
+  int get_num_local_rows() const {
     return map_->get_num_local_rows();
   }
   int start_row() const {

@@ -38,7 +38,7 @@ int rokko_distributed_crs_matrix_end_row(struct rokko_distributed_crs_matrix mat
 }
 
 int rokko_distributed_crs_matrix_num_local_rows(struct rokko_distributed_crs_matrix matrix) {
-  return static_cast<rokko::distributed_crs_matrix*>(matrix.ptr)->num_local_rows();
+  return static_cast<rokko::distributed_crs_matrix*>(matrix.ptr)->get_num_local_rows();
 }
 
 void rokko_distributed_crs_matrix_print(struct rokko_distributed_crs_matrix matrix) {
