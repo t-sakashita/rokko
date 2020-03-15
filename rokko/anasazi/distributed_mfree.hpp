@@ -28,8 +28,8 @@ public:
   anasazi_mfree_operator(rokko::distributed_mfree const*const op, mapping_1d const& map) :
     op_(op), ep_map(map.get_epetra_map()), ep_comm(map.get_epetra_comm()) {}
   ~anasazi_mfree_operator() = default;
-  virtual int SetUseTranspose(bool UseTranspose) { return 0; };
-  virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
+  virtual int SetUseTranspose(bool UseTranspose) override { return 0; };
+  virtual int Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const override {
     const int numvectors = X.NumVectors();
     Y.PutScalar(0);
     for (int i=0; i<numvectors; ++i) {
@@ -39,14 +39,14 @@ public:
     }
     return 0;
   }
-  virtual int ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const { return 0; }
-  virtual double NormInf() const { return 0; }
-  virtual const char * Label() const { return "Anasazi matrix_free"; }
-  virtual bool UseTranspose() const { return false; }
-  virtual bool HasNormInf() const  { return false; }
-  virtual const Epetra_Comm & Comm() const { return ep_comm; }
-  virtual const Epetra_Map & OperatorDomainMap() const { return ep_map; }
-  virtual const Epetra_Map & OperatorRangeMap() const { return ep_map; }
+  virtual int ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const override { return 0; }
+  virtual double NormInf() const override { return 0; }
+  virtual const char * Label() const override { return "Anasazi matrix_free"; }
+  virtual bool UseTranspose() const override { return false; }
+  virtual bool HasNormInf() const override { return false; }
+  virtual const Epetra_Comm & Comm() const override { return ep_comm; }
+  virtual const Epetra_Map & OperatorDomainMap() const override { return ep_map; }
+  virtual const Epetra_Map & OperatorRangeMap() const override { return ep_map; }
 
 private:
   distributed_mfree const*const op_;
