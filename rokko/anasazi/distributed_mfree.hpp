@@ -25,7 +25,7 @@ namespace anasazi {
 
 class anasazi_mfree_operator : public Epetra_Operator {
 public:
-  anasazi_mfree_operator(rokko::distributed_mfree const*const op, mapping_1d const& map) :
+  anasazi_mfree_operator(rokko::distributed_mfree const& op, mapping_1d const& map) :
     op_(op), ep_map(map.get_epetra_map()), ep_comm(map.get_epetra_comm()) {}
   ~anasazi_mfree_operator() = default;
   virtual int SetUseTranspose(bool UseTranspose) override { return 0; };
@@ -35,7 +35,7 @@ public:
     for (int i=0; i<numvectors; ++i) {
       const double* x = X[i];
       double* y = Y[i];
-      op_->multiply(x, y);
+      op_.multiply(x, y);
     }
     return 0;
   }
@@ -49,7 +49,7 @@ public:
   virtual const Epetra_Map & OperatorRangeMap() const override { return ep_map; }
 
 private:
-  distributed_mfree const*const op_;
+  const distributed_mfree& op_;
   Epetra_MpiComm ep_comm;
   Epetra_Map ep_map;
 };

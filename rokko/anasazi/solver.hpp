@@ -155,7 +155,7 @@ public:
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
     map_ = new mapping_1d(mat.get_dim(), mpi_comm{mat.get_comm()});
-    Teuchos::RCP<const anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(&mat, *map_));
+    Teuchos::RCP<const anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
     return diagonalize_common(anasazi_op, params);
   }
 
