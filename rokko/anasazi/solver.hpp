@@ -142,6 +142,9 @@ public:
   }
 
   parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    if (mat.get_solver_name() != "anasazi") {
+      throw std::invalid_argument("rokko::anasazi::solver::diagonalize() : " + mat.get_solver_name() + "'s distributed_crs_matrix is given.");
+    }
     return diagonalize(*static_cast<const rokko::anasazi::distributed_crs_matrix*>(mat.get_ptr()->get_impl()), params);
   }
 
