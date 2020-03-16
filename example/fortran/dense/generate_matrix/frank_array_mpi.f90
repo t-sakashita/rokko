@@ -41,9 +41,9 @@ program generate_frank_array_mpi
   m_local = rokko_get_m_local(map)
   n_local = rokko_get_n_local(map)
   do local_j = 0, n_local-1
-     global_j = rokko_translate_l2g_col(map, local_j)
+     global_j = rokko_translate_l2g_col0(map, local_j)
      do local_i = 0, m_local-1
-        global_i = rokko_translate_l2g_row(map, local_i)
+        global_i = rokko_translate_l2g_row0(map, local_i)
         array(local_i+1, local_j+1) = dim - max(global_i, global_j)
      enddo
   enddo

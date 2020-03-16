@@ -47,10 +47,10 @@ int rokko_mapping_bc_translate_l2g_col(struct rokko_mapping_bc map, int local_j)
 int rokko_mapping_bc_translate_g2l_row(struct rokko_mapping_bc map, int global_i);
 int rokko_mapping_bc_translate_g2l_col(struct rokko_mapping_bc map, int global_j);
 /* offset by one for Fortran */
-int rokko_mapping_bc_translate_l2g_row_f(struct rokko_mapping_bc map, int local_i);
-int rokko_mapping_bc_translate_l2g_col_f(struct rokko_mapping_bc map, int local_j);
-int rokko_mapping_bc_translate_g2l_row_f(struct rokko_mapping_bc map, int global_i);
-int rokko_mapping_bc_translate_g2l_col_f(struct rokko_mapping_bc map, int global_j);
+int rokko_mapping_bc_translate_l2g_row1(struct rokko_mapping_bc map, int local_i);
+int rokko_mapping_bc_translate_l2g_col1(struct rokko_mapping_bc map, int local_j);
+int rokko_mapping_bc_translate_g2l_row1(struct rokko_mapping_bc map, int global_i);
+int rokko_mapping_bc_translate_g2l_col1(struct rokko_mapping_bc map, int global_j);
 bool rokko_mapping_bc_is_row_major(struct rokko_mapping_bc map);
 bool rokko_mapping_bc_is_col_major(struct rokko_mapping_bc map);
 

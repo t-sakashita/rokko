@@ -63,10 +63,10 @@ program minij_matrix
   n_local = rokko_get_n_local(map)
 
   do local_j = 1, n_local
-     global_j = rokko_translate_l2g_col_f(map, local_j)
+     global_j = rokko_translate_l2g_col(map, local_j)
      do local_i = 1, m_local
-        global_i = rokko_translate_l2g_row_f(map, local_i)
-        call rokko_set_local_f(mat, local_i, local_j, dble(min(global_i,global_j)))
+        global_i = rokko_translate_l2g_row(map, local_i)
+        call rokko_set_local(mat, local_i, local_j, dble(min(global_i,global_j)))
      enddo
   enddo
 

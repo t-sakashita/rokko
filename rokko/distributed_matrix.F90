@@ -23,13 +23,30 @@ module rokko_distributed_matrix_mod
   ! generic names
   interface rokko_construct
      procedure rokko_distributed_matrix_construct
-     procedure rokko_distributed_matrix_construct_array_f
+     module procedure rokko_distributed_matrix_construct_array1
   end interface rokko_construct
 
   interface rokko_destruct
      procedure rokko_distributed_matrix_destruct
   end interface rokko_destruct
 
+  interface rokko_get_global0
+     procedure rokko_distributed_matrix_get_global0
+  end interface rokko_get_global0
+
+  interface rokko_get_local0
+     procedure rokko_distributed_matrix_get_local0
+  end interface rokko_get_local0
+
+  interface rokko_set_global0
+     procedure rokko_distributed_matrix_set_global0
+  end interface rokko_set_global0
+
+  interface rokko_set_local0
+     procedure rokko_distributed_matrix_set_local0
+  end interface rokko_set_local0
+
+  ! offset by one
   interface rokko_get_global
      procedure rokko_distributed_matrix_get_global
   end interface rokko_get_global
@@ -45,23 +62,6 @@ module rokko_distributed_matrix_mod
   interface rokko_set_local
      procedure rokko_distributed_matrix_set_local
   end interface rokko_set_local
-
-  ! offset by one
-  interface rokko_get_global_f
-     procedure rokko_distributed_matrix_get_global_f
-  end interface rokko_get_global_f
-
-  interface rokko_get_local_f
-     procedure rokko_distributed_matrix_get_local_f
-  end interface rokko_get_local_f
-
-  interface rokko_set_global_f
-     procedure rokko_distributed_matrix_set_global_f
-  end interface rokko_set_global_f
-
-  interface rokko_set_local_f
-     procedure rokko_distributed_matrix_set_local_f
-  end interface rokko_set_local_f
 
   interface rokko_get_mb
      procedure rokko_distributed_matrix_get_mb
@@ -99,6 +99,23 @@ module rokko_distributed_matrix_mod
      procedure rokko_distributed_matrix_get_n_size
   end interface rokko_get_n_size
 
+  interface rokko_translate_l2g_row0
+     procedure rokko_distributed_matrix_translate_l2g_row0
+  end interface rokko_translate_l2g_row0
+
+  interface rokko_translate_l2g_col0
+     procedure rokko_distributed_matrix_translate_l2g_col0
+  end interface rokko_translate_l2g_col0
+
+  interface rokko_translate_g2l_row0
+     procedure rokko_distributed_matrix_translate_g2l_row0
+  end interface rokko_translate_g2l_row0
+
+  interface rokko_translate_g2l_col0
+     procedure rokko_distributed_matrix_translate_g2l_col0
+  end interface rokko_translate_g2l_col0
+
+  ! offset by one
   interface rokko_translate_l2g_row
      procedure rokko_distributed_matrix_translate_l2g_row
   end interface rokko_translate_l2g_row
@@ -115,23 +132,6 @@ module rokko_distributed_matrix_mod
      procedure rokko_distributed_matrix_translate_g2l_col
   end interface rokko_translate_g2l_col
 
-  ! offset by one
-  interface rokko_translate_l2g_row_f
-     procedure  rokko_distributed_matrix_translate_l2g_row_f
-  end interface rokko_translate_l2g_row_f
-
-  interface rokko_translate_l2g_col_f
-     procedure  rokko_distributed_matrix_translate_l2g_col_f
-  end interface rokko_translate_l2g_col_f
-
-  interface rokko_translate_g2l_row_f
-     procedure  rokko_distributed_matrix_translate_g2l_row_f
-  end interface rokko_translate_g2l_row_f
-
-  interface rokko_translate_g2l_col_f
-     procedure  rokko_distributed_matrix_translate_g2l_col_f
-  end interface rokko_translate_g2l_col_f
-
   interface rokko_is_row_major
      procedure rokko_distributed_matrix_is_row_major
   end interface rokko_is_row_major
@@ -140,14 +140,14 @@ module rokko_distributed_matrix_mod
      procedure rokko_distributed_matrix_is_col_major
   end interface rokko_is_col_major
 
+  interface rokko_generate0
+     module procedure rokko_distributed_matrix_generate_function0
+  end interface rokko_generate0
+
   interface rokko_generate
      module procedure rokko_distributed_matrix_generate_function
      module procedure rokko_distributed_matrix_generate_from_array
   end interface rokko_generate
-
-  interface rokko_generate_f
-     module procedure rokko_distributed_matrix_generate_function_f
-  end interface rokko_generate_f
 
   interface rokko_get_array_pointer
      module procedure rokko_distributed_matrix_get_array_pointer
@@ -185,21 +185,22 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_matrix_destruct
      
-     subroutine rokko_distributed_matrix_generate_function_p(matrix, cproc) bind(c)
+     subroutine rokko_distributed_matrix_generate_function0_p(matrix, cproc) &
+          & bind(c,name="rokko_distributed_matrix_generate_function_p")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_distributed_matrix_generate_function_p
+     end subroutine rokko_distributed_matrix_generate_function0_p
 
-     subroutine rokko_distributed_matrix_generate_function_f_p(matrix, cproc) bind(c)
+     subroutine rokko_distributed_matrix_generate_function1_p(matrix, cproc) bind(c)
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_distributed_matrix_generate_function_f_p
+     end subroutine rokko_distributed_matrix_generate_function1_p
 
      subroutine rokko_distributed_matrix_print(matrix) bind(c)
        use iso_c_binding
@@ -208,7 +209,49 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
      end subroutine rokko_distributed_matrix_print
 
-     subroutine rokko_distributed_matrix_set_local(matrix, local_i, local_j, value) bind(c)
+     subroutine rokko_distributed_matrix_set_local0(matrix, local_i, local_j, value) &
+          & bind(c,name="rokko_distributed_matrix_set_local")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in) :: local_i, local_j
+       real(c_double), value, intent(in) :: value
+     end subroutine rokko_distributed_matrix_set_local0
+
+     function rokko_distributed_matrix_get_local0(matrix, local_i,local_j) &
+          & bind(c,name="rokko_distributed_matrix_get_local")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       real(c_double) :: rokko_distributed_matrix_get_local0
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in) :: local_i,local_j
+     end function rokko_distributed_matrix_get_local0
+
+     subroutine rokko_distributed_matrix_set_global0(matrix, global_i, global_j, value) &
+          & bind(c,name="rokko_distributed_matrix_set_global")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in) :: global_i, global_j
+       real(c_double), value, intent(in) :: value
+     end subroutine rokko_distributed_matrix_set_global0
+     
+     function rokko_distributed_matrix_get_global0(matrix, global_i, global_j) &
+          & bind(c,name="rokko_distributed_matrix_get_global")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       real(c_double) :: rokko_distributed_matrix_get_global0
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in):: global_i, global_j
+     end function rokko_distributed_matrix_get_global0
+
+     ! offset by one
+     subroutine rokko_distributed_matrix_set_local(matrix, local_i, local_j, value) &
+          & bind(c,name="rokko_distributed_matrix_set_local1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -217,7 +260,8 @@ module rokko_distributed_matrix_mod
        real(c_double), value, intent(in) :: value
      end subroutine rokko_distributed_matrix_set_local
 
-     function rokko_distributed_matrix_get_local(matrix, local_i,local_j) bind(c)
+     function rokko_distributed_matrix_get_local(matrix, local_i,local_j) &
+          & bind(c,name="rokko_distributed_matrix_get_local1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -226,7 +270,8 @@ module rokko_distributed_matrix_mod
        integer(c_int), value, intent(in) :: local_i,local_j
      end function rokko_distributed_matrix_get_local
 
-     subroutine rokko_distributed_matrix_set_global(matrix, global_i, global_j, value) bind(c)
+     subroutine rokko_distributed_matrix_set_global(matrix, global_i, global_j, value) &
+          & bind(c,name="rokko_distributed_matrix_set_global1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -234,8 +279,9 @@ module rokko_distributed_matrix_mod
        integer(c_int), value, intent(in) :: global_i, global_j
        real(c_double), value, intent(in) :: value
      end subroutine rokko_distributed_matrix_set_global
-     
-     function rokko_distributed_matrix_get_global(matrix, global_i, global_j) bind(c)
+
+     function rokko_distributed_matrix_get_global(matrix, global_i, global_j) &
+          & bind(c,name="rokko_distributed_matrix_get_global1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -243,43 +289,6 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in):: global_i, global_j
      end function rokko_distributed_matrix_get_global
-
-     ! offset by one
-     subroutine rokko_distributed_matrix_set_local_f(matrix, local_i, local_j, value) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in) :: local_i, local_j
-       real(c_double), value, intent(in) :: value
-     end subroutine rokko_distributed_matrix_set_local_f
-
-     function rokko_distributed_matrix_get_local_f(matrix, local_i,local_j) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       real(c_double) :: rokko_distributed_matrix_get_local_f
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in) :: local_i,local_j
-     end function rokko_distributed_matrix_get_local_f
-
-     subroutine rokko_distributed_matrix_set_global_f(matrix, global_i, global_j, value) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in) :: global_i, global_j
-       real(c_double), value, intent(in) :: value
-     end subroutine rokko_distributed_matrix_set_global_f
-
-     function rokko_distributed_matrix_get_global_f(matrix, global_i, global_j) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       real(c_double) :: rokko_distributed_matrix_get_global_f
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in):: global_i, global_j
-     end function rokko_distributed_matrix_get_global_f
 
      function rokko_distributed_matrix_get_mb(matrix) bind(c)
        use iso_c_binding
@@ -401,7 +410,49 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
      end function rokko_distributed_matrix_get_mycol
 
-     function rokko_distributed_matrix_translate_l2g_row(matrix, local_i) bind(c)
+     function rokko_distributed_matrix_translate_l2g_row0(matrix, local_i) &
+       & bind(c,name="rokko_distributed_matrix_translate_l2g_row")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_translate_l2g_row0
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int),value,intent(in) :: local_i
+     end function rokko_distributed_matrix_translate_l2g_row0
+
+     function rokko_distributed_matrix_translate_l2g_col0(matrix, local_j) &
+          & bind(c,name="rokko_distributed_matrix_translate_l2g_col")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_translate_l2g_col0
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in)::local_j
+     end function rokko_distributed_matrix_translate_l2g_col0
+
+     function rokko_distributed_matrix_translate_g2l_row0(matrix, global_i) &
+          & bind(c,name="rokko_distributed_matrix_translate_g2l_row")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_translate_g2l_row0
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in)::global_i
+     end function rokko_distributed_matrix_translate_g2l_row0
+
+     function rokko_distributed_matrix_translate_g2l_col0(matrix, global_j) &
+          & bind(c,name="rokko_distributed_matrix_translate_g2l_col")
+       use iso_c_binding
+       import rokko_distributed_matrix
+       implicit none
+       integer(c_int) :: rokko_distributed_matrix_translate_g2l_col0
+       type(rokko_distributed_matrix), value, intent(in) :: matrix
+       integer(c_int), value, intent(in) :: global_j
+     end function rokko_distributed_matrix_translate_g2l_col0
+
+     ! offset by one
+     function rokko_distributed_matrix_translate_l2g_row(matrix, local_i) &
+          & bind(c,name="rokko_distributed_matrix_translate_l2g_row1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -410,7 +461,8 @@ module rokko_distributed_matrix_mod
        integer(c_int),value,intent(in) :: local_i
      end function rokko_distributed_matrix_translate_l2g_row
 
-     function rokko_distributed_matrix_translate_l2g_col(matrix, local_j) bind(c)
+     function rokko_distributed_matrix_translate_l2g_col(matrix, local_j) &
+          & bind(c,name="rokko_distributed_matrix_translate_l2g_col1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -419,7 +471,8 @@ module rokko_distributed_matrix_mod
        integer(c_int), value, intent(in)::local_j
      end function rokko_distributed_matrix_translate_l2g_col
 
-     function rokko_distributed_matrix_translate_g2l_row(matrix, global_i) bind(c)
+     function rokko_distributed_matrix_translate_g2l_row(matrix, global_i) &
+          & bind(c,name="rokko_distributed_matrix_translate_g2l_row1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -428,7 +481,8 @@ module rokko_distributed_matrix_mod
        integer(c_int), value, intent(in)::global_i
      end function rokko_distributed_matrix_translate_g2l_row
 
-     function rokko_distributed_matrix_translate_g2l_col(matrix, global_j) bind(c)
+     function rokko_distributed_matrix_translate_g2l_col(matrix, global_j) &
+          & bind(c,name="rokko_distributed_matrix_translate_g2l_col1")
        use iso_c_binding
        import rokko_distributed_matrix
        implicit none
@@ -436,43 +490,6 @@ module rokko_distributed_matrix_mod
        type(rokko_distributed_matrix), value, intent(in) :: matrix
        integer(c_int), value, intent(in) :: global_j
      end function rokko_distributed_matrix_translate_g2l_col
-
-     ! offset by one
-     function rokko_distributed_matrix_translate_l2g_row_f(matrix, local_i) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       integer(c_int) :: rokko_distributed_matrix_translate_l2g_row_f
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int),value,intent(in) :: local_i
-     end function rokko_distributed_matrix_translate_l2g_row_f
-
-     function rokko_distributed_matrix_translate_l2g_col_f(matrix, local_j) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       integer(c_int) :: rokko_distributed_matrix_translate_l2g_col_f
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in)::local_j
-     end function rokko_distributed_matrix_translate_l2g_col_f
-
-     function rokko_distributed_matrix_translate_g2l_row_f(matrix, global_i) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       integer(c_int) :: rokko_distributed_matrix_translate_g2l_row_f
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in)::global_i
-     end function rokko_distributed_matrix_translate_g2l_row_f
-
-     function rokko_distributed_matrix_translate_g2l_col_f(matrix, global_j) bind(c)
-       use iso_c_binding
-       import rokko_distributed_matrix
-       implicit none
-       integer(c_int) :: rokko_distributed_matrix_translate_g2l_col_f
-       type(rokko_distributed_matrix), value, intent(in) :: matrix
-       integer(c_int), value, intent(in) :: global_j
-     end function rokko_distributed_matrix_translate_g2l_col_f
 
      function rokko_distributed_matrix_is_row_major(matrix) bind(c)
        use iso_c_binding
@@ -502,7 +519,7 @@ module rokko_distributed_matrix_mod
 
 contains
 
-  subroutine rokko_distributed_matrix_construct_array_f(matrix, map, array) bind(c)
+  subroutine rokko_distributed_matrix_construct_array1(matrix, map, array) bind(c)
     use iso_c_binding
     implicit none
     type(rokko_distributed_matrix), intent(out) :: matrix
@@ -512,7 +529,7 @@ contains
 
     sizes = shape(array)
     call rokko_distributed_matrix_construct_array_sizes(matrix, map, sizes(1), sizes(2), array)
-  end subroutine rokko_distributed_matrix_construct_array_f
+  end subroutine rokko_distributed_matrix_construct_array1
 
   subroutine rokko_distributed_matrix_generate_from_array(matrix, array)
     type(rokko_distributed_matrix), value, intent(in) :: matrix
@@ -521,16 +538,16 @@ contains
     m_local = rokko_distributed_matrix_get_m_local(matrix)
     n_local = rokko_distributed_matrix_get_n_local(matrix)
     do local_i = 0, m_local-1
-       global_i = rokko_distributed_matrix_translate_l2g_row(matrix, local_i)
+       global_i = rokko_distributed_matrix_translate_l2g_row0(matrix, local_i)
        do local_j = 0, n_local-1
-          global_j = rokko_distributed_matrix_translate_l2g_col(matrix, local_j)
-          call rokko_distributed_matrix_set_local(matrix, local_i, local_j, &
+          global_j = rokko_distributed_matrix_translate_l2g_col0(matrix, local_j)
+          call rokko_distributed_matrix_set_local0(matrix, local_i, local_j, &
                & array(global_i+1, global_j+1))
        enddo
     enddo
   end subroutine rokko_distributed_matrix_generate_from_array
 
-  subroutine rokko_distributed_matrix_generate_function(matrix, func_in)
+  subroutine rokko_distributed_matrix_generate_function0(matrix, func_in)
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     type(c_funptr) :: cproc
     interface
@@ -543,10 +560,10 @@ contains
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_distributed_matrix_generate_function_p(matrix, cproc)
-  end subroutine rokko_distributed_matrix_generate_function
+    call rokko_distributed_matrix_generate_function0_p(matrix, cproc)
+  end subroutine rokko_distributed_matrix_generate_function0
 
-  subroutine rokko_distributed_matrix_generate_function_f(matrix, func_in)
+  subroutine rokko_distributed_matrix_generate_function(matrix, func_in)
     type(rokko_distributed_matrix), value, intent(in) :: matrix
     type(c_funptr) :: cproc
     interface
@@ -559,8 +576,8 @@ contains
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_distributed_matrix_generate_function_f_p(matrix, cproc)
-  end subroutine rokko_distributed_matrix_generate_function_f
+    call rokko_distributed_matrix_generate_function1_p(matrix, cproc)
+  end subroutine rokko_distributed_matrix_generate_function
 
   subroutine rokko_distributed_matrix_get_array_pointer(matrix, f_array_ptr)
     type(rokko_distributed_matrix), value, intent(in) :: matrix

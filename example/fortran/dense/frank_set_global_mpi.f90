@@ -60,7 +60,7 @@ program frank_matrix
   do j = 0, dim-1
      do i = 0, dim-1
         value = dim - max(i,j)
-        call rokko_set_global(mat, i, j, value)
+        call rokko_set_global0(mat, i, j, value)
      enddo
   enddo
 

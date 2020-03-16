@@ -59,7 +59,7 @@ program minij_matrix
   ! generate minij matrix
   do global_j = 0, dim-1
      do global_i = 0, dim-1
-        call rokko_set_global(mat, global_i, global_j, dble(min(global_i,global_j)+1))
+        call rokko_set_global0(mat, global_i, global_j, dble(min(global_i,global_j)+1))
      enddo
   enddo
 

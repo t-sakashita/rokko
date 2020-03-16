@@ -79,7 +79,7 @@ program frank_function
 
   ! generate frank matrix from frank_matrix_element function
   call frank_matrix_set_dimension(dim)
-  call rokko_generate(mat, frank_matrix_element)
+  call rokko_generate0(mat, frank_matrix_element)
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)

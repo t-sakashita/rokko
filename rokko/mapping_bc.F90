@@ -64,6 +64,23 @@ module rokko_mapping_bc_mod
      procedure rokko_mapping_bc_get_n_size
   end interface rokko_get_n_size
 
+  interface rokko_translate_l2g_row0
+     procedure rokko_mapping_bc_translate_l2g_row0
+  end interface rokko_translate_l2g_row0
+
+  interface rokko_translate_l2g_col0
+     procedure rokko_mapping_bc_translate_l2g_col0
+  end interface rokko_translate_l2g_col0
+
+  interface rokko_translate_g2l_row0
+     procedure rokko_mapping_bc_translate_g2l_row0
+  end interface rokko_translate_g2l_row0
+
+  interface rokko_translate_g2l_col0
+     procedure rokko_mapping_bc_translate_g2l_col0
+  end interface rokko_translate_g2l_col0
+
+  ! offset by one
   interface rokko_translate_l2g_row
      procedure  rokko_mapping_bc_translate_l2g_row
   end interface rokko_translate_l2g_row
@@ -79,23 +96,6 @@ module rokko_mapping_bc_mod
   interface rokko_translate_g2l_col
      procedure  rokko_mapping_bc_translate_g2l_col
   end interface rokko_translate_g2l_col
-
-  ! offset by one
-  interface rokko_translate_l2g_row_f
-     procedure  rokko_mapping_bc_translate_l2g_row_f
-  end interface rokko_translate_l2g_row_f
-
-  interface rokko_translate_l2g_col_f
-     procedure  rokko_mapping_bc_translate_l2g_col_f
-  end interface rokko_translate_l2g_col_f
-
-  interface rokko_translate_g2l_row_f
-     procedure  rokko_mapping_bc_translate_g2l_row_f
-  end interface rokko_translate_g2l_row_f
-
-  interface rokko_translate_g2l_col_f
-     procedure  rokko_mapping_bc_translate_g2l_col_f
-  end interface rokko_translate_g2l_col_f
 
   interface rokko_is_row_major
      procedure rokko_mapping_bc_is_row_major
@@ -221,7 +221,49 @@ module rokko_mapping_bc_mod
        type(rokko_mapping_bc), value, intent(in) :: map
      end function rokko_mapping_bc_get_n_size
 
-     function rokko_mapping_bc_translate_l2g_row(map, local_i) bind(c)
+     function rokko_mapping_bc_translate_l2g_row0(map, local_i) &
+          & bind(c,name="rokko_mapping_bc_translate_l2g_row")
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_l2g_row0
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int),value,intent(in) :: local_i
+     end function rokko_mapping_bc_translate_l2g_row0
+
+     function rokko_mapping_bc_translate_l2g_col0(map, local_j) &
+          & bind(c,name="rokko_mapping_bc_translate_l2g_col")
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_l2g_col0
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in)::local_j
+     end function rokko_mapping_bc_translate_l2g_col0
+
+     function rokko_mapping_bc_translate_g2l_row0(map, global_i) &
+          & bind(c,name="rokko_mapping_bc_translate_g2l_row")
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_g2l_row0
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in)::global_i
+     end function rokko_mapping_bc_translate_g2l_row0
+
+     function rokko_mapping_bc_translate_g2l_col0(map, global_j) &
+          & bind(c,name="rokko_mapping_bc_translate_g2l_col")
+       use iso_c_binding
+       import rokko_mapping_bc
+       implicit none
+       integer(c_int) :: rokko_mapping_bc_translate_g2l_col0
+       type(rokko_mapping_bc), value, intent(in) :: map
+       integer(c_int), value, intent(in) :: global_j
+     end function rokko_mapping_bc_translate_g2l_col0
+
+     ! offset by one
+     function rokko_mapping_bc_translate_l2g_row(map, local_i) &
+          & bind(c,name="rokko_mapping_bc_translate_l2g_row1")
        use iso_c_binding
        import rokko_mapping_bc
        implicit none
@@ -230,7 +272,8 @@ module rokko_mapping_bc_mod
        integer(c_int),value,intent(in) :: local_i
      end function rokko_mapping_bc_translate_l2g_row
 
-     function rokko_mapping_bc_translate_l2g_col(map, local_j) bind(c)
+     function rokko_mapping_bc_translate_l2g_col(map, local_j) &
+          & bind(c,name="rokko_mapping_bc_translate_l2g_col1")
        use iso_c_binding
        import rokko_mapping_bc
        implicit none
@@ -239,7 +282,8 @@ module rokko_mapping_bc_mod
        integer(c_int), value, intent(in)::local_j
      end function rokko_mapping_bc_translate_l2g_col
 
-     function rokko_mapping_bc_translate_g2l_row(map, global_i) bind(c)
+     function rokko_mapping_bc_translate_g2l_row(map, global_i) &
+          & bind(c,name="rokko_mapping_bc_translate_g2l_row1")
        use iso_c_binding
        import rokko_mapping_bc
        implicit none
@@ -248,7 +292,8 @@ module rokko_mapping_bc_mod
        integer(c_int), value, intent(in)::global_i
      end function rokko_mapping_bc_translate_g2l_row
 
-     function rokko_mapping_bc_translate_g2l_col(map, global_j) bind(c)
+     function rokko_mapping_bc_translate_g2l_col(map, global_j) &
+          & bind(c,name="rokko_mapping_bc_translate_g2l_col1")
        use iso_c_binding
        import rokko_mapping_bc
        implicit none
@@ -256,43 +301,6 @@ module rokko_mapping_bc_mod
        type(rokko_mapping_bc), value, intent(in) :: map
        integer(c_int), value, intent(in) :: global_j
      end function rokko_mapping_bc_translate_g2l_col
-
-     ! offset by one
-     function rokko_mapping_bc_translate_l2g_row_f(map, local_i) bind(c)
-       use iso_c_binding
-       import rokko_mapping_bc
-       implicit none
-       integer(c_int) :: rokko_mapping_bc_translate_l2g_row_f
-       type(rokko_mapping_bc), value, intent(in) :: map
-       integer(c_int),value,intent(in) :: local_i
-     end function rokko_mapping_bc_translate_l2g_row_f
-
-     function rokko_mapping_bc_translate_l2g_col_f(map, local_j) bind(c)
-       use iso_c_binding
-       import rokko_mapping_bc
-       implicit none
-       integer(c_int) :: rokko_mapping_bc_translate_l2g_col_f
-       type(rokko_mapping_bc), value, intent(in) :: map
-       integer(c_int), value, intent(in)::local_j
-     end function rokko_mapping_bc_translate_l2g_col_f
-
-     function rokko_mapping_bc_translate_g2l_row_f(map, global_i) bind(c)
-       use iso_c_binding
-       import rokko_mapping_bc
-       implicit none
-       integer(c_int) :: rokko_mapping_bc_translate_g2l_row_f
-       type(rokko_mapping_bc), value, intent(in) :: map
-       integer(c_int), value, intent(in)::global_i
-     end function rokko_mapping_bc_translate_g2l_row_f
-
-     function rokko_mapping_bc_translate_g2l_col_f(map, global_j) bind(c)
-       use iso_c_binding
-       import rokko_mapping_bc
-       implicit none
-       integer(c_int) :: rokko_mapping_bc_translate_g2l_col_f
-       type(rokko_mapping_bc), value, intent(in) :: map
-       integer(c_int), value, intent(in) :: global_j
-     end function rokko_mapping_bc_translate_g2l_col_f
 
      function rokko_mapping_bc_is_row_major(map) bind(c)
        use iso_c_binding

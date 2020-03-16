@@ -164,28 +164,28 @@ int rokko_mapping_bc_translate_g2l_col(struct rokko_mapping_bc map, int global_j
 }
 
 // offset by one for Fortran
-int rokko_mapping_bc_translate_l2g_row_f(struct rokko_mapping_bc map, int local_i) {
+int rokko_mapping_bc_translate_l2g_row1(struct rokko_mapping_bc map, int local_i) {
   if (map.major == rokko_matrix_col_major)
     return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->translate_l2g_row(local_i - 1) + 1;
   else
     return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->translate_l2g_row(local_i - 1) + 1;
 }
 
-int rokko_mapping_bc_translate_l2g_col_f(struct rokko_mapping_bc map, int local_j) {
+int rokko_mapping_bc_translate_l2g_col1(struct rokko_mapping_bc map, int local_j) {
   if (map.major == rokko_matrix_col_major)
     return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->translate_l2g_col(local_j - 1) + 1;
   else
     return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->translate_l2g_col(local_j - 1) + 1;
 }
 
-int rokko_mapping_bc_translate_g2l_row_f(struct rokko_mapping_bc map, int global_i) {
+int rokko_mapping_bc_translate_g2l_row1(struct rokko_mapping_bc map, int global_i) {
   if (map.major == rokko_matrix_col_major)
     return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->translate_g2l_row(global_i - 1) + 1;
   else
     return static_cast<rokko::mapping_bc<rokko::matrix_row_major>*>(map.ptr)->translate_g2l_row(global_i - 1) + 1;
 }
 
-int rokko_mapping_bc_translate_g2l_col_f(struct rokko_mapping_bc map, int global_j) {
+int rokko_mapping_bc_translate_g2l_col1(struct rokko_mapping_bc map, int global_j) {
   if (map.major == rokko_matrix_col_major)
     return static_cast<rokko::mapping_bc<rokko::matrix_col_major>*>(map.ptr)->translate_g2l_col(global_j - 1) + 1;
   else

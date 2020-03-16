@@ -56,7 +56,7 @@ program minij_matrix
   call rokko_construct(w, dim)
 
   ! generate minij matrix
-  call rokko_generate(mat, minij_matrix_element)
+  call rokko_generate0(mat, minij_matrix_element)
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)

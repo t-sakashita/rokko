@@ -65,11 +65,11 @@ program frank_matrix
   print *,"m_local=", m_local, " n_local=", n_local
 
   do local_j = 0, n_local-1
-     global_j = rokko_translate_l2g_col(map, local_j)
+     global_j = rokko_translate_l2g_col0(map, local_j)
      do local_i = 0, m_local-1
-        global_i = rokko_translate_l2g_row(map, local_i)
+        global_i = rokko_translate_l2g_row0(map, local_i)
         val = dble(dim - max(global_i, global_j))
-        call rokko_set_local(mat, local_i, local_j, val)
+        call rokko_set_local0(mat, local_i, local_j, val)
      enddo
   enddo
 

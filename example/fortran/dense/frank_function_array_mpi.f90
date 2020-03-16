@@ -87,7 +87,7 @@ program frank_matrix_array_mpi
         eigen_array(j, i) = dim + 1 - max(i, j)
      end do
   end do
-  call rokko_generate(mat, func)
+  call rokko_generate0(mat, func)
 
   call rokko_print(mat)
   call rokko_diagonalize(solver, mat, w, Z)
