@@ -21,28 +21,28 @@ program generate_eigen_vector
   call rokko_construct(vec, dim)
 
   print *, "vec (0-started index):"
-  call rokko_generate(vec, func)
+  call rokko_generate0(vec, func0)
   call rokko_print(vec)
   print *, "vec (1-started index):"
-  call rokko_generate_f(vec, func_f)
+  call rokko_generate(vec, func)
   call rokko_print(vec)
 
   call rokko_destruct(vec)
 
 contains
 
+  function func0(i)
+    implicit none
+    double precision :: func0
+    integer, intent(in) :: i
+    func0 = dble(2*(i+1))
+  end function func0
+
   function func(i)
     implicit none
     double precision :: func
     integer, intent(in) :: i
-    func = dble(2*(i+1))
+    func = dble(2*i)
   end function func
-
-  function func_f(i)
-    implicit none
-    double precision :: func_f
-    integer, intent(in) :: i
-    func_f = dble(2*i)
-  end function func_f
 
 end program generate_eigen_vector

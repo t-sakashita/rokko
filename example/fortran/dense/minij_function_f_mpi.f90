@@ -56,7 +56,7 @@ program minij_matrix
   call rokko_construct(w, dim)
 
   ! generate minij matrix
-  call rokko_generate(mat, minij_matrix_element)
+  call rokko_generate0(mat, minij_matrix_element)
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)
@@ -64,7 +64,7 @@ program minij_matrix
   if (myrank.eq.0) then
      write(*,'(A)') "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") rokko_get_elem_f(w ,i)
+        write(*,"(f30.20)") rokko_get_elem(w ,i)
      enddo
   endif
 

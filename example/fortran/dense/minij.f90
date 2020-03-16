@@ -71,7 +71,7 @@ program minij_matrix
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
-     write(*,"(f30.20)") rokko_get_elem_f(w ,i)
+     write(*,"(f30.20)") rokko_get_elem(w ,i)
   enddo
 
   call rokko_destruct(mat)

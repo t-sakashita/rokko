@@ -69,7 +69,7 @@ program frank_matrix
 
   ! generate frank matrix
   call frank_matrix_set_dimension(dim)
-  call rokko_generate(mat, frank_matrix_element)
+  call rokko_generate0(mat, frank_matrix_element)
   call rokko_print(mat)
 
   call rokko_construct(params)
@@ -88,7 +88,7 @@ program frank_matrix
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
-     write(*,"(f30.20)") rokko_get_elem_f(w ,i)
+     write(*,"(f30.20)") rokko_get_elem(w ,i)
   enddo
 
   call rokko_destruct(mat)

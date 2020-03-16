@@ -25,7 +25,7 @@ program generate_minij_matrix
   ! generate minij matrix
   do i = 1, dim
      do j = 1, dim
-        call rokko_set_elem_f(mat, i, j, dble(min(i,j)))
+        call rokko_set_elem(mat, i, j, dble(min(i,j)))
      enddo
   enddo
   call rokko_print(mat)

@@ -66,7 +66,7 @@ void rokko_eigen_matrix_generate_function_p(struct rokko_eigen_matrix matrix,
     rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr), g);
 }
 
-void rokko_eigen_matrix_generate_function_f(struct rokko_eigen_matrix matrix,
+void rokko_eigen_matrix_generate_function1(struct rokko_eigen_matrix matrix,
 					      double (*func)(int i, int j)) {
   const auto g = [&func](int i, int j) { return func(i+1, j+1); };
 
@@ -76,7 +76,7 @@ void rokko_eigen_matrix_generate_function_f(struct rokko_eigen_matrix matrix,
     rokko::generate(*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr), g);
 }
 
-void rokko_eigen_matrix_generate_function_f_p(struct rokko_eigen_matrix matrix,
+void rokko_eigen_matrix_generate_function1_p(struct rokko_eigen_matrix matrix,
 					      double (*func)(const int* i, const int* j)) {
   const auto g = [&func](int i, int j) {
     const int i1 = i+1, j1 = j+1;
@@ -96,7 +96,7 @@ double rokko_eigen_matrix_get(struct rokko_eigen_matrix matrix, int i, int j) {
     return (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(i, j);
 }
 
-double rokko_eigen_matrix_get_f(struct rokko_eigen_matrix matrix, int i, int j) {
+double rokko_eigen_matrix_get1(struct rokko_eigen_matrix matrix, int i, int j) {
   if (matrix.major == rokko_matrix_col_major)
     return (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr))(i-1, j-1);
   else
@@ -110,7 +110,7 @@ void rokko_eigen_matrix_set(struct rokko_eigen_matrix matrix, int i, int j, doub
     (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>*>(matrix.ptr))(i, j) = value;
 }
 
-void rokko_eigen_matrix_set_f(struct rokko_eigen_matrix matrix, int i, int j, double value) {
+void rokko_eigen_matrix_set1(struct rokko_eigen_matrix matrix, int i, int j, double value) {
   if (matrix.major == rokko_matrix_col_major)
     (*static_cast<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>*>(matrix.ptr))(i-1, j-1) = value;
   else

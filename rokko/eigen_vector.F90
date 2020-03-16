@@ -28,21 +28,21 @@ module rokko_eigen_vector_mod
      procedure rokko_eigen_vector_destruct
   end interface rokko_destruct
 
+  interface rokko_get_elem0
+     procedure rokko_eigen_vector_get0
+  end interface rokko_get_elem0
+
   interface rokko_get_elem
      procedure rokko_eigen_vector_get
   end interface rokko_get_elem
 
-  interface rokko_get_elem_f
-     procedure rokko_eigen_vector_get_f
-  end interface rokko_get_elem_f
+  interface rokko_set_elem0
+     procedure rokko_eigen_vector_set0
+  end interface rokko_set_elem0
 
   interface rokko_set_elem
      procedure rokko_eigen_vector_set
   end interface rokko_set_elem
-
-  interface rokko_set_elem_f
-     procedure rokko_eigen_vector_set_f
-  end interface rokko_set_elem_f
 
   interface rokko_print
      procedure rokko_eigen_vector_print
@@ -52,13 +52,13 @@ module rokko_eigen_vector_mod
      module procedure rokko_eigen_vector_get_array_pointer
   end interface rokko_get_array_pointer
 
+  interface rokko_generate0
+     module procedure rokko_eigen_vector_generate_function0
+  end interface rokko_generate0
+
   interface rokko_generate
      module procedure rokko_eigen_vector_generate_function
   end interface rokko_generate
-
-  interface rokko_generate_f
-     module procedure rokko_eigen_vector_generate_function_f
-  end interface rokko_generate_f
 
   interface
      subroutine rokko_eigen_vector_construct(vec, dim) bind(c)
@@ -109,7 +109,18 @@ module rokko_eigen_vector_mod
        type(c_ptr) :: c_array_ptr
      end function rokko_eigen_vector_get_array_pointer_c
 
-     subroutine rokko_eigen_vector_set(vec, i, value) bind(c)
+     subroutine rokko_eigen_vector_set0(vec, i, value) &
+          & bind(c,name="rokko_eigen_vector_set")
+       use iso_c_binding
+       import rokko_eigen_vector
+       implicit none
+       type(rokko_eigen_vector), value, intent(in) :: vec
+       integer(c_int), value, intent(in) :: i
+       real(c_double), value, intent(in) :: value
+     end subroutine rokko_eigen_vector_set0
+
+     subroutine rokko_eigen_vector_set(vec, i, value) &
+          & bind(c,name="rokko_eigen_vector_set1")
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
@@ -118,16 +129,18 @@ module rokko_eigen_vector_mod
        real(c_double), value, intent(in) :: value
      end subroutine rokko_eigen_vector_set
 
-     subroutine rokko_eigen_vector_set_f(vec, i, value) bind(c)
+     function rokko_eigen_vector_get0(vec, i) &
+          & bind(c,name="rokko_eigen_vector_get")
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
+       real(c_double) :: rokko_eigen_vector_get0
        type(rokko_eigen_vector), value, intent(in) :: vec
        integer(c_int), value, intent(in) :: i
-       real(c_double), value, intent(in) :: value
-     end subroutine rokko_eigen_vector_set_f
+     end function rokko_eigen_vector_get0
 
-     function rokko_eigen_vector_get(vec, i) bind(c)
+     function rokko_eigen_vector_get(vec, i) &
+          & bind(c,name="rokko_eigen_vector_get1")
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
@@ -136,34 +149,41 @@ module rokko_eigen_vector_mod
        integer(c_int), value, intent(in) :: i
      end function rokko_eigen_vector_get
 
-     function rokko_eigen_vector_get_f(vec, i) bind(c)
-       use iso_c_binding
-       import rokko_eigen_vector
-       implicit none
-       real(c_double) :: rokko_eigen_vector_get_f
-       type(rokko_eigen_vector), value, intent(in) :: vec
-       integer(c_int), value, intent(in) :: i
-     end function rokko_eigen_vector_get_f
-
-     subroutine rokko_eigen_vector_generate_function_p(vec, cproc) bind(c)
+     subroutine rokko_eigen_vector_generate_function0_p(vec, cproc) &
+          & bind(c,name="rokko_eigen_vector_generate_function_p")
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
        type(rokko_eigen_vector), value, intent(in) :: vec
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_vector_generate_function_p
+     end subroutine rokko_eigen_vector_generate_function0_p
 
-     subroutine rokko_eigen_vector_generate_function_f_p(vec, cproc) bind(c)
+     subroutine rokko_eigen_vector_generate_function1_p(vec, cproc) bind(c)
        use iso_c_binding
        import rokko_eigen_vector
        implicit none
        type(rokko_eigen_vector), value, intent(in) :: vec
        type(c_funptr), value, intent(in) :: cproc
-     end subroutine rokko_eigen_vector_generate_function_f_p
+     end subroutine rokko_eigen_vector_generate_function1_p
 
   end interface
 
 contains
+
+  subroutine rokko_eigen_vector_generate_function0(vector, func_in)
+    type(rokko_eigen_vector), value, intent(in) :: vector
+    type(c_funptr) :: cproc
+    interface
+       function func_in(i)
+         double precision :: func_in
+         integer, intent(in) :: i
+       end function func_in
+    end interface
+    ! get c procedure pointer.
+    cproc = c_funloc(func_in)
+    ! call wrapper written in c.
+    call rokko_eigen_vector_generate_function0_p(vector, cproc)
+  end subroutine rokko_eigen_vector_generate_function0
 
   subroutine rokko_eigen_vector_generate_function(vector, func_in)
     type(rokko_eigen_vector), value, intent(in) :: vector
@@ -177,23 +197,8 @@ contains
     ! get c procedure pointer.
     cproc = c_funloc(func_in)
     ! call wrapper written in c.
-    call rokko_eigen_vector_generate_function_p(vector, cproc)
+    call rokko_eigen_vector_generate_function1_p(vector, cproc)
   end subroutine rokko_eigen_vector_generate_function
-
-  subroutine rokko_eigen_vector_generate_function_f(vector, func_in)
-    type(rokko_eigen_vector), value, intent(in) :: vector
-    type(c_funptr) :: cproc
-    interface
-       function func_in(i)
-         double precision :: func_in
-         integer, intent(in) :: i
-       end function func_in
-    end interface
-    ! get c procedure pointer.
-    cproc = c_funloc(func_in)
-    ! call wrapper written in c.
-    call rokko_eigen_vector_generate_function_f_p(vector, cproc)
-  end subroutine rokko_eigen_vector_generate_function_f
 
   subroutine rokko_eigen_vector_construct_array(vector, array) bind(c)
     use iso_c_binding

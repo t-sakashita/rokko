@@ -87,7 +87,7 @@ program frank_function
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
-        write(*,"(f30.20)") rokko_get_elem_f(w, i)
+        write(*,"(f30.20)") rokko_get_elem(w, i)
      enddo
   endif
 

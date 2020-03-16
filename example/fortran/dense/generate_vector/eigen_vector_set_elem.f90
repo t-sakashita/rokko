@@ -23,7 +23,7 @@ program generate_eigen_vector
   call rokko_construct(vec, dim)
 
   do i = 1, dim
-     call rokko_set_elem_f(vec, i, dble(i))
+     call rokko_set_elem(vec, i, dble(i))
   enddo
   call rokko_print(vec)
 

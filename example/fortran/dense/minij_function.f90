@@ -47,7 +47,7 @@ program minij_matrix
   call rokko_construct(w, dim)
 
   ! generate minij matrix
-  call rokko_generate_f(mat, minij_matrix_element)
+  call rokko_generate(mat, minij_matrix_element)
   call rokko_print(mat)
 
   call rokko_construct(params)
@@ -72,7 +72,7 @@ program minij_matrix
 
   write(*,'(A)') "Computed Eigenvalues = "
   do i = 1, dim
-     write(*,"(f30.20)") rokko_get_elem_f(w ,i)
+     write(*,"(f30.20)") rokko_get_elem(w ,i)
   enddo
 
   call rokko_destruct(mat)

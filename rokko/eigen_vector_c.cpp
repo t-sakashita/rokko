@@ -40,7 +40,7 @@ double rokko_eigen_vector_get(rokko_eigen_vector vec, int i) {
 }
 
 /* offset by one */
-double rokko_eigen_vector_get_f(rokko_eigen_vector vec, int i) {
+double rokko_eigen_vector_get1(rokko_eigen_vector vec, int i) {
   return (*static_cast<Eigen::VectorXd*>(vec.ptr))[i-1];
 }
 
@@ -49,7 +49,7 @@ void rokko_eigen_vector_set(rokko_eigen_vector vec, int i, double val) {
 }
 
 /* offset by one */
-void rokko_eigen_vector_set_f(rokko_eigen_vector vec, int i, double val) {
+void rokko_eigen_vector_set1(rokko_eigen_vector vec, int i, double val) {
   (*static_cast<Eigen::VectorXd*>(vec.ptr))[i-1] = val;
 }
 
@@ -68,13 +68,13 @@ void rokko_eigen_vector_generate_function_p(rokko_eigen_vector vec,
                   [&func](int i) { return func(&i); } );
 }
 
-void rokko_eigen_vector_generate_function_f(rokko_eigen_vector vec,
+void rokko_eigen_vector_generate_function1(rokko_eigen_vector vec,
                                             double (*func)(int i)) {
   rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr),
                   [&func](int i) { return func(i+1); });
 }
 
-void rokko_eigen_vector_generate_function_f_p(rokko_eigen_vector vec,
+void rokko_eigen_vector_generate_function1_p(rokko_eigen_vector vec,
                                               double (*func)(const int* i)) {
   rokko::generate(*static_cast<Eigen::VectorXd*>(vec.ptr),
                   [&func](int i) {
