@@ -13,6 +13,9 @@
 #define ROKKO_LAPACK_GEQRF_HPP
 
 #include <complex>
+#ifdef I
+# undef I
+#endif
 #include <stdexcept>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
