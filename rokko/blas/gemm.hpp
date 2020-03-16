@@ -13,6 +13,9 @@
 #define ROKKO_BLAS_GEMM_HPP
 
 #include <complex>
+#ifdef I
+# undef I
+#endif
 #include <stdexcept>
 #include <cblas.h>
 #include <rokko/blas/util.hpp>

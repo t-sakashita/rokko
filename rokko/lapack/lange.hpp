@@ -13,9 +13,11 @@
 #define ROKKO_LAPACK_LANGE_HPP
 
 #include <complex>
+#ifdef I
+# undef I
+#endif
 #include <stdexcept>
 #include <lapacke.h>
-#undef I
 #include <rokko/traits/norm_t.hpp>
 #include "complex_cast.hpp"
 

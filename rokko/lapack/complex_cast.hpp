@@ -13,6 +13,9 @@
 #define ROKKO_LAPACK_COMPLEX_CAST_HPP
 
 #include <complex>
+#ifdef I
+# undef I
+#endif
 #include <lapacke.h>
 
 namespace rokko {

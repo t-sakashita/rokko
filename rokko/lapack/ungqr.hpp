@@ -13,11 +13,13 @@
 #define ROKKO_LAPACK_UNGQR_HPP
 
 #include <complex>
+#ifdef I
+# undef I
+#endif
 #include <stdexcept>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <lapacke.h>
-#undef I
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 
