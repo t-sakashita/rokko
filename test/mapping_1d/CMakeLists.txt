@@ -7,7 +7,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 
-if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
+if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
   set(TESTS start_row sizes_for_all_libraries)
   foreach(name ${TESTS})
     set(target_name test_mapping_1d_${name})

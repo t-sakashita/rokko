@@ -1,3 +1,5 @@
+![build](https://github.com/t-sakashita/rokko/workflows/build/badge.svg?branch=develop)
+
 Rokko
 =====
 
