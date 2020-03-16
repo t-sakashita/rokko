@@ -275,7 +275,7 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("insert", py::overload_cast<int, std::vector<int> const&, std::vector<double> const&>(&wrap_distributed_crs_matrix::insert, py::const_))
     .def("complete", &distributed_crs_matrix::complete)
     .def_property_readonly("dim", &distributed_crs_matrix::get_dim)
-    .def_property_readonly("num_local_rows", &distributed_crs_matrix::num_local_rows)
+    .def_property_readonly("num_local_rows", &distributed_crs_matrix::get_num_local_rows)
     .def_property_readonly("start_row", &distributed_crs_matrix::start_row)
     .def_property_readonly("end_row", &distributed_crs_matrix::end_row)
     .def_property_readonly("nnz", &distributed_crs_matrix::get_nnz)
