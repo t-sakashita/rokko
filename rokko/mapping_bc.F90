@@ -65,19 +65,19 @@ module rokko_mapping_bc_mod
   end interface rokko_get_n_size
 
   interface rokko_translate_l2g_row
-     procedure rokko_mapping_bc_translate_l2g_row
+     procedure  rokko_mapping_bc_translate_l2g_row
   end interface rokko_translate_l2g_row
 
   interface rokko_translate_l2g_col
-     procedure rokko_mapping_bc_translate_l2g_col
+     procedure  rokko_mapping_bc_translate_l2g_col
   end interface rokko_translate_l2g_col
 
   interface rokko_translate_g2l_row
-     procedure rokko_mapping_bc_translate_g2l_row
+     procedure  rokko_mapping_bc_translate_g2l_row
   end interface rokko_translate_g2l_row
 
   interface rokko_translate_g2l_col
-     procedure rokko_mapping_bc_translate_g2l_col
+     procedure  rokko_mapping_bc_translate_g2l_col
   end interface rokko_translate_g2l_col
 
   ! offset by one
