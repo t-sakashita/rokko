@@ -43,13 +43,13 @@ module rokko_mapping_1d_mod
      module procedure rokko_mapping_1d_end_row
   end interface rokko_end_row
 
-  interface rokko_start_row_c
-     procedure rokko_mapping_1d_start_row_c
-  end interface rokko_start_row_c
+  interface rokko_start_row0
+     procedure rokko_mapping_1d_start_row0
+  end interface rokko_start_row0
 
-  interface rokko_end_row_c
-     procedure rokko_mapping_1d_end_row_c
-  end interface rokko_end_row_c
+  interface rokko_end_row0
+     procedure rokko_mapping_1d_end_row0
+  end interface rokko_end_row0
 
   interface rokko_get_comm
      procedure rokko_mapping_1d_get_comm
@@ -90,23 +90,23 @@ module rokko_mapping_1d_mod
        type(rokko_mapping_1d), value, intent(in) :: map
      end function rokko_mapping_1d_num_local_rows
 
-     function rokko_mapping_1d_start_row_c(map) &
+     function rokko_mapping_1d_start_row0(map) &
           & bind(c,name='rokko_mapping_1d_start_row')
        use iso_c_binding
        import rokko_mapping_1d
        implicit none
-       integer(c_int) :: rokko_mapping_1d_start_row_c
+       integer(c_int) :: rokko_mapping_1d_start_row0
        type(rokko_mapping_1d), value, intent(in) :: map
-     end function rokko_mapping_1d_start_row_c
+     end function rokko_mapping_1d_start_row0
 
-     function rokko_mapping_1d_end_row_c(map) &
+     function rokko_mapping_1d_end_row0(map) &
           & bind(c,name='rokko_mapping_1d_end_row')
        use iso_c_binding
        import rokko_mapping_1d
        implicit none
-       integer(c_int) :: rokko_mapping_1d_end_row_c
+       integer(c_int) :: rokko_mapping_1d_end_row0
        type(rokko_mapping_1d), value, intent(in) :: map
-     end function rokko_mapping_1d_end_row_c
+     end function rokko_mapping_1d_end_row0
 
      function rokko_mapping_1d_get_comm(map) &
           & bind(c,name='rokko_mapping_1d_get_comm_f')
@@ -124,13 +124,13 @@ contains
   function rokko_mapping_1d_start_row(matrix) result(ind)
     integer :: ind
     type(rokko_mapping_1d), value, intent(in) :: matrix
-    ind = rokko_mapping_1d_start_row_c(matrix) + 1
+    ind = rokko_mapping_1d_start_row0(matrix) + 1
   end function rokko_mapping_1d_start_row
 
   function rokko_mapping_1d_end_row(matrix) result(ind)
     integer :: ind
     type(rokko_mapping_1d), value, intent(in) :: matrix
-    ind = rokko_mapping_1d_end_row_c(matrix)
+    ind = rokko_mapping_1d_end_row0(matrix)
   end function rokko_mapping_1d_end_row
 
 end module rokko_mapping_1d_mod

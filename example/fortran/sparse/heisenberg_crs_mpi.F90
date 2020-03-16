@@ -70,7 +70,7 @@ program heisenberg_crs_mpi
   call rokko_default_mapping(solver, dim, mpi_comm_world, map)
   call rokko_construct(mat, map, L+1)
 
-  start_row = rokko_start_row_c(map) ! C sytle index
+  start_row = rokko_start_row0(map) ! C sytle index
   end_row = rokko_end_row(map) ! Fortran sytle index
 
   allocate( cols(dim) )
@@ -97,7 +97,7 @@ program heisenberg_crs_mpi
      count = count + 1
      cols(count) = row
      values(count) = diag
-     call rokko_insert_c(mat, row, count, cols, values)
+     call rokko_insert0(mat, row, count, cols, values)
   end do
   call rokko_complete(mat)
 !  call rokko_print(mat)
