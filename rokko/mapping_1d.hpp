@@ -41,28 +41,6 @@ private:
   rokko::mpi_comm mpi_comm_;
 };
 
-
-template<typename MAP>
-class ps_mapping_1d_wrapper : public ps_mapping_1d_base {
-public:
-  using mapping_1d_type = MAP;
-
-  explicit ps_mapping_1d_wrapper(int dim) : map_impl_() {}
-  explicit ps_mapping_1d_wrapper(int dim, mpi_comm const& mpi_comm_in) : map_impl_() {}
-  ps_mapping_1d_wrapper() : map_impl_() {}
-  ~ps_mapping_1d_wrapper() = default;
-  void init(int dim, mpi_comm const& mpi_comm_in) { map_impl_.init(dim, mpi_comm_in); }
-  int get_dim() const { return map_impl_.get_dim(); }
-  int get_num_local_rows() const { return map_impl_.get_num_local_rows(); }
-  int start_row() const { return map_impl_.start_row(); }
-  int end_row() const { return map_impl_.end_row(); }
-
-  const ps_mapping_1d_base* get_impl() const { return &map_impl_; }
-
-private:
-  mapping_1d_type map_impl_;
-};
-
 using ps_mapping_1d_factory = factory<ps_mapping_1d_base>;
 
 } // end namespace detail
@@ -104,7 +82,7 @@ private:
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<rokko::detail::ps_mapping_1d_base>;  \
-  using product = rokko::detail::ps_mapping_1d_wrapper<map>; \
+  using product = map; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }

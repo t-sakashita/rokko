@@ -40,41 +40,6 @@ public:
   virtual const ps_mapping_1d_base& get_map() const = 0;
 };
 
-
-template<typename CRS>
-class ps_crs_wrapper : public ps_crs_base {
-  using crs_type = CRS;
-public:
-  ps_crs_wrapper() : crs_impl_() {}
-  virtual ~ps_crs_wrapper() = default;
-  void initialize(rokko::mapping_1d const& map, int num_entries_per_row) { crs_impl_.initialize(map, num_entries_per_row); }
-  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    crs_impl_.insert(row, cols, values);
-  }
-  void insert(int row, int col_size, int const*const cols, double const*const values) {
-    crs_impl_.insert(row, col_size, cols, values);
-  }
-  void complete() { crs_impl_.complete(); }
-  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
-    crs_impl_.extract(row, cols, values);
-  }
-  int get_dim() const { return crs_impl_.get_dim(); }
-  int get_num_local_rows() const { return crs_impl_.get_num_local_rows(); }
-  int start_row() const { return crs_impl_.start_row(); }
-  int end_row() const { return crs_impl_.end_row(); }
-  int get_nnz() const { return crs_impl_.get_nnz(); }
-  void print() const { crs_impl_.print(); }
-  void output_matrix_market(std::ostream& os = std::cout) const { crs_impl_.output_matrix_market(os); }
-  MPI_Comm get_comm() const { return crs_impl_.get_comm(); }
-  const ps_crs_base* get_impl() const { return &crs_impl_; }
-  ps_crs_base* get_impl() { return &crs_impl_; }
-  const ps_mapping_1d_base& get_map() const { return crs_impl_.get_map(); }
-
-private:
-  crs_type crs_impl_;
-};
-
-
 using ps_crs_factory = factory<ps_crs_base>;
 
 } // end namespace detail
@@ -159,7 +124,7 @@ private:
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<rokko::detail::ps_crs_base>;  \
-  using product = rokko::detail::ps_crs_wrapper<crs>; \
+  using product = crs; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
