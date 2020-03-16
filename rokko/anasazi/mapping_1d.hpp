@@ -45,7 +45,6 @@ public:
 
   Epetra_MpiComm const& get_epetra_comm() const { return *ep_comm_; }
   Epetra_Map const& get_epetra_map() const { return *map_; }
-  const ps_mapping_1d_base* get_impl() const { return this; }
 
 private:
   const Epetra_MpiComm* ep_comm_;

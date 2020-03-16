@@ -42,11 +42,11 @@ public:
     if (map.get_solver_name() != "anasazi") {
       throw std::invalid_argument("Anasazi's distributed_crs_matrix() : " + map.get_solver_name() + "'s mapping_1d is given.");
     }
-    map_ = static_cast<const rokko::anasazi::mapping_1d*>(map.get_ptr()->get_impl());
+    map_ = std::static_pointer_cast<const rokko::anasazi::mapping_1d>(map.get_ptr());
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
   void initialize(rokko::anasazi::mapping_1d const& map, int num_entries_per_row) {
-    map_ = &map;
+    map_ = std::make_shared<const rokko::anasazi::mapping_1d>(map);
     matrix_ = Teuchos::rcp(new Epetra_CrsMatrix(Copy, map_->get_epetra_map(), num_entries_per_row));
   }
 
@@ -118,14 +118,12 @@ public:
     }
   }
 
-  const rokko::anasazi::mapping_1d* get_map_ptr() const { return map_; }
+  std::shared_ptr<const rokko::anasazi::mapping_1d> get_map_ptr() const { return map_; }
+
   const rokko::anasazi::mapping_1d& get_map() const { return *map_; }
 
-  ps_crs_base* get_impl() { return this; }
-  const ps_crs_base* get_impl() const { return this; }
-
 private:
-  const rokko::anasazi::mapping_1d* map_;
+  std::shared_ptr<const rokko::anasazi::mapping_1d> map_;
   Teuchos::RCP<Epetra_CrsMatrix> matrix_;
 };
 

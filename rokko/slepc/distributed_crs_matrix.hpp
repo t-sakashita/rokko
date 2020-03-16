@@ -41,7 +41,7 @@ public:
     if (map.get_solver_name() != "slepc") {
       throw std::invalid_argument("SLEPc's distributed_crs_matrix() : " + map.get_solver_name() + "'s mapping_1d is given.");
     }
-    initialize(*static_cast<const rokko::slepc::mapping_1d*>(map.get_ptr()->get_impl()), num_entries_per_row);
+    initialize(*std::static_pointer_cast<const rokko::slepc::mapping_1d>(map.get_ptr()), num_entries_per_row);
   }
 
   void initialize(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
@@ -142,9 +142,6 @@ public:
   }
 
   const rokko::slepc::mapping_1d& get_map() const { return *map_; }
-
-  ps_crs_base* get_impl() { return this; }
-  const ps_crs_base* get_impl() const { return this; }
 
 private:
   const rokko::slepc::mapping_1d* map_;

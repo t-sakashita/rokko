@@ -144,7 +144,7 @@ public:
     if (mat.get_solver_name() != "slepc") {
       throw std::invalid_argument("rokko::slepc::solver::diagonalize() : " + mat.get_solver_name() + "'s distributed_crs_matrix is given.");
     }
-    return diagonalize(*static_cast<const rokko::slepc::distributed_crs_matrix*>(mat.get_ptr()->get_impl()), params);
+    return diagonalize(*std::static_pointer_cast<const rokko::slepc::distributed_crs_matrix>(mat.get_ptr()), params);
   }
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {

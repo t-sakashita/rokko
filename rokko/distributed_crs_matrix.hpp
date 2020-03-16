@@ -35,8 +35,6 @@ public:
   virtual int get_nnz() const = 0;
   virtual void print() const = 0;
   virtual void output_matrix_market(std::ostream& os = std::cout) const = 0;
-  virtual ps_crs_base* get_impl() = 0;
-  virtual const ps_crs_base* get_impl() const = 0;
   virtual const ps_mapping_1d_base& get_map() const = 0;
 };
 

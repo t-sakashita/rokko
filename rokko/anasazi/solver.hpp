@@ -145,7 +145,7 @@ public:
     if (mat.get_solver_name() != "anasazi") {
       throw std::invalid_argument("rokko::anasazi::solver::diagonalize() : " + mat.get_solver_name() + "'s distributed_crs_matrix is given.");
     }
-    return diagonalize(*static_cast<const rokko::anasazi::distributed_crs_matrix*>(mat.get_ptr()->get_impl()), params);
+    return diagonalize(*std::static_pointer_cast<const rokko::anasazi::distributed_crs_matrix>(mat.get_ptr()), params);
   }
 
   parameters diagonalize(const rokko::anasazi::distributed_crs_matrix& mat, rokko::parameters const& params) {
@@ -154,7 +154,7 @@ public:
   }
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
-    map_ = new mapping_1d(mat.get_dim(), mpi_comm{mat.get_comm()});
+    map_ = std::make_shared<mapping_1d>(mat.get_dim(), mpi_comm{mat.get_comm()});
     Teuchos::RCP<const anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
     return diagonalize_common(anasazi_op, params);
   }
@@ -217,7 +217,7 @@ public:
 
 private:
   //std::list<std::string> anasazi_keys = { "Which", "Maximum Iterations", "Convergence Tolerance" };
-  const rokko::anasazi::mapping_1d* map_;
+  std::shared_ptr<const rokko::anasazi::mapping_1d> map_;
   Teuchos::RCP<eigenproblem_t> problem_;
 };
 

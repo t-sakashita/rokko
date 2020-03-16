@@ -31,7 +31,6 @@ public:
   int get_dim() const override { return dim_; }
   virtual int start_row() const = 0;
   virtual int end_row() const = 0;
-  virtual const ps_mapping_1d_base* get_impl() const = 0;
   const rokko::mpi_comm& get_mpi_comm() const { return mpi_comm_; }
   void set_dim(int dim) { dim_ = dim; }
   void set_mpi_comm(rokko::mpi_comm const& mpi_comm_in) { mpi_comm_ = mpi_comm_in; }

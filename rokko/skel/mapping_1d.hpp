@@ -45,7 +45,6 @@ public:
   int end_row() const override {
     return start_row() + get_num_local_rows();
   }
-  const ps_mapping_1d_base* get_impl() const override { return this; }
 };
 
 } // namespace skel
