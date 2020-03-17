@@ -100,8 +100,6 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   int dim = mat.get_m_global();
   int nev = 0;
 
-  double *eigvecs = new double[dim*dim]; // No calculation of eigenvectors, but need as work array.
-
   elpa_t handle;
   int error;
   handle = elpa_allocate(&error);
@@ -150,7 +148,6 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   elpa_eigenvalues_d(handle, mat.get_array_pointer(), &eigvals[0], &info);
   elpa_deallocate(handle, &error);
 
-  delete[] eigvecs;
   params_out.set("info", info);
   return params_out;
 }
