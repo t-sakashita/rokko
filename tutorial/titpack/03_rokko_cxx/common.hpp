@@ -71,7 +71,7 @@ void zcorr_mpi(subspace const& ss, std::vector<int> const& npair,
                MATRIX const& x, int xindex, std::vector<double>& szz) {
   int nbond = npair.size() / 2;
   std::vector<double> szz_local(nbond);
-  if (x.is_gindex_mycol(xindex)) {
+  if (x.has_global_col_index(xindex)) {
     for (int k = 0; k < nbond; ++k) {
       int i1 = npair[k * 2];
       int i2 = npair[k * 2 + 1];

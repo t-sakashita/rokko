@@ -134,12 +134,12 @@ public:
     return is_col ? col_ver().translate_g2l_col(local_j) : row_ver().translate_g2l_col(local_j);
   }
 
-  bool is_gindex_myrow(int global_i) const {
-    return is_col ? col_ver().is_gindex_myrow(global_i) : row_ver().is_gindex_myrow(global_i);
+  bool has_global_row_index(int global_i) const {
+    return is_col ? col_ver().has_global_row_index(global_i) : row_ver().has_global_row_index(global_i);
   }
 
-  bool is_gindex_mycol(int global_j) const {
-    return is_col ? col_ver().is_gindex_mycol(global_j) : row_ver().is_gindex_mycol(global_j);
+  bool has_global_col_index(int global_j) const {
+    return is_col ? col_ver().has_global_col_index(global_j) : row_ver().has_global_col_index(global_j);
   }
 
   bool is_gindex(std::tuple<int,int> const& global) const {

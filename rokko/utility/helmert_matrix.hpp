@@ -60,7 +60,7 @@ public:
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
     const int n = mat.get_m_global();
     int start_i;
-    if (mat.is_gindex_myrow(0)) {
+    if (mat.has_global_row_index(0)) {
       T val = 1 / sqrt(n);
       for(int local_j = 0; local_j < mat.get_n_local(); ++local_j)
         mat.set_local(0, local_j, val);

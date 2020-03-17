@@ -120,11 +120,11 @@ public:
     return (local_offset_block % grid_size[IND]) == my_coordinate[IND];
   }
 
-  bool is_gindex_myrow(int global_i) const {
+  bool has_global_row_index(int global_i) const {
     return is_gindex<0>(global_i);
   }
 
-  bool is_gindex_mycol(int global_j) const {
+  bool has_global_col_index(int global_j) const {
     return is_gindex<1>(global_j);
   }
 
@@ -133,7 +133,7 @@ public:
   }
 
   bool is_gindex(int global_i, int global_j) const {
-    return is_gindex<0>(global_i) && is_gindex_mycol(global_j);
+    return is_gindex<0>(global_i) && has_global_col_index(global_j);
   }
 
   MPI_Comm get_comm() const { return g.get_comm(); }

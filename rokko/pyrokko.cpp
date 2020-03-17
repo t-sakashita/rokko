@@ -140,8 +140,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("translate_g2l_row", &wrap_mapping_bc::translate_g2l_row)
     .def("translate_g2l_col", &wrap_mapping_bc::translate_g2l_col)
     .def("translate_g2l", &wrap_mapping_bc::translate_g2l) // tuple
-    .def("is_gindex_myrow", &wrap_mapping_bc::is_gindex_myrow)
-    .def("is_gindex_mycol", &wrap_mapping_bc::is_gindex_mycol)
+    .def("has_global_row_index", &wrap_mapping_bc::has_global_row_index)
+    .def("has_global_col_index", &wrap_mapping_bc::has_global_col_index)
     .def("is_gindex", &wrap_mapping_bc::is_gindex)
     .def("get_grid", &wrap_mapping_bc::get_grid)
     .def_property_readonly("major", &wrap_mapping_bc::get_major_string);
@@ -163,8 +163,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("translate_g2l_row", &wrap_distributed_matrix::translate_g2l_row)
     .def("translate_g2l_col", &wrap_distributed_matrix::translate_g2l_col)
     .def("translate_g2l", &wrap_distributed_matrix::translate_g2l) // tuple
-    .def("is_gindex_myrow", &wrap_distributed_matrix::is_gindex_myrow)
-    .def("is_gindex_mycol", &wrap_distributed_matrix::is_gindex_mycol)
+    .def("has_global_row_index", &wrap_distributed_matrix::has_global_row_index)
+    .def("has_global_col_index", &wrap_distributed_matrix::has_global_col_index)
     .def("is_gindex", &wrap_distributed_matrix::is_gindex)
     .def("get_local", &wrap_distributed_matrix::get_local)
     .def("get_global", &wrap_distributed_matrix::get_global)

@@ -33,7 +33,7 @@ public:
   int size() const { return n_global_; }
   int size_local() const { return storage_.size(); }
 
-  bool is_gindex(int gi) const {
+  bool has_global_index(int gi) const {
     return (gi >= offset_ && gi < offset_ + storage_.size());
   }
 
@@ -42,14 +42,14 @@ public:
   value_type get_local(int li) const { return storage_[li]; }
 
   void set_global(int gi, value_type value) {
-    if (is_gindex(gi)) set_local(gi - offset_, value);
+    if (has_global_index(gi)) set_local(gi - offset_, value);
   }
   void update_global(int gi, value_type value) {
-    if (is_gindex(gi)) update_local(gi - offset_, value);
+    if (has_global_index(gi)) update_local(gi - offset_, value);
   }
   value_type get_global(int gi) const { return get_local(gi - offset_); }
   value_type get_global_checked(int gi) const {
-    if (is_gindex(gi)) {
+    if (has_global_index(gi)) {
       return get_global(gi);
     } else {
       throw std::out_of_range("element not on this process.");

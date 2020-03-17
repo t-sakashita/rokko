@@ -212,20 +212,20 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice,
     int m3 = m1 + m2;
 
     for (int k = 0; k < N; ++k) {
-      if (map.is_gindex_mycol(k)) {
+      if (map.has_global_col_index(k)) {
         int local_k = map.translate_g2l_col(k);
         if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (map.is_gindex_myrow(k^m3)) {
+          if (map.has_global_row_index(k^m3)) {
             mat.update_local(map.translate_g2l_row(k^m3), local_k, offdiag_plus);
           }
-          if (map.is_gindex_myrow(k)) {
+          if (map.has_global_row_index(k)) {
             mat.update_local(map.translate_g2l_row(k), local_k, diag_minus);
           }
         } else {
-          if (map.is_gindex_myrow(k^m3)) {
+          if (map.has_global_row_index(k^m3)) {
             mat.update_local(map.translate_g2l_row(k^m3), local_k, offdiag_minus);
           }
-          if (map.is_gindex_myrow(k)) {
+          if (map.has_global_row_index(k)) {
             mat.update_local(map.translate_g2l_row(k), local_k, diag_plus);
           }
         }

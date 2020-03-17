@@ -29,7 +29,7 @@ void run_test(MPI_Comm comm, int dim) {
 
   rokko::distributed_vector<T> vec(dim, mpi.get_displacement(), mpi.get_displacement() + mpi.get_count());
   for (int i = 0; i < dim; ++i) {
-    if (vec.is_gindex(i)) vec.set_global(i, static_cast<T>(i));
+    if (vec.has_global_index(i)) vec.set_global(i, static_cast<T>(i));
   }
 
   VectorX<T> lvec(dim);
@@ -42,7 +42,7 @@ void run_test(MPI_Comm comm, int dim) {
       std::cout.flush();
 #endif
       for (int i = 0; i < dim; ++i) {
-        if (vec.is_gindex(i))
+        if (vec.has_global_index(i))
           ASSERT_EQ(vec.get_global(i), static_cast<T>(i));
       }
     }

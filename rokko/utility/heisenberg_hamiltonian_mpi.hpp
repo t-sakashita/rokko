@@ -205,17 +205,17 @@ void generate(int /* L */, std::vector<std::pair<int, int>>& lattice,
     int m2 = 1 << j;
     int m3 = m1 + m2;
     for (int k = 0; k < mat.get_n_global(); ++k) {
-      if (mat.is_gindex_mycol(k)) {
+      if (mat.has_global_col_index(k)) {
         int local_k = mat.translate_g2l_col(k);
         if (((k & m3) == m1) || ((k & m3) == m2)) {
           // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
-          if (mat.is_gindex_myrow(k^m3)) {
+          if (mat.has_global_row_index(k^m3)) {
             mat.update_local(mat.translate_g2l_row(k^m3), local_k, 0.5);
           }
-          if (mat.is_gindex_myrow(k)) {
+          if (mat.has_global_row_index(k)) {
             mat.update_local(mat.translate_g2l_row(k), local_k, -0.25);
           }
-        } else if (mat.is_gindex_myrow(k)) {
+        } else if (mat.has_global_row_index(k)) {
           mat.update_local(mat.translate_g2l_row(k), local_k, 0.25);
         }
       }

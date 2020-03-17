@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
   MPI_Barrier(comm.get_comm());
   int count = 0;
   for (int i = 12; i < ss.dimension(); i += ss.dimension()/20, ++count) {
-    if (eigvec.is_gindex(i)) {
+    if (eigvec.has_global_index(i)) {
       if (count % 4 == 0) std::cout << std::endl;
       std::cout << '\t' << eigvec.get_global(i);
     }

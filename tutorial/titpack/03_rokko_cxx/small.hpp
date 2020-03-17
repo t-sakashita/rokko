@@ -56,7 +56,7 @@ void elm3(hamiltonian const& hop, rokko::distributed_matrix<T, MAJOR>& elemnt) {
     double diag = 0.5 * wght * hop.z_ratio(k);
     #pragma omp parallel for schedule(static)
     for (int i = 0; i < hop.dimension(); ++i) {
-      if (elemnt.is_gindex_myrow(i)) {
+      if (elemnt.has_global_row_index(i)) {
         int ibit = hop.config(i) & is;
         if (ibit == 0 || ibit == is) {
           elemnt.update_global(i, i, -diag);
@@ -97,7 +97,7 @@ void elm3_sx(subspace const& ss, int i1, int i2, rokko::distributed_matrix<T, MA
   int is = (1 << i1) + (1 << i2);
   #pragma omp parallel for schedule(static)
   for (int i = 0; i < ss.dimension(); ++i) {
-    if (elemnt.is_gindex_myrow(i)) {
+    if (elemnt.has_global_row_index(i)) {
       int ibit = ss.config(i) & is;
       if (ibit != 0 && ibit != is) {
         int newcfg = ss.config2index(ss.config(i) ^ is);

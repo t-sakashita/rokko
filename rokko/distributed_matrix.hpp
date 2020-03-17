@@ -154,8 +154,8 @@ public:
   int translate_g2l_row(int global_i) const { return map.translate_g2l_row(global_i); }
   int translate_g2l_col(int global_j) const { return map.translate_g2l_col(global_j); }
   std::array<int,2> translate_g2l(std::array<int,2> global) const { return map.translate_g2l(global); }
-  bool is_gindex_myrow(int global_i) const { return map.is_gindex_myrow(global_i); }
-  bool is_gindex_mycol(int global_j) const { return map.is_gindex_mycol(global_j); }
+  bool has_global_row_index(int global_i) const { return map.has_global_row_index(global_i); }
+  bool has_global_col_index(int global_j) const { return map.has_global_col_index(global_j); }
   bool is_gindex(std::array<int,2> global) const { return map.is_gindex(global); }
 
   int get_length_array() const { return map.get_length_array(); }

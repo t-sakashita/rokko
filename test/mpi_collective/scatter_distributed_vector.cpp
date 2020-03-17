@@ -36,7 +36,7 @@ void run_test(MPI_Comm comm, int dim) {
     rokko::distributed_vector<T> vec(dim, mpi.get_displacement(), mpi.get_displacement() + mpi.get_count());
     mpi.scatter(lvec, vec, r);
     for (int i = 0; i < dim; ++i) {
-      if (vec.is_gindex(i))
+      if (vec.has_global_index(i))
         ASSERT_EQ(vec.get_global(i), static_cast<T>(i));
     }
   }
