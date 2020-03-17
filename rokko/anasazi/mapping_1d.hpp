@@ -18,6 +18,8 @@
 #include <Epetra_MpiComm.h>
 #include <Epetra_Map.h>
 
+#include <memory>
+
 namespace rokko {
 
 namespace anasazi {
@@ -27,13 +29,13 @@ public:
   explicit mapping_1d() = default;
   explicit mapping_1d(int dim) : mapping_1d(dim, mpi_comm{MPI_COMM_WORLD}) {}
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
-    : detail::ps_mapping_1d_base(dim, mpi_comm_in), ep_comm_(new Epetra_MpiComm(mpi_comm_in.get_comm())), map_(new Epetra_Map(dim, 0, *ep_comm_)) {
+    : detail::ps_mapping_1d_base(dim, mpi_comm_in), ep_comm_(std::make_shared<Epetra_MpiComm>(mpi_comm_in.get_comm())), map_(std::make_shared<Epetra_Map>(dim, 0, *ep_comm_)) {
   }
   void init(int dim, mpi_comm const& mpi_comm_in) {
     set_dim(dim);
     set_mpi_comm(mpi_comm_in);
-    ep_comm_ = new Epetra_MpiComm(mpi_comm_in.get_comm());
-    map_ = new Epetra_Map(dim, 0, *ep_comm_);
+    ep_comm_ = std::make_shared<Epetra_MpiComm>(mpi_comm_in.get_comm());
+    map_ = std::make_shared<Epetra_Map>(dim, 0, *ep_comm_);
   }
   int get_num_local_rows() const { return map_->NumMyElements();; }
   int start_row() const {
@@ -47,8 +49,8 @@ public:
   Epetra_Map const& get_epetra_map() const { return *map_; }
 
 private:
-  const Epetra_MpiComm* ep_comm_;
-  const Epetra_Map* map_;
+  std::shared_ptr<const Epetra_MpiComm> ep_comm_;
+  std::shared_ptr<const Epetra_Map> map_;
 };
 
 } // namespace anasazi
