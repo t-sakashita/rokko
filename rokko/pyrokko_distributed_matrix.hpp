@@ -19,6 +19,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/utility/tuple_to_array.hpp>
 
+#include <memory>
 
 namespace rokko {
 
@@ -27,25 +28,25 @@ public:
 
   wrap_distributed_matrix(wrap_mapping_bc const& map_in) : is_col(map_in.is_col_major()), map(map_in) {
     if (is_col)
-      _ptr = new distributed_matrix<double,matrix_col_major>(map_in.col_ver());
+      _ptr = std::make_shared<distributed_matrix<double,matrix_col_major>>(map_in.col_ver());
     else
-      _ptr = new distributed_matrix<double,matrix_row_major>(map_in.row_ver());
+      _ptr = std::make_shared<distributed_matrix<double,matrix_row_major>>(map_in.row_ver());
   }
 
   distributed_matrix<double,matrix_col_major>& col_ver() {
-    return *(boost::get<distributed_matrix<double,matrix_col_major>*>(_ptr));
+    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_col_major>>>(_ptr));
   }
   
   distributed_matrix<double,matrix_row_major>& row_ver() {
-    return *(boost::get<distributed_matrix<double,matrix_row_major>*>(_ptr));
+    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_row_major>>>(_ptr));
   }
 
   distributed_matrix<double,matrix_col_major> const& col_ver() const {
-    return *(boost::get<distributed_matrix<double,matrix_col_major>*>(_ptr));
+    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_col_major>>>(_ptr));
   }
   
   distributed_matrix<double,matrix_row_major> const& row_ver() const {
-    return *(boost::get<distributed_matrix<double,matrix_row_major>*>(_ptr));
+    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_row_major>>>(_ptr));
   }
 
   // map member function
@@ -203,7 +204,7 @@ public:
 
   template <typename MATRIX_MAJOR>
   distributed_matrix<double,MATRIX_MAJOR>* get_ptr() {
-    return boost::get<distributed_matrix<double,MATRIX_MAJOR>*>(_ptr);
+    return boost::get<std::shared_ptr<distributed_matrix<double,MATRIX_MAJOR>>>(_ptr).get();
   }
 
   template <typename MATRIX_MAJOR>
@@ -255,7 +256,7 @@ public:
 
 private:
   bool is_col;
-  boost::variant<distributed_matrix<double,matrix_row_major>*, distributed_matrix<double,matrix_col_major>*> _ptr;
+  boost::variant<std::shared_ptr<distributed_matrix<double,matrix_row_major>>, std::shared_ptr<distributed_matrix<double,matrix_col_major>>> _ptr;
   wrap_mapping_bc map;
 };
 
