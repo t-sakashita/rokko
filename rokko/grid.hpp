@@ -28,7 +28,7 @@ extern struct grid_col_major_t {} grid_col_major;
 class grid : public mpi_comm, public blacs_grid {
 public:
   template <typename GRID_MAJOR>
-  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0)
+  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major)
     : mpi_comm(comm_in) {
     if (comm == MPI_COMM_NULL) {
       set_size({0, 0});  // to avoid zero dividing and blacs does not take (0,0) size grid
@@ -39,7 +39,7 @@ public:
     if (is_MPI_2dim_Cart(comm))
       set_sizes_cart(grid_major);
     else
-      set_sizes_default(grid_major, lld);
+      set_sizes_default(grid_major);
 
     set_blacs_grid(get_comm(), is_row_major(), get_size());
   }
@@ -59,7 +59,7 @@ public:
     set_blacs_grid(get_comm(), is_row_major(), get_size());
   }
 
-  explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major, 0) {}
+  explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major) {}
 
   static int find_square_root_like_divisor(int n) {
     int i = int(std::sqrt((double)n));
@@ -104,16 +104,8 @@ public:
 
 protected:
   template <typename GRID_MAJOR>
-  void set_sizes_default(GRID_MAJOR, int lld) {
-    int nprow;
-    if (lld > 0) {
-      if ((nprocs % lld) != 0) {
-        throw std::invalid_argument("The number of processes should be a multiple of lld.");
-      }
-      nprow = (is_row ? nprocs / lld : lld);
-    } else {
-      nprow = find_square_root_like_divisor(nprocs);
-    }
+  void set_sizes_default(GRID_MAJOR) {
+    int nprow = find_square_root_like_divisor(nprocs);
     set_size({nprow, nprocs/nprow});
     set_major<GRID_MAJOR>();
     set_my_coordinate();

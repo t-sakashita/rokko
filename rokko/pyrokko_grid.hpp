@@ -44,8 +44,8 @@ public:
   }
 
   template <typename GRID_MAJOR>
-  wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0) {
-    ptr = std::make_shared<grid>(to_MPI_Comm(comm_handle), grid_major, lld);
+  wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major) {
+    ptr = std::make_shared<grid>(to_MPI_Comm(comm_handle), grid_major);
   }
 
   grid const& get_grid() const {
