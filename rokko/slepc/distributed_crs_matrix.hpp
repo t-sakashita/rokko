@@ -47,6 +47,7 @@ public:
   void initialize(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
     map_ = &map;
     int dim = map_->get_dim();
+    PetscErrorCode ierr;
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
     ierr = MatSetSizes(matrix_, map_->get_num_local_rows(), map_->get_num_local_rows(), dim, dim);  //CHKERRQ(ierr);
     ierr = MatSetFromOptions(matrix_);  //CHKERRQ(ierr);
@@ -57,14 +58,15 @@ public:
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
-    ierr = MatSetValues(matrix_, 1, &row, cols.size(), cols.data(), values.data(), INSERT_VALUES);  //CHKERRQ(ierr);
+    PetscErrorCode ierr = MatSetValues(matrix_, 1, &row, cols.size(), cols.data(), values.data(), INSERT_VALUES);  //CHKERRQ(ierr);
   }
   void insert(int row, int col_size, int const*const cols, double const*const values) {
-    ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);
+    PetscErrorCode ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/complete"
   void complete() {
+    PetscErrorCode ierr;
     ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
     ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
   }
@@ -116,7 +118,7 @@ public:
       cols.emplace_back(cols_tmp[idx[i]]);
       values.emplace_back(values_tmp[idx[i]]);
     }
-    MatRestoreRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
+    PetscErrorCode ierr = MatRestoreRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
   }
   void output_matrix_market(std::ostream& os = std::cout) const {
     const auto& comm = get_map().get_mpi_comm();
@@ -145,7 +147,6 @@ public:
 
 private:
   const rokko::slepc::mapping_1d* map_;
-  PetscErrorCode ierr;
   Mat matrix_;
 };
 
