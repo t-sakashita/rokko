@@ -18,7 +18,7 @@ jobs:
     - name: eigenexa
       run: PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/default.sh && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/link.sh
     - name: cmake
-      run: mkdir -p build && cd build && cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 ..
+      run: mkdir -p build && cd build && source rokko/rokkoenv.sh && cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 ..
     - name: make
       run: cd build && make
     - name: ctest
