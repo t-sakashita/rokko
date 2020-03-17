@@ -115,25 +115,25 @@ public:
   }
 
   template <int IND>
-  bool is_gindex(int global_index) const {
+  bool has_global_indices(int global_index) const {
     const int local_offset_block = global_index / block_size[IND];
     return (local_offset_block % grid_size[IND]) == my_coordinate[IND];
   }
 
   bool has_global_row_index(int global_i) const {
-    return is_gindex<0>(global_i);
+    return has_global_indices<0>(global_i);
   }
 
   bool has_global_col_index(int global_j) const {
-    return is_gindex<1>(global_j);
+    return has_global_indices<1>(global_j);
   }
 
-  bool is_gindex(std::array<int,2> const& global_indices) const {
-    return is_gindex<0>(global_indices[0]) && is_gindex<1>(global_indices[1]);
+  bool has_global_indices(std::array<int,2> const& global_indices) const {
+    return has_global_indices<0>(global_indices[0]) && has_global_indices<1>(global_indices[1]);
   }
 
-  bool is_gindex(int global_i, int global_j) const {
-    return is_gindex<0>(global_i) && has_global_col_index(global_j);
+  bool has_global_indices(int global_i, int global_j) const {
+    return has_global_indices<0>(global_i) && has_global_col_index(global_j);
   }
 
   MPI_Comm get_comm() const { return g.get_comm(); }

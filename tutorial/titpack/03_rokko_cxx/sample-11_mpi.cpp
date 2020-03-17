@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
   std::vector<double> sxx(1);
   matrix_type sxmat(map);
   xcorr3_mpi(ss, npair, v, 0, sxx, sxmat, w);
-  if (v.is_gindex({0, 0})) std::cout << "sxx: " << sxx[0] << std::endl;
+  if (v.has_global_indices({0, 0})) std::cout << "sxx: " << sxx[0] << std::endl;
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
   std::vector<double> szz(1);

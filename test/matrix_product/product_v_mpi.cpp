@@ -54,7 +54,7 @@ TEST(product_v_mpi, product_v_mpi) {
   rokko::product_v(1.0, matA, false, vecX, false, 0, 1, vecY, false, 0);
 
   for (int i = 0; i < dim; ++i) {
-    if (vecY.is_gindex({i, 0}))
+    if (vecY.has_global_indices({i, 0}))
       EXPECT_NEAR(vecY.get_global(i,0), locY(i), eps);
   }
 }

@@ -39,7 +39,7 @@ void run_test(std::array<int,2> const& global_size, std::array<int,2> const& blo
   // global to local
   // for row
   for (int global=0; global<map.get_m_global(); ++global) {
-    if (map.template is_gindex<0>(global)) {
+    if (map.template has_global_indices<0>(global)) {
       int local = map.template translate_g2l<0>(global);
       int global2 = map.template translate_l2g<0>(local);
       ASSERT_EQ(global, global2);
@@ -47,7 +47,7 @@ void run_test(std::array<int,2> const& global_size, std::array<int,2> const& blo
   }
   // for column
   for (int global=0; global<map.get_n_local(); ++global) {
-    if (map.template is_gindex<1>(global)) {
+    if (map.template has_global_indices<1>(global)) {
       int local = map.template translate_g2l<1>(global);
       int global2 = map.template translate_l2g<1>(local);
       ASSERT_EQ(global, global2);

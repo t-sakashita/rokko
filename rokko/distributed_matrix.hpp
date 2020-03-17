@@ -82,12 +82,12 @@ public:
   }
 
   void set_global(int global_i, int global_j, value_type value) {
-    if ((map.is_gindex(global_i, global_j)))
+    if ((map.has_global_indices(global_i, global_j)))
       set_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j), value);
   }
 
   void update_global(int global_i, int global_j, value_type value) {
-    if ((map.is_gindex(global_i, global_j)))
+    if ((map.has_global_indices(global_i, global_j)))
       update_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j), value);
   }
 
@@ -96,7 +96,7 @@ public:
   }
 
   value_type get_global_checked(int global_i, int global_j) const {
-    if ((map.is_gindex(global_i, global_j))) {
+    if ((map.has_global_indices(global_i, global_j))) {
       return get_local(map.translate_g2l_row(global_i), map.translate_g2l_col(global_j));
     } else {
       throw std::out_of_range("element not on this process.");
@@ -156,7 +156,7 @@ public:
   std::array<int,2> translate_g2l(std::array<int,2> global) const { return map.translate_g2l(global); }
   bool has_global_row_index(int global_i) const { return map.has_global_row_index(global_i); }
   bool has_global_col_index(int global_j) const { return map.has_global_col_index(global_j); }
-  bool is_gindex(std::array<int,2> global) const { return map.is_gindex(global); }
+  bool has_global_indices(std::array<int,2> global) const { return map.has_global_indices(global); }
 
   int get_length_array() const { return map.get_length_array(); }
   int get_lld() const { return map.get_lld(); };
@@ -253,7 +253,7 @@ T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
 
   value_type local_sum = 0;
   for (int i=0; i<std::min(map.get_m_global(), map.get_n_global()); ++i) {
-    if (map.is_gindex(i, i)) {
+    if (map.has_global_indices(i, i)) {
       local_sum += mat.get_global(i, i);
     }
   }
