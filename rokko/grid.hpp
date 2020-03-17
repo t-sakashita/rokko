@@ -119,10 +119,24 @@ protected:
     set_my_coordinate();
   }
 
+  static std::string mpi_error_string(int ierr) {
+    if (ierr == MPI_ERR_TOPOLOGY)
+      return "MPI_ERR_TOPOLOGY";
+    else if (ierr == MPI_ERR_COMM)
+      return "MPI_ERR_COMM";
+    else if (ierr == MPI_ERR_ARG)
+      return "MPI_ERR_ARG";
+    else
+      return "MPI_SUCCESS";
+  }
+
   void set_sizes_cart(grid_row_major_t) {
     constexpr int cart_dim = 2;
     std::array<int,2> dims, periods, coords;
-    /* int ierr = */ MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
+    int ierr = MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
+    if (ierr != MPI_SUCCESS)
+      throw std::invalid_argument("set_sizes_cart : MPI_Cart_get returns " + mpi_error_string(ierr));
+
     set_size(dims);
     set_my_coordinate(coords);
 
