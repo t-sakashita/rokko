@@ -29,38 +29,38 @@ public:
   
   wrap_mapping_bc(matrix_major_enum const& major = col) : is_col(major == col) {
     if (is_col)
-      _map = *(new mapping_bc<matrix_col_major>());
+      _map = mapping_bc<matrix_col_major>();
     else
-      _map = *(new mapping_bc<matrix_row_major>());
+      _map = mapping_bc<matrix_row_major>();
   }
 
   wrap_mapping_bc(int global_dim, int block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = col) : is_col(major == col) {
     if (is_col)
-      _map = *(new mapping_bc<matrix_col_major>(global_dim, block_size, wrap_g.get_grid()));
+      _map = mapping_bc<matrix_col_major>(global_dim, block_size, wrap_g.get_grid());
     else
-      _map = *(new mapping_bc<matrix_row_major>(global_dim, block_size, wrap_g.get_grid()));
+      _map = mapping_bc<matrix_row_major>(global_dim, block_size, wrap_g.get_grid());
   }
 
   wrap_mapping_bc(int global_dim, int block_size, int lld, wrap_grid const& wrap_g, matrix_major_enum const& major = col) : is_col(major == col) {
     if (is_col)
-      _map = *(new mapping_bc<matrix_col_major>(global_dim, block_size, lld, wrap_g.get_grid()));
+      _map = mapping_bc<matrix_col_major>(global_dim, block_size, lld, wrap_g.get_grid());
     else
-      _map = *(new mapping_bc<matrix_row_major>(global_dim, block_size, lld, wrap_g.get_grid()));
+      _map = mapping_bc<matrix_row_major>(global_dim, block_size, lld, wrap_g.get_grid());
   }
 
   wrap_mapping_bc(std::tuple<int,int> const& global_size, std::tuple<int,int> const& block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = col) : is_col(major == col) {
     if (is_col)
-      _map = *(new mapping_bc<matrix_col_major>(to_array(global_size), to_array(block_size), wrap_g.get_grid()));
+      _map = mapping_bc<matrix_col_major>(to_array(global_size), to_array(block_size), wrap_g.get_grid());
     else
-      _map = *(new mapping_bc<matrix_row_major>(to_array(global_size), to_array(block_size), wrap_g.get_grid()));
+      _map = mapping_bc<matrix_row_major>(to_array(global_size), to_array(block_size), wrap_g.get_grid());
   }
 
   wrap_mapping_bc(mapping_bc<matrix_col_major> const& map) : is_col(true) {
-    _map = *(new mapping_bc<matrix_col_major>(map));
+    _map = mapping_bc<matrix_col_major>(map);
   }
 
   wrap_mapping_bc(mapping_bc<matrix_row_major> const& map) : is_col(false) {
-    _map = *(new mapping_bc<matrix_row_major>(map));
+    _map = mapping_bc<matrix_row_major>(map);
   }
 
   mapping_bc<matrix_col_major>& col_ver() {
