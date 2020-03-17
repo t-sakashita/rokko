@@ -19,6 +19,8 @@
 #include <rokko/grid.hpp>
 #include <rokko/utility/tuple_to_array.hpp>
 
+#include <memory>
+
 namespace rokko {
 
 namespace py = pybind11;
@@ -29,21 +31,21 @@ public:
 
   template <typename GRID_MAJOR>
   wrap_grid(GRID_MAJOR const& grid_major = grid_row_major) {
-    ptr = new grid(to_MPI_Comm(), grid_major);
+    ptr = std::make_shared<grid>(to_MPI_Comm(), grid_major);
   }
 
   template <typename GRID_MAJOR>
   wrap_grid(pybind11::handle const& comm_handle, std::tuple<int,int> const& size_in, GRID_MAJOR const& grid_major = grid_row_major) {
-    ptr = new grid(to_MPI_Comm(comm_handle), to_array(size_in), grid_major);
+    ptr = std::make_shared<grid>(to_MPI_Comm(comm_handle), to_array(size_in), grid_major);
   }
 
-  wrap_grid(rokko::grid const& g) {
-    ptr = &g;
+  wrap_grid(rokko::grid const g) {
+    ptr = std::make_shared<grid>(g);
   }
 
   template <typename GRID_MAJOR>
   wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major, int lld = 0) {
-    ptr = new grid(to_MPI_Comm(comm_handle), grid_major, lld);
+    ptr = std::make_shared<grid>(to_MPI_Comm(comm_handle), grid_major, lld);
   }
 
   grid const& get_grid() const {
@@ -81,7 +83,7 @@ public:
   int calculate_rank_form_coords(int proc_row, int proc_col) const { return ptr->calculate_rank_form_coords(proc_row, proc_col); }
 
 private:
-  const grid* ptr;
+  std::shared_ptr<const grid> ptr;
 };
 
 } // end namespace rokko
