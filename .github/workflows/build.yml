@@ -13,8 +13,12 @@ jobs:
         ref: develop
     - name: package
       run: sudo apt-get update && sudo apt-get -y install gfortran mpi-default-dev libboost-all-dev libblas-dev liblapack-dev liblapacke-dev libscalapack-mpi-dev
+    - name: env
+      run: mkdir -p build/rokko build/rokko/build build/rokko/source && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/00_env/default.sh
+    - name: eigenexa
+      run: PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/default.sh && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/link.sh
     - name: cmake
-      run: mkdir build && cd build && cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 ..
+      run: mkdir -p build && cd build && cmake -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 ..
     - name: make
       run: cd build && make
     - name: ctest
