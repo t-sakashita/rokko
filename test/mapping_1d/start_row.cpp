@@ -23,11 +23,19 @@ int start_row(rokko::skel::mapping_1d const& map) {
   return index;
 }
 
+int dim_by_sum(rokko::skel::mapping_1d const& map) {
+  int sum = 0;
+  for (int proc=0; proc<map.get_mpi_comm().get_nprocs(); ++proc)
+    sum += map.calculate_num_local_rows(proc);
+  return sum;
+}
+
 TEST(mapping_1d, start_row) {
   constexpr int dim = 100;
   rokko::skel::mapping_1d map(dim);
 
   ASSERT_EQ(map.start_row(), start_row(map));
+  ASSERT_EQ(dim_by_sum(map), dim);
 }
 
 int main(int argc, char** argv) {
