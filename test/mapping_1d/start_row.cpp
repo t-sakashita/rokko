@@ -36,6 +36,10 @@ TEST(mapping_1d, start_row) {
 
   ASSERT_EQ(map.start_row(), start_row(map));
   ASSERT_EQ(dim_by_sum(map), dim);
+
+  const int end_proc = map.get_mpi_comm().get_nprocs() - 1;
+  if (map.get_mpi_comm().get_myrank() == end_proc)
+    ASSERT_EQ(map.end_row(), dim);
 }
 
 int main(int argc, char** argv) {
