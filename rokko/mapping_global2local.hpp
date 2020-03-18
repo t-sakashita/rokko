@@ -133,7 +133,7 @@ public:
   }
 
   bool has_global_indices(int global_i, int global_j) const {
-    return has_global_indices<0>(global_i) && has_global_col_index(global_j);
+    return has_global_indices<0>(global_i) && has_global_indices<1>(global_j);
   }
 
   MPI_Comm get_comm() const { return g.get_comm(); }
