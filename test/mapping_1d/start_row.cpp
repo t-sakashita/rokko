@@ -16,7 +16,7 @@
 int global_argc;
 char** global_argv;
 
-int start_row(rokko::skel::mapping_1d const& map) {
+int start_row_by_sum(rokko::skel::mapping_1d const& map) {
   int index = 0;
   for (int proc=0; proc<map.get_mpi_comm().get_myrank(); ++proc)
     index += map.calculate_num_local_rows(proc);
@@ -30,11 +30,11 @@ int dim_by_sum(rokko::skel::mapping_1d const& map) {
   return sum;
 }
 
-TEST(mapping_1d, start_row) {
+TEST(mapping_1d, skel) {
   constexpr int dim = 100;
   rokko::skel::mapping_1d map(dim);
 
-  ASSERT_EQ(map.start_row(), start_row(map));
+  ASSERT_EQ(map.start_row(), start_row_by_sum(map));
   ASSERT_EQ(dim_by_sum(map), dim);
 
   const int end_proc = map.get_mpi_comm().get_nprocs() - 1;
