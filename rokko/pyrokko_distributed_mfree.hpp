@@ -49,7 +49,9 @@ public:
   distributed_mfree_inherit(int dim, pybind11::handle const& comm_handle)
   : distributed_mfree_default(skel::mapping_1d(dim, wrap_communicator{comm_handle})) {}
 
-  virtual void multiply(const Eigen::VectorXd& x, Eigen::Ref<Eigen::VectorXd> y) const = 0;
+  virtual void multiply(const Eigen::VectorXd& x, Eigen::Ref<Eigen::VectorXd> y) const { // Not pure virtual to display error message
+    std::cerr << "distributed_mfree_inherit : multiply is not implemented in Python" << std::endl;
+  };
 
   void multiply(const double* x, double *const y) const override {
     const int num_local_rows = get_num_local_rows();
@@ -67,7 +69,7 @@ public:
   using distributed_mfree_inherit::distributed_mfree_inherit;
 
   void multiply(const Eigen::VectorXd& x, Eigen::Ref<Eigen::VectorXd> y) const override {
-    PYBIND11_OVERLOAD_PURE(void, distributed_mfree_inherit, multiply, x, y);
+    PYBIND11_OVERLOAD(void, distributed_mfree_inherit, multiply, x, y);
   }
 };
 
