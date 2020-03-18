@@ -8,7 +8,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(TESTS start_row sizes_for_all_libraries)
+  set(TESTS sizes_skel sizes_for_all_libraries)
   foreach(name ${TESTS})
     set(target_name test_mapping_1d_${name})
     add_executable(${target_name} ${name}.cpp)
