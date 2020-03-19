@@ -27,20 +27,17 @@ public:
   explicit ps_mapping_1d_base(int dim, mpi_comm const& mpi_comm_in) : dim_(dim), mpi_comm_(mpi_comm_in) {}
   ps_mapping_1d_base() = default;
   virtual ~ps_mapping_1d_base() = default;
-  virtual void init(int dim, mpi_comm const& mpi_comm_in) = 0;
   int get_dim() const override { return dim_; }
   virtual int start_row() const = 0;
   virtual int end_row() const = 0;
   const rokko::mpi_comm& get_mpi_comm() const { return mpi_comm_; }
-  void set_dim(int dim) { dim_ = dim; }
-  void set_mpi_comm(rokko::mpi_comm const& mpi_comm_in) { mpi_comm_ = mpi_comm_in; }
 
 private:
   int dim_;
   rokko::mpi_comm mpi_comm_;
 };
 
-using ps_mapping_1d_factory = factory<ps_mapping_1d_base>;
+using ps_mapping_1d_factory = factory<ps_mapping_1d_base,int,mpi_comm const&>;
 
 } // end namespace detail
 
@@ -48,13 +45,10 @@ class mapping_1d {
 public:
   template<typename SOLVER>
   mapping_1d(int dim, mpi_comm const& mpi_comm_in, SOLVER const& solver_in)
-    : mapping_1d(dim, mpi_comm_in, solver_in.get_solver_name()) {
-  }
+    : mapping_1d(dim, mpi_comm_in, solver_in.get_solver_name()) {}
 
   mapping_1d(int dim, mpi_comm const& mpi_comm_in, std::string const& solver_name)
-    : solver_name_(solver_name), map_impl_(detail::ps_mapping_1d_factory::instance()->make_product(solver_name)) {
-    map_impl_->init(dim, mpi_comm_in);
-  }
+    : solver_name_(solver_name), map_impl_(detail::ps_mapping_1d_factory::instance()->make_product(solver_name, dim, mpi_comm_in)) {}
 
   mapping_1d(int dim, mpi_comm const& mpi_comm_in)
     : mapping_1d(dim, mpi_comm_in, detail::ps_mapping_1d_factory::instance()->default_product_name()) {}
@@ -80,7 +74,7 @@ private:
 #define ROKKO_REGISTER_PARALLEL_SPARSE_MAPPING_1D(map, name, priority) \
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::ps_mapping_1d_base>;  \
+  using factory = rokko::detail::ps_mapping_1d_factory; \
   using product = map; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \

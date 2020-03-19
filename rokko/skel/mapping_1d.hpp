@@ -26,10 +26,6 @@ public:
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
     : detail::ps_mapping_1d_base(dim, mpi_comm_in) {}
 
-  void init(int dim, mpi_comm const& mpi_comm_in) override {
-    set_dim(dim);
-    set_mpi_comm(mpi_comm_in);
-  }
   int get_num_local_rows() const override { return calculate_num_local_rows(); }
   int calculate_num_local_rows() const {
     return calculate_num_local_rows(get_mpi_comm().get_myrank());

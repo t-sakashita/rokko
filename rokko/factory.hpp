@@ -23,20 +23,20 @@
 
 namespace rokko {
 
-template<typename BASE>
+template<typename BASE, class... Types>
 class factory : private rokko::noncopyable<factory<BASE>> {
 private:
   class abstract_creator {
   public:
     virtual ~abstract_creator() = default;
-    virtual std::shared_ptr<BASE> create() const = 0;
+    virtual std::shared_ptr<BASE> create(Types... args) const = 0;
   };
   template<typename PRODUCT>
   class creator : public abstract_creator {
   public:
     virtual ~creator() = default;
-    std::shared_ptr<BASE> create() const {
-      return std::static_pointer_cast<BASE>(std::make_shared<PRODUCT>());
+    std::shared_ptr<BASE> create(Types... args) const {
+      return std::static_pointer_cast<BASE>(std::make_shared<PRODUCT>(args...));
     }
   };
 
@@ -48,17 +48,17 @@ private:
   using creator_map_type = std::map<std::string, creator_pointer_type>;
 public:
   factory() : largest_priority_(0) {}
-  static product_pointer_type make_product(std::string const& name = "") {
+  static product_pointer_type make_product(std::string const& name = "", Types... args) {
     factory* f = factory::instance();
     if (name == "") {
       if (f->default_product_ != "") {
-        return f->make_creator(f->default_product_)->create();
+        return f->make_creator(f->default_product_)->create(args...);
       } else {
         std::cerr << "Error: default product is not defined\n";
         throw std::runtime_error("factory::make_product()");
       }
     } else {
-      return f->make_creator(name)->create();
+      return f->make_creator(name)->create(args...);
     }
   }
   template<typename PRODUCT>

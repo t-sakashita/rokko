@@ -29,14 +29,7 @@ public:
   explicit mapping_1d() = default;
   explicit mapping_1d(int dim) : mapping_1d(dim, mpi_comm{MPI_COMM_WORLD}) {}
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
-    : detail::ps_mapping_1d_base(dim, mpi_comm_in), ep_comm_(std::make_shared<Epetra_MpiComm>(mpi_comm_in.get_comm())), map_(std::make_shared<Epetra_Map>(dim, 0, *ep_comm_)) {
-  }
-  void init(int dim, mpi_comm const& mpi_comm_in) {
-    set_dim(dim);
-    set_mpi_comm(mpi_comm_in);
-    ep_comm_ = std::make_shared<Epetra_MpiComm>(mpi_comm_in.get_comm());
-    map_ = std::make_shared<Epetra_Map>(dim, 0, *ep_comm_);
-  }
+    : detail::ps_mapping_1d_base(dim, mpi_comm_in), ep_comm_(std::make_shared<Epetra_MpiComm>(mpi_comm_in.get_comm())), map_(std::make_shared<Epetra_Map>(dim, 0, *ep_comm_)) {}
   int get_num_local_rows() const { return map_->NumMyElements();; }
   int start_row() const {
     return get_epetra_map().MinMyGID();

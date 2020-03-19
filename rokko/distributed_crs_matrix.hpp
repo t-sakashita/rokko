@@ -23,7 +23,6 @@ namespace detail {
 class ps_crs_base {
 public:
   virtual ~ps_crs_base() = default;
-  virtual void initialize(rokko::mapping_1d const& map, int num_entries_per_row) = 0;
   virtual void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) = 0;
   virtual void insert(int row, int col_size, int const*const cols, double const*const values) = 0;
   virtual void complete() = 0;
@@ -38,16 +37,15 @@ public:
   virtual const ps_mapping_1d_base& get_map() const = 0;
 };
 
-using ps_crs_factory = factory<ps_crs_base>;
+using ps_crs_factory = factory<ps_crs_base,rokko::mapping_1d const&,int>;
 
 } // end namespace detail
 
 class distributed_crs_matrix {
 public:
   explicit distributed_crs_matrix(rokko::mapping_1d const& map, int num_entries_per_row)
-    : solver_name_(map.get_solver_name()), crs_impl_(detail::ps_crs_factory::instance()->make_product(solver_name_)) {
-    crs_impl_->initialize(map, num_entries_per_row);
-  }
+    : solver_name_(map.get_solver_name()), crs_impl_(detail::ps_crs_factory::instance()->make_product(solver_name_, map, num_entries_per_row)) {}
+
   std::string get_solver_name() const { return solver_name_; }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
     crs_impl_->insert(row, cols, values);
@@ -121,7 +119,7 @@ private:
 #define ROKKO_REGISTER_PARALLEL_SPARSE_CRS(crs, name, priority) \
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::ps_crs_base>;  \
+  using factory = rokko::detail::ps_crs_factory;   \
   using product = crs; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
