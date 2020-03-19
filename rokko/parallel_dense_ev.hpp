@@ -192,7 +192,7 @@ private:
 #define ROKKO_REGISTER_PARALLEL_DENSE_SOLVER(solver, name, priority) \
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::pd_ev_base>; \
+  using factory = rokko::detail::pd_solver_factory;     \
   using product = rokko::detail::pd_ev_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \

@@ -110,7 +110,7 @@ private:
 #define ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(solver, name, priority) \
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
-  using factory = rokko::factory<rokko::detail::ps_ev_base>;  \
+  using factory = rokko::detail::ps_solver_factory;     \
   using product = rokko::detail::ps_ev_wrapper<solver>; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
