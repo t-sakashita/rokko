@@ -29,23 +29,22 @@ public:
   distributed_crs_matrix() = default;
   ~distributed_crs_matrix() = default;
 
-  explicit distributed_crs_matrix(rokko::mapping_1d const& map, int num_entries_per_row) {
-    initialize(map, num_entries_per_row);
+  explicit distributed_crs_matrix(rokko::mapping_1d const& map, int num_entries_per_row) : map_(cast_map(map)) {
+    create_matrix(num_entries_per_row);
   }
 
-  explicit distributed_crs_matrix(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
-    initialize(map, num_entries_per_row);
+  explicit distributed_crs_matrix(rokko::slepc::mapping_1d const& map, int num_entries_per_row) : map_(std::make_shared<const rokko::slepc::mapping_1d>(map)) {
+    create_matrix(num_entries_per_row);
   }
 
-  void initialize(rokko::mapping_1d const& map, int num_entries_per_row) {
+  static std::shared_ptr<const rokko::slepc::mapping_1d> cast_map(rokko::mapping_1d const& map) {
     if (map.get_solver_name() != "slepc") {
       throw std::invalid_argument("SLEPc's distributed_crs_matrix() : " + map.get_solver_name() + "'s mapping_1d is given.");
     }
-    initialize(*std::static_pointer_cast<const rokko::slepc::mapping_1d>(map.get_ptr()), num_entries_per_row);
+    return std::static_pointer_cast<const rokko::slepc::mapping_1d>(map.get_ptr());
   }
 
-  void initialize(rokko::slepc::mapping_1d const& map, int num_entries_per_row) {
-    map_ = &map;
+  void create_matrix(int num_entries_per_row) {
     int dim = map_->get_dim();
     PetscErrorCode ierr;
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
@@ -146,7 +145,7 @@ public:
   const rokko::slepc::mapping_1d& get_map() const { return *map_; }
 
 private:
-  const rokko::slepc::mapping_1d* map_;
+  std::shared_ptr<const rokko::slepc::mapping_1d> map_;
   Mat matrix_;
 };
 
