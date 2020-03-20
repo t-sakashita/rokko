@@ -308,11 +308,11 @@ public:
     return static_cast<int>(num_conv);
   }
 
-  const EPS get_object() const {
+  const EPS& get_object() const {
     return eps;
   }
 
-  EPS get_object() {
+  EPS& get_object() {
     return eps;
   }
 
