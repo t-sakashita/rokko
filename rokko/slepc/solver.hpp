@@ -152,9 +152,9 @@ public:
     PetscErrorCode ierr;
     ierr = MatCreateShell(mat.get_comm(), mat.get_num_local_rows(), mat.get_num_local_rows(), mat.get_dim(), mat.get_dim(), const_cast<rokko::distributed_mfree*>(&mat), &A);
     ierr = MatSetFromOptions(A);
-    ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())MatMult_myMat);
-    ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult_myMat);
-    ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal_myMat);
+    ierr = MatShellSetOperation(A, MATOP_MULT, (void(*)())MatMult);
+    ierr = MatShellSetOperation(A, MATOP_MULT_TRANSPOSE, (void(*)())MatMult);
+    ierr = MatShellSetOperation(A, MATOP_GET_DIAGONAL, (void(*)())MatGetDiagonal);
 
     dimension_ = mat.get_dim();
     offset_local_ = mat.get_local_offset();
@@ -165,8 +165,8 @@ public:
   }
 
   #undef __FUNCT__
-  #define __FUNCT__ "slepc::solver::MatMult_myMat"
-  static PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y) {
+  #define __FUNCT__ "slepc::solver::MatMult"
+  static PetscErrorCode MatMult(Mat A, Vec x, Vec y) {
     PetscFunctionBeginUser;
     PetscErrorCode ierr;
 
@@ -188,8 +188,8 @@ public:
   }
 
   #undef __FUNCT__
-  #define __FUNCT__ "slepc::solver::MatGetDiagonal_myMat"
-  static PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag) {
+  #define __FUNCT__ "slepc::solver::MatGetDiagonal"
+  static PetscErrorCode MatGetDiagonal(Mat A, Vec diag) {
     PetscFunctionBeginUser;
     PetscErrorCode ierr;
 

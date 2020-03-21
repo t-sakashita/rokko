@@ -13,8 +13,8 @@ struct model {
 /*
    User-defined routines
 */
-PetscErrorCode MatMult_myMat(Mat A, Vec x, Vec y);
-PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag);
+PetscErrorCode MatMult(Mat A, Vec x, Vec y);
+PetscErrorCode MatGetDiagonal(Mat A, Vec diag);
 
 #undef __FUNCT__
 #define __FUNCT__ "main"
@@ -65,9 +65,9 @@ int main(int argc,char **argv)
   }
   ierr = MatCreateShell(PETSC_COMM_WORLD, N_local, N_local, N_global, N_global, &m, &A); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
-  ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)())MatMult_myMat); CHKERRQ(ierr);
-  ierr = MatShellSetOperation(A,MATOP_MULT_TRANSPOSE,(void(*)())MatMult_myMat); CHKERRQ(ierr);
-  //ierr = MatShellSetOperation(A,MATOP_GET_DIAGONAL,(void(*)())MatGetDiagonal_myMat); CHKERRQ(ierr);
+  ierr = MatShellSetOperation(A,MATOP_MULT,(void(*)())MatMult); CHKERRQ(ierr);
+  ierr = MatShellSetOperation(A,MATOP_MULT_TRANSPOSE,(void(*)())MatMult); CHKERRQ(ierr);
+  //ierr = MatShellSetOperation(A,MATOP_GET_DIAGONAL,(void(*)())MatGetDiagonal); CHKERRQ(ierr);
 
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 Create the eigensolver and set various options
@@ -144,8 +144,8 @@ int main(int argc,char **argv)
 }
 
 #undef __FUNCT__
-#define __FUNCT__ "MatMult_myMat"
-PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
+#define __FUNCT__ "MatMult"
+PetscErrorCode MatMult(Mat A,Vec x,Vec y)
 {
   PetscFunctionBeginUser;
   PetscErrorCode ierr;
@@ -172,8 +172,8 @@ PetscErrorCode MatMult_myMat(Mat A,Vec x,Vec y)
 
 
 #undef __FUNCT__
-#define __FUNCT__ "MatGetDiagonal_myMat"
-PetscErrorCode MatGetDiagonal_myMat(Mat A, Vec diag)
+#define __FUNCT__ "MatGetDiagonal"
+PetscErrorCode MatGetDiagonal(Mat A, Vec diag)
 {
   PetscFunctionBeginUser;
   PetscErrorCode ierr;
