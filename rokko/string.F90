@@ -40,38 +40,21 @@ module rokko_string
 
 contains
 
-  subroutine rokko_get_string (str_ptr, val)
-    type(c_ptr), value, intent(in) :: str_ptr
-    character(len=:), allocatable, intent(out) :: val
-    character, pointer, dimension(:) :: tmp_array
-    character*255 :: tmp
-    integer :: i, n
-    call c_f_pointer(str_ptr, tmp_array, [ 255 ] )
-    do i=1, 255
-       if (tmp_array(i) == char(0)) exit
-       tmp(i:i) = tmp_array(i)
-    enddo
-    n = i - 1
-    call free_c(str_ptr)
-    val = trim(tmp(1:n))  ! automatically allocating suitable size
-  end subroutine rokko_get_string
+  function rokko_get_string(s)
+    use, intrinsic :: iso_c_binding
+    interface
+       pure function strlen(s) bind(c, name="strlen")
+         use, intrinsic :: iso_c_binding
+         type(c_ptr), intent(in), value :: s
+         integer(c_size_t) :: strlen
+       end function strlen
+    end interface
+    type(c_ptr), intent(in), value :: s
+    character(kind=c_char, len=strlen(s)), pointer :: rokko_get_string
 
-  subroutine rokko_get_string_fixedsize (str_ptr, val)
-    type(c_ptr), value, intent(in) :: str_ptr
-    character(len=*), intent(out) :: val
-    character, pointer, dimension(:) :: tmp_array
-    character*255 :: tmp
-    integer :: i, n
-    call c_f_pointer(str_ptr, tmp_array, [ 255 ] )
-    do i=1, 255
-       if (tmp_array(i) == char(0)) exit
-       tmp(i:i) = tmp_array(i)
-    enddo
-    n = i - 1
-    call free_c(str_ptr)
-    val = trim(tmp(1:n))  ! automatically allocating suitable size
-  end subroutine rokko_get_string_fixedsize
-  
+    call c_f_pointer(s, rokko_get_string)
+  end function rokko_get_string
+
   subroutine string_free_c(str)
     type(c_ptr), intent(inout) :: str
     if (c_associated(str)) then

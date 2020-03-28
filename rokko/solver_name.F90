@@ -37,8 +37,8 @@ contains
     character(len=:), allocatable, intent(out) :: routine
     type(c_ptr) :: library_ptr, routine_ptr
     call rokko_split_solver_name_f (str//c_null_char, library_ptr, routine_ptr)
-    call rokko_get_string (library_ptr, library)
-    call rokko_get_string (routine_ptr, routine)
+    library = rokko_get_string(library_ptr)
+    routine = rokko_get_string(routine_ptr)
   end subroutine rokko_split_solver_name
 
   subroutine rokko_split_solver_name_fixedsize(str, library, routine)
@@ -47,8 +47,8 @@ contains
     character(len=*), intent(out) :: routine
     type(c_ptr) :: library_ptr, routine_ptr
     call rokko_split_solver_name_f (str//c_null_char, library_ptr, routine_ptr)
-    call rokko_get_string_fixedsize (library_ptr, library)
-    call rokko_get_string_fixedsize (routine_ptr, routine)
+    library = rokko_get_string(library_ptr)
+    routine = rokko_get_string(routine_ptr)
   end subroutine rokko_split_solver_name_fixedsize
 
 end module solver_name_utility

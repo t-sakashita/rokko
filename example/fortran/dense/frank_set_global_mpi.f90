@@ -32,7 +32,7 @@ program frank_matrix
   if (command_argument_count() >= 1) then
      call get_command_argument_deferred(1, library_routine)
   else
-     call rokko_parallel_dense_ev_default_solver(library_routine)
+     library_routine = rokko_parallel_dense_ev_default_solver()
   endif
   call rokko_split_solver_name(library_routine, library, routine)
 

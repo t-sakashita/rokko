@@ -25,7 +25,7 @@ program minij_matrix
   if (command_argument_count() >= 1) then
      call get_command_argument_deferred(1, solver_name)
   else
-     call rokko_serial_dense_ev_default_solver(solver_name)
+     solver_name = rokko_serial_dense_ev_default_solver()
   endif
   call rokko_split_solver_name(solver_name, library, routine)
 

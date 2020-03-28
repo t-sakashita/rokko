@@ -242,18 +242,9 @@ contains
     character(*), intent(in) :: key
     character(len=:), allocatable, intent(out) :: val
     type(c_ptr) :: ptr
-    character, pointer, dimension(:) :: tmp_array
-    character*255 :: tmp
-    integer :: i
-    integer(c_int) :: n
-    n = rokko_parameters_get_key_size_c (params, trim(key)//c_null_char)
+
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
-    call c_f_pointer(ptr, tmp_array, (/n/) )
-    do i=1, n
-       tmp(i:i) = tmp_array(i)
-    enddo
-    call free_c(ptr)
-    val = trim(tmp(1:n))  ! automatically allocating suitable size
+    val = rokko_get_string(ptr)
   end subroutine rokko_parameters_get_string
 
   subroutine rokko_parameters_keys (params, keys)
@@ -261,14 +252,12 @@ contains
     type(string), allocatable, intent(out) :: keys(:)
     type(c_ptr) :: ptr, ptr_i
     integer :: i, size
-    character(len=:), allocatable :: str
     ptr = rokko_parameters_keys_c (params)
     size = rokko_parameters_size_c (params)
     allocate(keys(size))
     do i = 1, size
        ptr_i = rokko_string_i_c (ptr, i-1)
-       call rokko_get_string(ptr_i, str)
-       keys(i)%str = str
+       keys(i)%str = rokko_get_string(ptr_i)
     enddo
   end subroutine rokko_parameters_keys
   
@@ -276,20 +265,10 @@ contains
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character*255 :: val
-    type(c_ptr) :: ptr!(*)
-    character, pointer, dimension(:) :: tmp_array
-    character*255 :: tmp
-    integer :: i
-    integer(c_int) :: n
-    n = rokko_parameters_get_key_size_c (params, trim(key)//c_null_char)
+    type(c_ptr) :: ptr
+
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
-    call c_f_pointer(ptr, tmp_array, (/n/) )
-    do i=1, n
-       tmp(i:i) = tmp_array(i)
-    enddo
-    call free_c(ptr)
-    val = trim(tmp(1:n))  ! the rest of letters of val is not changed.
-    !print*, "val=", val
+    val = rokko_get_string(ptr)
   end function rokko_parameters_get_string_fixed
   
   subroutine rokko_parameters_set_int (params, key, val)
