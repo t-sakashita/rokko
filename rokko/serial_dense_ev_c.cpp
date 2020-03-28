@@ -196,10 +196,6 @@ char** rokko_serial_dense_ev_solvers() {
   return solvers_c;
 }
 
-char* rokko_serial_dense_ev_default_solver() {
-  std::string solver = rokko::serial_dense_ev::default_solver();
-  char *solver_c = (char*)malloc((size_t)((solver.size() + 1) * sizeof(char)));
-  strcpy(solver_c, solver.c_str());
-  return solver_c;
+const char* rokko_serial_dense_ev_default_solver() {
+  return rokko::serial_dense_ev::default_solver().c_str();
 }
-

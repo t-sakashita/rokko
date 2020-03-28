@@ -82,7 +82,7 @@ void rokko_parallel_dense_ev_default_mapping_f(struct rokko_parallel_dense_ev so
 
 int rokko_parallel_dense_ev_num_solvers();
 char** rokko_parallel_dense_ev_solvers();
-char* rokko_parallel_dense_ev_default_solver();
+const char* rokko_parallel_dense_ev_default_solver();
 
 #ifdef __cplusplus
 }

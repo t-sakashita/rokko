@@ -72,7 +72,7 @@ void rokko_serial_dense_ev_diagonalize_eigvals_no_params_inout_f(struct rokko_se
 
 int rokko_serial_dense_ev_num_solvers();
 char** rokko_serial_dense_ev_solvers();
-char* rokko_serial_dense_ev_default_solver();
+const char* rokko_serial_dense_ev_default_solver();
 
 #ifdef __cplusplus
 }
