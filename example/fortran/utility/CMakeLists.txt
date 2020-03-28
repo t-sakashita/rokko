@@ -10,7 +10,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/rokko)
 include_directories(${PROJECT_BINARY_DIR}/rokko)
 
-set(EXAMPLE parameters solver_name solvers)
+set(EXAMPLE parameters solver_name solvers default_solvers)
 foreach(name ${EXAMPLE})
   set(target_name example_fortran_utility_${name})
   file(GLOB files ${name}.f90 ${name}.F90)
