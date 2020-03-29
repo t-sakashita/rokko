@@ -82,7 +82,7 @@ public:
     return retvec;
   }
 
-  static std::string default_product_name() {
+  static const std::string& default_product_name() {
     return instance()->default_product_;
   }
   static factory* instance() {

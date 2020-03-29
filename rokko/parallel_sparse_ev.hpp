@@ -99,7 +99,7 @@ public:
   int get_num_conv() const { return solver_impl_->get_num_conv(); }
   std::string get_solver_name() const { return solver_name_; }
   static std::vector<std::string> solvers() { return detail::ps_solver_factory::product_names(); }
-  static std::string default_solver() { return detail::ps_solver_factory::default_product_name(); }
+  static const std::string& default_solver() { return detail::ps_solver_factory::default_product_name(); }
 private:
   detail::ps_solver_factory::product_pointer_type solver_impl_;
   std::string solver_name_;

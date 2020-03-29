@@ -164,7 +164,7 @@ public:
   static std::vector<std::string> solvers() {
     return detail::sd_solver_factory::product_names();
   }
-  static std::string default_solver() {
+  static const std::string& default_solver() {
     return detail::sd_solver_factory::default_product_name();
   }
 private:
