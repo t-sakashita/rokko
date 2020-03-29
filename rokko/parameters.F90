@@ -223,11 +223,7 @@ contains
     logical, intent(out) :: val
     integer(c_int) :: tmp
     tmp = rokko_parameters_get_logical_c (params, trim(key)//c_null_char)
-    if (tmp == 0) then
-       val = .false.
-    else
-       val = .true.
-    endif
+    val = (tmp /= 0)
   end subroutine rokko_parameters_get_logical
   
   subroutine rokko_parameters_get_char (params, key, val)
