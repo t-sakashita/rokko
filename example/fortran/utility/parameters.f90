@@ -16,6 +16,7 @@ program frank_matrix
   type(rokko_parameters) :: params
   integer :: i
   double precision :: d
+  logical :: is
   character :: c
   character(255) :: val_fixed
   character(len=:), allocatable :: val
@@ -30,6 +31,10 @@ program frank_matrix
   call rokko_parameters_set_double(params, "DABURU", 1.2D0)
   call rokko_parameters_get_double(params, "DABURU", d)
   print*, "D=", d
+
+  call rokko_parameters_set_logical(params, "is", .true.)
+  call rokko_parameters_get_logical(params, "is", is)
+  print*, "is=", is
 
   call rokko_parameters_set_char(params, "cyara", 'A')
   call rokko_parameters_get_char(params, "cyara", c)
