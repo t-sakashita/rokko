@@ -11,6 +11,7 @@
 
 #include <rokko/parameters.h>
 #include <rokko/parameters.hpp>
+#include <rokko/copy_string.hpp>
 
 void rokko_parameters_construct(struct rokko_parameters* params) {
   params->ptr = new rokko::parameters();
@@ -68,13 +69,6 @@ double rokko_parameters_get_double(rokko_parameters params, const char* key) {
 
 char rokko_parameters_get_char(rokko_parameters params, const char* key) { 
   return static_cast<rokko::parameters*>(params.ptr)->get<char>(key);
-}
-
-char* copy_string(std::string const& str) {
-  char* p = (char*) malloc( sizeof(char) * (str.size() + 1) );
-  str.copy(p, str.size(), 0);
-  p[str.size()] = '\0';
-  return p;
 }
 
 

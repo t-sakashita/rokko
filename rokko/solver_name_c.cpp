@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -11,8 +11,7 @@
 
 #include <rokko/solver_name.h>
 #include <rokko/utility/solver_name.hpp>
-
-char* copy_string(std::string const& str);
+#include <rokko/copy_string.hpp>
 
 void rokko_split_solver_name(char* str, char** library_ptr, char** routine_ptr) {
   std::string tmp_library, tmp_routine;
