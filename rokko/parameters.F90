@@ -34,7 +34,7 @@ module parameters
      module procedure rokko_parameters_get_double
      !module procedure rokko_parameters_get_char
      module procedure rokko_parameters_get_logical
-     module procedure rokko_parameters_get_string
+     module procedure rokko_parameters_get_string_deferred
   end interface rokko_get
 
   interface rokko_set
@@ -233,7 +233,7 @@ contains
     val =  rokko_parameters_get_char_c (params, trim(key)//c_null_char)
   end subroutine rokko_parameters_get_char
 
-  subroutine rokko_parameters_get_string (params, key, val)
+  subroutine rokko_parameters_get_string_deferred (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     character(len=:), allocatable, intent(out) :: val
@@ -241,7 +241,7 @@ contains
 
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
     val = rokko_get_string(ptr)
-  end subroutine rokko_parameters_get_string
+  end subroutine rokko_parameters_get_string_deferred
 
   subroutine rokko_parameters_keys (params, keys)
     type(rokko_parameters), value, intent(in) :: params
@@ -257,15 +257,15 @@ contains
     enddo
   end subroutine rokko_parameters_keys
   
-  function rokko_parameters_get_string_fixed (params, key) result(val)
+  function rokko_parameters_get_string(params, key) result(val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
-    character*255 :: val
+    character(len=:), pointer :: val
     type(c_ptr) :: ptr
 
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
-    val = rokko_get_string(ptr)
-  end function rokko_parameters_get_string_fixed
+    val => rokko_get_string(ptr)
+  end function rokko_parameters_get_string
   
   subroutine rokko_parameters_set_int (params, key, val)
     type(rokko_parameters), value, intent(in) :: params

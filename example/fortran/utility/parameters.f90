@@ -18,8 +18,10 @@ program frank_matrix
   double precision :: d
   logical :: is
   character :: c
-  character(255) :: val_fixed
-  character(len=:), allocatable :: val
+  character(len=255) :: str_fixed
+  character(len=255), allocatable :: str_alloc_fixed
+  character(len=:), pointer :: str_ptr
+  character(len=:), allocatable :: str
   type(string), allocatable :: keys(:)
 
   call rokko_parameters_construct(params)
@@ -41,10 +43,18 @@ program frank_matrix
   print*, "cyara=", c
 
   call rokko_parameters_set_string(params, "solver", "ansazi")
-  call rokko_parameters_get_string(params, "solver", val)
-  print*, "solver=", val
-  val_fixed = rokko_parameters_get_string_fixed(params, "solver")
-  print*, "solver=", trim(val_fixed)
+  call rokko_get(params, "solver", str)
+  print*, "solver=", str
+
+  print*, "By function:"
+  str = rokko_parameters_get_string(params, "solver")
+  print*, "  deferred length & allocatable=", str
+  str_fixed = rokko_parameters_get_string(params, "solver")
+  print*, "  fixed length=", trim(str_fixed)
+  str_alloc_fixed = rokko_parameters_get_string(params, "solver")
+  print*, "  fixed length & allocatable=", trim(str_alloc_fixed)
+  str_ptr => rokko_parameters_get_string(params, "solver")
+  print*, "  deferred length & pointer=", str_ptr
 
   call rokko_parameters_keys(params, keys)
   do i = 1, size(keys)
