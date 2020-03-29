@@ -20,4 +20,3 @@ void rokko_split_solver_name(char* str, char** library_ptr, char** routine_ptr) 
   *library_ptr = copy_string(tmp_library);
   *routine_ptr = copy_string(tmp_routine);
 }
-
