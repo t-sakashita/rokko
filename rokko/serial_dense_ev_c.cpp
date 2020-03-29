@@ -11,6 +11,7 @@
 
 #include <rokko/serial_dense_ev.h>
 #include <rokko/serial_dense_ev.hpp>
+#include <rokko/copy_string.hpp>
 
 void rokko_serial_dense_ev_construct(rokko_serial_dense_ev* solver, const char* solver_name, int argc, char** argv) {
   solver->ptr = new rokko::serial_dense_ev(std::string(solver_name));
@@ -190,8 +191,7 @@ char** rokko_serial_dense_ev_solvers() {
   std::vector<std::string> solvers = rokko::serial_dense_ev::solvers();
   char **solvers_c = (char**)malloc((size_t)(solvers.size() * sizeof(char*)));
   for (std::size_t i = 0; i < solvers.size(); ++i) {
-    solvers_c[i] = (char*)malloc((size_t)((solvers[i].size() + 1) * sizeof(char)));
-    strcpy(solvers_c[i], solvers[i].c_str());
+    solvers_c[i] = copy_string(solvers[i]);
   }
   return solvers_c;
 }
