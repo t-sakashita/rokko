@@ -43,10 +43,6 @@ using ps_mapping_1d_factory = factory<ps_mapping_1d_base,int,mpi_comm const&>;
 
 class mapping_1d {
 public:
-  template<typename SOLVER>
-  mapping_1d(int dim, mpi_comm const& mpi_comm_in, SOLVER const& solver_in)
-    : mapping_1d(dim, mpi_comm_in, solver_in.get_solver_name()) {}
-
   mapping_1d(int dim, mpi_comm const& mpi_comm_in, std::string const& solver_name)
     : solver_name_(solver_name), map_impl_(detail::ps_mapping_1d_factory::instance()->make_product(solver_name, dim, mpi_comm_in)) {}
 

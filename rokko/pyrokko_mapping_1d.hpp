@@ -24,9 +24,6 @@ class wrap_mapping_1d : public mapping_1d {
 public:
   using mapping_1d::mapping_1d;
   wrap_mapping_1d(mapping_1d const& map) : mapping_1d(map) {}
-  template<typename SOLVER>
-  explicit wrap_mapping_1d(int dim, pybind11::handle const& comm_handle, SOLVER& solver_in)
-    : mapping_1d(dim, wrap_communicator{comm_handle}, solver_in) {}
 
   explicit wrap_mapping_1d(int dim, pybind11::handle const& comm_handle, std::string const& solver_name)
     : mapping_1d(dim, wrap_communicator{comm_handle}, solver_name) {}
