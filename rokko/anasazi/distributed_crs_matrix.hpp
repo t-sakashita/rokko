@@ -46,17 +46,17 @@ public:
     return std::static_pointer_cast<const rokko::anasazi::mapping_1d>(map.get_ptr());
   }
 
-  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
+  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) override {
     matrix_->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
   }
-  void insert(int row, int col_size, int const*const cols, double const*const values) {
+  void insert(int row, int col_size, int const*const cols, double const*const values) override {
     matrix_->InsertGlobalValues(row, col_size, values, cols);
   }
-  void complete() {
+  void complete() override {
     matrix_->FillComplete();
     matrix_->SetTracebackMode(1);
   }
-  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
+  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const override {
     int num_cols;
     int* cols_tmp;
     double* values_tmp;
@@ -76,25 +76,25 @@ public:
   Teuchos::RCP<Epetra_CrsMatrix> get_matrix() const {
     return matrix_;
   }
-  int get_dim() const {
+  int get_dim() const override {
     return map_->get_dim();
   }
-  int get_num_local_rows() const {
+  int get_num_local_rows() const override {
     return map_->get_num_local_rows();
   }
-  int start_row() const {
+  int start_row() const override {
     return map_->start_row();
   }
-  int end_row() const {
+  int end_row() const override {
     return map_->end_row();
   }
-  int get_nnz() const {
+  int get_nnz() const override {
     return matrix_->NumGlobalNonzeros();
   }
-  void print() const {
+  void print() const override {
     std::cout << *matrix_ << std::endl;
   }
-  void output_matrix_market(std::ostream& os = std::cout) const {
+  void output_matrix_market(std::ostream& os = std::cout) const override {
     constexpr int root_proc = 0;
     std::vector<int> cols;
     std::vector<double> values;
@@ -116,7 +116,7 @@ public:
 
   std::shared_ptr<const rokko::anasazi::mapping_1d> get_map_ptr() const { return map_; }
 
-  const rokko::anasazi::mapping_1d& get_map() const { return *map_; }
+  const rokko::anasazi::mapping_1d& get_map() const override { return *map_; }
 
 private:
   std::shared_ptr<const rokko::anasazi::mapping_1d> map_;

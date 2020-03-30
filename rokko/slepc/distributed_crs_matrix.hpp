@@ -54,15 +54,15 @@ public:
 
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/insert"
-  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) {
+  void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) override {
     PetscErrorCode ierr = MatSetValues(matrix_, 1, &row, cols.size(), cols.data(), values.data(), INSERT_VALUES);  //CHKERRQ(ierr);
   }
-  void insert(int row, int col_size, int const*const cols, double const*const values) {
+  void insert(int row, int col_size, int const*const cols, double const*const values) override {
     PetscErrorCode ierr = MatSetValues(matrix_, 1, &row, col_size, cols, values, INSERT_VALUES);  //CHKERRQ(ierr);
   }
   #undef __FUNCT__
   #define __FUNCT__ "distributed_crs_matrix/complete"
-  void complete() {
+  void complete() override {
     PetscErrorCode ierr;
     ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
     ierr = MatAssemblyEnd(matrix_, MAT_FINAL_ASSEMBLY);  //CHKERRQ(ierr);
@@ -73,33 +73,33 @@ public:
   const Mat& get_matrix() const {
     return matrix_;
   }
-  int get_dim() const {
+  int get_dim() const override {
     return map_->get_dim();
   }
-  int get_num_local_rows() const {
+  int get_num_local_rows() const override {
     int start_row, end_row;
     PetscErrorCode ierr = MatGetOwnershipRange(matrix_, &start_row, &end_row); //CHKERRQ(ierr);
     return end_row - start_row;
   }
-  int start_row() const {
+  int start_row() const override {
     int start_row;
     PetscErrorCode ierr = MatGetOwnershipRange(matrix_, &start_row, NULL); //CHKERRQ(ierr);
     return start_row;
   }
-  int end_row() const {
+  int end_row() const override {
     int end_row;
     PetscErrorCode ierr = MatGetOwnershipRange(matrix_, NULL, &end_row); //CHKERRQ(ierr);
     return end_row;
   }
-  int get_nnz() const {
+  int get_nnz() const override {
     MatInfo info;
     MatGetInfo(matrix_, MAT_GLOBAL_SUM, &info);
     return static_cast<int>(info.nz_used);
   }
-  void print() const {
+  void print() const override {
     MatView(matrix_, PETSC_VIEWER_STDOUT_(map_->get_mpi_comm().get_comm()));
   }
-  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const {
+  void extract(int row, std::vector<int>& cols, std::vector<double>& values) const override {
     PetscInt num_cols;
     const PetscInt * cols_tmp;
     const PetscScalar * values_tmp;
@@ -117,7 +117,7 @@ public:
     }
     PetscErrorCode ierr = MatRestoreRow(matrix_, row, &num_cols, &cols_tmp, &values_tmp);
   }
-  void output_matrix_market(std::ostream& os = std::cout) const {
+  void output_matrix_market(std::ostream& os = std::cout) const override {
     const auto& comm = get_map().get_mpi_comm();
     constexpr int root_proc = 0;
     std::vector<int> cols;
@@ -140,7 +140,7 @@ public:
     }
   }
 
-  const rokko::slepc::mapping_1d& get_map() const { return *map_; }
+  const rokko::slepc::mapping_1d& get_map() const override { return *map_; }
 
 private:
   std::shared_ptr<const rokko::slepc::mapping_1d> map_;
