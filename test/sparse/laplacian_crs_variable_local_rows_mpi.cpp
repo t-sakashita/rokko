@@ -39,7 +39,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
     auto map = solver.default_mapping(dim, num_local_rows, rokko_comm);
     rokko::distributed_crs_matrix mat(map, 3);
 
-    if (map.start_row() == 0) {
+    if ((map.start_row() == 0) && (map.num_local_rows() != 0)) {
       mat.insert(0, {0, 1}, {1., -1.});
     }
 
@@ -47,7 +47,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
       mat.insert(row, {row-1, row, row+1}, {-1., 2., -1.});
     }
 
-    if (map.end_row() == dim) {
+    if (map.end_row() == dim && (map.num_local_rows() != 0)) {
       mat.insert(dim-1, {dim-2, dim-1}, {-1., 2.});
     }
 
