@@ -38,6 +38,7 @@ private:
 };
 
 using ps_mapping_1d_factory = factory<ps_mapping_1d_base,int,mpi_comm const&>;
+using ps_mapping_1d_factory_num = factory<ps_mapping_1d_base,int,int,mpi_comm const&>;
 
 } // end namespace detail
 
@@ -48,6 +49,12 @@ public:
 
   mapping_1d(int dim, mpi_comm const& mpi_comm_in)
     : mapping_1d(dim, mpi_comm_in, detail::ps_mapping_1d_factory::instance()->default_product_name()) {}
+
+  mapping_1d(int dim, int num_local_rows, mpi_comm const& mpi_comm_in, std::string const& solver_name)
+    : solver_name_(solver_name), map_impl_(detail::ps_mapping_1d_factory_num::instance()->make_product(solver_name, dim, num_local_rows, mpi_comm_in)) {}
+
+  mapping_1d(int dim, int num_local_rows, mpi_comm const& mpi_comm_in)
+  : mapping_1d(dim, num_local_rows, mpi_comm_in, detail::ps_mapping_1d_factory::instance()->default_product_name()) {}
 
   int get_dim() const { return map_impl_->get_dim(); }
   int num_local_rows() const { return map_impl_->get_num_local_rows(); }
@@ -71,6 +78,14 @@ private:
 namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::detail::ps_mapping_1d_factory; \
+  using product = map; \
+  register_caller() { factory::instance()->register_creator<product>(name, priority); } \
+} caller; \
+} } \
+ \
+namespace { namespace ROKKO_JOIN(register2, __LINE__) { \
+struct register_caller { \
+  using factory = rokko::detail::ps_mapping_1d_factory_num; \
   using product = map; \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \

@@ -83,6 +83,10 @@ public:
   rokko::mapping_1d default_mapping(int dim, mpi_comm const& mpi_comm_in) const {
     return rokko::mapping_1d(dim, mpi_comm_in, get_solver_name());
   }
+  rokko::mapping_1d default_mapping(int dim, int num_local_rows, mpi_comm const& mpi_comm_in) const {
+    return rokko::mapping_1d(dim, num_local_rows, mpi_comm_in, get_solver_name());
+  }
+
   parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
     if(get_solver_name() != mat.get_solver_name())
       throw std::invalid_argument(get_solver_name() + "'s diagonalize() : " + mat.get_solver_name() + "'s distributed_crs_matrix is given.");

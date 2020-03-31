@@ -27,6 +27,12 @@ public:
       num_local_rows_(get_num_local_rows()), end_k_(num_local_rows_ - 1),
       is_first_proc(start_row() == 0), is_last_proc(end_row() == dim) {}
 
+  laplacian_mfree(int dim, int num_local_rows, rokko::mpi_comm const& comm)
+    : distributed_mfree_default(dim, num_local_rows, mpi_comm{comm}),
+      nprocs(get_mpi_comm().get_nprocs()), myrank(get_mpi_comm().get_myrank()),
+      num_local_rows_(get_num_local_rows()), end_k_(num_local_rows_ - 1),
+      is_first_proc(start_row() == 0), is_last_proc(end_row() == dim) {}
+
   ~laplacian_mfree() = default;
 
   void multiply(const double *const x, double *const y) const override {

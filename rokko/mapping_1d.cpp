@@ -13,3 +13,6 @@
 
 template<>
 rokko::detail::ps_mapping_1d_factory *rokko::detail::ps_mapping_1d_factory::instance_ = nullptr;
+
+template<>
+rokko::detail::ps_mapping_1d_factory_num *rokko::detail::ps_mapping_1d_factory_num::instance_ = nullptr;

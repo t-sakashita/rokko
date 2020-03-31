@@ -37,6 +37,7 @@ public:
   distributed_mfree_default() = default;
   distributed_mfree_default(int dim) : distributed_mfree_default(dim, rokko::mpi_comm{MPI_COMM_WORLD}) {}
   distributed_mfree_default(int dim, rokko::mpi_comm const& mpi_comm) : skel::mapping_1d(dim, mpi_comm) {}
+  distributed_mfree_default(int dim, int num_local_rows, rokko::mpi_comm const& mpi_comm) : skel::mapping_1d(dim, num_local_rows, mpi_comm) {}
   distributed_mfree_default(skel::mapping_1d const& map) : skel::mapping_1d(map) {}
 
   virtual ~distributed_mfree_default() = default;
