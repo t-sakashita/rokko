@@ -65,12 +65,12 @@ private:
 
 template<>
 inline int mapping_local2array<rokko::matrix_row_major>::get_default_lld() const {
-  return get_n_local();
+  return std::max(get_n_local(), get_nb());
 }
 
 template<>
 inline int mapping_local2array<rokko::matrix_col_major>::get_default_lld() const {
-  return get_m_local();
+  return std::max(get_m_local(), get_mb());
 }
 
 template<>

@@ -24,8 +24,17 @@ public:
   void set_n_local(int n_local) { std::get<1>(local_size) = n_local; }
   void set_local_size(std::array<int,2> local_size_in) { local_size = local_size_in; }
 
+  void set_block_size(std::array<int,2> const& block_size_in) {
+    block_size = block_size_in;
+  }
+
+  int get_mb() const { return std::get<0>(block_size); }
+  int get_nb() const { return std::get<1>(block_size); }
+  std::array<int,2> get_block_size() const { return block_size; }
+
 protected:
   explicit mapping_common_sizes() = default;
+  std::array<int,2> block_size;
 
 private:
   std::array<int,2> local_size;

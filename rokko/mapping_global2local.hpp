@@ -23,8 +23,9 @@ public:
   explicit mapping_global2local() = default;
 
   explicit mapping_global2local(std::array<int,2> const& global_size_in, std::array<int,2> const& block_size_in, grid const& g_in)
-    : global_size(global_size_in), block_size(block_size_in),
+    : global_size(global_size_in),
       g(g_in), my_coordinate(g_in.get_my_coordinate()), grid_size(g_in.get_size()) {
+    set_block_size(block_size_in);
     set_default_local_size();
     set_stride();
   }
@@ -49,14 +50,6 @@ public:
     set_stride_mine();
     set_stride_grid();
   }
-
-  void set_block_size(std::array<int,2> const& block_size_in) {
-    block_size = block_size_in;
-  }
-
-  int get_mb() const { return std::get<0>(block_size); }
-  int get_nb() const { return std::get<1>(block_size); }
-  std::array<int,2> get_block_size() const { return block_size; }
 
   int get_m_global() const { return std::get<0>(global_size); }
   int get_n_global() const { return std::get<1>(global_size); }
@@ -147,7 +140,6 @@ public:
 
 private:
   std::array<int,2> global_size;
-  std::array<int,2> block_size;
   std::array<int,2> stride_mine, stride_grid;
   grid g;
   // common variables of class grid
