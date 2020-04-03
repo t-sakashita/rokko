@@ -63,7 +63,7 @@ void SCALAPACK_pdsyevd(const char* jobz, const char* uplo, const int* n,
                        double* Z, const int* iz, const int* jz, const int* descZ,
                        double* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
-#ifdef ROKKO_HAVE_PDSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 #define SCALAPACK_pdsyevr ROKKO_GLOBAL(pdsyevr,PDSYEVR)
 void SCALAPACK_pdsyevr(const char* jobz, const char* range, const char* uplo, const int* n,
                        double* A, const int* ia, const int* ja, const int* descA,
@@ -115,7 +115,7 @@ void SCALAPACK_pssyevd(const char* jobz, const char* uplo, const int* n,
                        float* Z, const int* iz, const int* jz, const int* descZ,
                        float* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
-#ifdef ROKKO_HAVE_PDSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 #define SCALAPACK_pssyevr ROKKO_GLOBAL(pssyevr,PSSYEVR)
 void SCALAPACK_pssyevr(const char* jobz, const char* range, const char* uplo, const int* n,
                        float* A, const int* ia, const int* ja, const int* descA,

@@ -49,7 +49,7 @@ int cscalapack_pdsyevd_work(char jobz, char uplo, int n,
                             double* w, double* Z, int iz, int jz, const int* descZ,
                             double* work, int lwork, int* iwork, int liwork);
 
-#ifdef ROKKO_HAVE_PDSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pdsyevr_work(char jobz, char range, char uplo, int n,
                             double* A, int ia, int ja, const int* descA,
                             double vl, double vu, int il, int iu,
@@ -74,7 +74,7 @@ int cscalapack_pdsyevd(char jobz, char uplo, int n,
                        double* A, int ia, int ja, const int* descA,
                        double* w, double* Z, int iz, int jz, const int* descZ);
 
-#ifdef ROKKO_HAVE_PDSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pdsyevr(char jobz, char range, char uplo, int n,
                        double* A, int ia, int ja, const int* descA,
                        double vl, double vu, int il, int iu,
@@ -138,7 +138,7 @@ int cscalapack_pssyevd(char jobz, char uplo, int n,
                        float* A, int ia, int ja, const int* descA,
                        float* w, float* Z, int iz, int jz, const int* descZ);
 
-#ifdef ROKKO_HAVE_PDSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pssyevr(char jobz, char range, char uplo, int n,
                        float* A, int ia, int ja, const int* descA,
                        float vl, float vu, int il, int iu,
