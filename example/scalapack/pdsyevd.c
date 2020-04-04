@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
   info = cscalapack_pdsyevd('V', 'U', n, mat_ptr(a), 0, 0, desc, vec_ptr(w),
                             mat_ptr(z), 0, 0, desc);
   if (info) {
-    fprintf(stderr, "Error in cscalapack_pdsyev\n");
+    fprintf(stderr, "Error in cscalapack_pdsyevd\n");
     MPI_Abort(MPI_COMM_WORLD, info);
   }
   if (myrank == 0) {
