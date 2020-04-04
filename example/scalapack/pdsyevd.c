@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
   Cblacs_gridinit(&context, &order, nprow, npcol);
 
   int nb = 1;
-  int desc[50];
+  int desc[9];
   int info = cscalapack_descinit(desc, n, n, nb, nb, 0, 0, context, n/nprow);
   if (info) {
     fprintf(stderr, "Error in cscalapack_descinit\n");

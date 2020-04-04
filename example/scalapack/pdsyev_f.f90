@@ -3,7 +3,7 @@ program main
   implicit none
   integer, parameter :: n = 8, nb = 1
   integer :: provided, ierr, myrank, nprocs
-  integer :: icontxt, npcol, nprow, desc(50)
+  integer :: icontxt, npcol, nprow, desc(9)
   integer :: i, j, info
   double precision, allocatable :: a(:, :), z(:,:), w(:)
   integer :: lwork
