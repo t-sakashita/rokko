@@ -19,7 +19,6 @@ for build_type in $BUILD_TYPES; do
       -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
       -DCMAKE_C_FLAGS="-mt" -DCMAKE_Fortran_FLAGS="-mt" \
       -DMPI_C_COMPILER=mpicc -DMPI_Fortran_COMPILER=mpif90 \
-      -DMPI_C_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" -DMPI_Fortran_INCLUDE_PATH="/home/app/mpt/mpt-2.14-p11333/include" \
       -DMPI_C_LIBRARIES="-mt" -DMPI_Fortran_LIBRARIES="-mt" \
       -DCMAKE_Fortran_FLAGS="-fp-model strict" \
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_sgimpt_lp64 -mkl=parallel" \
