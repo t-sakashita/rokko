@@ -35,7 +35,7 @@ private:
   class creator : public abstract_creator {
   public:
     virtual ~creator() = default;
-    std::shared_ptr<BASE> create(Types... args) const {
+    std::shared_ptr<BASE> create(Types... args) const override {
       return std::static_pointer_cast<BASE>(std::make_shared<PRODUCT>(args...));
     }
   };
