@@ -8,7 +8,7 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(TESTS heisenberg_mfree_output_market_through_crs laplacian_crs_mpi laplacian_mfree_mpi laplacian_crs_variable_local_rows_mpi laplacian_mfree_variable_local_rows_mpi distributed_crs_symmetric_matrix_extract)
+  set(TESTS heisenberg_mfree_output_market_through_crs laplacian_crs_mpi laplacian_mfree_mpi laplacian_crs_variable_local_rows_mpi laplacian_mfree_variable_local_rows_mpi tridiagonal_toeplitz_mfree_mpi distributed_crs_symmetric_matrix_extract)
   foreach(name ${TESTS})
     set(target_name test_sparse_${name})
     add_executable(${target_name} ${name}.cpp)
