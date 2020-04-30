@@ -134,9 +134,9 @@ public:
 private:
   int nprocs, myrank;
   int num_local_rows_, end_k_;
-  int previous_rank_, next_rank_;
   bool need_send_recv_;
   bool is_first_proc, is_last_proc;
+  int previous_rank_, next_rank_;
 };
 
 } // namespace rokko
