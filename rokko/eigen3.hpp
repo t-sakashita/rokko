@@ -43,7 +43,7 @@ int cols(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
-int lda(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
+int ld(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
   return is_col_major(mat) ? rows(mat) : cols(mat);
 }
 

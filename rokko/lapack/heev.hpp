@@ -31,7 +31,7 @@ struct heev_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int heev(int matrix_layout, char jobz, char uplo, lapack_int n,
                          MATRIX& a, VECTOR& w) {
-    return LAPACKE_ssyev(matrix_layout, jobz, uplo, n, storage(a), lda(a), storage(w));
+    return LAPACKE_ssyev(matrix_layout, jobz, uplo, n, storage(a), ld(a), storage(w));
   }
 };
   
@@ -40,7 +40,7 @@ struct heev_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int heev(int matrix_layout, char jobz, char uplo, lapack_int n,
                          MATRIX& a, VECTOR& w) {
-    return LAPACKE_dsyev(matrix_layout, jobz, uplo, n, storage(a), lda(a), storage(w));
+    return LAPACKE_dsyev(matrix_layout, jobz, uplo, n, storage(a), ld(a), storage(w));
   }
 };
   
@@ -49,7 +49,7 @@ struct heev_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int heev(int matrix_layout, char jobz, char uplo, lapack_int n,
                          MATRIX& a, VECTOR& w) {
-    return LAPACKE_cheev(matrix_layout, jobz, uplo, n, complex_cast(storage(a)), lda(a),
+    return LAPACKE_cheev(matrix_layout, jobz, uplo, n, complex_cast(storage(a)), ld(a),
                          storage(w));
   }
 };
@@ -59,7 +59,7 @@ struct heev_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int heev(int matrix_layout, char jobz, char uplo, lapack_int n,
                          MATRIX& a, VECTOR& w) {
-    return LAPACKE_zheev(matrix_layout, jobz, uplo, n, complex_cast(storage(a)), lda(a),
+    return LAPACKE_zheev(matrix_layout, jobz, uplo, n, complex_cast(storage(a)), ld(a),
                          storage(w));
   }
 };

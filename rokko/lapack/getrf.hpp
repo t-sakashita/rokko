@@ -33,7 +33,7 @@ struct getrf_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int getrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& ipiv) {
-    return LAPACKE_sgetrf(matrix_layout, m, n, storage(a), lda(a), storage(ipiv));
+    return LAPACKE_sgetrf(matrix_layout, m, n, storage(a), ld(a), storage(ipiv));
   }
 };
 
@@ -42,7 +42,7 @@ struct getrf_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int getrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& ipiv) {
-    return LAPACKE_dgetrf(matrix_layout, m, n, storage(a), lda(a), storage(ipiv));
+    return LAPACKE_dgetrf(matrix_layout, m, n, storage(a), ld(a), storage(ipiv));
   }
 };
 
@@ -51,7 +51,7 @@ struct getrf_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int getrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& ipiv) {
-    return LAPACKE_cgetrf(matrix_layout, m, n, complex_cast(storage(a)), lda(a),
+    return LAPACKE_cgetrf(matrix_layout, m, n, complex_cast(storage(a)), ld(a),
                           storage(ipiv));
   }
 };
@@ -61,7 +61,7 @@ struct getrf_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int getrf(int matrix_layout, lapack_int m, lapack_int n,
                           MATRIX& a, VECTOR& ipiv) {
-    return LAPACKE_zgetrf(matrix_layout, m, n, complex_cast(storage(a)), lda(a),
+    return LAPACKE_zgetrf(matrix_layout, m, n, complex_cast(storage(a)), ld(a),
                           storage(ipiv));
   }
 };

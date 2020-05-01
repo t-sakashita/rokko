@@ -35,12 +35,12 @@ struct ungqr_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau) {
-    return LAPACKE_sorgqr(matrix_layout, m, n, k, storage(a), lda(a), storage(tau));
+    return LAPACKE_sorgqr(matrix_layout, m, n, k, storage(a), ld(a), storage(tau));
   }
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau, VECTOR& work) {
-    return LAPACKE_sorgqr(matrix_layout, m, n, k, storage(a), lda(a), storage(tau),
+    return LAPACKE_sorgqr(matrix_layout, m, n, k, storage(a), ld(a), storage(tau),
                           storage(work), size(work));
   }
 };
@@ -50,12 +50,12 @@ struct ungqr_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau) {
-    return LAPACKE_dorgqr(matrix_layout, m, n, k, storage(a), lda(a), storage(tau));
+    return LAPACKE_dorgqr(matrix_layout, m, n, k, storage(a), ld(a), storage(tau));
   }
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau, VECTOR& work) {
-    return LAPACKE_dorgqr(matrix_layout, m, n, k, storage(a), lda(a), storage(tau),
+    return LAPACKE_dorgqr(matrix_layout, m, n, k, storage(a), ld(a), storage(tau),
                           storage(work), size(work));
   }
 };
@@ -65,13 +65,13 @@ struct ungqr_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau) {
-    return LAPACKE_cungqr(matrix_layout, m, n, k, complex_cast(storage(a)), lda(a),
+    return LAPACKE_cungqr(matrix_layout, m, n, k, complex_cast(storage(a)), ld(a),
                           complex_cast(storage(tau)));
   }
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau, VECTOR& work) {
-    return LAPACKE_cungqr(matrix_layout, m, n, k, complex_cast(storage(a)), lda(a),
+    return LAPACKE_cungqr(matrix_layout, m, n, k, complex_cast(storage(a)), ld(a),
                           complex_cast(storage(tau)), complex_cast(storage(work)),
                           size(work));
   }
@@ -82,13 +82,13 @@ struct ungqr_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau) {
-    return LAPACKE_zungqr(matrix_layout, m, n, k, complex_cast(storage(a)), lda(a),
+    return LAPACKE_zungqr(matrix_layout, m, n, k, complex_cast(storage(a)), ld(a),
                           complex_cast(storage(tau)));
   }
   template<typename MATRIX, typename VECTOR>
   static lapack_int ungqr(int matrix_layout, lapack_int m, lapack_int n, lapack_int k,
                           MATRIX& a, VECTOR& tau, VECTOR& work) {
-    return LAPACKE_zungqr(matrix_layout, m, n, k, complex_cast(storage(a)), lda(a),
+    return LAPACKE_zungqr(matrix_layout, m, n, k, complex_cast(storage(a)), ld(a),
                           complex_cast(storage(tau)), complex_cast(storage(work)),
                           size(work));
   }

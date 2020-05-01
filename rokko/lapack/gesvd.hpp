@@ -38,12 +38,12 @@ struct gesvd_dispatch<float> {
                           MATRIX& u, MATRIX& vt, VECTOR& work) {
     if (size(work) == std::min(m, n) - 1)
       return LAPACKE_sgesvd(matrix_layout, jobu, jobvt, m, n, 
-                            storage(a), lda(a), storage(s), storage(u), lda(u),
-                            storage(vt), lda(vt), storage(work));
+                            storage(a), ld(a), storage(s), storage(u), ld(u),
+                            storage(vt), ld(vt), storage(work));
     else
       return LAPACKE_sgesvd_work(matrix_layout, jobu, jobvt, m, n, 
-                                 storage(a), lda(a), storage(s), storage(u), lda(u),
-                                 storage(vt), lda(vt), storage(work), size(work));
+                                 storage(a), ld(a), storage(s), storage(u), ld(u),
+                                 storage(vt), ld(vt), storage(work), size(work));
   }
 };
   
@@ -55,12 +55,12 @@ struct gesvd_dispatch<double> {
                           MATRIX& u, MATRIX& vt, VECTOR& work) {
     if (size(work) == std::min(m, n) - 1)
       return LAPACKE_dgesvd(matrix_layout, jobu, jobvt, m, n, 
-                            storage(a), lda(a), storage(s), storage(u), lda(u),
-                            storage(vt), lda(vt), storage(work));
+                            storage(a), ld(a), storage(s), storage(u), ld(u),
+                            storage(vt), ld(vt), storage(work));
     else
       return LAPACKE_dgesvd_work(matrix_layout, jobu, jobvt, m, n, 
-                                 storage(a), lda(a), storage(s), storage(u), lda(u),
-                                 storage(vt), lda(vt), storage(work), size(work));
+                                 storage(a), ld(a), storage(s), storage(u), ld(u),
+                                 storage(vt), ld(vt), storage(work), size(work));
   }
 };
   
@@ -73,18 +73,18 @@ struct gesvd_dispatch<std::complex<float>> {
     if (size(superb) != std::min(m, n) - 1)
       throw std::invalid_argument("vector superb size mismatch");
     return LAPACKE_cgesvd(matrix_layout, jobu, jobvt, m, n, 
-                          complex_cast(storage(a)), lda(a), storage(s),
-                          complex_cast(storage(u)), lda(u),
-                          complex_cast(storage(vt)), lda(vt), storage(superb));
+                          complex_cast(storage(a)), ld(a), storage(s),
+                          complex_cast(storage(u)), ld(u),
+                          complex_cast(storage(vt)), ld(vt), storage(superb));
   }
   template<typename MATRIX, typename VECTOR0, typename VECTOR1>
   static lapack_int gesvd_work(int matrix_layout, char jobu, char jobvt,
                                lapack_int m, lapack_int n, MATRIX& a, VECTOR0& s,
                                MATRIX& u, MATRIX& vt, VECTOR1& work, VECTOR0& rwork) {
     return LAPACKE_cgesvd(matrix_layout, jobu, jobvt, m, n, 
-                          complex_cast(storage(a)), lda(a), storage(s),
-                          complex_cast(storage(u)), lda(u),
-                          complex_cast(storage(vt)), lda(vt),
+                          complex_cast(storage(a)), ld(a), storage(s),
+                          complex_cast(storage(u)), ld(u),
+                          complex_cast(storage(vt)), ld(vt),
                           complex_cast(storage(work)), size(work), storage(rwork));
   }
 };
@@ -98,18 +98,18 @@ struct gesvd_dispatch<std::complex<double>> {
     if (size(superb) != std::min(m, n) - 1)
       throw std::invalid_argument("vector superb size mismatch");
     return LAPACKE_zgesvd(matrix_layout, jobu, jobvt, m, n, 
-                          complex_cast(storage(a)), lda(a), storage(s),
-                          complex_cast(storage(u)), lda(u),
-                          complex_cast(storage(vt)), lda(vt), storage(superb));
+                          complex_cast(storage(a)), ld(a), storage(s),
+                          complex_cast(storage(u)), ld(u),
+                          complex_cast(storage(vt)), ld(vt), storage(superb));
   }
   template<typename MATRIX, typename VECTOR0, typename VECTOR1>
   static lapack_int gesvd_work(int matrix_layout, char jobu, char jobvt,
                                lapack_int m, lapack_int n, MATRIX& a, VECTOR0& s,
                                MATRIX& u, MATRIX& vt, VECTOR1& work, VECTOR0& rwork) {
     return LAPACKE_zgesvd(matrix_layout, jobu, jobvt, m, n, 
-                          complex_cast(storage(a)), lda(a), storage(s),
-                          complex_cast(storage(u)), lda(u),
-                          complex_cast(storage(vt)), lda(vt),
+                          complex_cast(storage(a)), ld(a), storage(s),
+                          complex_cast(storage(u)), ld(u),
+                          complex_cast(storage(vt)), ld(vt),
                           complex_cast(storage(work)), size(work), storage(rwork));
   }
 };

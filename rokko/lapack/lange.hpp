@@ -34,7 +34,7 @@ struct lange_dispatch<float> {
   template<typename MATRIX>
   static float lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                      MATRIX const& a) {
-    return LAPACKE_slange(matrix_layout, norm, m, n, storage(a), lda(a));
+    return LAPACKE_slange(matrix_layout, norm, m, n, storage(a), ld(a));
   }
 };
 
@@ -43,7 +43,7 @@ struct lange_dispatch<double> {
   template<typename MATRIX>
   static double lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                       MATRIX const& a) {
-    return LAPACKE_dlange(matrix_layout, norm, m, n, storage(a), lda(a));
+    return LAPACKE_dlange(matrix_layout, norm, m, n, storage(a), ld(a));
   }
 };
 
@@ -52,7 +52,7 @@ struct lange_dispatch<std::complex<float>> {
   template<typename MATRIX>
   static float lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                      MATRIX const& a) {
-    return LAPACKE_clange(matrix_layout, norm, m, n, complex_cast((storage(a))), lda(a));
+    return LAPACKE_clange(matrix_layout, norm, m, n, complex_cast((storage(a))), ld(a));
   }
 };
 
@@ -61,7 +61,7 @@ struct lange_dispatch<std::complex<double>> {
   template<typename MATRIX>
   static double lange(int matrix_layout, char norm, lapack_int m, lapack_int n,
                       MATRIX const& a) {
-    return LAPACKE_zlange(matrix_layout, norm, m, n, complex_cast((storage(a))), lda(a));
+    return LAPACKE_zlange(matrix_layout, norm, m, n, complex_cast((storage(a))), ld(a));
   }
 };
 

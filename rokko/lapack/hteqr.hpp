@@ -31,7 +31,7 @@ struct hteqr_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
-    return LAPACKE_ssteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
+    return LAPACKE_ssteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), ld(z));
   }
 };
 
@@ -40,7 +40,7 @@ struct hteqr_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
-    return LAPACKE_dsteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
+    return LAPACKE_dsteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), ld(z));
   }
 };
 
@@ -49,7 +49,7 @@ struct hteqr_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
-    return LAPACKE_csteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
+    return LAPACKE_csteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), ld(z));
   }
 };
 
@@ -58,7 +58,7 @@ struct hteqr_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
-    return LAPACKE_zsteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
+    return LAPACKE_zsteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), ld(z));
   }
 };
 

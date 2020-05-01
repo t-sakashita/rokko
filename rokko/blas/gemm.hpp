@@ -53,7 +53,7 @@ void gemm(CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b,
   int n = util::op_cols(trans_b, b);
   int k = util::op_cols(trans_a, a);
   gemm((is_col_major(a) ? CblasColMajor : CblasRowMajor), trans_a, trans_b,
-       m, n, k, alpha, storage(a), lda(a), storage(b), lda(b), beta, storage(c), lda(c));
+       m, n, k, alpha, storage(a), ld(a), storage(b), ld(b), beta, storage(c), ld(c));
 }
 
 } // namespace blas
