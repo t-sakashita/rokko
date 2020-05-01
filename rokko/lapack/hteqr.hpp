@@ -24,39 +24,39 @@ namespace lapack {
 
 namespace {
 
-template<typename T> struct hsteqr_dispatch;
+template<typename T> struct hteqr_dispatch;
 
 template<>
-struct hsteqr_dispatch<float> {
+struct hteqr_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
-  static lapack_int hsteqr(int matrix_layout, char compz, lapack_int n,
+  static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
     return LAPACKE_ssteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
   }
 };
 
 template<>
-struct hsteqr_dispatch<double> {
+struct hteqr_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
-  static lapack_int hsteqr(int matrix_layout, char compz, lapack_int n,
+  static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
     return LAPACKE_dsteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
   }
 };
 
 template<>
-struct hsteqr_dispatch<std::complex<float>> {
+struct hteqr_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
-  static lapack_int hsteqr(int matrix_layout, char compz, lapack_int n,
+  static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
     return LAPACKE_csteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
   }
 };
 
 template<>
-struct hsteqr_dispatch<std::complex<double>> {
+struct hteqr_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
-  static lapack_int hsteqr(int matrix_layout, char compz, lapack_int n,
+  static lapack_int hteqr(int matrix_layout, char compz, lapack_int n,
                            VECTOR& d, VECTOR& e, MATRIX& z) {
     return LAPACKE_zsteqr(matrix_layout, compz, n, storage(d), storage(e), storage(z), lda(z));
   }
@@ -65,7 +65,7 @@ struct hsteqr_dispatch<std::complex<double>> {
 } // end of anonymous namespace
 
 template<typename MATRIX, typename VECTOR>
-lapack_int hsteqr(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
+lapack_int hteqr(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
   BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int n = rows(z);
   if (rows(z) != cols(z))
@@ -74,13 +74,13 @@ lapack_int hsteqr(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
     throw std::invalid_argument("vector d size mismatch");
   if (size(e) != n)
     throw std::invalid_argument("vector e size mismatch");
-  return hsteqr_dispatch<value_t<MATRIX>>::
-    hsteqr((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), compz, n, d, e, z);
+  return hteqr_dispatch<value_t<MATRIX>>::
+    hteqr((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), compz, n, d, e, z);
 }
 
 template<typename MATRIX, typename VECTOR>
 lapack_int steqr(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  return hsteqr(compz, d, e, z);
+  return hteqr(compz, d, e, z);
 };
 
 } // end namespace lapack
