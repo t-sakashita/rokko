@@ -112,7 +112,7 @@ public:
     return 1 / (2 * (1 - std::cos(M_PI * (2 * k + 1) / (2 * dim + 1))));
   }
 };
-    
+
 } // namespace rokko
 
 #endif // ROKKO_UTILITY_MINIJ_MATRIX_HPP
