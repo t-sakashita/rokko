@@ -38,6 +38,19 @@ public:
     multiply(dim, v.data(), w.data());
   }
 
+  // Giving diagonal and sub-diagonal elements as two vectors
+  template<typename VEC>
+  static void generate(VEC& d, VEC& e) {
+    if (d.size() != e.size())
+      throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
+
+    d[0] = 1;
+    for(int i = 1; i < d.size(); ++i)
+      d[i] = 2;
+    for(int i = 0; i < e.size(); ++i)
+      e[i] = -1;
+  }
+
   template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
     if (mat.rows() != mat.cols())
@@ -68,6 +81,7 @@ public:
     mat(n-1, n-2) = -1;  mat(n-1, n-1) = 2;
   }
 
+#if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   template<typename T>
   static void generate(rokko::distributed_matrix<T, matrix_col_major>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
@@ -97,6 +111,7 @@ public:
     }
     mat.set_global(n-1, n-2, -1);  mat.set_global(n-1, n-1, 2);
   }
+#endif
 
   // calculate k-th smallest eigenvalue of dim-dimensional Laplacian matrix (k=0...dim-1)
   static double eigenvalue(int dim, int k) {
