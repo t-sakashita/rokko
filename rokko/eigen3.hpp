@@ -44,7 +44,7 @@ int cols(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
 int ld(Eigen::Matrix<T, ROWS, COLS, MATRIX_MAJOR> const& mat) {
-  return is_col_major(mat) ? rows(mat) : cols(mat);
+  return mat.innerSize();
 }
 
 template<typename T, int ROWS, int COLS, int MATRIX_MAJOR>
