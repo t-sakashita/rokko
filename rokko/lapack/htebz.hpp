@@ -64,9 +64,11 @@ struct htebz_dispatch<std::complex<double>> {
 
 } // end of anonymous namespace
 
-template<typename VECTOR, typename VECTOR_INT>
-lapack_int htebz(char range, char order, double vl, double vu, lapack_int il, lapack_int iu, double abstol,
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htebz(char range, char order, T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
+  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+
   lapack_int n = size(d);
   if (size(e) != (n-1))
     throw std::invalid_argument("vector e size mismatch");
@@ -76,8 +78,8 @@ lapack_int htebz(char range, char order, double vl, double vu, lapack_int il, la
     htebz(range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit);
 }
 
-template<typename VECTOR, typename VECTOR_INT>
-lapack_int stebz(char range, char order, double vl, double vu, lapack_int il, lapack_int iu, double abstol,
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int stebz(char range, char order, T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
   return htebz(range, order, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit);
 };
