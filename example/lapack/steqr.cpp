@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/blas.hpp>
-#include <rokko/lapack/hteqr.hpp>
+#include <rokko/lapack/steqr.hpp>
 #include <rokko/lapack/lange.hpp>
 #include <rokko/eigen3.hpp>
 #include <rokko/utility/laplacian_matrix.hpp>
