@@ -41,13 +41,14 @@ public:
   // Giving diagonal and sub-diagonal elements as two vectors
   template<typename VEC>
   static void generate(VEC& d, VEC& e) {
-    if (d.size() != e.size())
-      throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
+    if (d.size() > (e.size()+1))
+      throw std::invalid_argument("laplacian_matrix::generate() : The vector for sub-diagonal elements is too short.");
 
+    const int n = d.size();
     d[0] = 1;
-    for(int i = 1; i < d.size(); ++i)
+    for(int i = 1; i < n; ++i)
       d[i] = 2;
-    for(int i = 0; i < e.size(); ++i)
+    for(int i = 0; i < (n-1); ++i)
       e[i] = -1;
   }
 

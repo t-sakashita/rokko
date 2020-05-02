@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
   if (argc > 1) n = std::stoi(argv[1]);
 
   // generate matrix
-  Eigen::VectorXd d(n), e(n);
+  Eigen::VectorXd d(n), e(n-1);
   rokko::laplacian_matrix::generate(d, e);
 
   // diagonalization

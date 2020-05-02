@@ -72,7 +72,7 @@ lapack_int htedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
     throw std::invalid_argument("matrix Z size mismatch");
   if (size(d) != n)
     throw std::invalid_argument("vector d size mismatch");
-  if (size(e) != n)
+  if (size(e) != (n-1))
     throw std::invalid_argument("vector e size mismatch");
   return htedc_dispatch<value_t<MATRIX>>::
     htedc((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), compz, n, d, e, z);
