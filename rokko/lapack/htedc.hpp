@@ -49,7 +49,7 @@ struct htedc_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int htedc(int matrix_layout, char compz, lapack_int n,
                           VECTOR& d, VECTOR& e, MATRIX& z) {
-    return LAPACKE_cstedc(matrix_layout, compz, n, storage(d), storage(e), storage(z), ld(z));
+    return LAPACKE_cstedc(matrix_layout, compz, n, storage(d), storage(e), complex_cast(storage(z)), ld(z));
   }
 };
 
@@ -58,7 +58,7 @@ struct htedc_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
   static lapack_int htedc(int matrix_layout, char compz, lapack_int n,
                           VECTOR& d, VECTOR& e, MATRIX& z) {
-    return LAPACKE_zstedc(matrix_layout, compz, n, storage(d), storage(e), storage(z), ld(z));
+    return LAPACKE_zstedc(matrix_layout, compz, n, storage(d), storage(e), complex_cast(storage(z)), ld(z));
   }
 };
 

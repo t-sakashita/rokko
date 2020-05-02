@@ -64,7 +64,7 @@ struct htein_dispatch<std::complex<float>> {
                           const VECTOR_INT& iblock, const VECTOR_INT& isplit,
                           VECTOR_INT& ifailv) {
     return LAPACKE_cstein(matrix_layout, n, storage(d), storage(e),
-                          m, storage(w), srorage(iblock), storage(isplit), storage(z), ld(z), storage(ifailv));
+                          m, storage(w), srorage(iblock), storage(isplit), complex_cast(storage(z)), ld(z), storage(ifailv));
   }
 };
 
@@ -78,7 +78,7 @@ struct htein_dispatch<std::complex<double>> {
                           const VECTOR_INT& iblock, const VECTOR_INT& isplit,
                           VECTOR_INT& ifailv) {
     return LAPACKE_zstein(matrix_layout, n, storage(d), storage(e),
-                          m, storage(w), storage(iblock), storage(isplit), storage(z), ld(z), storage(ifailv));
+                          m, storage(w), storage(iblock), storage(isplit), complex_cast(storage(z)), ld(z), storage(ifailv));
   }
 };
 
