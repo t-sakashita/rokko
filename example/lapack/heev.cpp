@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
   Eigen::VectorXd w(n);
   int info = rokko::lapack::heev('V', 'U', u, w);
   if (info) throw std::runtime_error("Error: heev failed");
- std::cout << "Eigenvalues: " << std::endl << w << std::endl;
+  std::cout << "Eigenvalues: " << std::endl << w << std::endl;
   std::cout << "Eigenvectors: " << std::endl << u << std::endl;
 
   // orthogonality check
