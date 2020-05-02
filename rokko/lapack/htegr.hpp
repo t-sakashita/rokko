@@ -18,6 +18,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <rokko/alias_template_function.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -84,12 +85,7 @@ lapack_int htegr(char jobz, char range, VECTOR& d, VECTOR& e,
     htegr((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz);
 }
 
-template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
-lapack_int stegr(char jobz, char range, VECTOR& d, VECTOR& e,
-                 T vl, T vu, lapack_int il, lapack_int iu, T abstol,
-                 lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
-  return htegr(jobz, range, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz);
-};
+ALIAS_TEMPLATE_FUNCTION(stegr, htegr);
 
 } // end namespace lapack
 } // end namespace rokko

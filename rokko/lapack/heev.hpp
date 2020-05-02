@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2017 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2017-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -18,6 +18,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <rokko/alias_template_function.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -77,17 +78,8 @@ lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
   return heev_dispatch<value_t<MATRIX>>::
     heev((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, uplo, n, a, w);
 }
-  
-template<typename MATRIX, typename VECTOR>
-lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
-  return heev(jobz, uplo, a, w);
-};
 
-template<typename MATRIX, typename VECTOR0, typename VECTOR1>
-lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work,
-                VECTOR1& rwork) {
-  return heev(jobz, uplo, a, w, work, rwork);
-};
+ALIAS_TEMPLATE_FUNCTION(syev, heev);
 
 } // end namespace lapack
 } // end namespace rokko

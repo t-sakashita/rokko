@@ -18,6 +18,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <rokko/alias_template_function.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -78,10 +79,7 @@ lapack_int htedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
     htedc((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), compz, n, d, e, z);
 }
 
-template<typename MATRIX, typename VECTOR>
-lapack_int stedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  return htedc(compz, d, e, z);
-};
+ALIAS_TEMPLATE_FUNCTION(stedc, htedc);
 
 } // end namespace lapack
 } // end namespace rokko

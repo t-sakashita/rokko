@@ -18,6 +18,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <rokko/alias_template_function.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -78,11 +79,7 @@ lapack_int htebz(char range, char order, T vl, T vu, lapack_int il, lapack_int i
     htebz(range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit);
 }
 
-template<typename T, typename VECTOR, typename VECTOR_INT>
-lapack_int stebz(char range, char order, T vl, T vu, lapack_int il, lapack_int iu, T abstol,
-                 VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
-  return htebz(range, order, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit);
-};
+ALIAS_TEMPLATE_FUNCTION(stebz, htebz);
 
 } // end namespace lapack
 } // end namespace rokko

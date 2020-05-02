@@ -18,6 +18,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <rokko/alias_template_function.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -101,11 +102,7 @@ lapack_int htein(VECTOR& d, VECTOR& e, lapack_int m, VECTOR& w, MATRIX& z,
     htein((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), n, d, e, m, w, z, iblock, isplit, ifailv);
 }
 
-template<typename MATRIX, typename VECTOR, typename VECTOR_INT>
-lapack_int stein(VECTOR& d, VECTOR& e, lapack_int m, VECTOR& w, MATRIX& z,
-                 const VECTOR_INT& iblock, const VECTOR_INT& isplit, VECTOR_INT& ifailv) {
-  return htein(d, e, m, w, z, iblock, isplit, ifailv);
-};
+ALIAS_TEMPLATE_FUNCTION(stein, htein);
 
 } // end namespace lapack
 } // end namespace rokko
