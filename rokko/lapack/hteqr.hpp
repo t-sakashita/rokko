@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HSTEQR_HPP
-#define ROKKO_LAPACK_HSTEQR_HPP
+#ifndef ROKKO_LAPACK_HTEQR_HPP
+#define ROKKO_LAPACK_HTEQR_HPP
 
 #include <complex>
 #include <lapacke.h>
@@ -86,4 +86,4 @@ lapack_int steqr(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
 } // end namespace lapack
 } // end namespace rokko
 
-#endif // ROKKO_LAPACK_HSTEQR_HPP
+#endif // ROKKO_LAPACK_HTEQR_HPP
