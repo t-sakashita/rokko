@@ -80,9 +80,6 @@ template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b, VECTOR0& w,
                 VECTOR1& work);
 
-template<typename MATRIX, typename VECTOR>
-lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR& w);
-
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work, VECTOR1& rwork);
 
