@@ -65,7 +65,7 @@ struct heev_dispatch<std::complex<double>> {
   }
 };
 
-}
+} // end of anonymous namespace
   
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
