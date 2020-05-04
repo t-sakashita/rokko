@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
   int m;
   Eigen::VectorXi ifail(n);
 
-  int info = rokko::lapack::syevx('V', 'A', 'U', a, vl, vu, il, iu, abstol, m, w, u, ifail);
-  if (info) throw std::runtime_error("Error: syevd failed");
+  int info = rokko::lapack::heevx('V', 'A', 'U', a, vl, vu, il, iu, abstol, m, w, u, ifail);
+  if (info) throw std::runtime_error("Error: heevx failed");
   std::cout << "Eigenvalues: " << std::endl << w << std::endl;
   std::cout << "Eigenvectors: " << std::endl << u << std::endl;
 
