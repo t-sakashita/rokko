@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
 
   // diagonalization
   Eigen::VectorXd w = d;
-  Eigen::MatrixXd u = Eigen::MatrixXd::Identity(n,n);
-  int info = rokko::lapack::stedc('V', w, e, u);
+  Eigen::MatrixXd u(n,n);
+  int info = rokko::lapack::stedc('I', w, e, u);
   std::cout << "Eigenvalues: " << std::endl << w << std::endl;
   std::cout << "Eigenvectors: " << std::endl << u << std::endl;
 
