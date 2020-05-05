@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_DSYEVX_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_DSYEVX_HPP
+#ifndef ROKKO_LAPACK_DIAGONALIZE_SYEVX_HPP
+#define ROKKO_LAPACK_DIAGONALIZE_SYEVX_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
@@ -22,17 +22,17 @@
 namespace rokko {
 namespace lapack {
 
-// dsyevx only eigenvalues
-template<int MATRIX_MAJOR>
-parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
+// only eigenvalues
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize_dsyevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
 			      parameters const& params) {
   parameters params_out;
 
-  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
+  T abstol = params.defined("abstol") ? params.get<T>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
-  double vl, vu;
+  T vl, vu;
   const char range = get_eigenvalues_range(params, vl, vu, il, iu);
   const char uplow = get_matrix_part(params);
 
@@ -45,7 +45,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
                    m, eigvals, ifail);
 
   if (info) {
-    std::cerr << "error at dsyevx function. info=" << info << std::endl;
+    std::cerr << "error at syevx function. info=" << info << std::endl;
     if (info < 0) {
       std::cerr << "This means that ";
       std::cerr << "the " << abs(info) << "-th argument had an illegal value." << std::endl;
@@ -56,25 +56,25 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevx", 'N', range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("syevx", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;
 }
 
 
-// dsyevx eigenvalues / eigenvectors
-template<int MATRIX_MAJOR>
-parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
-			      Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+// eigenvalues / eigenvectors
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize_dsyevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+			      Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   rokko::parameters params_out;
 
-  double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
+  T abstol = params.defined("abstol") ? params.get<T>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
-  double vl, vu;
+  T vl, vu;
   const char range = get_eigenvalues_range(params, vl, vu, il, iu);
   const char uplow = get_matrix_part(params);
 
@@ -87,7 +87,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
                    m, eigvals, eigvecs, ifail);
 
   if (info) {
-    std::cerr << "Error at dsyevx function. info=" << info << std::endl;
+    std::cerr << "Error at syevx function. info=" << info << std::endl;
     if (params.get_bool("verbose")) {
       std::cerr << "This means that ";
       if (info < 0) {
@@ -108,7 +108,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevx", 'V', range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("syevx", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;
@@ -118,4 +118,4 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_DSYEVX_HPP
+#endif // ROKKO_LAPACK_DIAGONALIZE_SYEVX_HPP

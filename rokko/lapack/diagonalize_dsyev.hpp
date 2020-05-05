@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_DSYEV_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_DSYEV_HPP
+#ifndef ROKKO_LAPACK_DIAGONALIZE_SYEV_HPP
+#define ROKKO_LAPACK_DIAGONALIZE_SYEV_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
@@ -22,9 +22,9 @@
 namespace rokko {
 namespace lapack {
 
-// dsyev only eigenvalues
-template<int MATRIX_MAJOR>
-parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
+// only eigenvalues
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize_dsyev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
 			     parameters const& params) {
   rokko::parameters params_out;
   const char jobz = 'N';  // only eigenvalues
@@ -34,19 +34,19 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
 
   params_out.set("info", info);
   if (info) {
-    std::cerr << "error at dsyev function. info=" << info  << std::endl;
+    std::cerr << "error at syev function. info=" << info  << std::endl;
   }
   if (params.get_bool("verbose")) {
-    print_verbose("dsyev", jobz, uplow);
+    print_verbose("syev", jobz, uplow);
   }
 
   return params_out;
 }
 
-// dsyev eigenvalues / eigenvectors
-template<int MATRIX_MAJOR>
-parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
-			     Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+// eigenvalues / eigenvectors
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize_dsyev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+			     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   rokko::parameters params_out;
   const char jobz = 'V';  // eigenvalues / eigenvectors
@@ -57,10 +57,10 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
 
   params_out.set("info", info);
   if (info) {
-    std::cerr << "error at dsyev function. info=" << info  << std::endl;
+    std::cerr << "error at syev function. info=" << info  << std::endl;
   }
   if (params.get_bool("verbose")) {
-    print_verbose("dsyev", jobz, uplow);
+    print_verbose("syev", jobz, uplow);
   }
 
   return params_out;
@@ -69,4 +69,4 @@ parameters diagonalize_dsyev(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_DSYEV_HPP
+#endif // ROKKO_LAPACK_DIAGONALIZE_SYEV_HPP
