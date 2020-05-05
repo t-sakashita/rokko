@@ -24,7 +24,7 @@ namespace lapack {
 
 // only eigenvalues
 template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_dsyevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
 			      parameters const& params) {
   parameters params_out;
 
@@ -65,7 +65,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATR
 
 // eigenvalues / eigenvectors
 template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_dsyevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
 			      Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   rokko::parameters params_out;

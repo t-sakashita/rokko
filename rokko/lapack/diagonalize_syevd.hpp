@@ -9,35 +9,34 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_SYEV_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_SYEV_HPP
+#ifndef ROKKO_LAPACK_DIAGONALIZE_SYEVD_HPP
+#define ROKKO_LAPACK_DIAGONALIZE_SYEVD_HPP
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
-#include <rokko/lapack/syev.hpp>
+#include <rokko/lapack/syevd.hpp>
 
 namespace rokko {
 namespace lapack {
 
 // only eigenvalues
 template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_dsyev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
-			     parameters const& params) {
+parameters diagonalize_syevd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+			      parameters const& params) {
   rokko::parameters params_out;
-  const char jobz = 'N';  // only eigenvalues
-  char uplow = get_matrix_part(params);
+  const char uplow = lapack::get_matrix_part(params);
 
-  int info = syev(jobz, uplow, mat, eigvals);
+  int info = syevd('N', uplow, mat, eigvals);
 
   params_out.set("info", info);
   if (info) {
-    std::cerr << "error at syev function. info=" << info  << std::endl;
+    std::cerr << "error at syevd function. info=" << info  << std::endl;
   }
   if (params.get_bool("verbose")) {
-    print_verbose("syev", jobz, uplow);
+    print_verbose("syevd", 'N', uplow);
   }
 
   return params_out;
@@ -45,28 +44,28 @@ parameters diagonalize_dsyev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 
 // eigenvalues / eigenvectors
 template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_dsyev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
-			     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
-			     parameters const& params) {
+parameters diagonalize_syevd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+			      Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+			      parameters const& params) {
   rokko::parameters params_out;
-  const char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = get_matrix_part(params);
+  const char uplow = get_matrix_part(params);
 
-  int info = syev(jobz, uplow, mat, eigvals);
+  int info = syevd('V', uplow, mat, eigvals);
   eigvecs = mat;
 
   params_out.set("info", info);
   if (info) {
-    std::cerr << "error at syev function. info=" << info  << std::endl;
+    std::cerr << "error at syevd function. info=" << info  << std::endl;
   }
   if (params.get_bool("verbose")) {
-    print_verbose("syev", jobz, uplow);
+    print_verbose("syevd", 'V', uplow);
   }
 
   return params_out;
 }
 
+
 } // namespace lapack
 } // namespace rokko
 
-#endif // ROKKO_LAPACK_DIAGONALIZE_SYEV_HPP
+#endif // ROKKO_LAPACK_DIAGONALIZE_SYEVD_HPP

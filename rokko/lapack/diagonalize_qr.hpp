@@ -16,7 +16,7 @@
 #include <rokko/eigen3.hpp>
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
-#include <rokko/lapack/diagonalize_dsyevx.hpp>
+#include <rokko/lapack/diagonalize_syevx.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -31,7 +31,7 @@ parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_M
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_dsyevx(mat, eigvals, params);
+  parameters params_out = diagonalize_syevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished dsyevx (qr)" << std::endl;
@@ -52,7 +52,7 @@ parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_M
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_dsyevx(mat, eigvals, eigvecs, params);
+  parameters params_out = diagonalize_syevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished dsyevx (qr)" << std::endl;

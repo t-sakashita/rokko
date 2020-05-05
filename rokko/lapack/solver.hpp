@@ -13,10 +13,10 @@
 #define ROKKO_LAPACK_SOLVER_HPP
 
 #include <rokko/parameters.hpp>
-#include <rokko/lapack/diagonalize_dsyev.hpp>
-#include <rokko/lapack/diagonalize_dsyevd.hpp>
-#include <rokko/lapack/diagonalize_dsyevr.hpp>
-#include <rokko/lapack/diagonalize_dsyevx.hpp>
+#include <rokko/lapack/diagonalize_syev.hpp>
+#include <rokko/lapack/diagonalize_syevd.hpp>
+#include <rokko/lapack/diagonalize_syevr.hpp>
+#include <rokko/lapack/diagonalize_syevx.hpp>
 #include <rokko/lapack/diagonalize_bisection.hpp>
 #include <rokko/lapack/diagonalize_qr.hpp>
 #include <rokko/lapack/diagonalize_dsygv.hpp>
@@ -64,22 +64,22 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if (routine=="dsyev") {
-    return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
+    return rokko::lapack::diagonalize_syev(mat, eigvals, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
-    return rokko::lapack::diagonalize_dsyevr(mat, eigvals, params);
+    return rokko::lapack::diagonalize_syevr(mat, eigvals, params);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
-    return rokko::lapack::diagonalize_dsyevd(mat, eigvals, params);
+    return rokko::lapack::diagonalize_syevd(mat, eigvals, params);
   } else if (routine=="dsyevx") {
-    return rokko::lapack::diagonalize_dsyevx(mat, eigvals, params);
+    return rokko::lapack::diagonalize_syevx(mat, eigvals, params);
   } else if (routine=="bisection") {
     return rokko::lapack::diagonalize_bisection(mat, eigvals, params);
   } else if (routine=="qr") {
     return rokko::lapack::diagonalize_qr(mat, eigvals, params);
   } else if (routine=="") {
     if (lapack::is_interval(params)) {
-      return rokko::lapack::diagonalize_dsyevr(mat, eigvals, params);
+      return rokko::lapack::diagonalize_syevr(mat, eigvals, params);
     } else {
-      return rokko::lapack::diagonalize_dsyev(mat, eigvals, params);
+      return rokko::lapack::diagonalize_syev(mat, eigvals, params);
     }
   } else {
     throw std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine");
@@ -103,22 +103,22 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if (routine=="dsyev") {
-    return rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params);
+    return rokko::lapack::diagonalize_syev(mat, eigvals, eigvecs, params);
   } else if ((routine=="dsyevr") || (routine=="mr3")) {
-    return rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params);
+    return rokko::lapack::diagonalize_syevr(mat, eigvals, eigvecs, params);
   } else if ((routine=="dsyevd") || (routine=="dc")) {
-    return rokko::lapack::diagonalize_dsyevd(mat, eigvals, eigvecs, params);
+    return rokko::lapack::diagonalize_syevd(mat, eigvals, eigvecs, params);
   } else if (routine=="dsyevx") {
-    return rokko::lapack::diagonalize_dsyevx(mat, eigvals, eigvecs, params);
+    return rokko::lapack::diagonalize_syevx(mat, eigvals, eigvecs, params);
   } else if (routine=="bisection") {
     return rokko::lapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
   } else if (routine=="qr") {
     return rokko::lapack::diagonalize_qr(mat, eigvals, eigvecs, params);
   } else if (routine=="") {
     if (is_interval(params)) {
-      return rokko::lapack::diagonalize_dsyevr(mat, eigvals, eigvecs, params);
+      return rokko::lapack::diagonalize_syevr(mat, eigvals, eigvecs, params);
     } else {
-      return rokko::lapack::diagonalize_dsyev(mat, eigvals, eigvecs, params);
+      return rokko::lapack::diagonalize_syev(mat, eigvals, eigvecs, params);
     }
   } else {
     throw std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine");
