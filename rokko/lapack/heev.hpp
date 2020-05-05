@@ -74,8 +74,8 @@ lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
-  if (size(w) != n)
-    throw std::invalid_argument("vector w size mismatch");
+  //if (size(w) != n)
+  //  throw std::invalid_argument("vector w size mismatch");
   return heev_dispatch<value_t<MATRIX>>::
     heev((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, uplo, n, a, w);
 }

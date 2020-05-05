@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,6 +17,7 @@
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
+#include <rokko/lapack/syevx.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -26,10 +27,7 @@ template<int MATRIX_MAJOR>
 parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 			      parameters const& params) {
   parameters params_out;
-  const char jobz = 'N';  // only eigenvalues
-  const int dim = mat.outerSize();
-  const int ld_mat = mat.innerSize();
-  lapack_int m;  // output: found eigenvalues
+
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
@@ -38,17 +36,13 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const char range = get_eigenvalues_range(params, vl, vu, il, iu);
   const char uplow = get_matrix_part(params);
 
+  lapack_int m;  // output: found eigenvalues
+  const int dim = mat.outerSize();
   std::vector<lapack_int> ifail(dim);
-  int info;
 
-  if(MATRIX_MAJOR == Eigen::ColMajor)
-    info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, ifail.data());
-  else
-    info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, ifail.data());
+  int info = syevx(range, uplow, mat,
+                   vl, vu, il, iu, abstol,
+                   m, eigvals, ifail);
 
   if (info) {
     std::cerr << "error at dsyevx function. info=" << info << std::endl;
@@ -62,7 +56,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("dsyevx", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;
@@ -75,13 +69,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 			      Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   rokko::parameters params_out;
-  const char jobz = 'V';  // eigenvalues / eigenvectors
-  const int dim = mat.outerSize();
-  const int ld_mat = mat.innerSize();
-  const int ld_eigvecs = eigvecs.innerSize();
-  std::vector<lapack_int> ifail(dim);
 
-  lapack_int m;  // output: found eigenvalues
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
@@ -90,15 +78,13 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const char range = get_eigenvalues_range(params, vl, vu, il, iu);
   const char uplow = get_matrix_part(params);
 
-  int info;
-  if(MATRIX_MAJOR == Eigen::ColMajor)
-    info = LAPACKE_dsyevx(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, eigvecs.data(), ld_eigvecs, ifail.data());
-  else
-    info = LAPACKE_dsyevx(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, eigvecs.data(), ld_eigvecs, ifail.data());
+  lapack_int m;  // output: found eigenvalues
+  const int dim = mat.outerSize();
+  std::vector<lapack_int> ifail(dim);
+
+  int info = syevx(range, uplow, mat,
+                   vl, vu, il, iu, abstol,
+                   m, eigvals, eigvecs, ifail);
 
   if (info) {
     std::cerr << "Error at dsyevx function. info=" << info << std::endl;
@@ -122,7 +108,7 @@ parameters diagonalize_dsyevx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("dsyevx", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;

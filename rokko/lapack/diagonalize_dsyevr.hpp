@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,6 +17,7 @@
 #include <rokko/utility/timer.hpp>
 #include <rokko/lapack.hpp>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
+#include <rokko/lapack/syevr.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -26,9 +27,6 @@ template<int MATRIX_MAJOR>
 parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
 			      parameters const& params) {
   parameters params_out;
-  const char jobz = 'N';  // only eigenvalues
-  const int dim = mat.outerSize();
-  const int ld_mat = mat.innerSize();
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
@@ -38,16 +36,12 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const char uplow = get_matrix_part(params);
 
   lapack_int m;  // output: found eigenvalues
+  const int dim = mat.outerSize();
   std::vector<lapack_int> isuppz(2*dim+1);
-  int info;
-  if(MATRIX_MAJOR == Eigen::ColMajor)
-    info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, isuppz.data());
-  else
-    info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, NULL, ld_mat, isuppz.data());
+
+  int info = syevr(range, uplow, mat,
+                   vl, vu, il, iu, abstol,
+                   m, eigvals, isuppz);
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
@@ -57,7 +51,7 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("isuppz", isuppz);
 
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("dsyevr", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;
@@ -70,11 +64,6 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
 			      Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   rokko::parameters params_out;
-  const char jobz = 'V';  // eigenvalues / eigenvectors
-
-  const int dim = mat.outerSize();
-  const int ld_mat = mat.innerSize();
-  const int ld_eigvecs = eigvecs.innerSize();
 
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : 0.;
   params_out.set("abstol", abstol);
@@ -85,17 +74,12 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   const char uplow = get_matrix_part(params);
 
   lapack_int m;  // output: found eigenvalues
+  const int dim = mat.outerSize();
   std::vector<lapack_int> isuppz(2*dim+1);
 
-  int info;
-  if(MATRIX_MAJOR == Eigen::ColMajor)
-    info = LAPACKE_dsyevr(LAPACK_COL_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, eigvecs.data(), ld_eigvecs, isuppz.data());
-  else
-    info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR, jobz, range, uplow, dim,
-			  mat.data(), ld_mat, vl, vu, il, iu,
-			  abstol, &m, eigvals, eigvecs.data(), ld_eigvecs, isuppz.data());
+  int info = syevr(range, uplow, mat,
+                   vl, vu, il, iu, abstol,
+                   m, eigvals, eigvecs, isuppz);
 
   if (info) {
     std::cerr << "error at dsyevr function. info=" << info << std::endl;
@@ -105,7 +89,7 @@ parameters diagonalize_dsyevr(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("isuppz", isuppz);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("dsyevr", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }

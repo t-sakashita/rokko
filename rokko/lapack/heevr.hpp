@@ -78,8 +78,8 @@ lapack_int heevr(char jobz, char range, char uplo, MATRIX& a,
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
-  if (size(w) != n)
-    throw std::invalid_argument("vector w size mismatch");
+  //if (size(w) != n)
+  //  throw std::invalid_argument("vector w size mismatch");
   return heevr_dispatch<value_t<MATRIX>>::
     heevr((is_col_major(a) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, range, uplo, n, a, vl, vu, il, iu, abstol, m, w, z, isuppz);
 }
