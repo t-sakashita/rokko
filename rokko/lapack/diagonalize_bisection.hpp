@@ -22,11 +22,11 @@ namespace rokko {
 namespace lapack {
 
 // bisection (dsyevx) only eigenvalues
-template<int MATRIX_MAJOR>
-parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
                  rokko::parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<double>("abstol") < 0) {
+    if (params.get<T>("abstol") < 0) {
       std::stringstream msg;
       msg << "lapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl
@@ -46,12 +46,12 @@ parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
 
 
 // bisection (dsyevx) eigenvalues / eigenvectors
-template<int MATRIX_MAJOR>
-parameters diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, double* eigvals,
-				 Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+template<typename T, int MATRIX_MAJOR>
+parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+				 Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
                  rokko::parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<double>("abstol") < 0) {
+    if (params.get<T>("abstol") < 0) {
       std::stringstream msg;
       msg << "lapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl
