@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 
   // diagonalization
   Eigen::VectorXd w(n);
-  Eigen::MatrixXd u = Eigen::MatrixXd::Identity(n,n);
+  Eigen::MatrixXd u(n,n);
   int m;
   const double vl = 0, vu = 0;
   const int il = 0, iu = 0;
