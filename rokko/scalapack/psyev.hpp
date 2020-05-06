@@ -24,14 +24,14 @@ inline int psyev_dispatch(char jobz, char uplo, int n, double* A, int ia, int ja
                           double* work, int lwork) {
   return cscalapack_pdsyev_work(jobz, uplo, n, A, ia, ja, descA, w, Z, iz, jz, descZ, work, lwork);
 }
-  
+
 inline int psyev_dispatch(char jobz, char uplo, int n, double* A, int ia, int ja, const int* descA,
                           double* w, double* Z, int iz, int jz, const int* descZ) {
   return cscalapack_pdsyev(jobz, uplo, n, A, ia, ja, descA, w, Z, iz, jz, descZ);
 }
-  
+
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
