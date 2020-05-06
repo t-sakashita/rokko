@@ -106,4 +106,12 @@ lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
 #include "lapack/lange.hpp"
 #include "lapack/ungqr.hpp"
 
+// eigensolvers for tridiagonal matrix
+#include "lapack/hteqr.hpp"
+#include "lapack/htedc.hpp"
+#include "lapack/htebz.hpp"
+#include "lapack/htein.hpp"
+#include "lapack/htegr.hpp"
+#include "lapack/sterf.hpp"
+
 #endif // ROKKO_LAPACK_HPP
