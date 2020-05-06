@@ -23,7 +23,7 @@
 namespace rokko {
 namespace scalapack {
 
-// pdsyevx eigenvalues / eigenvectors
+// eigenvalues & eigenvectors
 template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
@@ -58,7 +58,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
-// pdsyevx only eigenvalues
+// only eigenvalues
 template<typename MATRIX_MAJOR, typename VEC>
 parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
