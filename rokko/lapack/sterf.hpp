@@ -48,7 +48,7 @@ struct sterf_dispatch<double> {
 
 template<typename VECTOR>
 lapack_int sterf(VECTOR& d, VECTOR& e) {
-  lapack_int n = rows(d);
+  lapack_int n = size(d);
   if (size(e) != (n-1))
     throw std::invalid_argument("vector e size mismatch");
   return sterf_dispatch<value_t<VECTOR>>::

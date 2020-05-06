@@ -89,7 +89,7 @@ template<typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htein(VECTOR& d, VECTOR& e, lapack_int m, VECTOR& w, MATRIX& z,
                  const VECTOR_INT& iblock, const VECTOR_INT& isplit, VECTOR_INT& ifailv) {
   BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
-  lapack_int n = rows(z);
+  lapack_int n = size(d);
   if (rows(z) != cols(z))
     throw std::invalid_argument("matrix Z size mismatch");
   if (size(d) != n)
