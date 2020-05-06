@@ -113,7 +113,7 @@ int cscalapack_pssyevd_work(char jobz, char uplo, int n,
                             float* w, float* Z, int iz, int jz, const int* descZ,
                             float* work, int lwork, int* iwork, int liwork);
 
-#ifdef ROKKO_HAVE_PSSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pssyevr_work(char jobz, char range, char uplo, int n,
                             float* A, int ia, int ja, const int* descA,
                             float vl, float vu, int il, int iu,
