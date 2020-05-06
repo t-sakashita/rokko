@@ -86,6 +86,79 @@ lapack_int htegr(char jobz, char range, VECTOR& d, VECTOR& e,
     htegr((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz);
 }
 
+// only eigenvalues (without jobz)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(char range, VECTOR& d, VECTOR& e,
+                 T vl, T vu, lapack_int il, lapack_int iu, T abstol,
+                 lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
+  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+
+  lapack_int n = size(d);
+  constexpr null_matrix<T> z_null;
+  return htegr_dispatch<T>::
+    htegr(LAPACK_COL_MAJOR, 'N', range, n, d, e, vl, vu, il, iu, abstol, m, w, z_null, isuppz);
+}
+
+// eigenvalues & eigenvectors (without jobz)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(char range, VECTOR& d, VECTOR& e,
+                 T vl, T vu, lapack_int il, lapack_int iu, T abstol,
+                 lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
+  return htegr('V', range, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz);
+}
+
+// eigenvalues & eigenvectors, use all (without jobz, range, vl, vu, il, iu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(VECTOR& d, VECTOR& e,
+                 T abstol,
+                 lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
+  return htegr('A', d, e, 0., 0., 0, 0, abstol, m, w, z, isuppz);
+}
+
+// eigenvalues & eigenvectors, use vl, vu (without jobz, range, il, iu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(VECTOR& d, VECTOR& e,
+                 T vl, T vu, T abstol,
+                 lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
+  return htegr('V', d, e, vl, vu, 0, 0, abstol, m, w, z, isuppz);
+}
+
+// eigenvalues & eigenvectors, use il, iu (without jobz, range, vl, vu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(VECTOR& d, VECTOR& e,
+                 lapack_int il, lapack_int iu, T abstol,
+                 lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
+  return htegr('I', d, e, 0., 0., il, iu, abstol, m, w, z, isuppz);
+}
+
+// only eigenvalues, use all (without jobz, range, vl, vu, il, iu)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(VECTOR& d, VECTOR& e,
+                 T abstol,
+                 lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
+  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+
+  return htegr('A', d, e, 0., 0., 0, 0, abstol, m, w, isuppz);
+}
+
+// only eigenvalues, use vl, vu (without jobz, range, il, iu)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(VECTOR& d, VECTOR& e,
+                 T vl, T vu, T abstol,
+                 lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
+  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+
+  return htegr('V', d, e, vl, vu, 0, 0, abstol, m, w, isuppz);
+}
+
+// only eigenvalues, use il, iu (without jobz, range, vl, vu)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htegr(VECTOR& d, VECTOR& e,
+                 lapack_int il, lapack_int iu, T abstol,
+                 lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
+  return htegr('I', d, e, 0., 0., il, iu, abstol, m, w, isuppz);
+}
+
 ALIAS_TEMPLATE_FUNCTION(stegr, htegr);
 
 } // end namespace lapack

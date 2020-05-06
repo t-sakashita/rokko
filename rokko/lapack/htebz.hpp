@@ -79,6 +79,27 @@ lapack_int htebz(char range, char order, T vl, T vu, lapack_int il, lapack_int i
     htebz(range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit);
 }
 
+// use all (without range, vl, vu, il, iu)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htebz(char order, T abstol,
+                 VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
+  return htebz('A', order, 0., 0., 0, 0, abstol, d, e, m, nsplit, w, iblock, isplit);
+}
+
+// use vl, vu (without range, il, iu)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htebz(char order, T vl, T vu, T abstol,
+                 VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
+  return htebz('V', order, vl, vu, 0, 0, abstol, d, e, m, nsplit, w, iblock, isplit);
+}
+
+// use il, iu (without range, vl, vu)
+template<typename T, typename VECTOR, typename VECTOR_INT>
+lapack_int htebz(char order, lapack_int il, lapack_int iu, T abstol,
+                 VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
+  return htebz('I', order, 0., 0., il, iu, abstol, d, e, m, nsplit, w, iblock, isplit);
+}
+
 ALIAS_TEMPLATE_FUNCTION(stebz, htebz);
 
 } // end namespace lapack

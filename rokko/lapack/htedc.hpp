@@ -18,6 +18,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <rokko/lapack/storage.hpp>
 #include <rokko/alias_template_function.hpp>
 
 namespace rokko {
@@ -77,6 +78,24 @@ lapack_int htedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
     throw std::invalid_argument("vector e size mismatch");
   return htedc_dispatch<value_t<MATRIX>>::
     htedc((is_col_major(z) ? LAPACK_COL_MAJOR : LAPACK_ROW_MAJOR), compz, n, d, e, z);
+}
+
+// eigenvalues & eigenvectors (without compz)
+template<typename MATRIX, typename VECTOR>
+lapack_int htedc(VECTOR& d, VECTOR& e, MATRIX& z) {
+  return htedc('I', d, e, z);
+}
+
+// only eigenvalues (without compz)
+template<typename VECTOR>
+lapack_int htedc(VECTOR& d, VECTOR& e) {
+  lapack_int n = size(d);
+
+  using T = value_t<VECTOR>;
+  constexpr null_matrix<T> z_null;
+
+  return htedc_dispatch<value_t<VECTOR>>::
+    htedc(LAPACK_COL_MAJOR, 'N', n, d, e, z_null);
 }
 
 ALIAS_TEMPLATE_FUNCTION(stedc, htedc);
