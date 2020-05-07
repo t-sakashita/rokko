@@ -13,6 +13,8 @@
 #define ROKKO_SCALAPACK_PSYEV_HPP
 
 #include <rokko/cscalapack.h>
+#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/value_t.hpp>
 
 namespace rokko {
 namespace scalapack {
@@ -34,6 +36,8 @@ inline int psyev_dispatch(char jobz, char uplo, int n, double* A, int ia, int ja
 
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
+
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
   return psyev_dispatch(jobz, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
@@ -42,6 +46,8 @@ int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work) {
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
+
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
   return psyev_dispatch(jobz, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
@@ -57,6 +63,8 @@ int psyev(char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 // only eigenvalues (without jobz)
 template<typename MATRIX, typename VECTOR>
 int psyev(char uplo, MATRIX& a, VECTOR& w) {
+  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
+
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   return psyev_dispatch('N', uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
                         storage(w), NULL, 0, 0, NULL);
