@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVR_HPP
-#define ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVR_HPP
+#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PSYEVR_HPP
+#define ROKKO_SCALAPACK_DIAGONALIZE_PSYEVR_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -27,7 +27,7 @@ namespace scalapack {
 
 // eigenvalues & eigenvectors
 template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
+parameters diagonalize_psyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			parameters const& params) {
   parameters params_out;
@@ -54,7 +54,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
 // only eigenvalues
 template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
+parameters diagonalize_psyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   parameters params_out;
@@ -82,4 +82,4 @@ parameters diagonalize_pdsyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 } // namespace scalapack
 } // namespace rokko
 
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_PDSYEVR_HPP
+#endif // ROKKO_SCALAPACK_DIAGONALIZE_PSYEVR_HPP

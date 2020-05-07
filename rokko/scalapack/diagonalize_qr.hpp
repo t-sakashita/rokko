@@ -16,7 +16,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
-#include <rokko/scalapack/diagonalize_pdsyevx.hpp>
+#include <rokko/scalapack/diagonalize_psyevx.hpp>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
@@ -35,7 +35,7 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_pdsyevx(mat, eigvals, eigvecs, params);
+  parameters params_out = diagonalize_psyevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (qr)" << std::endl;
@@ -55,7 +55,7 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_pdsyevx(mat, eigvals, params);
+  parameters params_out = diagonalize_psyevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (qr)" << std::endl;

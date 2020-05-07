@@ -16,7 +16,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
-#include <rokko/scalapack/diagonalize_pdsyevx.hpp>
+#include <rokko/scalapack/diagonalize_psyevx.hpp>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
@@ -38,7 +38,7 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
       throw std::invalid_argument(msg.str());
     }
   }
-  parameters params_out = diagonalize_pdsyevx(mat, eigvals, eigvecs, params);
+  parameters params_out = diagonalize_psyevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (bisection)" << std::endl;
@@ -61,7 +61,7 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
       throw std::invalid_argument(msg.str());
     }
   }
-  parameters params_out = diagonalize_pdsyevx(mat, eigvals, params);
+  parameters params_out = diagonalize_psyevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (bisection)" << std::endl;
