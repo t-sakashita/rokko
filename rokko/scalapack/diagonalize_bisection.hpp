@@ -24,13 +24,13 @@
 namespace rokko {
 namespace scalapack {
 
-// bisection (pdsyevx) eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_bisection(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+// bisection (pdsyevx) eigenvalues & eigenvectors
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<double>("abstol") < 0) {
+    if (params.get<T>("abstol") < 0) {
       std::stringstream msg;
       msg << "scalapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl
@@ -48,12 +48,12 @@ parameters diagonalize_bisection(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // bisection (pdsyevx) only eigenvalues
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_bisection(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<double>("abstol") < 0) {
+    if (params.get<T>("abstol") < 0) {
       std::stringstream msg;
       msg << "scalapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl

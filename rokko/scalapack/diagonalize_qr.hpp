@@ -24,13 +24,13 @@
 namespace rokko {
 namespace scalapack {
 
-// qr (pdsyevx) eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_qr(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+// qr (pdsyevx) eigenvalues & eigenvectors
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters params) {
   if (params.defined("abstol")) {
-    double abstol = params.get<double>("abstol");
+    T abstol = params.get<T>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
@@ -45,12 +45,12 @@ parameters diagonalize_qr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // qr (pdsyevx) only eigenvalues
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_qr(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters params) {
   if (params.defined("abstol")) {
-    double abstol = params.get<double>("abstol");
+    T abstol = params.get<T>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
