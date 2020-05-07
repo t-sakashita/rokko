@@ -26,13 +26,13 @@ namespace rokko {
 namespace scalapack {
 
 // eigenvalues & eigenvectors
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_pdsyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  double vl = 0, vu = 0;
+  T vl = 0, vu = 0;
   int il = 0, iu = 0;
   const char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
 
@@ -53,13 +53,13 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // only eigenvalues
-  template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_pdsyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  double vl = 0, vu = 0;
+  T vl = 0, vu = 0;
   int il = 0, iu = 0;
   const char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
   int m, nz;

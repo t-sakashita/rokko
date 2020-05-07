@@ -22,9 +22,9 @@ namespace rokko {
 namespace scalapack {
 
 // eigenvalues & eigenvectors
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			      VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_pdsyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			      VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
@@ -40,8 +40,8 @@ parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // only eigenvalues
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyev(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_pdsyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			      VEC& eigvals,
 			      parameters const& params) {
   parameters params_out;

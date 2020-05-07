@@ -25,21 +25,21 @@ namespace rokko {
 namespace scalapack {
 
 // eigenvalues & eigenvectors
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_pdsyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  double vl, vu;
+  T vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
-  double orfac = params.defined("orfac") ? params.get<double>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
+  T abstol = params.defined("abstol") ? params.get<T>("abstol") : cscalapack_pdlamch(ictxt, 'U');
+  T orfac = params.defined("orfac") ? params.get<T>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
-  std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
+  std::vector<T> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
   int info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,
@@ -59,21 +59,21 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // only eigenvalues
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize_pdsyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   rokko::parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  double vl, vu;
+  T vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
-  double orfac = params.defined("orfac") ? params.get<double>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
+  T abstol = params.defined("abstol") ? params.get<T>("abstol") : cscalapack_pdlamch(ictxt, 'U');
+  T orfac = params.defined("orfac") ? params.get<T>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
-  std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
+  std::vector<T> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
   int info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,
