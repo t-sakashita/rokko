@@ -13,7 +13,7 @@
 
 void test(int n, double total_sz) {
   std::vector<int> list1;
-  std::vector<std::pair<int, int> > list2;
+  std::vector<std::pair<int, int>> list2;
   int idim = sz(n, total_sz, list1, list2);
   std::cout << n << ' ' << total_sz << ' ' << idim << std::endl;
   int ihf = (n + 1) / 2;

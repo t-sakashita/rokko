@@ -17,7 +17,7 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
          std::vector<double> const& zrtio, int nvec, int iv, std::vector<double>& E,
          std::vector<double>& alpha, std::vector<double>& beta, matrix_type& coeff,
          matrix_type& wk, std::vector<int> const& list1,
-         std::vector<std::pair<int, int> > const& list2) {
+         std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   if (iv < 0 ||  iv >= idim) {
     std::cerr << " #(E06)# Incorrect iv given to lnc1\n";
@@ -37,7 +37,7 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
           std::vector<double> const& zrtio, int nvec, int iv, std::vector<double>& E,
           std::vector<double>& alpha, std::vector<double>& beta, matrix_type& coeff,
           double *v1, double *v0, std::vector<int> const& list1,
-          std::vector<std::pair<int, int> > const& list2) {
+          std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   std::vector<int> iblock, isplit;
   matrix_type work(150, 5);
@@ -108,7 +108,7 @@ void lncv1(int n, std::vector<int> const& ipair, std::vector<double> const& bond
            std::vector<double> const& zrtio, int nvec, int iv, std::vector<double> const& alpha,
            std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,
            int itr, matrix_type& wk, std::vector<int> const& list1,
-           std::vector<std::pair<int, int> > const& list2) {
+           std::vector<std::pair<int, int>> const& list2) {
   if (nvec <= 0 || nvec > 4) {
     std::cerr << " #(W08)# nvec given to lncv1 out of range\n";
     return;
@@ -123,7 +123,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
             std::vector<double> const& zrtio, int nvec, int iv, std::vector<double> const& alpha,
             std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,
             int itr, double *v1, double *v0, std::vector<int> const& list1,
-            std::vector<std::pair<int, int> > const& list2) {
+            std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   if (x.size1() != idim || x.size2() < nvec) x.resize(idim, nvec);
 
@@ -174,7 +174,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
 
 double mltply(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, double *v1, double *v0,
-              std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2) {
+              std::vector<int> const& list1, std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   int ibond = ipair.size() / 2;
 
@@ -217,7 +217,7 @@ double mltply(int n, std::vector<int> const& ipair, std::vector<double> const& b
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, const double *x,
               matrix_type& v, int vindex, std::vector<int> const& list1,
-              std::vector<std::pair<int, int> > const& list2) {
+              std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   int ibond = ipair.size() / 2;
   if (v.size1() != idim || v.size2() < vindex) v.resize(idim, vindex);
@@ -275,21 +275,21 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, matrix_type const& x, int xindex,
               matrix_type& v, int vindex, std::vector<int> const& list1,
-              std::vector<std::pair<int, int> > const& list2) {
+              std::vector<std::pair<int, int>> const& list2) {
   return check1(n, ipair, bondwt, zrtio, &x(0, xindex), v, vindex, list1, list2);
 }
 
 double check1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
               std::vector<double> const& zrtio, std::vector<double> const& x,
               matrix_type& v, int vindex, std::vector<int> const& list1,
-              std::vector<std::pair<int, int> > const& list2) {
+              std::vector<std::pair<int, int>> const& list2) {
   return check1(n, ipair, bondwt, zrtio, &x[0], v, vindex, list1, list2);
 }
 
 void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
           matrix_type& wk, std::vector<int> const& list1,
-          std::vector<std::pair<int, int> > const& list2) {
+          std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   if (wk.size1() != idim || wk.size2() < 4) wk.resize(idim, 4);
   inv1z(n, ipair, bondwt, zrtio, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3), list1, list2);
@@ -298,7 +298,7 @@ void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 void inv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
            std::vector<double> const& zrtio, double Eig, int iv, std::vector<double>& x,
            double *b, double *p, double *r, double *y, std::vector<int> const& list1,
-           std::vector<std::pair<int, int> > const& list2) {
+           std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   if (x.size() != idim) x.resize(idim);
   for (int i = 0; i < idim; ++i) b[i] = 0;
@@ -331,7 +331,7 @@ void inv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bond
 int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
         std::vector<double> const& zrtio, double Eig, std::vector<double>& x,
         double *b, double *p, double *r, double *y, std::vector<int> const& list1,
-        std::vector<std::pair<int, int> > const& list2) {
+        std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   int ibond = ipair.size() / 2;
 

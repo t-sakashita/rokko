@@ -38,7 +38,7 @@ int main() {
 
   // table of configurations
   std::vector<int> list1;
-  std::vector<std::pair<int, int> > list2;
+  std::vector<std::pair<int, int>> list2;
   int idim = sz(n, 0, list1, list2);
   // You may alternatively use szdy or sztn for faster processing
   //   int = szdy(n, 0, list1, list2);

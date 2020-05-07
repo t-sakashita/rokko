@@ -32,7 +32,7 @@
 
 void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, matrix_type& elemnt, i_matrix_type& loc,
-          std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2);
+          std::vector<int> const& list1, std::vector<std::pair<int, int>> const& list2);
 
 //
 // eigenvalues by the Lanczos method

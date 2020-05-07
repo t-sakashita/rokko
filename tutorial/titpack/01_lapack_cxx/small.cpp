@@ -18,7 +18,7 @@
 
 void elm3(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
           std::vector<double> const& zrtio, matrix_type& elemnt,
-          std::vector<int> const& list1, std::vector<std::pair<int, int> > const& list2) {
+          std::vector<int> const& list1, std::vector<std::pair<int, int>> const& list2) {
   int ihfbit = 1 << ((n+1)/2);
   int irght = ihfbit - 1;
   int ilft = ((1 << n) - 1) ^ irght;

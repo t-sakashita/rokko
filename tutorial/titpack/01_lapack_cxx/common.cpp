@@ -15,7 +15,7 @@
 #include <lapacke.h>
 #include <iostream>
 
-int sz(int n, double szval, std::vector<int>& list1, std::vector<std::pair<int, int> >& list2) {
+int sz(int n, double szval, std::vector<int>& list1, std::vector<std::pair<int, int>>& list2) {
   if (szval < -1e-13 || szval > (n/2 - 1 + 1e-13)) {
     std::cerr << " #(E01)# Variable szval given to sz out of range\n";
     std::abort();
@@ -101,7 +101,7 @@ void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, in
 
 void xcorr(int n, std::vector<int> const& npair, const double *x,
            std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::pair<int, int> >& list2) {
+           std::vector<std::pair<int, int>>& list2) {
   int idim = list1.size();
   int nbond = npair.size() / 2;
   int ihf = (n + 1) / 2;
@@ -133,13 +133,13 @@ void xcorr(int n, std::vector<int> const& npair, const double *x,
 
 void xcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
            std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::pair<int, int> >& list2) {
+           std::vector<std::pair<int, int>>& list2) {
   xcorr(n, npair, &x[0], sxx, list1, list2);
 }
 
 void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,
            std::vector<double>& sxx, std::vector<int>& list1,
-           std::vector<std::pair<int, int> >& list2) {
+           std::vector<std::pair<int, int>>& list2) {
   xcorr(n, npair, &x(0, xindex), sxx, list1, list2);
 }
 

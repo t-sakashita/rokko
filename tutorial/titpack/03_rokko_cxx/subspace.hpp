@@ -32,7 +32,7 @@ public:
 private:
   int n_, ihfbit_, irght_, ilft_;
   std::vector<int> list1_;
-  std::vector<std::pair<int, int> > list2_;
+  std::vector<std::pair<int, int>> list2_;
 };
 
 #endif
