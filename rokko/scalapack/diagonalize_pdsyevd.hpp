@@ -30,17 +30,15 @@ parameters diagonalize_pdsyevd(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
-  const char jobz = 'V';  // eigenvalues / eigenvectors
   const char uplow = lapack::get_matrix_part(params);
-  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
-  int info = cscalapack_pdsyevd(jobz, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0,
-                                desc, &eigvals[0], eigvecs.get_array_pointer(), 0, 0, desc);
+  int info = psyevd(uplow, mat, eigvals, eigvecs);
+
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info << std::endl;
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevd", jobz, uplow);
+    lapack::print_verbose("pdsyevd", 'V', uplow);
   }
   return params_out;
 }

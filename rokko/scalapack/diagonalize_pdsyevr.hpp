@@ -16,6 +16,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
+#include <rokko/scalapack/psyevr.hpp>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
@@ -30,16 +31,15 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			parameters const& params) {
   parameters params_out;
-  const char jobz = 'V';  // eigenvalues / eigenvectors
   const char uplow = lapack::get_matrix_part(params);
   double vl = 0, vu = 0;
   int il = 0, iu = 0;
   const char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
-  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
+
   int m, nz;
-  int info = cscalapack_pdsyevr(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
-                           vl, vu, il, iu, &m, &nz,
-                           &eigvals[0], eigvecs.get_array_pointer(), 0, 0, desc);
+  int info = psyevr(range, uplow, mat,
+                    vl, vu, il, iu, m, nz,
+                    eigvals, eigvecs);
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
   }
@@ -47,7 +47,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   params_out.set("m", m);
   params_out.set("nz", nz);
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("pdsyevr", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }
@@ -58,16 +58,14 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   parameters params_out;
-  const char jobz = 'N';  // only eigenvalues
   const char uplow = lapack::get_matrix_part(params);
   double vl = 0, vu = 0;
   int il = 0, iu = 0;
   const char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
-  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
   int m, nz;
-  int info = cscalapack_pdsyevr(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc,
-		       vl, vu, il, iu, &m, &nz,
-		       &eigvals[0], NULL, 0, 0, desc);
+  int info = psyevr(range, uplow, mat,
+                    vl, vu, il, iu, m, nz,
+                    eigvals);
 
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
@@ -76,7 +74,7 @@ parameters diagonalize_pdsyevr(distributed_matrix<double, MATRIX_MAJOR>& mat,
   params_out.set("m", m);
   params_out.set("nz", nz);
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevr", jobz, range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("pdsyevr", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }

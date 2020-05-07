@@ -16,6 +16,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/diagonalize_get_parameters.hpp>
+#include <rokko/scalapack/psyevx.hpp>
 #include <rokko/utility/timer.hpp>
 
 #include <mpi.h>
@@ -29,23 +30,22 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
-  const char jobz = 'V';  // eigenvalues / eigenvectors
   const char uplow = lapack::get_matrix_part(params);
   double vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   double orfac = params.defined("orfac") ? params.get<double>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
-  int info = cscalapack_pdsyevx(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc, vl, vu, il, iu,
-		       abstol, &m, &nz, &eigvals[0], orfac,
-		       eigvecs.get_array_pointer(), 0, 0, desc,
-		       ifail.data(), iclustr.data(), gap.data());
+  int info = psyevx(range, uplow, mat,
+                    vl, vu, il, iu,
+                    abstol, m, nz,
+                    eigvals, orfac, eigvecs,
+                    ifail.data(), iclustr.data(), gap.data());
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
@@ -53,7 +53,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   params_out.set("iclustr", iclustr);
   params_out.set("gap", gap);
   if (params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("pdsyevx", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }
@@ -64,23 +64,21 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   rokko::parameters params_out;
-  const char jobz = 'N';  // only eigenvalues
   const char uplow = lapack::get_matrix_part(params);
   double vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  const int* desc = mat.get_mapping().get_blacs_descriptor().data();
   double abstol = params.defined("abstol") ? params.get<double>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   double orfac = params.defined("orfac") ? params.get<double>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<double> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
-  int info = cscalapack_pdsyevx(jobz, range, uplow, mat.get_m_global(), mat.get_array_pointer(), 0, 0, desc, vl, vu, il, iu,
-		       abstol, &m, &nz, &eigvals[0], orfac,
-		       NULL, 0, 0, desc,
-		       ifail.data(), iclustr.data(), gap.data());
+  int info = psyevx(range, uplow, mat,
+                    vl, vu, il, iu,
+                    abstol, m, nz, eigvals, orfac,
+                    ifail.data(), iclustr.data(), gap.data());
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
@@ -88,7 +86,7 @@ parameters diagonalize_pdsyevx(distributed_matrix<double, MATRIX_MAJOR>& mat,
   params_out.set("iclustr", iclustr);
   params_out.set("gap", gap);
   if (params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("pdsyevx", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }
