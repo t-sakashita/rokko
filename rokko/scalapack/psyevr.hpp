@@ -56,7 +56,7 @@ inline int psyevr_dispatch(char jobz, char range, char uplo, int n, double* A, i
 template<typename T, typename MATRIX, typename VECTOR>
 int psyevr(char jobz, char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
-           int* m, int* nz,
+           int& m, int& nz,
            VECTOR& w, MATRIX& z) {
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -68,7 +68,7 @@ int psyevr(char jobz, char range, char uplo, MATRIX& a,
 template<typename T, typename MATRIX, typename VECTOR0, typename VECTOR1>
 int psyevr(char jobz, char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
-           int* m, int* nz,
+           int& m, int& nz,
            VECTOR0& w, MATRIX& z, VECTOR0& work, VECTOR1& iwork) {
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
