@@ -89,6 +89,38 @@ int psyevr(char range, char uplo, MATRIX& a,
                 w, z);
 }
 
+// eigenvalues & eigenvectors, use all (without jobz, range, vl, vu, il, iu)
+template<typename T, typename MATRIX, typename VECTOR>
+int psyevr(char uplo, MATRIX& a,
+           int& m, int& nz,
+           VECTOR& w, MATRIX& z) {
+  return psyevr('A', uplo, a,
+                m, nz,
+                w, z);
+}
+
+// eigenvalues & eigenvectors, use vl, vu (without jobz, range, il, iu)
+template<typename T, typename MATRIX, typename VECTOR>
+int psyevr(char uplo, MATRIX& a,
+           T vl, T vu,
+           int& m, int& nz,
+           VECTOR& w, MATRIX& z) {
+  return psyevr('V', uplo, a,
+                vl, vu, 0, 0, m, nz,
+                w, z);
+}
+
+// eigenvalues & eigenvectors, use il, iu (without jobz, range, vl, vu)
+template<typename T, typename MATRIX, typename VECTOR>
+int psyevr(char uplo, MATRIX& a,
+           int il, int iu,
+           int& m, int& nz,
+           VECTOR& w, MATRIX& z) {
+  return psyevr('I', uplo, a,
+                0., 0., il, iu, m, nz,
+                w, z);
+}
+
 // only eigenvalues (without jobz)
 template<typename T, typename MATRIX, typename VECTOR>
 int psyevr(char range, char uplo, MATRIX& a,
@@ -99,6 +131,38 @@ int psyevr(char range, char uplo, MATRIX& a,
   return psyevr_dispatch('N', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
                          vl, vu, il, iu, m, nz,
                          storage(w), NULL, 0, 0, NULL);
+}
+
+// only eigenvalues, use all (without jobz, range, vl, vu, il, iu)
+template<typename T, typename MATRIX, typename VECTOR>
+int psyevr(char uplo, MATRIX& a,
+           int& m, int& nz,
+           VECTOR& w) {
+  return psyevr('A', uplo, a,
+                m, nz,
+                w);
+}
+
+// only eigenvalues, use vl, vu (without jobz, range, il, iu)
+template<typename T, typename MATRIX, typename VECTOR>
+int psyevr(char uplo, MATRIX& a,
+           T vl, T vu,
+           int& m, int& nz,
+           VECTOR& w) {
+  return psyevr('V', uplo, a,
+                vl, vu, 0, 0, m, nz,
+                w);
+}
+
+// only eigenvalues, use il, iu (without jobz, range, vl, vu)
+template<typename T, typename MATRIX, typename VECTOR>
+int psyevr(char uplo, MATRIX& a,
+           int il, int iu,
+           int& m, int& nz,
+           VECTOR& w) {
+  return psyevr('I', uplo, a,
+                0., 0., il, iu, m, nz,
+                w);
 }
 
 } // end namespace scalapack

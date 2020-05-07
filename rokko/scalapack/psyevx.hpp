@@ -107,6 +107,44 @@ int psyevx(char range, char uplo, MATRIX& a,
                 ifail, iclustr, gap);
 }
 
+// eigenvalues & eigenvectors, use all (without jobz, range, vl, vu, il, iu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
+int psyevx(char uplo, MATRIX& a,
+           T abstol, int& m, int& nz,
+           VECTOR& w, T orfac, MATRIX& z,
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  return psyevx('A', uplo, a,
+                0., 0., 0, 0, abstol, m, nz,
+                w, orfac, z,
+                ifail, iclustr, gap);
+}
+
+// eigenvalues & eigenvectors, use vl, vu (without jobz, range, il, iu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
+int psyevx(char uplo, MATRIX& a,
+           T vl, T vu,
+           T abstol, int& m, int& nz,
+           VECTOR& w, T orfac, MATRIX& z,
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  return psyevx('V', uplo, a,
+                vl, vu, 0, 0, abstol, m, nz,
+                w, orfac, z,
+                ifail, iclustr, gap);
+}
+
+// eigenvalues & eigenvectors, use il, iu (without jobz, range, vl, vu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
+int psyevx(char uplo, MATRIX& a,
+           int il, int iu,
+           T abstol, int& m, int& nz,
+           VECTOR& w, T orfac, MATRIX& z,
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  return psyevx('I', uplo, a,
+                0., 0., il, iu, abstol, m, nz,
+                w, orfac, z,
+                ifail, iclustr, gap);
+}
+
 // only eigenvalues (without jobz)
 template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
 int psyevx(char range, char uplo, MATRIX& a,
@@ -119,6 +157,44 @@ int psyevx(char range, char uplo, MATRIX& a,
                          vl, vu, il, iu, abstol, m, nz,
                          storage(w), orfac, NULL, 0, 0, NULL,
                          storage(ifail), storage(iclustr), storage(gap));
+}
+
+// only eigenvalues, use all (without jobz, range, vl, vu, il, iu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
+int psyevx(char uplo, MATRIX& a,
+           T abstol, int& m, int& nz,
+           VECTOR& w, T orfac,
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  return psyevx('A', uplo, a,
+                0., 0., 0, 0, abstol, m, nz,
+                w, orfac,
+                ifail, iclustr, gap);
+}
+
+// only eigenvalues, use vl, vu (without jobz, range, il, iu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
+int psyevx(char uplo, MATRIX& a,
+           T vl, T vu,
+           T abstol, int& m, int& nz,
+           VECTOR& w, T orfac,
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  return psyevx('V', uplo, a,
+                vl, vu, 0, 0, abstol, m, nz,
+                w, orfac,
+                ifail, iclustr, gap);
+}
+
+// only eigenvalues, use il, iu (without jobz, range, vl, vu)
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
+int psyevx(char uplo, MATRIX& a,
+           int il, int iu,
+           T abstol, int& m, int& nz,
+           VECTOR& w, T orfac,
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  return psyevx('I', uplo, a,
+                0., 0., il, iu, abstol, m, nz,
+                w, orfac,
+                ifail, iclustr, gap);
 }
 
 } // end namespace scalapack
