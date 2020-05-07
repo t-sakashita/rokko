@@ -13,9 +13,13 @@
 #define ROKKO_SCALAPACK_PSYEVX_HPP
 
 #include <rokko/cscalapack.h>
+#include <rokko/eigen3.hpp>
+#include <rokko/lapack/storage.hpp>
 
 namespace rokko {
 namespace scalapack {
+
+using rokko::lapack::storage;
 
 namespace {
 
@@ -61,42 +65,42 @@ inline int psyevx_dispatch(char jobz, char range, char uplo, int n, double* A, i
 
 } // end of anonymous namespace
 
-template<typename T, typename MATRIX, typename VECTOR>
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
 int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            T abstol, int& m, int& nz,
            VECTOR& w, double orfac, MATRIX& z,
-           int* ifail, int* iclustr, double* gap) {
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
   return psyevx_dispatch(jobz, range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
                          vl, vu, il, iu, abstol, m, nz,
                          storage(w), orfac, z.get_array_pointer(), 0, 0, descZ,
-                         ifail, iclustr, gap);
+                         storage(ifail), storage(iclustr), storage(gap));
 }
 
-template<typename T, typename MATRIX, typename VECTOR0, typename VECTOR1>
+template<typename T, typename MATRIX, typename VECTOR0, typename VECTOR1, typename VECTOR_INT, typename VECTOR2>
 int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            T abstol, int& m, int& nz,
            VECTOR0& w, double orfac, MATRIX& z, VECTOR0& work, VECTOR1& iwork,
-           int* ifail, int* iclustr, double* gap) {
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
   return psyevx_dispatch(jobz, range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
                          vl, vu, il, iu, abstol, m, nz,
                          storage(w), orfac, z.get_array_pointer(), 0, 0, descZ,
                          storage(work), work.size(), storage(iwork), iwork.size(),
-                         ifail, iclustr, gap);
+                         storage(ifail), storage(iclustr), storage(gap));
 }
 
 // eigenvalues & eigenvectors (without jobz)
-template<typename T, typename MATRIX, typename VECTOR>
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
 int psyevx(char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac, MATRIX& z,
-           int* ifail, int* iclustr, T* gap) {
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
   return psyevx('V', range, uplo, a,
                 vl, vu, il, iu, abstol, m, nz,
                 w, orfac, z,
@@ -104,17 +108,17 @@ int psyevx(char range, char uplo, MATRIX& a,
 }
 
 // only eigenvalues (without jobz)
-template<typename T, typename MATRIX, typename VECTOR>
+template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT, typename VECTOR2>
 int psyevx(char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac,
-           int* ifail, int* iclustr, T* gap) {
+           VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   return psyevx_dispatch('N', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
                          vl, vu, il, iu, abstol, m, nz,
                          storage(w), orfac, NULL, 0, 0, NULL,
-                         ifail, iclustr, gap);
+                         storage(ifail), storage(iclustr), storage(gap));
 }
 
 } // end namespace scalapack

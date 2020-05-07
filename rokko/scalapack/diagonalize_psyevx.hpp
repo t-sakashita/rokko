@@ -45,7 +45,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
                     vl, vu, il, iu,
                     abstol, m, nz,
                     eigvals, orfac, eigvecs,
-                    ifail.data(), iclustr.data(), gap.data());
+                    ifail, iclustr, gap);
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
@@ -78,7 +78,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
   int info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,
                     abstol, m, nz, eigvals, orfac,
-                    ifail.data(), iclustr.data(), gap.data());
+                    ifail, iclustr, gap);
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
