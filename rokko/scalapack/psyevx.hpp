@@ -97,12 +97,10 @@ int psyevx(char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac, MATRIX& z,
            int* ifail, int* iclustr, T* gap) {
-  const int* descA = a.get_mapping().get_blacs_descriptor().data();
-  const int* descZ = z.get_mapping().get_blacs_descriptor().data();
-  return psyevx_dispatch('V', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
-                         vl, vu, il, iu, abstol, m, nz,
-                         storage(w), orfac, z.get_array_pointer(), 0, 0, descZ,
-                         ifail, iclustr, gap);
+  return psyevx('V', range, uplo, a,
+                vl, vu, il, iu, abstol, m, nz,
+                w, orfac, z,
+                ifail, iclustr, gap);
 }
 
 // only eigenvalues (without jobz)
