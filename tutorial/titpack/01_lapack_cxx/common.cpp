@@ -83,8 +83,8 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
   if (iblock.size() < ndim) iblock.resize(ndim);
   if (isplit.size() < ndim) isplit.resize(ndim);
   int m, nsplit;
-  int info = LAPACKE_dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, &alpha[0], &beta[0],
-                            &m, &nsplit, &w[0], &iblock[0], &isplit[0]);
+  int info = LAPACKE_dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, alpha.data(), beta.data(),
+                            &m, &nsplit, w.data(), iblock.data(), isplit.data());
   for (int i = 0; i < ne; ++i) E[i] = w[i];
   return std::make_tuple(m, nsplit);
 }
@@ -95,8 +95,8 @@ void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, in
   if (z.size1() != ndim || z.size2() < nvec) z.resize(ndim, nvec);
   for (int i = 0; i < nvec; ++i) w[i] = E[i];
   std::vector<int> ifail(nvec);
-  int info = LAPACKE_dstein(LAPACK_COL_MAJOR, ndim, &alpha[0], &beta[0], nvec, w, &iblock[0],
-                            &isplit[0], &z(0,0), ndim, &ifail[0]);
+  int info = LAPACKE_dstein(LAPACK_COL_MAJOR, ndim, alpha.data(), beta.data(), nvec, w, iblock.data(),
+                            isplit.data(), &z(0,0), ndim, ifail.data());
 }
 
 void xcorr(int n, std::vector<int> const& npair, const double *x,
@@ -134,7 +134,7 @@ void xcorr(int n, std::vector<int> const& npair, const double *x,
 void xcorr(int n, std::vector<int> const& npair, std::vector<double> const& x,
            std::vector<double>& sxx, std::vector<int>& list1,
            std::vector<std::pair<int, int>>& list2) {
-  xcorr(n, npair, &x[0], sxx, list1, list2);
+  xcorr(n, npair, x.data(), sxx, list1, list2);
 }
 
 void xcorr(int n, std::vector<int> const& npair, matrix_type const& x, int xindex,

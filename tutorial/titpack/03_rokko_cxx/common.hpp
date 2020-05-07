@@ -90,7 +90,7 @@ void zcorr_mpi(subspace const& ss, std::vector<int> const& npair,
       szz_local[k] = corr / 4;
     }
   }
-  MPI_Reduce(&szz_local[0], &szz[0], nbond, MPI_DOUBLE, MPI_SUM, 0, x.get_grid().get_comm());
+  MPI_Reduce(szz_local.data(), szz.data(), nbond, MPI_DOUBLE, MPI_SUM, 0, x.get_grid().get_comm());
 }
 
 //

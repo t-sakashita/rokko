@@ -192,7 +192,7 @@ double check2(crs_matrix const& mat, matrix_type const& x, int xindex,
 
 double check2(crs_matrix const& mat, std::vector<double> const& x,
               matrix_type& v, int vindex) {
-  return check2(mat, &x[0], v, vindex);
+  return check2(mat, x.data(), v, vindex);
 }
 
 void inv2(crs_matrix const& mat, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {

@@ -293,7 +293,7 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, matrix_type c
 
 double check2(matrix_type const& elemnt, i_matrix_type const& loc, std::vector<double> const& x,
               matrix_type& v, int vindex) {
-  return check2(elemnt, loc, &x[0], v, vindex);
+  return check2(elemnt, loc, x.data(), v, vindex);
 }
 
 void inv2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int iv,

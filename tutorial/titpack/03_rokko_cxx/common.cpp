@@ -37,5 +37,5 @@ void xcorr(subspace const& ss, std::vector<int> const& npair, const double *x,
 
 void xcorr(subspace const& ss, std::vector<int> const& npair, std::vector<double> const& x,
            std::vector<double>& sxx) {
-  xcorr(ss, npair, &x[0], sxx);
+  xcorr(ss, npair, x.data(), sxx);
 }

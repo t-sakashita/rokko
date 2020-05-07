@@ -50,7 +50,7 @@ void diag(matrix_type& elemnt, std::vector<double>& E, matrix_type& v, int nvec)
   }
   int idim = elemnt.size1();
   if (E.size() < idim) E.resize(idim);
-  int info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', idim, &elemnt(0,0), idim, &E[0]);
+  int info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', idim, &elemnt(0,0), idim, E.data());
 
   if (v.size1() != idim || v.size2() < nvec) v.resize(idim, nvec);
   for (int j = 0; j < nvec; ++j)

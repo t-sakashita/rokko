@@ -194,7 +194,7 @@ double check1(hamiltonian const& hop, matrix_type const& x, int xindex, matrix_t
 }
 
 double check1(hamiltonian const& hop, std::vector<double> const& x, matrix_type& v, int vindex) {
-  return check1(hop, &x[0], v, vindex);
+  return check1(hop, x.data(), v, vindex);
 }
 
 void inv1(hamiltonian const& hop, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {

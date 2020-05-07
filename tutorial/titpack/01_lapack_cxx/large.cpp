@@ -283,7 +283,7 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
               std::vector<double> const& zrtio, std::vector<double> const& x,
               matrix_type& v, int vindex, std::vector<int> const& list1,
               std::vector<std::pair<int, int>> const& list2) {
-  return check1(n, ipair, bondwt, zrtio, &x[0], v, vindex, list1, list2);
+  return check1(n, ipair, bondwt, zrtio, x.data(), v, vindex, list1, list2);
 }
 
 void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
