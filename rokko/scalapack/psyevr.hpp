@@ -84,11 +84,9 @@ int psyevr(char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            int& m, int& nz,
            VECTOR& w, MATRIX& z) {
-  const int* descA = a.get_mapping().get_blacs_descriptor().data();
-  const int* descZ = z.get_mapping().get_blacs_descriptor().data();
-  return psyevr_dispatch('V', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
-                         vl, vu, il, iu, m, nz,
-                         storage(w), z.get_array_pointer(), 0, 0, descZ);
+  return psyevr('V', range, uplo, a,
+                vl, vu, il, iu, m, nz,
+                w, z);
 }
 
 // only eigenvalues (without jobz)
