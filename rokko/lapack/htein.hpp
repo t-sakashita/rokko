@@ -90,8 +90,10 @@ lapack_int htein(VECTOR& d, VECTOR& e, lapack_int m, VECTOR& w, MATRIX& z,
                  const VECTOR_INT& iblock, const VECTOR_INT& isplit, VECTOR_INT& ifailv) {
   BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int n = size(d);
-  if (rows(z) != cols(z))
-    throw std::invalid_argument("matrix Z size mismatch");
+  if (rows(z) != n)
+    throw std::invalid_argument("matrix Z row size mismatch");
+  if (cols(z) < m)
+    throw std::invalid_argument("matrix Z col size mismatch");
   if (size(d) != n)
     throw std::invalid_argument("vector d size mismatch");
   if (size(e) != (n-1))
