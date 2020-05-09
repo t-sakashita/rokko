@@ -90,6 +90,11 @@ if(BUILD_PARALLEL_SPARSE_SOLVER)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} mapping_1d.F90 rokko_parallel_sparse.F90 parallel_sparse_ev.F90 distributed_crs_matrix.F90 distributed_mfree.F90 distributed_mfree_f.cpp)
   endif(BUILD_Fortran_BINDING)
 
+  # original Lanczos
+  if(BUILD_SHARED_LIBS)
+    set(ROKKO_SOURCES ${ROKKO_SOURCES} original/original.cpp)
+  endif(BUILD_SHARED_LIBS)
+
   # SLEPc
   if(ROKKO_HAVE_SLEPC)
     if(BUILD_SHARED_LIBS)
