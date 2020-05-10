@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -133,6 +133,11 @@ void SCALAPACK_pssyevx(const char* jobz, const char* range, const char* uplo, co
                        float* Z, const int* iZ, const int* jZ, const int* descZ,
                        float* work, const int* lwork, int* iwork, const int* liwork,
                        int* ifail, int* iclustr, float* gap, int* info);
+
+#define SCALAPACK_pdstedc ROKKO_GLOBAL(pdstedc,PDSTEDC)
+void SCALAPACK_pdstedc(const char* compz, const int* n, double* d, double* e,
+                       double* Q, const int* iq, const int* jq, const int* descQ,
+                       double* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
 #ifdef __cplusplus
 }

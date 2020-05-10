@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2017-2019 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2017-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -55,5 +55,7 @@ int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 #include "scalapack/plange.hpp"
 #include "scalapack/psyev.hpp"
 #include "scalapack/psyevd.hpp"
+
+#include "scalapack/pstedc.hpp"
 
 #endif // ROKKO_SCALAPACK_HPP
