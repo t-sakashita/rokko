@@ -153,6 +153,28 @@ int cscalapack_pssyevx(char jobz, char range, char uplo, int n,
                        float* Z, int iZ, int jZ, const int* descZ,
                        int* ifail, int* iclustr, float* gap);
 
+int cscalapack_pdstebz(int ictxt, char range, char order, int n,
+                       double vl, double vu, int il, int iu,
+                       double abstol, const double* d, const double* e, int* m, int* nsplit,
+                       double* w, int* iblock, int* isplit);
+
+int cscalapack_pdstebz_work(int ictxt, char range, char order, int n,
+                            double vl, double vu, int il, int iu,
+                            double abstol, const double* d, const double* e, int* m, int* nsplit,
+                            double* w, int* iblock, int* isplit,
+                            double* work, int lwork, int* iwork, int liwork);
+
+int cscalapack_pdstein(int n, const double* d, const double* e, int m,
+                       double* w, const int* iblock, const int* isplit, double orfac,
+                       double* Z, const int* iZ, const int* jZ, const int* descZ,
+                       int* ifail, int* iclustr, double* gap);
+
+int cscalapack_pdstein_work(int n, const double* d, const double* e, int m,
+                            double* w, const int* iblock, const int* isplit, double orfac,
+                            double* Z, const int* iZ, const int* jZ, const int* descZ,
+                            double* work, int lwork, int* iwork, int liwork,
+                            int* ifail, int* iclustr, double* gap);
+
 int cscalapack_pdstedc(char compz, int n, double* d, double* e,
                        double* Q, int iq, int jq, const int* descQ);
 

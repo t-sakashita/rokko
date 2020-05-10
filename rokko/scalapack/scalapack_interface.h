@@ -134,6 +134,20 @@ void SCALAPACK_pssyevx(const char* jobz, const char* range, const char* uplo, co
                        float* work, const int* lwork, int* iwork, const int* liwork,
                        int* ifail, int* iclustr, float* gap, int* info);
 
+#define SCALAPACK_pdstebz ROKKO_GLOBAL(pdstebz,PDSTEBZ)
+void SCALAPACK_pdstebz(const int* ictxt, const char* range, const char* order, const int* n,
+                       const double* vl, const double* vu, const int* il, const int* iu,
+                       const double* abstol, const double* d, const double* e, int* m, int* nsplit,
+                       double* w, int* iblock, int* isplit,
+                       double* work, const int* lwork, int* iwork, const int* liwork, int* info);
+
+#define SCALAPACK_pdstein ROKKO_GLOBAL(pdstein,PDSTEIN)
+void SCALAPACK_pdstein(const int* n, const double* d, const double* e, const int* m,
+                       double* w, const int* iblock, const int* isplit, const double* orfac,
+                       double* Z, const int* iZ, const int* jZ, const int* descZ,
+                       double* work, const int* lwork, int* iwork, const int* liwork,
+                       int* ifail, int* iclustr, double* gap, int* info);
+
 #define SCALAPACK_pdstedc ROKKO_GLOBAL(pdstedc,PDSTEDC)
 void SCALAPACK_pdstedc(const char* compz, const int* n, double* d, double* e,
                        double* Q, const int* iq, const int* jq, const int* descQ,

@@ -56,6 +56,8 @@ int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 #include "scalapack/psyev.hpp"
 #include "scalapack/psyevd.hpp"
 
+#include "scalapack/pstebz.hpp"
+#include "scalapack/pstein.hpp"
 #include "scalapack/pstedc.hpp"
 
 #endif // ROKKO_SCALAPACK_HPP
