@@ -13,6 +13,7 @@
 #define ROKKO_CSCALAPACK_H
 
 #include <rokko/config.h>
+#include <lapacke.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,16 +40,6 @@ double cscalapack_pdlange_work(char norm, int m, int n, const double* A, const i
 void cscalapack_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA,
                          int irprnt, int icprnt, const char* cmatnm, int nout, double* work);
 
-int cscalapack_pdsyev_work(char jobz, char uplo, int n,
-                           double* A, int ia, int ja, const int* descA,
-                           double* w, double* Z, int iz, int jz, const int* descZ,
-                           double* work, int lwork);
-
-int cscalapack_pdsyevd_work(char jobz, char uplo, int n,
-                            double* A, int ia, int ja, const int* descA,
-                            double* w, double* Z, int iz, int jz, const int* descZ,
-                            double* work, int lwork, int* iwork, int liwork);
-
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pdsyevr_work(char jobz, char range, char uplo, int n,
                             double* A, int ia, int ja, const int* descA,
@@ -66,13 +57,55 @@ int cscalapack_pdsyevx_work(char jobz, char range, char uplo, int n,
                             double* work, int lwork, int* iwork, int liwork,
                             int* ifail, int* iclustr, double* gap);
 
-int cscalapack_pdsyev(char jobz, char uplo, int n,
-                      double* A, int ia, int ja, const int* descA,
-                      double* w, double* Z, int iz, int jz, const int* descZ);
+#define CSCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE) \
+int cscalapack_ ## NAMES ## _work (char jobz, char uplo, int n, \
+                                   TYPE* A, int ia, int ja, const int* descA, \
+                                   TYPE* w, TYPE* Z, int iz, int jz, const int* descZ, \
+                                   TYPE* work, int lwork); \
+int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
+                          TYPE* A, int ia, int ja, const int* descA, \
+                          TYPE* w, TYPE* Z, int iz, int jz, const int* descZ);
 
-int cscalapack_pdsyevd(char jobz, char uplo, int n,
-                       double* A, int ia, int ja, const int* descA,
-                       double* w, double* Z, int iz, int jz, const int* descZ);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+CSCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float);
+CSCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double);
+CSCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float);
+CSCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double);
+
+#ifdef __cplusplus
+}
+#endif
+
+#undef CSCALAPACK_PSYEV_DECL
+
+
+#define CSCALAPACK_PSYEVD_DECL(NAMES, NAMEL, TYPE) \
+int cscalapack_ ## NAMES ## _work (char jobz, char uplo, int n, \
+                                   TYPE* A, int ia, int ja, const int* descA, \
+                                   TYPE* w, TYPE* Z, int iz, int jz, const int* descZ, \
+                                   TYPE* work, int lwork, int* iwork, int liwork); \
+int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
+                          TYPE* A, int ia, int ja, const int* descA, \
+                          TYPE* w, TYPE* Z, int iz, int jz, const int* descZ);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+CSCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float);
+CSCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double);
+CSCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float);
+CSCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
+
+#ifdef __cplusplus
+}
+#endif
+
+#undef CSCALAPACK_PSYEVD_DECL
+
 
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pdsyevr(char jobz, char range, char uplo, int n,
@@ -103,16 +136,6 @@ float cscalapack_pslange_work(char norm, int m, int n, const float* A, const int
 void cscalapack_pslaprnt(int m, int n, const float* A, int ia, int ja, const int* descA,
                          int irprnt, int icprnt, const char* cmatnm, int nout, float* work);
 
-int cscalapack_pssyev_work(char jobz, char uplo, int n,
-                           float* A, int ia, int ja, const int* descA,
-                           float* w, float* Z, int iz, int jz, const int* descZ,
-                           float* work, int lwork);
-
-int cscalapack_pssyevd_work(char jobz, char uplo, int n,
-                            float* A, int ia, int ja, const int* descA,
-                            float* w, float* Z, int iz, int jz, const int* descZ,
-                            float* work, int lwork, int* iwork, int liwork);
-
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pssyevr_work(char jobz, char range, char uplo, int n,
                             float* A, int ia, int ja, const int* descA,
@@ -129,14 +152,6 @@ int cscalapack_pssyevx_work(char jobz, char range, char uplo, int n,
                             float* Z, int iZ, int jZ, const int* descZ,
                             float* work, int lwork, int* iwork, int liwork,
                             int* ifail, int* iclustr, float* gap);
-
-int cscalapack_pssyev(char jobz, char uplo, int n,
-                      float* A, int ia, int ja, const int* descA,
-                      float* w, float* Z, int iz, int jz, const int* descZ);
-
-int cscalapack_pssyevd(char jobz, char uplo, int n,
-                       float* A, int ia, int ja, const int* descA,
-                       float* w, float* Z, int iz, int jz, const int* descZ);
 
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pssyevr(char jobz, char range, char uplo, int n,
