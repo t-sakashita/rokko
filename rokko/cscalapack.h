@@ -165,16 +165,22 @@ float cscalapack_pslange_work(char norm, int m, int n, const float* A, const int
 void cscalapack_pslaprnt(int m, int n, const float* A, int ia, int ja, const int* descA,
                          int irprnt, int icprnt, const char* cmatnm, int nout, float* work);
 
-int cscalapack_pdstebz(int ictxt, char range, char order, int n,
-                       double vl, double vu, int il, int iu,
-                       double abstol, const double* d, const double* e, int* m, int* nsplit,
-                       double* w, int* iblock, int* isplit);
+#define CSCALAPACK_PSTEBZ_DECL(NAMES, NAMEL, TYPE) \
+int cscalapack_## NAMES ##_work(int ictxt, char range, char order, int n, \
+                                TYPE vl, TYPE vu, int il, int iu, \
+                                TYPE abstol, const TYPE* d, const TYPE* e, int* m, int* nsplit, \
+                                TYPE* w, int* iblock, int* isplit, \
+                                TYPE* work, int lwork, int* iwork, int liwork); \
+int cscalapack_## NAMES (int ictxt, char range, char order, int n, \
+                         TYPE vl, TYPE vu, int il, int iu, \
+                         TYPE abstol, const TYPE* d, const TYPE* e, int* m, int* nsplit, \
+                         TYPE* w, int* iblock, int* isplit);
 
-int cscalapack_pdstebz_work(int ictxt, char range, char order, int n,
-                            double vl, double vu, int il, int iu,
-                            double abstol, const double* d, const double* e, int* m, int* nsplit,
-                            double* w, int* iblock, int* isplit,
-                            double* work, int lwork, int* iwork, int liwork);
+CSCALAPACK_PSTEBZ_DECL(psstebz, PSSTEBZ, float);
+CSCALAPACK_PSTEBZ_DECL(pdstebz, PDSTEBZ, double);
+
+#undef CSCALAPACK_PSTEBZ_DECL
+
 
 int cscalapack_pdstein(int n, const double* d, const double* e, int m,
                        double* w, const int* iblock, const int* isplit, double orfac,

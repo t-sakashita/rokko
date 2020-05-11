@@ -165,12 +165,19 @@ void SCALAPACK_pslaprnt(const int* m, const int* n, const float* A, const int* i
                         const int* descA, const int* irprnt, const int* icprnt, const char* cmatnm,
                         const int* nout, float* work);
 
-#define SCALAPACK_pdstebz ROKKO_GLOBAL(pdstebz,PDSTEBZ)
-void SCALAPACK_pdstebz(const int* ictxt, const char* range, const char* order, const int* n,
-                       const double* vl, const double* vu, const int* il, const int* iu,
-                       const double* abstol, const double* d, const double* e, int* m, int* nsplit,
-                       double* w, int* iblock, int* isplit,
-                       double* work, const int* lwork, int* iwork, const int* liwork, int* info);
+
+#define SCALAPACK_PSTEBZ_DECL(NAMES, NAMEL, TYPE) \
+void ROKKO_GLOBAL(NAMES, NAMEL) (const int* ictxt, const char* range, const char* order, const int* n, \
+                                 const TYPE* vl, const TYPE* vu, const int* il, const int* iu, \
+                                 const TYPE* abstol, const TYPE* d, const TYPE* e, int* m, int* nsplit, \
+                                 TYPE* w, int* iblock, int* isplit, \
+                                 TYPE* work, const int* lwork, int* iwork, const int* liwork, int* info);
+
+SCALAPACK_PSTEBZ_DECL(psstebz, PSSTEBZ, float);
+SCALAPACK_PSTEBZ_DECL(pdstebz, PDSTEBZ, double);
+
+#undef SCALAPACK_PSTEBZ_DECL
+
 
 #define SCALAPACK_pdstein ROKKO_GLOBAL(pdstein,PDSTEIN)
 void SCALAPACK_pdstein(const int* n, const double* d, const double* e, const int* m,
