@@ -49,18 +49,10 @@ int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
                           TYPE* A, int ia, int ja, const int* descA, \
                           TYPE* w, TYPE* Z, int iz, int jz, const int* descZ);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 CSCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float);
 CSCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double);
 CSCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float);
 CSCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef CSCALAPACK_PSYEV_DECL
 
@@ -74,18 +66,10 @@ int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
                           TYPE* A, int ia, int ja, const int* descA, \
                           TYPE* w, TYPE* Z, int iz, int jz, const int* descZ);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 CSCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float);
 CSCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double);
 CSCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float);
 CSCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef CSCALAPACK_PSYEVD_DECL
 
@@ -105,18 +89,10 @@ int cscalapack_ ## NAMES (char jobz, char range, char uplo, int n, \
                           TYPE* Z, int iz, int jz, const int* descZ, \
                           int* ifail, int* iclustr, TYPE_REAL* gap);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 CSCALAPACK_PSYEVX_DECL(pssyevx, PSSYEVX, float, float);
 CSCALAPACK_PSYEVX_DECL(pdsyevx, PDSYEVX, double, double);
 CSCALAPACK_PSYEVX_DECL(pcheevx, PCHEEVX, lapack_complex_float, float);
 CSCALAPACK_PSYEVX_DECL(pzheevx, PZHEEVX, lapack_complex_double, double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef CSCALAPACK_PSYEVX_DECL
 
@@ -135,18 +111,10 @@ int cscalapack_## NAMES (char jobz, char range, char uplo, int n, \
                          int* m, int* nz, \
                          TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 CSCALAPACK_PSYEVR_DECL(pssyevr, PSSYEVR, float, float);
 CSCALAPACK_PSYEVR_DECL(pdsyevr, PDSYEVR, double, double);
 CSCALAPACK_PSYEVR_DECL(pcheevr, PCHEEVR, lapack_complex_float, float);
 CSCALAPACK_PSYEVR_DECL(pzheevr, PZHEEVR, lapack_complex_double, double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef CSCALAPACK_PSYEVR_DECL
 #endif

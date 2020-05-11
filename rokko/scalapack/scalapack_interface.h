@@ -57,18 +57,10 @@ void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* uplo, const int* 
                                  TYPE* w, TYPE* Z, const int* iz, const int* jz, const int* descZ, \
                                  TYPE* work, const int* lwork, int* info);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 SCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float);
 SCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double);
 SCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float);
 SCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef SCALAPACK_PSYEV_DECL
 
@@ -80,18 +72,10 @@ void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* uplo, const int* 
   TYPE* Z, const int* iz, const int* jz, const int* descZ, \
   TYPE* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 SCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float);
 SCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double);
 SCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float);
 SCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef SCALAPACK_PSYEVD_DECL
 
@@ -105,18 +89,10 @@ void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* range, const char
   TYPE* work, const int* lwork, int* iwork, const int* liwork, \
   int* ifail, int* iclustr, TYPE_REAL* gap, int* info);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 SCALAPACK_PSYEVX_DECL(pssyevx, PSSYEVX, float, float);
 SCALAPACK_PSYEVX_DECL(pdsyevx, PDSYEVX, double, double);
 SCALAPACK_PSYEVX_DECL(pcheevx, PCHEEVX, lapack_complex_float, float);
 SCALAPACK_PSYEVX_DECL(pzheevx, PZHEEVX, lapack_complex_double, double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef SCALAPACK_PSYEVX_DECL
 
@@ -129,18 +105,10 @@ void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* range, const char
   TYPE_REAL* w, TYPE* Z, const int* iz, const int* jz, const int* descZ, \
   TYPE* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 SCALAPACK_PSYEVR_DECL(pssyevr, PSSYEVR, float, float);
 SCALAPACK_PSYEVR_DECL(pdsyevr, PDSYEVR, double, double);
 SCALAPACK_PSYEVR_DECL(pcheevr, PCHEEVR, lapack_complex_float, float);
 SCALAPACK_PSYEVR_DECL(pzheevr, PZHEEVR, lapack_complex_double, double);
-
-#ifdef __cplusplus
-}
-#endif
 
 #undef SCALAPACK_PSYEVR_DECL
 #endif
