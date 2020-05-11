@@ -179,10 +179,15 @@ void SCALAPACK_pdstein(const int* n, const double* d, const double* e, const int
                        double* work, const int* lwork, int* iwork, const int* liwork,
                        int* ifail, int* iclustr, double* gap, int* info);
 
-#define SCALAPACK_pdstedc ROKKO_GLOBAL(pdstedc,PDSTEDC)
-void SCALAPACK_pdstedc(const char* compz, const int* n, double* d, double* e,
-                       double* Q, const int* iq, const int* jq, const int* descQ,
-                       double* work, const int* lwork, int* iwork, const int* liwork, int* info);
+#define SCALAPACK_PSTEDC_DECL(NAMES, NAMEL, TYPE) \
+void ROKKO_GLOBAL(NAMES, NAMEL) (const char* compz, const int* n, TYPE* d, TYPE* e, \
+                                 TYPE* Q, const int* iq, const int* jq, const int* descQ, \
+                                 TYPE* work, const int* lwork, int* iwork, const int* liwork, int* info);
+
+SCALAPACK_PSTEDC_DECL(psstedc, PSSTEDC, float);
+SCALAPACK_PSTEDC_DECL(pdstedc, PDSTEDC, double);
+
+#undef SCALAPACK_PSTEDC_DECL
 
 #ifdef __cplusplus
 }

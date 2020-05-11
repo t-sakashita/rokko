@@ -187,12 +187,17 @@ int cscalapack_pdstein_work(int n, const double* d, const double* e, int m,
                             double* work, int lwork, int* iwork, int liwork,
                             int* ifail, int* iclustr, double* gap);
 
-int cscalapack_pdstedc(char compz, int n, double* d, double* e,
-                       double* Q, int iq, int jq, const int* descQ);
+#define CSCALAPACK_PSTEDC_DECL(NAMES, NAMEL, TYPE) \
+int cscalapack_## NAMES ##_work(char compz, int n, TYPE* d, TYPE* e, \
+                                TYPE* Q, int iq, int jq, const int* descQ, \
+                                TYPE* work, int lwork, int* iwork, int liwork); \
+int cscalapack_## NAMES (char compz, int n, TYPE* d, TYPE* e, \
+                         TYPE* Q, int iq, int jq, const int* descQ);
 
-int cscalapack_pdstedc_work(char compz, int n, double* d, double* e,
-                            double* Q, int iq, int jq, const int* descQ,
-                            double* work, int lwork, int* iwork, int liwork);
+CSCALAPACK_PSTEDC_DECL(psstedc, PSSTEDC, float);
+CSCALAPACK_PSTEDC_DECL(pdstedc, PDSTEDC, double);
+
+#undef CSCALAPACK_PSTEDC_DECL
 
 #ifdef __cplusplus
 }
