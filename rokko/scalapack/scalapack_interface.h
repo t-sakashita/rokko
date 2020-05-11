@@ -179,12 +179,20 @@ SCALAPACK_PSTEBZ_DECL(pdstebz, PDSTEBZ, double);
 #undef SCALAPACK_PSTEBZ_DECL
 
 
-#define SCALAPACK_pdstein ROKKO_GLOBAL(pdstein,PDSTEIN)
-void SCALAPACK_pdstein(const int* n, const double* d, const double* e, const int* m,
-                       double* w, const int* iblock, const int* isplit, const double* orfac,
-                       double* Z, const int* iZ, const int* jZ, const int* descZ,
-                       double* work, const int* lwork, int* iwork, const int* liwork,
-                       int* ifail, int* iclustr, double* gap, int* info);
+#define SCALAPACK_PSTEIN_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
+void ROKKO_GLOBAL(NAMES, NAMEL) (const int* n, const TYPE_REAL* d, const TYPE_REAL* e, const int* m, \
+                                 TYPE_REAL* w, const int* iblock, const int* isplit, const TYPE_REAL* orfac, \
+                                 TYPE* Z, const int* iZ, const int* jZ, const int* descZ, \
+                                 TYPE* work, const int* lwork, int* iwork, const int* liwork, \
+                                 int* ifail, int* iclustr, TYPE_REAL* gap, int* info);
+
+SCALAPACK_PSTEIN_DECL(psstein, PSSTEIN, float, float);
+SCALAPACK_PSTEIN_DECL(pdstein, PDSTEIN, double, double);
+SCALAPACK_PSTEIN_DECL(pcstein, PCSTEIN, lapack_complex_float, float);
+SCALAPACK_PSTEIN_DECL(pzstein, PZSTEIN, lapack_complex_double, double);
+
+#undef SCALAPACK_PSTEIN_DECL
+
 
 #define SCALAPACK_PSTEDC_DECL(NAMES, NAMEL, TYPE) \
 void ROKKO_GLOBAL(NAMES, NAMEL) (const char* compz, const int* n, TYPE* d, TYPE* e, \

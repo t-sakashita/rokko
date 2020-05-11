@@ -182,16 +182,24 @@ CSCALAPACK_PSTEBZ_DECL(pdstebz, PDSTEBZ, double);
 #undef CSCALAPACK_PSTEBZ_DECL
 
 
-int cscalapack_pdstein(int n, const double* d, const double* e, int m,
-                       double* w, const int* iblock, const int* isplit, double orfac,
-                       double* Z, const int* iZ, const int* jZ, const int* descZ,
-                       int* ifail, int* iclustr, double* gap);
+#define CSCALAPACK_PSTEIN_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
+int cscalapack_## NAMES ##_work(int n, const TYPE_REAL* d, const TYPE_REAL* e, int m, \
+                                TYPE_REAL* w, const int* iblock, const int* isplit, TYPE_REAL orfac, \
+                                TYPE* Z, const int* iZ, const int* jZ, const int* descZ, \
+                                TYPE* work, int lwork, int* iwork, int liwork, \
+                                int* ifail, int* iclustr, TYPE_REAL* gap); \
+int cscalapack_## NAMES (int n, const TYPE_REAL* d, const TYPE_REAL* e, int m, \
+                         TYPE_REAL* w, const int* iblock, const int* isplit, TYPE_REAL orfac, \
+                         TYPE* Z, const int* iZ, const int* jZ, const int* descZ, \
+                         int* ifail, int* iclustr, TYPE_REAL* gap);
 
-int cscalapack_pdstein_work(int n, const double* d, const double* e, int m,
-                            double* w, const int* iblock, const int* isplit, double orfac,
-                            double* Z, const int* iZ, const int* jZ, const int* descZ,
-                            double* work, int lwork, int* iwork, int liwork,
-                            int* ifail, int* iclustr, double* gap);
+CSCALAPACK_PSTEIN_DECL(psstein, PSSTEIN, float, float);
+CSCALAPACK_PSTEIN_DECL(pdstein, PDSTEIN, double, double);
+CSCALAPACK_PSTEIN_DECL(pcstein, PCSTEIN, lapack_complex_float, float);
+CSCALAPACK_PSTEIN_DECL(pzstein, PZSTEIN, lapack_complex_double, double);
+
+#undef CSCALAPACK_PSTEIN_DECL
+
 
 #define CSCALAPACK_PSTEDC_DECL(NAMES, NAMEL, TYPE) \
 int cscalapack_## NAMES ##_work(char compz, int n, TYPE* d, TYPE* e, \
