@@ -34,7 +34,7 @@ int lnc1z(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
           double *v1, double *v0) {
   std::vector<int> iblock, isplit;
   matrix_type work(5, 150);
-  double eps = 1e-10;
+  constexpr double eps = 1e-10;
   int m, nsplit;
   double ebefor;
 
