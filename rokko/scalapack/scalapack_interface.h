@@ -95,6 +95,32 @@ SCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
 
 #undef SCALAPACK_PSYEVD_DECL
 
+
+#define SCALAPACK_PSYEVX_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
+void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* range, const char* uplo, const int* n, \
+  TYPE* A, const int* iA, const int* jA, const int* descA, \
+  const TYPE_REAL* vl, const TYPE_REAL* vu, const int* il, const int* iu, \
+  const TYPE_REAL* abstol, int* m, int* nZ, TYPE_REAL* w, const TYPE_REAL* orfac, \
+  TYPE* Z, const int* iZ, const int* jZ, const int* descZ, \
+  TYPE* work, const int* lwork, int* iwork, const int* liwork, \
+  int* ifail, int* iclustr, TYPE_REAL* gap, int* info);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+SCALAPACK_PSYEVX_DECL(pssyevx, PSSYEVX, float, float);
+SCALAPACK_PSYEVX_DECL(pdsyevx, PDSYEVX, double, double);
+SCALAPACK_PSYEVX_DECL(pcheevx, PCHEEVX, lapack_complex_float, float);
+SCALAPACK_PSYEVX_DECL(pzheevx, PZHEEVX, lapack_complex_double, double);
+
+#ifdef __cplusplus
+}
+#endif
+
+#undef SCALAPACK_PSYEVX_DECL
+
+
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 #define SCALAPACK_pdsyevr ROKKO_GLOBAL(pdsyevr,PDSYEVR)
 void SCALAPACK_pdsyevr(const char* jobz, const char* range, const char* uplo, const int* n,
@@ -104,15 +130,6 @@ void SCALAPACK_pdsyevr(const char* jobz, const char* range, const char* uplo, co
                        double* Z, const int* iz, const int* jz, const int* descZ,
                        double* work, const int* lwork, int* iwork, const int* liwork, int* info);
 #endif
-
-#define SCALAPACK_pdsyevx ROKKO_GLOBAL(pdsyevx,PDSYEVX)
-void SCALAPACK_pdsyevx(const char* jobz, const char* range, const char* uplo, const int* n,
-                       double* A, const int* iA, const int* jA, const int* descA,
-                       const double* vl, const double* vu, const int* il, const int* iu,
-                       const double* abstol, int* m, int* nZ, double* w, const double* orfac,
-                       double* Z, const int* iZ, const int* jZ, const int* descZ,
-                       double* work, const int* lwork, int* iwork, const int* liwork,
-                       int* ifail, int* iclustr, double* gap, int* info);
 
 #define SCALAPACK_pselget ROKKO_GLOBAL(pselget,PSELGET)
 void SCALAPACK_pselget(const char* scope, const char* top, float* alpha,
@@ -143,15 +160,6 @@ void SCALAPACK_pssyevr(const char* jobz, const char* range, const char* uplo, co
                        float* Z, const int* iz, const int* jz, const int* descZ,
                        float* work, const int* lwork, int* iwork, const int* liwork, int* info);
 #endif
-
-#define SCALAPACK_pssyevx ROKKO_GLOBAL(pssyevx,PSSYEVX)
-void SCALAPACK_pssyevx(const char* jobz, const char* range, const char* uplo, const int* n,
-                       float* A, const int* iA, const int* jA, const int* descA,
-                       const float* vl, const float* vu, const int* il, const int* iu,
-                       const float* abstol, int* m, int* nZ, float* w, const float* orfac,
-                       float* Z, const int* iZ, const int* jZ, const int* descZ,
-                       float* work, const int* lwork, int* iwork, const int* liwork,
-                       int* ifail, int* iclustr, float* gap, int* info);
 
 #define SCALAPACK_pdstebz ROKKO_GLOBAL(pdstebz,PDSTEBZ)
 void SCALAPACK_pdstebz(const int* ictxt, const char* range, const char* order, const int* n,

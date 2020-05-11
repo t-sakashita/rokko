@@ -107,6 +107,37 @@ CSCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
 #undef CSCALAPACK_PSYEVD_DECL
 
 
+#define CSCALAPACK_PSYEVX_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
+int cscalapack_ ## NAMES ## _work(char jobz, char range, char uplo, int n, \
+                                  TYPE* A, int ia, int ja, const int* descA, \
+                                  TYPE_REAL vl, TYPE_REAL vu, int il, int iu, \
+                                  TYPE_REAL abstol, int* m, int* nZ, TYPE_REAL* w, TYPE_REAL orfac, \
+                                  TYPE* Z, int iz, int jz, const int* descZ, \
+                                  TYPE* work, int lwork, int* iwork, int liwork, \
+                                  int* ifail, int* iclustr, TYPE_REAL* gap); \
+int cscalapack_ ## NAMES (char jobz, char range, char uplo, int n, \
+                          TYPE* A, int ia, int ja, const int* descA, \
+                          TYPE_REAL vl, TYPE_REAL vu, int il, int iu, \
+                          TYPE_REAL abstol, int* m, int* nZ, TYPE_REAL* w, TYPE_REAL orfac, \
+                          TYPE* Z, int iz, int jz, const int* descZ, \
+                          int* ifail, int* iclustr, TYPE_REAL* gap);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+CSCALAPACK_PSYEVX_DECL(pssyevx, PSSYEVX, float, float);
+CSCALAPACK_PSYEVX_DECL(pdsyevx, PDSYEVX, double, double);
+CSCALAPACK_PSYEVX_DECL(pcheevx, PCHEEVX, lapack_complex_float, float);
+CSCALAPACK_PSYEVX_DECL(pzheevx, PZHEEVX, lapack_complex_double, double);
+
+#ifdef __cplusplus
+}
+#endif
+
+#undef CSCALAPACK_PSYEVX_DECL
+
+
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pdsyevr(char jobz, char range, char uplo, int n,
                        double* A, int ia, int ja, const int* descA,
@@ -114,13 +145,6 @@ int cscalapack_pdsyevr(char jobz, char range, char uplo, int n,
                        int* m, int* nz, double* w,
                        double* Z, int iz, int jz, const int* descZ);
 #endif
-
-int cscalapack_pdsyevx(char jobz, char range, char uplo, int n,
-                       double* A, int iA, int jA, const int* descA,
-                       double vl, double vu, int il, int iu,
-                       double abstol, int* m, int* nZ, double* w, double orfac,
-                       double* Z, int iZ, int jZ, const int* descZ,
-                       int* ifail, int* iclustr, double* gap);
 
 float cscalapack_pselget(char scope, char top, const float* A, int ia, int ja, const int* descA);
 
@@ -160,13 +184,6 @@ int cscalapack_pssyevr(char jobz, char range, char uplo, int n,
                        int* m, int* nz, float* w,
                        float* Z, int iz, int jz, const int* descZ);
 #endif
-
-int cscalapack_pssyevx(char jobz, char range, char uplo, int n,
-                       float* A, int iA, int jA, const int* descA,
-                       float vl, float vu, int il, int iu,
-                       float abstol, int* m, int* nZ, float* w, float orfac,
-                       float* Z, int iZ, int jZ, const int* descZ,
-                       int* ifail, int* iclustr, float* gap);
 
 int cscalapack_pdstebz(int ictxt, char range, char order, int n,
                        double vl, double vu, int il, int iu,
