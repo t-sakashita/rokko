@@ -40,15 +40,6 @@ double cscalapack_pdlange_work(char norm, int m, int n, const double* A, const i
 void cscalapack_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA,
                          int irprnt, int icprnt, const char* cmatnm, int nout, double* work);
 
-#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
-int cscalapack_pdsyevr_work(char jobz, char range, char uplo, int n,
-                            double* A, int ia, int ja, const int* descA,
-                            double vl, double vu, int il, int iu,
-                            int* m, int* nz, double* w,
-                            double* Z, int iz, int jz, const int* descZ,
-                            double* work, int lwork, int* iwork, int liwork);
-#endif
-
 #define CSCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE) \
 int cscalapack_ ## NAMES ## _work (char jobz, char uplo, int n, \
                                    TYPE* A, int ia, int ja, const int* descA, \
@@ -131,11 +122,33 @@ CSCALAPACK_PSYEVX_DECL(pzheevx, PZHEEVX, lapack_complex_double, double);
 
 
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
-int cscalapack_pdsyevr(char jobz, char range, char uplo, int n,
-                       double* A, int ia, int ja, const int* descA,
-                       double vl, double vu, int il, int iu,
-                       int* m, int* nz, double* w,
-                       double* Z, int iz, int jz, const int* descZ);
+#define CSCALAPACK_PSYEVR_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
+int cscalapack_## NAMES ##_work(char jobz, char range, char uplo, int n, \
+                                TYPE* A, int ia, int ja, const int* descA, \
+                                TYPE_REAL vl, TYPE_REAL vu, int il, int iu, \
+                                int* m, int* nz, \
+                                TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ, \
+                                TYPE* work, int lwork, int* iwork, int liwork); \
+int cscalapack_## NAMES (char jobz, char range, char uplo, int n, \
+                         TYPE* A, int ia, int ja, const int* descA, \
+                         TYPE_REAL vl, TYPE_REAL vu, int il, int iu, \
+                         int* m, int* nz, \
+                         TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+CSCALAPACK_PSYEVR_DECL(pssyevr, PSSYEVR, float, float);
+CSCALAPACK_PSYEVR_DECL(pdsyevr, PDSYEVR, double, double);
+CSCALAPACK_PSYEVR_DECL(pcheevr, PCHEEVR, lapack_complex_float, float);
+CSCALAPACK_PSYEVR_DECL(pzheevr, PZHEEVR, lapack_complex_double, double);
+
+#ifdef __cplusplus
+}
+#endif
+
+#undef CSCALAPACK_PSYEVR_DECL
 #endif
 
 float cscalapack_pselget(char scope, char top, const float* A, int ia, int ja, const int* descA);
@@ -151,23 +164,6 @@ float cscalapack_pslange_work(char norm, int m, int n, const float* A, const int
 
 void cscalapack_pslaprnt(int m, int n, const float* A, int ia, int ja, const int* descA,
                          int irprnt, int icprnt, const char* cmatnm, int nout, float* work);
-
-#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
-int cscalapack_pssyevr_work(char jobz, char range, char uplo, int n,
-                            float* A, int ia, int ja, const int* descA,
-                            float vl, float vu, int il, int iu,
-                            int* m, int* nz, float* w,
-                            float* Z, int iz, int jz, const int* descZ,
-                            float* work, int lwork, int* iwork, int liwork);
-#endif
-
-#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
-int cscalapack_pssyevr(char jobz, char range, char uplo, int n,
-                       float* A, int ia, int ja, const int* descA,
-                       float vl, float vu, int il, int iu,
-                       int* m, int* nz, float* w,
-                       float* Z, int iz, int jz, const int* descZ);
-#endif
 
 int cscalapack_pdstebz(int ictxt, char range, char order, int n,
                        double vl, double vu, int il, int iu,
