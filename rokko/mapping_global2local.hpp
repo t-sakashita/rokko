@@ -30,6 +30,7 @@ public:
     set_stride();
   }
 
+  // For square matrix
   explicit mapping_global2local(int global_dim, int block_size, grid const& g_in)
     : mapping_global2local({global_dim, global_dim}, {block_size, block_size}, g_in) {}
 
