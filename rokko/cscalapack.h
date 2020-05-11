@@ -49,14 +49,6 @@ int cscalapack_pdsyevr_work(char jobz, char range, char uplo, int n,
                             double* work, int lwork, int* iwork, int liwork);
 #endif
 
-int cscalapack_pdsyevx_work(char jobz, char range, char uplo, int n,
-                            double* A, int iA, int jA, const int* descA,
-                            double vl, double vu, int il, int iu,
-                            double abstol, int* m, int* nZ, double* w, double orfac,
-                            double* Z, int iZ, int jZ, const int* descZ,
-                            double* work, int lwork, int* iwork, int liwork,
-                            int* ifail, int* iclustr, double* gap);
-
 #define CSCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE) \
 int cscalapack_ ## NAMES ## _work (char jobz, char uplo, int n, \
                                    TYPE* A, int ia, int ja, const int* descA, \
@@ -168,14 +160,6 @@ int cscalapack_pssyevr_work(char jobz, char range, char uplo, int n,
                             float* Z, int iz, int jz, const int* descZ,
                             float* work, int lwork, int* iwork, int liwork);
 #endif
-
-int cscalapack_pssyevx_work(char jobz, char range, char uplo, int n,
-                            float* A, int iA, int jA, const int* descA,
-                            float vl, float vu, int il, int iu,
-                            float abstol, int* m, int* nZ, float* w, float orfac,
-                            float* Z, int iZ, int jZ, const int* descZ,
-                            float* work, int lwork, int* iwork, int liwork,
-                            int* ifail, int* iclustr, float* gap);
 
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 int cscalapack_pssyevr(char jobz, char range, char uplo, int n,
