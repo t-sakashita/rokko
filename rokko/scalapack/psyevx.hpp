@@ -15,6 +15,7 @@
 #include <rokko/cscalapack.h>
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack/storage.hpp>
+#include <rokko/lapack/complex_cast.hpp>
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 
@@ -22,6 +23,7 @@ namespace rokko {
 namespace scalapack {
 
 using rokko::lapack::storage;
+using rokko::lapack::complex_cast;
 
 namespace {
 
@@ -62,6 +64,24 @@ inline int psyevx_dispatch(char jobz, char range, char uplo, int n, double* A, i
                            double* w, double orfac, double* Z, int iz, int jz, const int* descZ,
                            int* ifail, int* iclustr, double* gap) {
   return cscalapack_pdsyevx(jobz, range, uplo, n, A, ia, ja, descA, vl, vu, il, iu, abstol, &m, &nz, w, orfac, Z, iz, jz, descZ,
+                            ifail, iclustr, gap);
+}
+
+inline int psyevx_dispatch(char jobz, char range, char uplo, int n, std::complex<float>* A, int ia, int ja, const int* descA,
+                           float vl, float vu, int il, int iu,
+                           float abstol, int& m, int& nz,
+                           float* w, float orfac, std::complex<float>* Z, int iz, int jz, const int* descZ,
+                           int* ifail, int* iclustr, float* gap) {
+  return cscalapack_pcheevx(jobz, range, uplo, n, complex_cast(A), ia, ja, descA, vl, vu, il, iu, abstol, &m, &nz, w, orfac, complex_cast(Z), iz, jz, descZ,
+                            ifail, iclustr, gap);
+}
+
+inline int psyevx_dispatch(char jobz, char range, char uplo, int n, std::complex<double>* A, int ia, int ja, const int* descA,
+                           double vl, double vu, int il, int iu,
+                           double abstol, int& m, int& nz,
+                           double* w, double orfac, std::complex<double>* Z, int iz, int jz, const int* descZ,
+                           int* ifail, int* iclustr, double* gap) {
+  return cscalapack_pzheevx(jobz, range, uplo, n, complex_cast(A), ia, ja, descA, vl, vu, il, iu, abstol, &m, &nz, w, orfac, complex_cast(Z), iz, jz, descZ,
                             ifail, iclustr, gap);
 }
 

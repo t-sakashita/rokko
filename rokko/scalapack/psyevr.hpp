@@ -13,11 +13,16 @@
 #define ROKKO_SCALAPACK_PSYEVR_HPP
 
 #include <rokko/cscalapack.h>
+#include <rokko/lapack/storage.hpp>
+#include <rokko/lapack/complex_cast.hpp>
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 
 namespace rokko {
 namespace scalapack {
+
+using rokko::lapack::storage;
+using rokko::lapack::complex_cast;
 
 namespace {
 
@@ -51,6 +56,20 @@ inline int psyevr_dispatch(char jobz, char range, char uplo, int n, double* A, i
                            int& m, int& nz,
                            double* w, double* Z, int iz, int jz, const int* descZ) {
   return cscalapack_pdsyevr(jobz, range, uplo, n, A, ia, ja, descA, vl, vu, il, iu, &m, &nz, w, Z, iz, jz, descZ);
+}
+
+inline int psyevr_dispatch(char jobz, char range, char uplo, int n, std::complex<float>* A, int ia, int ja, const int* descA,
+                           float vl, float vu, int il, int iu,
+                           int& m, int& nz,
+                           float* w, std::complex<float>* Z, int iz, int jz, const int* descZ) {
+  return cscalapack_pcheevr(jobz, range, uplo, n, complex_cast(A), ia, ja, descA, vl, vu, il, iu, &m, &nz, w, complex_cast(Z), iz, jz, descZ);
+}
+
+inline int psyevr_dispatch(char jobz, char range, char uplo, int n, std::complex<double>* A, int ia, int ja, const int* descA,
+                           double vl, double vu, int il, int iu,
+                           int& m, int& nz,
+                           double* w, std::complex<double>* Z, int iz, int jz, const int* descZ) {
+  return cscalapack_pzheevr(jobz, range, uplo, n, complex_cast(A), ia, ja, descA, vl, vu, il, iu, &m, &nz, w, complex_cast(Z), iz, jz, descZ);
 }
 
 } // end of anonymous namespace
