@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 by Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 by Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,11 +13,11 @@
 #include <stdlib.h>
 #include <rokko/scalapack/scalapack_interface.h>
 
-#define CSCALAPACK_PSYEVD_IMPL(NAMES, NAMEL, TYPE) \
+#define CSCALAPACK_PSYEVD_IMPL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
-                          TYPE* A, int ia, int ja, const int* descA,  \
-                          TYPE* w, TYPE* Z, int iz, int jz, const int* descZ) { \
-  /* call for querying optimal size of work array */                    \
+                          TYPE* A, int ia, int ja, const int* descA, \
+                          TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ) { \
+  /* call for querying optimal size of work array */  \
   int lwork = -1; \
   int liwork = 1; \
   TYPE work_query[1]; \
@@ -42,9 +42,9 @@ int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
   return info; \
 }
 
-CSCALAPACK_PSYEVD_IMPL(pssyevd, PSSYEVD, float)
-CSCALAPACK_PSYEVD_IMPL(pdsyevd, PDSYEVD, double)
-CSCALAPACK_PSYEVD_IMPL(pcheevd, PCHEEVD, lapack_complex_float)
-CSCALAPACK_PSYEVD_IMPL(pzheevd, PZHEEVD, lapack_complex_double)
+CSCALAPACK_PSYEVD_IMPL(pssyevd, PSSYEVD, float, float)
+CSCALAPACK_PSYEVD_IMPL(pdsyevd, PDSYEVD, double, double)
+CSCALAPACK_PSYEVD_IMPL(pcheevd, PCHEEVD, lapack_complex_float, float)
+CSCALAPACK_PSYEVD_IMPL(pzheevd, PZHEEVD, lapack_complex_double, double)
 
 #undef CSCALAPACK_PSYEVD_IMPL

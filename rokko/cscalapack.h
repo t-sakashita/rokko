@@ -40,36 +40,36 @@ double cscalapack_pdlange_work(char norm, int m, int n, const double* A, const i
 void cscalapack_pdlaprnt(int m, int n, const double* A, int ia, int ja, const int* descA,
                          int irprnt, int icprnt, const char* cmatnm, int nout, double* work);
 
-#define CSCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE) \
+#define CSCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 int cscalapack_ ## NAMES ## _work (char jobz, char uplo, int n, \
                                    TYPE* A, int ia, int ja, const int* descA, \
-                                   TYPE* w, TYPE* Z, int iz, int jz, const int* descZ, \
+                                   TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ, \
                                    TYPE* work, int lwork); \
 int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
                           TYPE* A, int ia, int ja, const int* descA, \
-                          TYPE* w, TYPE* Z, int iz, int jz, const int* descZ);
+                          TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ);
 
-CSCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float);
-CSCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double);
-CSCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float);
-CSCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double);
+CSCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float, float);
+CSCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double, double);
+CSCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float, float);
+CSCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double, double);
 
 #undef CSCALAPACK_PSYEV_DECL
 
 
-#define CSCALAPACK_PSYEVD_DECL(NAMES, NAMEL, TYPE) \
+#define CSCALAPACK_PSYEVD_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 int cscalapack_ ## NAMES ## _work (char jobz, char uplo, int n, \
                                    TYPE* A, int ia, int ja, const int* descA, \
-                                   TYPE* w, TYPE* Z, int iz, int jz, const int* descZ, \
+                                   TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ, \
                                    TYPE* work, int lwork, int* iwork, int liwork); \
 int cscalapack_ ## NAMES (char jobz, char uplo, int n, \
                           TYPE* A, int ia, int ja, const int* descA, \
-                          TYPE* w, TYPE* Z, int iz, int jz, const int* descZ);
+                          TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ);
 
-CSCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float);
-CSCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double);
-CSCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float);
-CSCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
+CSCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float, float);
+CSCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double, double);
+CSCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float, float);
+CSCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double, double);
 
 #undef CSCALAPACK_PSYEVD_DECL
 

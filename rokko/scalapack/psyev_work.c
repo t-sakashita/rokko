@@ -12,10 +12,10 @@
 #include <rokko/cscalapack.h>
 #include <rokko/scalapack/scalapack_interface.h>
 
-#define CSCALAPACK_PSYEV_WORK_IMPL(NAMES, NAMEL, TYPE) \
+#define CSCALAPACK_PSYEV_WORK_IMPL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 int cscalapack_ ## NAMES ## _work(char jobz, char uplo, int n, \
                                   TYPE* A, int ia, int ja, const int* descA, \
-                                  TYPE* w, TYPE* Z, int iz, int jz, const int* descZ, \
+                                  TYPE_REAL* w, TYPE* Z, int iz, int jz, const int* descZ, \
                                   TYPE* work, int lwork) { \
   int ia_f = ia + 1; \
   int ja_f = ja + 1; \
@@ -27,9 +27,9 @@ int cscalapack_ ## NAMES ## _work(char jobz, char uplo, int n, \
   return info; \
 }
 
-CSCALAPACK_PSYEV_WORK_IMPL(pssyev, PSSYEV, float)
-CSCALAPACK_PSYEV_WORK_IMPL(pdsyev, PDSYEV, double)
-CSCALAPACK_PSYEV_WORK_IMPL(pcheev, PCHEEV, lapack_complex_float)
-CSCALAPACK_PSYEV_WORK_IMPL(pzheev, PZHEEV, lapack_complex_double)
+CSCALAPACK_PSYEV_WORK_IMPL(pssyev, PSSYEV, float, float)
+CSCALAPACK_PSYEV_WORK_IMPL(pdsyev, PDSYEV, double, double)
+CSCALAPACK_PSYEV_WORK_IMPL(pcheev, PCHEEV, lapack_complex_float, float)
+CSCALAPACK_PSYEV_WORK_IMPL(pzheev, PZHEEV, lapack_complex_double, double)
 
 #undef CSCALAPACK_PSYEV_WORK_IMPL

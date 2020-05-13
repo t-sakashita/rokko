@@ -51,31 +51,31 @@ void SCALAPACK_pdlaprnt(const int* m, const int* n, const double* A, const int* 
                         const int* descA, const int* irprnt, const int* icprnt, const char* cmatnm,
                         const int* nout, double* work);
 
-#define SCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE) \
+#define SCALAPACK_PSYEV_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* uplo, const int* n, \
                                  TYPE* A, const int* ia, const int* ja, const int* descA, \
-                                 TYPE* w, TYPE* Z, const int* iz, const int* jz, const int* descZ, \
+                                 TYPE_REAL* w, TYPE* Z, const int* iz, const int* jz, const int* descZ, \
                                  TYPE* work, const int* lwork, int* info);
 
-SCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float);
-SCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double);
-SCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float);
-SCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double);
+SCALAPACK_PSYEV_DECL(pssyev, PSSYEV, float, float);
+SCALAPACK_PSYEV_DECL(pdsyev, PDSYEV, double, double);
+SCALAPACK_PSYEV_DECL(pcheev, PCHEEV, lapack_complex_float, float);
+SCALAPACK_PSYEV_DECL(pzheev, PZHEEV, lapack_complex_double, double);
 
 #undef SCALAPACK_PSYEV_DECL
 
 
-#define SCALAPACK_PSYEVD_DECL(NAMES, NAMEL, TYPE) \
+#define SCALAPACK_PSYEVD_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 void ROKKO_GLOBAL(NAMES, NAMEL) (const char* jobz, const char* uplo, const int* n, \
   TYPE* A, const int* ia, const int* ja, const int* descA, \
-  TYPE* w, \
+  TYPE_REAL* w, \
   TYPE* Z, const int* iz, const int* jz, const int* descZ, \
   TYPE* work, const int* lwork, int* iwork, const int* liwork, int* info);
 
-SCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float);
-SCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double);
-SCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float);
-SCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double);
+SCALAPACK_PSYEVD_DECL(pssyevd, PSSYEVD, float, float);
+SCALAPACK_PSYEVD_DECL(pdsyevd, PDSYEVD, double, double);
+SCALAPACK_PSYEVD_DECL(pcheevd, PCHEEVD, lapack_complex_float, float);
+SCALAPACK_PSYEVD_DECL(pzheevd, PZHEEVD, lapack_complex_double, double);
 
 #undef SCALAPACK_PSYEVD_DECL
 
