@@ -67,60 +67,60 @@ class pd_ev_wrapper : public pd_ev_base {
 public:
   pd_ev_wrapper() : solver_impl_() {}
   virtual ~pd_ev_wrapper() = default;
-  bool is_available_grid_major(grid_row_major_t const& grid_major) {
+  bool is_available_grid_major(grid_row_major_t const& grid_major) override {
     return solver_impl_.is_available_grid_major(grid_major);
   }
-  bool is_available_grid_major(grid_col_major_t const& grid_major) {
+  bool is_available_grid_major(grid_col_major_t const& grid_major) override {
     return solver_impl_.is_available_grid_major(grid_major);
   }
-  void initialize(int& argc, char**& argv) {
+  void initialize(int& argc, char**& argv) override {
     solver_impl_.initialize(argc, argv);
   }
-  void finalize() { solver_impl_.finalize(); }
+  void finalize() override { solver_impl_.finalize(); }
   // eigenvalues/eigenvectors
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 			 Eigen::VectorXd& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 			 Eigen::VectorXd& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 			 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 			 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
   // only eigenvalues
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 			 Eigen::VectorXd& eigvals,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 			 Eigen::VectorXd& eigvals,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 			 Eigen::RefVec<double>& eigvals,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 			 Eigen::RefVec<double>& eigvals,
-			 parameters const& params) {
+			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   // default_mapping
-  mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
+  mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const override {
     return solver_impl_.default_mapping(dim, g);
   }
 private:
