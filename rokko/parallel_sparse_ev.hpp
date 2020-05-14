@@ -45,19 +45,19 @@ class ps_ev_wrapper : public ps_ev_base {
 public:
   ps_ev_wrapper() : solver_impl_() {}
   virtual ~ps_ev_wrapper() = default;
-  void initialize(int& argc, char**& argv) { solver_impl_.initialize(argc, argv); }
-  void finalize() { solver_impl_.finalize(); }
-  parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
+  void initialize(int& argc, char**& argv) override { solver_impl_.initialize(argc, argv); }
+  void finalize() override { solver_impl_.finalize(); }
+  parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) override {
     return solver_impl_.diagonalize(mat, params);
   }
-  parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
+  parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) override {
     return solver_impl_.diagonalize(mat, params);
   }
-  double eigenvalue(int k) const { return solver_impl_.eigenvalue(k); }
-  void eigenvector(int k, std::vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
-  void eigenvector(int k, double* vec) const { solver_impl_.eigenvector(k, vec); }
-  void eigenvector(int k, distributed_vector<double>& vec) const { solver_impl_.eigenvector(k, vec); }
-  int get_num_conv() const { return solver_impl_.get_num_conv(); }
+  double eigenvalue(int k) const override { return solver_impl_.eigenvalue(k); }
+  void eigenvector(int k, std::vector<double>& vec) const override { solver_impl_.eigenvector(k, vec); }
+  void eigenvector(int k, double* vec) const override { solver_impl_.eigenvector(k, vec); }
+  void eigenvector(int k, distributed_vector<double>& vec) const override { solver_impl_.eigenvector(k, vec); }
+  int get_num_conv() const override { return solver_impl_.get_num_conv(); }
 
 private:
   solver_type solver_impl_;
