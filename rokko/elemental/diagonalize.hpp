@@ -95,9 +95,9 @@ El::SortType get_sort(parameters const& params) {
 }
 
 // eigenvalues / eigenvectors
-  template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-		       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
+		       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 		       parameters const& params) {
   if(mat.is_row_major())
     throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
@@ -112,22 +112,22 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     elemental_grid_order = El::COLUMN_MAJOR;
   }
   El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
-  El::DistMatrix<double> elem_mat;
+  El::DistMatrix<T> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
 		  mat.get_array_pointer(), mat.get_lld());
-  El::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
-  El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
+  El::DistMatrix<T> elem_eigvecs(0, 0, elem_grid);
+  El::DistMatrix<T, El::VR, El::STAR> elem_w(elem_grid);
 
   El::UpperOrLower elem_uplow = get_matrix_part(params);
-  El::HermitianEigCtrl<double> ctrl = get_ctrl(params);
-  El::HermitianEigSubset<double> subset = get_subset(params);
+  El::HermitianEigCtrl<T> ctrl = get_ctrl(params);
+  El::HermitianEigSubset<T> subset = get_subset(params);
   ctrl.tridiagEigCtrl.subset = get_subset(params);
   ctrl.tridiagEigCtrl.sort = get_sort(params);
 
   El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_eigvecs, ctrl);
 
   for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
-  double* result_mat = elem_eigvecs.Buffer();
+  T* result_mat = elem_eigvecs.Buffer();
   for(int local_i=0; local_i<mat.get_m_local(); ++local_i) {
     for(int local_j=0; local_j<elem_w.LocalHeight(); ++local_j) {
       eigvecs.set_local(local_i, local_j, result_mat[local_j * mat.get_lld() + local_i]);
@@ -137,8 +137,8 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // only eigenvalues
-template<typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 		       VEC& eigvals,
 		       parameters const& params) {
   if(mat.is_row_major())
@@ -154,15 +154,15 @@ parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
     elemental_grid_order = El::COLUMN_MAJOR;
   }
   El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
-  El::DistMatrix<double> elem_mat;
+  El::DistMatrix<T> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
 		  mat.get_array_pointer(), mat.get_lld());
-  El::DistMatrix<double> elem_eigvecs(0, 0, elem_grid);
-  El::DistMatrix<double, El::VR, El::STAR> elem_w(elem_grid);
+  El::DistMatrix<T> elem_eigvecs(0, 0, elem_grid);
+  El::DistMatrix<T, El::VR, El::STAR> elem_w(elem_grid);
 
   El::UpperOrLower elem_uplow = get_matrix_part(params);
-  El::HermitianEigCtrl<double> ctrl = get_ctrl(params);
-  El::HermitianEigSubset<double> subset = get_subset(params);
+  El::HermitianEigCtrl<T> ctrl = get_ctrl(params);
+  El::HermitianEigSubset<T> subset = get_subset(params);
   ctrl.tridiagEigCtrl.subset = get_subset(params);
   ctrl.tridiagEigCtrl.sort = get_sort(params);
 
