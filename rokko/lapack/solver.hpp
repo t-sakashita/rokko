@@ -31,16 +31,7 @@ class solver {
 public:
   void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
-  // standard eigenvalue problem, only eigenvalues, eigenvalue:T*
-  template<typename T, int MATRIX_MAJOR>
-  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-             norm_t<T>* eigvals,
-			 parameters const& params);
-  // standard eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:T*
-  template<typename T, int MATRIX_MAJOR>
-  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-             norm_t<T>* eigvals, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
-			 parameters const& params);
+
   // standard eigenvalue problem, only eigenvalues, eigenvalue:VEC&
   template<typename T, int MATRIX_MAJOR, typename VEC>
   parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
@@ -58,9 +49,9 @@ private:
 
 // -------------------------standard eigenvalue problem-----------------------------
 // standard eigenvalue problem, only eigenvalues
-template<typename T, int MATRIX_MAJOR>
+template<typename T, int MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-                   norm_t<T>* eigvals,
+                   VEC& eigvals,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
@@ -85,15 +76,6 @@ parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAT
   } else {
     throw std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine");
   }
-}
-
-template<typename T, int MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			       VEC& eigvals,
-			       parameters const& params) {
-  const std::size_t dim = mat.rows();
-  if (eigvals.size() < dim) eigvals.resize(dim);
-  return solver::diagonalize(mat, &eigvals[0], params);
 }
 
 // standard eigenvalue problem, eigenvalues/eigenvectors
