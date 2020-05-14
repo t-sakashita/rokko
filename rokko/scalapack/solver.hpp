@@ -43,20 +43,20 @@ public:
     return mapping_bc<matrix_col_major>(dim, b, g);
   }
 
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			 VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params);
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 parameters const& params);
 };
 
 // eigenvalues / eigenvectors
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
@@ -92,8 +92,8 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 }
 
 // only eigenvalues
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+template<typename T, typename MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
