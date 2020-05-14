@@ -74,6 +74,18 @@ public:
       throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
   }
+
+  template <typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 distributed_matrix<float, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params) {
+    throw std::invalid_argument("eigenexa::diagonalize() : elpa doesn't support float type.  Use elpa with double type.");
+  }
+  template <typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 parameters const& params) {
+    throw std::invalid_argument("eigenexa::diagonalize() : elpa doesn't support float type.  Use elpa with double type.");
+  }
 };
 
 } // namespace elpa

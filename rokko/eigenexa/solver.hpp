@@ -42,6 +42,15 @@ public:
   parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 parameters const& params);
+
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, distributed_matrix<float, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params);
+  template<typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 parameters const& params);
 };
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -72,6 +81,21 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   } else {
     throw std::invalid_argument("eigenexa::diagonalize() : " + routine + " is invalid routine name");
   }
+}
+
+template<typename MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
+			       VEC& eigvals, distributed_matrix<float, MATRIX_MAJOR>& eigvecs,
+			       parameters const& params) {
+  throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support float type.  Use eigenexa with double type.");
+
+}
+
+template<typename MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
+			       VEC& eigvals,
+			       parameters const& params) {
+  throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support float type.  Use eigenexa with double type.");
 }
 
 } // namespace eigenexa
