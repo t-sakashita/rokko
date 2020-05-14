@@ -59,6 +59,19 @@ public:
   virtual parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat,
 				 std::vector<double>& eigvals,
 				 parameters const& params) = 0;
+  // complex with parameters, only eigenvalues
+  virtual parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat,
+				 Eigen::VectorXd& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat,
+				 Eigen::VectorXd& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat,
+				 std::vector<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat,
+				 std::vector<double>& eigvals,
+				 parameters const& params) = 0;
   // complex with parameters, eigenvalues/eigenvectors
   virtual parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat,
 				 Eigen::VectorXd& eigvals,
@@ -127,6 +140,27 @@ public:
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat,
+			 std::vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  // complex with parameters, only eigenvalues
+  parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat,
+			 Eigen::VectorXd& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat,
+			 Eigen::VectorXd& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>& mat,
+			 std::vector<double>& eigvals,
+			 parameters const& params) {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>& mat,
 			 std::vector<double>& eigvals,
 			 parameters const& params) {
     return solver_impl_.diagonalize(mat, eigvals, params);
