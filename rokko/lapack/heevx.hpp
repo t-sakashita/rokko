@@ -121,7 +121,7 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int heevx(char range, char uplo, MATRIX& a,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& ifail) {
-  constexpr null_matrix<T> z_null;
+  constexpr null_matrix<value_t<MATRIX>> z_null;
   return heevx('N', range, uplo, a, vl, vu, il, iu, abstol, m, w, z_null, ifail);
 }
 
