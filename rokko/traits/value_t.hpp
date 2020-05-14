@@ -34,6 +34,16 @@ struct value_type_traits<T**> {
 };
 
 template<>
+struct value_type_traits<float> {
+  using type = float;
+};
+
+template<>
+struct value_type_traits<std::complex<float>> {
+  using type = std::complex<float>;
+};
+
+template<>
 struct value_type_traits<double> {
   using type = double;
 };

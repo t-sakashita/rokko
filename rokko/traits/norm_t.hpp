@@ -27,6 +27,16 @@ struct norm_type_traits {
 };
 
 template<>
+struct norm_type_traits<float> {
+  using type = float;
+};
+
+template<>
+struct norm_type_traits<std::complex<float>> {
+  using type = float;
+};
+
+template<>
 struct norm_type_traits<double> {
   using type = double;
 };

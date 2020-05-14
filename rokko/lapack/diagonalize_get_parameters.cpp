@@ -123,6 +123,9 @@ bool is_interval(parameters const& params) {
 template
 char get_eigenvalues_range(parameters const& params, double& vl, double& vu, int& il, int& iu);
 
+template
+char get_eigenvalues_range(parameters const& params, float& vl, float& vu, int& il, int& iu);
+
 void print_verbose(std::string const& routine, char const& jobz, char const& uplow);
 
 template
@@ -131,6 +134,10 @@ void print_verbose(std::string const& routine, char const& jobz, char const& ran
 
 template void print_verbose<double>(std::string const& routine, char const& jobz, char const& range, char const& uplow,
 		   double vl, double vu, int il, int iu,
+		   parameters const& params);
+
+template void print_verbose<float>(std::string const& routine, char const& jobz, char const& range, char const& uplow,
+		   float vl, float vu, int il, int iu,
 		   parameters const& params);
 
 } // namespace lapack
