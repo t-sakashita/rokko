@@ -28,7 +28,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 			      parameters const& params) {
   parameters params_out;
 
-  auto abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
+  norm_t<T> abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -70,7 +70,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 			      parameters const& params) {
   rokko::parameters params_out;
 
-  auto abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
+  norm_t<T> abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
