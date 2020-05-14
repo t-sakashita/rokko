@@ -26,6 +26,16 @@ struct norm_type_traits {
   using type = typename boost::numeric::ublas::type_traits<value_type>::real_type;
 };
 
+template<>
+struct norm_type_traits<double> {
+  using type = double;
+};
+
+template<>
+struct norm_type_traits<std::complex<double>> {
+  using type = double;
+};
+
 } // end namespace detail
 
 template<typename T>

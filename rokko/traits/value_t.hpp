@@ -33,6 +33,16 @@ struct value_type_traits<T**> {
   using type = T;
 };
 
+template<>
+struct value_type_traits<double> {
+  using type = double;
+};
+
+template<>
+struct value_type_traits<std::complex<double>> {
+  using type = std::complex<double>;
+};
+
 } // end namespace detail
 
 template<typename T>

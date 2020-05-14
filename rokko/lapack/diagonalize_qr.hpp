@@ -22,11 +22,11 @@ namespace rokko {
 namespace lapack {
 
 // qr (dsyevx) only eigenvalues
-template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+template<typename T, int MATRIX_MAJOR, typename VEC>
+parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
                  rokko::parameters params) {
   if (params.defined("abstol")) {
-    T abstol = params.get<T>("abstol");
+    auto abstol = params.get<norm_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
@@ -42,12 +42,12 @@ parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_M
 
 
 // qr (dsyevx) eigenvalues / eigenvectors
-template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+template<typename T, int MATRIX_MAJOR, typename VEC>
+parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
                  Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
                  rokko::parameters params) {
   if (params.defined("abstol")) {
-    T abstol = params.get<T>("abstol");
+    auto abstol = params.get<norm_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }

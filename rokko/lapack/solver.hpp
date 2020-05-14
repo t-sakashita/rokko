@@ -31,35 +31,36 @@ class solver {
 public:
   void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
-  // standard eigenvalue problem, only eigenvalues, eigenvalue:double*
-  template<int MATRIX_MAJOR>
-  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			 double* eigvals,
+  // standard eigenvalue problem, only eigenvalues, eigenvalue:T*
+  template<typename T, int MATRIX_MAJOR>
+  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+             norm_t<T>* eigvals,
 			 parameters const& params);
-  // standard eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:double*
-  template<int MATRIX_MAJOR>
-  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			 double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+  // standard eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:T*
+  template<typename T, int MATRIX_MAJOR>
+  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+             norm_t<T>* eigvals, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 parameters const& params);
   // standard eigenvalue problem, only eigenvalues, eigenvalue:VEC&
-  template<int MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+  template<typename T, int MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
 			 parameters const& params);
   // standard eigenvalue problem, eigenvalues/eigenvectors, eigenvalue:VEC&
-  template<int MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			 VEC& eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+  template<typename T, int MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+			 VEC& eigvals, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			 parameters const& params);
+
 private:
   //std::string routine_;  // record routine_;
 };
 
 // -------------------------standard eigenvalue problem-----------------------------
 // standard eigenvalue problem, only eigenvalues
-template<int MATRIX_MAJOR>
-parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			       double* eigvals,
+template<typename T, int MATRIX_MAJOR>
+parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+                   norm_t<T>* eigvals,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
@@ -86,8 +87,8 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
   }
 }
 
-template<int MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+template<typename T, int MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   const std::size_t dim = mat.rows();
@@ -96,9 +97,9 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
 }
 
 // standard eigenvalue problem, eigenvalues/eigenvectors
-template<int MATRIX_MAJOR>
-parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			       double* eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
+template<typename T, int MATRIX_MAJOR, typename VEC>
+parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
+                               VEC& eigvals, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
@@ -123,15 +124,6 @@ parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynami
   } else {
     throw std::invalid_argument("lapack::diagonalize() : " + routine + " is not lapack routine");
   }
-}
-
-template<int MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat,
-			       VEC& eigvals, Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
-			       parameters const& params) {
-  const std::size_t dim = mat.rows();
-  if (eigvals.size() < dim) eigvals.resize(dim);
-  return solver::diagonalize(mat, &eigvals[0], eigvecs, params);
 }
 
 } // namespace lapack

@@ -23,8 +23,8 @@ namespace rokko {
 namespace lapack {
 
 // only eigenvalues
-template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+template<typename T, int MATRIX_MAJOR, typename VEC>
+parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
 			     parameters const& params) {
   rokko::parameters params_out;
   const char jobz = 'N';  // only eigenvalues
@@ -44,8 +44,8 @@ parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX
 }
 
 // eigenvalues / eigenvectors
-template<typename T, int MATRIX_MAJOR>
-parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, T* eigvals,
+template<typename T, int MATRIX_MAJOR, typename VEC>
+parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
 			     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			     parameters const& params) {
   rokko::parameters params_out;
