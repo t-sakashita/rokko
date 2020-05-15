@@ -17,7 +17,7 @@
 #include <stdexcept>
 #include <rokko/blacs.hpp>
 #include <rokko/scalapack.hpp>
-#include <rokko/cpblas.h>
+#include <rokko/pblas/pcopy.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/eigen3.hpp>
 
@@ -39,7 +39,7 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   std::array<int,9> descTo;
   scalapack::descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
   for (int j = 0; j < n; ++j)
-    cpblas_pdcopy(m, from.get_array_pointer(), 0, j, descFrom.data(), 1, to, 0, j, descTo.data(), 1);
+    pblas::pcopy(m, from.get_array_pointer(), 0, j, descFrom.data(), 1, to, 0, j, descTo.data(), 1);
 }
 
 template<typename T, int ROWS, int COLS, typename MATRIX_MAJOR>
@@ -62,7 +62,7 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   scalapack::descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
   const std::array<int,9>& descTo = to.get_mapping().get_blacs_descriptor();
   for (int j = 0; j < n; ++j)
-    cpblas_pdcopy(m, from, 0, j, descFrom.data(), 1, to.get_array_pointer(), 0, j, descTo.data(), 1);
+    pblas::pcopy(m, from, 0, j, descFrom.data(), 1, to.get_array_pointer(), 0, j, descTo.data(), 1);
 }
 
 template<typename T, int ROWS, int COLS, typename MATRIX_MAJOR>
