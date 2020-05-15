@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -75,16 +75,16 @@ public:
     }
   }
 
-  template <typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat, VEC& eigvals,
-			 distributed_matrix<float, MATRIX_MAJOR>& eigvecs,
+  template <typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
     throw std::invalid_argument("eigenexa::diagonalize() : elpa doesn't support float type.  Use elpa with double type.");
   }
-  template <typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat, VEC& eigvals,
+  template <typename T,typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    throw std::invalid_argument("eigenexa::diagonalize() : elpa doesn't support float type.  Use elpa with double type.");
+    throw std::invalid_argument("future work");
   }
 };
 
