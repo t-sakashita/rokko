@@ -148,27 +148,27 @@ public:
     solver_impl_->finalize();
   }
   // with parameters, eigenvalues/eigenvectors
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			 VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
     return solver_impl_->diagonalize(mat, eigvals, eigvecs, params);
   }
   // with parameters, only eigenvalues
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
     return solver_impl_->diagonalize(mat, eigvals, params);
   }
   // no parameters, eigenvalues/eigenvectors
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
-			 VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs) {
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvecs) {
     return solver_impl_->diagonalize(mat, eigvals, eigvecs, null_params);
   }
   // no parameters, only eigenvalues
-  template<typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			 VEC& eigvals) {
     return diagonalize(mat, eigvals, null_params);
   }
