@@ -16,6 +16,7 @@
 #include <rokko/parameters.hpp>
 #include <rokko/eigenexa/diagonalize_eigen_s.hpp>
 #include <rokko/eigenexa/diagonalize_eigen_sx.hpp>
+#include <complex>
 
 namespace rokko {
 
@@ -46,11 +47,28 @@ public:
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
 			 VEC& eigvals, distributed_matrix<float, MATRIX_MAJOR>& eigvecs,
-			 parameters const& params);
+			 parameters const& params) {
+    throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support float type.  Use eigenexa with double type.");
+  }
   template<typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,
-			 parameters const& params);
+			 parameters const& params) {
+    throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support float type.  Use eigenexa with double type.");
+  }
+
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<std::complex<T>, MATRIX_MAJOR>& mat,
+			 VEC& eigvals, distributed_matrix<std::complex<T>, MATRIX_MAJOR>& eigvecs,
+			 parameters const& params) {
+    throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support complex number.");
+  }
+  template<typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<std::complex<T>, MATRIX_MAJOR>& mat,
+			 VEC& eigvals,
+			 parameters const& params) {
+    throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support complex number.");
+  }
 };
 
 template<typename MATRIX_MAJOR, typename VEC>
@@ -81,21 +99,6 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
   } else {
     throw std::invalid_argument("eigenexa::diagonalize() : " + routine + " is invalid routine name");
   }
-}
-
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, distributed_matrix<float, MATRIX_MAJOR>& eigvecs,
-			       parameters const& params) {
-  throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support float type.  Use eigenexa with double type.");
-
-}
-
-template<typename MATRIX_MAJOR, typename VEC>
-parameters solver::diagonalize(distributed_matrix<float, MATRIX_MAJOR>& mat,
-			       VEC& eigvals,
-			       parameters const& params) {
-  throw std::invalid_argument("eigenexa::diagonalize() : eigenexa doesn't support float type.  Use eigenexa with double type.");
 }
 
 } // namespace eigenexa
