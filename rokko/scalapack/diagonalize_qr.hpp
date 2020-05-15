@@ -30,7 +30,7 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters params) {
   if (params.defined("abstol")) {
-    T abstol = params.get<T>("abstol");
+    norm_t<T> abstol = params.get<norm_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
@@ -50,7 +50,7 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters params) {
   if (params.defined("abstol")) {
-    T abstol = params.get<T>("abstol");
+    norm_t<T> abstol = params.get<norm_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
