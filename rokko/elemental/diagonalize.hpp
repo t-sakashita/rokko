@@ -86,7 +86,7 @@ El::HermitianEigCtrl<T> get_ctrl(parameters const& params) {
     ctrl.sdcCtrl.maxOuterIts = params.get<int>("maxOuterIts");
   }
   if (params.defined("tol")) {
-    ctrl.sdcCtrl.tol = params.get<int>("tol");
+    ctrl.sdcCtrl.tol = params.get<norm_t<T>>("tol");
   }
   if (params.defined("spreadFactor")) {
     ctrl.sdcCtrl.spreadFactor = params.get<norm_t<T>>("spreadFactor");
