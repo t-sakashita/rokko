@@ -77,7 +77,7 @@ El::HermitianEigCtrl<T> get_ctrl(parameters const& params) {
     ctrl.useSDC = params.get<bool>("useSDC");
   }
   if (params.defined("cutoff")) {
-    //ctrl.cutoff = params.get<norm_t<T>>("cutoff");
+    ctrl.sdcCtrl.cutoff = params.get<int>("cutoff");
   }
   if (params.defined("maxInnerIts")) {
     ctrl.sdcCtrl.maxInnerIts = params.get<int>("maxInnerIts");
