@@ -14,6 +14,8 @@
 
 #include <rokko/pyrokko_parameters.hpp>
 #include <rokko/serial_dense_ev.hpp>
+#include <rokko/eigen3.hpp>
+#include <rokko/traits/norm_t.hpp>
 
 namespace rokko {
 
@@ -29,42 +31,44 @@ public:
     serial_dense_ev::initialize(num, ptr);
   }
 
-  template<int MAJOR>
-  wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
-             Eigen::Ref<Eigen::VectorXd> eigval_in,
-             Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> eigvec_in,
+  template<typename T, int MAJOR>
+  wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
+             Eigen::RefVec<norm_t<T>> eigval_in,
+             Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> eigvec_in,
 			 wrap_parameters const& params) {
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvec;
-    Eigen::VectorXd eigval;
+    using vector_type = Eigen::Vector<norm_t<T>>;
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvec;
+    vector_type eigval;
 
-    new (&mat) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
-    new (&eigval) Eigen::Ref<Eigen::VectorXd>(eigval_in);
-    new (&eigvec) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(eigvec_in.data(), eigvec_in.rows(), eigvec_in.cols());
+    new (&mat) Eigen::Map<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
+    new (&eigval) Eigen::Ref<vector_type>(eigval_in);
+    new (&eigvec) Eigen::Map<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(eigvec_in.data(), eigvec_in.rows(), eigvec_in.cols());
 
     wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, eigvec, parameters(params));
 
-    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
-    new (&eigval) Eigen::VectorXd();
-    new (&eigvec) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&mat) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&eigval) vector_type();
+    new (&eigvec) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
 
     return params_out;
   }
 
-  template<int MAJOR>
-  wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
-             Eigen::Ref<Eigen::VectorXd> eigval_in,
+  template<typename T, int MAJOR>
+  wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
+             Eigen::RefVec<norm_t<T>> eigval_in,
 			 wrap_parameters const& params) {
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
-    Eigen::VectorXd eigval;
+    using vector_type = Eigen::Vector<norm_t<T>>;
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
+    vector_type eigval;
 
-    new (&mat) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
-    new (&eigval) Eigen::Ref<Eigen::VectorXd>(eigval_in);
+    new (&mat) Eigen::Map<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
+    new (&eigval) Eigen::Ref<vector_type>(eigval_in);
 
     wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, parameters(params));
 
-    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
-    new (&eigval) Eigen::VectorXd();
+    new (&mat) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&eigval) vector_type();
 
     return params_out;
   }
