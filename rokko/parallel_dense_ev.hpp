@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -32,7 +32,61 @@ public:
   virtual bool is_available_grid_major(grid_col_major_t const& grid_major) = 0;
   virtual void initialize(int& argc, char**& argv) = 0;
   virtual void finalize() = 0;
-  // eigenvalues/eigenvectors
+
+  // float # eigenvalues/eigenvectors
+  virtual parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+				 Eigen::VectorXf& eigvals, distributed_matrix<float, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+				 Eigen::VectorXf& eigvals, distributed_matrix<float, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+				 Eigen::RefVec<float>& eigvals, distributed_matrix<float, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+				 Eigen::RefVec<float>& eigvals, distributed_matrix<float, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  // float # only eigenvalues
+  virtual parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+				 Eigen::VectorXf& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+				 Eigen::VectorXf& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+				 Eigen::RefVec<float>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+				 Eigen::RefVec<float>& eigvals,
+				 parameters const& params) = 0;
+  // complex float # eigenvalues/eigenvectors
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+				 Eigen::VectorXf& eigvals, distributed_matrix<std::complex<float>, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+				 Eigen::VectorXf& eigvals, distributed_matrix<std::complex<float>, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+				 Eigen::RefVec<float>& eigvals, distributed_matrix<std::complex<float>, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+				 Eigen::RefVec<float>& eigvals, distributed_matrix<std::complex<float>, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  // complex float # only eigenvalues
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+				 Eigen::VectorXf& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+				 Eigen::VectorXf& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+				 Eigen::RefVec<float>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+				 Eigen::RefVec<float>& eigvals,
+                 parameters const& params) = 0;
+
+  // double # eigenvalues/eigenvectors
   virtual parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 				 Eigen::VectorXd& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
 				 parameters const& params) = 0;
@@ -45,7 +99,7 @@ public:
   virtual parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 				 Eigen::RefVec<double>& eigvals, distributed_matrix<double, matrix_col_major>& eigvecs,
 				 parameters const& params) = 0;
-  // only eigenvalues
+  // double # only eigenvalues
   virtual parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 				 Eigen::VectorXd& eigvals,
 				 parameters const& params) = 0;
@@ -58,6 +112,34 @@ public:
   virtual parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
 				 Eigen::RefVec<double>& eigvals,
 				 parameters const& params) = 0;
+  // complex double # eigenvalues/eigenvectors
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+				 Eigen::VectorXd& eigvals, distributed_matrix<std::complex<double>, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+				 Eigen::VectorXd& eigvals, distributed_matrix<std::complex<double>, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+				 Eigen::RefVec<double>& eigvals, distributed_matrix<std::complex<double>, matrix_row_major>& eigvecs,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+				 Eigen::RefVec<double>& eigvals, distributed_matrix<std::complex<double>, matrix_col_major>& eigvecs,
+				 parameters const& params) = 0;
+
+  // complex double # only eigenvalues
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+				 Eigen::VectorXd& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+				 Eigen::VectorXd& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+				 Eigen::RefVec<double>& eigvals,
+				 parameters const& params) = 0;
+  virtual parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+				 Eigen::RefVec<double>& eigvals,
+                 parameters const& params) = 0;
+
   virtual mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const = 0;
 };
   
@@ -77,7 +159,91 @@ public:
     solver_impl_.initialize(argc, argv);
   }
   void finalize() override { solver_impl_.finalize(); }
-  // eigenvalues/eigenvectors
+  // float # eigenvalues/eigenvectors
+  parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+			 Eigen::VectorXf& eigvals, distributed_matrix<float, matrix_row_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+			 Eigen::VectorXf& eigvals, distributed_matrix<float, matrix_col_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+			 Eigen::RefVec<float>& eigvals, distributed_matrix<float, matrix_row_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+			 Eigen::RefVec<float>& eigvals, distributed_matrix<float, matrix_col_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  // float # only eigenvalues
+  parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+			 Eigen::VectorXf& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+			 Eigen::VectorXf& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<float, matrix_row_major>& mat,
+			 Eigen::RefVec<float>& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<float, matrix_col_major>& mat,
+			 Eigen::RefVec<float>& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  // complex float # eigenvalues/eigenvectors
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+			 Eigen::VectorXf& eigvals, distributed_matrix<std::complex<float>, matrix_row_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+			 Eigen::VectorXf& eigvals, distributed_matrix<std::complex<float>, matrix_col_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+			 Eigen::RefVec<float>& eigvals, distributed_matrix<std::complex<float>, matrix_row_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+			 Eigen::RefVec<float>& eigvals, distributed_matrix<std::complex<float>, matrix_col_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  // complex float # only eigenvalues
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+			 Eigen::VectorXf& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+			 Eigen::VectorXf& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_row_major>& mat,
+			 Eigen::RefVec<float>& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<float>, matrix_col_major>& mat,
+			 Eigen::RefVec<float>& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  // double # eigenvalues/eigenvectors
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 			 Eigen::VectorXd& eigvals, distributed_matrix<double, matrix_row_major>& eigvecs,
 			 parameters const& params) override {
@@ -98,7 +264,7 @@ public:
 			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
   }
-  // only eigenvalues
+  // double # only eigenvalues
   parameters diagonalize(distributed_matrix<double, matrix_row_major>& mat,
 			 Eigen::VectorXd& eigvals,
 			 parameters const& params) override {
@@ -115,6 +281,48 @@ public:
     return solver_impl_.diagonalize(mat, eigvals, params);
   }
   parameters diagonalize(distributed_matrix<double, matrix_col_major>& mat,
+			 Eigen::RefVec<double>& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  // complex double # eigenvalues/eigenvectors
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+			 Eigen::VectorXd& eigvals, distributed_matrix<std::complex<double>, matrix_row_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+			 Eigen::VectorXd& eigvals, distributed_matrix<std::complex<double>, matrix_col_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+			 Eigen::RefVec<double>& eigvals, distributed_matrix<std::complex<double>, matrix_row_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+			 Eigen::RefVec<double>& eigvals, distributed_matrix<std::complex<double>, matrix_col_major>& eigvecs,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, eigvecs, params);
+  }
+  // complex double # only eigenvalues
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+			 Eigen::VectorXd& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
+			 Eigen::VectorXd& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_row_major>& mat,
+			 Eigen::RefVec<double>& eigvals,
+			 parameters const& params) override {
+    return solver_impl_.diagonalize(mat, eigvals, params);
+  }
+  parameters diagonalize(distributed_matrix<std::complex<double>, matrix_col_major>& mat,
 			 Eigen::RefVec<double>& eigvals,
 			 parameters const& params) override {
     return solver_impl_.diagonalize(mat, eigvals, params);

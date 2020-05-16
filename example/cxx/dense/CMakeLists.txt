@@ -31,7 +31,7 @@ endforeach(name)
 unset(SAMPLE)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  set(SAMPLE frank_mpi minij_mpi frank_partial_mpi frank_block_mpi frank_no_mapping_mpi helmert_mpi helmert_block_mpi heisenberg_mpi xyz_mpi all_gather_mpi gather_mpi helmert_9x9value_mpi frank_group_comm_null_mpi frank_cartesian_comm_mpi frank_2groups_comm_mpi frank_comm_split_mpi)
+  set(SAMPLE frank_mpi minij_mpi minij_complex_mpi minij_float_mpi frank_partial_mpi frank_block_mpi frank_no_mapping_mpi helmert_mpi helmert_block_mpi heisenberg_mpi xyz_mpi all_gather_mpi gather_mpi helmert_9x9value_mpi frank_group_comm_null_mpi frank_cartesian_comm_mpi frank_2groups_comm_mpi frank_comm_split_mpi)
   foreach(name ${SAMPLE})
     set(target_name example_dense_cxx_${name})
     add_executable(${target_name} ${name}.cpp)
