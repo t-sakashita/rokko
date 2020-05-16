@@ -91,6 +91,9 @@ El::HermitianEigCtrl<T> get_ctrl(parameters const& params) {
   if (params.defined("spreadFactor")) {
     ctrl.sdcCtrl.spreadFactor = params.get<norm_t<T>>("spreadFactor");
   }
+  if (params.defined("random")) {
+    ctrl.sdcCtrl.progress = params.get<bool>("random");
+  }
   if (params.defined("progress")) {
     ctrl.sdcCtrl.progress = params.get<bool>("progress");
   }
