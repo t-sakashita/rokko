@@ -25,65 +25,38 @@ namespace rokko {
 
 namespace py = pybind11;
 
-class wrap_grid {
+class wrap_grid : public grid {
 public:
-  wrap_grid() : wrap_grid{grid_row_major} {}
+  using grid::grid;
 
   template <typename GRID_MAJOR>
-  wrap_grid(GRID_MAJOR const& grid_major = grid_row_major) {
-    ptr = std::make_shared<grid>(to_MPI_Comm(), grid_major);
-  }
+  wrap_grid(GRID_MAJOR const& grid_major = grid_row_major) : grid(to_MPI_Comm(), grid_major) {}
 
   template <typename GRID_MAJOR>
-  wrap_grid(pybind11::handle const& comm_handle, std::tuple<int,int> const& size_in, GRID_MAJOR const& grid_major = grid_row_major) {
-    ptr = std::make_shared<grid>(to_MPI_Comm(comm_handle), to_array(size_in), grid_major);
-  }
-
-  wrap_grid(rokko::grid const g) {
-    ptr = std::make_shared<grid>(g);
-  }
+  wrap_grid(pybind11::handle const& comm_handle, std::tuple<int,int> const& size_in, GRID_MAJOR const& grid_major = grid_row_major)
+    : grid(to_MPI_Comm(comm_handle), to_array(size_in), grid_major) {}
 
   template <typename GRID_MAJOR>
-  wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major) {
-    ptr = std::make_shared<grid>(to_MPI_Comm(comm_handle), grid_major);
-  }
+  wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major)
+    : grid(to_MPI_Comm(comm_handle), grid_major) {}
 
-  grid const& get_grid() const {
-    return *ptr;
-  }
+  wrap_grid(rokko::grid const g) : grid(g) {}
 
   std::string get_major_string() const {
-    return get_grid().is_row_major() ? "row" : "col";
+    return grid::is_row_major() ? "row" : "col";
   }
 
   pybind11::handle get_comm() const {
-    return pybind11::handle(PyMPIComm_New(ptr->get_comm()));
+    return pybind11::handle(PyMPIComm_New(grid::get_comm()));
   }
-  
-  int get_nprocs() const { return ptr->get_nprocs(); }
-  int get_nprow() const { return ptr->get_nprow(); }
-  int get_npcol() const { return ptr->get_npcol(); }
 
   std::tuple<int,int> get_shape() const {
-    return ptr->get_size();
+    return grid::get_size();
   }
-  
-  int get_myrank() const { return ptr->get_myrank(); }
-  int get_myrow() const { return ptr->get_myrow(); }
-  int get_mycol() const { return ptr->get_mycol(); }
 
   std::tuple<int,int> get_mine() const {
-    return ptr->get_my_coordinate();
+    return grid::get_my_coordinate();
   }
-  
-  bool is_row_major() const { return ptr->is_row_major(); }
-
-  bool is_col_major() const { return ptr->is_col_major(); }
-
-  int calculate_rank_form_coords(int proc_row, int proc_col) const { return ptr->calculate_rank_form_coords(proc_row, proc_col); }
-
-private:
-  std::shared_ptr<const grid> ptr;
 };
 
 } // end namespace rokko
