@@ -40,7 +40,7 @@ public:
   wrap_grid(pybind11::handle const& comm_handle, GRID_MAJOR const& grid_major = grid_row_major)
     : grid(to_MPI_Comm(comm_handle), grid_major) {}
 
-  wrap_grid(rokko::grid const g) : grid(g) {}
+  wrap_grid(rokko::grid const& g) : grid(g) {}
 
   std::string get_major_string() const {
     return grid::is_row_major() ? "row" : "col";
