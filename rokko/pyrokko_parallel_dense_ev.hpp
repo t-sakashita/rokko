@@ -31,7 +31,7 @@ public:
   }
 
   wrap_mapping_bc default_mapping(int dim, wrap_grid const& g) const {
-    return wrap_mapping_bc(parallel_dense_ev::default_mapping(dim, g.get_grid()));
+    return wrap_mapping_bc(parallel_dense_ev::default_mapping(dim, g));
   }
 
   template<typename VEC>
