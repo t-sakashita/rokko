@@ -148,72 +148,77 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_property_readonly("mine", &wrap_grid::get_mine)
     .def_property_readonly("major", &wrap_grid::get_major_string);
 
-  py::class_<wrap_mapping_bc>(m, "mapping_bc")
-    .def(py::init<matrix_major_enum>(), py::arg("major") = col)
-    .def(py::init<int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"), py::arg("major") = col)
-    .def(py::init<int, int, int, wrap_grid, matrix_major_enum>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"), py::arg("major") = col)
-    .def(py::init<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid, matrix_major_enum>(), py::arg("global_size"), py::arg("block_size"), py::arg("grid"), py::arg("major") = col)
-    .def("get_mb", &wrap_mapping_bc::get_mb)
-    .def("get_nb", &wrap_mapping_bc::get_nb)
-    .def_property_readonly("block_shape", &wrap_mapping_bc::get_block_shape)
-    .def_property_readonly("m_global", &wrap_mapping_bc::get_m_global)
-    .def_property_readonly("n_global", &wrap_mapping_bc::get_n_global)
-    .def_property_readonly("global_shape", &wrap_mapping_bc::get_global_shape)
-    .def_property_readonly("m_local", &wrap_mapping_bc::get_m_local)
-    .def_property_readonly("n_local", &wrap_mapping_bc::get_n_local)
-    .def_property_readonly("local_shape", &wrap_mapping_bc::get_local_shape)
-    .def("translate_l2g_row", &wrap_mapping_bc::translate_l2g_row)
-    .def("translate_l2g_col", &wrap_mapping_bc::translate_l2g_col)
-    .def("translate_l2g", &wrap_mapping_bc::translate_l2g) // tuple
-    .def("translate_g2l_row", &wrap_mapping_bc::translate_g2l_row)
-    .def("translate_g2l_col", &wrap_mapping_bc::translate_g2l_col)
-    .def("translate_g2l", &wrap_mapping_bc::translate_g2l) // tuple
-    .def("has_global_row_index", &wrap_mapping_bc::has_global_row_index)
-    .def("has_global_col_index", &wrap_mapping_bc::has_global_col_index)
-    .def("has_global_indices", &wrap_mapping_bc::has_global_indices)
-    .def("get_grid", &wrap_mapping_bc::get_grid)
-    .def_property_readonly("major", &wrap_mapping_bc::get_major_string);
-  
-  py::class_<wrap_distributed_matrix>(m, "distributed_matrix")
-    .def(py::init<wrap_mapping_bc>())
-    .def_property_readonly("mb", &wrap_distributed_matrix::get_mb)
-    .def_property_readonly("nb", &wrap_distributed_matrix::get_nb)
-    .def_property_readonly("block_shape", &wrap_distributed_matrix::get_block_shape)
-    .def_property_readonly("m_global", &wrap_distributed_matrix::get_m_global)
-    .def_property_readonly("n_global", &wrap_distributed_matrix::get_n_global)
-    .def_property_readonly("m_local", &wrap_distributed_matrix::get_m_local)
-    .def_property_readonly("n_local", &wrap_distributed_matrix::get_n_local)
-    .def_property_readonly("global_shape", &wrap_distributed_matrix::get_global_shape)
-    .def_property_readonly("local_shape", &wrap_distributed_matrix::get_local_shape)
-    .def("translate_l2g_row", &wrap_distributed_matrix::translate_l2g_row)
-    .def("translate_l2g_col", &wrap_distributed_matrix::translate_l2g_col)
-    .def("translate_l2g", &wrap_distributed_matrix::translate_l2g) // tuple
-    .def("translate_g2l_row", &wrap_distributed_matrix::translate_g2l_row)
-    .def("translate_g2l_col", &wrap_distributed_matrix::translate_g2l_col)
-    .def("translate_g2l", &wrap_distributed_matrix::translate_g2l) // tuple
-    .def("has_global_row_index", &wrap_distributed_matrix::has_global_row_index)
-    .def("has_global_col_index", &wrap_distributed_matrix::has_global_col_index)
-    .def("has_global_indices", &wrap_distributed_matrix::has_global_indices)
-    .def("get_local", &wrap_distributed_matrix::get_local)
-    .def("get_global", &wrap_distributed_matrix::get_global)
-    .def("set_local", &wrap_distributed_matrix::set_local)
-    .def("set_global", &wrap_distributed_matrix::set_global)
-    .def("update_local", &wrap_distributed_matrix::update_local)
-    .def("update_global", &wrap_distributed_matrix::update_global)
-    .def("set_zeros", &wrap_distributed_matrix::set_zeros)
-    .def_property_readonly("length_array", &wrap_distributed_matrix::get_length_array)
-    .def_property_readonly("lld", &wrap_distributed_matrix::get_lld)
-    .def("generate", &wrap_distributed_matrix::generate)
-    .def("print", &wrap_distributed_matrix::print)
-    .def("get_map", &wrap_distributed_matrix::get_map)
-    .def_property_readonly("major", &wrap_distributed_matrix::get_major_string)
-    .def("set_ndarray", &wrap_distributed_matrix::set_ndarray)
-    .def("get_ndarray", &wrap_distributed_matrix::get_ndarray, py::return_value_policy::reference_internal)
-    .def_property("ndarray", &wrap_distributed_matrix::get_ndarray, &wrap_distributed_matrix::set_ndarray)
-    .def_property_readonly("map", &wrap_distributed_matrix::get_map)
-    .def_property_readonly("major", &wrap_distributed_matrix::get_major_string);
+  py::class_<base_mapping_bc, std::shared_ptr<base_mapping_bc>>(m, "base_mapping_bc");
 
-  m.def("product", py::overload_cast<double, wrap_distributed_matrix const&, bool, wrap_distributed_matrix const&, bool, double, wrap_distributed_matrix&>(&pyrokko_product), py::arg("alpha"), py::arg("matA"), py::arg("transA"), py::arg("matB"), py::arg("transB"), py::arg("beta"), py::arg("matC"));
+  py::class_<wrap_mapping_bc<matrix_col_major>, base_mapping_bc, std::shared_ptr<wrap_mapping_bc<matrix_col_major>>>(m, "mapping_bc_col")
+    .def(py::init<int, int, wrap_grid>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"))
+    .def(py::init<int, int, int, wrap_grid>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"))
+    .def(py::init<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid>(), py::arg("global_size"), py::arg("block_size"), py::arg("grid"))
+    .def("get_mb", &wrap_mapping_bc<matrix_col_major>::get_mb)
+    .def("get_nb", &wrap_mapping_bc<matrix_col_major>::get_nb)
+    .def_property_readonly("block_shape", &wrap_mapping_bc<matrix_col_major>::get_block_shape)
+    .def_property_readonly("m_global", &wrap_mapping_bc<matrix_col_major>::get_m_global)
+    .def_property_readonly("n_global", &wrap_mapping_bc<matrix_col_major>::get_n_global)
+    .def_property_readonly("global_shape", &wrap_mapping_bc<matrix_col_major>::get_global_shape)
+    .def_property_readonly("m_local", &wrap_mapping_bc<matrix_col_major>::get_m_local)
+    .def_property_readonly("n_local", &wrap_mapping_bc<matrix_col_major>::get_n_local)
+    .def_property_readonly("local_shape", &wrap_mapping_bc<matrix_col_major>::get_local_shape)
+    .def("translate_l2g_row", &wrap_mapping_bc<matrix_col_major>::translate_l2g_row)
+    .def("translate_l2g_col", &wrap_mapping_bc<matrix_col_major>::translate_l2g_col)
+    .def("translate_l2g", &wrap_mapping_bc<matrix_col_major>::translate_l2g) // tuple
+    .def("translate_g2l_row", &wrap_mapping_bc<matrix_col_major>::translate_g2l_row)
+    .def("translate_g2l_col", &wrap_mapping_bc<matrix_col_major>::translate_g2l_col)
+    .def("translate_g2l", &wrap_mapping_bc<matrix_col_major>::translate_g2l) // tuple
+    .def("has_global_row_index", &wrap_mapping_bc<matrix_col_major>::has_global_row_index)
+    .def("has_global_col_index", &wrap_mapping_bc<matrix_col_major>::has_global_col_index)
+    .def("has_global_indices", &wrap_mapping_bc<matrix_col_major>::has_global_indices)
+    .def("get_grid", &wrap_mapping_bc<matrix_col_major>::get_grid)
+    .def_property_readonly("major", &wrap_mapping_bc<matrix_col_major>::get_major_string);
+
+  m.def("mapping_bc", py::overload_cast<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
+  m.def("mapping_bc", py::overload_cast<int, int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
+  m.def("mapping_bc", py::overload_cast<int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
+
+  py::class_<wrap_distributed_matrix<matrix_col_major>>(m, "distributed_matrix")
+    .def(py::init<wrap_mapping_bc<matrix_col_major>>())
+    .def_property_readonly("mb", &wrap_distributed_matrix<matrix_col_major>::get_mb)
+    .def_property_readonly("nb", &wrap_distributed_matrix<matrix_col_major>::get_nb)
+    .def_property_readonly("block_shape", &wrap_distributed_matrix<matrix_col_major>::get_block_shape)
+    .def_property_readonly("m_global", &wrap_distributed_matrix<matrix_col_major>::get_m_global)
+    .def_property_readonly("n_global", &wrap_distributed_matrix<matrix_col_major>::get_n_global)
+    .def_property_readonly("m_local", &wrap_distributed_matrix<matrix_col_major>::get_m_local)
+    .def_property_readonly("n_local", &wrap_distributed_matrix<matrix_col_major>::get_n_local)
+    .def_property_readonly("global_shape", &wrap_distributed_matrix<matrix_col_major>::get_global_shape)
+    .def_property_readonly("local_shape", &wrap_distributed_matrix<matrix_col_major>::get_local_shape)
+    .def("translate_l2g_row", &wrap_distributed_matrix<matrix_col_major>::translate_l2g_row)
+    .def("translate_l2g_col", &wrap_distributed_matrix<matrix_col_major>::translate_l2g_col)
+    .def("translate_l2g", &wrap_distributed_matrix<matrix_col_major>::translate_l2g) // tuple
+    .def("translate_g2l_row", &wrap_distributed_matrix<matrix_col_major>::translate_g2l_row)
+    .def("translate_g2l_col", &wrap_distributed_matrix<matrix_col_major>::translate_g2l_col)
+    .def("translate_g2l", &wrap_distributed_matrix<matrix_col_major>::translate_g2l) // tuple
+    .def("has_global_row_index", &wrap_distributed_matrix<matrix_col_major>::has_global_row_index)
+    .def("has_global_col_index", &wrap_distributed_matrix<matrix_col_major>::has_global_col_index)
+    .def("has_global_indices", &wrap_distributed_matrix<matrix_col_major>::has_global_indices)
+    .def("get_local", &wrap_distributed_matrix<matrix_col_major>::get_local)
+    .def("get_global", &wrap_distributed_matrix<matrix_col_major>::get_global)
+    .def("set_local", &wrap_distributed_matrix<matrix_col_major>::set_local)
+    .def("set_global", &wrap_distributed_matrix<matrix_col_major>::set_global)
+    .def("update_local", &wrap_distributed_matrix<matrix_col_major>::update_local)
+    .def("update_global", &wrap_distributed_matrix<matrix_col_major>::update_global)
+    .def("set_zeros", &wrap_distributed_matrix<matrix_col_major>::set_zeros)
+    .def_property_readonly("length_array", &wrap_distributed_matrix<matrix_col_major>::get_length_array)
+    .def_property_readonly("lld", &wrap_distributed_matrix<matrix_col_major>::get_lld)
+    //.def("generate", &wrap_distributed_matrix<matrix_col_major>::generate)
+    .def("print", &wrap_distributed_matrix<matrix_col_major>::print)
+    .def("get_map", &wrap_distributed_matrix<matrix_col_major>::get_map)
+    .def_property_readonly("major", &wrap_distributed_matrix<matrix_col_major>::get_major_string)
+    .def("set_ndarray", &wrap_distributed_matrix<matrix_col_major>::set_ndarray)
+    .def("get_ndarray", &wrap_distributed_matrix<matrix_col_major>::get_ndarray, py::return_value_policy::reference_internal)
+    .def_property("ndarray", &wrap_distributed_matrix<matrix_col_major>::get_ndarray, &wrap_distributed_matrix<matrix_col_major>::set_ndarray)
+    .def_property_readonly("map", &wrap_distributed_matrix<matrix_col_major>::get_map)
+    .def_property_readonly("major", &wrap_distributed_matrix<matrix_col_major>::get_major_string);
+
+  m.def("product", py::overload_cast<double, wrap_distributed_matrix<matrix_col_major> const&, bool, wrap_distributed_matrix<matrix_col_major> const&, bool, double, wrap_distributed_matrix<matrix_col_major>&>(&pyrokko_product), py::arg("alpha"), py::arg("matA"), py::arg("transA"), py::arg("matB"), py::arg("transB"), py::arg("beta"), py::arg("matC"));
 
   py::class_<wrap_parallel_dense_ev>(m, "parallel_dense_ev")
     .def(py::init<std::string const&>())
@@ -221,9 +226,9 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("initialize", &wrap_parallel_dense_ev::initialize)
     .def("finalize", &wrap_parallel_dense_ev::finalize)
     .def("default_mapping", &wrap_parallel_dense_ev::default_mapping)
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<Eigen::RefVec<double>>),
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<Eigen::RefVec<double>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix&, Eigen::RefVec<double>&, wrap_distributed_matrix&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<Eigen::RefVec<double>>),
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&, Eigen::RefVec<double>&, wrap_distributed_matrix<matrix_col_major>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<Eigen::RefVec<double>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &wrap_parallel_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &wrap_parallel_dense_ev::default_solver);
@@ -232,13 +237,13 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_minij_matrix>(m, "minij_matrix")
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_minij_matrix::generate_row))
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_minij_matrix::generate_col))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_minij_matrix::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&>(&wrap_minij_matrix::generate<matrix_col_major>))
     .def_static("eigenvalue", &minij_matrix::eigenvalue);
   
   py::class_<wrap_frank_matrix>(m, "frank_matrix")
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_frank_matrix::generate_row))
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_frank_matrix::generate_col))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_frank_matrix::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&>(&wrap_frank_matrix::generate<matrix_col_major>))
     .def_static("eigenvalue", &frank_matrix::eigenvalue);
 
   py::class_<wrap_laplacian_matrix>(m, "laplacian_matrix")
@@ -249,22 +254,22 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_helmert_matrix>(m, "helmert_matrix")
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_helmert_matrix::generate_eigen<Eigen::RowMajor>))
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_helmert_matrix::generate_eigen<Eigen::ColMajor>))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_helmert_matrix::generate))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&>(&wrap_helmert_matrix::generate<matrix_col_major>))
     .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues_eigen<Eigen::RowMajor>))
     .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues_eigen<Eigen::ColMajor>))
-    .def_static("generate_for_given_eigenvalues", py::overload_cast<wrap_distributed_matrix&,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues));
+    .def_static("generate_for_given_eigenvalues", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues<matrix_col_major>));
 
   py::class_<wrap_matrix012>(m, "matrix012")
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_matrix012::generate_row))
     .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_matrix012::generate_col))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix&>(&wrap_matrix012::generate));
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix<matrix_col_major>&>(&wrap_matrix012::generate<matrix_col_major>));
 
   // collective MPI communication
-  m.def("gather", py::overload_cast<wrap_distributed_matrix const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather));
-  m.def("gather", py::overload_cast<wrap_distributed_matrix const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather));
+  m.def("gather", py::overload_cast<wrap_distributed_matrix<matrix_row_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather));
+  m.def("gather", py::overload_cast<wrap_distributed_matrix<matrix_col_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather));
 
-  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix&, int>(&pyrokko_scatter));
-  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix&, int>(&pyrokko_scatter));
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix<matrix_row_major>&, int>(&pyrokko_scatter));
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix<matrix_col_major>&, int>(&pyrokko_scatter));
 
   py::class_<distributed_mfree>(m, "distributed_mfree_base");
 

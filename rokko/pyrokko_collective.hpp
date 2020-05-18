@@ -18,46 +18,38 @@
 
 namespace rokko {
 
-void pyrokko_gather(wrap_distributed_matrix const& from, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> to_in, int root) {
-  assert(!from.is_major_col());
-
+void pyrokko_gather(wrap_distributed_matrix<matrix_row_major> const& from, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> to_in, int root) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> to;
   new (&to) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>(to_in.data(), to_in.rows(), to_in.cols());
 
-  gather(from.row_ver(), to, root);
+  gather(from, to, root);
 
   new (&to) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>();
 }
 
-void pyrokko_gather(wrap_distributed_matrix const& from, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> to_in, int root) {
-  assert(from.is_major_col());
-
+void pyrokko_gather(wrap_distributed_matrix<matrix_col_major> const& from, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> to_in, int root) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> to;
   new (&to) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>(to_in.data(), to_in.rows(), to_in.cols());
 
-  gather(from.col_ver(), to, root);
+  gather(from, to, root);
 
   new (&to) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>();
 }
 
-void pyrokko_scatter(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> from_in, wrap_distributed_matrix& to, int root) {
-  assert(!to.is_major_col());
-
+void pyrokko_scatter(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>> from_in, wrap_distributed_matrix<matrix_row_major>& to, int root) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> from;
   new (&from) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>(from_in.data(), from_in.rows(), from_in.cols());
 
-  scatter(from, to.row_ver(), root);
+  scatter(from, to, root);
 
   new (&from) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>();
 }
 
-void pyrokko_scatter(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> from_in, wrap_distributed_matrix& to, int root) {
-  assert(to.is_major_col());
-
+void pyrokko_scatter(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>> from_in, wrap_distributed_matrix<matrix_col_major>& to, int root) {
   Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor> from;
   new (&from) Eigen::Map<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>(from_in.data(), from_in.rows(), from_in.cols());
   
-  scatter(from, to.col_ver(), root);
+  scatter(from, to, root);
 
   new (&from) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>();
 }

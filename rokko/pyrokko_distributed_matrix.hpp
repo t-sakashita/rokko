@@ -12,7 +12,6 @@
 #ifndef PYROKKO_DISTRIBUTED_MATRIX_HPP
 #define PYROKKO_DISTRIBUTED_MATRIX_HPP
 
-#include <boost/variant.hpp>
 #include <pybind11/pybind11.h>
 
 #include <rokko/pyrokko_mapping_bc.hpp>
@@ -23,213 +22,71 @@
 
 namespace rokko {
 
-class wrap_distributed_matrix {
+class base_distributed_matrix {
 public:
+  virtual ~base_distributed_matrix() = default;
+};
 
-  wrap_distributed_matrix(wrap_mapping_bc const& map_in) : is_col(map_in.is_col_major()), map(map_in) {
-    if (is_col)
-      _ptr = std::make_shared<distributed_matrix<double,matrix_col_major>>(map_in.col_ver());
-    else
-      _ptr = std::make_shared<distributed_matrix<double,matrix_row_major>>(map_in.row_ver());
-  }
+template <typename MATRIX_MAJOR>
+class wrap_distributed_matrix : public distributed_matrix<double,MATRIX_MAJOR>, public base_distributed_matrix {
+public:
+  using distributed_matrix<double,MATRIX_MAJOR>::get_global_size;
+  using distributed_matrix<double,MATRIX_MAJOR>::get_local_size;
+  using distributed_matrix<double,MATRIX_MAJOR>::get_block_size;
+  using distributed_matrix<double,MATRIX_MAJOR>::get_m_local;
+  using distributed_matrix<double,MATRIX_MAJOR>::get_n_local;
+  using distributed_matrix<double,MATRIX_MAJOR>::get_lld;
+  using distributed_matrix<double,MATRIX_MAJOR>::get_array_pointer;
+  using distributed_matrix<double,MATRIX_MAJOR>::is_col_major;
 
-  distributed_matrix<double,matrix_col_major>& col_ver() {
-    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_col_major>>>(_ptr));
-  }
-  
-  distributed_matrix<double,matrix_row_major>& row_ver() {
-    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_row_major>>>(_ptr));
-  }
+  wrap_distributed_matrix(wrap_mapping_bc<MATRIX_MAJOR> const& map) : distributed_matrix<double,MATRIX_MAJOR>(map) {}
 
-  distributed_matrix<double,matrix_col_major> const& col_ver() const {
-    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_col_major>>>(_ptr));
-  }
-  
-  distributed_matrix<double,matrix_row_major> const& row_ver() const {
-    return *(boost::get<std::shared_ptr<distributed_matrix<double,matrix_row_major>>>(_ptr));
-  }
-
-  // map member function
-  int get_mb() const {
-    return is_col ? col_ver().get_mb() : row_ver().get_mb();
-  }
-
-  int get_nb() const {
-    return is_col ? col_ver().get_nb() : row_ver().get_nb();
-  }
+  wrap_distributed_matrix() = default;
   
   std::tuple<int,int> get_block_shape() const {
-    return is_col ? col_ver().get_block_size() : row_ver().get_block_size();
+    return get_block_size();
   }
   
-  int get_m_global() const {
-    return is_col ? col_ver().get_m_global() : row_ver().get_m_global();
-  }
-
-  int get_n_global() const {
-    return is_col ? col_ver().get_n_global() : row_ver().get_n_global();
-  }
-
-  int get_m_local() const {
-    return is_col ? col_ver().get_m_local() : row_ver().get_m_local();
-  }
-
-  int get_n_local() const {
-    return is_col ? col_ver().get_n_local() : row_ver().get_n_local();
-  }
-
-  // local to global index
-  int translate_l2g_row(int local_i) const {
-    return is_col ? col_ver().translate_l2g_row(local_i) : row_ver().translate_l2g_row(local_i);
-  }
-
-  int translate_l2g_col(int local_j) const {
-    return is_col ? col_ver().translate_l2g_col(local_j) : row_ver().translate_l2g_col(local_j);
-  }
-
-  // global to local index
-  int translate_g2l_row(int local_i) const {
-    return is_col ? col_ver().translate_g2l_row(local_i) : row_ver().translate_g2l_row(local_i);
-  }
-
-  int translate_g2l_col(int local_j) const {
-    return is_col ? col_ver().translate_g2l_col(local_j) : row_ver().translate_g2l_col(local_j);
-  }
-
-  bool has_global_row_index(int global_i) const {
-    return is_col ? col_ver().has_global_row_index(global_i) : row_ver().has_global_row_index(global_i);
-  }
-
-  bool has_global_col_index(int global_j) const {
-    return is_col ? col_ver().has_global_col_index(global_j) : row_ver().has_global_col_index(global_j);
-  }
-
   bool has_global_indices(std::tuple<int,int> const& global) const {
-    return is_col ? col_ver().has_global_indices(to_array(global)) : row_ver().has_global_indices(to_array(global));
+    return has_global_indices(to_array(global));
   }
   
   std::tuple<int,int> get_global_shape() const {
-    return is_col ? col_ver().get_global_size() : row_ver().get_global_size();
+    return get_global_size();
   }
   
   std::tuple<int,int> get_local_shape() const {
-    return is_col ? col_ver().get_local_size() : row_ver().get_local_size();
+    return get_local_size();
   }
 
   std::tuple<int,int> translate_l2g(std::tuple<int,int> const& local) const {
-    return is_col ? col_ver().translate_l2g(to_array(local)) : row_ver().translate_l2g(to_array(local));
+    return translate_l2g(to_array(local));
   }
 
   std::tuple<int,int> translate_g2l(std::tuple<int,int> const& global) const {
-    return is_col ? col_ver().translate_g2l(to_array(global)) : row_ver().translate_g2l(to_array(global));
+    return translate_g2l(to_array(global));
   }
 
-  double get_local(int local_i, int local_j) {
-    return is_col ?
-      col_ver().get_local(local_i, local_j) : row_ver().get_local(local_i, local_j);
-  }
-
-  double get_global(int global_i, int global_j) {
-    return is_col ?
-      col_ver().get_global(global_i, global_j) : row_ver().get_global(global_i, global_j);
-  }
-
-  void set_local(int local_i, int local_j, double value) {
-    if (is_col)
-      col_ver().set_local(local_i, local_j, value);
-    else
-      row_ver().set_local(local_i, local_j, value);
-  }
-  
-  void set_global(int global_i, int global_j, double value) {
-    if (is_col)
-      col_ver().set_global(global_i, global_j, value);
-    else
-      row_ver().set_global(global_i, global_j, value);
-  }
-
-  void update_local(int local_i, int local_j, double value) {
-    if (is_col)
-      col_ver().update_local(local_i, local_j, value);
-    else
-      row_ver().update_local(local_i, local_j, value);
-  }
-
-  void update_global(int global_i, int global_j, double value) {
-    if (is_col)
-      col_ver().update_global(global_i, global_j, value);
-    else
-      row_ver().update_global(global_i, global_j, value);
-  }
-
-  int get_length_array() const {
-    return is_col ? col_ver().get_length_array() : row_ver().get_length_array();
-  }
-  int get_lld() const {
-    return is_col ? col_ver().get_lld() : row_ver().get_lld();
-  };
-  
-  void set_zeros() {
-    if (is_col)
-      col_ver().set_zeros();
-    else
-      row_ver().set_zeros();
-  }
-
-  void generate(std::function<double(int, int)> const& func) {
-    if (is_col)
-      col_ver().generate(func);
-    else
-      row_ver().generate(func);
-  }
-  
-  void print() const {
-    if (is_col)
-      col_ver().print();
-    else
-      row_ver().print();
-  }
-
-  bool is_major_col() const {
-    return is_col;
-  }
-  
   std::string get_major_string() const {
-    return is_col ? "col" : "row";
+    return is_col_major() ? "col" : "row";
   }
 
-  const wrap_mapping_bc& get_map() const {
-    return map;
+  wrap_mapping_bc<MATRIX_MAJOR> get_map() const {
+    return distributed_matrix<double,MATRIX_MAJOR>::get_mapping();
   }
 
-  template <typename MATRIX_MAJOR>
-  distributed_matrix<double,MATRIX_MAJOR>* get_ptr() {
-    return boost::get<std::shared_ptr<distributed_matrix<double,MATRIX_MAJOR>>>(_ptr).get();
-  }
+  py::array_t<double> get_ndarray();
 
-  template <typename MATRIX_MAJOR>
-  double* get_array_pointer() {
-    return get_ptr<MATRIX_MAJOR>()->get_array_pointer();
-  }
-
-  py::array_t<double> get_ndarray() {
-    if (is_col)
-      return py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer<matrix_col_major>(), py::cast(*this));
-    else
-      return py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer<matrix_row_major>(), py::cast(*this));
-  }
-
-  template <typename MATRIX_MAJOR>
   auto get_eigen_map() {
-    return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, rokko::eigen3_major<MATRIX_MAJOR>>,0,Eigen::OuterStride<>>(get_array_pointer<MATRIX_MAJOR>(), get_m_local(), get_n_local(), Eigen::OuterStride<Eigen::Dynamic>(get_lld()));
+    return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, rokko::eigen3_major<MATRIX_MAJOR>>,0,Eigen::OuterStride<>>(get_array_pointer(), get_m_local(), get_n_local(), Eigen::OuterStride<Eigen::Dynamic>(get_lld()));
   }
 
   void set_ndarray(py::array_t<double> const& mat) {
     py::array_t<double> array;
-    if (is_col) {
-      array = py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer<matrix_col_major>(), py::cast(*this));
+    if (is_col_major()) {
+      array = py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer(), py::cast(*this));
     } else {
-      array = py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer<matrix_row_major>(), py::cast(*this));
+      array = py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer(), py::cast(*this));
     }
 
     auto r = array.template mutable_unchecked<2>();
@@ -241,36 +98,38 @@ public:
   }
 
   void set_col_major_matrix(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>> mat) {
-    if (!is_col)
+    if (!is_col_major())
       throw std::invalid_argument("Cannot set col-major ndarray to row-major distributed_matrix");
 
-    get_eigen_map<matrix_col_major>() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(mat);
+    get_eigen_map() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>>(mat);
   }
 
   void set_row_major_matrix(Eigen::Ref<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> mat) {
-    if (is_col)
+    if (is_col_major())
       throw std::invalid_argument("Cannot set row-major ndarray to col-major distributed_matrix");
 
-    get_eigen_map<matrix_row_major>() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(mat);
+    get_eigen_map() = static_cast<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(mat);
   }
-
-private:
-  bool is_col;
-  boost::variant<std::shared_ptr<distributed_matrix<double,matrix_row_major>>, std::shared_ptr<distributed_matrix<double,matrix_col_major>>> _ptr;
-  wrap_mapping_bc map;
 };
 
 
-void pyrokko_product(double alpha,
-                     wrap_distributed_matrix const& matA, bool transA,
-                     wrap_distributed_matrix const& matB, bool transB,
-                     double beta,
-                     wrap_distributed_matrix& matC) {
-  assert(matA.is_major_col());
-  assert(matB.is_major_col());
-  assert(matC.is_major_col());
+template<>
+py::array_t<double> wrap_distributed_matrix<matrix_col_major>::get_ndarray() {
+  return py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double), sizeof(double)*get_lld()}, get_array_pointer(), py::cast(*this));
+}
 
-  product(alpha, matA.col_ver(), transA, matB.col_ver(), transB, beta, matC.col_ver());
+template<>
+py::array_t<double> wrap_distributed_matrix<matrix_row_major>::get_ndarray() {
+  return py::array_t<double>({get_m_local(), get_n_local()}, {sizeof(double)*get_lld(), sizeof(double)}, get_array_pointer(), py::cast(*this));
+}
+
+
+void pyrokko_product(double alpha,
+                     wrap_distributed_matrix<matrix_col_major> const& matA, bool transA,
+                     wrap_distributed_matrix<matrix_col_major> const& matB, bool transB,
+                     double beta,
+                     wrap_distributed_matrix<matrix_col_major>& matC) {
+  product(alpha, matA, transA, matB, transB, beta, matC);
 }
 
 } // end namespace rokko
