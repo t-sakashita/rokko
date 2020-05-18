@@ -47,6 +47,35 @@ namespace rokko {
 
 namespace py = pybind11;
 
+template<typename MATRIX_MAJOR>
+void declare_wrap_mapping_bc(py::module &m, std::string const& typestr) {
+  std::string pyclass_name = std::string("mapping_bc_") + typestr;
+  py::class_<wrap_mapping_bc<MATRIX_MAJOR>, base_mapping_bc, std::shared_ptr<wrap_mapping_bc<MATRIX_MAJOR>>>(m, pyclass_name.c_str())
+    .def(py::init<int, int, wrap_grid>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"))
+    .def(py::init<int, int, int, wrap_grid>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"))
+    .def(py::init<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid>(), py::arg("global_size"), py::arg("block_size"), py::arg("grid"))
+    .def("get_mb", &wrap_mapping_bc<MATRIX_MAJOR>::get_mb)
+    .def("get_nb", &wrap_mapping_bc<MATRIX_MAJOR>::get_nb)
+    .def_property_readonly("block_shape", &wrap_mapping_bc<MATRIX_MAJOR>::get_block_shape)
+    .def_property_readonly("m_global", &wrap_mapping_bc<MATRIX_MAJOR>::get_m_global)
+    .def_property_readonly("n_global", &wrap_mapping_bc<MATRIX_MAJOR>::get_n_global)
+    .def_property_readonly("global_shape", &wrap_mapping_bc<MATRIX_MAJOR>::get_global_shape)
+    .def_property_readonly("m_local", &wrap_mapping_bc<MATRIX_MAJOR>::get_m_local)
+    .def_property_readonly("n_local", &wrap_mapping_bc<MATRIX_MAJOR>::get_n_local)
+    .def_property_readonly("local_shape", &wrap_mapping_bc<MATRIX_MAJOR>::get_local_shape)
+    .def("translate_l2g_row", &wrap_mapping_bc<MATRIX_MAJOR>::translate_l2g_row)
+    .def("translate_l2g_col", &wrap_mapping_bc<MATRIX_MAJOR>::translate_l2g_col)
+    .def("translate_l2g", &wrap_mapping_bc<MATRIX_MAJOR>::translate_l2g) // tuple
+    .def("translate_g2l_row", &wrap_mapping_bc<MATRIX_MAJOR>::translate_g2l_row)
+    .def("translate_g2l_col", &wrap_mapping_bc<MATRIX_MAJOR>::translate_g2l_col)
+    .def("translate_g2l", &wrap_mapping_bc<MATRIX_MAJOR>::translate_g2l) // tuple
+    .def("has_global_row_index", &wrap_mapping_bc<MATRIX_MAJOR>::has_global_row_index)
+    .def("has_global_col_index", &wrap_mapping_bc<MATRIX_MAJOR>::has_global_col_index)
+    .def("has_global_indices", &wrap_mapping_bc<MATRIX_MAJOR>::has_global_indices)
+    .def("get_grid", &wrap_mapping_bc<MATRIX_MAJOR>::get_grid)
+    .def_property_readonly("major", &wrap_mapping_bc<MATRIX_MAJOR>::get_major_string);
+}
+
 PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_parameters>(m, "parameters")
     .def(py::init<>())
@@ -149,31 +178,8 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_property_readonly("major", &wrap_grid::get_major_string);
 
   py::class_<base_mapping_bc, std::shared_ptr<base_mapping_bc>>(m, "base_mapping_bc");
-
-  py::class_<wrap_mapping_bc<matrix_col_major>, base_mapping_bc, std::shared_ptr<wrap_mapping_bc<matrix_col_major>>>(m, "mapping_bc_col")
-    .def(py::init<int, int, wrap_grid>(), py::arg("global_dim"), py::arg("block_size"), py::arg("grid"))
-    .def(py::init<int, int, int, wrap_grid>(), py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"))
-    .def(py::init<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid>(), py::arg("global_size"), py::arg("block_size"), py::arg("grid"))
-    .def("get_mb", &wrap_mapping_bc<matrix_col_major>::get_mb)
-    .def("get_nb", &wrap_mapping_bc<matrix_col_major>::get_nb)
-    .def_property_readonly("block_shape", &wrap_mapping_bc<matrix_col_major>::get_block_shape)
-    .def_property_readonly("m_global", &wrap_mapping_bc<matrix_col_major>::get_m_global)
-    .def_property_readonly("n_global", &wrap_mapping_bc<matrix_col_major>::get_n_global)
-    .def_property_readonly("global_shape", &wrap_mapping_bc<matrix_col_major>::get_global_shape)
-    .def_property_readonly("m_local", &wrap_mapping_bc<matrix_col_major>::get_m_local)
-    .def_property_readonly("n_local", &wrap_mapping_bc<matrix_col_major>::get_n_local)
-    .def_property_readonly("local_shape", &wrap_mapping_bc<matrix_col_major>::get_local_shape)
-    .def("translate_l2g_row", &wrap_mapping_bc<matrix_col_major>::translate_l2g_row)
-    .def("translate_l2g_col", &wrap_mapping_bc<matrix_col_major>::translate_l2g_col)
-    .def("translate_l2g", &wrap_mapping_bc<matrix_col_major>::translate_l2g) // tuple
-    .def("translate_g2l_row", &wrap_mapping_bc<matrix_col_major>::translate_g2l_row)
-    .def("translate_g2l_col", &wrap_mapping_bc<matrix_col_major>::translate_g2l_col)
-    .def("translate_g2l", &wrap_mapping_bc<matrix_col_major>::translate_g2l) // tuple
-    .def("has_global_row_index", &wrap_mapping_bc<matrix_col_major>::has_global_row_index)
-    .def("has_global_col_index", &wrap_mapping_bc<matrix_col_major>::has_global_col_index)
-    .def("has_global_indices", &wrap_mapping_bc<matrix_col_major>::has_global_indices)
-    .def("get_grid", &wrap_mapping_bc<matrix_col_major>::get_grid)
-    .def_property_readonly("major", &wrap_mapping_bc<matrix_col_major>::get_major_string);
+  declare_wrap_mapping_bc<matrix_col_major>(m, "col");
+  declare_wrap_mapping_bc<matrix_row_major>(m, "row");
 
   m.def("mapping_bc", py::overload_cast<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
   m.def("mapping_bc", py::overload_cast<int, int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
