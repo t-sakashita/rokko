@@ -67,6 +67,10 @@ public:
     return translate_g2l(to_array(global));
   }
 
+  void print() const {
+    distributed_matrix<T,MATRIX_MAJOR>::print();
+  }
+
   std::string get_major_string() const {
     return is_col_major() ? "col" : "row";
   }
