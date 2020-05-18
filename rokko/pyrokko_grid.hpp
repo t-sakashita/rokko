@@ -29,6 +29,8 @@ class wrap_grid : public grid {
 public:
   using grid::grid;
 
+  wrap_grid() : grid(to_MPI_Comm()) {}
+
   template <typename GRID_MAJOR>
   wrap_grid(GRID_MAJOR const& grid_major = grid_row_major) : grid(to_MPI_Comm(), grid_major) {}
 
