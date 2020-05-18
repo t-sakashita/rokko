@@ -81,9 +81,9 @@ public:
 
   py::array_t<T> get_ndarray() {
     if (is_col_major())
-      return py::array_t<T>({get_m_local(), get_n_local()}, {sizeof(T), sizeof(T)*get_lld()}, get_array_pointer(), py::cast(*this));
+      return py::array_t<T>(get_local_size(), {sizeof(T), sizeof(T)*get_lld()}, get_array_pointer(), py::cast(*this));
     else
-     return py::array_t<T>({get_m_local(), get_n_local()}, {sizeof(T)*get_lld(), sizeof(T)}, get_array_pointer(), py::cast(*this));
+     return py::array_t<T>(get_local_size(), {sizeof(T)*get_lld(), sizeof(T)}, get_array_pointer(), py::cast(*this));
   }
 
   auto get_eigen_map() {
@@ -93,9 +93,9 @@ public:
   void set_ndarray(py::array_t<T> const& mat) {
     py::array_t<T> array;
     if (is_col_major()) {
-      array = py::array_t<T>({get_m_local(), get_n_local()}, {sizeof(T), sizeof(T)*get_lld()}, get_array_pointer(), py::cast(*this));
+      array = py::array_t<T>(get_local_size(), {sizeof(T), sizeof(T)*get_lld()}, get_array_pointer(), py::cast(*this));
     } else {
-      array = py::array_t<T>({get_m_local(), get_n_local()}, {sizeof(T)*get_lld(), sizeof(T)}, get_array_pointer(), py::cast(*this));
+      array = py::array_t<T>(get_local_size(), {sizeof(T)*get_lld(), sizeof(T)}, get_array_pointer(), py::cast(*this));
     }
 
     auto r = array.template mutable_unchecked<2>();
