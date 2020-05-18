@@ -76,6 +76,51 @@ void declare_wrap_mapping_bc(py::module &m, std::string const& typestr) {
     .def_property_readonly("major", &wrap_mapping_bc<MATRIX_MAJOR>::get_major_string);
 }
 
+template<typename MATRIX_MAJOR>
+void declare_wrap_distributed_matrix(py::module &m, std::string const& typestr) {
+  std::string pyclass_name = std::string("distributed_matrix_") + typestr;
+  py::class_<wrap_distributed_matrix<MATRIX_MAJOR>, base_distributed_matrix, std::shared_ptr<wrap_distributed_matrix<MATRIX_MAJOR>>>(m, pyclass_name.c_str())
+    .def(py::init<wrap_mapping_bc<MATRIX_MAJOR>>())
+    .def_property_readonly("mb", &wrap_distributed_matrix<MATRIX_MAJOR>::get_mb)
+    .def_property_readonly("nb", &wrap_distributed_matrix<MATRIX_MAJOR>::get_nb)
+    .def_property_readonly("block_shape", &wrap_distributed_matrix<MATRIX_MAJOR>::get_block_shape)
+    .def_property_readonly("m_global", &wrap_distributed_matrix<MATRIX_MAJOR>::get_m_global)
+    .def_property_readonly("n_global", &wrap_distributed_matrix<MATRIX_MAJOR>::get_n_global)
+    .def_property_readonly("m_local", &wrap_distributed_matrix<MATRIX_MAJOR>::get_m_local)
+    .def_property_readonly("n_local", &wrap_distributed_matrix<MATRIX_MAJOR>::get_n_local)
+    .def_property_readonly("global_shape", &wrap_distributed_matrix<MATRIX_MAJOR>::get_global_shape)
+    .def_property_readonly("local_shape", &wrap_distributed_matrix<MATRIX_MAJOR>::get_local_shape)
+    .def("translate_l2g_row", &wrap_distributed_matrix<MATRIX_MAJOR>::translate_l2g_row)
+    .def("translate_l2g_col", &wrap_distributed_matrix<MATRIX_MAJOR>::translate_l2g_col)
+    .def("translate_l2g", &wrap_distributed_matrix<MATRIX_MAJOR>::translate_l2g) // tuple
+    .def("translate_g2l_row", &wrap_distributed_matrix<MATRIX_MAJOR>::translate_g2l_row)
+    .def("translate_g2l_col", &wrap_distributed_matrix<MATRIX_MAJOR>::translate_g2l_col)
+    .def("translate_g2l", &wrap_distributed_matrix<MATRIX_MAJOR>::translate_g2l) // tuple
+    .def("has_global_row_index", &wrap_distributed_matrix<MATRIX_MAJOR>::has_global_row_index)
+    .def("has_global_col_index", &wrap_distributed_matrix<MATRIX_MAJOR>::has_global_col_index)
+    .def("has_global_indices", &wrap_distributed_matrix<MATRIX_MAJOR>::has_global_indices)
+    .def("get_local", &wrap_distributed_matrix<MATRIX_MAJOR>::get_local)
+    .def("get_global", &wrap_distributed_matrix<MATRIX_MAJOR>::get_global)
+    .def("set_local", &wrap_distributed_matrix<MATRIX_MAJOR>::set_local)
+    .def("set_global", &wrap_distributed_matrix<MATRIX_MAJOR>::set_global)
+    .def("update_local", &wrap_distributed_matrix<MATRIX_MAJOR>::update_local)
+    .def("update_global", &wrap_distributed_matrix<MATRIX_MAJOR>::update_global)
+    .def("set_zeros", &wrap_distributed_matrix<MATRIX_MAJOR>::set_zeros)
+    .def_property_readonly("length_array", &wrap_distributed_matrix<MATRIX_MAJOR>::get_length_array)
+    .def_property_readonly("lld", &wrap_distributed_matrix<MATRIX_MAJOR>::get_lld)
+    //.def("generate", &wrap_distributed_matrix<MATRIX_MAJOR>::generate)
+    .def("print", &wrap_distributed_matrix<MATRIX_MAJOR>::print)
+    .def("get_map", &wrap_distributed_matrix<MATRIX_MAJOR>::get_map)
+    .def_property_readonly("major", &wrap_distributed_matrix<MATRIX_MAJOR>::get_major_string)
+    .def("set_ndarray", &wrap_distributed_matrix<MATRIX_MAJOR>::set_ndarray)
+    .def("get_ndarray", &wrap_distributed_matrix<MATRIX_MAJOR>::get_ndarray, py::return_value_policy::reference_internal)
+    .def_property("ndarray", &wrap_distributed_matrix<MATRIX_MAJOR>::get_ndarray, &wrap_distributed_matrix<MATRIX_MAJOR>::set_ndarray)
+    .def_property_readonly("map", &wrap_distributed_matrix<MATRIX_MAJOR>::get_map)
+    .def_property_readonly("major", &wrap_distributed_matrix<MATRIX_MAJOR>::get_major_string);
+
+  m.def("distributed_matrix", py::overload_cast<wrap_mapping_bc<MATRIX_MAJOR>const&>(&create_distributed_matrix<MATRIX_MAJOR>));
+}
+
 PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_parameters>(m, "parameters")
     .def(py::init<>())
@@ -185,44 +230,9 @@ PYBIND11_MODULE(pyrokko, m) {
   m.def("mapping_bc", py::overload_cast<int, int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
   m.def("mapping_bc", py::overload_cast<int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
 
-  py::class_<wrap_distributed_matrix<matrix_col_major>>(m, "distributed_matrix")
-    .def(py::init<wrap_mapping_bc<matrix_col_major>>())
-    .def_property_readonly("mb", &wrap_distributed_matrix<matrix_col_major>::get_mb)
-    .def_property_readonly("nb", &wrap_distributed_matrix<matrix_col_major>::get_nb)
-    .def_property_readonly("block_shape", &wrap_distributed_matrix<matrix_col_major>::get_block_shape)
-    .def_property_readonly("m_global", &wrap_distributed_matrix<matrix_col_major>::get_m_global)
-    .def_property_readonly("n_global", &wrap_distributed_matrix<matrix_col_major>::get_n_global)
-    .def_property_readonly("m_local", &wrap_distributed_matrix<matrix_col_major>::get_m_local)
-    .def_property_readonly("n_local", &wrap_distributed_matrix<matrix_col_major>::get_n_local)
-    .def_property_readonly("global_shape", &wrap_distributed_matrix<matrix_col_major>::get_global_shape)
-    .def_property_readonly("local_shape", &wrap_distributed_matrix<matrix_col_major>::get_local_shape)
-    .def("translate_l2g_row", &wrap_distributed_matrix<matrix_col_major>::translate_l2g_row)
-    .def("translate_l2g_col", &wrap_distributed_matrix<matrix_col_major>::translate_l2g_col)
-    .def("translate_l2g", &wrap_distributed_matrix<matrix_col_major>::translate_l2g) // tuple
-    .def("translate_g2l_row", &wrap_distributed_matrix<matrix_col_major>::translate_g2l_row)
-    .def("translate_g2l_col", &wrap_distributed_matrix<matrix_col_major>::translate_g2l_col)
-    .def("translate_g2l", &wrap_distributed_matrix<matrix_col_major>::translate_g2l) // tuple
-    .def("has_global_row_index", &wrap_distributed_matrix<matrix_col_major>::has_global_row_index)
-    .def("has_global_col_index", &wrap_distributed_matrix<matrix_col_major>::has_global_col_index)
-    .def("has_global_indices", &wrap_distributed_matrix<matrix_col_major>::has_global_indices)
-    .def("get_local", &wrap_distributed_matrix<matrix_col_major>::get_local)
-    .def("get_global", &wrap_distributed_matrix<matrix_col_major>::get_global)
-    .def("set_local", &wrap_distributed_matrix<matrix_col_major>::set_local)
-    .def("set_global", &wrap_distributed_matrix<matrix_col_major>::set_global)
-    .def("update_local", &wrap_distributed_matrix<matrix_col_major>::update_local)
-    .def("update_global", &wrap_distributed_matrix<matrix_col_major>::update_global)
-    .def("set_zeros", &wrap_distributed_matrix<matrix_col_major>::set_zeros)
-    .def_property_readonly("length_array", &wrap_distributed_matrix<matrix_col_major>::get_length_array)
-    .def_property_readonly("lld", &wrap_distributed_matrix<matrix_col_major>::get_lld)
-    //.def("generate", &wrap_distributed_matrix<matrix_col_major>::generate)
-    .def("print", &wrap_distributed_matrix<matrix_col_major>::print)
-    .def("get_map", &wrap_distributed_matrix<matrix_col_major>::get_map)
-    .def_property_readonly("major", &wrap_distributed_matrix<matrix_col_major>::get_major_string)
-    .def("set_ndarray", &wrap_distributed_matrix<matrix_col_major>::set_ndarray)
-    .def("get_ndarray", &wrap_distributed_matrix<matrix_col_major>::get_ndarray, py::return_value_policy::reference_internal)
-    .def_property("ndarray", &wrap_distributed_matrix<matrix_col_major>::get_ndarray, &wrap_distributed_matrix<matrix_col_major>::set_ndarray)
-    .def_property_readonly("map", &wrap_distributed_matrix<matrix_col_major>::get_map)
-    .def_property_readonly("major", &wrap_distributed_matrix<matrix_col_major>::get_major_string);
+  py::class_<base_distributed_matrix, std::shared_ptr<base_distributed_matrix>>(m, "base_distributed_matrix");
+  declare_wrap_distributed_matrix<matrix_col_major>(m, "col");
+  declare_wrap_distributed_matrix<matrix_row_major>(m, "row");
 
   m.def("product", py::overload_cast<double, wrap_distributed_matrix<matrix_col_major> const&, bool, wrap_distributed_matrix<matrix_col_major> const&, bool, double, wrap_distributed_matrix<matrix_col_major>&>(&pyrokko_product), py::arg("alpha"), py::arg("matA"), py::arg("transA"), py::arg("matB"), py::arg("transB"), py::arg("beta"), py::arg("matC"));
 

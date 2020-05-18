@@ -124,6 +124,11 @@ py::array_t<double> wrap_distributed_matrix<matrix_row_major>::get_ndarray() {
 }
 
 
+template<typename MATRIX_MAJOR>
+std::shared_ptr<base_distributed_matrix> create_distributed_matrix(wrap_mapping_bc<MATRIX_MAJOR> const& map) {
+  return std::make_shared<wrap_distributed_matrix<MATRIX_MAJOR>>(map);
+}
+
 void pyrokko_product(double alpha,
                      wrap_distributed_matrix<matrix_col_major> const& matA, bool transA,
                      wrap_distributed_matrix<matrix_col_major> const& matB, bool transB,
