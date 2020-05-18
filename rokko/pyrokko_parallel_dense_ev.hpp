@@ -34,14 +34,14 @@ public:
     return wrap_mapping_bc<matrix_col_major>(parallel_dense_ev::default_mapping(dim, g));
   }
 
-  template<typename VEC>
-  wrap_parameters diagonalize(wrap_distributed_matrix<matrix_col_major>& mat, VEC& eigvals, wrap_distributed_matrix<matrix_col_major>& eigvecs,
+  template<typename T, typename VEC>
+  wrap_parameters diagonalize(wrap_distributed_matrix<T,matrix_col_major>& mat, VEC& eigvals, wrap_distributed_matrix<T,matrix_col_major>& eigvecs,
 			 wrap_parameters const& params) {
     return parallel_dense_ev::diagonalize(mat, eigvals, eigvecs, parameters(params));
   }
 
-  template<typename VEC>
-  wrap_parameters diagonalize(wrap_distributed_matrix<matrix_col_major>& mat, VEC& eigvals,
+  template<typename T, typename VEC>
+  wrap_parameters diagonalize(wrap_distributed_matrix<T,matrix_col_major>& mat, VEC& eigvals,
 			 wrap_parameters const& params) {
     return parallel_dense_ev::diagonalize(mat, eigvals, parameters(params));
   }

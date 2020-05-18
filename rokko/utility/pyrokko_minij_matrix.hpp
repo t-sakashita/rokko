@@ -34,11 +34,9 @@ public:
     new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>();
   }
 
-  static void generate(wrap_distributed_matrix& mat) {
-    if (mat.is_major_col())
-      minij_matrix::generate(mat.col_ver());
-    else
-      minij_matrix::generate(mat.row_ver());
+  template <typename T, typename MATRIX_MAJOR>
+  static void generate(wrap_distributed_matrix<T,MATRIX_MAJOR>& mat) {
+    minij_matrix::generate(mat);
   }
 };
 

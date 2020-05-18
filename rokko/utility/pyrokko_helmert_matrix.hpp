@@ -43,21 +43,17 @@ public:
     new (&diag) Eigen::VectorXd();
   }
 
-  static void generate(wrap_distributed_matrix& mat) {
-    if (mat.is_major_col())
-      helmert_matrix::generate(mat.col_ver());
-    else
-      helmert_matrix::generate(mat.row_ver());
+  template <typename T, typename MATRIX_MAJOR>
+  static void generate(wrap_distributed_matrix<T,MATRIX_MAJOR>& mat) {
+    helmert_matrix::generate(mat);
   }
 
-  static void generate_for_given_eigenvalues(wrap_distributed_matrix& mat, Eigen::Ref<Eigen::VectorXd> diag_in) {
+  template <typename T, typename MATRIX_MAJOR>
+  static void generate_for_given_eigenvalues(wrap_distributed_matrix<T,MATRIX_MAJOR>& mat, Eigen::Ref<Eigen::VectorXd> diag_in) {
     Eigen::VectorXd diag;
     new (&diag) Eigen::Ref<Eigen::VectorXd>(diag_in);
 
-    if (mat.is_major_col())
-      helmert_matrix::generate_for_given_eigenvalues(mat.col_ver(), diag);
-    else
-      helmert_matrix::generate_for_given_eigenvalues(mat.row_ver(), diag);
+    helmert_matrix::generate_for_given_eigenvalues(mat, diag);
 
     new (&diag) Eigen::VectorXd();
   }
