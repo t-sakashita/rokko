@@ -87,7 +87,7 @@ public:
 
     for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
       int global_i = mat.translate_l2g_row(local_i);
-      double common_elem = diag(0) / n;
+      T common_elem = diag(0) / n;
       for (int k=global_i+1; k<n; ++k)
 	common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
       T val = common_elem - diag(global_i) / (global_i+1);
@@ -100,7 +100,7 @@ public:
     
     for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
       int global_j = mat.translate_l2g_col(local_j);
-      double common_elem = diag(0) / n;
+      T common_elem = diag(0) / n;
       for (int k=global_j+1; k<n; ++k)
 	common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
       T val = common_elem - diag(global_j) / (global_j+1);
