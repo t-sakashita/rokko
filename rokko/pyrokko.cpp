@@ -242,9 +242,12 @@ PYBIND11_MODULE(pyrokko, m) {
   declare_wrap_mapping_bc<matrix_col_major>(m, "col");
   declare_wrap_mapping_bc<matrix_row_major>(m, "row");
 
-  m.def("mapping_bc", py::overload_cast<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
-  m.def("mapping_bc", py::overload_cast<int, int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
-  m.def("mapping_bc", py::overload_cast<int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc));
+  m.def("mapping_bc", py::overload_cast<std::tuple<int,int> const&, std::tuple<int,int> const&, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc),
+        py::arg("global_size"), py::arg("block_size"), py::arg("grid"), py::arg("major") = matrix_major_enum::col);
+  m.def("mapping_bc", py::overload_cast<int, int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc),
+        py::arg("global_dim"), py::arg("block_size"), py::arg("lld"), py::arg("grid"), py::arg("major") = matrix_major_enum::col);
+  m.def("mapping_bc", py::overload_cast<int, int, wrap_grid const&, matrix_major_enum const&>(&create_mapping_bc),
+        py::arg("global_dim"), py::arg("block_size"), py::arg("grid"), py::arg("major") = matrix_major_enum::col);
 
   py::class_<base_distributed_matrix, std::shared_ptr<base_distributed_matrix>>(m, "base_distributed_matrix");
   declare_wrap_distributed_matrix<double,matrix_col_major>(m, "double_col");
