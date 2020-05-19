@@ -258,9 +258,9 @@ PYBIND11_MODULE(pyrokko, m) {
     .def("initialize", &wrap_parallel_dense_ev::initialize)
     .def("finalize", &wrap_parallel_dense_ev::finalize)
     .def("default_mapping", &wrap_parallel_dense_ev::default_mapping)
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<double,Eigen::RefVec<double>>),
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<double,matrix_col_major,Eigen::RefVec<double>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&, Eigen::RefVec<double>&, wrap_distributed_matrix<double,matrix_col_major>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<double,Eigen::RefVec<double>>),
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&, Eigen::RefVec<double>&, wrap_distributed_matrix<double,matrix_col_major>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<double,matrix_col_major,Eigen::RefVec<double>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &wrap_parallel_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &wrap_parallel_dense_ev::default_solver);
