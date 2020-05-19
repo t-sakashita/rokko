@@ -43,11 +43,11 @@ public:
       throw std::invalid_argument("helmert_matrix::generate_for_given_eigenvalues() : non-square matrix");
     const int n = mat.rows();
     for (int i=0; i<n; ++i) {
-      double common_elem = diag(0) / n;
+      T common_elem = diag(0) / n;
       for (int k=i+1; k<n; ++k)
         common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
       mat(i, i) = common_elem + i * diag(i) / (i+1);
-      double val = common_elem - diag(i) / (i+1);
+      T val = common_elem - diag(i) / (i+1);
       mat.row(i).head(i).setConstant(val);
       mat.col(i).head(i).setConstant(val);
     }
