@@ -121,6 +121,22 @@ void declare_wrap_distributed_matrix(py::module &m, std::string const& typestr) 
   m.def("distributed_matrix", py::overload_cast<wrap_mapping_bc<MATRIX_MAJOR>const&>(&create_distributed_matrix<T,MATRIX_MAJOR>));
 }
 
+template<typename T, class CLASS>
+void declare_matrix(py::class_<CLASS>& obj) {
+  obj.def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&CLASS::template generate_eigen<T,Eigen::RowMajor>))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&CLASS::template generate_eigen<T,Eigen::ColMajor>))
+    .def_static("generate", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&>(&CLASS::template generate<T,matrix_col_major>));
+}
+
+template<typename T>
+void declare_helmert_matrix(py::class_<wrap_helmert_matrix>& obj) {
+  declare_matrix<T>(obj);
+
+  obj.def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::Vector<T>>>(&wrap_helmert_matrix::template generate_for_given_eigenvalues_eigen<T, Eigen::RowMajor>))
+    .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::Vector<T>>>(&wrap_helmert_matrix::template generate_for_given_eigenvalues_eigen<T, Eigen::ColMajor>))
+    .def_static("generate_for_given_eigenvalues", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&,Eigen::Ref<Eigen::Vector<T>>>(&wrap_helmert_matrix::template generate_for_given_eigenvalues<T,matrix_col_major>));
+}
+
 PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_parameters>(m, "parameters")
     .def(py::init<>())
@@ -250,35 +266,28 @@ PYBIND11_MODULE(pyrokko, m) {
     .def_property_readonly_static("default_solver", &wrap_parallel_dense_ev::default_solver);
 
 
-  py::class_<wrap_minij_matrix>(m, "minij_matrix")
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_minij_matrix::generate_row))
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_minij_matrix::generate_col))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&>(&wrap_minij_matrix::generate<double,matrix_col_major>))
-    .def_static("eigenvalue", &minij_matrix::eigenvalue);
-  
-  py::class_<wrap_frank_matrix>(m, "frank_matrix")
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_frank_matrix::generate_row))
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_frank_matrix::generate_col))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&>(&wrap_frank_matrix::generate<double,matrix_col_major>))
-    .def_static("eigenvalue", &frank_matrix::eigenvalue);
+  py::class_<wrap_minij_matrix> minij_obj(m, "minij_matrix");
+  declare_matrix<float>(minij_obj);
+  declare_matrix<double>(minij_obj);
+  minij_obj.def_static("eigenvalue", &minij_matrix::eigenvalue);
 
-  py::class_<wrap_laplacian_matrix>(m, "laplacian_matrix")
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_laplacian_matrix::generate_row))
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_laplacian_matrix::generate_col))
-    .def_static("eigenvalue", &laplacian_matrix::eigenvalue);
+  py::class_<wrap_frank_matrix> frank_obj(m, "frank_matrix");
+  declare_matrix<float>(frank_obj);
+  declare_matrix<double>(frank_obj);
+  frank_obj.def_static("eigenvalue", &frank_matrix::eigenvalue);
 
-  py::class_<wrap_helmert_matrix>(m, "helmert_matrix")
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_helmert_matrix::generate_eigen<Eigen::RowMajor>))
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_helmert_matrix::generate_eigen<Eigen::ColMajor>))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&>(&wrap_helmert_matrix::generate<double,matrix_col_major>))
-    .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues_eigen<Eigen::RowMajor>))
-    .def_static("generate_for_given_eigenvalues", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues_eigen<Eigen::ColMajor>))
-    .def_static("generate_for_given_eigenvalues", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&,Eigen::Ref<Eigen::VectorXd>>(&wrap_helmert_matrix::generate_for_given_eigenvalues<double,matrix_col_major>));
+  py::class_<wrap_laplacian_matrix> laplacian_obj(m, "laplacian_matrix");
+  declare_matrix<float>(laplacian_obj);
+  declare_matrix<double>(laplacian_obj);
+  laplacian_obj.def_static("eigenvalue", &laplacian_matrix::eigenvalue);
 
-  py::class_<wrap_matrix012>(m, "matrix012")
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&wrap_matrix012::generate_row))
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&wrap_matrix012::generate_col))
-    .def_static("generate", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&>(&wrap_matrix012::generate<double,matrix_col_major>));
+  py::class_<wrap_matrix012> matrix012_obj(m, "matrix012");
+  declare_matrix<float>(matrix012_obj);
+  declare_matrix<double>(matrix012_obj);
+
+  py::class_<wrap_helmert_matrix> helmert_obj(m, "helmert_matrix");
+  declare_helmert_matrix<float>(helmert_obj);
+  declare_helmert_matrix<double>(helmert_obj);
 
   // collective MPI communication
   m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_row_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather));

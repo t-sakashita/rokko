@@ -21,26 +21,26 @@ namespace rokko {
 class wrap_helmert_matrix {
 public:
 
-  template <int MAJOR>
-  static void generate_eigen(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in) {
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat(mat_in.rows(), mat_in.cols());
-    new (&mat) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in);
+  template <typename T, int MAJOR>
+  static void generate_eigen(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in) {
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat(mat_in.rows(), mat_in.cols());
+    new (&mat) Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in);
     helmert_matrix::generate(mat);
-    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&mat) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
   }
 
-  template <int MAJOR>
-  static void generate_for_given_eigenvalues_eigen(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in, Eigen::Ref<Eigen::VectorXd> diag_in) {
-    Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat(mat_in.rows(), mat_in.cols());
-    Eigen::VectorXd diag;
+  template <typename T, int MAJOR>
+  static void generate_for_given_eigenvalues_eigen(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in, Eigen::Ref<Eigen::Vector<T>> diag_in) {
+    Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat(mat_in.rows(), mat_in.cols());
+    Eigen::Vector<T> diag;
 
-    new (&mat) Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in);
-    new (&diag) Eigen::Ref<Eigen::VectorXd>(diag_in);
+    new (&mat) Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in);
+    new (&diag) Eigen::Ref<Eigen::Vector<T>>(diag_in);
 
     helmert_matrix::generate_for_given_eigenvalues(mat, diag);
 
-    new (&mat) Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
-    new (&diag) Eigen::VectorXd();
+    new (&mat) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
+    new (&diag) Eigen::Vector<T>();
   }
 
   template <typename T, typename MATRIX_MAJOR>
@@ -49,13 +49,13 @@ public:
   }
 
   template <typename T, typename MATRIX_MAJOR>
-  static void generate_for_given_eigenvalues(wrap_distributed_matrix<T,MATRIX_MAJOR>& mat, Eigen::Ref<Eigen::VectorXd> diag_in) {
-    Eigen::VectorXd diag;
-    new (&diag) Eigen::Ref<Eigen::VectorXd>(diag_in);
+  static void generate_for_given_eigenvalues(wrap_distributed_matrix<T,MATRIX_MAJOR>& mat, Eigen::Ref<Eigen::Vector<T>> diag_in) {
+    Eigen::Vector<T> diag;
+    new (&diag) Eigen::Ref<Eigen::Vector<T>>(diag_in);
 
     helmert_matrix::generate_for_given_eigenvalues(mat, diag);
 
-    new (&diag) Eigen::VectorXd();
+    new (&diag) Eigen::Vector<T>();
   }
 };
 
