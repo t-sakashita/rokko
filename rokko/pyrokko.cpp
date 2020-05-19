@@ -119,6 +119,24 @@ void declare_wrap_distributed_matrix(py::module &m, std::string const& typestr) 
     .def_property_readonly("major", &wrap_distributed_matrix<T,MATRIX_MAJOR>::get_major_string);
 }
 
+template <typename T>
+void declare_gather(py::module &m) {
+  m.def("gather", py::overload_cast<wrap_distributed_matrix<T,matrix_row_major> const&, Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather<T,matrix_row_major>));
+  m.def("gather", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major> const&, Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather<T,matrix_col_major>));
+}
+
+template <typename T>
+void declare_scatter(py::module &m) {
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix<T,matrix_row_major>&, int>(&pyrokko_scatter<T,matrix_row_major>));
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix<T,matrix_col_major>&, int>(&pyrokko_scatter<T,matrix_col_major>));
+}
+
+template <typename T>
+void declare_collective(py::module &m) {
+  declare_gather<T>(m);
+  declare_scatter<T>(m);
+}
+
 template<typename T, class CLASS>
 void declare_matrix(py::class_<CLASS>& obj) {
   obj.def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&CLASS::template generate_eigen<T,Eigen::RowMajor>))
@@ -301,11 +319,10 @@ PYBIND11_MODULE(pyrokko, m) {
   declare_helmert_matrix<double>(helmert_obj);
 
   // collective MPI communication
-  m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_row_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather<double,matrix_row_major>));
-  m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather<double,matrix_col_major>));
-
-  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix<double,matrix_row_major>&, int>(&pyrokko_scatter<double,matrix_row_major>));
-  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix<double,matrix_col_major>&, int>(&pyrokko_scatter<double,matrix_col_major>));
+  declare_collective<float>(m);
+  declare_collective<double>(m);
+  declare_collective<std::complex<float>>(m);
+  declare_collective<std::complex<double>>(m);
 
   py::class_<distributed_mfree>(m, "distributed_mfree_base");
 
