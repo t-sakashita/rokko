@@ -122,9 +122,18 @@ public:
 };
 
 
-template<typename T, typename MATRIX_MAJOR>
-std::shared_ptr<base_distributed_matrix> create_distributed_matrix(wrap_mapping_bc<MATRIX_MAJOR> const& map) {
-  return std::make_shared<wrap_distributed_matrix<T,MATRIX_MAJOR>>(map);
+template<typename MATRIX_MAJOR>
+std::shared_ptr<base_distributed_matrix> create_distributed_matrix(wrap_mapping_bc<MATRIX_MAJOR> const& map, std::string const& dtype = "double") {
+  if (dtype == "double")
+    return std::make_shared<wrap_distributed_matrix<double,MATRIX_MAJOR>>(map);
+  else if (dtype == "float")
+    return std::make_shared<wrap_distributed_matrix<float,MATRIX_MAJOR>>(map);
+  else if (dtype == "cdouble")
+    return std::make_shared<wrap_distributed_matrix<std::complex<double>,MATRIX_MAJOR>>(map);
+  else if (dtype == "cfloat")
+    return std::make_shared<wrap_distributed_matrix<std::complex<float>,MATRIX_MAJOR>>(map);
+  else
+    throw std::invalid_argument("create_distributed_matrix : unknwon type '" + dtype + "'");
 }
 
 template<typename T, typename MATRIX_MAJOR>

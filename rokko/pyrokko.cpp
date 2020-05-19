@@ -117,8 +117,6 @@ void declare_wrap_distributed_matrix(py::module &m, std::string const& typestr) 
     .def_property("ndarray", &wrap_distributed_matrix<T,MATRIX_MAJOR>::get_ndarray, &wrap_distributed_matrix<T,MATRIX_MAJOR>::set_ndarray)
     .def_property_readonly("map", &wrap_distributed_matrix<T,MATRIX_MAJOR>::get_map)
     .def_property_readonly("major", &wrap_distributed_matrix<T,MATRIX_MAJOR>::get_major_string);
-
-  m.def("distributed_matrix", py::overload_cast<wrap_mapping_bc<MATRIX_MAJOR>const&>(&create_distributed_matrix<T,MATRIX_MAJOR>));
 }
 
 template<typename T, class CLASS>
@@ -252,6 +250,16 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<base_distributed_matrix, std::shared_ptr<base_distributed_matrix>>(m, "base_distributed_matrix");
   declare_wrap_distributed_matrix<double,matrix_col_major>(m, "double_col");
   declare_wrap_distributed_matrix<double,matrix_row_major>(m, "double_row");
+  declare_wrap_distributed_matrix<float,matrix_col_major>(m, "float_col");
+  declare_wrap_distributed_matrix<float,matrix_row_major>(m, "float_row");
+  declare_wrap_distributed_matrix<std::complex<double>,matrix_col_major>(m, "cdouble_col");
+  declare_wrap_distributed_matrix<std::complex<double>,matrix_row_major>(m, "cdouble_row");
+  declare_wrap_distributed_matrix<std::complex<float>,matrix_col_major>(m, "cfloat_col");
+  declare_wrap_distributed_matrix<std::complex<float>,matrix_row_major>(m, "cfloat_row");
+  m.def("distributed_matrix", py::overload_cast<wrap_mapping_bc<matrix_col_major>const&,std::string const&>(&create_distributed_matrix<matrix_col_major>),
+        py::arg("mat"), py::arg("dtype") = "double");
+  m.def("distributed_matrix", py::overload_cast<wrap_mapping_bc<matrix_row_major>const&,std::string const&>(&create_distributed_matrix<matrix_row_major>),
+        py::arg("mat"), py::arg("dtype") = "double");
 
   m.def("product", py::overload_cast<double, wrap_distributed_matrix<double,matrix_col_major> const&, bool, wrap_distributed_matrix<double,matrix_col_major> const&, bool, double, wrap_distributed_matrix<double,matrix_col_major>&>(&pyrokko_product<double,matrix_col_major>), py::arg("alpha"), py::arg("matA"), py::arg("transA"), py::arg("matB"), py::arg("transB"), py::arg("beta"), py::arg("matC"));
 
