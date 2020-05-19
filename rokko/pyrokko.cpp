@@ -298,21 +298,29 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_minij_matrix> minij_obj(m, "minij_matrix");
   declare_matrix<float>(minij_obj);
   declare_matrix<double>(minij_obj);
+  declare_matrix<std::complex<float>>(minij_obj);
+  declare_matrix<std::complex<double>>(minij_obj);
   minij_obj.def_static("eigenvalue", &minij_matrix::eigenvalue);
 
   py::class_<wrap_frank_matrix> frank_obj(m, "frank_matrix");
   declare_matrix<float>(frank_obj);
   declare_matrix<double>(frank_obj);
+  declare_matrix<std::complex<float>>(frank_obj);
+  declare_matrix<std::complex<double>>(frank_obj);
   frank_obj.def_static("eigenvalue", &frank_matrix::eigenvalue);
 
   py::class_<wrap_laplacian_matrix> laplacian_obj(m, "laplacian_matrix");
   declare_matrix<float>(laplacian_obj);
   declare_matrix<double>(laplacian_obj);
+  declare_matrix<std::complex<float>>(laplacian_obj);
+  declare_matrix<std::complex<double>>(laplacian_obj);
   laplacian_obj.def_static("eigenvalue", &laplacian_matrix::eigenvalue);
 
   py::class_<wrap_matrix012> matrix012_obj(m, "matrix012");
   declare_matrix<float>(matrix012_obj);
   declare_matrix<double>(matrix012_obj);
+  declare_matrix<std::complex<float>>(matrix012_obj);
+  declare_matrix<std::complex<double>>(matrix012_obj);
 
   py::class_<wrap_helmert_matrix> helmert_obj(m, "helmert_matrix");
   declare_helmert_matrix<float>(helmert_obj);
