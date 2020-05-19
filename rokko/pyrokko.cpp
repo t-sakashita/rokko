@@ -290,11 +290,11 @@ PYBIND11_MODULE(pyrokko, m) {
   declare_helmert_matrix<double>(helmert_obj);
 
   // collective MPI communication
-  m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_row_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather));
-  m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather));
+  m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_row_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, int>(&pyrokko_gather<double,matrix_row_major>));
+  m.def("gather", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major> const&, Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, int>(&pyrokko_gather<double,matrix_col_major>));
 
-  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix<double,matrix_row_major>&, int>(&pyrokko_scatter));
-  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix<double,matrix_col_major>&, int>(&pyrokko_scatter));
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>, wrap_distributed_matrix<double,matrix_row_major>&, int>(&pyrokko_scatter<double,matrix_row_major>));
+  m.def("scatter", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>, wrap_distributed_matrix<double,matrix_col_major>&, int>(&pyrokko_scatter<double,matrix_col_major>));
 
   py::class_<distributed_mfree>(m, "distributed_mfree_base");
 
