@@ -154,6 +154,18 @@ void declare_helmert_matrix(py::class_<wrap_helmert_matrix>& obj) {
 }
 
 template<typename T>
+void declare_sd_diagonalize(py::class_<wrap_serial_dense_ev>& obj) {
+  obj.def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::Vector<norm_t<T>>>,Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<T,Eigen::RowMajor>),
+          py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::Vector<norm_t<T>>>,Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<T,Eigen::ColMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::Vector<norm_t<T>>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<T,Eigen::RowMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::Vector<norm_t<T>>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<T,Eigen::ColMajor>),
+         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters());
+}
+
+template<typename T>
 void declare_pd_diagonalize(py::class_<wrap_parallel_dense_ev>& obj) {
   obj.def("diagonalize", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&, Eigen::RefVec<norm_t<T>>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<T,matrix_col_major,Eigen::RefVec<norm_t<T>>>),
           py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
@@ -187,50 +199,17 @@ PYBIND11_MODULE(pyrokko, m) {
     .value("row", matrix_major_enum::row)
     .value("col", matrix_major_enum::col);
 
-  py::class_<wrap_serial_dense_ev>(m, "serial_dense_ev")
+  auto sd_obj = py::class_<wrap_serial_dense_ev>(m, "serial_dense_ev")
     .def(py::init<std::string const&>())
     .def(py::init<>())
     //.def("initialize", py::overload_cast<int&, char**&>(&serial_dense_ev::initialize))
     .def("finalize", &serial_dense_ev::finalize)
-    // for double
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<double,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<double,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<double,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<double,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    // for complex double
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<double>,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<double>,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<double>,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<double>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<double>,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    // for float
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXf>,Eigen::Ref<Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<float,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXf>,Eigen::Ref<Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<float,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXf>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<float,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<float,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXf>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<float,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    // for complex float
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<float>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXf>,Eigen::Ref<Eigen::Matrix<std::complex<float>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<float>,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<float>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXf>,Eigen::Ref<Eigen::Matrix<std::complex<float>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<float>,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("eigvec"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<float>,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXf>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<float>,Eigen::RowMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<Eigen::Ref<Eigen::Matrix<std::complex<float>,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXf>,wrap_parameters const&>(&wrap_serial_dense_ev::diagonalize<std::complex<float>,Eigen::ColMajor>),
-         py::arg("mat"), py::arg("eigval"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &serial_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &serial_dense_ev::default_solver);
-
+  declare_sd_diagonalize<float>(sd_obj);
+  declare_sd_diagonalize<double>(sd_obj);
+  declare_sd_diagonalize<std::complex<float>>(sd_obj);
+  declare_sd_diagonalize<std::complex<double>>(sd_obj);
 
   // For grid
   py::class_<grid_row_major_t>(m,"grid_row_major")
