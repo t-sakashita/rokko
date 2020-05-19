@@ -153,6 +153,14 @@ void declare_helmert_matrix(py::class_<wrap_helmert_matrix>& obj) {
     .def_static("generate_for_given_eigenvalues", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&,Eigen::Ref<Eigen::Vector<T>>>(&wrap_helmert_matrix::template generate_for_given_eigenvalues<T,matrix_col_major>));
 }
 
+template<typename T>
+void declare_pd_diagonalize(py::class_<wrap_parallel_dense_ev>& obj) {
+  obj.def("diagonalize", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&, Eigen::RefVec<norm_t<T>>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<T,matrix_col_major,Eigen::RefVec<norm_t<T>>>),
+          py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
+    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&, Eigen::RefVec<norm_t<T>>&, wrap_distributed_matrix<T,matrix_col_major>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<T,matrix_col_major,Eigen::RefVec<norm_t<T>>>),
+         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters());
+}
+
 PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_parameters>(m, "parameters")
     .def(py::init<>())
@@ -281,19 +289,18 @@ PYBIND11_MODULE(pyrokko, m) {
 
   m.def("product", py::overload_cast<double, wrap_distributed_matrix<double,matrix_col_major> const&, bool, wrap_distributed_matrix<double,matrix_col_major> const&, bool, double, wrap_distributed_matrix<double,matrix_col_major>&>(&pyrokko_product<double,matrix_col_major>), py::arg("alpha"), py::arg("matA"), py::arg("transA"), py::arg("matB"), py::arg("transB"), py::arg("beta"), py::arg("matC"));
 
-  py::class_<wrap_parallel_dense_ev>(m, "parallel_dense_ev")
+  auto pd_obj = py::class_<wrap_parallel_dense_ev>(m, "parallel_dense_ev")
     .def(py::init<std::string const&>())
     .def(py::init<>())
     .def("initialize", &wrap_parallel_dense_ev::initialize)
     .def("finalize", &wrap_parallel_dense_ev::finalize)
     .def("default_mapping", &wrap_parallel_dense_ev::default_mapping)
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&, Eigen::RefVec<double>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<double,matrix_col_major,Eigen::RefVec<double>>),
-         py::arg("mat"), py::arg("eigvals"), py::arg("params") = wrap_parameters())
-    .def("diagonalize", py::overload_cast<wrap_distributed_matrix<double,matrix_col_major>&, Eigen::RefVec<double>&, wrap_distributed_matrix<double,matrix_col_major>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<double,matrix_col_major,Eigen::RefVec<double>>),
-         py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &wrap_parallel_dense_ev::solvers)
     .def_property_readonly_static("default_solver", &wrap_parallel_dense_ev::default_solver);
-
+  declare_pd_diagonalize<float>(pd_obj);
+  declare_pd_diagonalize<double>(pd_obj);
+  declare_pd_diagonalize<std::complex<float>>(pd_obj);
+  declare_pd_diagonalize<std::complex<double>>(pd_obj);
 
   py::class_<wrap_minij_matrix> minij_obj(m, "minij_matrix");
   declare_matrix<float>(minij_obj);
