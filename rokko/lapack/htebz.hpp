@@ -19,7 +19,6 @@
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 #include <rokko/alias_template_function.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -69,7 +68,7 @@ struct htebz_dispatch<std::complex<double>> {
 template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htebz(char range, char order, T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   lapack_int n = size(d);
   if (size(e) != (n-1))

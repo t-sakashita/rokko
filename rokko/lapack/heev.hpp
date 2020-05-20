@@ -20,7 +20,6 @@
 #include "complex_cast.hpp"
 #include <rokko/lapack/storage.hpp>
 #include <rokko/alias_template_function.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -71,7 +70,7 @@ struct heev_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");

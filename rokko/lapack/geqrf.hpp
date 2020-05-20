@@ -17,7 +17,6 @@
 # undef I
 #endif
 #include <stdexcept>
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <lapacke.h>
 #undef I
@@ -99,7 +98,7 @@ struct geqrf_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -111,7 +110,7 @@ lapack_int geqrf(MATRIX& a, VECTOR& tau) {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);

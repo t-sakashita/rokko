@@ -19,7 +19,6 @@
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 #include <rokko/alias_template_function.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -89,7 +88,7 @@ struct htein_dispatch<std::complex<double>> {
 template<typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htein(VECTOR& d, VECTOR& e, lapack_int m, VECTOR& w, MATRIX& z,
                  const VECTOR_INT& iblock, const VECTOR_INT& isplit, VECTOR_INT& ifailv) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int n = size(d);
   if (rows(z) != n)
     throw std::invalid_argument("matrix Z row size mismatch");

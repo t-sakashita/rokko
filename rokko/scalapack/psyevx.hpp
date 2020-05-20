@@ -18,7 +18,6 @@
 #include <rokko/lapack/complex_cast.hpp>
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace scalapack {
@@ -94,9 +93,9 @@ int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, double orfac, MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -112,9 +111,9 @@ int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR0& w, double orfac, MATRIX& z, VECTOR0& work, VECTOR1& iwork,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR0>>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR0>, value_t<VECTOR2>>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR0>, T>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR0>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR0>, value_t<VECTOR2>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR0>, T>::value, "");
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -183,9 +182,9 @@ int psyevx(char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   return psyevx_dispatch('N', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,

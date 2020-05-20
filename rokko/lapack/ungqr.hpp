@@ -17,7 +17,6 @@
 # undef I
 #endif
 #include <stdexcept>
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <lapacke.h>
 #include <rokko/traits/value_t.hpp>
@@ -98,7 +97,7 @@ struct ungqr_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   if (size(tau) != k)
@@ -109,7 +108,7 @@ lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   if (size(tau) != k)

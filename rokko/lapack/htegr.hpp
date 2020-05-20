@@ -20,7 +20,6 @@
 #include "complex_cast.hpp"
 #include <rokko/lapack/storage.hpp>
 #include <rokko/alias_template_function.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -75,8 +74,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(char jobz, char range, VECTOR& d, VECTOR& e,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, T>::value);
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, T>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   lapack_int n = size(d);
   if (size(e) != n)  // e(n) is used as internal workspace
@@ -92,7 +91,7 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(char range, VECTOR& d, VECTOR& e,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   lapack_int n = size(d);
   constexpr null_matrix<T> z_null;
@@ -137,7 +136,7 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   return htegr('A', d, e, 0., 0., 0, 0, abstol, m, w, isuppz);
 }
@@ -147,7 +146,7 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  T vl, T vu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   return htegr('V', d, e, vl, vu, 0, 0, abstol, m, w, isuppz);
 }

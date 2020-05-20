@@ -18,7 +18,6 @@
 #include <rokko/lapack/storage.hpp>
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace scalapack {
@@ -44,7 +43,7 @@ int pstein(const VECTOR& d, const VECTOR& e, int& m,
            VECTOR& w, const VECTOR_INT& iblock, const VECTOR_INT& isplit, double orfac,
            MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR& gap) {
-  BOOST_STATIC_ASSERT(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int n = size(d);
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
 

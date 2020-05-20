@@ -18,7 +18,6 @@
 #include <rokko/lapack/storage.hpp>
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
-#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace scalapack {
@@ -44,7 +43,7 @@ int pstebz(int ictxt, char range, char order,
            T vl, T vu, int il, int iu,
            T abstol, const VECTOR& d, const VECTOR& e, int& m, int& nsplit,
            VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
-  BOOST_STATIC_ASSERT(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
   lapack_int n = size(d);
 
   return pstebz_dispatch(ictxt, range, order, n,
