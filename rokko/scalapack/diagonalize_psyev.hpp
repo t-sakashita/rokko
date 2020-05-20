@@ -34,7 +34,7 @@ parameters diagonalize_psyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
     std::cerr << "error at pdsyev function. info=" << info << std::endl;
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyev", 'V', uplow);
+    lapack::print_verbose("syev", 'V', uplow);
   }
   return params_out;
 }
@@ -52,7 +52,7 @@ parameters diagonalize_psyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
     std::cerr << "error at pdsyev function. info=" << info << std::endl;
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyev", 'N', uplow);
+    lapack::print_verbose("syev", 'N', uplow);
   }
   return params_out;
 }

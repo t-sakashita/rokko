@@ -60,17 +60,17 @@ parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
-  if ((routine=="pdsyev") || (routine=="qr")) {
+  if ((routine=="syev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_psyev(mat, eigvals, eigvecs, params);
-  } else if ((routine=="pdsyevr") || (routine=="mr3")) {
+  } else if ((routine=="syevr") || (routine=="mr3")) {
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
     return rokko::scalapack::diagonalize_psyevr(mat, eigvals, eigvecs, params);
 #else
     throw std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine.");
 #endif
-  } else if ((routine=="pdsyevd") || (routine=="dc")) {
+  } else if ((routine=="syevd") || (routine=="dc")) {
     return rokko::scalapack::diagonalize_psyevd(mat, eigvals, eigvecs, params);
-  } else if (routine=="pdsyevx") {
+  } else if (routine=="syevx") {
     return rokko::scalapack::diagonalize_psyevx(mat, eigvals, eigvecs, params);
   } else if (routine=="bisection") {
     return rokko::scalapack::diagonalize_bisection(mat, eigvals, eigvecs, params);
@@ -98,17 +98,17 @@ parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       parameters const& params) {
   const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
-  if ((routine=="pdsyev") || (routine=="qr")) {
+  if ((routine=="syev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_psyev(mat, eigvals, params);
-  } else if ((routine=="pdsyevr") || (routine=="mr3")) {
+  } else if ((routine=="syevr") || (routine=="mr3")) {
 #ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
     return rokko::scalapack::diagonalize_psyevr(mat, eigvals, params);
 #else
     throw std::invalid_argument("scalapack::diagonalize() : the routine pdsyevr does not exist in your machine.");
 #endif
-  } else if ((routine=="pdsyevd") || (routine=="dc")) {
+  } else if ((routine=="syevd") || (routine=="dc")) {
     throw std::invalid_argument("scalapack::diagonalize() : " + routine + " does not support computing only eigenvalues");
-  } else if (routine=="pdsyevx") {
+  } else if (routine=="syevx") {
     return rokko::scalapack::diagonalize_psyevx(mat, eigvals, params);
   } else if (routine=="bisection") {
     return rokko::scalapack::diagonalize_bisection(mat, eigvals, params);

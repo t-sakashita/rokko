@@ -53,7 +53,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
   params_out.set("iclustr", iclustr);
   params_out.set("gap", gap);
   if (params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevx", 'V', range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("syevx", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }
@@ -86,7 +86,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
   params_out.set("iclustr", iclustr);
   params_out.set("gap", gap);
   if (params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevx", 'N', range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("syevx", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }

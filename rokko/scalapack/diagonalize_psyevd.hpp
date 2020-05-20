@@ -38,7 +38,7 @@ parameters diagonalize_psyevd(distributed_matrix<T, MATRIX_MAJOR>& mat,
     std::cerr << "error at pdsyevd function. info=" << info << std::endl;
   }
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevd", 'V', uplow);
+    lapack::print_verbose("syevd", 'V', uplow);
   }
   return params_out;
 }

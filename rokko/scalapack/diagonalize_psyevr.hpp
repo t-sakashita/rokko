@@ -47,7 +47,7 @@ parameters diagonalize_psyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
   params_out.set("m", m);
   params_out.set("nz", nz);
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevr", 'V', range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("syevr", 'V', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }
@@ -74,7 +74,7 @@ parameters diagonalize_psyevr(distributed_matrix<T, MATRIX_MAJOR>& mat,
   params_out.set("m", m);
   params_out.set("nz", nz);
   if ((mat.get_myrank() == 0) && params.get_bool("verbose")) {
-    lapack::print_verbose("pdsyevr", 'N', range, uplow, vl, vu, il, iu, params_out);
+    lapack::print_verbose("syevr", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
   return params_out;
 }
