@@ -11,7 +11,7 @@ from mpi4py import MPI
 
 def find_square_root_like_divisor(n):
     import math
-    for i in range(int(math.sqrt(n)), 1, -1):
+    for i in range(int(math.sqrt(n)), 0, -1):
         if ((n % i) == 0):  break
     return i
 
