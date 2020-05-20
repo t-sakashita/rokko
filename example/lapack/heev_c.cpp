@@ -13,6 +13,7 @@
 #include <rokko/lapack/heev.hpp>
 #include <rokko/lapack/lange.hpp>
 #include <rokko/eigen3.hpp>
+#include <iostream>
 
 int main(int argc, char** argv) {
   constexpr double eps = 1e-5;
