@@ -206,7 +206,7 @@ public:
     if ((d_count_ + 1) % interval == 0) {
       for (std::size_t i = 0; i < labels_.size(); ++i) {
         if (d_mapping_[i] >= 0) {
-          os << boost::format("detail: %d %d %.3f %d\n",
+          os << rokko::format("detail: %d %d %.3f %d\n",
                               d_count_, i, d_sums_[d_mapping_[i]], d_counts_[d_mapping_[i]]);
         }
       }
