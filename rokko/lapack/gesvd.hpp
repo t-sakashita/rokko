@@ -22,6 +22,7 @@
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
+#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace lapack {

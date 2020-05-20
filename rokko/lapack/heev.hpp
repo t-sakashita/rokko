@@ -20,6 +20,7 @@
 #include "complex_cast.hpp"
 #include <rokko/lapack/storage.hpp>
 #include <rokko/alias_template_function.hpp>
+#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace lapack {

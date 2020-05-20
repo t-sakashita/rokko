@@ -16,6 +16,7 @@
 #include <rokko/lapack/complex_cast.hpp>
 #include <rokko/traits/norm_t.hpp>
 #include <rokko/traits/value_t.hpp>
+#include <boost/static_assert.hpp>
 
 namespace rokko {
 namespace scalapack {
