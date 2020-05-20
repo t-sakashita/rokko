@@ -52,7 +52,7 @@ program frank_matrix
 
   call rokko_construct(params)
 
-  call rokko_set(params, "routine", "dsyevr")
+  call rokko_set(params, "routine", "syevr")
   call rokko_set(params, "verbose", .true.)
   call rokko_set(params, "upper_index", 4)
   call rokko_set(params, "lower_index", 2)

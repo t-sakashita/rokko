@@ -99,7 +99,7 @@ void print_verbose(std::string const& routine, char const& jobz, char const& ran
 		   T vl, T vu, int il, int iu,
 		   parameters const& params) {
   print_verbose(routine, jobz, range, uplow, vl, vu, il, iu);
-  if (routine == "dsyevx") {
+  if (routine == "syevx") {
     std::cout << "The number of found eigenvalues = " << params.get_string("m") << std::endl;
     //std::cout << "ifail = " << params.get_string("ifail") << std::endl;
   }

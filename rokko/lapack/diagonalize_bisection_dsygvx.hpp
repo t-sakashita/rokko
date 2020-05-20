@@ -69,7 +69,7 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsygvx (bisection)", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("sygvx (bisection)", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;
@@ -138,7 +138,7 @@ int diagonalize_bisection(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,MAT
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsygvx (bisecition)", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("sygvx (bisecition)", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
   timer.stop(timer_id::diagonalize_finalize);
   return info;

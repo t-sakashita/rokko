@@ -62,7 +62,7 @@ parameters diagonalize_dsygvx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsygvx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("sygvx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;
@@ -123,7 +123,7 @@ parameters diagonalize_dsygvx(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
   params_out.set("ifail", ifail);
   
   if (params.get_bool("verbose")) {
-    print_verbose("dsygvx", jobz, range, uplow, vl, vu, il, iu, params_out);
+    print_verbose("sygvx", jobz, range, uplow, vl, vu, il, iu, params_out);
   }
 
   return params_out;

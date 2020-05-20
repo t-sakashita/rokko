@@ -23,7 +23,7 @@ helmert_matrix.generate_for_given_eigenvalues(mat, diag)
 print(mat)
 
 params = parameters()
-params.set("routine", "dsyev")
+params.set("routine", "syev")
 params.set("verbose", True)
 solver = serial_dense_ev("lapack")
 solver.diagonalize(mat, eigval, eigvec, params)

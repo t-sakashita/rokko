@@ -52,7 +52,7 @@ program minij_matrix
 
   call rokko_construct(params)
 
-  call rokko_set(params, "routine", "dsyevd")
+  call rokko_set(params, "routine", "syevd")
   call rokko_set(params, "verbose", .true.)
   call rokko_set(params, "upper_index", 4)
   call rokko_set(params, "lower_index", 2)

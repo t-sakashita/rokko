@@ -15,9 +15,9 @@
 
 TEST(split_solver_name, const_string) {
   std::string library, routine;
-  rokko::split_solver_name("lapack:dsyevd", library, routine);
+  rokko::split_solver_name("lapack:syevd", library, routine);
   ASSERT_TRUE(library == "lapack");
-  ASSERT_TRUE(routine == "dsyevd");
+  ASSERT_TRUE(routine == "syevd");
 }
 
 int main(int argc, char** argv) {

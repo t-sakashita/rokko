@@ -58,7 +58,7 @@ program frank_matrix
   call rokko_print(mat)
 
   call rokko_construct(params)
-  call rokko_set(params, "routine", "dsyev")
+  call rokko_set(params, "routine", "syev")
 
 !  call diagonalize(solver, mat, w, Z, params, params_out)
 !  call diagonalize(solver, mat, w, Z, params)

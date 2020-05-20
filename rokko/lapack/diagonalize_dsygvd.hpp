@@ -43,7 +43,7 @@ parameters diagonalize_dsygvd(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
     std::cerr << "error at dsygvd function. info=" << info  << std::endl;
   }
   if (params.get_bool("verbose")) {
-    print_verbose("dsygvd", jobz, uplow);
+    print_verbose("sygvd", jobz, uplow);
   }
 
   return params_out;
@@ -73,7 +73,7 @@ parameters diagonalize_dsygvd(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic
     std::cerr << "error at dsygvd function. info=" << info  << std::endl;
   }
   if (params.get_bool("verbose")) {
-    print_verbose("dsygvd", jobz, uplow);
+    print_verbose("sygvd", jobz, uplow);
   }
 
   return params_out;
