@@ -21,7 +21,7 @@ namespace rokko {
 class wrap_laplacian_matrix {
 public:
   template <typename T, int MAJOR>
-  static void generate_eigen(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in) {
+  static void generate(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in) {
     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
     new (&mat) Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in);
     laplacian_matrix::generate(mat);

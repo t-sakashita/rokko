@@ -139,8 +139,8 @@ void declare_collective(py::module &m) {
 
 template<typename T, class CLASS>
 void declare_matrix(py::class_<CLASS>& obj) {
-  obj.def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&CLASS::template generate_eigen<T,Eigen::RowMajor>))
-    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&CLASS::template generate_eigen<T,Eigen::ColMajor>))
+  obj.def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>>(&CLASS::template generate<T,Eigen::RowMajor>))
+    .def_static("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>>(&CLASS::template generate<T,Eigen::ColMajor>))
     .def_static("generate", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&>(&CLASS::template generate<T,matrix_col_major>));
 }
 

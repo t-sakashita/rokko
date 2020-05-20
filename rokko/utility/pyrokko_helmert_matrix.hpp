@@ -22,7 +22,7 @@ class wrap_helmert_matrix {
 public:
 
   template <typename T, int MAJOR>
-  static void generate_eigen(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in) {
+  static void generate(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in) {
     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat(mat_in.rows(), mat_in.cols());
     new (&mat) Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in);
     helmert_matrix::generate(mat);
