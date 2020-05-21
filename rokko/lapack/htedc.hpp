@@ -15,7 +15,7 @@
 #include <complex>
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 #include <rokko/lapack/storage.hpp>
@@ -68,7 +68,7 @@ struct htedc_dispatch<std::complex<double>> {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int htedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int n = size(d);
   if (rows(z) != cols(z))
     throw std::invalid_argument("matrix Z size mismatch");

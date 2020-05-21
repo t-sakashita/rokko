@@ -16,7 +16,7 @@
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack/storage.hpp>
 #include <rokko/lapack/complex_cast.hpp>
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 
 namespace rokko {
@@ -93,7 +93,7 @@ int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, double orfac, MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
   static_assert(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value, "");
   static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
@@ -111,7 +111,7 @@ int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR0& w, double orfac, MATRIX& z, VECTOR0& work, VECTOR1& iwork,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR0>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value, "");
   static_assert(std::is_same<value_t<VECTOR0>, value_t<VECTOR2>>::value, "");
   static_assert(std::is_same<value_t<VECTOR0>, T>::value, "");
 
@@ -182,7 +182,7 @@ int psyevx(char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
   static_assert(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value, "");
   static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 

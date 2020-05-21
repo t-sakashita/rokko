@@ -16,7 +16,7 @@
 #include <rokko/cscalapack.h>
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack/storage.hpp>
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 
 namespace rokko {
@@ -34,7 +34,7 @@ inline int pstedc_dispatch(char compz, int n, double* d, double* e,
 
 template<typename MATRIX, typename VECTOR>
 int pstedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
 
   lapack_int n = size(d);
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();

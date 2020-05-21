@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 
@@ -119,7 +119,7 @@ struct gesvd_dispatch<std::complex<double>> {
 template<typename MATRIX, typename VECTOR>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX& vt,
                  VECTOR& work) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -141,7 +141,7 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX&
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX& vt,
                  VECTOR1& work, VECTOR0& rwork) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR0>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value, "");
   static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR1>>::value, "");
   lapack_int m = rows(a);
   lapack_int n = cols(a);

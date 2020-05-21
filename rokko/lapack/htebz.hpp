@@ -15,7 +15,7 @@
 #include <complex>
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 #include <rokko/alias_template_function.hpp>

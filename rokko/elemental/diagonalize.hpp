@@ -86,10 +86,10 @@ El::HermitianEigCtrl<T> get_ctrl(parameters const& params) {
     ctrl.sdcCtrl.maxOuterIts = params.get<int>("maxOuterIts");
   }
   if (params.defined("tol")) {
-    ctrl.sdcCtrl.tol = params.get<norm_t<T>>("tol");
+    ctrl.sdcCtrl.tol = params.get<real_t<T>>("tol");
   }
   if (params.defined("spreadFactor")) {
-    ctrl.sdcCtrl.spreadFactor = params.get<norm_t<T>>("spreadFactor");
+    ctrl.sdcCtrl.spreadFactor = params.get<real_t<T>>("spreadFactor");
   }
   if (params.defined("random")) {
     ctrl.sdcCtrl.progress = params.get<bool>("random");
@@ -136,12 +136,12 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
                   static_cast<complex_t<T>*>(mat.get_array_pointer()), mat.get_lld());
   El::DistMatrix<complex_t<T>> elem_eigvecs(0, 0, elem_grid);
-  El::DistMatrix<norm_t<T>, El::VR, El::STAR> elem_w(elem_grid);
+  El::DistMatrix<real_t<T>, El::VR, El::STAR> elem_w(elem_grid);
 
   El::UpperOrLower elem_uplow = get_matrix_part(params);
   El::HermitianEigCtrl<complex_t<T>> ctrl = get_ctrl<complex_t<T>>(params);
-  El::HermitianEigSubset<norm_t<T>> subset = get_subset<norm_t<T>>(params);
-  ctrl.tridiagEigCtrl.subset = get_subset<norm_t<T>>(params);
+  El::HermitianEigSubset<real_t<T>> subset = get_subset<real_t<T>>(params);
+  ctrl.tridiagEigCtrl.subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.sort = get_sort(params);
 
   El::HermitianEig(elem_uplow, elem_mat, elem_w, elem_eigvecs, ctrl);
@@ -178,12 +178,12 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
                   static_cast<complex_t<T>*>(mat.get_array_pointer()), mat.get_lld());
   El::DistMatrix<complex_t<T>> elem_eigvecs(0, 0, elem_grid);
-  El::DistMatrix<norm_t<T>, El::VR, El::STAR> elem_w(elem_grid);
+  El::DistMatrix<real_t<T>, El::VR, El::STAR> elem_w(elem_grid);
 
   El::UpperOrLower elem_uplow = get_matrix_part(params);
   El::HermitianEigCtrl<complex_t<T>> ctrl = get_ctrl<complex_t<T>>(params);
-  El::HermitianEigSubset<norm_t<T>> subset = get_subset<norm_t<T>>(params);
-  ctrl.tridiagEigCtrl.subset = get_subset<norm_t<T>>(params);
+  El::HermitianEigSubset<real_t<T>> subset = get_subset<real_t<T>>(params);
+  ctrl.tridiagEigCtrl.subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.sort = get_sort(params);
 
   El::HermitianEig(elem_uplow, elem_mat, elem_w, ctrl);

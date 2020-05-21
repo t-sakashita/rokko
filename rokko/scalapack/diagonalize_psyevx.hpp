@@ -31,15 +31,15 @@ parameters diagonalize_psyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  norm_t<T> vl, vu;
+  real_t<T> vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  norm_t<T> abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
-  norm_t<T> orfac = params.defined("orfac") ? params.get<norm_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
+  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
+  real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
-  std::vector<norm_t<T>> gap(mat.get_nprow() * mat.get_npcol());
+  std::vector<real_t<T>> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
   int info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,
@@ -65,15 +65,15 @@ parameters diagonalize_psyevx(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       parameters const& params) {
   rokko::parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  norm_t<T> vl, vu;
+  real_t<T> vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const int ictxt = mat.get_grid().get_blacs_context();
-  norm_t<T> abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
-  norm_t<T> orfac = params.defined("orfac") ? params.get<norm_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
+  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
+  real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
-  std::vector<norm_t<T>> gap(mat.get_nprow() * mat.get_npcol());
+  std::vector<real_t<T>> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
   int info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,

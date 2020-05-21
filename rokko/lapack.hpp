@@ -14,7 +14,7 @@
 
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 
 namespace rokko {
 namespace lapack {
@@ -50,10 +50,10 @@ template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work);
   
 template<typename MATRIX>
-rokko::norm_t<MATRIX> lange(char norm, MATRIX const& a);
+rokko::real_t<MATRIX> lange(char norm, MATRIX const& a);
 
 template<typename MATRIX, typename VECTOR>
-rokko::norm_t<MATRIX> lange(char norm, MATRIX const& a, VECTOR& work);
+rokko::real_t<MATRIX> lange(char norm, MATRIX const& a, VECTOR& work);
   
 template<typename MATRIX, typename VECTOR>
 lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau);

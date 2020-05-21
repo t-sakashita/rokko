@@ -15,7 +15,7 @@
 #include <complex>
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 #include <rokko/lapack/storage.hpp>
@@ -74,7 +74,7 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(char jobz, char range, VECTOR& d, VECTOR& e,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
-  static_assert(std::is_same<norm_t<MATRIX>, T>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, T>::value, "");
   static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
 
   lapack_int n = size(d);

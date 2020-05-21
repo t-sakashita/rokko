@@ -26,7 +26,7 @@ template<typename T, int MATRIX_MAJOR, typename VEC>
 parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
                  rokko::parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<norm_t<T>>("abstol") < 0) {
+    if (params.get<real_t<T>>("abstol") < 0) {
       std::stringstream msg;
       msg << "lapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl
@@ -51,7 +51,7 @@ parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,M
 				 Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
                  rokko::parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<norm_t<T>>("abstol") < 0) {
+    if (params.get<real_t<T>>("abstol") < 0) {
       std::stringstream msg;
       msg << "lapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl

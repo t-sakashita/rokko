@@ -15,7 +15,7 @@
 #include <rokko/pyrokko_parameters.hpp>
 #include <rokko/serial_dense_ev.hpp>
 #include <rokko/eigen3.hpp>
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 
 namespace rokko {
 
@@ -33,10 +33,10 @@ public:
 
   template<typename T, int MAJOR>
   wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
-             Eigen::RefVec<norm_t<T>> eigval_in,
+             Eigen::RefVec<real_t<T>> eigval_in,
              Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> eigvec_in,
 			 wrap_parameters const& params) {
-    using vector_type = Eigen::Vector<norm_t<T>>;
+    using vector_type = Eigen::Vector<real_t<T>>;
     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> eigvec;
     vector_type eigval;
@@ -56,9 +56,9 @@ public:
 
   template<typename T, int MAJOR>
   wrap_parameters diagonalize(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>> mat_in,
-             Eigen::RefVec<norm_t<T>> eigval_in,
+             Eigen::RefVec<real_t<T>> eigval_in,
 			 wrap_parameters const& params) {
-    using vector_type = Eigen::Vector<norm_t<T>>;
+    using vector_type = Eigen::Vector<real_t<T>>;
     Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR> mat;
     vector_type eigval;
 

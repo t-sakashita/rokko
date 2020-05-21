@@ -16,7 +16,7 @@
 #include <rokko/cscalapack.h>
 #include <rokko/eigen3.hpp>
 #include <rokko/lapack/storage.hpp>
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 
 namespace rokko {

@@ -30,7 +30,7 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<norm_t<T>>("abstol") < 0) {
+    if (params.get<real_t<T>>("abstol") < 0) {
       std::stringstream msg;
       msg << "scalapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl
@@ -53,7 +53,7 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   if (params.defined("abstol")) {
-    if (params.get<norm_t<T>>("abstol") < 0) {
+    if (params.get<real_t<T>>("abstol") < 0) {
       std::stringstream msg;
       msg << "scalapack::diagonalize_bisection() : " << std::endl
           << "abstol is negative value, which means QR method." << std::endl

@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include "complex_cast.hpp"
 
 namespace rokko {
@@ -68,7 +68,7 @@ struct lange_dispatch<std::complex<double>> {
 }
 
 template<typename MATRIX>
-norm_t<MATRIX> lange(char norm, MATRIX const& a) {
+real_t<MATRIX> lange(char norm, MATRIX const& a) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   return lange_dispatch<value_t<MATRIX>>

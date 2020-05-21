@@ -15,7 +15,7 @@
 #include <complex>
 #include <lapacke.h>
 #undef I
-#include <rokko/traits/norm_t.hpp>
+#include <rokko/traits/real_t.hpp>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"
 #include <rokko/lapack/storage.hpp>
@@ -74,7 +74,7 @@ template<typename T, typename MATRIX, typename MATRIX2, typename VECTOR, typenam
 lapack_int heevx(char jobz, char range, char uplo, MATRIX& a,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX2& z, VECTOR_INT& ifail) {
-  static_assert(std::is_same<norm_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");

@@ -27,11 +27,11 @@ template<typename T, int MATRIX_MAJOR, typename VEC>
 parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
 			      parameters const& params) {
   parameters params_out;
-  norm_t<T> abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : 0.;
+  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
-  norm_t<T> vl, vu;
+  real_t<T> vl, vu;
   const char range = get_eigenvalues_range(params, vl, vu, il, iu);
   const char uplow = get_matrix_part(params);
 
@@ -65,11 +65,11 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 			      parameters const& params) {
   rokko::parameters params_out;
 
-  norm_t<T> abstol = params.defined("abstol") ? params.get<norm_t<T>>("abstol") : 0.;
+  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il = 0, iu = 0;
-  norm_t<T> vl = 0, vu = 0;
+  real_t<T> vl = 0, vu = 0;
   const char range = get_eigenvalues_range(params, vl, vu, il, iu);
   const char uplow = get_matrix_part(params);
 

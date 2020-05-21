@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_TRAITS_NORM_T_HPP
-#define ROKKO_TRAITS_NORM_T_HPP
+#ifndef ROKKO_TRAITS_REAL_T_HPP
+#define ROKKO_TRAITS_REAL_T_HPP
 
 #include "value_t.hpp"
 #include <complex>
@@ -44,7 +44,7 @@ struct norm_scalar_type_traits<std::complex<double>> {
 };
 
 template<typename T>
-struct norm_type_traits {
+struct real_type_traits {
   using value_type = rokko::value_t<T>;
   using type = typename norm_scalar_type_traits<value_type>::type;
 };
@@ -52,8 +52,8 @@ struct norm_type_traits {
 } // end namespace detail
 
 template<typename T>
-using norm_t = typename detail::norm_type_traits<T>::type;
+using real_t = typename detail::real_type_traits<T>::type;
 
 } // namespace rokko
 
-#endif // ROKKO_TRAITS_NORM_T_HPP
+#endif // ROKKO_TRAITS_REAL_T_HPP
