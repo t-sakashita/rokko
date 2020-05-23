@@ -112,7 +112,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
-  return htegr('A', d, e, 0., 0., 0, 0, abstol, m, w, z, isuppz);
+  constexpr real_t<VECTOR> real_zero = 0;
+  return htegr('A', d, e, real_zero, real_zero, 0, 0, abstol, m, w, z, isuppz);
 }
 
 // eigenvalues & eigenvectors, use vl, vu (without jobz, range, il, iu)
@@ -128,7 +129,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
-  return htegr('I', d, e, 0., 0., il, iu, abstol, m, w, z, isuppz);
+  constexpr real_t<VECTOR> real_zero = 0;
+  return htegr('I', d, e, real_zero, real_zero, il, iu, abstol, m, w, z, isuppz);
 }
 
 // only eigenvalues, use all (without jobz, range, vl, vu, il, iu)
@@ -137,8 +139,9 @@ lapack_int htegr(VECTOR& d, VECTOR& e,
                  T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
   static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  constexpr real_t<VECTOR> real_zero = 0;
 
-  return htegr('A', d, e, 0., 0., 0, 0, abstol, m, w, isuppz);
+  return htegr('A', d, e, real_zero, real_zero, 0, 0, abstol, m, w, isuppz);
 }
 
 // only eigenvalues, use vl, vu (without jobz, range, il, iu)
@@ -156,7 +159,8 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  return htegr('I', d, e, 0., 0., il, iu, abstol, m, w, isuppz);
+  constexpr real_t<VECTOR> real_zero = 0;
+  return htegr('I', d, e, real_zero, real_zero, il, iu, abstol, m, w, isuppz);
 }
 
 ALIAS_TEMPLATE_FUNCTION(stegr, htegr);

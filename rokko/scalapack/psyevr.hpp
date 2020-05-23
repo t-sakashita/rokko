@@ -121,8 +121,9 @@ template<typename MATRIX, typename VECTOR>
 int psyevr(char uplo, MATRIX& a,
            int& m, int& nz,
            VECTOR& w, MATRIX& z) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevr('A', uplo, a,
-                0., 0., 0, 0, m, nz,
+                real_zero, real_zero, 0, 0, m, nz,
                 w, z);
 }
 
@@ -143,8 +144,9 @@ int psyevr(char uplo, MATRIX& a,
            int il, int iu,
            int& m, int& nz,
            VECTOR& w, MATRIX& z) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevr('I', uplo, a,
-                0., 0., il, iu, m, nz,
+                real_zero, real_zero, il, iu, m, nz,
                 w, z);
 }
 
@@ -168,8 +170,9 @@ template<typename MATRIX, typename VECTOR>
 int psyevr(char uplo, MATRIX& a,
            int& m, int& nz,
            VECTOR& w) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevr('A', uplo, a,
-                0., 0., 0, 0, m, nz,
+                real_zero, real_zero, 0, 0, m, nz,
                 w);
 }
 
@@ -190,8 +193,9 @@ int psyevr(char uplo, MATRIX& a,
            int il, int iu,
            int& m, int& nz,
            VECTOR& w) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevr('I', uplo, a,
-                0., 0., il, iu, m, nz,
+                real_zero, real_zero, il, iu, m, nz,
                 w);
 }
 

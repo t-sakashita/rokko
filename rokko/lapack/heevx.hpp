@@ -97,7 +97,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int heevx(char uplo, MATRIX& a,
                  T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& ifail) {
-  return heevx('A', uplo, a, 0., 0., 0, 0, abstol, m, w, z, ifail);
+  constexpr real_t<MATRIX> real_zero = 0;
+  return heevx('A', uplo, a, real_zero, real_zero, 0, 0, abstol, m, w, z, ifail);
 }
 
 // eigenvalues & eigenvectors, use vl, vu (without jobz, range, il, iu)
@@ -113,7 +114,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int heevx(char uplo, MATRIX& a,
                  lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& ifail) {
-  return heevx('I', uplo, a, 0., 0., il, iu, abstol, m, w, z, ifail);
+  constexpr real_t<MATRIX> real_zero = 0;
+  return heevx('I', uplo, a, real_zero, real_zero, il, iu, abstol, m, w, z, ifail);
 }
 
 // only eigenvalues (without jobz)
@@ -130,7 +132,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int heevx(char uplo, MATRIX& a,
                  T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& ifail) {
-  return heevx('A', uplo, a, 0., 0., 0, 0, abstol, m, w, ifail);
+  constexpr real_t<MATRIX> real_zero = 0;
+  return heevx('A', uplo, a, real_zero, real_zero, 0, 0, abstol, m, w, ifail);
 }
 
 // only eigenvalues, use vl, vu (without jobz, range, il, iu)
@@ -146,7 +149,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int heevx(char uplo, MATRIX& a,
                  lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& ifail) {
-  return heevx('I', uplo, a, 0., 0., il, iu, abstol, m, w, ifail);
+  constexpr real_t<MATRIX> real_zero = 0;
+  return heevx('I', uplo, a, real_zero, real_zero, il, iu, abstol, m, w, ifail);
 }
 
 ALIAS_TEMPLATE_FUNCTION(syevx, heevx);

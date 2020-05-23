@@ -143,8 +143,9 @@ int psyevx(char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac, MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevx('A', uplo, a,
-                0., 0., 0, 0, abstol, m, nz,
+                real_zero, real_zero, 0, 0, abstol, m, nz,
                 w, orfac, z,
                 ifail, iclustr, gap);
 }
@@ -169,8 +170,9 @@ int psyevx(char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac, MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevx('I', uplo, a,
-                0., 0., il, iu, abstol, m, nz,
+                real_zero, real_zero, il, iu, abstol, m, nz,
                 w, orfac, z,
                 ifail, iclustr, gap);
 }
@@ -199,8 +201,9 @@ int psyevx(char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevx('A', uplo, a,
-                0., 0., 0, 0, abstol, m, nz,
+                real_zero, real_zero, 0, 0, abstol, m, nz,
                 w, orfac,
                 ifail, iclustr, gap);
 }
@@ -225,8 +228,9 @@ int psyevx(char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
+  constexpr real_t<MATRIX> real_zero = 0;
   return psyevx('I', uplo, a,
-                0., 0., il, iu, abstol, m, nz,
+                real_zero, real_zero, il, iu, abstol, m, nz,
                 w, orfac,
                 ifail, iclustr, gap);
 }
