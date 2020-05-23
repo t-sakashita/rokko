@@ -117,12 +117,12 @@ int psyevr(char range, char uplo, MATRIX& a,
 }
 
 // eigenvalues & eigenvectors, use all (without jobz, range, vl, vu, il, iu)
-template<typename T, typename MATRIX, typename VECTOR>
+template<typename MATRIX, typename VECTOR>
 int psyevr(char uplo, MATRIX& a,
            int& m, int& nz,
            VECTOR& w, MATRIX& z) {
   return psyevr('A', uplo, a,
-                m, nz,
+                0., 0., 0, 0, m, nz,
                 w, z);
 }
 
@@ -164,12 +164,12 @@ int psyevr(char range, char uplo, MATRIX& a,
 }
 
 // only eigenvalues, use all (without jobz, range, vl, vu, il, iu)
-template<typename T, typename MATRIX, typename VECTOR>
+template<typename MATRIX, typename VECTOR>
 int psyevr(char uplo, MATRIX& a,
            int& m, int& nz,
            VECTOR& w) {
   return psyevr('A', uplo, a,
-                m, nz,
+                0., 0., 0, 0, m, nz,
                 w);
 }
 
