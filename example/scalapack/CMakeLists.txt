@@ -1,4 +1,4 @@
-set(PROG psyev psyevd pstedc pstebz_tein psyevd_float psyevd_complex)
+set(PROG psyev psyevd pstedc pstebz_tein psyevd_float psyevd_complex psyevr psyevr_float)
 foreach(name ${PROG})
   set(target_name example_scalapack_${name})
   add_executable(${target_name} ${name}.cpp)
