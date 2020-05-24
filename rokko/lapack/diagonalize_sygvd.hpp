@@ -23,7 +23,7 @@ namespace lapack {
 
 // only eigenvalues
 template<typename T, int MATRIX_MAJOR, typename VEC>
-parameters diagonalize_dsygvd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
+parameters diagonalize_sygvd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
 			      VEC& eigvals,
 			      parameters const& params) {
   parameters params_out;
@@ -45,7 +45,7 @@ parameters diagonalize_dsygvd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATR
 
 // eigenvalues / eigenvectors
 template<typename T, int MATRIX_MAJOR, typename VEC>
-parameters diagonalize_dsygvd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
+parameters diagonalize_sygvd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mata, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& matb,
 			      VEC& eigvals, Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   parameters params_out;

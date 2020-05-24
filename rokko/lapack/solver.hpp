@@ -19,9 +19,9 @@
 #include <rokko/lapack/diagonalize_syevx.hpp>
 #include <rokko/lapack/diagonalize_bisection.hpp>
 #include <rokko/lapack/diagonalize_qr.hpp>
-#include <rokko/lapack/diagonalize_dsygv.hpp>
-#include <rokko/lapack/diagonalize_dsygvd.hpp>
-#include <rokko/lapack/diagonalize_dsygvx.hpp>
+#include <rokko/lapack/diagonalize_sygv.hpp>
+#include <rokko/lapack/diagonalize_sygvd.hpp>
+#include <rokko/lapack/diagonalize_sygvx.hpp>
 #include <rokko/lapack/diagonalize_bisection_dsygvx.hpp>
 
 namespace rokko {
