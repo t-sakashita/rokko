@@ -8,7 +8,7 @@ foreach(name ${PROG})
 endforeach(name)
 unset(PROG)
 
-set(PROG gesvd gesvd_z getrs getrs_z heev heev_c heevx heevr lange orgqr ungqr syev syev_s syevd syevx syevr steqr stedc stebz_tein sterf stegr sygv)
+set(PROG gesvd gesvd_z getrs getrs_z heev heev_c heevx heevr lange orgqr ungqr syev syev_s syevd syevx syevr syevr_float syevr_complex steqr stedc stebz_tein sterf stegr sygv)
 foreach(name ${PROG})
   set(target_name example_lapack_${name})
   add_executable(${target_name} ${name}.cpp)
