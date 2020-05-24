@@ -125,12 +125,8 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
     throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
-  enum El::GridOrder elemental_grid_order; // El::ROW_MAJOR;
-  if (mat.get_grid().is_row_major()) {
-    elemental_grid_order = El::ROW_MAJOR;
-  } else {
-    elemental_grid_order = El::COLUMN_MAJOR;
-  }
+  enum El::GridOrder elemental_grid_order = (mat.get_grid().is_row_major()) ?
+    El::ROW_MAJOR : El::COLUMN_MAJOR;
   El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
   El::DistMatrix<complex_t<T>> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
@@ -167,12 +163,8 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
     throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
   MPI_Comm comm = mat.get_grid().get_comm();
-  enum El::GridOrder elemental_grid_order;
-  if (mat.get_grid().is_row_major()) {
-    elemental_grid_order = El::ROW_MAJOR;
-  } else {
-    elemental_grid_order = El::COLUMN_MAJOR;
-  }
+  enum El::GridOrder elemental_grid_order = (mat.get_grid().is_row_major()) ?
+    El::ROW_MAJOR : El::COLUMN_MAJOR;
   El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
   El::DistMatrix<complex_t<T>> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
