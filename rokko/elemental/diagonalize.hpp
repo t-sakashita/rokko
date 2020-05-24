@@ -144,8 +144,8 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
   for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
   T* result_mat = elem_eigvecs.Buffer();
-  for(int local_i=0; local_i<mat.get_m_local(); ++local_i) {
-    for(int local_j=0; local_j<elem_w.LocalHeight(); ++local_j) {
+  for(int local_j=0; local_j<elem_w.LocalHeight(); ++local_j) {
+    for(int local_i=0; local_i<mat.get_m_local(); ++local_i) {
       eigvecs.set_local(local_i, local_j, result_mat[local_j * mat.get_lld() + local_i]);
     }
   }
