@@ -40,9 +40,9 @@ parameters diagonalize_sygvx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const int dim = mata.outerSize();
   std::vector<lapack_int> ifail(dim);
   constexpr int itype = 1;
-  int info = dsygvx(itype, jobz, range, uplow,
-                    mata, matb, vl, vu, il, iu,
-                    abstol, m, eigvals, NULL, ifail);
+  int info = sygvx(itype, jobz, range, uplow,
+                   mata, matb, vl, vu, il, iu,
+                   abstol, m, eigvals, NULL, ifail);
 
   if (info) {
     std::cerr << "error at dsygvx function. info=" << info << std::endl;
