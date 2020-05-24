@@ -102,7 +102,9 @@ lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
 #include "lapack/heevx.hpp"
 #include "lapack/heevd.hpp"
 #include "lapack/heevr.hpp"
-// #include "lapack/hegv.hpp"
+#include "lapack/hegv.hpp"
+#include "lapack/hegvd.hpp"
+#include "lapack/hegvx.hpp"
 #include "lapack/lange.hpp"
 #include "lapack/ungqr.hpp"
 
