@@ -151,7 +151,7 @@ program test_real_example
   call mpi_barrier(mpi_comm_world, mpierr)
    diag_tick = mpi_wtime()
 
-   if (elpa_init(20190524) /= elpa_ok) then
+   if (elpa_init(20200417) /= elpa_ok) then
      print *, "ELPA API version not supported"
      stop
    endif

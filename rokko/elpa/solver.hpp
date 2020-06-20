@@ -25,7 +25,7 @@ public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& /* grid_major */) { return true; }
   void initialize(int& /* argc */, char**& /* argv */) {
-    if (elpa_init(20190524) != ELPA_OK) {
+    if (elpa_init(20200417) != ELPA_OK) {
       throw std::invalid_argument("ERROR: elpa::initialize()");
     }
   }
