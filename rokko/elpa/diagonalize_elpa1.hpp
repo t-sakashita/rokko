@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2012-2015 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -80,7 +80,7 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   assert_elpa_ok(error);
   
   int info;
-  elpa_eigenvectors_d(handle, mat.get_array_pointer(), &eigvals[0], eigvecs.get_array_pointer(), &info);
+  elpa_eigenvectors_d(handle, mat.get_array_pointer(), storage(eigvals), eigvecs.get_array_pointer(), &info);
   elpa_deallocate(handle, &error);
 
   params_out.set("info", info);
@@ -145,7 +145,7 @@ parameters diagonalize_elpa1(distributed_matrix<double, MATRIX_MAJOR>& mat,
   assert_elpa_ok(error);
 
   int info;
-  elpa_eigenvalues_d(handle, mat.get_array_pointer(), &eigvals[0], &info);
+  elpa_eigenvalues_d(handle, mat.get_array_pointer(), storage(eigvals), &info);
   elpa_deallocate(handle, &error);
 
   params_out.set("info", info);
