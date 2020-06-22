@@ -15,6 +15,7 @@
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.h>
+#include <rokko/elpa.hpp>
 #include <rokko/elpa/diagonalize_get_parameters.hpp>
 #include <rokko/utility/timer.hpp>
 
@@ -90,8 +91,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   assert_elpa_ok(error);
 
   // call eigenvalue routine
-  int info;
-  elpa_eigenvectors_d(handle, mat.get_array_pointer(), storage(eigvals), eigvecs.get_array_pointer(), &info);
+  int info = elpa::diag(handle, mat, eigvals, eigvecs);
   elpa_deallocate(handle, &error);
 
   params_out.set("info", info);
@@ -162,8 +162,7 @@ parameters diagonalize_elpa2(distributed_matrix<double, MATRIX_MAJOR>& mat,
   assert_elpa_ok(error);
 
   // call eigenvalue routine
-  int info;
-  elpa_eigenvalues_d(handle, mat.get_array_pointer(), storage(eigvals), &info);
+  int info = elpa::diag(handle, mat, eigvals);
   elpa_deallocate(handle, &error);
 
   params_out.set("info", info);
