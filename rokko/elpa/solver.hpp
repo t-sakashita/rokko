@@ -43,9 +43,9 @@ public:
     int b = std::min(mb, nb);
     return mapping_bc<matrix_col_major>(dim, b, g);
   }
-  template <typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
-			 distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+  template <typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
+			 distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
     const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
@@ -59,8 +59,9 @@ public:
       throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
   }
-  template <typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat, VEC& eigvals,
+
+  template <typename T, typename MATRIX_MAJOR, typename VEC>
+  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
     const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
 
@@ -73,18 +74,6 @@ public:
     } else {
       throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
     }
-  }
-
-  template <typename T, typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
-			 distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
-			 parameters const& params) {
-    throw std::invalid_argument("eigenexa::diagonalize() : elpa doesn't support float type.  Use elpa with double type.");
-  }
-  template <typename T,typename MATRIX_MAJOR, typename VEC>
-  parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
-			 parameters const& params) {
-    throw std::invalid_argument("future work");
   }
 };
 

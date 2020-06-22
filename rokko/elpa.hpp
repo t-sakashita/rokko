@@ -13,6 +13,8 @@
 #define ROKKO_ELPA_DIAG_HPP
 
 #include <rokko/elpa/elpa.h>
+#include <complex>
+#undef complex
 
 namespace rokko {
 namespace elpa {
@@ -29,6 +31,18 @@ int diag(elpa_t handle, float* a, float* ev, float* q) {
   return error;
 }
 
+int diag(elpa_t handle, std::complex<double>* a, double* ev, std::complex<double>* q) {
+  int error;
+  elpa_eigenvectors_dc(handle, complex_cast(a), ev, complex_cast(q), &error);
+  return error;
+}
+
+int diag(elpa_t handle, std::complex<float>* a, float* ev, std::complex<float>* q) {
+  int error;
+  elpa_eigenvectors_fc(handle, complex_cast(a), ev, complex_cast(q), &error);
+  return error;
+}
+
 int diag(elpa_t handle, double* a, double* ev) {
   int error;
   elpa_eigenvalues_d(handle, a, ev, &error);
@@ -38,6 +52,18 @@ int diag(elpa_t handle, double* a, double* ev) {
 int diag(elpa_t handle, float* a, float* ev) {
   int error;
   elpa_eigenvalues_f(handle, a, ev, &error);
+  return error;
+}
+
+int diag(elpa_t handle, std::complex<double>* a, double* ev) {
+  int error;
+  elpa_eigenvalues_dc(handle, complex_cast(a), ev, &error);
+  return error;
+}
+
+int diag(elpa_t handle, std::complex<float>* a, float* ev) {
+  int error;
+  elpa_eigenvalues_fc(handle, complex_cast(a), ev, &error);
   return error;
 }
 
