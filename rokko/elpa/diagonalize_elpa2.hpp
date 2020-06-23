@@ -37,20 +37,16 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   /* Set parameters */
   set_parameters(mat, params, handle);
 
-  int use_qr = get_blocked_qr(params);
-  elpa_set_integer(handle, "qr", use_qr, &error);
+  assert_elpa_ok( elpa_set(handle, "qr", get_blocked_qr(params)) );
   
   /* Setup */
   assert_elpa_ok(elpa_setup(handle));
 
   /* Set tunables */
   constexpr int solver_enum = ELPA_SOLVER_2STAGE;
-  elpa_set_integer(handle, "solver", solver_enum, &error);
-  assert_elpa_ok(error);
+  assert_elpa_ok( elpa_set(handle, "solver", solver_enum) );
 
-  int kernel = get_kernel(params);
-  elpa_set_integer(handle, "real_kernel", kernel, &error);
-  assert_elpa_ok(error);
+  assert_elpa_ok( elpa_set(handle, "real_kernel", get_kernel(params)) );
 
   // call eigenvalue routine
   int info = elpa::diag(handle, mat, eigvals, eigvecs);
@@ -72,20 +68,16 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   /* Set parameters */
   set_parameters(mat, params, handle);
 
-  int use_qr = get_blocked_qr(params);
-  elpa_set_integer(handle, "qr", use_qr, &error);
+  assert_elpa_ok( elpa_set(handle, "qr", get_blocked_qr(params)) );
   
   /* Setup */
   assert_elpa_ok(elpa_setup(handle));
 
   /* Set tunables */
   constexpr int solver_enum = ELPA_SOLVER_2STAGE;
-  elpa_set_integer(handle, "solver", solver_enum, &error);
-  assert_elpa_ok(error);
+  assert_elpa_ok( elpa_set(handle, "solver", solver_enum) );
 
-  int kernel = get_kernel(params);
-  elpa_set_integer(handle, "real_kernel", kernel, &error);
-  assert_elpa_ok(error);
+  assert_elpa_ok( elpa_set(handle, "real_kernel", get_kernel(params)) );
 
   // call eigenvalue routine
   int info = elpa::diag(handle, mat, eigvals);
