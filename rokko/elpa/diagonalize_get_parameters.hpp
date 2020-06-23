@@ -13,6 +13,7 @@
 #define ROKKO_ELPA_DIAGONALIZE_GET_PARAMETERS_HPP
 
 #include <rokko/parameters.hpp>
+#include <rokko/elpa/elpa.h>
 
 namespace rokko {
 namespace elpa {
@@ -24,9 +25,8 @@ void get_nev(parameters const& params, int& nev) {
     nev = params.get<int>("nev");
 }
 
-void get_kernel(parameters const& params, int& kernel) {
-  if (params.defined("kernel"))
-    kernel = params.get<int>("kernel");
+int get_kernel(parameters const& params) {
+  return params.defined("kernel") ? params.get<int>("kernel") : ELPA_2STAGE_REAL_GENERIC_SIMPLE;
 }
 
 void get_blocked_qr(parameters const& params, int& blocked_qr) {

@@ -50,8 +50,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   elpa_set_integer(handle, "solver", solver_enum, &error);
   assert_elpa_ok(error);
 
-  int kernel = ELPA_2STAGE_REAL_GENERIC_SIMPLE;
-  get_kernel(params, kernel);
+  int kernel = get_kernel(params);
   elpa_set_integer(handle, "real_kernel", kernel, &error);
   assert_elpa_ok(error);
 
@@ -88,8 +87,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   elpa_set_integer(handle, "solver", solver_enum, &error);
   assert_elpa_ok(error);
 
-  int kernel = ELPA_2STAGE_REAL_GENERIC_SIMPLE;
-  get_kernel(params, kernel);
+  int kernel = get_kernel(params);
   elpa_set_integer(handle, "real_kernel", kernel, &error);
   assert_elpa_ok(error);
 
