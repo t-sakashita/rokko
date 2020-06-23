@@ -29,9 +29,8 @@ int get_kernel(parameters const& params) {
   return params.defined("kernel") ? params.get<int>("kernel") : ELPA_2STAGE_REAL_GENERIC_SIMPLE;
 }
 
-void get_blocked_qr(parameters const& params, int& blocked_qr) {
-  if (params.defined("blocked_qr"))
-    blocked_qr = static_cast<int>(params.get<bool>("blocked_qr"));
+int get_blocked_qr(parameters const& params) {
+  return params.defined("blocked_qr") ? static_cast<int>(params.get<bool>("blocked_qr")) : 0;
 }
 
 } // namespace elpa

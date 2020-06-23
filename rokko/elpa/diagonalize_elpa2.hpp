@@ -38,8 +38,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   /* Set parameters */
   set_parameters(mat, params, handle);
 
-  int use_qr = 0;
-  get_blocked_qr(params, use_qr);
+  int use_qr = get_blocked_qr(params);
   elpa_set_integer(handle, "qr", use_qr, &error);
   
   /* Setup */
@@ -75,8 +74,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   /* Set parameters */
   set_parameters(mat, params, handle);
 
-  int use_qr = 0;
-  get_blocked_qr(params, use_qr);
+  int use_qr = get_blocked_qr(params);
   elpa_set_integer(handle, "qr", use_qr, &error);
   
   /* Setup */
