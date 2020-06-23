@@ -19,6 +19,19 @@
 namespace rokko {
 namespace elpa {
 
+int elpa_set(elpa_t handle, const char *name, int value) {
+  int error;
+  elpa_set_integer(handle, name, value, &error);
+  return error;
+}
+
+int elpa_set(elpa_t handle, const char *name, double value) {
+  int error;
+  elpa_set_double(handle, name, value, &error);
+  return error;
+}
+
+
 int diag(elpa_t handle, double* a, double* ev, double* q) {
   int error;
   elpa_eigenvectors_d(handle, a, ev, q, &error);
