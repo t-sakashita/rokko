@@ -28,14 +28,10 @@ void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters c
   assert_elpa_ok( elpa_set(handle, "na", mat.get_m_global()) );
   assert_elpa_ok( elpa_set(handle, "nev", nev) );
 
-  int na_rows = mat.get_m_local();
-  assert_elpa_ok( elpa_set(handle, "local_nrows", na_rows) );
+  assert_elpa_ok( elpa_set(handle, "local_nrows", mat.get_m_local()) );
+  assert_elpa_ok( elpa_set(handle, "local_ncols", mat.get_n_local()) );
 
-  int na_cols = mat.get_n_local();
-  assert_elpa_ok( elpa_set(handle, "local_ncols", na_cols) );
-
-  int nblk = mat.get_mb();
-  assert_elpa_ok( elpa_set(handle, "nblk", nblk) );
+  assert_elpa_ok( elpa_set(handle, "nblk", mat.get_mb()) );
 
   MPI_Comm comm = mat.get_grid().get_comm();
   assert_elpa_ok( elpa_set(handle, "mpi_comm_parent", MPI_Comm_c2f(comm)) );
