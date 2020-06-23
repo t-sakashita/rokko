@@ -41,8 +41,7 @@ parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
   /* Set tunables */
   constexpr int solver_enum = ELPA_SOLVER_1STAGE;
-  elpa_set_integer(handle, "solver", solver_enum, &error);
-  assert_elpa_ok(error);
+  assert_elpa_ok( elpa_set(handle, "solver", solver_enum) );
   
   int info = elpa::diag(handle, mat, eigvals, eigvecs);
   elpa_deallocate(handle, &error);
@@ -70,8 +69,7 @@ parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
   /* Set tunables */
   constexpr int solver_enum = ELPA_SOLVER_1STAGE;
-  elpa_set_integer(handle, "solver", solver_enum, &error);
-  assert_elpa_ok(error);
+  assert_elpa_ok( elpa_set(handle, "solver", solver_enum) );
 
   int info = elpa::diag(handle, mat, eigvals);
   elpa_deallocate(handle, &error);
