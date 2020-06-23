@@ -19,6 +19,12 @@
 namespace rokko {
 namespace elpa {
 
+int deallocate(elpa_t handle) {
+  int error;
+  elpa_deallocate(handle, &error);
+  return error;
+}
+
 int elpa_set(elpa_t handle, const char *name, int value) {
   int error;
   elpa_set_integer(handle, name, value, &error);

@@ -44,7 +44,7 @@ parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
   assert_elpa_ok( elpa_set(handle, "solver", solver_enum) );
   
   int info = elpa::diag(handle, mat, eigvals, eigvecs);
-  elpa_deallocate(handle, &error);
+  assert_elpa_ok( deallocate(handle) );
 
   params_out.set("info", info);
   return params_out;
@@ -72,7 +72,7 @@ parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
   assert_elpa_ok( elpa_set(handle, "solver", solver_enum) );
 
   int info = elpa::diag(handle, mat, eigvals);
-  elpa_deallocate(handle, &error);
+  assert_elpa_ok( deallocate(handle) );
 
   params_out.set("info", info);
   return params_out;

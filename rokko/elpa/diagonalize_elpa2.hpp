@@ -50,7 +50,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
   // call eigenvalue routine
   int info = elpa::diag(handle, mat, eigvals, eigvecs);
-  elpa_deallocate(handle, &error);
+  assert_elpa_ok( deallocate(handle) );
 
   params_out.set("info", info);
   return params_out;
@@ -81,7 +81,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
   // call eigenvalue routine
   int info = elpa::diag(handle, mat, eigvals);
-  elpa_deallocate(handle, &error);
+  assert_elpa_ok( deallocate(handle) );
 
   params_out.set("info", info);
   return params_out;
