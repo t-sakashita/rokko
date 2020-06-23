@@ -31,9 +31,8 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
   if(mat.is_row_major())
     throw std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
 
-  elpa_t handle;
   int error;
-  handle = elpa_allocate(&error);
+  elpa_t handle = elpa_allocate(&error);
 
   /* Set parameters */
   set_parameters(mat, params, handle);
@@ -66,10 +65,9 @@ parameters diagonalize_elpa2(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			     VEC& eigvals,
 			     parameters const& params) {
   parameters params_out;
-  
-  elpa_t handle;
+
   int error;
-  handle = elpa_allocate(&error);
+  elpa_t handle = elpa_allocate(&error);
 
   /* Set parameters */
   set_parameters(mat, params, handle);
