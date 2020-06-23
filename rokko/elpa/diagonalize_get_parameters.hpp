@@ -31,7 +31,7 @@ int get_kernel(parameters const& params) {
 
 void get_blocked_qr(parameters const& params, int& blocked_qr) {
   if (params.defined("blocked_qr"))
-    blocked_qr = (int) params.get<bool>("blocked_qr");
+    blocked_qr = static_cast<int>(params.get<bool>("blocked_qr"));
 }
 
 } // namespace elpa
