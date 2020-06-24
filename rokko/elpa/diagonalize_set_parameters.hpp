@@ -20,6 +20,12 @@
 namespace rokko {
 namespace elpa {
 
+void set_solver(parameters const& params, elpa_t handle) {
+  assert_elpa_ok( set(handle, "solver", get_solver(params)) );
+  if (get_solver(params) == ELPA_SOLVER_2STAGE)
+    assert_elpa_ok( set(handle, "real_kernel", get_kernel(params)) );
+}
+
 template<typename T, typename MATRIX_MAJOR>
 void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters const& params, elpa_t handle) {
   assert_elpa_ok( set(handle, "na", mat.get_m_global()) );

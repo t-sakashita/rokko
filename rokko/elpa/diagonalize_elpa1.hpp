@@ -37,10 +37,7 @@ parameters diagonalize_elpa1(distributed_matrix<T, rokko::matrix_col_major>& mat
   /* Setup */
   assert_elpa_ok(elpa_setup(handle));
 
-  /* Set tunables */
-  constexpr int solver_enum = ELPA_SOLVER_1STAGE;
-  assert_elpa_ok( set(handle, "solver", solver_enum) );
-  
+  set_solver(params, handle);
   int info = elpa::diag(handle, mat, eigvals, eigvecs);
   assert_elpa_ok( deallocate(handle) );
 
@@ -70,10 +67,7 @@ parameters diagonalize_elpa1(distributed_matrix<T, rokko::matrix_col_major>& mat
   /* Setup */
   assert_elpa_ok(elpa_setup(handle));
 
-  /* Set tunables */
-  constexpr int solver_enum = ELPA_SOLVER_1STAGE;
-  assert_elpa_ok( set(handle, "solver", solver_enum) );
-
+  set_solver(params, handle);
   int info = elpa::diag(handle, mat, eigvals);
   assert_elpa_ok( deallocate(handle) );
 
