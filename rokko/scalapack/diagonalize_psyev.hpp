@@ -22,9 +22,9 @@ namespace rokko {
 namespace scalapack {
 
 // eigenvalues & eigenvectors
-template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_psyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
-			      VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename VEC>
+parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_col_major>& mat,
+			      VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			      parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
@@ -39,9 +39,16 @@ parameters diagonalize_psyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
+template<typename T, typename VEC>
+parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_row_major>& mat,
+			      VEC& eigvals, distributed_matrix<T, rokko::matrix_row_major>& eigvecs,
+			      parameters const& params) {
+  throw std::invalid_argument("scalapack::diagonalize_psyev() : scalapack doesn't support matrix_row_major.  Use scalapack with matrix_col_major.");
+}
+
 // only eigenvalues
-template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_psyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
+template<typename T, typename VEC>
+parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			      VEC& eigvals,
 			      parameters const& params) {
   parameters params_out;
@@ -55,6 +62,13 @@ parameters diagonalize_psyev(distributed_matrix<T, MATRIX_MAJOR>& mat,
     lapack::print_verbose("syev", 'N', uplow);
   }
   return params_out;
+}
+
+template<typename T, typename VEC>
+parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_row_major>& mat,
+			      VEC& eigvals,
+			      parameters const& params) {
+  throw std::invalid_argument("scalapack::diagonalize_psyev() : scalapack doesn't support matrix_row_major.  Use scalapack with matrix_col_major.");
 }
 
 } // namespace scalapack
