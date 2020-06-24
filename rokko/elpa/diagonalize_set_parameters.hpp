@@ -42,6 +42,9 @@ void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters c
   MPI_Comm_split(comm, my_prow, my_pcol, &mpi_comm_cols);  // color = my_prow, key = my_pcol
   assert_elpa_ok( set(handle, "mpi_comm_rows", MPI_Comm_c2f(mpi_comm_rows)) );
   assert_elpa_ok( set(handle, "mpi_comm_cols", MPI_Comm_c2f(mpi_comm_cols)) );
+
+  // For 2STAGE only
+  assert_elpa_ok( set(handle, "qr", get_blocked_qr(params)) );
 }
 
 } // namespace elpa
