@@ -23,13 +23,11 @@
 namespace rokko {
 namespace elpa {
 
-template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
-			     VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename VEC>
+parameters diagonalize_elpa1(distributed_matrix<T, rokko::matrix_col_major>& mat,
+			     VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			     parameters const& params) {
   parameters params_out;
-  if(mat.is_row_major())
-    throw std::invalid_argument("elpa::diagonalize_elpa1() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
 
   int error;
   elpa_t handle = elpa_allocate(&error);
@@ -50,13 +48,18 @@ parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
-template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
+template<typename T, typename VEC>
+parameters diagonalize_elpa1(distributed_matrix<T, rokko::matrix_row_major>& mat,
+			     VEC& eigvals, distributed_matrix<T, rokko::matrix_row_major>& eigvecs,
+			     parameters const& params) {
+  throw std::invalid_argument("elpa::diagonalize_elpa1() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
+}
+
+template<typename T, typename VEC>
+parameters diagonalize_elpa1(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			     VEC& eigvals,
 			     parameters const& params) {
   parameters params_out;
-  if(mat.is_row_major())
-    throw std::invalid_argument("elpa::diagonalize_elpa1() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
 
   int error;
   elpa_t handle = elpa_allocate(&error);
@@ -76,6 +79,13 @@ parameters diagonalize_elpa1(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
   params_out.set("info", info);
   return params_out;
+}
+
+template<typename T, typename VEC>
+parameters diagonalize_elpa1(distributed_matrix<T, rokko::matrix_row_major>& mat,
+			     VEC& eigvals,
+			     parameters const& params) {
+  throw std::invalid_argument("elpa::diagonalize_elpa1() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
 }
 
 } // namespace elpa
