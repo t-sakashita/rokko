@@ -14,8 +14,7 @@
 
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.h>
-#include <rokko/elpa/diagonalize_elpa1.hpp>
-#include <rokko/elpa/diagonalize_elpa2.hpp>
+#include <rokko/elpa/diagonalize.hpp>
 
 namespace rokko {
 namespace elpa {
@@ -47,33 +46,13 @@ public:
   parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			 parameters const& params) {
-    const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
-
-    if (routine=="elpa1") {
-      return rokko::elpa::diagonalize_elpa1(mat, eigvals, eigvecs, params);
-    } else if (routine=="elpa2") {
-      return rokko::elpa::diagonalize_elpa2(mat, eigvals, eigvecs, params);
-    } else if (routine=="") {  // default
-      return rokko::elpa::diagonalize_elpa2(mat, eigvals, eigvecs, params);
-    } else {
-      throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
-    }
+    return rokko::elpa::diagonalize(mat, eigvals, eigvecs, params);
   }
 
   template <typename T, typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat, VEC& eigvals,
 			 parameters const& params) {
-    const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
-
-    if (routine=="elpa1") {
-      return rokko::elpa::diagonalize_elpa1(mat, eigvals, params);
-    } else if (routine=="elpa2") {
-      return rokko::elpa::diagonalize_elpa2(mat, eigvals, params);
-    } else if (routine=="") {  // default
-      return rokko::elpa::diagonalize_elpa2(mat, eigvals, params);
-    } else {
-      throw std::invalid_argument("elpa::diagonalize() : " + routine + " is invalid routine name");
-    }
+    return rokko::elpa::diagonalize(mat, eigvals, params);
   }
 };
 

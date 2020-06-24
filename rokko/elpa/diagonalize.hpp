@@ -9,8 +9,8 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_DIAGONALIZE_ELPA2_HPP
-#define ROKKO_ELPA_DIAGONALIZE_ELPA2_HPP
+#ifndef ROKKO_ELPA_DIAGONALIZE_HPP
+#define ROKKO_ELPA_DIAGONALIZE_HPP
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -24,7 +24,7 @@ namespace rokko {
 namespace elpa {
 
 template<typename T, typename VEC>
-parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_col_major>& mat,
+parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			     VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			     parameters const& params) {
   parameters params_out;
@@ -32,13 +32,9 @@ parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_col_major>& mat
   int error;
   elpa_t handle = elpa_allocate(&error);
 
-  /* Set parameters */
   set_parameters(mat, params, handle);
-
-  /* Setup */
   assert_elpa_ok(elpa_setup(handle));
 
-  // call eigenvalue routine
   set_solver(params, handle);
   int info = elpa::diag(handle, mat, eigvals, eigvecs);
   assert_elpa_ok( deallocate(handle) );
@@ -48,14 +44,14 @@ parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_col_major>& mat
 }
 
 template<typename T, typename VEC>
-parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_row_major>& mat,
+parameters diagonalize(distributed_matrix<T, rokko::matrix_row_major>& mat,
 			     VEC& eigvals, distributed_matrix<T, rokko::matrix_row_major>& eigvecs,
 			     parameters const& params) {
   throw std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
 }
 
 template<typename T, typename VEC>
-parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_col_major>& mat,
+parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			     VEC& eigvals,
 			     parameters const& params) {
   parameters params_out;
@@ -63,13 +59,9 @@ parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_col_major>& mat
   int error;
   elpa_t handle = elpa_allocate(&error);
 
-  /* Set parameters */
   set_parameters(mat, params, handle);
-  
-  /* Setup */
   assert_elpa_ok(elpa_setup(handle));
 
-  // call eigenvalue routine
   set_solver(params, handle);
   int info = elpa::diag(handle, mat, eigvals);
   assert_elpa_ok( deallocate(handle) );
@@ -79,7 +71,7 @@ parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_col_major>& mat
 }
 
 template<typename T, typename VEC>
-parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_row_major>& mat,
+parameters diagonalize(distributed_matrix<T, rokko::matrix_row_major>& mat,
 			     VEC& eigvals,
 			     parameters const& params) {
   throw std::invalid_argument("elpa::diagonalize_elpa2() : elpa doesn't support matrix_row_major.  Use elpa with matrix_col_major.");
@@ -88,4 +80,4 @@ parameters diagonalize_elpa2(distributed_matrix<T, rokko::matrix_row_major>& mat
 } // namespace elpa
 } // namespace rokko
 
-#endif // ROKKO_ELPA_DIAGONALIZE_ELPA2_HPP
+#endif // ROKKO_ELPA_DIAGONALIZE_HPP
