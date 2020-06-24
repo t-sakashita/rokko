@@ -20,13 +20,11 @@ namespace rokko {
 namespace eigenexa {
 
 // eigen_s eigenvalues / eigenvectors
-template <typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_eigen_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
-			       VEC& eigvals, rokko::distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
+template <typename VEC>
+parameters diagonalize_eigen_s(rokko::distributed_matrix<double, rokko::matrix_col_major>& mat,
+			       VEC& eigvals, rokko::distributed_matrix<double, rokko::matrix_col_major>& eigvecs,
 			       parameters const& params) {
   parameters params_out;
-  if(mat.is_row_major())
-    throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa doesn't support matrix_row_major.  Use eigenexa with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa supports only 1x1 block size.");
   rokko::eigenexa::init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
@@ -40,14 +38,19 @@ parameters diagonalize_eigen_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& 
   return params_out;
 }
 
+template <typename VEC>
+parameters diagonalize_eigen_s(rokko::distributed_matrix<double, rokko::matrix_row_major>& mat,
+			       VEC& eigvals, rokko::distributed_matrix<double, rokko::matrix_row_major>& eigvecs,
+			       parameters const& params) {
+  throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa doesn't support matrix_row_major.  Use eigenexa with matrix_col_major.");
+}
+
 // eigen_s only eigenvalues
-template <typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize_eigen_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& mat,
+template <typename VEC>
+parameters diagonalize_eigen_s(rokko::distributed_matrix<double, rokko::matrix_col_major>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
   parameters params_out;
-  if(mat.is_row_major())
-    throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa doesn't support matrix_row_major.  Use eigenexa with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa supports only 1x1 block size.");
   rokko::eigenexa::init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
@@ -59,6 +62,13 @@ parameters diagonalize_eigen_s(rokko::distributed_matrix<double, MATRIX_MAJOR>& 
 
   rokko::eigenexa::free(1);
   return params_out;
+}
+
+template <typename VEC>
+parameters diagonalize_eigen_s(rokko::distributed_matrix<double, rokko::matrix_row_major>& mat,
+			       VEC& eigvals,
+			       parameters const& params) {
+  throw std::invalid_argument("eigenexa::diagonalize_eigen_s() : eigenexa doesn't support matrix_row_major.  Use eigenexa with matrix_col_major.");
 }
 
 } // namespace eigenexa
