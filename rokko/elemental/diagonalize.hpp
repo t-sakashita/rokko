@@ -112,12 +112,10 @@ El::SortType get_sort(parameters const& params) {
 }
 
 // eigenvalues / eigenvectors
-template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
-		       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
+template<typename T, typename VEC>
+parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
+		       VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 		       parameters const& params) {
-  if(mat.is_row_major())
-    throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
@@ -149,13 +147,18 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
   return params_out;
 }
 
+template<typename T, typename VEC>
+parameters diagonalize(distributed_matrix<T, rokko::matrix_row_major>& mat,
+		       VEC& eigvals, distributed_matrix<T, rokko::matrix_row_major>& eigvecs,
+		       parameters const& params) {
+  throw std::invalid_argument("elemental::diagonalize() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
+}
+
 // only eigenvalues
-template<typename T, typename MATRIX_MAJOR, typename VEC>
-parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
+template<typename T, typename VEC>
+parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
 		       VEC& eigvals,
 		       parameters const& params) {
-  if(mat.is_row_major())
-    throw std::invalid_argument("elemental::diagonalize_elpa1() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
@@ -179,6 +182,13 @@ parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
   for (int i = 0; i < elem_w.Height(); ++i) eigvals(i) = elem_w.Get(i, 0);
 
   return params_out;
+}
+
+template<typename T, typename VEC>
+parameters diagonalize(distributed_matrix<T, rokko::matrix_row_major>& mat,
+		       VEC& eigvals,
+		       parameters const& params) {
+  throw std::invalid_argument("elemental::diagonalize() : elemental doesn't support matrix_row_major.  Use it with matrix_col_major.");
 }
 
 } // namespace elemental
