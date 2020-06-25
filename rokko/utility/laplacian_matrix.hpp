@@ -13,6 +13,7 @@
 #define ROKKO_UTILITY_LAPLACIAN_MATRIX_HPP
 
 #include <cmath>
+#include <vector>
 #include <stdexcept>
 #include <rokko/eigen3.hpp>
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
