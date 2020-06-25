@@ -1,4 +1,7 @@
-set(PROG psyev psyevd pstedc pstebz_tein psyevd_float psyevd_complex psyevr psyevr_float)
+set(PROG psyev psyevd pstedc pstebz_tein psyevd_float psyevd_complex)
+if(ROKKO_HAVE_SCALAPACK_PDSYEVR)
+  set(PROG ${PROG} psyevr psyevr_float)
+endif(ROKKO_HAVE_SCALAPACK_PDSYEVR)
 foreach(name ${PROG})
   set(target_name example_scalapack_${name})
   add_executable(${target_name} ${name}.cpp)
