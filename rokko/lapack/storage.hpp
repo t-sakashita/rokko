@@ -13,6 +13,7 @@
 #define ROKKO_LAPACK_STORAGE_HPP
 
 #include <rokko/lapack/null_matrix.hpp>
+#include <vector>
 
 namespace rokko {
 namespace lapack {
