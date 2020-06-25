@@ -16,6 +16,9 @@ endif(ROKKO_HAVE_SCALAPACK)
 if(ROKKO_HAVE_EIGENEXA)
   add_subdirectory(eigenexa)
 endif(ROKKO_HAVE_EIGENEXA)
+if(ROKKO_HAVE_ELPA)
+  add_subdirectory(elpa)
+endif(ROKKO_HAVE_ELPA)
 
 add_subdirectory(cxx)
 
