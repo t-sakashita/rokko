@@ -16,6 +16,14 @@
 #include <complex>
 #undef complex
 
+inline auto elpa_complex_cast(std::complex<double>* c) {
+  return reinterpret_cast<__complex__ double*>(c);
+}
+
+inline auto elpa_complex_cast(std::complex<float>* c) {
+  return reinterpret_cast<__complex__ float*>(c);
+}
+
 namespace rokko {
 namespace elpa {
 
@@ -52,13 +60,13 @@ int diag(elpa_t handle, float* a, float* ev, float* q) {
 
 int diag(elpa_t handle, std::complex<double>* a, double* ev, std::complex<double>* q) {
   int error;
-  elpa_eigenvectors_dc(handle, complex_cast(a), ev, complex_cast(q), &error);
+  elpa_eigenvectors_dc(handle, elpa_complex_cast(a), ev, elpa_complex_cast(q), &error);
   return error;
 }
 
 int diag(elpa_t handle, std::complex<float>* a, float* ev, std::complex<float>* q) {
   int error;
-  elpa_eigenvectors_fc(handle, complex_cast(a), ev, complex_cast(q), &error);
+  elpa_eigenvectors_fc(handle, elpa_complex_cast(a), ev, elpa_complex_cast(q), &error);
   return error;
 }
 
@@ -76,13 +84,13 @@ int diag(elpa_t handle, float* a, float* ev) {
 
 int diag(elpa_t handle, std::complex<double>* a, double* ev) {
   int error;
-  elpa_eigenvalues_dc(handle, complex_cast(a), ev, &error);
+  elpa_eigenvalues_dc(handle, elpa_complex_cast(a), ev, &error);
   return error;
 }
 
 int diag(elpa_t handle, std::complex<float>* a, float* ev) {
   int error;
-  elpa_eigenvalues_fc(handle, complex_cast(a), ev, &error);
+  elpa_eigenvalues_fc(handle, elpa_complex_cast(a), ev, &error);
   return error;
 }
 
