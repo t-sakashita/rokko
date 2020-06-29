@@ -52,12 +52,12 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Error in cscalapack_descinit\n");
     MPI_Abort(MPI_COMM_WORLD, info);
   }
-  float **a = alloc_dmatrix(n/nprow, n/npcol);
-  float **z = alloc_dmatrix(n/nprow, n/npcol);
-  float *w = alloc_dvector(n);
+  float **a = alloc_smatrix(n/nprow, n/npcol);
+  float **z = alloc_smatrix(n/nprow, n/npcol);
+  float *w = alloc_svector(n);
   for (int j = 0; j < n; ++j)
     for (int i = 0; i < n; ++i)
-      cscalapack_pdelset(mat_ptr(a), i, j, desc, imin(i, j) + 1);
+      cscalapack_pselset(mat_ptr(a), i, j, desc, imin(i, j) + 1);
 
   info = cscalapack_pssyevd('V', 'U', n, mat_ptr(a), 0, 0, desc, vec_ptr(w),
                             mat_ptr(z), 0, 0, desc);
@@ -67,12 +67,12 @@ int main(int argc, char** argv) {
   }
   if (myrank == 0) {
     printf("eigenvalues: ");
-    fprint_dvector(stdout, n, vec_ptr(w));
+    fprint_svector(stdout, n, vec_ptr(w));
   }
 
-  free_dmatrix(a);
-  free_dmatrix(z);
-  free_dvector(w);
+  free_smatrix(a);
+  free_smatrix(z);
+  free_svector(w);
   Cblacs_gridexit(context);
   MPI_Finalize();
 }
