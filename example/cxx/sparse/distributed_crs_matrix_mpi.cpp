@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
   
   constexpr int dim = 4;
   int num_nonzero_cols[] = {2, 1, 2, 1};
-  int nonzero_cols[] = {0, 1, 3, 0, 3, 2};
+  int cols[] = {0, 1, 3, 0, 3, 2};
   double values[] = {7.1, 5.2, 6.4, 0.2, 4.3, 0.5};
 
   if (rank == 0) std::cout << "[solver = " << library << "]" << std::endl;
@@ -30,8 +30,8 @@ int main(int argc, char *argv[]) {
   rokko::distributed_crs_matrix mat(solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD}), 2);
   int current = 0;
   for (int row = 0; row < dim; ++row) {
-    mat.insert(row, num_nonzero_cols[row], &nonzero_cols[current], &values[current]);
-    current += num_nonzero_cols[row]; 
+    mat.insert(row, num_nonzero_cols[row], &cols[current], &values[current]);
+    current += num_nonzero_cols[row];
   }
   mat.complete();
   mat.print();

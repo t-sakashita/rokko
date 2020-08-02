@@ -21,10 +21,10 @@ char** global_argv;
 
 void run_test(std::string const& library, MPI_Comm comm) {
   constexpr int dim = 8;
-  std::vector<std::vector<int>> nonzero_cols = {{0, 4}, {3}, {5}, {1, 7}, {0, 5, 6}, {2, 4}, {4, 7}, {3, 6}};
+  std::vector<std::vector<int>> cols = {{0, 4}, {3}, {5}, {1, 7}, {0, 5, 6}, {2, 4}, {4, 7}, {3, 6}};
   std::vector<std::vector<double>> values = {{7.1, 2.8}, {6.4}, {0.5}, {6.4, 3.5}, {2.8, 0.2, 1.4}, {0.5, 0.2}, {1.4, 4.3}, {3.5, 4.3}};
 
-  int num_entries_per_row = std::max_element(nonzero_cols.cbegin(), nonzero_cols.cend(),
+  int num_entries_per_row = std::max_element(cols.cbegin(), cols.cend(),
                                               [] (auto const& a, auto const& b) {
                                                 return a.size() < b.size();
                                               })->size();
@@ -36,7 +36,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
     rokko::distributed_crs_matrix mat(map, num_entries_per_row);
     // storing
     for (int row = map.start_row(); row < map.end_row(); ++row) {
-      mat.insert(row, nonzero_cols[row], values[row]);
+      mat.insert(row, cols[row], values[row]);
     }
     mat.complete();
     // checking
@@ -45,7 +45,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
     for (int row = map.start_row(); row < map.end_row(); ++row) {
       mat.extract(row, cols_check, values_check);
       for (int i=0; i<cols_check.size(); ++i) {
-        ASSERT_EQ(cols_check[i], nonzero_cols[row][i]);
+        ASSERT_EQ(cols_check[i], cols[row][i]);
         ASSERT_EQ(values_check[i], values[row][i]);
       }
     }
