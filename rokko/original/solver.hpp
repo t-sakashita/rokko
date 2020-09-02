@@ -18,6 +18,7 @@
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/skel/mapping_1d.hpp>
 #include <rokko/parameters.hpp>
+#include <rokko/original/lanczos_tridiagonalization.hpp>
 #include <rokko/lapack/stebz.hpp>
 #include <rokko/lapack/stein.hpp>
 
@@ -42,32 +43,13 @@ public:
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
     parameters params_out;
-    constexpr double eps_lanczos = 1e-8;
     map_ = std::make_shared<rokko::skel::mapping_1d>(mat.get_dim(), mat.get_num_local_rows(), mpi_comm{mat.get_comm()});
 
     // tridiagonaliation by Lanczos method
     const int dim = mat.get_dim();
     Eigen::VectorXd alpha(dim), beta(dim-1);
-    Eigen::VectorXd tmp(dim), y(dim);
     Eigen::MatrixXd u(dim, dim);
-
-    u.col(0).setRandom();
-    u.col(0) /= u.col(0).norm();
-
-    y.setZero();
-    mat.multiply(u.col(0).data(), y.data());
-    alpha(0) = y.dot(u.col(0));
-    tmp = y - alpha(0) * u.col(0);
-    for (int i=1; i<dim; ++i) {
-      beta(i-1) = tmp.norm();
-      if (beta(i-1) < eps_lanczos)  throw std::runtime_error("beta is too small");
-      u.col(i) = tmp / beta(i-1);
-
-      y.setZero();
-      mat.multiply(u.col(i).data(), y.data());
-      alpha(i) = y.dot(u.col(i));
-      tmp = y - alpha(i) * u.col(i) - beta(i-1) * u.col(i-1);
-    }
+    lanczos::tridiagonalization(mat, alpha, beta, u);
 
     // calculating eigenvalues of tridiagonalized matrix
     eigvals.resize(dim);
