@@ -19,8 +19,7 @@
 #include <rokko/skel/mapping_1d.hpp>
 #include <rokko/parameters.hpp>
 #include <rokko/original/lanczos_tridiagonalization.hpp>
-#include <rokko/lapack/stebz.hpp>
-#include <rokko/lapack/stein.hpp>
+#include <rokko/lapack/diagonalize_tridiagonal_matrix_bisection.hpp>
 
 namespace rokko {
 
@@ -42,7 +41,6 @@ public:
   }
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
-    parameters params_out;
     map_ = std::make_shared<rokko::skel::mapping_1d>(mat.get_dim(), mat.get_num_local_rows(), mpi_comm{mat.get_comm()});
 
     // tridiagonaliation by Lanczos method
@@ -51,28 +49,14 @@ public:
     Eigen::MatrixXd u(dim, dim);
     lanczos::tridiagonalization(mat, alpha, beta, u);
 
-    // calculating eigenvalues of tridiagonalized matrix
-    eigvals.resize(dim);
-    constexpr double abstol = 0.;
-    int il = dim, iu = dim;
-    int nsplit;
-    Eigen::VectorXi iblock(dim), isplit(dim);
-    int info = rokko::lapack::stebz('E', il, iu, abstol, alpha, beta, num_conv, nsplit, eigvals, iblock, isplit);
+    // calculating eigenvalues & eigenvectors of tridiagonalized matrix
+    auto params_out = rokko::lapack::diagonalize_bisection(alpha, beta, eigvals, eigvecs, params);
+    num_conv = params_out.get<int>("num_conv");
 
-    // calculating eigenvectors of tridiagonalized matrix
-    eigvecs.resize(dim, num_conv);
-    Eigen::VectorXi ifailv(num_conv);
-    info = rokko::lapack::stein(alpha, beta, num_conv, eigvals, eigvecs, iblock, isplit, ifailv);
     // calculating eigenvectors of mat
     eigvecs = u * eigvecs;
 
-    set_output_parameters(params_out);
     return params_out;
-  }
-
-  void set_output_parameters(rokko::parameters& params_out) const {
-    int num_conv = get_num_conv();
-    params_out.set("num_conv", num_conv);
   }
 
   value_type eigenvalue(int k) const { return eigvals(k); }
