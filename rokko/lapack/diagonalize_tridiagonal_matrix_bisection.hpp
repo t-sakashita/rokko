@@ -30,7 +30,7 @@ parameters diagonalize_bisection(VEC& alpha, VEC& beta,
 			      Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
 			      parameters const& params) {
   // calculating eigenvalues
-  int num_conv; // SHOULD BE RETRIEVED
+  int num_conv;
   const int dim = alpha.size();
   eigvals.resize(dim);
   constexpr T abstol = 0.;
