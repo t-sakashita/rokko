@@ -27,7 +27,7 @@ endforeach(name)
 unset(PROG)
 
 if(BUILD_Fortran_BINDING)
-  set(PROG pdsyev_f pdsyevd_f pdsyevx_f pssyevd_f)
+  set(PROG pdsyev_f pdsyevd_f pdsyevx_f pssyevd_f pdstebz_f)
   if(ROKKO_HAVE_SCALAPACK_PDSYEVR)
     set(PROG ${PROG} pdsyevr_f)
   endif(ROKKO_HAVE_SCALAPACK_PDSYEVR)
