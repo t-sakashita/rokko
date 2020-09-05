@@ -12,7 +12,7 @@ foreach(name ${PROG})
 endforeach(name)
 unset(PROG)
 
-set(PROG pdsyev pdsyevd pdsyevx pssyevd pdstebz)
+set(PROG pdsyev pdsyevd pdsyevx pssyevd pdstebz pdlaprnt)
 if(ROKKO_HAVE_SCALAPACK_PDSYEVR)
   set(PROG ${PROG} pdsyevr)
 endif(ROKKO_HAVE_SCALAPACK_PDSYEVR)
