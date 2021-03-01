@@ -55,7 +55,7 @@ int EIGENEXA_translate_l2g_wrap(const int* ictr, const int* nnod, const int* ino
 #define EIGENEXA_translate_g2l_wrap ROKKO_GLOBAL(eigen_translate_g2l_wrap,EIGEN_TRANSLATE_G2L_WRAP)
 int EIGENEXA_translate_g2l_wrap(const int* ictr, const int* nnod, const int* inod);
 
-#define EIGENEXA_eigen_s ROKKO_GLOBAL(eigen_s,EIGEN_S)
+#define EIGENEXA_eigen_s ROKKO_GLOBAL(eigen_s0,EIGEN_S0)
 void EIGENEXA_eigen_s(const int* n, const int* nvec, double* a, const int* lda,
                       double* w, double* z, const int* ldz,
                       const int* m_forward, const int* m_backword, const char* mode);

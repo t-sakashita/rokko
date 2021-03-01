@@ -7,5 +7,5 @@ set_prefix
 
 FILE="EigenExa-$EIGENEXA_VERSION.tgz"
 if [ -f $SOURCE_DIR/$FILE ]; then :; else
-  wget -O $SOURCE_DIR/$FILE http://www.r-ccs.riken.jp/labs/lpnctrt/assets/img/$FILE
+  wget -O $SOURCE_DIR/$FILE https://www.r-ccs.riken.jp/labs/lpnctrt/projects/eigenexa/$FILE
 fi

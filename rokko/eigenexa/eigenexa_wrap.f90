@@ -42,10 +42,10 @@ subroutine eigen_free_wrap0()
 end subroutine eigen_free_wrap0
 
 subroutine eigen_free_wrap1(flag)
-  use eigen_libs_mod, only : eigen_free
+  use eigen_libs0_mod, only : eigen_free0
   implicit none
   integer, intent(in) :: flag
-  call eigen_free(flag)
+  call eigen_free0(flag)
   return
 end subroutine eigen_free_wrap1
 
