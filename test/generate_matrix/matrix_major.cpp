@@ -10,8 +10,12 @@
 *****************************************************************************/
 
 #include <rokko/eigen3.hpp>
+
+#include <rokko/config.h>
+#ifdef ROKKO_HAVE_BOOST
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#endif
 
 #include <gtest/gtest.h>
 
@@ -44,6 +48,7 @@ TEST(matrix, major) {
   ASSERT_EQ((M1.row(0))(1), 2.0);
   ASSERT_EQ((M1.col(0))(1), 4.0);
 
+#ifdef ROKKO_HAVE_BOOST
   boost::numeric::ublas::matrix<double> M2(dim,dim); // row major
   for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) M2(i,j) = M0(i,j);
   std::cout << M2 << std::endl;
@@ -61,6 +66,7 @@ TEST(matrix, major) {
   ASSERT_EQ(M3(1,0),4.0);
   double* ptr3 = &M3(0,0);
   ASSERT_EQ(*(ptr3 + 1), 4.0); // column major
+#endif
 
   Eigen::MatrixXd M4(dim, dim); // column major
   for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) M4(i,j) = M0(i,j);
