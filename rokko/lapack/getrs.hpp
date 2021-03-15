@@ -17,7 +17,6 @@
 # undef I
 #endif
 #include <stdexcept>
-#include <boost/type_traits/is_same.hpp>
 #include <lapacke.h>
 #include <rokko/traits/value_t.hpp>
 #include "complex_cast.hpp"

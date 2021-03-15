@@ -14,7 +14,6 @@
 
 #include <complex>
 #include <stdexcept>
-#include <boost/type_traits/is_same.hpp>
 #include <lapacke.h>
 #undef I
 #include <rokko/traits/value_t.hpp>
