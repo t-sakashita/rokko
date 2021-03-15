@@ -16,7 +16,7 @@
 #include <list>
 #include <map>
 #include <string>
-#include <boost/any.hpp>
+#include <any>
 
 #include <stdexcept>
 
@@ -24,7 +24,7 @@ namespace rokko {
 
 class parameters {
 private:
-  using map_type = std::map<std::string, boost::any>;
+  using map_type = std::map<std::string, std::any>;
   using mapped_type = map_type::mapped_type;
 public:
   using key_type = map_type::key_type;
@@ -59,7 +59,7 @@ public:
       //std::cout << "type(key)=" << type(key).name() << " typeid(T)=" << typeid(T).name() << std::endl;
       throw std::invalid_argument("parameters::get() : type given as template parameter is not correct.");
     }
-    return boost::any_cast<T>(map_.find(key)->second);
+    return std::any_cast<T>(map_.find(key)->second);
   }
   const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
   // return parameter as string
@@ -97,10 +97,10 @@ public:
     }
     return false;
   }
-  std::map<std::string, boost::any>const& get_map() const { return map_; }
+  std::map<std::string, std::any>const& get_map() const { return map_; }
   
 private:
-  std::map<std::string, boost::any> map_;
+  std::map<std::string, std::any> map_;
 };
 
 
