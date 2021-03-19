@@ -79,8 +79,8 @@ int psyevr(char jobz, char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            int& m, int& nz,
            VECTOR& w, MATRIX& z) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
-  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -94,8 +94,8 @@ int psyevr(char jobz, char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            int& m, int& nz,
            VECTOR0& w, MATRIX& z, VECTOR0& work, VECTOR1& iwork) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value, "");
-  static_assert(std::is_same<value_t<VECTOR0>, T>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value);
+  static_assert(std::is_same<value_t<VECTOR0>, T>::value);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -156,8 +156,8 @@ int psyevr(char range, char uplo, MATRIX& a,
            T vl, T vu, int il, int iu,
            int& m, int& nz,
            VECTOR& w) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
-  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   return psyevr_dispatch('N', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,

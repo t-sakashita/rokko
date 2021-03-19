@@ -68,7 +68,7 @@ struct hegvd_dispatch<std::complex<double>> {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int hegvd(lapack_int itype, char jobz, char uplo, MATRIX& a, MATRIX& b, VECTOR& w) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");

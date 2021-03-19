@@ -68,7 +68,7 @@ struct hteqr_dispatch<std::complex<double>> {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int hteqr(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
   lapack_int n = size(d);
   if (rows(z) != cols(z))
     throw std::invalid_argument("matrix Z size mismatch");

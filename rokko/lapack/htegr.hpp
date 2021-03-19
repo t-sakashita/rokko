@@ -74,8 +74,8 @@ template<typename T, typename MATRIX, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(char jobz, char range, VECTOR& d, VECTOR& e,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX& z, VECTOR_INT& isuppz) {
-  static_assert(std::is_same<real_t<MATRIX>, T>::value, "");
-  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  static_assert(std::is_same<real_t<MATRIX>, T>::value);
+  static_assert(std::is_same<value_t<VECTOR>, T>::value);
 
   lapack_int n = size(d);
   if (size(e) != n)  // e(n) is used as internal workspace
@@ -91,7 +91,7 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(char range, VECTOR& d, VECTOR& e,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, T>::value);
 
   lapack_int n = size(d);
   constexpr null_matrix<T> z_null;
@@ -138,7 +138,7 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, T>::value);
   constexpr real_t<VECTOR> real_zero = 0;
 
   return htegr('A', d, e, real_zero, real_zero, 0, 0, abstol, m, w, isuppz);
@@ -149,7 +149,7 @@ template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htegr(VECTOR& d, VECTOR& e,
                  T vl, T vu, T abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& isuppz) {
-  static_assert(std::is_same<value_t<VECTOR>, T>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, T>::value);
 
   return htegr('V', d, e, vl, vu, 0, 0, abstol, m, w, isuppz);
 }

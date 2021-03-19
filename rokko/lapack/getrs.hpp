@@ -73,8 +73,8 @@ struct getrs_dispatch<std::complex<double>> {
 template<typename MATRIX0, typename MATRIX1, typename VECTOR>
 lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
                  VECTOR const& ipiv, MATRIX1& b) {
-  static_assert(std::is_same<value_t<VECTOR>, lapack_int>::value, "");
-  static_assert(std::is_same<value_t<MATRIX0>, value_t<MATRIX1>>::value, "");
+  static_assert(std::is_same<value_t<VECTOR>, lapack_int>::value);
+  static_assert(std::is_same<value_t<MATRIX0>, value_t<MATRIX1>>::value);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
