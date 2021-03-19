@@ -10,6 +10,11 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(titpack NONE)
 
+# C++ compilers
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 find_package(Rokko REQUIRED PATHS ${ROKKO_ROOT_DIR} $ENV{ROKKO_HOME}
   NO_SYSTEM_ENVIRONMENT_PATH)
 message(STATUS "Found Rokko: ${ROKKO_ROOT_DIR}")
