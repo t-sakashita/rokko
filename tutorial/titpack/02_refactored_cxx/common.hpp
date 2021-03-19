@@ -15,13 +15,13 @@
 #define TITPACK_COMMON_HPP
 
 #include "subspace.hpp"
+#include <iostream>
 #include <vector>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
 #include <tuple>
 
-using matrix_type = boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major>;
-using i_matrix_type = boost::numeric::ublas::matrix<int, boost::numeric::ublas::column_major>;
+#include <Eigen/Dense>
+using matrix_type = Eigen::MatrixXd;
+using i_matrix_type = Eigen::MatrixXi;
 
 //
 // eigenvalues by the bisection method

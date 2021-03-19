@@ -63,11 +63,11 @@ void elm3(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 }
 
 void diag(matrix_type& elemnt, std::vector<double>& E, matrix_type& v, int nvec) {
-  if (elemnt.size1() != elemnt.size2()) {
+  if (elemnt.rows() != elemnt.cols()) {
     std::cerr << "diag: Incorrect matrix size\n";
     return;
   }
-  int idim = elemnt.size1();
+  int idim = elemnt.rows();
   E.resize(idim);
   int info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', idim, &elemnt(0,0), idim, E.data());
 
@@ -78,11 +78,11 @@ void diag(matrix_type& elemnt, std::vector<double>& E, matrix_type& v, int nvec)
 }
 
 double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
-  if (elemnt.size1() != elemnt.size2() || elemnt.size1() != x.size1() || x.size2() <= xindex) {
+  if (elemnt.rows() != elemnt.cols() || elemnt.rows() != x.rows() || x.cols() <= xindex) {
     std::cerr << "check3: Incorrect matrix size\n";
     return 0;
   }
-  int idim = elemnt.size1();
+  int idim = elemnt.rows();
 
   double dnorm = 0;
   for (int j=0; j < idim; ++j) {

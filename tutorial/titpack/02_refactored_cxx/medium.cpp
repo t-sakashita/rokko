@@ -25,7 +25,7 @@ int lnc2(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() != mat.dimension() || wk.size2() < 2) wk.resize(mat.dimension(), 2);
+  if (wk.rows() != mat.dimension() || wk.cols() < 2) wk.resize(mat.dimension(), 2);
   return lnc2z(mat, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1));
 }
 
@@ -102,14 +102,14 @@ void lncv2(crs_matrix const& mat, int nvec, int iv,
     std::cerr << " #(W14)# nvec given to lncv2 out of range\n";
     return;
   }
-  if (wk.size1() != mat.dimension() || wk.size2() < 2) wk.resize(mat.dimension(), 2);
+  if (wk.rows() != mat.dimension() || wk.cols() < 2) wk.resize(mat.dimension(), 2);
   lncv2z(mat, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1));
 }
 
 void lncv2z(crs_matrix const& mat, int nvec, int iv,
             std::vector<double> const& alpha, std::vector<double> const& beta,
             matrix_type const& coeff, matrix_type& x, int itr, double *v1, double *v0) {
-  if (x.size1() != mat.dimension() || x.size2() < nvec) x.resize(mat.dimension(), nvec);
+  if (x.rows() != mat.dimension() || x.cols() < nvec) x.resize(mat.dimension(), nvec);
 
   // initialization
   for (int i = 0; i < mat.dimension(); ++i) {
@@ -157,7 +157,7 @@ void lncv2z(crs_matrix const& mat, int nvec, int iv,
 }
 
 double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex) {
-  if (v.size1() != mat.dimension() || v.size2() < vindex) v.resize(mat.dimension(), vindex);
+  if (v.rows() != mat.dimension() || v.cols() < vindex) v.resize(mat.dimension(), vindex);
 
   double dnorm = 0;
   for (int i = 0; i < mat.dimension(); ++i) dnorm += x[i] * x[i];
@@ -196,7 +196,7 @@ double check2(crs_matrix const& mat, std::vector<double> const& x,
 }
 
 void inv2(crs_matrix const& mat, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {
-  if (wk.size1() != mat.dimension() || wk.size2() < 4) wk.resize(mat.dimension(), 4);
+  if (wk.rows() != mat.dimension() || wk.cols() < 4) wk.resize(mat.dimension(), 4);
   inv2z(mat, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 

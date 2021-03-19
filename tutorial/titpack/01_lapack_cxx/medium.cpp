@@ -27,8 +27,8 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 
   datack(ipair, n);
   // initialization
-  if (elemnt.size1() != idim || elemnt.size2() < ic) elemnt.resize(idim, ic);
-  if (loc.size1() != idim || loc.size2() < ic) loc.resize(idim, ic);
+  if (elemnt.rows() != idim || elemnt.cols() < ic) elemnt.resize(idim, ic);
+  if (loc.rows() != idim || loc.cols() < ic) loc.resize(idim, ic);
   for (int i = 0; i < ic; ++i)
     for (int j = 0; j < idim; ++j)
       elemnt(j, i) = 0;
@@ -79,7 +79,7 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
          std::vector<double>& E, std::vector<double>& alpha, std::vector<double>& beta,
          matrix_type& coeff, matrix_type& wk) {
-  int idim = elemnt.size1();
+  int idim = elemnt.rows();
   if (iv < 0 ||  iv >= idim) {
     std::cerr << " #(E08)# Incorrect iv given to lnc2\n";
     return -1;
@@ -89,15 +89,15 @@ int lnc2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() != idim || wk.size2() < 2) wk.resize(idim, 2);
+  if (wk.rows() != idim || wk.cols() < 2) wk.resize(idim, 2);
   return lnc2z(elemnt, loc, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1));
 }
 
 int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
           std::vector<double>& E, std::vector<double>& alpha, std::vector<double>& beta,
           matrix_type& coeff, double *v1, double *v0) {
-  int idim = elemnt.size1();
-  int ic = elemnt.size2();
+  int idim = elemnt.rows();
+  int ic = elemnt.cols();
   std::vector<int> iblock, isplit;
   matrix_type work(150, 5);
   double eps = 1e-10;
@@ -182,17 +182,17 @@ void lncv2(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv
     std::cerr << " #(W14)# nvec given to lncv2 out of range\n";
     return;
   }
-  int idim = elemnt.size1();
-  if (wk.size1() != idim || wk.size2() < 2) wk.resize(idim, 2);
+  int idim = elemnt.rows();
+  if (wk.rows() != idim || wk.cols() < 2) wk.resize(idim, 2);
   lncv2z(elemnt, loc, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1));
 }
 
 void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
             std::vector<double> const& alpha, std::vector<double> const& beta,
             matrix_type const& coeff, matrix_type& x, int itr, double *v1, double *v0) {
-  int idim = elemnt.size1();
-  int ic = elemnt.size2();
-  if (x.size1() != idim || x.size2() < nvec) x.resize(idim, nvec);
+  int idim = elemnt.rows();
+  int ic = elemnt.cols();
+  if (x.rows() != idim || x.cols() < nvec) x.resize(idim, nvec);
 
   // initialization
   for (int i = 0; i < idim; ++i) {
@@ -255,9 +255,9 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
 
 double check2(matrix_type const& elemnt, i_matrix_type const& loc, const double *x,
               matrix_type& v, int vindex) {
-  int idim = elemnt.size1();
-  int ic = elemnt.size2();
-  if (v.size1() != idim || v.size2() < vindex) v.resize(idim, vindex);
+  int idim = elemnt.rows();
+  int ic = elemnt.cols();
+  if (v.rows() != idim || v.cols() < vindex) v.resize(idim, vindex);
 
   double dnorm = 0;
   for (int i = 0; i < idim; ++i) dnorm += x[i] * x[i];
@@ -298,15 +298,15 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, std::vector<d
 
 void inv2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int iv,
           std::vector<double>& x, matrix_type& wk) {
-  int idim = elemnt.size1();
-  if (wk.size1() != idim || wk.size2() < 4) wk.resize(idim, 4);
+  int idim = elemnt.rows();
+  if (wk.rows() != idim || wk.cols() < 4) wk.resize(idim, 4);
   inv2z(elemnt, loc, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 
 void inv2z(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int iv,
            std::vector<double>& x, double *b, double *p, double *r, double *y) {
-  int idim = elemnt.size1();
-  int ic = elemnt.size2();
+  int idim = elemnt.rows();
+  int ic = elemnt.cols();
   if (x.size() != idim) x.resize(idim);
   for (int i = 0; i < idim; ++i) b[i] = 0;
   b[iv]=1;
@@ -337,8 +337,8 @@ void inv2z(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int 
 
 int cg2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, std::vector<double>& x,
         double *b, double *p, double *r, double *y) {
-  int idim = elemnt.size1();
-  int ic = elemnt.size2();
+  int idim = elemnt.rows();
+  int ic = elemnt.cols();
 
   // initialization
   double bnorm = 0;

@@ -17,9 +17,9 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
   int ic = ibond + 1;
 
   // initialization
-  if (elemnt_.size1() != hop.dimension() || elemnt_.size2() < ic)
+  if (elemnt_.rows() != hop.dimension() || elemnt_.cols() < ic)
     elemnt_.resize(hop.dimension(), ic);
-  if (loc_.size1() != hop.dimension() || loc_.size2() < ic) loc_.resize(hop.dimension(), ic);
+  if (loc_.rows() != hop.dimension() || loc_.cols() < ic) loc_.resize(hop.dimension(), ic);
   for (int i = 0; i < ic; ++i)
     for (int j = 0; j < hop.dimension(); ++j)
       elemnt_(j, i) = 0;
@@ -58,7 +58,7 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
 
 double crs_matrix::multiply(const double *v1, double *v0) const {
   double prdct = 0;
-  for (int k = 0; k < elemnt_.size2(); ++k) {
+  for (int k = 0; k < elemnt_.cols(); ++k) {
     for (int j = 0; j < dimension(); ++j) {
       double temp = elemnt_(j, k) * v1[loc_(j, k)];
       v0[j] += temp;

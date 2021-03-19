@@ -25,7 +25,7 @@ int lnc1(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() != hop.dimension() || wk.size1() < 2) wk.resize(hop.dimension(), 2);
+  if (wk.rows() != hop.dimension() || wk.rows() < 2) wk.resize(hop.dimension(), 2);
   return lnc1z(hop, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1));
 }
 
@@ -104,14 +104,14 @@ void lncv1(hamiltonian const& hop, int nvec, int iv, std::vector<double> const& 
     std::cerr << " #(W08)# nvec given to lncv1 out of range\n";
     return;
   }
-  if (wk.size1() != hop.dimension() || wk.size2() < 2) wk.resize(hop.dimension(), 2);
+  if (wk.rows() != hop.dimension() || wk.cols() < 2) wk.resize(hop.dimension(), 2);
   lncv1z(hop, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1));
 }
 
 void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const& alpha,
             std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,
             int itr, double *v1, double *v0) {
-  if (x.size1() != hop.dimension() || x.size2() < nvec) x.resize(hop.dimension(), nvec);
+  if (x.rows() != hop.dimension() || x.cols() < nvec) x.resize(hop.dimension(), nvec);
 
   // initialization
   for (int i = 0; i < hop.dimension(); ++i) {
@@ -160,7 +160,7 @@ void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const&
 
 double check1(hamiltonian const& hop, const double *x, matrix_type& v, int vindex) {
   int ibond = hop.num_bonds();
-  if (v.size1() != hop.dimension() || v.size2() < vindex) v.resize(hop.dimension(), vindex);
+  if (v.rows() != hop.dimension() || v.cols() < vindex) v.resize(hop.dimension(), vindex);
 
   double dnorm = 0;
   for (int i = 0; i < hop.dimension(); ++i) dnorm += x[i] * x[i];
@@ -198,7 +198,7 @@ double check1(hamiltonian const& hop, std::vector<double> const& x, matrix_type&
 }
 
 void inv1(hamiltonian const& hop, double Eig, int iv, std::vector<double>& x, matrix_type& wk) {
-  if (wk.size1() != hop.dimension() || wk.size2() < 4) wk.resize(hop.dimension(), 4);
+  if (wk.rows() != hop.dimension() || wk.cols() < 4) wk.resize(hop.dimension(), 4);
   inv1z(hop, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3));
 }
 

@@ -92,7 +92,7 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
 void vec12(std::vector<double> const& alpha, std::vector<double> const& beta, int ndim,
            std::vector<double> const& E, int nvec, matrix_type& z,
            std::vector<int>& iblock, std::vector<int>& isplit, double *w) {
-  if (z.size1() != ndim || z.size2() < nvec) z.resize(ndim, nvec);
+  if (z.rows() != ndim || z.cols() < nvec) z.resize(ndim, nvec);
   for (int i = 0; i < nvec; ++i) w[i] = E[i];
   std::vector<int> ifail(nvec);
   int info = LAPACKE_dstein(LAPACK_COL_MAJOR, ndim, alpha.data(), beta.data(), nvec, w, iblock.data(),
@@ -187,7 +187,7 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec) {
     return -1;
   }
   if (norm.size() < numvec) norm.resize(numvec);
-  int idim = ev.size1();
+  int idim = ev.rows();
   for (int i = 0; i < numvec; ++i) {
     double dnorm = 0;
     for (int j = 0; j < idim; ++j) dnorm += ev(j, i) * ev(j, i);

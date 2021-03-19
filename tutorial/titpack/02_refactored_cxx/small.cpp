@@ -44,26 +44,26 @@ void elm3(hamiltonian const& hop, matrix_type& elemnt) {
 }
 
 void diag(matrix_type& elemnt, std::vector<double>& E, matrix_type& v, int nvec) {
-  if (elemnt.size1() != elemnt.size2()) {
+  if (elemnt.rows() != elemnt.cols()) {
     std::cerr << "diag: Incorrect matrix size\n";
     return;
   }
-  int idim = elemnt.size1();
+  int idim = elemnt.rows();
   if (E.size() < idim) E.resize(idim);
   int info = LAPACKE_dsyev(LAPACK_COL_MAJOR, 'V', 'U', idim, &elemnt(0,0), idim, E.data());
 
-  if (v.size1() != idim || v.size2() < nvec) v.resize(idim, nvec);
+  if (v.rows() != idim || v.cols() < nvec) v.resize(idim, nvec);
   for (int j = 0; j < nvec; ++j)
     for (int i = 0; i < idim; ++i)
       v(i, j) = elemnt(i, j);
 }
 
 double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
-  if (elemnt.size1() != elemnt.size2() || elemnt.size2() != x.size1() || x.size2() <= xindex) {
+  if (elemnt.rows() != elemnt.cols() || elemnt.cols() != x.rows() || x.cols() <= xindex) {
     std::cerr << "check3: Incorrect matrix size\n";
     return 0;
   }
-  int idim = elemnt.size1();
+  int idim = elemnt.rows();
 
   double dnorm = 0;
   for (int j=0; j < idim; ++j) {

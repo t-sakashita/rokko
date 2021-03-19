@@ -28,7 +28,7 @@ int lnc1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt
               << "         Only the eigenvalues are calculated\n";
     nvec = 0;
   }
-  if (wk.size1() != idim || wk.size1() < 2) wk.resize(idim, 2);
+  if (wk.rows() != idim || wk.rows() < 2) wk.resize(idim, 2);
   return lnc1z(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, &wk(0,0), &wk(0,1),
                list1, list2);
 }
@@ -114,7 +114,7 @@ void lncv1(int n, std::vector<int> const& ipair, std::vector<double> const& bond
     return;
   }
   int idim = list1.size();
-  if (wk.size1() != idim || wk.size2() < 2) wk.resize(idim, 2);
+  if (wk.rows() != idim || wk.cols() < 2) wk.resize(idim, 2);
   lncv1z(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, &wk(0,0), &wk(0,1),
          list1, list2);
 }
@@ -125,7 +125,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
             int itr, double *v1, double *v0, std::vector<int> const& list1,
             std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
-  if (x.size1() != idim || x.size2() < nvec) x.resize(idim, nvec);
+  if (x.rows() != idim || x.cols() < nvec) x.resize(idim, nvec);
 
   // initialization
   for (int i = 0; i < idim; ++i) {
@@ -220,7 +220,7 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
               std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
   int ibond = ipair.size() / 2;
-  if (v.size1() != idim || v.size2() < vindex) v.resize(idim, vindex);
+  if (v.rows() != idim || v.cols() < vindex) v.resize(idim, vindex);
 
   int ihf = (n + 1) / 2;
   int ihfbit = 1 << ihf;
@@ -291,7 +291,7 @@ void inv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
           matrix_type& wk, std::vector<int> const& list1,
           std::vector<std::pair<int, int>> const& list2) {
   int idim = list1.size();
-  if (wk.size1() != idim || wk.size2() < 4) wk.resize(idim, 4);
+  if (wk.rows() != idim || wk.cols() < 4) wk.resize(idim, 4);
   inv1z(n, ipair, bondwt, zrtio, Eig, iv, x, &wk(0,0), &wk(0,1), &wk(0,2), &wk(0,3), list1, list2);
 }
 
