@@ -84,7 +84,7 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
   if (isplit.size() < ndim) isplit.resize(ndim);
   int m, nsplit;
   int info = LAPACKE_dstebz('I', 'B', ndim, 0, 0, 1, ne, eps, alpha.data(), beta.data(),
-                            &m, &nsplit, w.data(), iblock.data(), isplit.data());
+                            &m, &nsplit, w, iblock.data(), isplit.data());
   for (int i = 0; i < ne; ++i) E[i] = w[i];
   return std::make_tuple(m, nsplit);
 }
