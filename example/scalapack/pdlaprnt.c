@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
 
   double work[1000];
   const char cmatnm[] = "minij_matrix";
-  cscalapack_pdlaprnt(n, n, mat_ptr(a), 0, 0, desc, myrow, mycol, cmatnm, 6, work);
+  cscalapack_pdlaprnt(n, n, mat_ptr(a), 0, 0, desc, 0, 0, cmatnm, 6, work);
 
   free_dmatrix(a);
   Cblacs_gridexit(context);
