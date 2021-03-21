@@ -1,6 +1,21 @@
+diff -urN Elemental-0.87.7.orig/CMakeLists.txt Elemental-0.87.7/CMakeLists.txt
+--- Elemental-0.87.7.orig/CMakeLists.txt	2017-02-07 01:23:30.000000000 +0000
++++ Elemental-0.87.7/CMakeLists.txt	2021-03-21 23:22:03.339759856 +0000
+@@ -386,6 +386,11 @@
+   if("${isSystemDir}" STREQUAL "-1")
+     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+   endif()
++else()
++  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
++  set(CMAKE_SKIP_BUILD_RPATH FALSE)
++  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
++  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ endif()
+ 
+ # Detect Fortran
 diff -urN Elemental-0.87.7.orig/cmake/external_projects/ElMath/OpenBLAS.cmake Elemental-0.87.7/cmake/external_projects/ElMath/OpenBLAS.cmake
 --- Elemental-0.87.7.orig/cmake/external_projects/ElMath/OpenBLAS.cmake	2017-02-07 01:23:30.000000000 +0000
-+++ Elemental-0.87.7/cmake/external_projects/ElMath/OpenBLAS.cmake	2021-03-21 14:25:49.158383398 +0000
++++ Elemental-0.87.7/cmake/external_projects/ElMath/OpenBLAS.cmake	2021-03-21 23:21:04.656893831 +0000
 @@ -26,6 +26,10 @@
                       /usr/lib/gcc/x86_64-linux-gnu/4.9
                       /usr/lib/gcc/x86_64-linux-gnu/5
@@ -27,7 +42,7 @@ diff -urN Elemental-0.87.7.orig/cmake/external_projects/ElMath/OpenBLAS.cmake El
      if(NOT GFORTRAN_LIB)
 diff -urN Elemental-0.87.7.orig/include/El/blas_like/level1/decl.hpp Elemental-0.87.7/include/El/blas_like/level1/decl.hpp
 --- Elemental-0.87.7.orig/include/El/blas_like/level1/decl.hpp	2017-02-07 01:23:30.000000000 +0000
-+++ Elemental-0.87.7/include/El/blas_like/level1/decl.hpp	2021-03-21 14:26:15.678000174 +0000
++++ Elemental-0.87.7/include/El/blas_like/level1/decl.hpp	2021-03-21 23:21:04.660893483 +0000
 @@ -482,7 +482,7 @@
  template<typename T>
  void Copy( const Matrix<T>& A, Matrix<T>& B );
@@ -75,7 +90,7 @@ diff -urN Elemental-0.87.7.orig/include/El/blas_like/level1/decl.hpp Elemental-0
  template<typename T>
 diff -urN Elemental-0.87.7.orig/include/El/core.hpp Elemental-0.87.7/include/El/core.hpp
 --- Elemental-0.87.7.orig/include/El/core.hpp	2017-02-07 01:23:30.000000000 +0000
-+++ Elemental-0.87.7/include/El/core.hpp	2021-03-21 14:26:15.678000174 +0000
++++ Elemental-0.87.7/include/El/core.hpp	2021-03-21 23:21:04.660893483 +0000
 @@ -100,6 +100,16 @@
  template<typename S,typename T>
  using IsSame = std::is_same<S,T>;
@@ -95,7 +110,7 @@ diff -urN Elemental-0.87.7.orig/include/El/core.hpp Elemental-0.87.7/include/El/
  template<typename Condition,class T=void>
 diff -urN Elemental-0.87.7.orig/src/core/imports/mpi.cpp Elemental-0.87.7/src/core/imports/mpi.cpp
 --- Elemental-0.87.7.orig/src/core/imports/mpi.cpp	2017-02-07 01:23:30.000000000 +0000
-+++ Elemental-0.87.7/src/core/imports/mpi.cpp	2021-03-21 14:26:15.682000115 +0000
++++ Elemental-0.87.7/src/core/imports/mpi.cpp	2021-03-21 23:21:04.660893483 +0000
 @@ -2841,238 +2841,248 @@
  #endif
  }
