@@ -14,7 +14,7 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
     add_executable(${target_name} ${name}.cpp)
     set_target_properties(${target_name} PROPERTIES OUTPUT_NAME ${name})
     target_link_libraries(${target_name} rokko gtest_main)
-    add_test(${name} ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 1 ${CMAKE_CURRENT_BINARY_DIR}/${name})
+    add_test(${target_name} ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 1 ${CMAKE_CURRENT_BINARY_DIR}/${name})
   endforeach(name)
 
   # 2,3,4,5,6 processes

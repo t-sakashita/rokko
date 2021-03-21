@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
   if (argc > 1) {
     dim = std::stoi(argv[1]);
   } else {
-    std::cin >> dim;
+    dim = 1000;
   }
 
   rokko::timer timer;
