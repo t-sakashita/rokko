@@ -9,7 +9,7 @@ sh $SCRIPT_DIR/setup.sh
 
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/scalapack-$SCALAPACK_VERSION-$SCALAPACK_PATCH_VERSION/$build_type
+  PREFIX=$PREFIX_ROKKO/scalapack/scalapack-$SCALAPACK_VERSION-$SCALAPACK_PATCH_VERSION/$build_type
   cd $BUILD_DIR
   rm -rf scalapack-$SCALAPACK_VERSION-build-$build_type
   mkdir -p scalapack-$SCALAPACK_VERSION-build-$build_type
@@ -30,6 +30,6 @@ EOF
 done
 
 cat << EOF > $BUILD_DIR/scalapackvars.sh
-export SCALAPACK_ROOT=$PREFIX_ROKKO/scalapack-$SCALAPACK_VERSION-$SCALAPACK_PATCH_VERSION
+export SCALAPACK_ROOT=$PREFIX_ROKKO/scalapack/scalapack-$SCALAPACK_VERSION-$SCALAPACK_PATCH_VERSION
 EOF
-$SUDO cp -f $BUILD_DIR/scalapackvars.sh $PREFIX_ROKKO/scalapack-$SCALAPACK_VERSION-$SCALAPACK_PATCH_VERSION
+$SUDO cp -f $BUILD_DIR/scalapackvars.sh $PREFIX_ROKKO/scalapack/scalapack-$SCALAPACK_VERSION-$SCALAPACK_PATCH_VERSION

@@ -9,7 +9,7 @@ sh $SCRIPT_DIR/setup.sh
 
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION/$build_type
+  PREFIX=$PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION/$build_type
   cd $BUILD_DIR
   mkdir -p trilinos-$TRILINOS_VERSION-Source-build-$build_type
   cd trilinos-$TRILINOS_VERSION-Source-build-$build_type
@@ -24,10 +24,10 @@ done
 
 DATE=$(date +%Y%m%d-%H%M%S)
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION/$build_type
+  PREFIX=$PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION/$build_type
   cat << EOF > $BUILD_DIR/trilinosvars.sh
 # trilinos $(basename $0 .sh) $TRILINOS_VERSION $TRILINOS_RK_REVISION $DATE
-export TRILINOS_ROOT=$PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION
+export TRILINOS_ROOT=$PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION
 export LD_LIBRARY_PATH=$PREFIX/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/trilinosvars.sh $PREFIX
@@ -35,6 +35,6 @@ done
 
 cat << EOF > $BUILD_DIR/trilinosvars.sh
 # trilinos $(basename $0 .sh) $TRILINOS_VERSION $TRILINOS_RK_REVISION $DATE
-export TRILINOS_ROOT=$PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION
+export TRILINOS_ROOT=$PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION
 EOF
-$SUDO cp -f $BUILD_DIR/trilinosvars.sh $PREFIX_ROKKO/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION
+$SUDO cp -f $BUILD_DIR/trilinosvars.sh $PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION

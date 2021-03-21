@@ -10,7 +10,7 @@ sh $SCRIPT_DIR/setup.sh
 . $PREFIX_ROKKO/rokkoenv-Linux-s64fx.d/petscvars.sh
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx/$build_type
+  PREFIX=$PREFIX_ROKKO/slepc/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx/$build_type
   cd $BUILD_DIR
   cp -rp slepc-$SLEPC_VERSION slepc-$SLEPC_VERSION-build-Linux-s64fx-$build_type
   cd slepc-$SLEPC_VERSION-build-Linux-s64fx-$build_type
@@ -23,10 +23,10 @@ done
 
 DATE=$(date +%Y%m%d-%H%M%S)
 for build_type in $BUILD_TYPES; do
-  PREFIX=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx/$build_type
+  PREFIX=$PREFIX_ROKKO/slepc/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx/$build_type
   cat << EOF > $BUILD_DIR/slepcvars.sh
 # slepc $(basename $0 .sh) $SLEPC_VERSION $SLEPC_RK_REVISION $DATE
-export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx
+export SLEPC_ROOT=$PREFIX_ROKKO/slepc/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx
 export LD_LIBRARY_PATH=$PREFIX/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/slepcvars.sh $PREFIX
@@ -34,6 +34,6 @@ done
 
 cat << EOF > $BUILD_DIR/slepcvars.sh
 # slepc $(basename $0 .sh) $SLEPC_VERSION $SLEPC_RK_REVISION $DATE
-export SLEPC_ROOT=$PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx
+export SLEPC_ROOT=$PREFIX_ROKKO/slepc/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx
 EOF
-$SUDO cp -f $BUILD_DIR/slepcvars.sh $PREFIX_ROKKO/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx
+$SUDO cp -f $BUILD_DIR/slepcvars.sh $PREFIX_ROKKO/slepc/slepc-$SLEPC_VERSION-$SLEPC_RK_REVISION/Linux-s64fx

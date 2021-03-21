@@ -12,7 +12,7 @@ patch -p1 < $SCRIPT_DIR/petsc-3.5.2-fx10.patch
 unset PETSC_DIR
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  PREFIX_BACKEND=$PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx/$build_type
+  PREFIX_BACKEND=$PREFIX_ROKKO/petsc/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx/$build_type
   cd $BUILD_DIR
   cp -rp petsc-$PETSC_VERSION petsc-$PETSC_VERSION-build-Linux-s64fx-$build_type
   cd petsc-$PETSC_VERSION-build-Linux-s64fx-$build_type
@@ -39,10 +39,10 @@ done
 
 DATE=$(date +%Y%m%d-%H%M%S)
 for build_type in $BUILD_TYPES; do
-  PREFIX_BACKEND=$PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx/$build_type
+  PREFIX_BACKEND=$PREFIX_ROKKO/petsc/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx/$build_type
   cat << EOF > $BUILD_DIR/petscvars.sh
 # petsc $(basename $0 .sh) $PETSC_VERSION $PETSC_RK_REVISION $DATE
-export PETSC_ROOT=$PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx
+export PETSC_ROOT=$PREFIX_ROKKO/petsc/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx
 export LD_LIBRARY_PATH=$PREFIX_BACKEND/lib:\$LD_LIBRARY_PATH
 EOF
   $SUDO cp -f $BUILD_DIR/petscvars.sh $PREFIX_BACKEND
@@ -50,6 +50,6 @@ done
 
 cat << EOF > $BUILD_DIR/petscvars.sh
 # petsc $(basename $0 .sh) $PETSC_VERSION $PETSC_RK_REVISION $DATE
-export PETSC_ROOT=$PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx
+export PETSC_ROOT=$PREFIX_ROKKO/petsc/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx
 EOF
-$SUDO cp -f $BUILD_DIR/petscvars.sh $PREFIX_ROKKO/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx
+$SUDO cp -f $BUILD_DIR/petscvars.sh $PREFIX_ROKKO/petsc/petsc-$PETSC_VERSION-$PETSC_RK_REVISION/Linux-s64fx

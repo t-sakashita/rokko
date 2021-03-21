@@ -5,15 +5,35 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
+__NAME__="elemental"
+__VERSION__=${ELEMENTAL_VERSION}
+__RK_REVISION__=${ELEMENTAL_RK_REVISION}
+
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
-  if [ -f $PREFIX_ROKKO/elemental/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION/$build_type/elementalvars.sh ]; then
-    $SUDO rm -f $PREFIX_ROKKO/rokkoenv-$build_type.d/elementalvars.sh
-    $SUDO ln -s $PREFIX_ROKKO/elemental/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION/$build_type/elementalvars.sh $PREFIX_ROKKO/rokkoenv-$build_type.d/elementalvars.sh
+  if [ -f $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/$build_type/${__NAME__}vars.sh ]; then
+    $SUDO rm -f $PREFIX_ROKKO/rokkoenv-$build_type.d/${__NAME__}vars.sh
+    $SUDO ln -s $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/$build_type/${__NAME__}vars.sh $PREFIX_ROKKO/rokkoenv-$build_type.d/${__NAME__}vars.sh
   fi
 done
 
-if [ -f $PREFIX_ROKKO/elemental/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION/elementalvars.sh ]; then
-  $SUDO rm -f $PREFIX_ROKKO/rokkoenv.d/elementalvars.sh
-  $SUDO ln -s $PREFIX_ROKKO/elemental/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION/elementalvars.sh $PREFIX_ROKKO/rokkoenv.d/elementalvars.sh
+if [ -f $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/${__NAME__}vars.sh ]; then
+  $SUDO rm -f $PREFIX_ROKKO/rokkoenv.d/${__NAME__}vars.sh
+  $SUDO ln -s $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/${__NAME__}vars.sh $PREFIX_ROKKO/rokkoenv.d/${__NAME__}vars.sh
 fi
+
+ARCH_TYPES="Linux-s64fx Linux-x86_64"
+for arch_type in $ARCH_TYPES; do
+  BUILD_TYPES="Release Debug"
+  for build_type in $BUILD_TYPES; do
+    if [ -f $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/$arch_type/$build_type/${__NAME__}vars.sh ]; then
+      $SUDO rm -f $PREFIX_ROKKO/rokkoenv-$arch_type-$build_type.d/${__NAME__}vars.sh
+      $SUDO ln -s $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/$arch_type/$build_type/${__NAME__}vars.sh $PREFIX_ROKKO/rokkoenv-$arch_type-$build_type.d/${__NAME__}vars.sh
+    fi
+  done
+
+  if [ -f $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/$arch_type/${__NAME__}vars.sh ]; then
+    $SUDO rm -f $PREFIX_ROKKO/rokkoenv-$arch_type.d/${__NAME__}vars.sh
+    $SUDO ln -s $PREFIX_ROKKO/${__NAME__}/${__NAME__}-${__VERSION__}-${__RK_REVISION__}/$arch_type/${__NAME__}vars.sh $PREFIX_ROKKO/rokkoenv-$arch_type.d/${__NAME__}vars.sh
+  fi
+done
