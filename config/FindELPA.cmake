@@ -35,6 +35,7 @@ else(ELPA_DIR)
 	      /opt/rokko/${CMAKE_BUILD_TYPE}
 	      /opt/rokko
 	      /opt/local /opt
+	      /usr/local /usr
 	      )
 endif(ELPA_DIR)
 
@@ -43,7 +44,7 @@ foreach (_PATH ${_PATHS})
 endforeach()
 
 foreach (_INCPATH ${_INCPATHS})
-  file(GLOB _ELPA_INCLUDE_FILE "${_INCPATH}/elpa_*/elpa/elpa.h")
+  file(GLOB _ELPA_INCLUDE_FILE "${_INCPATH}/elpa*/elpa/elpa.h")
   if(_ELPA_INCLUDE_FILE)
     string(REGEX REPLACE "elpa/+elpa.h" "" ELPA_INCLUDE_DIR ${_ELPA_INCLUDE_FILE})  # cut the trailing "elpa/elpa.h" from _ELPA_INCLUDE_FILE
     break()

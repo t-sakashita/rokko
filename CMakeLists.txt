@@ -236,10 +236,19 @@ components_check()
 
 # find Anasazi
 if(ROKKO_HAVE_ANASAZI)
-  find_package(Anasazi)
-  set(ROKKO_HAVE_ANASAZI ${ANASAZI_FOUND})
-  include_directories(${ANASAZI_INCLUDE_DIR})
-  string(REGEX REPLACE ";" " " ANASAZI_LIBS "${ANASAZI_LIBRARIES}")
+  find_package(Anasazi QUIET HINTS
+    ${TRILINOS_ROOT}/${CMAKE_BUILD_TYPE} ${TRILINOS_ROOT}
+    $ENV{TRILINOS_ROOT}/${CMAKE_BUILD_TYPE} $ENV{TRILINOS_ROOT})
+  if(Anasazi_FOUND)
+    message(STATUS "Anasazi include directory: ${Anasazi_INCLUDE_DIRS}")
+    message(STATUS "Anasazi libraries: ${Anasazi_LIBRARIES}")
+    set(ROKKO_HAVE_ANASAZI TRUE)
+    include_directories(${Anasazi_INCLUDE_DIRS})
+    # string(REGEX REPLACE ";" " " ANASAZI_LIBS "${Anasazi_LIBRARIES}")
+  else(Anasazi_FOUND)
+    message(STATUS "Anasazi not found")
+    set(ROKKO_HAVE_ANASAZI FALSE)
+  endif(Anasazi_FOUND)
 endif(ROKKO_HAVE_ANASAZI)
 components_check()
 

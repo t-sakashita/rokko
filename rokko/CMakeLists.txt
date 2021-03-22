@@ -160,7 +160,7 @@ if(ROKKO_SOURCES)
   endif(ROKKO_HAVE_SLEPC)
 
   if(ROKKO_HAVE_ANASAZI)
-    target_link_libraries(rokko ${ANASAZI_LIBRARIES})
+    target_link_libraries(rokko ${Anasazi_LIBRARIES})
   endif(ROKKO_HAVE_ANASAZI)
 
   if(BUILD_Python_BINDING)
