@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_MEDIUM_HPP
-#define TITPACK_MEDIUM_HPP
+#pragma once
 
 #include "common.hpp"
 #include <vector>
@@ -119,5 +118,3 @@ void inv2z(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, int 
 
 int cg2(matrix_type const& elemnt, i_matrix_type const& loc, double Eig, std::vector<double>& x,
         double *b, double *p, double *r, double *y);
-
-#endif

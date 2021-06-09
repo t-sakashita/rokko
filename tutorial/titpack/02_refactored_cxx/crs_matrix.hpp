@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef TITPACK_CRS_MATRIX_HPP
-#define TITPACK_CRS_MATRIX_HPP
+#pragma once
 
 #include "common.hpp"
 #include "hamiltonian.hpp"
@@ -28,5 +27,3 @@ private:
   matrix_type elemnt_;
   i_matrix_type loc_;
 };
-
-#endif

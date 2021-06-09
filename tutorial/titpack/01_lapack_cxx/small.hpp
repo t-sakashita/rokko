@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_SMALL_HPP
-#define TITPACK_SMALL_HPP
+#pragma once
 
 #include "common.hpp"
 #include <vector>
@@ -52,4 +51,3 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex);
 // xindex
 // return value: Hexpec <x*H*x>
 
-#endif

@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_MEDIUM_HPP
-#define TITPACK_MEDIUM_HPP
+#pragma once
 
 #include "common.hpp"
 #include "crs_matrix.hpp"
@@ -101,5 +100,3 @@ void inv2z(crs_matrix const& mat, double Eig, int iv, std::vector<double>& x, do
 
 int cg2(crs_matrix const& mat, double Eig, std::vector<double>& x, double *b, double *p,
         double *r, double *y);
-
-#endif

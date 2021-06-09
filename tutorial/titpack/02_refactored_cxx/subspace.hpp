@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef TITPACK_SUBSPACE_HPP
-#define TITPACK_SUBSPACE_HPP
+#pragma once
 
 #include <vector>
 
@@ -34,5 +33,3 @@ private:
   std::vector<int> list1_;
   std::vector<std::pair<int, int>> list2_;
 };
-
-#endif
