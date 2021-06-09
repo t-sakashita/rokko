@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_TRIDIAGONAL_TOEPLITZ_MATRIX_HPP
-#define ROKKO_UTILITY_TRIDIAGONAL_TOEPLITZ_MATRIX_HPP
+#pragma once
 
 #include <cmath>
 #include <stdexcept>
@@ -106,5 +105,3 @@ public:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_TRIDIAGONAL_TOEPLITZ_MATRIX_HPP

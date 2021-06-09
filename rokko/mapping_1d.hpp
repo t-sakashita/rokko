@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_1D_HPP
-#define ROKKO_MAPPING_1D_HPP
+#pragma once
 
 #include <rokko/factory.hpp>
 #include <rokko/mpi_communicator.hpp>
@@ -90,5 +89,3 @@ struct register_caller { \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
-
-#endif // ROKKO_MAPPING_1D_HPP

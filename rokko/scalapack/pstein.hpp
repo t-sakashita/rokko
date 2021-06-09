@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSTEIN_HPP
-#define ROKKO_SCALAPACK_PSTEIN_HPP
+#pragma once
 
 #include <lapacke.h>
 #include <rokko/cscalapack.h>
@@ -55,5 +54,3 @@ int pstein(const VECTOR& d, const VECTOR& e, int& m,
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSTEIN_HPP

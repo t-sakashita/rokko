@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_BLACS_GRID_HPP
-#define ROKKO_BLACS_GRID_HPP
+#pragma once
 
 #include <mpi.h>
 #include <array>
@@ -35,5 +34,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_BLACS_GRID_HPP

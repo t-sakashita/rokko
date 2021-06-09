@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MANGLING_H
-#define ROKKO_MANGLING_H
+#pragma once
 
 #ifdef __cplusplus
 # include <complex>
@@ -33,5 +32,3 @@
 
 /* Mangling for Fortran module symbols with underscores. */
 #define ROKKO_MODULE_(mod_name,name, mod_NAME,NAME) __##mod_name##_MOD_##name
-
-#endif /* ROKKO_MANGLING_H */

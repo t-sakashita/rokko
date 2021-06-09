@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_TRAITS_VALUE_T_HPP
-#define ROKKO_TRAITS_VALUE_T_HPP
+#pragma once
 
 #include <complex>
 
@@ -59,5 +58,3 @@ template<typename T>
 using value_t = typename detail::value_type_traits<T>::type;
 
 } // namespace rokko
-
-#endif // ROKKO_TRAITS_VALUE_T_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_COMPARE_VECTORS_HPP
-#define ROKKO_UTILITY_COMPARE_VECTORS_HPP
+#pragma once
 
 #include <rokko/eigen3.hpp>
 
@@ -28,5 +27,3 @@ auto norm_diff(const MAT1 source, const MAT2 target) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_COMPARE_VECTORS_HPP

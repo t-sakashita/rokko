@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PARALLEL_DENSE_EV_H
-#define ROKKO_PARALLEL_DENSE_EV_H
+#pragma once
 
 #include <rokko/grid.h>
 #include <rokko/mapping_bc.h>
@@ -87,5 +86,3 @@ const char* rokko_parallel_dense_ev_default_solver();
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_PARALLEL_DENSE_EV_H */

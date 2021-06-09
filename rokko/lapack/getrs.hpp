@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_GETRS_HPP
-#define ROKKO_LAPACK_GETRS_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -89,5 +88,3 @@ lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_GETRS_HPP

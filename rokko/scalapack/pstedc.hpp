@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSTEDC_HPP
-#define ROKKO_SCALAPACK_PSTEDC_HPP
+#pragma once
 
 #include <lapacke.h>
 #include <rokko/cscalapack.h>
@@ -50,5 +49,3 @@ int pstedc(MATRIX& a, VECTOR& w, MATRIX& z) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSTEDC_HPP

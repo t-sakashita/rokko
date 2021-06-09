@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_COMPLEX_CAST_HPP
-#define ROKKO_LAPACK_COMPLEX_CAST_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -34,5 +33,3 @@ COMPLEX_CAST_IMPL(double)
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_COMPLEX_CAST_HPP

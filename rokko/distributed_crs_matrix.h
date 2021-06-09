@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_CRS_MATRIX_H
-#define ROKKO_DISTRIBUTED_CRS_MATRIX_H
+#pragma once
 
 #include <rokko/mapping_1d.h>
 
@@ -35,5 +34,3 @@ void rokko_distributed_crs_matrix_print(struct rokko_distributed_crs_matrix matr
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_DISTRIBUTED_CRS_MATRIX_H */

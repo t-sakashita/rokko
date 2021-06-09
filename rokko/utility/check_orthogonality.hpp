@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CHECK_ORTHOGONALITY_HPP
-#define ROKKO_CHECK_ORTHOGONALITY_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 
@@ -27,5 +26,3 @@ int check_orthogonality(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_CHECK_ORTHOGONALITY_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_SYGVD_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_SYGVD_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
@@ -68,5 +67,3 @@ parameters diagonalize_sygvd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 
 } // namespace lapack
 } // namespace rokko
-
-#endif // ROKKO_LAPACK_DIAGONALIZE_SYGVD_HPP

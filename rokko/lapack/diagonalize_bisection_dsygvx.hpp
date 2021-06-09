@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_BISECTION_SYGVX_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_BISECTION_SYGVX_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
@@ -61,5 +60,3 @@ parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,M
 
 } // namespace lapack
 } // namespace rokko
-
-#endif // ROKKO_LAPACK_DIAGONALIZE_BISECTION_SYGVX_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_TRAITS_REAL_T_HPP
-#define ROKKO_TRAITS_REAL_T_HPP
+#pragma once
 
 #include "value_t.hpp"
 #include <complex>
@@ -55,5 +54,3 @@ template<typename T>
 using real_t = typename detail::real_type_traits<T>::type;
 
 } // namespace rokko
-
-#endif // ROKKO_TRAITS_REAL_T_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_MINIJ_MATRIX_H
-#define ROKKO_UTILITY_MINIJ_MATRIX_H
+#pragma once
 
 #include <rokko/dense.h>
 
@@ -28,4 +27,3 @@ void rokko_minij_matrix_generate_distributed_matrix(struct rokko_distributed_mat
 }
 #endif
 
-#endif /* ROKKO_UTILITY_MINIJ_MATRIX_H */

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_SOLVER_NAME_HPP
-#define ROKKO_UTILITY_SOLVER_NAME_HPP
+#pragma once
 
 #include <regex>
 #include <vector>
@@ -32,5 +31,3 @@ void split_solver_name(std::string const& str, std::string& library, std::string
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_SOLVER_NAME_HPP

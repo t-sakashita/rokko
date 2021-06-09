@@ -9,13 +9,10 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ALIAS_TEMPLATE_FUNCTION_HPP
-#define ROKKO_ALIAS_TEMPLATE_FUNCTION_HPP
+#pragma once
 
 #define ALIAS_TEMPLATE_FUNCTION(target, source)  \
 template<typename... Types> \
 inline auto target(Types&&... args) -> decltype(source(std::forward<Types>(args)...)) { \
   return source(std::forward<Types>(args)...); \
 }
-
-#endif // ROKKO_ALIAS_TEMPLATE_FUNCTION_HPP

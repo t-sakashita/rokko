@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSYEV_HPP
-#define ROKKO_SCALAPACK_PSYEV_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/storage.hpp>
@@ -92,5 +91,3 @@ int psyev(char uplo, MATRIX& a, VECTOR& w) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSYEV_HPP

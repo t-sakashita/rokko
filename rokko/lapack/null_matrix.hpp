@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_NULL_MATRIX_HPP
-#define ROKKO_LAPACK_NULL_MATRIX_HPP
+#pragma once
 
 namespace rokko {
 namespace lapack {
@@ -30,5 +29,3 @@ T* storage(null_matrix<T>) {
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_NULL_MATRIX_HPP

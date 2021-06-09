@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGENEXA_EIGENEXA_INTERFACE_H
-#define ROKKO_EIGENEXA_EIGENEXA_INTERFACE_H
+#pragma once
 
 #include <mpi.h>
 #include <rokko/mangling.h>
@@ -68,5 +67,3 @@ void EIGENEXA_eigen_sx(const int* n, const int* nvec, double* a, const int* lda,
 #ifdef __cplusplus
 }
 #endif
-
-#endif // ROKKO_EIGENEXA_EIGENEXA_INTERFACE_H

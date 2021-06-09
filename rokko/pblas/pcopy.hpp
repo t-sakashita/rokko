@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PCOPY_HPP
-#define ROKKO_SCALAPACK_PCOPY_HPP
+#pragma once
 
 #include <rokko/cpblas.h>
 #include <rokko/lapack/complex_cast.hpp>
@@ -42,5 +41,3 @@ inline void pcopy(int n, const std::complex<double>* X, int ix, int jx, const in
 
 } // end namespace pblas
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PCOPY_HPP

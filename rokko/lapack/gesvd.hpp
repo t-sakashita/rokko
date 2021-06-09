@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_GESVD_HPP
-#define ROKKO_LAPACK_GESVD_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -165,5 +164,3 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_GESVD_HPP

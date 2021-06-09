@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CONFIG_H
-#define ROKKO_CONFIG_H
+#pragma once
 
 #define ROKKO_VERSION "0.3"
 
@@ -101,5 +100,3 @@
 
 /* Define if you have Python binding */
 #cmakedefine ROKKO_HAVE_PYTHON_BINDING
-
-#endif /* ROKKO_CONFIG_H */

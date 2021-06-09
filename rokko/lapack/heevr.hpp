@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HEEVR_HPP
-#define ROKKO_LAPACK_HEEVR_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -157,5 +156,3 @@ ALIAS_TEMPLATE_FUNCTION(syevr, heevr);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HEEVR_HPP

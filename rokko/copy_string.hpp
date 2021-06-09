@@ -9,9 +9,6 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_COPY_STRING_HPP
-#define ROKKO_COPY_STRING_HPP
+#pragma once
 
 char* copy_string(std::string const& str);
-
-#endif // ROKKO_COPY_STRING_HPP

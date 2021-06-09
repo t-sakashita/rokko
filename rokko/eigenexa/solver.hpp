@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGENEXA_SOLVER_HPP
-#define ROKKO_EIGENEXA_SOLVER_HPP
+#pragma once
 
 #include <rokko/matrix_major.hpp>
 #include <rokko/parameters.hpp>
@@ -103,5 +102,3 @@ parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 
 } // namespace eigenexa
 } // namespace rokko
-
-#endif // ROKKO_EIGENEXA_SOLVER_HPP

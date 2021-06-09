@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_H
-#define ROKKO_ELPA_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,5 +44,3 @@ const char *elpa_strerr(int elpa_error);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // ROKKO_ELPA_H

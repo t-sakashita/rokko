@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTIL_STRING_FORMAT_HPP
-#define ROKKO_UTIL_STRING_FORMAT_HPP
+#pragma once
 
 #include <cstdio>
 #include <string>
@@ -27,5 +26,3 @@ std::string format(const std::string& fmt, Args ... args) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTIL_STRING_FORMAT_HPP

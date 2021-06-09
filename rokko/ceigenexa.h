@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CEIGENEXA_H
-#define ROKKO_CEIGENEXA_H
+#pragma once
 
 #include <mpi.h>
 
@@ -50,5 +49,3 @@ void ceigenexa_eigen_sx(int n, int nvec, double* a, int lda, double* w, double* 
 #ifdef __cplusplus
 }
 #endif
-
-#endif // ROKKO_EIGENEXA_WRAP_H

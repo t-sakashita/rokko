@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_BISECTION_HPP
-#define ROKKO_SCALAPACK_DIAGONALIZE_BISECTION_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -71,5 +70,3 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
 } // namespace scalapack
 } // namespace rokko
-
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_BISECTION_HPP

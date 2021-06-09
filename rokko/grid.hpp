@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_GRID_HPP
-#define ROKKO_GRID_HPP
+#pragma once
 
 #include <array>
 #include <iostream>
@@ -145,5 +144,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_GRID_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_BLAS_GEMV_HPP
-#define ROKKO_BLAS_GEMV_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -58,5 +57,3 @@ void gemv(CBLAS_TRANSPOSE trans, T alpha, const MATRIX& a, const VECTOR& x, int 
 
 } // namespace blas
 } // namespace rokko
-
-#endif // ROKKO_BLAS_GEMV_HPP

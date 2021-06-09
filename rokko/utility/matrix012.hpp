@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_MATRIX012_HPP
-#define ROKKO_UTILITY_MATRIX012_HPP
+#pragma once
 
 #include <cmath>
 #include <stdexcept>
@@ -96,5 +95,3 @@ int matrix012::get_index<Eigen::RowMajor>(int ld, int global_i, int global_j) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_MATRIX012_HPP

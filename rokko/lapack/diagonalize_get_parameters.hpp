@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_GET_PARAMETERS_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_GET_PARAMETERS_HPP
+#pragma once
 
 namespace rokko {
 namespace lapack {
@@ -37,6 +36,3 @@ bool is_interval(parameters const& params);
 
 } // namespace lapack
 } // namespace rokko
-
-#endif // ROKKO_LAPACK_DIAGONALIZE_GET_PARAMETERS_HPP
-

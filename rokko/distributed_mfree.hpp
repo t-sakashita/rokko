@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MFREE_HPP
-#define ROKKO_DISTRIBUTED_MFREE_HPP
+#pragma once
 
 #include <rokko/mapping_1d.hpp>
 #include <rokko/mapping_1d_common.hpp>
@@ -94,5 +93,3 @@ private:
 };
 
 } // end namespace rokko
-
-#endif // ROKKO_DISTRIBUTED_MFREE_HPP

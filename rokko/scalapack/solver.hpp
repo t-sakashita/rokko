@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_SOLVER_HPP
-#define ROKKO_SCALAPACK_SOLVER_HPP
+#pragma once
 
 #include <rokko/config.h>
 #include <rokko/parameters.hpp>
@@ -131,5 +130,3 @@ parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
 } // namespace sclapack
 } // namespace rokko
-
-#endif // ROKKO_SCALAPACK_SOLVER_HPP

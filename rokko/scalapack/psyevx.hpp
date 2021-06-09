@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSYEVX_HPP
-#define ROKKO_SCALAPACK_PSYEVX_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 #include <rokko/eigen3.hpp>
@@ -237,5 +236,3 @@ int psyevx(char uplo, MATRIX& a,
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSYEVX_HPP

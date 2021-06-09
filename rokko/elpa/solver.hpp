@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_SOLVER_HPP
-#define ROKKO_ELPA_SOLVER_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.h>
@@ -58,5 +57,3 @@ public:
 
 } // namespace elpa
 } // namespace rokko
-
-#endif // ROKKO_ELPA_SOLVER_HPP

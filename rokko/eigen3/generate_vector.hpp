@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_GENERATE_VECTOR_HPP
-#define ROKKO_EIGEN3_GENERATE_VECTOR_HPP
+#pragma once
 
 #include <iostream>
 #include <rokko/eigen3.hpp>
@@ -32,5 +31,3 @@ void generate(Eigen::Vector<T,ROWS>& vec, std::function<T(int)> const& func) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_EIGEN3_GENERATE_VECTOR_HPP

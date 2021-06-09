@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HTEGR_HPP
-#define ROKKO_LAPACK_HTEGR_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -167,5 +166,3 @@ ALIAS_TEMPLATE_FUNCTION(stegr, htegr);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HTEGR_HPP

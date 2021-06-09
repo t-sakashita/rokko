@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HEEV_HPP
-#define ROKKO_LAPACK_HEEV_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -84,5 +83,3 @@ ALIAS_TEMPLATE_FUNCTION(syev, heev);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HEEV_HPP

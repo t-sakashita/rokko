@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ORIGINAL_SOLVER_HPP
-#define ROKKO_ORIGINAL_SOLVER_HPP
+#pragma once
 
 #include <tuple>
 
@@ -90,5 +89,3 @@ private:
 } // namespace original
 
 } // namespace rokko
-
-#endif // ROKKO_ORIGINAL_SOLVER_HPP

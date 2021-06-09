@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MPI_TYPE_TRAITS_HPP
-#define ROKKO_MPI_TYPE_TRAITS_HPP
+#pragma once
 
 #include <mpi.h>
 
@@ -45,5 +44,3 @@ template <typename T>
 static const auto mpi_type = detail::mpi_type_traits<T>::get_type();
 
 } // namespace rokko
-
-#endif // ROKKO_MPI_TYPE_TRAITS_HPP

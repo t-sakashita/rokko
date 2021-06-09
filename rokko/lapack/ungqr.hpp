@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_UNGQR_HPP
-#define ROKKO_LAPACK_UNGQR_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -130,5 +129,3 @@ lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
   
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_UNGQR_HPP

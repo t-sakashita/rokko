@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_BC_HPP
-#define ROKKO_MAPPING_BC_HPP
+#pragma once
 
 #include <array>
 #include <rokko/grid.hpp>
@@ -84,5 +83,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_MAPPING_BC_HPP

@@ -9,12 +9,9 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_JOIN_HPP
-#define ROKKO_JOIN_HPP
+#pragma once
 
 // based on idea of BOOST_JOIN
 #define ROKKO_JOIN(X, Y) ROKKO_DO_JOIN(X, Y)
 #define ROKKO_DO_JOIN(X, Y) ROKKO_DO_JOIN2(X,Y)
 #define ROKKO_DO_JOIN2(X, Y) X##Y
-
-#endif // ROKKO_JOIN_HPP

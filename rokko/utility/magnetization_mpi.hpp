@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAGNETIZATION_HPP
-#define ROKKO_MAGNETIZATION_HPP
+#pragma once
 
 #include <vector>
 #include <rokko/eigen3.hpp>
@@ -79,5 +78,3 @@ double magnetization(int L, std::vector<std::pair<int, int>>& lattice, int power
 //} // namespace heisenberg_hamiltonian
 
 } // namespace rokko
-
-#endif // ROKKO_MAGNETIZATION_HPP

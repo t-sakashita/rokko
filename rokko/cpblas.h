@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CPBLAS_H
-#define ROKKO_CPBLAS_H
+#pragma once
 
 #include <rokko/pblas/pblas_interface.h>
 
@@ -96,5 +95,3 @@ CPBLAS_PGEMM_DECL(pzgemm, PZGEMM, lapack_complex_double);
 #endif
 
 #undef CPBLAS_PGEMM_DECL
-
-#endif // ROKKO_CPBLAS_H

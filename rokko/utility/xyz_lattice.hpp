@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_XYZ_LATTICE_HPP
-#define ROKKO_UTILITY_XYZ_LATTICE_HPP
+#pragma once
 
 #include <string>
 #include <list>
@@ -68,5 +67,3 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_XYZ_LATTICE_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_SCALAPACK_INTERFACE_H
-#define ROKKO_SCALAPACK_SCALAPACK_INTERFACE_H
+#pragma once
 
 #include <rokko/config.h>
 #include <rokko/mangling.h>
@@ -175,5 +174,3 @@ SCALAPACK_PSTEDC_DECL(pdstedc, PDSTEDC, double);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // ROKKO_SCALAPACK_SCALAPACK_INTERFACE_H

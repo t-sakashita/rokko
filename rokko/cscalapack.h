@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CSCALAPACK_H
-#define ROKKO_CSCALAPACK_H
+#pragma once
 
 #include <rokko/config.h>
 #include <lapacke.h>
@@ -184,5 +183,3 @@ CSCALAPACK_PSTEDC_DECL(pdstedc, PDSTEDC, double);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // ROKKO_CSCALAPACK_H

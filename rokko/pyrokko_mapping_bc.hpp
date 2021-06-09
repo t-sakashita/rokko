@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_MAPPING_BC_HPP
-#define PYROKKO_MAPPING_BC_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -112,5 +111,3 @@ std::shared_ptr<base_mapping_bc> create_mapping_bc(int global_size, int block_si
 }
 
 } // end namespace rokko
-
-#endif // PYROKKO_MAPPING_BC_HPP

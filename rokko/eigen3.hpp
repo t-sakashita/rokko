@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_HPP
-#define ROKKO_EIGEN3_HPP
+#pragma once
 
 #include <rokko/eigen3/matrix_major.hpp>
 #include <Eigen/Dense>
@@ -84,5 +83,3 @@ template<typename T>
 using RefVec = Eigen::Ref<Vector<T>>;
 
 } // namespace Eigen
-
-#endif // ROKKO_EIGEN3_HPP

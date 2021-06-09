@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_PARALLEL_SPARSE_EV_HPP
-#define PYROKKO_PARALLEL_SPARSE_EV_HPP
+#pragma once
 
 #include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/pyrokko_mapping_1d.hpp>
@@ -55,5 +54,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_PARALLEL_SPARSE_EV_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_UTILITY_SOLVER_NAME_HPP
-#define PYROKKO_UTILITY_SOLVER_NAME_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -31,5 +30,3 @@ std::tuple<std::string,std::string> wrap_split_solver_name(std::string const& st
 }
 
 } // end namespace rokko
-
-#endif // PYROKKO_UTILITY_SOLVER_NAME_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_BLACS_HPP
-#define ROKKO_BLACS_HPP
+#pragma once
 
 #include <vector>
 #include <rokko/Cblacs.h>
@@ -49,5 +48,3 @@ inline int sys2blacs_handle(const MPI_Comm& comm) {
 
 } // end namespace blacs
 } // end namespace rokko
-
-#endif // ROKKO_BLACS_HPP

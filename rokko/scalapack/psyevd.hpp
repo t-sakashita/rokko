@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSYEVD_HPP
-#define ROKKO_SCALAPACK_PSYEVD_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/complex_cast.hpp>
@@ -90,5 +89,3 @@ int psyevd(char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSYEVD_HPP

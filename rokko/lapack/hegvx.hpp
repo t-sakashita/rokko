@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HEGVX_HPP
-#define ROKKO_LAPACK_HEGVX_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -93,5 +92,3 @@ ALIAS_TEMPLATE_FUNCTION(sygvx, hegvx);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HEGVX_HPP

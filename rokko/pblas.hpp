@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PBLAS_HPP
-#define ROKKO_PBLAS_HPP
+#pragma once
 
 #include <rokko/cpblas.h>
 #include <rokko/lapack/complex_cast.hpp>
@@ -159,5 +158,3 @@ void pgemm(char transa, char transb, T alpha, const MATRIX& a, const MATRIX& b,
 
 } // namespace pblas
 } // namespace rokko
-
-#endif // ROKKO_PBLAS_HPP

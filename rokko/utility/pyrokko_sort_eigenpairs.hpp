@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_UTILITY_SORT_EIGENPAIRS_HPP
-#define PYROKKO_UTILITY_SORT_EIGENPAIRS_HPP
+#pragma once
 
 #include <rokko/eigen3.hpp>
 
@@ -41,5 +40,3 @@ void pyrokko_sort_eigenpairs(Eigen::Ref<Eigen::VectorXd> eigval_in,
 }
 
 } // namespace rokko
-
-#endif // PYROKKO_UTILITY_SORT_EIGENPAIRS_HPP

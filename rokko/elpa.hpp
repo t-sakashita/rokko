@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_DIAG_HPP
-#define ROKKO_ELPA_DIAG_HPP
+#pragma once
 
 #include <rokko/elpa/elpa.h>
 #include <complex>
@@ -106,5 +105,3 @@ int diag(elpa_t handle, MATRIX& a, VECTOR& ev) {
 
 } // namespace elpa
 } // namespace rokko
-
-#endif // ROKKO_ELPA_DIAG_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_LAPLACIAN_MATRIX_H
-#define ROKKO_UTILITY_LAPLACIAN_MATRIX_H
+#pragma once
 
 #include <math.h>
 
@@ -18,5 +17,3 @@
 double rokko_laplacian_matrix_eigenvalue(int dim, int k) {
   return 2 * (1 - cos(M_PI * (2 * k + 1) / (2 * dim + 1)));
 }
-
-#endif // ROKKO_UTILITY_LAPLACIAN_MATRIX_H

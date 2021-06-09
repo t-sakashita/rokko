@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_HPP
-#define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_HPP
+#pragma once
 
 #include "mpi.h"
 #include <vector>
@@ -226,5 +225,3 @@ void generate(int /* L */, std::vector<std::pair<int, int>>& lattice,
 } // namespace heisenberg_hamiltonian
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_HPP

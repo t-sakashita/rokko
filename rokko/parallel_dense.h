@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PARALLEL_DENSE_H
-#define ROKKO_PARALLEL_DENSE_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,5 +25,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_PARALLEL_DENSE_H */

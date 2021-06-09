@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MFREE_HPP
-#define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MFREE_HPP
+#pragma once
 
 #include <rokko/utility/heisenberg_hamiltonian_mpi.hpp>
 #include <rokko/distributed_mfree.hpp>
@@ -49,5 +48,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MFREE_HPP

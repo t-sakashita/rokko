@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_MATRIX_MAJOR_HPP
-#define ROKKO_EIGEN3_MATRIX_MAJOR_HPP
+#pragma once
 
 #include <rokko/matrix_major.hpp>
 #include <Eigen/Dense>
@@ -63,5 +62,3 @@ template<typename MATRIX_MAJOR>
 constexpr int eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
 
 } // namespace rokko
-
-#endif // ROKKO_EIGEN3_MATRIX_MAJOR_HPP

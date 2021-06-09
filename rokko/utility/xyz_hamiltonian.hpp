@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
-#define ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP
+#pragma once
 
 #include <vector>
 #include <tuple>
@@ -141,5 +140,3 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice,
 } // namespace xyz_hamiltonian
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_XYZ_HAMILTONIAN_HPP

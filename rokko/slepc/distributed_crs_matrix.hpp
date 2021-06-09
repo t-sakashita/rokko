@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_HPP
-#define ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_HPP
+#pragma once
 
 #include <rokko/slepc/mapping_1d.hpp>
 #include <rokko/distributed_crs_matrix.hpp>
@@ -149,5 +148,3 @@ private:
 
 } // namespace slepc
 } // namespace rokko
-
-#endif // ROKKO_SLEPC_DISTRIBUTED_CRS_MATRIX_HPP

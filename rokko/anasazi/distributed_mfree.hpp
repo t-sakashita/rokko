@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_DISTRIBUTED_MFREE_HPP
-#define ROKKO_ANASAZI_DISTRIBUTED_MFREE_HPP
+#pragma once
 
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/anasazi/mapping_1d.hpp>
@@ -57,5 +56,3 @@ private:
 } // end namespace anasazi
 
 } // end namespace rokko
-
-#endif // ROKKO_ANASAZI_DISTRIBUTED_MFREE_HPP

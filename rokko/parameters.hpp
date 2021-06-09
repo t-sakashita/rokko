@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PARAMETERS_HPP
-#define ROKKO_PARAMETERS_HPP
+#pragma once
 
 #include <iostream>
 #include <list>
@@ -125,5 +124,3 @@ bool get_key(rokko::parameters const& params, std::string const& key, T& value) 
 
 
 } // namespace rokko
-
-#endif // ROKKO_PARAMETERS_HPP

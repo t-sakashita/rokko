@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_DISTRIBUTED_MFREE_HPP
-#define ROKKO_SLEPC_DISTRIBUTED_MFREE_HPP
+#pragma once
 
 #include <rokko/distributed_mfree.hpp>
 
@@ -74,5 +73,3 @@ private:
 } // end namespace slepc
 
 } // end namespace rokko
-
-#endif // ROKKO_SLEPC_DISTRIBUTED_MFREE_HPP

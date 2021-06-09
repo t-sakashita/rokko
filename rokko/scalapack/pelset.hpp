@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PELSET_HPP
-#define ROKKO_SCALAPACK_PELSET_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 
@@ -36,5 +35,3 @@ void pelset(MATRIX& A, int ia, int ja, typename MATRIX::value_type alpha) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PELSET_HPP

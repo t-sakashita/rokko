@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_NONCOPYABLE_HPP
-#define ROKKO_NONCOPYABLE_HPP
+#pragma once
 
 namespace rokko {
 
@@ -26,5 +25,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // ROKKO_NONCOPYABLE_HPP

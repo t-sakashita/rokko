@@ -9,10 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_HPP
-#define ROKKO_SLEPC_HPP
+#pragma once
 
 #include <petscvec.h>
 #include <slepceps.h>
-
-#endif // ROKKO_SLEPC_HPP

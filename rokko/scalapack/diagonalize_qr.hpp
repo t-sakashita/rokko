@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_QR_HPP
-#define ROKKO_SCALAPACK_DIAGONALIZE_QR_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -66,5 +65,3 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 
 } // namespace scalapack
 } // namespace rokko
-
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_QR_HPP

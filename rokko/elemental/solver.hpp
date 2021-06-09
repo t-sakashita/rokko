@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELEMENTAL_SOLVER_HPP
-#define ROKKO_ELEMENTAL_SOLVER_HPP
+#pragma once
 
 #include <El.hpp>
 #include <rokko/parameters.hpp>
@@ -61,5 +60,3 @@ public:
 
 } // namespace elemental
 } // namespace rokko
-
-#endif // ROKKO_ELEMENTAL_SOLVER_HPP

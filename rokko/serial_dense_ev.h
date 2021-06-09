@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SERIAL_DENSE_EV_H
-#define ROKKO_SERIAL_DENSE_EV_H
+#pragma once
 
 #include <rokko/eigen_matrix.h>
 #include <rokko/eigen_vector.h>
@@ -77,5 +76,3 @@ const char* rokko_serial_dense_ev_default_solver();
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_SERIAL_DENSE_EV_H */

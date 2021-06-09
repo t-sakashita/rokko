@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_GETRF_HPP
-#define ROKKO_LAPACK_GETRF_HPP
+#pragma once
 
 #include <complex>
 #include <stdexcept>
@@ -80,5 +79,3 @@ lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_GETRF_HPP

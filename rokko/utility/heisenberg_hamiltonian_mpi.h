@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_H
-#define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_H
+#pragma once
 
 #include "mpi.h"
 
@@ -151,5 +150,3 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
     }
   }
 }
-
-#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_MPI_H

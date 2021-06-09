@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MPI_COMMNUNICATOR_HPP
-#define ROKKO_MPI_COMMNUNICATOR_HPP
+#pragma once
 
 #include <mpi.h>
 
@@ -59,5 +58,3 @@ protected:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_MPI_COMMNUNICATOR_HPP

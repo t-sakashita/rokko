@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_MPI_VECTOR_HPP
-#define ROKKO_UTILITY_MPI_VECTOR_HPP
+#pragma once
 
 #include <vector>
 #include <rokko/eigen3.hpp>
@@ -123,5 +122,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_MPI_VECTOR_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_DISTRIBUTED_MATRIX_HPP
-#define PYROKKO_DISTRIBUTED_MATRIX_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 
@@ -146,5 +145,3 @@ void pyrokko_product(T alpha,
 }
 
 } // end namespace rokko
-
-#endif // PYROKKO_DISTRIBUTED_MATRIX_HPP

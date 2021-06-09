@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SKEL_MAPPING_1D_HPP
-#define ROKKO_SKEL_MAPPING_1D_HPP
+#pragma once
 
 #include <rokko/mpi_communicator.hpp>
 #include <rokko/mapping_1d.hpp>
@@ -70,5 +69,3 @@ private:
 } // namespace skel
 
 } // namespace rokko
-
-#endif // ROKKO_SKEL_MAPPING_1D_HPP

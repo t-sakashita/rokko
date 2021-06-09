@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_SYEVR_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_SYEVR_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
@@ -97,5 +96,3 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 
 } // namespace lapack
 } // namespace rokko
-
-#endif // ROKKO_LAPACK_DIAGONALIZE_SYEVR_HPP

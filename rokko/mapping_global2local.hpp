@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_GLOBAL2LOCAL_HPP
-#define ROKKO_MAPPING_GLOBAL2LOCAL_HPP
+#pragma once
 
 #include <array>
 #include <rokko/grid.hpp>
@@ -151,5 +150,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_MAPPING_GLOBAL2LOCAL_HPP

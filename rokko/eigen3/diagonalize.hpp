@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_DIAGONALIZE_HPP
-#define ROKKO_EIGEN3_DIAGONALIZE_HPP
+#pragma once
 
 #include <rokko/eigen3.hpp>
 #include <rokko/traits/real_t.hpp>
@@ -94,5 +93,3 @@ parameters diagonalize(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, std::vector
 
 } // namespace eigen3
 } // namespace rokko
-
-#endif // ROKKO_EIGEN3_DIAGONALIZE_HPP

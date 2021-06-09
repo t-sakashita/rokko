@@ -9,9 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_MATRIX_MAJOR_ENUM_HPP
-#define PYROKKO_MATRIX_MAJOR_ENUM_HPP
-
+#pragma once
 
 namespace rokko {
 
@@ -20,5 +18,3 @@ enum matrix_major_enum {
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_MATRIX_MAJOR_ENUM_HPP

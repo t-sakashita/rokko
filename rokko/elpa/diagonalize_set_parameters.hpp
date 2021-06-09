@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_DIAGONALIZE_SET_PARAMETERS_HPP
-#define ROKKO_ELPA_DIAGONALIZE_SET_PARAMETERS_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -55,5 +54,3 @@ void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters c
 
 } // namespace elpa
 } // namespace rokko
-
-#endif // ROKKO_ELPA_DIAGONALIZE_SET_PARAMETERS_HPP

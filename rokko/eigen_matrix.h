@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN_MATRIX_H
-#define ROKKO_EIGEN_MATRIX_H
+#pragma once
 
 #include <rokko/matrix_major.h>
 
@@ -52,5 +51,3 @@ double* rokko_eigen_matrix_get_array_pointer(struct rokko_eigen_matrix matrix);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_EIGEN_MATRIX_H */

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_GEQRF_HPP
-#define ROKKO_LAPACK_GEQRF_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -123,5 +122,3 @@ lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work) {
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_GEQRF_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_LOCAL2ARRAY_HPP
-#define ROKKO_MAPPING_LOCAL2ARRAY_HPP
+#pragma once
 
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_common_sizes.hpp>
@@ -114,5 +113,3 @@ inline int mapping_local2array<rokko::matrix_col_major>::get_n_size() const {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_MAPPING_LOCAL2ARRAY_HPP

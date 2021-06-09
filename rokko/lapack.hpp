@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HPP
-#define ROKKO_LAPACK_HPP
+#pragma once
 
 #include <lapacke.h>
 #undef I
@@ -115,5 +114,3 @@ lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
 #include "lapack/htein.hpp"
 #include "lapack/htegr.hpp"
 #include "lapack/sterf.hpp"
-
-#endif // ROKKO_LAPACK_HPP

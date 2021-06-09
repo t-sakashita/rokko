@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_GRID_H
-#define ROKKO_GRID_H
+#pragma once
 
 #include <stdbool.h>
 #include <mpi.h>
@@ -43,5 +42,3 @@ bool rokko_grid_is_col_major(struct rokko_grid grid);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_GRID_H */

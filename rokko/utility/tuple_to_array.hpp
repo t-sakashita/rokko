@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTIL_TUPLE_TO_ARRAY_HPP
-#define ROKKO_UTIL_TUPLE_TO_ARRAY_HPP
+#pragma once
 
 #include <array>
 #include <tuple>
@@ -31,5 +30,3 @@ constexpr decltype(auto) to_array(const std::tuple<HEAD, T...>& a) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTIL_TUPLE_TO_ARRAY_HPP

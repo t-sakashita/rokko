@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SOLVER_PARAMETERS_HPP
-#define ROKKO_SOLVER_PARAMETERS_HPP
+#pragma once
 
 namespace rokko {
 
@@ -21,5 +20,3 @@ bool is_rokko_solver_key(std::string const& key) {
 }
 
 } // end namespace rokko
-
-#endif // ROKKO_SOLVER_PARAMETERS_HPP

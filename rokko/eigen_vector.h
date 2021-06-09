@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN_VECTOR_H
-#define ROKKO_EIGEN_VECTOR_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,5 +42,3 @@ void rokko_eigen_vector_generate_function1_p(struct rokko_eigen_vector vec,
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_EIGEN_VECTOR_H */

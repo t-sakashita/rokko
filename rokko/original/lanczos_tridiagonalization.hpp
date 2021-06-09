@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ORIGINAL_LANCZOS_TRIDIAGONALIZATION_HPP
-#define ROKKO_ORIGINAL_LANCZOS_TRIDIAGONALIZATION_HPP
+#pragma once
 
 #include <rokko/mpi/reduction.hpp>
 
@@ -51,5 +50,3 @@ public:
 } // namespace original
 
 } // namespace rokko
-
-#endif // ROKKO_ORIGINAL_LANCZOS_TRIDIAGONALIZATION_HPP

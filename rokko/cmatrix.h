@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CMATRIX_H
-#define ROKKO_CMATRIX_H
+#pragma once
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -546,6 +545,4 @@ static inline void read_zmatrix_r(FILE *fp, int *m, int *n, double complex ***ma
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

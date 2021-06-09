@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MATRIX_MAJOR_H
-#define ROKKO_MATRIX_MAJOR_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,5 +22,3 @@ enum {
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_MATRIX_MAJOR_H */

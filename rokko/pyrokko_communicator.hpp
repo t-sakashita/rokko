@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_COMMUNICATOR_HPP
-#define PYROKKO_COMMUNICATOR_HPP
+#pragma once
 
 #include <mpi4py/mpi4py.h>
 
@@ -44,5 +43,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_COMMUNICATOR_HPP

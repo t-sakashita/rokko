@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MATRIX_HPP
-#define ROKKO_DISTRIBUTED_MATRIX_HPP
+#pragma once
 
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
@@ -266,5 +265,3 @@ T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_DISTRIBUTED_MATRIX_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_PARALLEL_DENSE_EV_HPP
-#define PYROKKO_PARALLEL_DENSE_EV_HPP
+#pragma once
 
 #include <rokko/pyrokko_mapping_bc.hpp>
 #include <rokko/pyrokko_distributed_matrix.hpp>
@@ -49,5 +48,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_PARALLEL_DENSE_EV_HPP

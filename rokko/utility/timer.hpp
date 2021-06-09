@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTIL_TIMER_HPP
-#define ROKKO_UTIL_TIMER_HPP
+#pragma once
 
 // You may define the following macros:
 //   #define ROKKO_DISABLE_TIMER
@@ -282,5 +281,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_UTIL_TIMER_HPP

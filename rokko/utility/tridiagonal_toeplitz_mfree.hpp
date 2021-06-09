@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_TRIDIAGONAL_TOEPLITZ_MFREE_HPP
-#define ROKKO_UTILITY_TRIDIAGONAL_TOEPLITZ_MFREE_HPP
+#pragma once
 
 #include <rokko/distributed_mfree.hpp>
 
@@ -141,5 +140,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_TRIDIAGONAL_TOEPLITZ_MFREE_HPP

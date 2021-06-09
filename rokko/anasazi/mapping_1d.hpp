@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ANASAZI_MAPPING_1D_HPP
-#define ROKKO_ANASAZI_MAPPING_1D_HPP
+#pragma once
 
 #include <rokko/mpi_communicator.hpp>
 #include <rokko/mapping_1d.hpp>
@@ -52,5 +51,3 @@ private:
 } // namespace anasazi
 
 } // namespace rokko
-
-#endif // ROKKO_ANASAZI_MAPPING_1D_HPP
