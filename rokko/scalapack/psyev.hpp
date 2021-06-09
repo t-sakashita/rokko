@@ -56,7 +56,7 @@ inline int psyev_dispatch(char jobz, char uplo, int n, std::complex<double>* A, 
 
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -66,7 +66,7 @@ int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 
 template<typename MATRIX, typename VECTOR>
 int psyev(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -83,7 +83,7 @@ int psyev(char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 // only eigenvalues (without jobz)
 template<typename MATRIX, typename VECTOR>
 int psyev(char uplo, MATRIX& a, VECTOR& w) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   return psyev_dispatch('N', uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,

@@ -43,7 +43,7 @@ int pstebz(int ictxt, char range, char order,
            T vl, T vu, int il, int iu,
            T abstol, const VECTOR& d, const VECTOR& e, int& m, int& nsplit,
            VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
-  static_assert(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same_v<value_t<VECTOR>, T>);
   lapack_int n = size(d);
 
   return pstebz_dispatch(ictxt, range, order, n,

@@ -70,7 +70,7 @@ template<typename MATRIX, typename VECTOR>
 lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
-  static_assert(std::is_same<value_t<VECTOR>, lapack_int>::value);
+  static_assert(std::is_same_v<value_t<VECTOR>, lapack_int>);
   if (size(ipiv) < std::min(m, n))
     throw std::invalid_argument("vector ipiv size mismatch");
   return getrf_dispatch<value_t<MATRIX>>

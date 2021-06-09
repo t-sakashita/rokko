@@ -51,10 +51,10 @@ public:
   int get_array_index(int local_i, int local_j) const;
 
   bool is_row_major() const {
-    return std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+    return std::is_same_v<MATRIX_MAJOR, matrix_row_major>;
   }
   bool is_col_major() const {
-    return std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    return std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
   }
 
 private:

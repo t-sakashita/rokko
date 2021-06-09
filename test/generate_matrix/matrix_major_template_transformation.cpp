@@ -15,7 +15,7 @@
 #include <gtest/gtest.h>
 
 TEST(matrix, major_template_transformation) {
-  static_assert( std::is_same<rokko::matrix_major<Eigen::MatrixXd>, rokko::matrix_col_major>::value, "rokko::matrix_major<Eigen::MatrixXd> != rokko::matrix_col_major");
+  static_assert( std::is_same_v<rokko::matrix_major<Eigen::MatrixXd>, rokko::matrix_col_major>, "rokko::matrix_major<Eigen::MatrixXd> != rokko::matrix_col_major");
 }
 
 int main(int argc, char** argv) {
