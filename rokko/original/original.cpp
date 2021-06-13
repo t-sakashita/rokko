@@ -12,8 +12,10 @@
 #include <rokko/parallel_sparse_ev.hpp>
 #include <rokko/original/solver.hpp>
 #include <rokko/skel/mapping_1d.hpp>
+#include <rokko/original/distributed_crs_matrix.hpp>
 
 ROKKO_REGISTER_PARALLEL_SPARSE_SOLVER(rokko::original::solver, "original", 1)
 
 ROKKO_REGISTER_PARALLEL_SPARSE_MAPPING_1D(rokko::skel::mapping_1d, "original", 1)
 
+ROKKO_REGISTER_PARALLEL_SPARSE_CRS(rokko::original::distributed_crs_matrix, "original", 1)
