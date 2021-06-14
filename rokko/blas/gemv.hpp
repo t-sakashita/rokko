@@ -35,7 +35,7 @@ BLAS_GEMV_IMPL(dgemv, double);
   
 #define BLAS_GEMV_IMPL(NAMES, TYPE) \
 inline void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans, int m, int n, TYPE alpha, const TYPE * a, int lda, const TYPE * x, int inc_x, TYPE beta, TYPE * y, int inc_y) { \
-  cblas_ ## NAMES (order, trans, m, n, &alpha, lapack::complex_cast(a), lda, lapack::complex_cast(x), inc_x, &beta, lapack::complex_cast(y), inc_y); \
+  cblas_ ## NAMES (order, trans, m, n, lapack::complex_cast(&alpha), lapack::complex_cast(a), lda, lapack::complex_cast(x), inc_x, lapack::complex_cast(&beta), lapack::complex_cast(y), inc_y); \
 }
 
 BLAS_GEMV_IMPL(cgemv, std::complex<float>);

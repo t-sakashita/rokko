@@ -35,7 +35,7 @@ BLAS_GEMM_IMPL(dgemm, double);
 
 #define BLAS_GEMM_IMPL(NAMES, TYPE) \
 inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, TYPE alpha, const TYPE * a, int lda_a, const TYPE * b, int lda_b, TYPE beta, TYPE * c, int lda_c) { \
-  cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, &alpha, lapack::complex_cast(a), lda_a, lapack::complex_cast(b), lda_b, &beta, lapack::complex_cast(c), lda_c); \
+  cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, lapack::complex_cast(&alpha), lapack::complex_cast(a), lda_a, lapack::complex_cast(b), lda_b, lapack::complex_cast(&beta), lapack::complex_cast(c), lda_c); \
 }
   
 BLAS_GEMM_IMPL(cgemm, std::complex<float>);
