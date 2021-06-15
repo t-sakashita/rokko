@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSYEVD_HPP
-#define ROKKO_SCALAPACK_PSYEVD_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 #include <rokko/lapack/complex_cast.hpp>
@@ -63,7 +62,7 @@ inline int psyevd_dispatch(char jobz, char uplo, int n, std::complex<double>* A,
 
 template<typename MATRIX, typename VECTOR>
 int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -73,7 +72,7 @@ int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 int psyevd(char jobz, char uplo, MATRIX& a, VECTOR0& w, MATRIX& z, VECTOR0& work, VECTOR1& iwork) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR0>>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -90,5 +89,3 @@ int psyevd(char uplo, MATRIX& a, VECTOR& w, MATRIX& z) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSYEVD_HPP

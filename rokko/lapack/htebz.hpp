@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HTEBZ_HPP
-#define ROKKO_LAPACK_HTEBZ_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -68,7 +67,7 @@ struct htebz_dispatch<std::complex<double>> {
 template<typename T, typename VECTOR, typename VECTOR_INT>
 lapack_int htebz(char range, char order, T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  VECTOR& d, VECTOR& e, lapack_int& m, lapack_int& nsplit, VECTOR& w, VECTOR_INT& iblock, VECTOR_INT& isplit) {
-  static_assert(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same_v<value_t<VECTOR>, T>);
 
   lapack_int n = size(d);
   if (size(e) != (n-1))
@@ -106,5 +105,3 @@ ALIAS_TEMPLATE_FUNCTION(stebz, htebz);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HTEBZ_HPP

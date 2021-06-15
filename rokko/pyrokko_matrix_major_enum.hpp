@@ -9,16 +9,12 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_MATRIX_MAJOR_ENUM_HPP
-#define PYROKKO_MATRIX_MAJOR_ENUM_HPP
-
+#pragma once
 
 namespace rokko {
 
-enum matrix_major_enum {
-  col = 0, row = 1
+enum class matrix_major_enum {
+  col, row
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_MATRIX_MAJOR_ENUM_HPP

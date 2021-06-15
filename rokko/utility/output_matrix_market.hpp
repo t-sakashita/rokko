@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_OUTPUT_MATRIX_MARKET_HPP
-#define ROKKO_OUTPUT_MATRIX_MARKET_HPP
+#pragma once
 
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/utility/mpi_vector.hpp>
@@ -64,5 +63,3 @@ void output_matrix_market(distributed_mfree const& op, std::ostream& os = std::c
 }
 
 } // end namespace rokko
-
-#endif // ROKKO_OUTPUT_MATRIX_MARKET_HPP

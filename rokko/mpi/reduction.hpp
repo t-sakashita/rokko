@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MPI_VECTOR_REDUCTION_HPP
-#define ROKKO_MPI_VECTOR_REDUCTION_HPP
+#pragma once
 
 #include <vector>
 #include <rokko/eigen3.hpp>
@@ -30,5 +29,3 @@ T all_reduce(T local_sum, MPI_Comm comm) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_MPI_VECTOR_REDUCTION_HPP

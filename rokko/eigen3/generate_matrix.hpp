@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_GENERATE_MATRIX_HPP
-#define ROKKO_EIGEN3_GENERATE_MATRIX_HPP
+#pragma once
 
 #include <iostream>
 #include <rokko/eigen3.hpp>
@@ -54,5 +53,3 @@ void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat, std::function<T(i
 }
 
 } // namespace rokko
-
-#endif // ROKKO_EIGEN3_GENERATE_MATRIX_HPP

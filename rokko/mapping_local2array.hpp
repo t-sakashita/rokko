@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_LOCAL2ARRAY_HPP
-#define ROKKO_MAPPING_LOCAL2ARRAY_HPP
+#pragma once
 
 #include <rokko/matrix_major.hpp>
 #include <rokko/mapping_common_sizes.hpp>
@@ -51,10 +50,10 @@ public:
   int get_array_index(int local_i, int local_j) const;
 
   bool is_row_major() const {
-    return std::is_same<MATRIX_MAJOR, matrix_row_major>::value;
+    return std::is_same_v<MATRIX_MAJOR, matrix_row_major>;
   }
   bool is_col_major() const {
-    return std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    return std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
   }
 
 private:
@@ -114,5 +113,3 @@ inline int mapping_local2array<rokko::matrix_col_major>::get_n_size() const {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_MAPPING_LOCAL2ARRAY_HPP

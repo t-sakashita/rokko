@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_SOLVER_HPP
-#define ROKKO_LAPACK_SOLVER_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/lapack/diagonalize_syev.hpp>
@@ -110,5 +109,3 @@ parameters solver::diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAT
 
 } // namespace lapack
 } // namespace rokko
-
-#endif // ROKKO_LAPACK_SOLVER_HPP

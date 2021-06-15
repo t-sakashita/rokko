@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DENSE_H
-#define ROKKO_DENSE_H
+#pragma once
 
 #include <rokko/config.h>
 
@@ -19,5 +18,3 @@
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
 #include <rokko/parallel_dense.h>
 #endif /* defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER) */
-
-#endif /* ROKKO_DENSE_H */

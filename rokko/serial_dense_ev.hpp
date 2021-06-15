@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SERIAL_DENSE_SOLVER_HPP
-#define ROKKO_SERIAL_DENSE_SOLVER_HPP
+#pragma once
 
 #include <string>
 #include <rokko/factory.hpp>
@@ -399,5 +398,3 @@ struct register_caller { \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
-
-#endif // ROKKO_SERIAL_DENSE_SOLVER_HPP

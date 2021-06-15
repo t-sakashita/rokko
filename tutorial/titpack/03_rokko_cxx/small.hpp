@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_SMALL_HPP
-#define TITPACK_SMALL_HPP
+#pragma once
 
 #include "common.hpp"
 #include "hamiltonian.hpp"
@@ -187,5 +186,3 @@ void xcorr3_mpi(subspace const& ss, std::vector<int> const& npair, MATRIX const&
     sxx[k] =dot_product(x, false, xindex, y, false, xindex) / dnorm;
   }
 }
-
-#endif

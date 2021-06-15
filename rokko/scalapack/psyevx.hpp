@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSYEVX_HPP
-#define ROKKO_SCALAPACK_PSYEVX_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 #include <rokko/eigen3.hpp>
@@ -93,9 +92,9 @@ int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, double orfac, MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
-  static_assert(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value);
-  static_assert(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
+  static_assert(std::is_same_v<value_t<VECTOR>, value_t<VECTOR2>>);
+  static_assert(std::is_same_v<value_t<VECTOR>, T>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -111,9 +110,9 @@ int psyevx(char jobz, char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR0& w, double orfac, MATRIX& z, VECTOR0& work, VECTOR1& iwork,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value);
-  static_assert(std::is_same<value_t<VECTOR0>, value_t<VECTOR2>>::value);
-  static_assert(std::is_same<value_t<VECTOR0>, T>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR0>>);
+  static_assert(std::is_same_v<value_t<VECTOR0>, value_t<VECTOR2>>);
+  static_assert(std::is_same_v<value_t<VECTOR0>, T>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -184,9 +183,9 @@ int psyevx(char range, char uplo, MATRIX& a,
            T abstol, int& m, int& nz,
            VECTOR& w, T orfac,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR2& gap) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
-  static_assert(std::is_same<value_t<VECTOR>, value_t<VECTOR2>>::value);
-  static_assert(std::is_same<value_t<VECTOR>, T>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
+  static_assert(std::is_same_v<value_t<VECTOR>, value_t<VECTOR2>>);
+  static_assert(std::is_same_v<value_t<VECTOR>, T>);
 
   const int* descA = a.get_mapping().get_blacs_descriptor().data();
   return psyevx_dispatch('N', range, uplo, a.get_m_global(), a.get_array_pointer(), 0, 0, descA,
@@ -237,5 +236,3 @@ int psyevx(char uplo, MATRIX& a,
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSYEVX_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_SORT_EIGENPAIRS_HPP
-#define ROKKO_UTILITY_SORT_EIGENPAIRS_HPP
+#pragma once
 
 #include <vector>
 #include <utility>
@@ -72,5 +71,3 @@ void sort_eigenpairs(const Eigen::Vector<T, SIZE>& eigval,
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_SORT_EIGENPAIRS_HPP

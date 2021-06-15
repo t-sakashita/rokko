@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_DIAGONALIZE_TRIDIAGONALIZED_MATRIX_BISECTION_HPP
-#define ROKKO_LAPACK_DIAGONALIZE_TRIDIAGONALIZED_MATRIX_BISECTION_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/eigen3.hpp>
@@ -56,5 +55,3 @@ parameters diagonalize_bisection(VEC& alpha, VEC& beta,
 
 } // namespace lapack
 } // namespace rokko
-
-#endif // ROKKO_LAPACK_DIAGONALIZE_TRIDIAGONALIZED_MATRIX_BISECTION_HPP

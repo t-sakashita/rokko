@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELEMENTAL_DIAGONALIZE_HPP
-#define ROKKO_ELEMENTAL_DIAGONALIZE_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 #include <El.hpp>
@@ -193,5 +192,3 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_row_major>& mat,
 
 } // namespace elemental
 } // namespace rokko
-
-#endif // ROKKO_ELEMENTAL_DIAGONALIZE_HPP

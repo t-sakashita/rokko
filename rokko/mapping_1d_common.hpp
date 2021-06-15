@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_1D_COMMON_HPP
-#define ROKKO_MAPPING_1D_COMMON_HPP
+#pragma once
 
 namespace rokko {
 
@@ -28,5 +27,3 @@ public:
 } // end namespace detail
 
 } // end namespace rokko
-
-#endif // ROKKO_MAPPING_1D_COMMON_HPP

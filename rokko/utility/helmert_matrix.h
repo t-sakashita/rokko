@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_HELMERT_MATRIX_H
-#define ROKKO_UTILITY_HELMERT_MATRIX_H
+#pragma once
 
 #include <rokko/dense.h>
 
@@ -29,5 +28,3 @@ void rokko_helmert_matrix_generate_for_given_eigenvalues_distributed_matrix(stru
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_UTILITY_HELMERT_MATRIX_H */

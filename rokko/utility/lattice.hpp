@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_LATTICE_HPP
-#define ROKKO_UTILITY_LATTICE_HPP
+#pragma once
 
 #include <regex>
 #include <string>
@@ -155,5 +154,3 @@ void print_lattice(std::vector<std::pair<int, int>> const& lattice) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_LATTICE_HPP

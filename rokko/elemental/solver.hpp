@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELEMENTAL_SOLVER_HPP
-#define ROKKO_ELEMENTAL_SOLVER_HPP
+#pragma once
 
 #include <El.hpp>
 #include <rokko/parameters.hpp>
@@ -23,7 +22,7 @@ class solver {
 public:
   template <typename GRID_MAJOR>
   bool is_available_grid_major(GRID_MAJOR const& grid_major) {
-    return std::is_same<GRID_MAJOR, grid_col_major_t>::value;
+    return std::is_same_v<GRID_MAJOR, grid_col_major_t>;
   }
   void initialize(int& argc, char**& argv) { El::Initialize(argc, argv); }
   void finalize() { El::Finalize(); }
@@ -61,5 +60,3 @@ public:
 
 } // namespace elemental
 } // namespace rokko
-
-#endif // ROKKO_ELEMENTAL_SOLVER_HPP

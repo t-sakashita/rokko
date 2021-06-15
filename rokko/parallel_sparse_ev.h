@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PARALLEL_SPARSE_EV_H
-#define ROKKO_PARALLEL_SPARSE_EV_H
+#pragma once
 
 #include <rokko/mapping_1d.h>
 #include <rokko/distributed_crs_matrix.h>
@@ -66,5 +65,3 @@ const char* rokko_parallel_sparse_ev_default_solver();
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_PARALLEL_SPARSE_EV_H */

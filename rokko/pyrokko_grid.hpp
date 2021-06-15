@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_GRID_HPP
-#define PYROKKO_GRID_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -62,5 +61,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_GRID_HPP

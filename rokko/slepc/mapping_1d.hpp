@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_MAPPING_1D_HPP
-#define ROKKO_SLEPC_MAPPING_1D_HPP
+#pragma once
 
 #include <rokko/skel/mapping_1d.hpp>
 
@@ -23,5 +22,3 @@ using mapping_1d = rokko::skel::mapping_1d;
 } // namespace slepc
 
 } // namespace rokko
-
-#endif // ROKKO_SLEPC_MAPPING_1D_HPP

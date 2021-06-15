@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_MAPPING_1D_HPP
-#define PYROKKO_MAPPING_1D_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -36,5 +35,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_MAPPING_1D_HPP

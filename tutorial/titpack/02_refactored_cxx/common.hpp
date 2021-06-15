@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_COMMON_HPP
-#define TITPACK_COMMON_HPP
+#pragma once
 
 #include "subspace.hpp"
 #include <iostream>
@@ -114,5 +113,3 @@ int orthg(matrix_type& ev, std::vector<double>& norm, int numvec);
 
 void szdy(int n, int idim, double szval, std::vector<int>& list1,
           std::vector<std::vector<int>>& list2);
-
-#endif

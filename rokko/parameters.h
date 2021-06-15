@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PARAMETERS_H
-#define ROKKO_PARAMETERS_H
+#pragma once
 
 #include <rokko/config.h>
 
@@ -64,5 +63,3 @@ char* rokko_string_i(char** strings, int i);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_PARAMETERS_H */

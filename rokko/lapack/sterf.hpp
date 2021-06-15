@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_STERF_HPP
-#define ROKKO_LAPACK_STERF_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -57,5 +56,3 @@ lapack_int sterf(VECTOR& d, VECTOR& e) {
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_STERF_HPP

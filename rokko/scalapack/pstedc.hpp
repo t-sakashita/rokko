@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSTEDC_HPP
-#define ROKKO_SCALAPACK_PSTEDC_HPP
+#pragma once
 
 #include <lapacke.h>
 #include <rokko/cscalapack.h>
@@ -34,7 +33,7 @@ inline int pstedc_dispatch(char compz, int n, double* d, double* e,
 
 template<typename MATRIX, typename VECTOR>
 int pstedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
 
   lapack_int n = size(d);
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
@@ -50,5 +49,3 @@ int pstedc(MATRIX& a, VECTOR& w, MATRIX& z) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSTEDC_HPP

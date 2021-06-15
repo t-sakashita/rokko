@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_SX_HPP
-#define ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_SX_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -76,5 +75,3 @@ parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, rokko::matrix_
 
 } // namespace eigenexa
 } // namespace rokko
-
-#endif // ROKKO_EIGENEXA_DIAGONALIZE_EIGEN_SX_HPP

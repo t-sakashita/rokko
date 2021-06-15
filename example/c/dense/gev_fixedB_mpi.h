@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_GEV_FIXEDB_MPI_H
-#define ROKKO_GEV_FIXEDB_MPI_H
+#pragma once
 
 #include <mpi.h>
 #include <rokko/rokko.h>
@@ -29,7 +28,3 @@ void set_A_B_c(struct rokko_eigen_matrix locA_in, struct rokko_eigen_matrix locB
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_GEV_FIXEDB_MPI_H */
-
-

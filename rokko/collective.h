@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_COLLECTIVE_H
-#define ROKKO_COLLECTIVE_H
+#pragma once
 
 #include <rokko/eigen_matrix.h>
 #include <rokko/distributed_matrix.h>
@@ -31,5 +30,3 @@ void rokko_all_gather(struct rokko_distributed_matrix matrix, double* array);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_COLLECTIVE_H */

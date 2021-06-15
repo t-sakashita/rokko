@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HTEDC_HPP
-#define ROKKO_LAPACK_HTEDC_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -68,7 +67,7 @@ struct htedc_dispatch<std::complex<double>> {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int htedc(char compz, VECTOR& d, VECTOR& e, MATRIX& z) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
   lapack_int n = size(d);
   if (rows(z) != cols(z))
     throw std::invalid_argument("matrix Z size mismatch");
@@ -102,5 +101,3 @@ ALIAS_TEMPLATE_FUNCTION(stedc, htedc);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HTEDC_HPP

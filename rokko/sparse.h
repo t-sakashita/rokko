@@ -9,13 +9,10 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SPARSE_H
-#define ROKKO_SPARSE_H
+#pragma once
 
 #include <rokko/config.h>
 
 #if defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
 # include <rokko/parallel_sparse.h>
 #endif /* defined(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER) */
-
-#endif /* ROKKO_SPARSE_H */

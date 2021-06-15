@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_FRANK_MATRIX_H
-#define ROKKO_UTILITY_FRANK_MATRIX_H
+#pragma once
 
 #include <rokko/dense.h>
 
@@ -27,5 +26,3 @@ void rokko_frank_matrix_generate_distributed_matrix(struct rokko_distributed_mat
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_UTILITY_FRANK_MATRIX_H */

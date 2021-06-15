@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_FRANK_MATRIX_HPP
-#define PYROKKO_FRANK_MATRIX_HPP
+#pragma once
 
 #include <rokko/utility/frank_matrix.hpp>
 
@@ -35,5 +34,3 @@ public:
 };
 
 } // namespace rokko
-
-#endif // PYROKKO_FRANK_MATRIX_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_BC_H
-#define ROKKO_MAPPING_BC_H
+#pragma once
 
 #include <rokko/grid.h>
 #include <rokko/matrix_major.h>
@@ -57,5 +56,3 @@ bool rokko_mapping_bc_is_col_major(struct rokko_mapping_bc map);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_MAPPING_BC_H */

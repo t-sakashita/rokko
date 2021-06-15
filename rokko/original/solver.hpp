@@ -9,15 +9,16 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ORIGINAL_SOLVER_HPP
-#define ROKKO_ORIGINAL_SOLVER_HPP
+#pragma once
 
 #include <tuple>
 
 #include <rokko/distributed_vector.hpp>
+#include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
 #include <rokko/skel/mapping_1d.hpp>
 #include <rokko/parameters.hpp>
+#include <rokko/original/distributed_crs_matrix.hpp>
 #include <rokko/original/lanczos_tridiagonalization.hpp>
 #include <rokko/lapack/diagonalize_tridiagonal_matrix_bisection.hpp>
 
@@ -37,7 +38,29 @@ public:
   void finalize() {}
 
   parameters diagonalize(const rokko::distributed_crs_matrix& mat, rokko::parameters const& params) {
-    throw std::invalid_argument("rokko::original::solver::diagonalize() is not implemented.");
+    if (mat.get_solver_name() != "original") {
+      throw std::invalid_argument("rokko::original::solver::diagonalize() : " + mat.get_solver_name() + "'s distributed_crs_matrix is given.");
+    }
+    return diagonalize(*std::static_pointer_cast<const rokko::original::distributed_crs_matrix>(mat.get_ptr()), params);
+  }
+
+  parameters diagonalize(const rokko::original::distributed_crs_matrix& mat, rokko::parameters const& params) {
+    map_ = std::make_shared<rokko::skel::mapping_1d>(mat.get_map());
+
+    // tridiagonaliation by Lanczos method
+    const int dim = mat.get_dim();
+    Eigen::VectorXd alpha(dim), beta(dim-1);
+    Eigen::MatrixXd u(dim, dim);
+    lanczos::tridiagonalization(*mat.get_matrix(), alpha, beta, u);
+
+    // calculating eigenvalues & eigenvectors of tridiagonalized matrix
+    auto params_out = rokko::lapack::diagonalize_bisection(alpha, beta, eigvals, eigvecs, params);
+    num_conv = params_out.get<int>("num_conv");
+
+    // calculating eigenvectors of mat
+    eigvecs = u * eigvecs;
+
+    return params_out;
   }
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
@@ -90,5 +113,3 @@ private:
 } // namespace original
 
 } // namespace rokko
-
-#endif // ROKKO_ORIGINAL_SOLVER_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SKEL_MAPPING_1D_HPP
-#define ROKKO_SKEL_MAPPING_1D_HPP
+#pragma once
 
 #include <rokko/mpi_communicator.hpp>
 #include <rokko/mapping_1d.hpp>
@@ -22,6 +21,8 @@ namespace skel {
 
 class mapping_1d : public detail::ps_mapping_1d_base {
 public:
+  mapping_1d(mapping_1d const&) = default;
+
   explicit mapping_1d() : mapping_1d(0) {}
   explicit mapping_1d(int dim) : mapping_1d(dim, mpi_comm{MPI_COMM_WORLD}) {}
   explicit mapping_1d(int dim, mpi_comm const& mpi_comm_in)
@@ -70,5 +71,3 @@ private:
 } // namespace skel
 
 } // namespace rokko
-
-#endif // ROKKO_SKEL_MAPPING_1D_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HEGVX_HPP
-#define ROKKO_LAPACK_HEGVX_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -79,7 +78,7 @@ lapack_int hegvx(lapack_int itype, char jobz, char uplo,
                  MATRIX& a, MATRIX& b,
                  double vl, double vu, lapack_int il, lapack_int iu, double abstol,
                  lapack_int& m, VECTOR& w, VECTOR_INT& ifail) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
@@ -93,5 +92,3 @@ ALIAS_TEMPLATE_FUNCTION(sygvx, hegvx);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HEGVX_HPP

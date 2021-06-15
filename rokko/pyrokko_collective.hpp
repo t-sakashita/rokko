@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_COLLECTIVE_HPP
-#define PYROKKO_COLLECTIVE_HPP
+#pragma once
 
 #include <rokko/pyrokko_distributed_matrix.hpp>
 
@@ -41,5 +40,3 @@ void pyrokko_scatter(Eigen::Ref<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,ro
 }
 
 } // end namespace rokko
-
-#endif // PYROKKO_COLLECTIVE_HPP

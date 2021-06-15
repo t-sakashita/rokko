@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_VARIOUS_MPI_COMM_HPP
-#define ROKKO_VARIOUS_MPI_COMM_HPP
+#pragma once
 
 #include <mpi.h>
 #include <array>
@@ -94,5 +93,3 @@ MPI_Comm create_cart_comm(MPI_Comm comm_in = MPI_COMM_WORLD) {
 
   return comm;
 }
-
-#endif // ROKKO_VARIOUS_MPI_COMM_HPP

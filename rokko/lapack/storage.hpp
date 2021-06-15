@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_STORAGE_HPP
-#define ROKKO_LAPACK_STORAGE_HPP
+#pragma once
 
 #include <rokko/lapack/null_matrix.hpp>
 #include <vector>
@@ -29,5 +28,3 @@ T* storage(std::vector<T>& vec) { return vec.data(); }
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_STORAGE_HPP

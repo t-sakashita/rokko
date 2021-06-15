@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PLANGE_HPP
-#define ROKKO_SCALAPACK_PLANGE_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 
@@ -43,5 +42,3 @@ typename MATRIX::value_type plange(char norm, const MATRIX& A, VECTOR& work) {
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PLANGE_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_MAPPING_BC_HPP
-#define PYROKKO_MAPPING_BC_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -90,27 +89,25 @@ public:
   }
 };
 
-std::shared_ptr<base_mapping_bc> create_mapping_bc(std::tuple<int,int> const& global_size, std::tuple<int,int> const& block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = col) {
-  if (major == col)
+std::shared_ptr<base_mapping_bc> create_mapping_bc(std::tuple<int,int> const& global_size, std::tuple<int,int> const& block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = matrix_major_enum::col) {
+  if (major == matrix_major_enum::col)
     return std::make_shared<wrap_mapping_bc<matrix_col_major>>(global_size, block_size, wrap_g);
   else
     return std::make_shared<wrap_mapping_bc<matrix_row_major>>(global_size, block_size, wrap_g);
 }
 
-std::shared_ptr<base_mapping_bc> create_mapping_bc(int global_size, int block_size, int lld, wrap_grid const& wrap_g, matrix_major_enum const& major = col) {
-  if (major == col)
+std::shared_ptr<base_mapping_bc> create_mapping_bc(int global_size, int block_size, int lld, wrap_grid const& wrap_g, matrix_major_enum const& major = matrix_major_enum::col) {
+  if (major == matrix_major_enum::col)
     return std::make_shared<wrap_mapping_bc<matrix_col_major>>(global_size, block_size, lld, wrap_g);
   else
     return std::make_shared<wrap_mapping_bc<matrix_row_major>>(global_size, block_size, lld, wrap_g);
 }
 
-std::shared_ptr<base_mapping_bc> create_mapping_bc(int global_size, int block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = col) {
-  if (major == col)
+std::shared_ptr<base_mapping_bc> create_mapping_bc(int global_size, int block_size, wrap_grid const& wrap_g, matrix_major_enum const& major = matrix_major_enum::col) {
+  if (major == matrix_major_enum::col)
     return std::make_shared<wrap_mapping_bc<matrix_col_major>>(global_size, block_size, wrap_g);
   else
     return std::make_shared<wrap_mapping_bc<matrix_row_major>>(global_size, block_size, wrap_g);
 }
 
 } // end namespace rokko
-
-#endif // PYROKKO_MAPPING_BC_HPP

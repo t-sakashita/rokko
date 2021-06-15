@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_LAPLACIAN_MATRIX_HPP
-#define PYROKKO_LAPLACIAN_MATRIX_HPP
+#pragma once
 
 #include <rokko/utility/laplacian_matrix.hpp>
 
@@ -35,5 +34,3 @@ public:
 };
 
 } // namespace rokko
-
-#endif // PYROKKO_LAPLACIAN_MATRIX_HPP

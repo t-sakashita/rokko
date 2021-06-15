@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_HEEVR_HPP
-#define ROKKO_LAPACK_HEEVR_HPP
+#pragma once
 
 #include <complex>
 #include <lapacke.h>
@@ -74,7 +73,7 @@ template<typename T, typename MATRIX, typename MATRIX2, typename VECTOR, typenam
 lapack_int heevr(char jobz, char range, char uplo, MATRIX& a,
                  T vl, T vu, lapack_int il, lapack_int iu, T abstol,
                  lapack_int& m, VECTOR& w, MATRIX2& z, VECTOR_INT& isuppz) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
   lapack_int n = rows(a);
   if (rows(a) != cols(a))
     throw std::invalid_argument("matrix A size mismatch");
@@ -157,5 +156,3 @@ ALIAS_TEMPLATE_FUNCTION(syevr, heevr);
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_HEEVR_HPP

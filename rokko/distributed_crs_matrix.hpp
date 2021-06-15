@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
-#define ROKKO_DISTRIBUTED_CRS_MATRIX_HPP
+#pragma once
 
 #include <rokko/mapping_1d.hpp>
 #include <rokko/utility/tuple_to_array.hpp>
@@ -125,4 +124,3 @@ struct register_caller { \
 } caller; \
 } }
 
-#endif // ROKKO_DISTRIBUTED_CRS_MATRIX_HPP

@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_COMMON_HPP
-#define TITPACK_COMMON_HPP
+#pragma once
 
 #include "subspace.hpp"
 #include <cmath>
@@ -155,5 +154,3 @@ int orthg(MATRIX& ev, std::vector<double>& norm, int numvec) {
   }
   return idgn;
 }
-
-#endif

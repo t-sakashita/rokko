@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_LARGE_HPP
-#define TITPACK_LARGE_HPP
+#pragma once
 
 #include "common.hpp"
 #include "hamiltonian.hpp"
@@ -100,5 +99,3 @@ void inv1z(hamiltonian const& hop, double Eig, int iv, std::vector<double>& x, d
 
 int cg1(hamiltonian const& hop, double Eig, std::vector<double>& x, double *b,
         double *p, double *r, double *y);
-
-#endif

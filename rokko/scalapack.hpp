@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_HPP
-#define ROKKO_SCALAPACK_HPP
+#pragma once
 
 #include <rokko/config.h>
 #include <rokko/cscalapack.h>
@@ -62,5 +61,3 @@ int psyevd(char jobz, char uplo, MATRIX& a, VECTOR& w, MATRIX& z, VECTOR& work);
 #include "scalapack/pstebz.hpp"
 #include "scalapack/pstein.hpp"
 #include "scalapack/pstedc.hpp"
-
-#endif // ROKKO_SCALAPACK_HPP

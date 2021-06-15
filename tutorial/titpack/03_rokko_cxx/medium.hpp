@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_MEDIUM_HPP
-#define TITPACK_MEDIUM_HPP
+#pragma once
 
 #include "common.hpp"
 #include "hamiltonian.hpp"
@@ -56,5 +55,3 @@ void elm2_mpi(hamiltonian const& hop, CRS_MATRIX& mat) {
   }
   mat.complete();
 }
-
-#endif

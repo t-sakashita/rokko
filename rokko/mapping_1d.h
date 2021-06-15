@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_1D_H
-#define ROKKO_MAPPING_1D_H
+#pragma once
 
 #include <mpi.h>
 
@@ -36,5 +35,3 @@ MPI_Fint rokko_mapping_1d_get_comm_f(struct rokko_mapping_1d map);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_MAPPING_1D_H */

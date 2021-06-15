@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_DIAGONALIZE_PSYEV_HPP
-#define ROKKO_SCALAPACK_DIAGONALIZE_PSYEV_HPP
+#pragma once
 
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/parameters.hpp>
@@ -73,5 +72,3 @@ parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_row_major>& /* 
 
 } // namespace scalapack
 } // namespace rokko
-
-#endif // ROKKO_SCALAPACK_DIAGONALIZE_PSYEV_HPP

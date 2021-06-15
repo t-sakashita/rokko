@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_MAPPING_COMMON_SIZES_HPP
-#define ROKKO_MAPPING_COMMON_SIZES_HPP
+#pragma once
 
 namespace rokko {
 
@@ -41,5 +40,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_MAPPING_COMMON_SIZES_HPP

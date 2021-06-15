@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_GESVD_HPP
-#define ROKKO_LAPACK_GESVD_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -119,7 +118,7 @@ struct gesvd_dispatch<std::complex<double>> {
 template<typename MATRIX, typename VECTOR>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX& vt,
                  VECTOR& work) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -141,8 +140,8 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR& s, MATRIX& u, MATRIX&
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX& vt,
                  VECTOR1& work, VECTOR0& rwork) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR0>>::value);
-  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR1>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR0>>);
+  static_assert(std::is_same_v<value_t<MATRIX>, value_t<VECTOR1>>);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   lapack_int r = std::min(m, n);
@@ -165,5 +164,3 @@ lapack_int gesvd(char jobu, char jobvt, MATRIX& a, VECTOR0& s, MATRIX& u, MATRIX
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_GESVD_HPP

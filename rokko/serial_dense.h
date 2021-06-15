@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SERIAL_DENSE_H
-#define ROKKO_SERIAL_DENSE_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,5 +24,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_SERIAL_DENSE_H */

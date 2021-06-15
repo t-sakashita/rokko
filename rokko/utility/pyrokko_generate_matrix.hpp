@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_GENERATE_MATRIX_HPP
-#define PYROKKO_GENERATE_MATRIX_HPP
+#pragma once
 
 #include <rokko/eigen3.hpp>
 
@@ -26,5 +25,3 @@ void pyrokko_generate(Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dyna
 }
 
 } // namespace rokko
-
-#endif // PYROKKO_GENERATE_MATRIX_HPP

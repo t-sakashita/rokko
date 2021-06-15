@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_GETRF_HPP
-#define ROKKO_LAPACK_GETRF_HPP
+#pragma once
 
 #include <complex>
 #include <stdexcept>
@@ -70,7 +69,7 @@ template<typename MATRIX, typename VECTOR>
 lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
   lapack_int m = rows(a);
   lapack_int n = cols(a);
-  static_assert(std::is_same<value_t<VECTOR>, lapack_int>::value);
+  static_assert(std::is_same_v<value_t<VECTOR>, lapack_int>);
   if (size(ipiv) < std::min(m, n))
     throw std::invalid_argument("vector ipiv size mismatch");
   return getrf_dispatch<value_t<MATRIX>>
@@ -80,5 +79,3 @@ lapack_int getrf(MATRIX& a, VECTOR& ipiv) {
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_GETRF_HPP

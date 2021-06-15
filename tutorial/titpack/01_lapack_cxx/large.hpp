@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_LARGE_HPP
-#define TITPACK_LARGE_HPP
+#pragma once
 
 #include "common.hpp"
 #include <vector>
@@ -142,4 +141,3 @@ int cg1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
         double *b, double *p, double *r, double *y, std::vector<int> const& list1,
         std::vector<std::pair<int, int>> const& list2);
 
-#endif

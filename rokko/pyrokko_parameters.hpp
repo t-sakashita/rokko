@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_PARAMETERS_HPP
-#define PYROKKO_PARAMETERS_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 
@@ -53,5 +52,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_PARAMETERS_HPP

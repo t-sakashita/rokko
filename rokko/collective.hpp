@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_COLLECTIVE_HPP
-#define ROKKO_COLLECTIVE_HPP
+#pragma once
 
 #include <mpi.h>
 #include <array>
@@ -72,5 +71,3 @@ void scatter(Eigen::Matrix<T,ROWS,COLS,rokko::eigen3_major<MATRIX_MAJOR>> const&
 }
 
 } // namespace rokko
-
-#endif // ROKKO_COLLECTIVE_HPP

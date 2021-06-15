@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MATRIX_HPP
-#define ROKKO_DISTRIBUTED_MATRIX_HPP
+#pragma once
 
 #include <rokko/grid.hpp>
 #include <rokko/matrix_major.hpp>
@@ -34,7 +33,7 @@ class distributed_matrix {
 public:
   using value_type = T;
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(map_in) {
-    bool is_col_major = std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    bool is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
     if (is_col_major != map.is_col_major()) {
       throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
@@ -42,7 +41,7 @@ public:
   }
 
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in, value_type *const array_in) : map(map_in) {
-    bool is_col_major = std::is_same<MATRIX_MAJOR, matrix_col_major>::value;
+    bool is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
     if (is_col_major != map.is_col_major()) {
       throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
@@ -266,5 +265,3 @@ T trace(rokko::distributed_matrix<T,MAJOR> const& mat) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_DISTRIBUTED_MATRIX_HPP

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
-#define ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP
+#pragma once
 
 #include <vector>
 #include <rokko/eigen3.hpp>
@@ -98,5 +97,3 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice, Eigen::Mat
 } // namespace heisenberg_hamiltonian
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_HEISENBERG_HAMILTONIAN_HPP

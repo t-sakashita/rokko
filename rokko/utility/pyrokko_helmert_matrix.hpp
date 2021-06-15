@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_HELMERT_MATRIX_HPP
-#define PYROKKO_HELMERT_MATRIX_HPP
+#pragma once
 
 #include <rokko/utility/helmert_matrix.hpp>
 
@@ -60,5 +59,3 @@ public:
 };
 
 } // namespace rokko
-
-#endif // PYROKKO_HELMERT_MATRIX_HPP

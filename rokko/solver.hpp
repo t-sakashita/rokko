@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SOLVER_HPP
-#define ROKKO_SOLVER_HPP
+#pragma once
 
 #include <rokko/config.h>
 #include <rokko/serial_dense_ev.hpp>
@@ -20,5 +19,3 @@
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 # include <rokko/parallel_sparse_ev.hpp>
 #endif
-
-#endif // ROKKO_SOLVER_HPP

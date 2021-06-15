@@ -9,9 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SOLVER_NAME_H
-#define ROKKO_SOLVER_NAME_H
-
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,5 +23,3 @@ void rokko_split_solver_name(char* str, char** library_ptr, char** routine_ptr);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_SOLVER_NAME_H */

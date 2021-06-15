@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_LAPLACIAN_MATRIX_HPP
-#define ROKKO_UTILITY_LAPLACIAN_MATRIX_HPP
+#pragma once
 
 #include <cmath>
 #include <vector>
@@ -122,5 +121,3 @@ public:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_LAPLACIAN_MATRIX_HPP

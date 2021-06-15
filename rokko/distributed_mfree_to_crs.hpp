@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MFREE_TO_CRS_HPP
-#define ROKKO_DISTRIBUTED_MFREE_TO_CRS_HPP
+#pragma once
 
 #include <rokko/distributed_crs_matrix.hpp>
 #include <rokko/distributed_mfree.hpp>
@@ -51,5 +50,3 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
 }
 
 } // end namespace rokko
-
-#endif // ROKKO_DISTRIBUTED_MFREE_TO_CRS_HPP

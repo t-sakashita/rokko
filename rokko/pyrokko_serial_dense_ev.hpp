@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_SERIAL_DENSE_EV_HPP
-#define PYROKKO_SERIAL_DENSE_EV_HPP
+#pragma once
 
 #include <rokko/pyrokko_parameters.hpp>
 #include <rokko/serial_dense_ev.hpp>
@@ -75,5 +74,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_SERIAL_DENSE_EV_HPP

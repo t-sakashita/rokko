@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_CBLACS_H
-#define ROKKO_CBLACS_H
+#pragma once
 
 #include "mpi.h"
 
@@ -41,5 +40,3 @@ int Csys2blacs_handle(MPI_Comm SysCtxt);
 #ifdef __cplusplus
 } // extern "C"
 #endif
-
-#endif // ROKKO_CBLACS_H

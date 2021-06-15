@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef TITPACK_HAMILTONIAN_HPP
-#define TITPACK_HAMILTONIAN_HPP
+#pragma once
 
 #include "subspace.hpp"
 
@@ -38,5 +37,3 @@ private:
   std::vector<int> ipair_;
   std::vector<double> bondwt_, zrtio_;
 };
-
-#endif

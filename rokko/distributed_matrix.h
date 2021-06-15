@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MATRIX_H
-#define ROKKO_DISTRIBUTED_MATRIX_H
+#pragma once
 
 #include <rokko/mapping_bc.h>
 
@@ -90,5 +89,3 @@ double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matr
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_DISTRIBUTED_MATRIX_H */

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef OPTIONS_HPP
-#define OPTIONS_HPP
+#pragma once
 
 #include <iosfwd>
 
@@ -50,5 +49,3 @@ struct options {
     valid = false;
   }
 };
-
-#endif

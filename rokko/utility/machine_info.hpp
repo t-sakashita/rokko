@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_MACHINE_INFO_HPP
-#define ROKKO_UTILITY_MACHINE_INFO_HPP
+#pragma once
 
 #include <iostream>
 #include <iomanip>
@@ -61,5 +60,3 @@ void machine_info(std::ostringstream& oss, MPI_Comm const& comm = MPI_COMM_WORLD
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_MACHINE_INFO_HPP

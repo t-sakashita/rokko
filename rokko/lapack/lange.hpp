@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_LANGE_HPP
-#define ROKKO_LAPACK_LANGE_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -78,5 +77,3 @@ real_t<MATRIX> lange(char norm, MATRIX const& a) {
 
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_LANGE_HPP

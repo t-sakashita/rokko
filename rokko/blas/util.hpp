@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_BLAS_UTIL_HPP
-#define ROKKO_BLAS_UTIL_HPP
+#pragma once
 
 #include <cblas.h>
 
@@ -31,5 +30,3 @@ int op_cols(CBLAS_TRANSPOSE trans, MATRIX const& a) {
 } // namespace util
 } // namespace blas
 } // namespace rokko
-
-#endif // ROKKO_BLAS_UTIL_HPP

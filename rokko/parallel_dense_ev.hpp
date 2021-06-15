@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PARALLEL_DENSE_SOLVER_HPP
-#define ROKKO_PARALLEL_DENSE_SOLVER_HPP
+#pragma once
 
 #include <rokko/factory.hpp>
 #include <rokko/matrix_major.hpp>
@@ -405,5 +404,3 @@ struct register_caller { \
   register_caller() { factory::instance()->register_creator<product>(name, priority); } \
 } caller; \
 } }
-
-#endif // ROKKO_PARALLEL_DENSE_SOLVER_HPP

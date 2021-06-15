@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SLEPC_SOLVER_HPP
-#define ROKKO_SLEPC_SOLVER_HPP
+#pragma once
 
 #include <rokko/slepc.hpp>
 
@@ -330,5 +329,3 @@ const std::map<std::string,EPSLanczosReorthogType> solver::lanczos_reorthog_map{
 } // namespace slepc
 
 } // namespace rokko
-
-#endif // ROKKO_SLEPC_SOLVER_HPP

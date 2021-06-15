@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGENEXA_HPP
-#define ROKKO_EIGENEXA_HPP
+#pragma once
 
 #include <rokko/config.h>
 #include <rokko/ceigenexa.h>
@@ -60,5 +59,3 @@ void eigen_sx(MATRIX& a, VECTOR& w, int m_forward = 48, int m_backword = 128, ch
   
 } // end namespace eigenexa
 } // end namespace rokko
-
-#endif // ROKKO_EIGENEXA_HPP

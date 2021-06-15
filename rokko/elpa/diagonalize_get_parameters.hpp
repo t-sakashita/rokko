@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_ELPA_DIAGONALIZE_GET_PARAMETERS_HPP
-#define ROKKO_ELPA_DIAGONALIZE_GET_PARAMETERS_HPP
+#pragma once
 
 #include <rokko/parameters.hpp>
 #include <rokko/elpa/elpa.h>
@@ -49,6 +48,3 @@ int get_solver(parameters const& params) {
 
 } // namespace elpa
 } // namespace rokko
-
-#endif // ROKKO_ELPA_DIAGONALIZE_GET_PARAMETERS_HPP
-

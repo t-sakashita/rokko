@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_MFREE_H
-#define ROKKO_DISTRIBUTED_MFREE_H
+#pragma once
 
 #include <mpi.h>
 
@@ -49,5 +48,3 @@ int rokko_distributed_mfree_f_offset(struct rokko_distributed_mfree* matrix);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* ROKKO_DISTRIBUTED_MFREE_H */

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTIL_STRING_TRIM_HPP
-#define ROKKO_UTIL_STRING_TRIM_HPP
+#pragma once
 
 namespace rokko {
 
@@ -54,5 +53,3 @@ inline std::string trim_copy(std::string&& str) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTIL_STRING_TRIM_HPP

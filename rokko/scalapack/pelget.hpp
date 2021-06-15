@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PELGET_HPP
-#define ROKKO_SCALAPACK_PELGET_HPP
+#pragma once
 
 #include <rokko/cscalapack.h>
 
@@ -38,5 +37,3 @@ typename MATRIX::value_type pelget(char scope, char top, const MATRIX& A, int ia
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PELGET_HPP

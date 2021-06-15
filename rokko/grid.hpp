@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_GRID_HPP
-#define ROKKO_GRID_HPP
+#pragma once
 
 #include <array>
 #include <iostream>
@@ -81,7 +80,7 @@ public:
   void set_my_coordinate() { set_my_coordinate(calculate_coordinate(myrank)); }
 
   template <typename GRID_MAJOR>
-  void set_major() { is_row = std::is_same<GRID_MAJOR, grid_row_major_t>::value; }
+  void set_major() { is_row = std::is_same_v<GRID_MAJOR, grid_row_major_t>; }
 
   bool is_row_major() const { return is_row; }
   bool is_col_major() const { return !is_row; }
@@ -145,5 +144,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_GRID_HPP

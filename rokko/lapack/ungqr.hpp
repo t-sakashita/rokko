@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_LAPACK_UNGQR_HPP
-#define ROKKO_LAPACK_UNGQR_HPP
+#pragma once
 
 #include <complex>
 #ifdef I
@@ -96,7 +95,7 @@ struct ungqr_dispatch<std::complex<double>> {
   
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
-  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<value_t<MATRIX>, value_t<VECTOR>>);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   if (size(tau) != k)
@@ -107,7 +106,7 @@ lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
 
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
-  static_assert(std::is_same<value_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<value_t<MATRIX>, value_t<VECTOR>>);
   lapack_int m = rows(a);
   lapack_int n = cols(a);
   if (size(tau) != k)
@@ -130,5 +129,3 @@ lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
   
 } // end namespace lapack
 } // end namespace rokko
-
-#endif // ROKKO_LAPACK_UNGQR_HPP

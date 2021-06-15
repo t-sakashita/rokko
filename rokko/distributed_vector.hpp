@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_DISTRIBUTED_VECTOR_HPP
-#define ROKKO_DISTRIBUTED_VECTOR_HPP
+#pragma once
 
 namespace rokko {
 
@@ -64,5 +63,3 @@ private:
 };
 
 } // namespace rokko
-
-#endif // ROKKO_DISTRIBUTED_VECTOR_HPP

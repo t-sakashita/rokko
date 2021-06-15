@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_TRAITS_GRID2MATRIX_MAJOR_HPP
-#define ROKKO_TRAITS_GRID2MATRIX_MAJOR_HPP
+#pragma once
 
 #include <rokko/eigen3.hpp>
 #include <rokko/matrix_major.hpp>
@@ -33,5 +32,3 @@ struct eigen3_matrix_major<rokko::grid_col_major_t> {
 } // namespace detail
 
 } // namespace rokko
-
-#endif // ROKKO_TRAITS_GRID2MATRIX_MAJOR_HPP

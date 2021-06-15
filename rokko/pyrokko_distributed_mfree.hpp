@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_DISTRIBUTED_MFREE_HPP
-#define PYROKKO_DISTRIBUTED_MFREE_HPP
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -74,5 +73,3 @@ public:
 };
 
 } // end namespace rokko
-
-#endif // PYROKKO_DISTRIBUTED_MFREE_HPP

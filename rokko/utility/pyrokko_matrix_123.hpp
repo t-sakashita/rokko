@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef PYROKKO_MATRIX_123_HPP
-#define PYROKKO_MATRIX_123_HPP
+#pragma once
 
 #include <rokko/utility/matrix123.hpp>
 
@@ -26,5 +25,3 @@ static void pyrokko_generate_matrix_123(wrap_distributed_matrix& mat) {
 }
 
 } // namespace rokko
-
-#endif // PYROKKO_MATRIX_123_HPP

@@ -11,8 +11,7 @@
 
 // C++ version of TITPACK Ver.2 by H. Nishimori
 
-#ifndef TITPACK_SMALL_HPP
-#define TITPACK_SMALL_HPP
+#pragma once
 
 #include "common.hpp"
 #include "hamiltonian.hpp"
@@ -43,5 +42,3 @@ void diag(matrix_type& elemnt, std::vector<double>& E, matrix_type& v, int nvec)
 // return value: Hexpec <x*H*x>
 
 double check3(matrix_type const& elemnt, matrix_type const& x, int xindex);
-
-#endif

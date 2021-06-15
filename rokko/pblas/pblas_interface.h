@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_PBLAS_INTERFACE_H
-#define ROKKO_PBLAS_INTERFACE_H
+#pragma once
 
 #include <lapacke.h>
 #undef I
@@ -97,5 +96,3 @@ PBLAS_PGEMM_DECL(pzgemm, PZGEMM, lapack_complex_double);
 #endif
 
 #undef PBLAS_PGEMM_DECL
-
-#endif // ROKKO_PBLAS_INTERFACE_H

@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_EIGEN3_SOLVER_HPP
-#define ROKKO_EIGEN3_SOLVER_HPP
+#pragma once
 
 #include <rokko/eigen3/diagonalize.hpp>
 
@@ -53,5 +52,3 @@ public:
 
 } // namespace eigen3
 } // namespace rokko
-
-#endif // ROKKO_EIGEN3_SOLVER_HPP

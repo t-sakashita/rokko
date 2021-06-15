@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_UTILITY_MATH_HPP
-#define ROKKO_UTILITY_MATH_HPP
+#pragma once
 
 namespace rokko {
 
@@ -25,5 +24,3 @@ int find_power_of_two(int n) {
 }
 
 } // namespace rokko
-
-#endif // ROKKO_UTILITY_MATH_HPP

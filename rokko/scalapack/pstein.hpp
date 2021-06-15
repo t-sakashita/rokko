@@ -9,8 +9,7 @@
 *
 *****************************************************************************/
 
-#ifndef ROKKO_SCALAPACK_PSTEIN_HPP
-#define ROKKO_SCALAPACK_PSTEIN_HPP
+#pragma once
 
 #include <lapacke.h>
 #include <rokko/cscalapack.h>
@@ -43,7 +42,7 @@ int pstein(const VECTOR& d, const VECTOR& e, int& m,
            VECTOR& w, const VECTOR_INT& iblock, const VECTOR_INT& isplit, double orfac,
            MATRIX& z,
            VECTOR_INT& ifail, VECTOR_INT& iclustr, VECTOR& gap) {
-  static_assert(std::is_same<real_t<MATRIX>, value_t<VECTOR>>::value);
+  static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);
   lapack_int n = size(d);
   const int* descZ = z.get_mapping().get_blacs_descriptor().data();
 
@@ -55,5 +54,3 @@ int pstein(const VECTOR& d, const VECTOR& e, int& m,
 
 } // end namespace scalapack
 } // end namespace rokko
-
-#endif // ROKKO_SCALAPACK_PSTEIN_HPP
