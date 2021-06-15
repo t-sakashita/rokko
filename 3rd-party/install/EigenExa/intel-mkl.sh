@@ -11,20 +11,20 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/eigenexa/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/$build_type
   cd $BUILD_DIR
-  mkdir -p EigenExa-$EIGENEXA_VERSION-build-$build_type
-  cd EigenExa-$EIGENEXA_VERSION-build-$build_type
+  mkdir -p eigenexa-$EIGENEXA_VERSION-build-$build_type
+  cd eigenexa-$EIGENEXA_VERSION-build-$build_type
   if [ `which mpicc > /dev/null 2>&1; echo $?` = 0 ]; then
     check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-      $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
+      $BUILD_DIR/eigenexa-$EIGENEXA_VERSION
   else
     check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DCMAKE_C_COMPILER=icc -DCMAKE_Fortran_COMPILER=ifort \
       -DMPI_C_INCLUDE_PATH="/usr/include" \
       -DMPI_C_LIBRARIES="-lmpi" -DMPI_Fortran_LIBRARIES="-lmpi" \
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -mkl=parallel" \
-      $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
+      $BUILD_DIR/eigenexa-$EIGENEXA_VERSION
   fi
   check make -j4
   $SUDO make install

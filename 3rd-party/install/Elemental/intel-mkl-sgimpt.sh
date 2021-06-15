@@ -11,8 +11,8 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/elemental/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION/$build_type
   cd $BUILD_DIR
-  rm -rf Elemental-$ELEMENTAL_VERSION-build-$build_type
-  mkdir -p Elemental-$ELEMENTAL_VERSION-build-$build_type && cd Elemental-$ELEMENTAL_VERSION-build-$build_type
+  rm -rf elemental-$ELEMENTAL_VERSION-build-$build_type
+  mkdir -p elemental-$ELEMENTAL_VERSION-build-$build_type && cd elemental-$ELEMENTAL_VERSION-build-$build_type
   if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
     check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DELEM_SHARED_LIBRARIES=ON \
@@ -21,7 +21,7 @@ for build_type in $BUILD_TYPES; do
       -DMPI_CXX_COMPILER=mpicxx -DMPI_C_COMPILER=mpicc -DMPI_Fortran_COMPILER=mpif90 \
       -DMPI_CXX_LIBRARIES="-mt" -DMPI_C_LIBRARIES="-mt" -DMPI_Fortran_LIBRARIES="-mt" \
       -DMATH_LIBS="-mkl=parallel;-lifcore" \
-      $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
+      $BUILD_DIR/elemental-$ELEMENTAL_VERSION
   else
     check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX_ROKKO/elemental \
       -DELEM_SHARED_LIBRARIES=ON \
@@ -29,7 +29,7 @@ for build_type in $BUILD_TYPES; do
       -DMPI_C_INCLUDE_PATH="/usr/include" -DMPI_CXX_INCLUDE_PATH="/usr/include" \
       -DMPI_C_LIBRARIES="-lmpi" -DMPI_CXX_LIBRARIES="-lmpi++;-lmpi" -DMPI_Fortran_LIBRARIES="-lmpi" \
       -DMATH_LIBS="-mkl=parallel;-lifcore" \
-    $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
+    $BUILD_DIR/elemental-$ELEMENTAL_VERSION
   fi
   check make -j4
   $SUDO make install

@@ -11,11 +11,11 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/elemental/elemental-$ELEMENTAL_VERSION-$ELEMENTAL_RK_REVISION/$build_type
   cd $BUILD_DIR
-  rm -rf Elemental-$ELEMENTAL_VERSION-build-$build_type
-  mkdir -p Elemental-$ELEMENTAL_VERSION-build-$build_type && cd Elemental-$ELEMENTAL_VERSION-build-$build_type
+  rm -rf elemental-$ELEMENTAL_VERSION-build-$build_type
+  mkdir -p elemental-$ELEMENTAL_VERSION-build-$build_type && cd elemental-$ELEMENTAL_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE="Hybrid$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DELEM_SHARED_LIBRARIES=ON \
-    $BUILD_DIR/Elemental-$ELEMENTAL_VERSION
+    $BUILD_DIR/elemental-$ELEMENTAL_VERSION
   check make -j4
   $SUDO make install
 done

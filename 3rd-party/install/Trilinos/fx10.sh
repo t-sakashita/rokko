@@ -11,8 +11,8 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX_BACKEND=$PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION/Linux-s64fx/$build_type
   cd $BUILD_DIR
-  mkdir -p trilinos-$TRILINOS_VERSION-Source-build-Linux-s64fx-$build_type
-  cd trilinos-$TRILINOS_VERSION-Source-build-Linux-s64fx-$build_type
+  mkdir -p trilinos-$TRILINOS_VERSION-build-Linux-s64fx-$build_type
+  cd trilinos-$TRILINOS_VERSION-build-Linux-s64fx-$build_type
   check cmake -DCMAKE_BUILD_TYPE="$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX_BACKEND \
     -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
     -DTPL_ENABLE_MPI=ON \
@@ -25,7 +25,7 @@ for build_type in $BUILD_TYPES; do
     -DTrilinos_EXTRA_LINK_FLAGS="--linkfortran" \
     -DTrilinos_SKIP_FORTRANCINTERFACE_VERIFY_TEST=ON \
     -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
-    $BUILD_DIR/trilinos-$TRILINOS_VERSION-Source
+    $BUILD_DIR/trilinos-$TRILINOS_VERSION
   check make VERBOSE=1 -j4
   $SUDO make install
 done

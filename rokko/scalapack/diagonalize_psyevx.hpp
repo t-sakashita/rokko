@@ -59,9 +59,9 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
 }
 
 template<typename T, typename VEC>
-parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_row_major>& mat,
-			       VEC& eigvals, distributed_matrix<T, rokko::matrix_row_major>& eigvecs,
-			       parameters const& params) {
+parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_row_major>& /* mat */,
+                              VEC& /* eigvals */, distributed_matrix<T, rokko::matrix_row_major>& /* eigvecs */,
+                              parameters const& /* params */) {
   throw std::invalid_argument("scalapack::diagonalize_psyevx() : scalapack doesn't support matrix_row_major.  Use scalapack with matrix_col_major.");
 }
 
@@ -99,9 +99,9 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
 }
 
 template<typename T, typename VEC>
-parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_row_major>& mat,
-			       VEC& eigvals,
-			       parameters const& params) {
+parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_row_major>& /* mat */,
+                              VEC& /* eigvals */,
+                              parameters const& /* params */) {
   throw std::invalid_argument("scalapack::diagonalize_psyevx() : scalapack doesn't support matrix_row_major.  Use scalapack with matrix_col_major.");
 }
 

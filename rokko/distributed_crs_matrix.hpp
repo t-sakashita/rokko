@@ -100,7 +100,7 @@ public:
     for (int global_row=0; global_row<get_dim(); ++global_row) {
       if ((global_row >= start_row()) && (global_row < end_row())) {
         extract(global_row, cols, values);
-        for (int i=0; i<cols.size(); ++i) {
+        for (std::size_t i=0; i < cols.size(); ++i) {
           os << global_row + 1 << " " << cols[i] + 1 << " " << values[i] << std::endl;
         }
       }

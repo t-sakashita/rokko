@@ -7,14 +7,14 @@ set_prefix
 
 sh $SCRIPT_DIR/setup.sh
 
-cd $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
+cd $BUILD_DIR/eigenexa-$EIGENEXA_VERSION
 
 BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/eigenexa/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/$build_type
   cd $BUILD_DIR
-  mkdir -p EigenExa-$EIGENEXA_VERSION-build-$build_type
-  cd EigenExa-$EIGENEXA_VERSION-build-$build_type
+  mkdir -p eigenexa-$EIGENEXA_VERSION-build-$build_type
+  cd eigenexa-$EIGENEXA_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DCMAKE_C_COMPILER=mpicc -DCMAKE_Fortran_COMPILER=mpif90 \
       -DCMAKE_C_FLAGS="-mt" -DCMAKE_Fortran_FLAGS="-mt" \
@@ -22,7 +22,7 @@ for build_type in $BUILD_TYPES; do
       -DMPI_C_LIBRARIES="-mt" -DMPI_Fortran_LIBRARIES="-mt" \
       -DCMAKE_Fortran_FLAGS="-fp-model strict" \
       -DSCALAPACK_LIB="-lmkl_scalapack_lp64 -lmkl_blacs_sgimpt_lp64 -mkl=parallel" \
-      $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
+      $BUILD_DIR/eigenexa-$EIGENEXA_VERSION
   check make -j2
   $SUDO make install
 done

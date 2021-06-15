@@ -11,8 +11,8 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX=$PREFIX_ROKKO/trilinos/trilinos-$TRILINOS_VERSION-$TRILINOS_RK_REVISION/$build_type
   cd $BUILD_DIR
-  mkdir -p trilinos-$TRILINOS_VERSION-Source-build-$build_type
-  cd trilinos-$TRILINOS_VERSION-Source-build-$build_type
+  mkdir -p trilinos-$TRILINOS_VERSION-build-$build_type
+  cd trilinos-$TRILINOS_VERSION-build-$build_type
   if [ `which mpicxx > /dev/null 2>&1; echo $?` = 0 ]; then
     check cmake -DCMAKE_BUILD_TYPE="$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
@@ -21,7 +21,7 @@ for build_type in $BUILD_TYPES; do
       -DBLAS_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_BLAS_LIBRARIES="-mkl=parallel" \
       -DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
       -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
-      $BUILD_DIR/trilinos-$TRILINOS_VERSION-Source
+      $BUILD_DIR/trilinos-$TRILINOS_VERSION
   else
     check cmake -DCMAKE_BUILD_TYPE="$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
@@ -32,7 +32,7 @@ for build_type in $BUILD_TYPES; do
       -DBLAS_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_BLAS_LIBRARIES="-mkl=parallel" \
       -DLAPACK_LIBRARY_DIRS="$MKLROOT/lib/intel64" -DTPL_LAPACK_LIBRARIES="-mkl=parallel" \
       -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON \
-      $BUILD_DIR/trilinos-$TRILINOS_VERSION-Source
+      $BUILD_DIR/trilinos-$TRILINOS_VERSION
   fi
   check make VERBOSE=1 -j4
   $SUDO make install

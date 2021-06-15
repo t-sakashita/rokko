@@ -5,10 +5,15 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
+sh $SCRIPT_DIR/download.sh
+
 cd $BUILD_DIR
-rm -rf scalapack-$SCALAPACK_VERSION scalapack-$SCALAPACK_VERSION-build
-if test -f $SOURCE_DIR/scalapack-$SCALAPACK_VERSION.tgz; then
-  check tar zxf $SOURCE_DIR/scalapack-$SCALAPACK_VERSION.tgz
-else
-  check wget -O - http://www.netlib.org/scalapack/scalapack-$SCALAPACK_VERSION.tgz | tar zxf -
+if [ -d scalapack-$SCALAPACK_VERSION ]; then :; else
+  check mkdir -p scalapack-$SCALAPACK_VERSION
+  tar zxf $SOURCE_DIR/scalapack-$SCALAPACK_VERSION.tgz -C scalapack-$SCALAPACK_VERSION --strip-components=1
+  cd scalapack-$SCALAPACK_VERSION
+  if [ -f $SCRIPT_DIR/scalapack-$SCALAPACK_VERSION.patch ]; then
+    echo "applying scalapack-$SCALAPACK_VERSION.patch"
+    check patch -p1 < $SCRIPT_DIR/scalapack-$SCALAPACK_VERSION.patch
+  fi
 fi

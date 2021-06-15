@@ -70,7 +70,7 @@ using ps_solver_factory = factory<ps_ev_base>;
 class parallel_sparse_ev {
 public:
   parallel_sparse_ev(std::string const& solver_name)
-    : solver_name_(solver_name), solver_impl_(detail::ps_solver_factory::instance()->make_product(solver_name)) {}
+    : solver_impl_(detail::ps_solver_factory::instance()->make_product(solver_name)), solver_name_(solver_name) {}
 
   parallel_sparse_ev() : parallel_sparse_ev(default_solver()) {}
 

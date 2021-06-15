@@ -25,7 +25,7 @@ public:
   virtual ~distributed_mfree() = default;
 
   virtual void multiply(const double *const x, double *const y) const = 0;
-  virtual void fill_diagonal(double* x) const {  // optional
+  virtual void fill_diagonal(double* /* x */) const { // optional
     throw std::runtime_error("distributed_mfree : fill_diagonal is not implemented");
   }
   virtual int get_local_offset() const = 0;
@@ -53,7 +53,7 @@ using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
 class distributed_mfree_holder : public rokko::distributed_mfree_default {
 public:
   distributed_mfree_holder(std::function<void(const double *const, double *const)> const& multiply_in, rokko::skel::mapping_1d const& map)
-    : multiply_(multiply_in), rokko::distributed_mfree_default(map) {}
+    : rokko::distributed_mfree_default(map), multiply_(multiply_in) {}
 
   // For function pointer
   distributed_mfree_holder(void (*multiply_in)(const double *const, double *const), rokko::skel::mapping_1d const& map)

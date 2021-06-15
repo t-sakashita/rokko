@@ -24,7 +24,7 @@ public:
 
   explicit mapping_global2local(std::array<int,2> const& global_size_in, std::array<int,2> const& block_size_in, grid const& g_in)
     : global_size(global_size_in),
-      g(g_in), my_coordinate(g_in.get_my_coordinate()), grid_size(g_in.get_size()) {
+      g(g_in), grid_size(g_in.get_size()), my_coordinate(g_in.get_my_coordinate()) {
     set_block_size(block_size_in);
     set_default_local_size();
     set_stride();

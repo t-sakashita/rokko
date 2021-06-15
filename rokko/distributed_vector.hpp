@@ -33,7 +33,7 @@ public:
   int size() const { return n_global_; }
   int size_local() const { return storage_.size(); }
 
-  bool has_global_index(int gi) const {
+  bool has_global_index(std::size_t gi) const {
     return (gi >= offset_ && gi < offset_ + storage_.size());
   }
 

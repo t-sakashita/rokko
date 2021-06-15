@@ -33,6 +33,7 @@ public:
   parameters() = default;
   parameters(parameters const& map_in) : map_(map_in.get_map()) {}
   ~parameters() = default;
+  parameters& operator=(parameters const&) = default;
   
   void clear() { map_.clear(); }
   void clear(key_type const& key) { map_.erase(map_.find(key)); }

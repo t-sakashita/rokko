@@ -11,14 +11,14 @@ BUILD_TYPES="Release Debug"
 for build_type in $BUILD_TYPES; do
   PREFIX_BACKEND=$PREFIX_ROKKO/eigenexa/eigenexa-$EIGENEXA_VERSION-$EIGENEXA_RK_REVISION/Linux-s64fx/$build_type
   cd $BUILD_DIR
-  mkdir -p EigenExa-$EIGENEXA_VERSION-build-Linux-s64fx-$build_type
-  cd EigenExa-$EIGENEXA_VERSION-build-Linux-s64fx-$build_type
+  mkdir -p eigenexa-$EIGENEXA_VERSION-build-Linux-s64fx-$build_type
+  cd eigenexa-$EIGENEXA_VERSION-build-Linux-s64fx-$build_type
   check cmake -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_INSTALL_PREFIX=$PREFIX_BACKEND \
     -DCMAKE_C_COMPILER=mpifccpx -DCMAKE_Fortran_COMPILER=mpifrtpx \
     -DCMAKE_C_FLAGS="-Kfast -Xg -KPIC" -DCMAKE_Fortran_FLAGS="-Kfast -KPIC -Kocl -Ksimd -KXFILL -Cpp" -DOpenMP_C_FLAGS="-Kopenmp" \
     -DSCALAPACK_LIB="-SCALAPACK -SSL2BLAMP" \
     -DUSE_C_LINKER=ON \
-    $BUILD_DIR/EigenExa-$EIGENEXA_VERSION
+    $BUILD_DIR/eigenexa-$EIGENEXA_VERSION
   check make -j4
   $SUDO make install
 done

@@ -5,11 +5,15 @@ SCRIPT_DIR=$(cd "$(dirname $0)"; pwd)
 . $SCRIPT_DIR/version.sh
 set_prefix
 
+sh $SCRIPT_DIR/download.sh
+
 cd $BUILD_DIR
-rm -rf slepc-$SLEPC_VERSION*
 if [ -f $SOURCE_DIR/slepc-$SLEPC_VERSION.tar.gz ]; then
-  check tar zxf $SOURCE_DIR/slepc-$SLEPC_VERSION.tar.gz
-else
-  check wget http://slepc.upv.es/download/distrib/slepc-$SLEPC_VERSION.tar.gz
-  check tar zxf slepc-$SLEPC_VERSION.tar.gz
+  check mkdir -p slepc-$SLEPC_VERSION
+  tar zxf $SOURCE_DIR/slepc-$SLEPC_VERSION.tar.gz -C slepc-$SLEPC_VERSION --strip-components=1
+  cd slepc-$SLEPC_VERSION
+  if [ -f $SCRIPT_DIR/slepc-$SLEPC_VERSION.patch ]; then
+    echo "applying slepc-$SLEPC_VERSION.patch"
+    check patch -p1 < $SCRIPT_DIR/slepc-$SLEPC_VERSION.patch
+  fi
 fi

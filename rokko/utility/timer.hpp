@@ -198,8 +198,8 @@ public:
     }
   }
 
+  #ifdef ROKKO_ENABLE_TIMER_DETAILED
   void detailed_report(std::size_t interval = 1, std::ostream& os = std::clog) const {
-    #ifdef ROKKO_ENABLE_TIMER_DETAILED
     if (d_count_ == 0) {
       os << "timer: interval = " << interval << std::endl;
     }
@@ -215,8 +215,10 @@ public:
     std::fill(d_counts_.begin(), d_counts_.end(), 0);
     std::fill(d_sums_.begin(), d_sums_.end(), 0);
     os << std::flush;
-    #endif
   }
+  #else
+  void detailed_report(std::size_t /* interval */ = 1, std::ostream& /* os */ = std::clog) const {}
+  #endif
 
 protected:
   std::vector<std::string> labels_;
