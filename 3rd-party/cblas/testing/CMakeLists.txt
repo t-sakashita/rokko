@@ -37,3 +37,9 @@ target_link_libraries(xzcblat2 cblas)
 
 add_executable(xzcblat3 c_zblat3.f c_zblas3.c c_z3chke.c auxiliary.c c_xerbla.c)
 target_link_libraries(xzcblat3 cblas)
+
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0.0)
+    set_source_files_properties(c_sblat1.f c_sblat2.f c_sblat3.f c_dblat1.f c_dblat2.f c_dblat3.f c_cblat1.f c_cblat2.f c_cblat2.f c_zblat1.f c_zblat2.f c_zblat3.f PROPERTIES COMPILE_OPTIONS "-fallow-argument-mismatch")
+  endif()
+endif()

@@ -14,12 +14,12 @@ program main
      print *, a(1:n, j)
   end do
 
-  norm = slange('M', n, n, a, n)
+  norm = slange('M', n, n, a, n, work)
   print *, "element of largest absolute value =", norm
-  norm = slange('1', n, n, a, n)
+  norm = slange('1', n, n, a, n, work)
   print *, "one norm =", norm
   norm = slange('I', n, n, a, n, work)
   print *, "infinity norm =", norm
-  norm = slange('F', n, n, a, n)
+  norm = slange('F', n, n, a, n, work)
   print *, "Frobenius norm =", norm
 end program main
