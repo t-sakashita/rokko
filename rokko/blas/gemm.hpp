@@ -18,7 +18,6 @@
 #include <stdexcept>
 #include <cblas.h>
 #include <rokko/blas/util.hpp>
-#include <rokko/lapack/complex_cast.hpp>
 
 namespace rokko {
 namespace blas {
@@ -34,12 +33,12 @@ BLAS_GEMM_IMPL(dgemm, double);
 #undef BLAS_GEMM_IMPL  
 
 #define BLAS_GEMM_IMPL(NAMES, TYPE) \
-inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, TYPE alpha, const TYPE * a, int lda_a, const TYPE * b, int lda_b, TYPE beta, TYPE * c, int lda_c) { \
-  cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, lapack::complex_cast(&alpha), lapack::complex_cast(a), lda_a, lapack::complex_cast(b), lda_b, lapack::complex_cast(&beta), lapack::complex_cast(c), lda_c); \
+inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, std::complex<TYPE> alpha, const std::complex<TYPE>* a, int lda_a, const std::complex<TYPE>* b, int lda_b, std::complex<TYPE> beta, std::complex<TYPE>* c, int lda_c) { \
+  cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, reinterpret_cast<TYPE*>(&alpha), reinterpret_cast<const TYPE*>(a), lda_a, reinterpret_cast<const TYPE*>(b), lda_b, reinterpret_cast<TYPE*>(&beta), (TYPE*)c, lda_c); \
 }
   
-BLAS_GEMM_IMPL(cgemm, std::complex<float>);
-BLAS_GEMM_IMPL(zgemm, std::complex<double>);
+BLAS_GEMM_IMPL(cgemm, float);
+BLAS_GEMM_IMPL(zgemm, double);
   
 #undef BLAS_GEMM_IMPL  
 

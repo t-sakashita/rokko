@@ -18,7 +18,6 @@
 #include <stdexcept>
 #include <cblas.h>
 #include <rokko/blas/util.hpp>
-#include <rokko/lapack/complex_cast.hpp>
 
 namespace rokko {
 namespace blas {
@@ -34,12 +33,12 @@ BLAS_GEMV_IMPL(dgemv, double);
 #undef BLAS_GEMV_IMPL  
   
 #define BLAS_GEMV_IMPL(NAMES, TYPE) \
-inline void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans, int m, int n, TYPE alpha, const TYPE * a, int lda, const TYPE * x, int inc_x, TYPE beta, TYPE * y, int inc_y) { \
-  cblas_ ## NAMES (order, trans, m, n, lapack::complex_cast(&alpha), lapack::complex_cast(a), lda, lapack::complex_cast(x), inc_x, lapack::complex_cast(&beta), lapack::complex_cast(y), inc_y); \
+inline void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans, int m, int n, std::complex<TYPE> alpha, const std::complex<TYPE>* a, int lda, const std::complex<TYPE>* x, int inc_x, std::complex<TYPE> beta, std::complex<TYPE>* y, int inc_y) { \
+  cblas_ ## NAMES (order, trans, m, n, reinterpret_cast<TYPE*>(&alpha), reinterpret_cast<const TYPE*>(a), lda, reinterpret_cast<const TYPE*>(x), inc_x, reinterpret_cast<TYPE*>(&beta), reinterpret_cast<TYPE*>(y), inc_y); \
 }
 
-BLAS_GEMV_IMPL(cgemv, std::complex<float>);
-BLAS_GEMV_IMPL(zgemv, std::complex<double>);
+BLAS_GEMV_IMPL(cgemv, float);
+BLAS_GEMV_IMPL(zgemv, double);
   
 #undef BLAS_GEMV_IMPL  
   
