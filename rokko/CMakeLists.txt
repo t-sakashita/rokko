@@ -129,7 +129,6 @@ if(ROKKO_SOURCES)
 
   if(ROKKO_HAVE_MPI)
     if(BUILD_Fortran_BINDING)
-      include_directories(${MPI_Fortran_INCLUDE_PATH})
       target_link_libraries(rokko ${MPI_Fortran_LIBRARIES})
     endif(BUILD_Fortran_BINDING)
     target_link_libraries(rokko ${MPI_CXX_LIBRARIES})

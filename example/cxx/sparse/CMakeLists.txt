@@ -8,7 +8,13 @@
 #
 
 if(ROKKO_HAVE_PARALLEL_SPARSE_SOLVER)
-  set(TESTS distributed_crs_matrix_mpi distributed_crs_symmetric_matrix_mpi heisenberg_crs_mpi heisenberg_crs_anasazi_mpi heisenberg_crs_slepc_mpi laplacian_crs_mpi laplacian_mfree_mpi heisenberg_ladder_crs_matrix_market)
+  set(TESTS distributed_crs_matrix_mpi distributed_crs_symmetric_matrix_mpi heisenberg_crs_mpi laplacian_crs_mpi laplacian_mfree_mpi heisenberg_ladder_crs_matrix_market)
+  if(ROKKO_HAVE_SLEPC)
+    list(APPEND TESTS heisenberg_crs_slepc_mpi)
+  endif(ROKKO_HAVE_SLEPC)
+  if(ROKKO_HAVE_ANASAZI)
+    list(APPEND TESTS heisenberg_crs_anasazi_mpi)
+  endif(ROKKO_HAVE_ANASAZI)
   foreach(name ${TESTS})
     set(target_name example_cxx_sparse_${name})
     add_executable(${target_name} ${name}.cpp)

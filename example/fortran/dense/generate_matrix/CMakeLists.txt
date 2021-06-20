@@ -22,7 +22,6 @@ foreach(name ${EXAMPLE})
 endforeach(name)
 
 if(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
-  include_directories(${MPI_Fortran_INCLUDE_PATH})
   set(EXAMPLE minij_array_mpi frank_array_mpi matrix012_mpi)
   foreach(name ${EXAMPLE})
     set(target_name example_fortran_dense_generate_matrix_${name})
