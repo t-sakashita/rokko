@@ -41,7 +41,7 @@ TEST(mapping_1d, various_num_local_rows_for_all_libraries) {
     rokko::parallel_sparse_ev solver(name);
 
     auto const map = solver.default_mapping(dim, num_local_rows, comm);
-    const int num_entries_per_row = 3;
+    constexpr int num_entries_per_row = 3;
     rokko::distributed_crs_matrix mat(map, num_entries_per_row);
     check_map_mat(skel_map, mat);
   }
