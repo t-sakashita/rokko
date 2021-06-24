@@ -76,12 +76,20 @@ public:
       throw std::invalid_argument("get_wanted_eigenvalues: invalid parameter");
   }
 
+  void set_lanczos_reorthog(std::string const& str) {
+    if (lanczos_reorthog_map.find(str) == lanczos_reorthog_map.end())
+      throw std::invalid_argument(str + " is not lanczos reorthog in SLEPc");
+    PetscErrorCode ierr = EPSLanczosSetReorthog(eps, lanczos_reorthog_map.at(str));
+  }
+
   void set_lanczos_reorthog(rokko::parameters const& params) {
     if (params.defined("reorthog")) {
       std::string str = params.get<std::string>("reorthog");
       if (lanczos_reorthog_map.find(str) == lanczos_reorthog_map.end())
         throw std::invalid_argument(str + " is not lanczos reorthog in SLEPc");
       PetscErrorCode ierr = EPSLanczosSetReorthog(eps, lanczos_reorthog_map.at(str));
+    } else {
+      set_lanczos_reorthog("local");
     }
   }
 
