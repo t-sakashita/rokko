@@ -43,7 +43,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
     if (library == "anasazi")
       routines = { {"lobpcg", "largest_real"}, {"block_krylov_schur", "largest"}, {"block_davidson", "largest_real"}, {"rtr", "largest_real"} };
     else if (library == "slepc")
-      routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"lobpcg", "largest_real"}, {"rqcg", "smallest_real"}, {"subspace", "largest"} };  // excludes not converging "power"
+      routines = { {"krylovschur", "largest"}, {"lanczos", "largest"}, {"subspace", "largest"} };  // excludes not converging "power". SLEPc does not support for mfree of {"lobpcg", "largest_real"}, {"rqcg", "smallest_real"}.
 
     for (auto routine : routines) {
       std::cout << "routine=" << routine[0] << std::endl;
