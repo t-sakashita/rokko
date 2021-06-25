@@ -64,7 +64,7 @@ public:
       std::stringstream msg;
       msg << "anasazi::solver::create_solver_manager : " << routine << " is not a solver in Anasazi" << std::endl;
       msg << "list of Anasazi solvers:" << std::endl;
-      for (int i=0; i<names.size(); ++i) {
+      for (size_t i=0; i<names.size(); ++i) {
         msg << names[i] << " " << std::endl;
       }
       throw std::invalid_argument(msg.str());
