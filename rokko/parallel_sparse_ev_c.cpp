@@ -114,7 +114,7 @@ int rokko_parallel_sparse_ev_num_solvers() {
 char** rokko_parallel_sparse_ev_solvers() {
   std::vector<std::string> solvers = rokko::parallel_sparse_ev::solvers();
   char **solvers_c = (char**)malloc((size_t)(solvers.size() * sizeof(char*)));
-  for (int i = 0; i < solvers.size(); ++i) {
+  for (size_t i = 0; i < solvers.size(); ++i) {
     solvers_c[i] = copy_string(solvers[i]);
   }
   return solvers_c;
