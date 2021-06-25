@@ -20,9 +20,10 @@ namespace rokko {
 class heisenberg_mfree : public rokko::distributed_mfree_default {
 public:
   heisenberg_mfree(int L, const std::vector<std::pair<int, int>>& lattice, MPI_Comm comm = MPI_COMM_WORLD)
-    : L_(L), lattice_(lattice), distributed_mfree_default{1 << L, rokko::mpi_comm{comm}} {
-    check_nprocs(rokko::mpi_comm{comm});
-    buffer_.resize(get_num_local_rows());
+    : distributed_mfree_default{1 << L, rokko::mpi_comm{comm}},
+      L_(L), lattice_(lattice) {
+	check_nprocs(rokko::mpi_comm{comm});
+	buffer_.resize(get_num_local_rows());
   }
   ~heisenberg_mfree() = default;
 
