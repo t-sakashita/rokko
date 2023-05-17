@@ -1,7 +1,7 @@
 diff -U1 -rN EigenExa-2.7.orig/CMakeLists.txt EigenExa-2.7/CMakeLists.txt
 --- EigenExa-2.7.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ EigenExa-2.7/CMakeLists.txt	2021-02-28 18:04:01.000000000 +0900
-@@ -0,0 +1,31 @@
++++ EigenExa-2.7/CMakeLists.txt	2023-05-17 15:39:01.000000000 +0900
+@@ -0,0 +1,37 @@
 +cmake_minimum_required(VERSION 3.1)
 +project(EigenExa NONE)
 +enable_language(C Fortran)
@@ -31,11 +31,17 @@ diff -U1 -rN EigenExa-2.7.orig/CMakeLists.txt EigenExa-2.7/CMakeLists.txt
 +find_package(ScaLAPACK REQUIRED)
 +string(REGEX REPLACE ";" " " SCAPALACK_LIBS "${SCAPALACK_LIBRARIES}")
 +
++if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
++  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0.0)
++    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch -fallow-invalid-boz")
++  endif()
++endif()
++
 +add_subdirectory(src)
 +add_subdirectory(benchmark)
 diff -U1 -rN EigenExa-2.7.orig/FindScaLAPACK.cmake EigenExa-2.7/FindScaLAPACK.cmake
 --- EigenExa-2.7.orig/FindScaLAPACK.cmake	1970-01-01 09:00:00.000000000 +0900
-+++ EigenExa-2.7/FindScaLAPACK.cmake	2021-02-28 18:14:30.000000000 +0900
++++ EigenExa-2.7/FindScaLAPACK.cmake	2023-05-17 15:30:25.000000000 +0900
 @@ -0,0 +1,145 @@
 +# - Try to find ScaLAPACK
 +# Once done this will define
@@ -184,7 +190,7 @@ diff -U1 -rN EigenExa-2.7.orig/FindScaLAPACK.cmake EigenExa-2.7/FindScaLAPACK.cm
 +message(STATUS "ScaLAPACK libraries: ${SCALAPACK_LIBRARIES}")
 diff -U1 -rN EigenExa-2.7.orig/benchmark/CMakeLists.txt EigenExa-2.7/benchmark/CMakeLists.txt
 --- EigenExa-2.7.orig/benchmark/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ EigenExa-2.7/benchmark/CMakeLists.txt	2021-02-28 18:04:29.000000000 +0900
++++ EigenExa-2.7/benchmark/CMakeLists.txt	2023-05-17 15:30:25.000000000 +0900
 @@ -0,0 +1,12 @@
 +include_directories(${PROJECT_BINARY_DIR}/src)
 +
@@ -200,7 +206,7 @@ diff -U1 -rN EigenExa-2.7.orig/benchmark/CMakeLists.txt EigenExa-2.7/benchmark/C
 +configure_file(IN IN COPYONLY)
 diff -U1 -rN EigenExa-2.7.orig/src/CMakeLists.txt EigenExa-2.7/src/CMakeLists.txt
 --- EigenExa-2.7.orig/src/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
-+++ EigenExa-2.7/src/CMakeLists.txt	2021-02-28 18:21:29.000000000 +0900
++++ EigenExa-2.7/src/CMakeLists.txt	2023-05-17 15:30:25.000000000 +0900
 @@ -0,0 +1,84 @@
 +add_definitions(-DUSE_SYNC=1 -D_DEBUG_=0 -D_DEBUG2_=0 -DAT_BCAST_OVERLAP=1 -DOVERLAP_DECISION_TYPE=3)
 +
