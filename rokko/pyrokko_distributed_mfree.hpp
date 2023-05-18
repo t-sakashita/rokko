@@ -53,7 +53,7 @@ public:
   };
 
   void multiply(const double* x, double *const y) const override {
-    const int num_local_rows = get_num_local_rows();
+    const auto num_local_rows = get_num_local_rows();
     Eigen::Vector<double> X, Y;
     new (&X) Eigen::Map<const Eigen::Vector<double>>(x, num_local_rows);
     new (&Y) Eigen::Map<Eigen::Vector<double>>(y, num_local_rows);

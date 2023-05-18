@@ -61,10 +61,10 @@ public:
 
   template <int IND>
   int calculate_default_local_size(int proc) const {
-    const int quotient = global_size[IND] / block_size[IND];
-    const int local_num_block = (quotient + (grid_size[IND]-1 - proc)) / grid_size[IND];
-    const int remainder_proc = quotient % grid_size[IND];
-    const int remainder_size = (proc == remainder_proc) ? global_size[IND] % block_size[IND] : 0;  // size of the remainder block (< block_size)
+    const auto quotient = global_size[IND] / block_size[IND];
+    const auto local_num_block = (quotient + (grid_size[IND]-1 - proc)) / grid_size[IND];
+    const auto remainder_proc = quotient % grid_size[IND];
+    const auto remainder_size = (proc == remainder_proc) ? global_size[IND] % block_size[IND] : 0;  // size of the remainder block (< block_size)
     return local_num_block * block_size[IND] + remainder_size;
   }
 
@@ -91,7 +91,7 @@ public:
 
   template <int IND>
   int translate_g2l(int global_index) const {
-    const int local_offset_block = global_index / block_size[IND];
+    const auto local_offset_block = global_index / block_size[IND];
     return (local_offset_block - my_coordinate[IND]) / grid_size[IND] * block_size[IND] + global_index % block_size[IND];
   }
 
@@ -109,7 +109,7 @@ public:
 
   template <int IND>
   bool has_global_indices(int global_index) const {
-    const int local_offset_block = global_index / block_size[IND];
+    const auto local_offset_block = global_index / block_size[IND];
     return (local_offset_block % grid_size[IND]) == my_coordinate[IND];
   }
 

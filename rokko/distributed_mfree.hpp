@@ -77,7 +77,7 @@ public:
   distributed_mfree_holder(std::function<void(ConstMapVec,MapVec)> const& multiply_in, rokko::skel::mapping_1d const& map)
     : rokko::distributed_mfree_default(map),
       multiply_([this, multiply_in](const double *const x, double *const y) {
-        const int num_local_rows = get_num_local_rows();
+        const auto num_local_rows = get_num_local_rows();
         ConstMapVec  X(x, num_local_rows);
         MapVec  Y(y, num_local_rows);
         multiply_in(X, Y);
