@@ -1,0 +1,209 @@
+diff -U1 -rN EigenExa-2.12.orig/CMakeLists.txt EigenExa-2.12/CMakeLists.txt
+--- EigenExa-2.12.orig/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ EigenExa-2.12/CMakeLists.txt	2023-05-18 09:15:03.000000000 +0900
+@@ -0,0 +1,37 @@
++cmake_minimum_required(VERSION 3.1)
++project(EigenExa NONE)
++enable_language(C Fortran)
++option(BUILD_SHARED_LIBS "Build shared libraries" ON)
++option(USE_C_LINKER "Use C Linker instead of Fortran" OFF)
++list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
++
++# RPATH setting
++set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
++set(CMAKE_SKIP_BUILD_RPATH FALSE)
++set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
++set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
++set(CMAKE_MACOSX_RPATH 1)
++
++# OpenMP
++find_package(OpenMP)
++if(OPENMP_FOUND)
++  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
++  # Almost always OpenMP flags are same both for C and for Fortran.
++  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
++endif(OPENMP_FOUND)
++
++# MPI library
++find_package(MPI)
++
++# ScaLAPACK library
++find_package(ScaLAPACK REQUIRED)
++string(REGEX REPLACE ";" " " SCAPALACK_LIBS "${SCAPALACK_LIBRARIES}")
++
++if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
++  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0.0)
++    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch -fallow-invalid-boz")
++  endif()
++endif()
++
++add_subdirectory(src)
++add_subdirectory(benchmark)
+diff -U1 -rN EigenExa-2.12.orig/benchmark/CMakeLists.txt EigenExa-2.12/benchmark/CMakeLists.txt
+--- EigenExa-2.12.orig/benchmark/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ EigenExa-2.12/benchmark/CMakeLists.txt	2023-05-18 15:54:14.000000000 +0900
+@@ -0,0 +1,25 @@
++include_directories(${PROJECT_BINARY_DIR}/src)
++
++add_executable(main2 main2.f mat_set.f ev_test.f w_test.f)
++target_include_directories(main2 PUBLIC ${CMAKE_BINARY_DIR}/src/modules)
++target_link_libraries(main2 EigenExa)
++
++if(USE_C_LINKER)
++  set_target_properties(main2 PROPERTIES LINKER_LANGUAGE C)
++endif(USE_C_LINKER)
++
++
++add_executable(KMATH_EIGEN_GEV KMATH_EIGEN_GEV_main.f KMATH_EIGEN_GEV_check.f mat_set.f)
++target_include_directories(KMATH_EIGEN_GEV PUBLIC ${CMAKE_BINARY_DIR}/src/modules)
++target_link_libraries(KMATH_EIGEN_GEV EigenExa)
++
++if(USE_C_LINKER)
++  set_target_properties(KMATH_EIGEN_GEV PROPERTIES LINKER_LANGUAGE C)
++endif(USE_C_LINKER)
++
++
++# copying input file in build directory
++configure_file(IN IN COPYONLY)
++configure_file(IN-x IN-x COPYONLY)
++configure_file(IN_GEV IN_GEV COPYONLY)
++configure_file(W.dat W.dat COPYONLY)
+diff -U1 -rN EigenExa-2.12.orig/src/CMakeLists.txt EigenExa-2.12/src/CMakeLists.txt
+--- EigenExa-2.12.orig/src/CMakeLists.txt	1970-01-01 09:00:00.000000000 +0900
++++ EigenExa-2.12/src/CMakeLists.txt	2023-05-18 09:48:03.000000000 +0900
+@@ -0,0 +1,103 @@
++add_definitions(-DUSE_SYNC=1 -D_DEBUG_=0 -D_DEBUG2_=0 -DAT_BCAST_OVERLAP=1 -DOVERLAP_DECISION_TYPE=3)
++
++set(SOURCES ALLREDUCE_hand.f90
++    CSTAB.F
++    FS2eigen_PDLASRT.F90
++    FS_EDC.F90
++    FS_MERGE_D.F90
++    FS_PDLAED0.F90
++    FS_PDLAED1.F90
++    FS_PDLAED2.F90
++    FS_PDLAED3.F90
++    FS_PDLAEDZ.F90
++    FS_PDLASRT.F90
++    FS_REDUCE_ZD.F90
++    FS_const.F90
++    FS_dividing.F90
++    FS_libs.F90
++    FS_memory_internal.F
++    FS_prof.F90
++    KMATH_EIGEN_GEV.F
++    KMATH_EIGEN_GEV_1.F
++    KMATH_EIGEN_GEV_2.F
++    KMATH_EIGEN_GEV_misc.F
++    MPI_Allreduce_group.F90
++    bisect.F
++    bisect2.F
++    comm.F
++    comm_h.F
++    dc2.F
++    dc2_FS.F
++    dc_redist1.F
++    dc_redist1_r.F
++    dc_redist2.F
++    dc_redist2_r.F
++    dcx.F
++    dlacpy.F
++    eigen_FS.F
++    eigen_blacs.F
++    eigen_dc.F
++    eigen_devel.F
++    eigen_h.F
++    eigen_house.F
++    eigen_house_h.F
++    eigen_hrbak.F
++    eigen_hrd.F
++    eigen_hrd_t1.F
++    eigen_hrd_t2.F
++    eigen_hrd_t4.F
++    eigen_hrd_t5.F
++    eigen_hrd_t5x.F
++    eigen_hrd_t6_3.F
++    eigen_hrd_t7.F
++    eigen_hrd_t8.F
++    eigen_identity.F
++    eigen_libs.F
++    eigen_libs0.F
++    eigen_prd.F
++    eigen_prd_t2.F
++    eigen_prd_t4x.F
++    eigen_prd_t5.F
++    eigen_prd_t6_3.F
++    eigen_prd_t7.F
++    eigen_prd_t8.F
++    eigen_s.F
++    eigen_scaling.F
++    eigen_scaling_h.F
++    eigen_sx.F
++    eigen_t1.F
++    eigen_trbak.F
++    eigen_trd.F
++    eigen_trd_t2.F
++    eigen_trd_t4.F
++    eigen_trd_t5.F
++    eigen_trd_t5x.F
++    eigen_trd_t6_3.F
++    eigen_trd_t7.F
++    eigen_trd_t8.F
++    hrbakwy4.F
++    hrbakwy4_body.F
++    lapack_eigen.F
++    miscC.c
++    mx_pdlaed0.F
++    mx_pdlaed1.F
++    mx_pdlaed2.F
++    mx_pdlaed3.F
++    mx_pdlaedz.F
++    mx_pdstedc.F
++    my_pdlaed0.F
++    my_pdlaed1.F
++    my_pdlaed2.F
++    my_pdlaed3.F
++    my_pdlaedz.F
++    my_pdlasrt.F
++    my_pdsxedc.F
++    trbakwy4.F
++    trbakwy4_body.F)
++
++
++add_library(EigenExa ${SOURCES})
++target_link_libraries(EigenExa ${SCALAPACK_LIBRARIES} ${MPI_Fortran_LIBRARIES})
++set_target_properties(EigenExa PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/modules)
++install(TARGETS EigenExa ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)
++install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/modules/ DESTINATION include)
+diff -U1 -rN EigenExa-2.12.orig/src/KMATH_EIGEN_GEV_1.F EigenExa-2.12/src/KMATH_EIGEN_GEV_1.F
+--- EigenExa-2.12.orig/src/KMATH_EIGEN_GEV_1.F	2023-05-18 16:02:06.000000000 +0900
++++ EigenExa-2.12/src/KMATH_EIGEN_GEV_1.F	2023-05-18 15:41:25.000000000 +0900
+@@ -4,2 +4,3 @@
+ !$    use OMP_LIB
++      use eigen_devel_mod
+       use eigen_libs_mod
+@@ -12,5 +13,2 @@
+ 
+-      real(8),parameter :: one = 1.0D0
+-      real(8),parameter :: zero = 0.0D0
+-
+       integer :: i,j,k
+diff -U1 -rN EigenExa-2.12.orig/src/KMATH_EIGEN_GEV_misc.F EigenExa-2.12/src/KMATH_EIGEN_GEV_misc.F
+--- EigenExa-2.12.orig/src/KMATH_EIGEN_GEV_misc.F	2023-05-18 16:02:06.000000000 +0900
++++ EigenExa-2.12/src/KMATH_EIGEN_GEV_misc.F	2023-05-18 09:53:44.000000000 +0900
+@@ -57,2 +57,3 @@
+       real(8), intent(IN), optional :: mode
++      real(8), parameter     :: ONE=1.0D0
+ 
+diff -U1 -rN EigenExa-2.12.orig/src/hrbakwy4_body.F EigenExa-2.12/src/hrbakwy4_body.F
+--- EigenExa-2.12.orig/src/hrbakwy4_body.F	2023-05-18 16:02:06.000000000 +0900
++++ EigenExa-2.12/src/hrbakwy4_body.F	2023-05-18 09:57:46.000000000 +0900
+@@ -214,5 +214,5 @@
+ !$     use MPI
+-!$     use eigen_devel
+-!$     use eigen_libs
+-!$     use eigen_hrbak
++!$     use eigen_devel_mod
++!$     use eigen_libs_mod
++!$     use eigen_hrbak_mod
+ !$     implicit NONE
