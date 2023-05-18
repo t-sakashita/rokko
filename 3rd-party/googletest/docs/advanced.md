@@ -1,7 +1,5 @@
 # Advanced googletest Topics
 
-<!-- GOOGLETEST_CM0016 DO NOT DELETE -->
-
 ## Introduction
 
 Now that you have read the [googletest Primer](primer.md) and learned how to
@@ -17,69 +15,13 @@ assertions.
 
 ### Explicit Success and Failure
 
-These three assertions do not actually test a value or expression. Instead, they
-generate a success or failure directly. Like the macros that actually perform a
-test, you may stream a custom failure message into them.
-
-```c++
-SUCCEED();
-```
-
-Generates a success. This does **NOT** make the overall test succeed. A test is
-considered successful only if none of its assertions fail during its execution.
-
-NOTE: `SUCCEED()` is purely documentary and currently doesn't generate any
-user-visible output. However, we may add `SUCCEED()` messages to googletest's
-output in the future.
-
-```c++
-FAIL();
-ADD_FAILURE();
-ADD_FAILURE_AT("file_path", line_number);
-```
-
-`FAIL()` generates a fatal failure, while `ADD_FAILURE()` and `ADD_FAILURE_AT()`
-generate a nonfatal failure. These are useful when control flow, rather than a
-Boolean expression, determines the test's success or failure. For example, you
-might want to write something like:
-
-```c++
-switch(expression) {
-  case 1:
-     ... some checks ...
-  case 2:
-     ... some other checks ...
-  default:
-     FAIL() << "We shouldn't get here.";
-}
-```
-
-NOTE: you can only use `FAIL()` in functions that return `void`. See the
-[Assertion Placement section](#assertion-placement) for more information.
+See [Explicit Success and Failure](reference/assertions.md#success-failure) in
+the Assertions Reference.
 
 ### Exception Assertions
 
-These are for verifying that a piece of code throws (or does not throw) an
-exception of the given type:
-
-Fatal assertion                            | Nonfatal assertion                         | Verifies
------------------------------------------- | ------------------------------------------ | --------
-`ASSERT_THROW(statement, exception_type);` | `EXPECT_THROW(statement, exception_type);` | `statement` throws an exception of the given type
-`ASSERT_ANY_THROW(statement);`             | `EXPECT_ANY_THROW(statement);`             | `statement` throws an exception of any type
-`ASSERT_NO_THROW(statement);`              | `EXPECT_NO_THROW(statement);`              | `statement` doesn't throw any exception
-
-Examples:
-
-```c++
-ASSERT_THROW(Foo(5), bar_exception);
-
-EXPECT_NO_THROW({
-  int n = 5;
-  Bar(&n);
-});
-```
-
-**Availability**: requires exceptions to be enabled in the build environment
+See [Exception Assertions](reference/assertions.md#exceptions) in the Assertions
+Reference.
 
 ### Predicate Assertions for Better Error Messages
 
@@ -99,60 +41,9 @@ googletest gives you three different options to solve this problem:
 
 If you already have a function or functor that returns `bool` (or a type that
 can be implicitly converted to `bool`), you can use it in a *predicate
-assertion* to get the function arguments printed for free:
-
-<!-- mdformat off(github rendering does not support multiline tables) -->
-
-| Fatal assertion                   | Nonfatal assertion                | Verifies                    |
-| --------------------------------- | --------------------------------- | --------------------------- |
-| `ASSERT_PRED1(pred1, val1)`       | `EXPECT_PRED1(pred1, val1)`       | `pred1(val1)` is true       |
-| `ASSERT_PRED2(pred2, val1, val2)` | `EXPECT_PRED2(pred2, val1, val2)` | `pred1(val1, val2)` is true |
-| `...`                             | `...`                             | `...`                       |
-
-<!-- mdformat on-->
-In the above, `predn` is an `n`-ary predicate function or functor, where `val1`,
-`val2`, ..., and `valn` are its arguments. The assertion succeeds if the
-predicate returns `true` when applied to the given arguments, and fails
-otherwise. When the assertion fails, it prints the value of each argument. In
-either case, the arguments are evaluated exactly once.
-
-Here's an example. Given
-
-```c++
-// Returns true if m and n have no common divisors except 1.
-bool MutuallyPrime(int m, int n) { ... }
-
-const int a = 3;
-const int b = 4;
-const int c = 10;
-```
-
-the assertion
-
-```c++
-  EXPECT_PRED2(MutuallyPrime, a, b);
-```
-
-will succeed, while the assertion
-
-```c++
-  EXPECT_PRED2(MutuallyPrime, b, c);
-```
-
-will fail with the message
-
-```none
-MutuallyPrime(b, c) is false, where
-b is 4
-c is 10
-```
-
-> NOTE:
->
-> 1.  If you see a compiler error "no matching function to call" when using
->     `ASSERT_PRED*` or `EXPECT_PRED*`, please see
->     [this](faq.md#the-compiler-complains-no-matching-function-to-call-when-i-use-assert-pred-how-do-i-fix-it)
->     for how to resolve it.
+assertion* to get the function arguments printed for free. See
+[`EXPECT_PRED*`](reference/assertions.md#EXPECT_PRED) in the Assertions
+Reference for details.
 
 #### Using a Function That Returns an AssertionResult
 
@@ -187,11 +78,11 @@ write a predicate function that returns `AssertionResult` instead of `bool`. For
 example, if you define `IsEven()` as:
 
 ```c++
-::testing::AssertionResult IsEven(int n) {
+testing::AssertionResult IsEven(int n) {
   if ((n % 2) == 0)
-     return ::testing::AssertionSuccess();
+    return testing::AssertionSuccess();
   else
-     return ::testing::AssertionFailure() << n << " is odd";
+    return testing::AssertionFailure() << n << " is odd";
 }
 ```
 
@@ -225,11 +116,11 @@ are fine with making the predicate slower in the success case, you can supply a
 success message:
 
 ```c++
-::testing::AssertionResult IsEven(int n) {
+testing::AssertionResult IsEven(int n) {
   if ((n % 2) == 0)
-     return ::testing::AssertionSuccess() << n << " is even";
+    return testing::AssertionSuccess() << n << " is even";
   else
-     return ::testing::AssertionFailure() << n << " is odd";
+    return testing::AssertionFailure() << n << " is odd";
 }
 ```
 
@@ -243,176 +134,53 @@ Then the statement `EXPECT_FALSE(IsEven(Fib(6)))` will print
 
 #### Using a Predicate-Formatter
 
-If you find the default message generated by `(ASSERT|EXPECT)_PRED*` and
-`(ASSERT|EXPECT)_(TRUE|FALSE)` unsatisfactory, or some arguments to your
-predicate do not support streaming to `ostream`, you can instead use the
-following *predicate-formatter assertions* to *fully* customize how the message
-is formatted:
-
-Fatal assertion                                  | Nonfatal assertion                               | Verifies
------------------------------------------------- | ------------------------------------------------ | --------
-`ASSERT_PRED_FORMAT1(pred_format1, val1);`       | `EXPECT_PRED_FORMAT1(pred_format1, val1);`       | `pred_format1(val1)` is successful
-`ASSERT_PRED_FORMAT2(pred_format2, val1, val2);` | `EXPECT_PRED_FORMAT2(pred_format2, val1, val2);` | `pred_format2(val1, val2)` is successful
-`...`                                            | `...`                                            | ...
-
-The difference between this and the previous group of macros is that instead of
-a predicate, `(ASSERT|EXPECT)_PRED_FORMAT*` take a *predicate-formatter*
-(`pred_formatn`), which is a function or functor with the signature:
-
-```c++
-::testing::AssertionResult PredicateFormattern(const char* expr1,
-                                               const char* expr2,
-                                               ...
-                                               const char* exprn,
-                                               T1 val1,
-                                               T2 val2,
-                                               ...
-                                               Tn valn);
-```
-
-where `val1`, `val2`, ..., and `valn` are the values of the predicate arguments,
-and `expr1`, `expr2`, ..., and `exprn` are the corresponding expressions as they
-appear in the source code. The types `T1`, `T2`, ..., and `Tn` can be either
-value types or reference types. For example, if an argument has type `Foo`, you
-can declare it as either `Foo` or `const Foo&`, whichever is appropriate.
-
-As an example, let's improve the failure message in `MutuallyPrime()`, which was
-used with `EXPECT_PRED2()`:
-
-```c++
-// Returns the smallest prime common divisor of m and n,
-// or 1 when m and n are mutually prime.
-int SmallestPrimeCommonDivisor(int m, int n) { ... }
-
-// A predicate-formatter for asserting that two integers are mutually prime.
-::testing::AssertionResult AssertMutuallyPrime(const char* m_expr,
-                                               const char* n_expr,
-                                               int m,
-                                               int n) {
-  if (MutuallyPrime(m, n)) return ::testing::AssertionSuccess();
-
-  return ::testing::AssertionFailure() << m_expr << " and " << n_expr
-      << " (" << m << " and " << n << ") are not mutually prime, "
-      << "as they have a common divisor " << SmallestPrimeCommonDivisor(m, n);
-}
-```
-
-With this predicate-formatter, we can use
-
-```c++
-  EXPECT_PRED_FORMAT2(AssertMutuallyPrime, b, c);
-```
-
-to generate the message
-
-```none
-b and c (4 and 10) are not mutually prime, as they have a common divisor 2.
-```
-
-As you may have realized, many of the built-in assertions we introduced earlier
-are special cases of `(EXPECT|ASSERT)_PRED_FORMAT*`. In fact, most of them are
-indeed defined using `(EXPECT|ASSERT)_PRED_FORMAT*`.
+If you find the default message generated by
+[`EXPECT_PRED*`](reference/assertions.md#EXPECT_PRED) and
+[`EXPECT_TRUE`](reference/assertions.md#EXPECT_TRUE) unsatisfactory, or some
+arguments to your predicate do not support streaming to `ostream`, you can
+instead use *predicate-formatter assertions* to *fully* customize how the
+message is formatted. See
+[`EXPECT_PRED_FORMAT*`](reference/assertions.md#EXPECT_PRED_FORMAT) in the
+Assertions Reference for details.
 
 ### Floating-Point Comparison
 
-Comparing floating-point numbers is tricky. Due to round-off errors, it is very
-unlikely that two floating-points will match exactly. Therefore, `ASSERT_EQ` 's
-naive comparison usually doesn't work. And since floating-points can have a wide
-value range, no single fixed error bound works. It's better to compare by a
-fixed relative error bound, except for values close to 0 due to the loss of
-precision there.
-
-In general, for floating-point comparison to make sense, the user needs to
-carefully choose the error bound. If they don't want or care to, comparing in
-terms of Units in the Last Place (ULPs) is a good default, and googletest
-provides assertions to do this. Full details about ULPs are quite long; if you
-want to learn more, see
-[here](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
-
-#### Floating-Point Macros
-
-<!-- mdformat off(github rendering does not support multiline tables) -->
-
-| Fatal assertion                 | Nonfatal assertion              | Verifies                                 |
-| ------------------------------- | ------------------------------- | ---------------------------------------- |
-| `ASSERT_FLOAT_EQ(val1, val2);`  | `EXPECT_FLOAT_EQ(val1, val2);`  | the two `float` values are almost equal  |
-| `ASSERT_DOUBLE_EQ(val1, val2);` | `EXPECT_DOUBLE_EQ(val1, val2);` | the two `double` values are almost equal |
-
-<!-- mdformat on-->
-
-By "almost equal" we mean the values are within 4 ULP's from each other.
-
-The following assertions allow you to choose the acceptable error bound:
-
-<!-- mdformat off(github rendering does not support multiline tables) -->
-
-| Fatal assertion                       | Nonfatal assertion                    | Verifies                                                                         |
-| ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------- |
-| `ASSERT_NEAR(val1, val2, abs_error);` | `EXPECT_NEAR(val1, val2, abs_error);` | the difference between `val1` and `val2` doesn't exceed the given absolute error |
-
-<!-- mdformat on-->
+See [Floating-Point Comparison](reference/assertions.md#floating-point) in the
+Assertions Reference.
 
 #### Floating-Point Predicate-Format Functions
 
 Some floating-point operations are useful, but not that often used. In order to
 avoid an explosion of new macros, we provide them as predicate-format functions
-that can be used in predicate assertion macros (e.g. `EXPECT_PRED_FORMAT2`,
-etc).
+that can be used in the predicate assertion macro
+[`EXPECT_PRED_FORMAT2`](reference/assertions.md#EXPECT_PRED_FORMAT), for
+example:
 
 ```c++
-EXPECT_PRED_FORMAT2(::testing::FloatLE, val1, val2);
-EXPECT_PRED_FORMAT2(::testing::DoubleLE, val1, val2);
+using ::testing::FloatLE;
+using ::testing::DoubleLE;
+...
+EXPECT_PRED_FORMAT2(FloatLE, val1, val2);
+EXPECT_PRED_FORMAT2(DoubleLE, val1, val2);
 ```
 
-Verifies that `val1` is less than, or almost equal to, `val2`. You can replace
-`EXPECT_PRED_FORMAT2` in the above table with `ASSERT_PRED_FORMAT2`.
+The above code verifies that `val1` is less than, or approximately equal to,
+`val2`.
 
 ### Asserting Using gMock Matchers
 
-[gMock](../../googlemock) comes with a library of matchers for validating
-arguments passed to mock objects. A gMock *matcher* is basically a predicate
-that knows how to describe itself. It can be used in these assertion macros:
-
-<!-- mdformat off(github rendering does not support multiline tables) -->
-
-| Fatal assertion                | Nonfatal assertion             | Verifies              |
-| ------------------------------ | ------------------------------ | --------------------- |
-| `ASSERT_THAT(value, matcher);` | `EXPECT_THAT(value, matcher);` | value matches matcher |
-
-<!-- mdformat on-->
-
-For example, `StartsWith(prefix)` is a matcher that matches a string starting
-with `prefix`, and you can write:
-
-```c++
-using ::testing::StartsWith;
-...
-    // Verifies that Foo() returns a string starting with "Hello".
-    EXPECT_THAT(Foo(), StartsWith("Hello"));
-```
-
-Read this
-[recipe](../../googlemock/docs/cook_book.md#using-matchers-in-googletest-assertions)
-in the gMock Cookbook for more details.
-
-gMock has a rich set of matchers. You can do many things googletest cannot do
-alone with them. For a list of matchers gMock provides, read
-[this](../../googlemock/docs/cook_book.md##using-matchers). It's easy to write
-your [own matchers](../../googlemock/docs/cook_book.md#NewMatchers) too.
-
-gMock is bundled with googletest, so you don't need to add any build dependency
-in order to take advantage of this. Just include `"testing/base/public/gmock.h"`
-and you're ready to go.
+See [`EXPECT_THAT`](reference/assertions.md#EXPECT_THAT) in the Assertions
+Reference.
 
 ### More String Assertions
 
 (Please read the [previous](#asserting-using-gmock-matchers) section first if
 you haven't.)
 
-You can use the gMock
-[string matchers](../../googlemock/docs/cheat_sheet.md#string-matchers) with
-`EXPECT_THAT()` or `ASSERT_THAT()` to do more string comparison tricks
-(sub-string, prefix, suffix, regular expression, and etc). For example,
+You can use the gMock [string matchers](reference/matchers.md#string-matchers)
+with [`EXPECT_THAT`](reference/assertions.md#EXPECT_THAT) to do more string
+comparison tricks (sub-string, prefix, suffix, regular expression, and etc). For
+example,
 
 ```c++
 using ::testing::HasSubstr;
@@ -422,37 +190,10 @@ using ::testing::MatchesRegex;
   EXPECT_THAT(bar_string, MatchesRegex("\\w*\\d+"));
 ```
 
-If the string contains a well-formed HTML or XML document, you can check whether
-its DOM tree matches an
-[XPath expression](http://www.w3.org/TR/xpath/#contents):
-
-```c++
-// Currently still in //template/prototemplate/testing:xpath_matcher
-#include "template/prototemplate/testing/xpath_matcher.h"
-using prototemplate::testing::MatchesXPath;
-EXPECT_THAT(html_string, MatchesXPath("//a[text()='click here']"));
-```
-
 ### Windows HRESULT assertions
 
-These assertions test for `HRESULT` success or failure.
-
-Fatal assertion                        | Nonfatal assertion                     | Verifies
--------------------------------------- | -------------------------------------- | --------
-`ASSERT_HRESULT_SUCCEEDED(expression)` | `EXPECT_HRESULT_SUCCEEDED(expression)` | `expression` is a success `HRESULT`
-`ASSERT_HRESULT_FAILED(expression)`    | `EXPECT_HRESULT_FAILED(expression)`    | `expression` is a failure `HRESULT`
-
-The generated output contains the human-readable error message associated with
-the `HRESULT` code returned by `expression`.
-
-You might use them like this:
-
-```c++
-CComPtr<IShellDispatch2> shell;
-ASSERT_HRESULT_SUCCEEDED(shell.CoCreateInstance(L"Shell.Application"));
-CComVariant empty;
-ASSERT_HRESULT_SUCCEEDED(shell->ShellExecute(CComBSTR(url), empty, empty, empty, empty));
-```
+See [Windows HRESULT Assertions](reference/assertions.md#HRESULT) in the
+Assertions Reference.
 
 ### Type Assertions
 
@@ -464,10 +205,9 @@ You can call the function
 
 to assert that types `T1` and `T2` are the same. The function does nothing if
 the assertion is satisfied. If the types are different, the function call will
-fail to compile, the compiler error message will say that
-`type1 and type2 are not the same type` and most likely (depending on the compiler)
-show you the actual values of `T1` and `T2`. This is mainly useful inside
-template code.
+fail to compile, the compiler error message will say that `T1 and T2 are not the
+same type` and most likely (depending on the compiler) show you the actual
+values of `T1` and `T2`. This is mainly useful inside template code.
 
 **Caveat**: When used inside a member function of a class template or a function
 template, `StaticAssertTypeEq<T1, T2>()` is effective only if the function is
@@ -476,7 +216,7 @@ instantiated. For example, given:
 ```c++
 template <typename T> class Foo {
  public:
-  void Bar() { ::testing::StaticAssertTypeEq<int, T>(); }
+  void Bar() { testing::StaticAssertTypeEq<int, T>(); }
 };
 ```
 
@@ -516,6 +256,7 @@ any assertion inside of it.
 If changing the function's type is not an option, you should just use assertions
 that generate non-fatal failures, such as `ADD_FAILURE*` and `EXPECT_*`.
 
+{: .callout .note}
 NOTE: Constructors and destructors are not considered void-returning functions,
 according to the C++ language specification, and so you may not use fatal
 assertions in them; you'll get a compilation error if you try. Instead, either
@@ -523,12 +264,45 @@ call `abort` and crash the entire test executable, or put the fatal assertion in
 a `SetUp`/`TearDown` function; see
 [constructor/destructor vs. `SetUp`/`TearDown`](faq.md#CtorVsSetUp)
 
+{: .callout .warning}
 WARNING: A fatal assertion in a helper function (private void-returning method)
-called from a constructor or destructor does not does not terminate the current
-test, as your intuition might suggest: it merely returns from the constructor or
+called from a constructor or destructor does not terminate the current test, as
+your intuition might suggest: it merely returns from the constructor or
 destructor early, possibly leaving your object in a partially-constructed or
 partially-destructed state! You almost certainly want to `abort` or use
 `SetUp`/`TearDown` instead.
+
+## Skipping test execution
+
+Related to the assertions `SUCCEED()` and `FAIL()`, you can prevent further test
+execution at runtime with the `GTEST_SKIP()` macro. This is useful when you need
+to check for preconditions of the system under test during runtime and skip
+tests in a meaningful way.
+
+`GTEST_SKIP()` can be used in individual test cases or in the `SetUp()` methods
+of classes derived from either `::testing::Environment` or `::testing::Test`.
+For example:
+
+```c++
+TEST(SkipTest, DoesSkip) {
+  GTEST_SKIP() << "Skipping single test";
+  EXPECT_EQ(0, 1);  // Won't fail; it won't be executed
+}
+
+class SkipFixture : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    GTEST_SKIP() << "Skipping all tests for this fixture";
+  }
+};
+
+// Tests for SkipFixture won't be executed.
+TEST_F(SkipFixture, SkipsOneTest) {
+  EXPECT_EQ(5, 7);  // Won't fail
+}
+```
+
+As with assertion macros, you can stream a custom message into `GTEST_SKIP()`.
 
 ## Teaching googletest How to Print Your Values
 
@@ -605,16 +379,16 @@ call `::testing::PrintToString(x)`, which returns an `std::string`:
 vector<pair<Bar, int> > bar_ints = GetBarIntVector();
 
 EXPECT_TRUE(IsCorrectBarIntVector(bar_ints))
-    << "bar_ints = " << ::testing::PrintToString(bar_ints);
+    << "bar_ints = " << testing::PrintToString(bar_ints);
 ```
 
 ## Death Tests
 
 In many applications, there are assertions that can cause application failure if
-a condition is not met. These sanity checks, which ensure that the program is in
-a known good state, are there to fail at the earliest possible time after some
-program state is corrupted. If the assertion checks the wrong condition, then
-the program may proceed in an erroneous state, which could lead to memory
+a condition is not met. These consistency checks, which ensure that the program
+is in a known good state, are there to fail at the earliest possible time after
+some program state is corrupted. If the assertion checks the wrong condition,
+then the program may proceed in an erroneous state, which could lead to memory
 corruption, security holes, or worse. Hence it is vitally important to test that
 such assertion statements work as expected.
 
@@ -628,73 +402,16 @@ exception and avoid the crash. If you want to verify exceptions thrown by your
 code, see [Exception Assertions](#ExceptionAssertions).
 
 If you want to test `EXPECT_*()/ASSERT_*()` failures in your test code, see
-Catching Failures
+["Catching" Failures](#catching-failures).
 
 ### How to Write a Death Test
 
-googletest has the following macros to support death tests:
+GoogleTest provides assertion macros to support death tests. See
+[Death Assertions](reference/assertions.md#death) in the Assertions Reference
+for details.
 
-Fatal assertion                                  | Nonfatal assertion                               | Verifies
------------------------------------------------- | ------------------------------------------------ | --------
-`ASSERT_DEATH(statement, matcher);`              | `EXPECT_DEATH(statement, matcher);`              | `statement` crashes with the given error
-`ASSERT_DEATH_IF_SUPPORTED(statement, matcher);` | `EXPECT_DEATH_IF_SUPPORTED(statement, matcher);` | if death tests are supported, verifies that `statement` crashes with the given error; otherwise verifies nothing
-`ASSERT_EXIT(statement, predicate, matcher);`    | `EXPECT_EXIT(statement, predicate, matcher);`    | `statement` exits with the given error, and its exit code matches `predicate`
-
-where `statement` is a statement that is expected to cause the process to die,
-`predicate` is a function or function object that evaluates an integer exit
-status, and `matcher` is either a GMock matcher matching a `const std::string&`
-or a (Perl) regular expression - either of which is matched against the stderr
-output of `statement`. For legacy reasons, a bare string (i.e. with no matcher)
-is interpreted as `ContainsRegex(str)`, **not** `Eq(str)`. Note that `statement`
-can be *any valid statement* (including *compound statement*) and doesn't have
-to be an expression.
-
-As usual, the `ASSERT` variants abort the current test function, while the
-`EXPECT` variants do not.
-
-> NOTE: We use the word "crash" here to mean that the process terminates with a
-> *non-zero* exit status code. There are two possibilities: either the process
-> has called `exit()` or `_exit()` with a non-zero value, or it may be killed by
-> a signal.
->
-> This means that if `*statement*` terminates the process with a 0 exit code, it
-> is *not* considered a crash by `EXPECT_DEATH`. Use `EXPECT_EXIT` instead if
-> this is the case, or if you want to restrict the exit code more precisely.
-
-A predicate here must accept an `int` and return a `bool`. The death test
-succeeds only if the predicate returns `true`. googletest defines a few
-predicates that handle the most common cases:
-
-```c++
-::testing::ExitedWithCode(exit_code)
-```
-
-This expression is `true` if the program exited normally with the given exit
-code.
-
-```c++
-::testing::KilledBySignal(signal_number)  // Not available on Windows.
-```
-
-This expression is `true` if the program was killed by the given signal.
-
-The `*_DEATH` macros are convenient wrappers for `*_EXIT` that use a predicate
-that verifies the process' exit code is non-zero.
-
-Note that a death test only cares about three things:
-
-1.  does `statement` abort or exit the process?
-2.  (in the case of `ASSERT_EXIT` and `EXPECT_EXIT`) does the exit status
-    satisfy `predicate`? Or (in the case of `ASSERT_DEATH` and `EXPECT_DEATH`)
-    is the exit status non-zero? And
-3.  does the stderr output match `regex`?
-
-In particular, if `statement` generates an `ASSERT_*` or `EXPECT_*` failure, it
-will **not** cause the death test to fail, as googletest assertions don't abort
-the process.
-
-To write a death test, simply use one of the above macros inside your test
-function. For example,
+To write a death test, simply use one of the macros inside your test function.
+For example,
 
 ```c++
 TEST(MyDeathTest, Foo) {
@@ -706,11 +423,11 @@ TEST(MyDeathTest, Foo) {
 }
 
 TEST(MyDeathTest, NormalExit) {
-  EXPECT_EXIT(NormalExit(), ::testing::ExitedWithCode(0), "Success");
+  EXPECT_EXIT(NormalExit(), testing::ExitedWithCode(0), "Success");
 }
 
-TEST(MyDeathTest, KillMyself) {
-  EXPECT_EXIT(KillMyself(), ::testing::KilledBySignal(SIGKILL),
+TEST(MyDeathTest, KillProcess) {
+  EXPECT_EXIT(KillProcess(), testing::KilledBySignal(SIGKILL),
               "Sending myself unblockable signal");
 }
 ```
@@ -720,13 +437,26 @@ verifies that:
 *   calling `Foo(5)` causes the process to die with the given error message,
 *   calling `NormalExit()` causes the process to print `"Success"` to stderr and
     exit with exit code 0, and
-*   calling `KillMyself()` kills the process with signal `SIGKILL`.
+*   calling `KillProcess()` kills the process with signal `SIGKILL`.
 
 The test function body may contain other assertions and statements as well, if
 necessary.
 
+Note that a death test only cares about three things:
+
+1.  does `statement` abort or exit the process?
+2.  (in the case of `ASSERT_EXIT` and `EXPECT_EXIT`) does the exit status
+    satisfy `predicate`? Or (in the case of `ASSERT_DEATH` and `EXPECT_DEATH`)
+    is the exit status non-zero? And
+3.  does the stderr output match `matcher`?
+
+In particular, if `statement` generates an `ASSERT_*` or `EXPECT_*` failure, it
+will **not** cause the death test to fail, as googletest assertions don't abort
+the process.
+
 ### Death Test Naming
 
+{: .callout .important}
 IMPORTANT: We strongly recommend you to follow the convention of naming your
 **test suite** (not test) `*DeathTest` when it contains a death test, as
 demonstrated in the above example. The
@@ -737,7 +467,7 @@ If a test fixture class is shared by normal tests and death tests, you can use
 duplicating its code:
 
 ```c++
-class FooTest : public ::testing::Test { ... };
+class FooTest : public testing::Test { ... };
 
 using FooDeathTest = FooTest;
 
@@ -752,10 +482,12 @@ TEST_F(FooDeathTest, DoesThat) {
 
 ### Regular Expression Syntax
 
-On POSIX systems (e.g. Linux, Cygwin, and Mac), googletest uses the
+When built with Bazel and using Abseil, googletest uses the
+[RE2](https://github.com/google/re2/wiki/Syntax) syntax. Otherwise, for POSIX
+systems (Linux, Cygwin, Mac), googletest uses the
 [POSIX extended regular expression](http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html#tag_09_04)
-syntax. To learn about this syntax, you may want to read this
-[Wikipedia entry](http://en.wikipedia.org/wiki/Regular_expression#POSIX_Extended_Regular_Expressions).
+syntax. To learn about POSIX syntax, you may want to read this
+[Wikipedia entry](http://en.wikipedia.org/wiki/Regular_expression#POSIX_extended).
 
 On Windows, googletest uses its own simple regular expression implementation. It
 lacks many features. For example, we don't support union (`"x|y"`), grouping
@@ -795,31 +527,8 @@ limited syntax only.
 
 ### How It Works
 
-Under the hood, `ASSERT_EXIT()` spawns a new process and executes the death test
-statement in that process. The details of how precisely that happens depend on
-the platform and the variable ::testing::GTEST_FLAG(death_test_style) (which is
-initialized from the command-line flag `--gtest_death_test_style`).
-
-*   On POSIX systems, `fork()` (or `clone()` on Linux) is used to spawn the
-    child, after which:
-    *   If the variable's value is `"fast"`, the death test statement is
-        immediately executed.
-    *   If the variable's value is `"threadsafe"`, the child process re-executes
-        the unit test binary just as it was originally invoked, but with some
-        extra flags to cause just the single death test under consideration to
-        be run.
-*   On Windows, the child is spawned using the `CreateProcess()` API, and
-    re-executes the binary to cause just the single death test under
-    consideration to be run - much like the `threadsafe` mode on POSIX.
-
-Other values for the variable are illegal and will cause the death test to fail.
-Currently, the flag's default value is **"fast"**
-
-1.  the child's exit status satisfies the predicate, and
-2.  the child's stderr matches the regular expression.
-
-If the death test statement runs to completion without dying, the child process
-will nonetheless terminate, and the assertion fails.
+See [Death Assertions](reference/assertions.md#death) in the Assertions
+Reference.
 
 ### Death Tests And Threads
 
@@ -853,7 +562,7 @@ The automated testing framework does not set the style flag. You can choose a
 particular style of death tests by setting the flag programmatically:
 
 ```c++
-testing::FLAGS_gtest_death_test_style="threadsafe"
+GTEST_FLAG_SET(death_test_style, "threadsafe")
 ```
 
 You can do this in `main()` to set the style for all death tests in the binary,
@@ -862,13 +571,13 @@ restored afterwards, so you need not do that yourself. For example:
 
 ```c++
 int main(int argc, char** argv) {
-  InitGoogle(argv[0], &argc, &argv, true);
-  ::testing::FLAGS_gtest_death_test_style = "fast";
+  testing::InitGoogleTest(&argc, argv);
+  GTEST_FLAG_SET(death_test_style, "fast");
   return RUN_ALL_TESTS();
 }
 
 TEST(MyDeathTest, TestOne) {
-  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  GTEST_FLAG_SET(death_test_style, "threadsafe");
   // This test is run in the "threadsafe" style:
   ASSERT_DEATH(ThisShouldDie(), "");
 }
@@ -905,8 +614,14 @@ Despite the improved thread safety afforded by the "threadsafe" style of death
 test, thread problems such as deadlock are still possible in the presence of
 handlers registered with `pthread_atfork(3)`.
 
-
 ## Using Assertions in Sub-routines
+
+{: .callout .note}
+Note: If you want to put a series of test assertions in a subroutine to check
+for a complex condition, consider using
+[a custom GMock matcher](gmock_cook_book.md#NewMatchers) instead. This lets you
+provide a more readable error message in case of failure and avoid all of the
+issues described below.
 
 ### Adding Traces to Assertions
 
@@ -918,6 +633,9 @@ the `SCOPED_TRACE` macro or the `ScopedTrace` utility:
 
 ```c++
 SCOPED_TRACE(message);
+```
+
+```c++
 ScopedTrace trace("file_path", line_number, message);
 ```
 
@@ -953,7 +671,7 @@ path/to/foo_test.cc:11: Failure
 Value of: Bar(n)
 Expected: 1
   Actual: 2
-   Trace:
+Google Test trace:
 path/to/foo_test.cc:17: A
 
 path/to/foo_test.cc:12: Failure
@@ -1003,7 +721,7 @@ TEST(FooTest, Bar) {
                  // in Subroutine() to abort the entire test.
 
   // The actual behavior: the function goes on after Subroutine() returns.
-  int* p = NULL;
+  int* p = nullptr;
   *p = 3;  // Segfault!
 }
 ```
@@ -1097,7 +815,7 @@ If `HasFatalFailure()` is used outside of `TEST()` , `TEST_F()` , or a test
 fixture, you must add the `::testing::Test::` prefix, as in:
 
 ```c++
-if (::testing::Test::HasFatalFailure()) return;
+if (testing::Test::HasFatalFailure()) return;
 ```
 
 Similarly, `HasNonfatalFailure()` returns `true` if the current test has at
@@ -1123,16 +841,17 @@ will output XML like this:
 
 ```xml
   ...
-    <testcase name="MinAndMaxWidgets" status="run" time="0.006" classname="WidgetUsageTest" MaximumWidgets="12" MinimumWidgets="9" />
+    <testcase name="MinAndMaxWidgets" file="test.cpp" line="1" status="run" time="0.006" classname="WidgetUsageTest" MaximumWidgets="12" MinimumWidgets="9" />
   ...
 ```
 
+{: .callout .note}
 > NOTE:
 >
 > *   `RecordProperty()` is a static member of the `Test` class. Therefore it
 >     needs to be prefixed with `::testing::Test::` if used outside of the
 >     `TEST` body and the test fixture class.
-> *   `*key*` must be a valid XML attribute name, and cannot conflict with the
+> *   *`key`* must be a valid XML attribute name, and cannot conflict with the
 >     ones already used by googletest (`name`, `status`, `time`, `classname`,
 >     `type_param`, and `value_param`).
 > *   Calling `RecordProperty()` outside of the lifespan of a test is allowed.
@@ -1173,16 +892,25 @@ preceding or following another. Also, the tests must either not modify the state
 of any shared resource, or, if they do modify the state, they must restore the
 state to its original value before passing control to the next test.
 
+Note that `SetUpTestSuite()` may be called multiple times for a test fixture
+class that has derived classes, so you should not expect code in the function
+body to be run only once. Also, derived classes still have access to shared
+resources defined as static members, so careful consideration is needed when
+managing shared resources to avoid memory leaks.
+
 Here's an example of per-test-suite set-up and tear-down:
 
 ```c++
-class FooTest : public ::testing::Test {
+class FooTest : public testing::Test {
  protected:
   // Per-test-suite set-up.
   // Called before the first test in this test suite.
   // Can be omitted if not needed.
   static void SetUpTestSuite() {
-    shared_resource_ = new ...;
+    // Avoid reallocating static objects if called in subclasses of FooTest.
+    if (shared_resource_ == nullptr) {
+      shared_resource_ = new ...;
+    }
   }
 
   // Per-test-suite tear-down.
@@ -1190,20 +918,20 @@ class FooTest : public ::testing::Test {
   // Can be omitted if not needed.
   static void TearDownTestSuite() {
     delete shared_resource_;
-    shared_resource_ = NULL;
+    shared_resource_ = nullptr;
   }
 
   // You can define per-test set-up logic as usual.
-  virtual void SetUp() { ... }
+  void SetUp() override { ... }
 
   // You can define per-test tear-down logic as usual.
-  virtual void TearDown() { ... }
+  void TearDown() override { ... }
 
   // Some expensive resource shared by all tests.
   static T* shared_resource_;
 };
 
-T* FooTest::shared_resource_ = NULL;
+T* FooTest::shared_resource_ = nullptr;
 
 TEST_F(FooTest, Test1) {
   ... you can refer to shared_resource_ here ...
@@ -1214,6 +942,7 @@ TEST_F(FooTest, Test2) {
 }
 ```
 
+{: .callout .note}
 NOTE: Though the above code declares `SetUpTestSuite()` protected, it may
 sometimes be necessary to declare it public, such as when using it with
 `TEST_P`.
@@ -1229,7 +958,7 @@ environment, which knows how to set-up and tear-down:
 ```c++
 class Environment : public ::testing::Environment {
  public:
-  virtual ~Environment() {}
+  ~Environment() override {}
 
   // Override this to define how to set up the environment.
   void SetUp() override {}
@@ -1265,8 +994,8 @@ probably in `main()`. If you use `gtest_main`, you need to call this before
 variable like this:
 
 ```c++
-::testing::Environment* const foo_env =
-    ::testing::AddGlobalTestEnvironment(new FooEnvironment);
+testing::Environment* const foo_env =
+    testing::AddGlobalTestEnvironment(new FooEnvironment);
 ```
 
 However, we strongly recommend you to write your own `main()` and call
@@ -1301,6 +1030,7 @@ and `testing::WithParamInterface<T>`. `T` can be any copyable type. If it's a
 raw pointer, you are responsible for managing the lifespan of the pointed
 values.
 
+{: .callout .note}
 NOTE: If your test fixture defines `SetUpTestSuite()` or `TearDownTestSuite()`
 they must be declared **public** rather than **protected** in order to use
 `TEST_P`.
@@ -1340,80 +1070,85 @@ TEST_P(FooTest, HasBlahBlah) {
 }
 ```
 
-Finally, you can use `INSTANTIATE_TEST_SUITE_P` to instantiate the test suite
-with any set of parameters you want. googletest defines a number of functions
-for generating test parameters. They return what we call (surprise!) *parameter
-generators*. Here is a summary of them, which are all in the `testing`
-namespace:
+Finally, you can use the `INSTANTIATE_TEST_SUITE_P` macro to instantiate the
+test suite with any set of parameters you want. GoogleTest defines a number of
+functions for generating test parameters—see details at
+[`INSTANTIATE_TEST_SUITE_P`](reference/testing.md#INSTANTIATE_TEST_SUITE_P) in
+the Testing Reference.
 
-<!-- mdformat off(github rendering does not support multiline tables) -->
-
-| Parameter Generator                                                                       | Behavior                                                                                                          |
-| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `Range(begin, end [, step])`                                                              | Yields values `{begin, begin+step, begin+step+step, ...}`. The values do not include `end`. `step` defaults to 1. |
-| `Values(v1, v2, ..., vN)`                                                                 | Yields values `{v1, v2, ..., vN}`.                                                                                |
-| `ValuesIn(container)` and  `ValuesIn(begin,end)`                                          | Yields values from a C-style array, an  STL-style container, or an iterator range `[begin, end)`                  |
-| `Bool()`                                                                                  | Yields sequence `{false, true}`.                                                                                  |
-| `Combine(g1, g2, ..., gN)`                                                                | Yields all combinations (Cartesian product) as std\:\:tuples of the values generated by the `N` generators.       |
-
-<!-- mdformat on-->
-
-For more details, see the comments at the definitions of these functions.
-
-The following statement will instantiate tests from the `FooTest` test suite
-each with parameter values `"meeny"`, `"miny"`, and `"moe"`.
+For example, the following statement will instantiate tests from the `FooTest`
+test suite each with parameter values `"meeny"`, `"miny"`, and `"moe"` using the
+[`Values`](reference/testing.md#param-generators) parameter generator:
 
 ```c++
-INSTANTIATE_TEST_SUITE_P(InstantiationName,
+INSTANTIATE_TEST_SUITE_P(MeenyMinyMoe,
                          FooTest,
                          testing::Values("meeny", "miny", "moe"));
 ```
 
+{: .callout .note}
 NOTE: The code above must be placed at global or namespace scope, not at
 function scope.
 
-NOTE: Don't forget this step! If you do your test will silently pass, but none
-of its suites will ever run!
+The first argument to `INSTANTIATE_TEST_SUITE_P` is a unique name for the
+instantiation of the test suite. The next argument is the name of the test
+pattern, and the last is the
+[parameter generator](reference/testing.md#param-generators).
 
-To distinguish different instances of the pattern (yes, you can instantiate it
-more than once), the first argument to `INSTANTIATE_TEST_SUITE_P` is a prefix
-that will be added to the actual test suite name. Remember to pick unique
-prefixes for different instantiations. The tests from the instantiation above
-will have these names:
+The parameter generator expression is not evaluated until GoogleTest is
+initialized (via `InitGoogleTest()`). Any prior initialization done in the
+`main` function will be accessible from the parameter generator, for example,
+the results of flag parsing.
 
-*   `InstantiationName/FooTest.DoesBlah/0` for `"meeny"`
-*   `InstantiationName/FooTest.DoesBlah/1` for `"miny"`
-*   `InstantiationName/FooTest.DoesBlah/2` for `"moe"`
-*   `InstantiationName/FooTest.HasBlahBlah/0` for `"meeny"`
-*   `InstantiationName/FooTest.HasBlahBlah/1` for `"miny"`
-*   `InstantiationName/FooTest.HasBlahBlah/2` for `"moe"`
+You can instantiate a test pattern more than once, so to distinguish different
+instances of the pattern, the instantiation name is added as a prefix to the
+actual test suite name. Remember to pick unique prefixes for different
+instantiations. The tests from the instantiation above will have these names:
+
+*   `MeenyMinyMoe/FooTest.DoesBlah/0` for `"meeny"`
+*   `MeenyMinyMoe/FooTest.DoesBlah/1` for `"miny"`
+*   `MeenyMinyMoe/FooTest.DoesBlah/2` for `"moe"`
+*   `MeenyMinyMoe/FooTest.HasBlahBlah/0` for `"meeny"`
+*   `MeenyMinyMoe/FooTest.HasBlahBlah/1` for `"miny"`
+*   `MeenyMinyMoe/FooTest.HasBlahBlah/2` for `"moe"`
 
 You can use these names in [`--gtest_filter`](#running-a-subset-of-the-tests).
 
-This statement will instantiate all tests from `FooTest` again, each with
-parameter values `"cat"` and `"dog"`:
+The following statement will instantiate all tests from `FooTest` again, each
+with parameter values `"cat"` and `"dog"` using the
+[`ValuesIn`](reference/testing.md#param-generators) parameter generator:
 
 ```c++
 const char* pets[] = {"cat", "dog"};
-INSTANTIATE_TEST_SUITE_P(AnotherInstantiationName, FooTest,
-                         testing::ValuesIn(pets));
+INSTANTIATE_TEST_SUITE_P(Pets, FooTest, testing::ValuesIn(pets));
 ```
 
 The tests from the instantiation above will have these names:
 
-*   `AnotherInstantiationName/FooTest.DoesBlah/0` for `"cat"`
-*   `AnotherInstantiationName/FooTest.DoesBlah/1` for `"dog"`
-*   `AnotherInstantiationName/FooTest.HasBlahBlah/0` for `"cat"`
-*   `AnotherInstantiationName/FooTest.HasBlahBlah/1` for `"dog"`
+*   `Pets/FooTest.DoesBlah/0` for `"cat"`
+*   `Pets/FooTest.DoesBlah/1` for `"dog"`
+*   `Pets/FooTest.HasBlahBlah/0` for `"cat"`
+*   `Pets/FooTest.HasBlahBlah/1` for `"dog"`
 
 Please note that `INSTANTIATE_TEST_SUITE_P` will instantiate *all* tests in the
 given test suite, whether their definitions come before or *after* the
 `INSTANTIATE_TEST_SUITE_P` statement.
 
+Additionally, by default, every `TEST_P` without a corresponding
+`INSTANTIATE_TEST_SUITE_P` causes a failing test in test suite
+`GoogleTestVerification`. If you have a test suite where that omission is not an
+error, for example it is in a library that may be linked in for other reasons or
+where the list of test cases is dynamic and may be empty, then this check can be
+suppressed by tagging the test suite:
+
+```c++
+GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(FooTest);
+```
+
 You can see [sample7_unittest.cc] and [sample8_unittest.cc] for more examples.
 
-[sample7_unittest.cc]: ../samples/sample7_unittest.cc "Parameterized Test example"
-[sample8_unittest.cc]: ../samples/sample8_unittest.cc "Parameterized Test example with multiple parameters"
+[sample7_unittest.cc]: https://github.com/google/googletest/blob/main/googletest/samples/sample7_unittest.cc "Parameterized Test example"
+[sample8_unittest.cc]: https://github.com/google/googletest/blob/main/googletest/samples/sample8_unittest.cc "Parameterized Test example with multiple parameters"
 
 ### Creating Value-Parameterized Abstract Tests
 
@@ -1450,6 +1185,7 @@ the test parameters. The function should accept one argument of type
 returns the value of `testing::PrintToString(GetParam())`. It does not work for
 `std::string` or C strings.
 
+{: .callout .note}
 NOTE: test names must be non-empty, unique, and may only contain ASCII
 alphanumeric characters. In particular, they
 [should not contain underscores](faq.md#why-should-test-suite-names-and-test-names-not-contain-underscore)
@@ -1476,17 +1212,17 @@ for conciseness:
 ```c++
 enum class MyType { MY_FOO = 0, MY_BAR = 1 };
 
-class MyTestSuite : public testing::TestWithParam<std::tuple<MyType, string>> {
+class MyTestSuite : public testing::TestWithParam<std::tuple<MyType, std::string>> {
 };
 
 INSTANTIATE_TEST_SUITE_P(
     MyGroup, MyTestSuite,
     testing::Combine(
-        testing::Values(MyType::VALUE_0, MyType::VALUE_1),
-        testing::ValuesIn("", "")),
+        testing::Values(MyType::MY_FOO, MyType::MY_BAR),
+        testing::Values("A", "B")),
     [](const testing::TestParamInfo<MyTestSuite::ParamType>& info) {
-      string name = absl::StrCat(
-          std::get<0>(info.param) == MY_FOO ? "Foo" : "Bar", "_",
+      std::string name = absl::StrCat(
+          std::get<0>(info.param) == MyType::MY_FOO ? "Foo" : "Bar",
           std::get<1>(info.param));
       absl::c_replace_if(name, [](char c) { return !std::isalnum(c); }, '_');
       return name;
@@ -1515,10 +1251,10 @@ Remember to derive it from `::testing::Test`:
 
 ```c++
 template <typename T>
-class FooTest : public ::testing::Test {
+class FooTest : public testing::Test {
  public:
   ...
-  typedef std::list<T> List;
+  using List = std::list<T>;
   static T shared_;
   T value_;
 };
@@ -1563,7 +1299,7 @@ TYPED_TEST(FooTest, HasPropertyA) { ... }
 
 You can see [sample6_unittest.cc] for a complete example.
 
-[sample6_unittest.cc]: ../samples/sample6_unittest.cc "Typed Test example"
+[sample6_unittest.cc]: https://github.com/google/googletest/blob/main/googletest/samples/sample6_unittest.cc "Typed Test example"
 
 ## Type-Parameterized Tests
 
@@ -1583,7 +1319,8 @@ First, define a fixture class template, as we did with typed tests:
 
 ```c++
 template <typename T>
-class FooTest : public ::testing::Test {
+class FooTest : public testing::Test {
+  void DoSomethingInteresting();
   ...
 };
 ```
@@ -1601,6 +1338,9 @@ this as many times as you want:
 TYPED_TEST_P(FooTest, DoesBlah) {
   // Inside a test, refer to TypeParam to get the type parameter.
   TypeParam n = 0;
+
+  // You will need to use `this` explicitly to refer to fixture members.
+  this->DoSomethingInteresting()
   ...
 }
 
@@ -1622,7 +1362,7 @@ put the above code in a header file, you can `#include` it in multiple C++
 source files and instantiate it multiple times.
 
 ```c++
-typedef ::testing::Types<char, int, unsigned int> MyTypes;
+using MyTypes = ::testing::Types<char, int, unsigned int>;
 INSTANTIATE_TYPED_TEST_SUITE_P(My, FooTest, MyTypes);
 ```
 
@@ -1718,10 +1458,11 @@ To test them, we use the following special techniques:
     }
     ```
 
-    Pay special attention when your class is defined in a namespace, as you
-    should define your test fixtures and tests in the same namespace if you want
-    them to be friends of your class. For example, if the code to be tested
-    looks like:
+    Pay special attention when your class is defined in a namespace. If you want
+    your test fixtures and tests to be friends of your class, then they must be
+    defined in the exact same namespace (no anonymous or inline namespaces).
+
+    For example, if the code to be tested looks like:
 
     ```c++
     namespace my_namespace {
@@ -1741,7 +1482,7 @@ To test them, we use the following special techniques:
     ```c++
     namespace my_namespace {
 
-    class FooTest : public ::testing::Test {
+    class FooTest : public testing::Test {
      protected:
       ...
     };
@@ -1762,8 +1503,8 @@ In frameworks that report a failure by throwing an exception, you could catch
 the exception and assert on it. But googletest doesn't use exceptions, so how do
 we test that a piece of code generates an expected failure?
 
-gunit-spi.h contains some constructs to do this. After #including this header,
-you can use
+`"gtest/gtest-spi.h"` contains some constructs to do this.
+After #including this header, you can use
 
 ```c++
   EXPECT_FATAL_FAILURE(statement, substring);
@@ -1788,6 +1529,7 @@ well, use one of the following macros instead:
   EXPECT_NONFATAL_FAILURE_ON_ALL_THREADS(statement, substring);
 ```
 
+{: .callout .note}
 NOTE: Assertions from multiple threads are currently not supported on Windows.
 
 For technical reasons, there are some caveats:
@@ -1803,7 +1545,7 @@ For technical reasons, there are some caveats:
 ## Registering tests programmatically
 
 The `TEST` macros handle the vast majority of all use cases, but there are few
-were runtime registration logic is required. For those cases, the framework
+where runtime registration logic is required. For those cases, the framework
 provides the `::testing::RegisterTest` that allows callers to register arbitrary
 tests dynamically.
 
@@ -1836,7 +1578,7 @@ undefined.
 Use case example:
 
 ```c++
-class MyFixture : public ::testing::Test {
+class MyFixture : public testing::Test {
  public:
   // All of these optional, just like in regular macro usage.
   static void SetUpTestSuite() { ... }
@@ -1856,7 +1598,7 @@ class MyTest : public MyFixture {
 
 void RegisterMyTests(const std::vector<int>& values) {
   for (int v : values) {
-    ::testing::RegisterTest(
+    testing::RegisterTest(
         "MyFixture", ("Test" + std::to_string(v)).c_str(), nullptr,
         std::to_string(v).c_str(),
         __FILE__, __LINE__,
@@ -1866,45 +1608,30 @@ void RegisterMyTests(const std::vector<int>& values) {
 }
 ...
 int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
   std::vector<int> values_to_test = LoadValuesFromConfig();
   RegisterMyTests(values_to_test);
   ...
   return RUN_ALL_TESTS();
 }
 ```
+
 ## Getting the Current Test's Name
 
 Sometimes a function may need to know the name of the currently running test.
 For example, you may be using the `SetUp()` method of your test fixture to set
-the golden file name based on which test is running. The `::testing::TestInfo`
-class has this information:
-
-```c++
-namespace testing {
-
-class TestInfo {
- public:
-  // Returns the test suite name and the test name, respectively.
-  //
-  // Do NOT delete or free the return value - it's managed by the
-  // TestInfo class.
-  const char* test_suite_name() const;
-  const char* name() const;
-};
-
-}
-```
+the golden file name based on which test is running. The
+[`TestInfo`](reference/testing.md#TestInfo) class has this information.
 
 To obtain a `TestInfo` object for the currently running test, call
-`current_test_info()` on the `UnitTest` singleton object:
+`current_test_info()` on the [`UnitTest`](reference/testing.md#UnitTest)
+singleton object:
 
 ```c++
   // Gets information about the currently running test.
   // Do NOT delete the returned object - it's managed by the UnitTest class.
-  const ::testing::TestInfo* const test_info =
-    ::testing::UnitTest::GetInstance()->current_test_info();
-
-
+  const testing::TestInfo* const test_info =
+      testing::UnitTest::GetInstance()->current_test_info();
 
   printf("We are in test %s of test suite %s.\n",
          test_info->name(),
@@ -1912,8 +1639,8 @@ To obtain a `TestInfo` object for the currently running test, call
 ```
 
 `current_test_info()` returns a null pointer if no test is running. In
-particular, you cannot find the test suite name in `TestSuiteSetUp()`,
-`TestSuiteTearDown()` (where you know the test suite name implicitly), or
+particular, you cannot find the test suite name in `SetUpTestSuite()`,
+`TearDownTestSuite()` (where you know the test suite name implicitly), or
 functions called from them.
 
 ## Extending googletest by Handling Test Events
@@ -1928,12 +1655,14 @@ checkpoints to implement a resource leak checker, for example.
 
 ### Defining Event Listeners
 
-To define a event listener, you subclass either testing::TestEventListener or
-testing::EmptyTestEventListener The former is an (abstract) interface, where
-*each pure virtual method can be overridden to handle a test event* (For
-example, when a test starts, the `OnTestStart()` method will be called.). The
-latter provides an empty implementation of all methods in the interface, such
-that a subclass only needs to override the methods it cares about.
+To define a event listener, you subclass either
+[`testing::TestEventListener`](reference/testing.md#TestEventListener) or
+[`testing::EmptyTestEventListener`](reference/testing.md#EmptyTestEventListener)
+The former is an (abstract) interface, where *each pure virtual method can be
+overridden to handle a test event* (For example, when a test starts, the
+`OnTestStart()` method will be called.). The latter provides an empty
+implementation of all methods in the interface, such that a subclass only needs
+to override the methods it cares about.
 
 When an event is fired, its context is passed to the handler function as an
 argument. The following argument types are used:
@@ -1950,15 +1679,15 @@ interesting information about the event and the test program's state.
 Here's an example:
 
 ```c++
-  class MinimalistPrinter : public ::testing::EmptyTestEventListener {
+  class MinimalistPrinter : public testing::EmptyTestEventListener {
     // Called before a test starts.
-    virtual void OnTestStart(const ::testing::TestInfo& test_info) {
+    void OnTestStart(const testing::TestInfo& test_info) override {
       printf("*** Test %s.%s starting.\n",
              test_info.test_suite_name(), test_info.name());
     }
 
     // Called after a failed assertion or a SUCCESS().
-    virtual void OnTestPartResult(const ::testing::TestPartResult& test_part_result) {
+    void OnTestPartResult(const testing::TestPartResult& test_part_result) override {
       printf("%s in %s:%d\n%s\n",
              test_part_result.failed() ? "*** Failure" : "Success",
              test_part_result.file_name(),
@@ -1967,7 +1696,7 @@ Here's an example:
     }
 
     // Called after a test ends.
-    virtual void OnTestEnd(const ::testing::TestInfo& test_info) {
+    void OnTestEnd(const testing::TestInfo& test_info) override {
       printf("*** Test %s.%s ending.\n",
              test_info.test_suite_name(), test_info.name());
     }
@@ -1977,16 +1706,17 @@ Here's an example:
 ### Using Event Listeners
 
 To use the event listener you have defined, add an instance of it to the
-googletest event listener list (represented by class TestEventListeners - note
-the "s" at the end of the name) in your `main()` function, before calling
+googletest event listener list (represented by class
+[`TestEventListeners`](reference/testing.md#TestEventListeners) - note the "s"
+at the end of the name) in your `main()` function, before calling
 `RUN_ALL_TESTS()`:
 
 ```c++
 int main(int argc, char** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
+  testing::InitGoogleTest(&argc, argv);
   // Gets hold of the event listener list.
-  ::testing::TestEventListeners& listeners =
-        ::testing::UnitTest::GetInstance()->listeners();
+  testing::TestEventListeners& listeners =
+      testing::UnitTest::GetInstance()->listeners();
   // Adds a listener to the end.  googletest takes the ownership.
   listeners.Append(new MinimalistPrinter);
   return RUN_ALL_TESTS();
@@ -2008,7 +1738,7 @@ You can do so by adding one line:
 Now, sit back and enjoy a completely different output from your tests. For more
 details, see [sample9_unittest.cc].
 
-[sample9_unittest.cc]: ../samples/sample9_unittest.cc "Event listener example"
+[sample9_unittest.cc]: https://github.com/google/googletest/blob/main/googletest/samples/sample9_unittest.cc "Event listener example"
 
 You may append more than one listener to the list. When an `On*Start()` or
 `OnTestPartResult()` event is fired, the listeners will receive it in the order
@@ -2035,7 +1765,7 @@ by the former.
 
 See [sample10_unittest.cc] for an example of a failure-raising listener.
 
-[sample10_unittest.cc]: ../samples/sample10_unittest.cc "Failure-raising listener example"
+[sample10_unittest.cc]: https://github.com/google/googletest/blob/main/googletest/samples/sample10_unittest.cc "Failure-raising listener example"
 
 ## Running Test Programs: Advanced Options
 
@@ -2104,6 +1834,14 @@ For example:
     everything in test suite `FooTest` except `FooTest.Bar` and everything in
     test suite `BarTest` except `BarTest.Foo`.
 
+#### Stop test execution upon first failure
+
+By default, a googletest program runs all tests the user has defined. In some
+cases (e.g. iterative test development & execution) it may be desirable stop
+test execution upon first failure (trading improved latency for completeness).
+If `GTEST_FAIL_FAST` environment variable or `--gtest_fail_fast` flag is set,
+the test runner will stop execution as soon as the first test failure is found.
+
 #### Temporarily Disabling Tests
 
 If you have a broken test that you cannot fix right away, you can add the
@@ -2122,19 +1860,21 @@ will still be compiled:
 // Tests that Foo does Abc.
 TEST(FooTest, DISABLED_DoesAbc) { ... }
 
-class DISABLED_BarTest : public ::testing::Test { ... };
+class DISABLED_BarTest : public testing::Test { ... };
 
 // Tests that Bar does Xyz.
 TEST_F(DISABLED_BarTest, DoesXyz) { ... }
 ```
 
+{: .callout .note}
 NOTE: This feature should only be used for temporary pain-relief. You still have
 to fix the disabled tests at a later date. As a reminder, googletest will print
 a banner warning you if a test program contains any disabled tests.
 
-TIP: You can easily count the number of disabled tests you have using `gsearch`
-and/or `grep`. This number can be used as a metric for improving your test
-quality.
+{: .callout .tip}
+TIP: You can easily count the number of disabled tests you have using
+`grep`. This number can be used as a metric for
+improving your test quality.
 
 #### Temporarily Enabling Disabled Tests
 
@@ -2173,8 +1913,12 @@ Repeat the tests whose name matches the filter 1000 times.
 
 If your test program contains
 [global set-up/tear-down](#global-set-up-and-tear-down) code, it will be
-repeated in each iteration as well, as the flakiness may be in it. You can also
-specify the repeat count by setting the `GTEST_REPEAT` environment variable.
+repeated in each iteration as well, as the flakiness may be in it. To avoid
+repeating global set-up/tear-down, specify
+`--gtest_recreate_environments_when_repeating=false`{.nowrap}.
+
+You can also specify the repeat count by setting the `GTEST_REPEAT` environment
+variable.
 
 ### Shuffling the Tests
 
@@ -2194,6 +1938,58 @@ time.
 If you combine this with `--gtest_repeat=N`, googletest will pick a different
 random seed and re-shuffle the tests in each iteration.
 
+### Distributing Test Functions to Multiple Machines
+
+If you have more than one machine you can use to run a test program, you might
+want to run the test functions in parallel and get the result faster. We call
+this technique *sharding*, where each machine is called a *shard*.
+
+GoogleTest is compatible with test sharding. To take advantage of this feature,
+your test runner (not part of GoogleTest) needs to do the following:
+
+1.  Allocate a number of machines (shards) to run the tests.
+1.  On each shard, set the `GTEST_TOTAL_SHARDS` environment variable to the total
+    number of shards. It must be the same for all shards.
+1.  On each shard, set the `GTEST_SHARD_INDEX` environment variable to the index
+    of the shard. Different shards must be assigned different indices, which
+    must be in the range `[0, GTEST_TOTAL_SHARDS - 1]`.
+1.  Run the same test program on all shards. When GoogleTest sees the above two
+    environment variables, it will select a subset of the test functions to run.
+    Across all shards, each test function in the program will be run exactly
+    once.
+1.  Wait for all shards to finish, then collect and report the results.
+
+Your project may have tests that were written without GoogleTest and thus don't
+understand this protocol. In order for your test runner to figure out which test
+supports sharding, it can set the environment variable `GTEST_SHARD_STATUS_FILE`
+to a non-existent file path. If a test program supports sharding, it will create
+this file to acknowledge that fact; otherwise it will not create it. The actual
+contents of the file are not important at this time, although we may put some
+useful information in it in the future.
+
+Here's an example to make it clear. Suppose you have a test program `foo_test`
+that contains the following 5 test functions:
+
+```
+TEST(A, V)
+TEST(A, W)
+TEST(B, X)
+TEST(B, Y)
+TEST(B, Z)
+```
+
+Suppose you have 3 machines at your disposal. To run the test functions in
+parallel, you would set `GTEST_TOTAL_SHARDS` to 3 on all machines, and set
+`GTEST_SHARD_INDEX` to 0, 1, and 2 on the machines respectively. Then you would
+run the same `foo_test` on each machine.
+
+GoogleTest reserves the right to change how the work is distributed across the
+shards, but here's one possible scenario:
+
+*   Machine #0 runs `A.V` and `B.X`.
+*   Machine #1 runs `A.W` and `B.Y`.
+*   Machine #2 runs `B.Z`.
+
 ### Controlling Test Output
 
 #### Colored Terminal Output
@@ -2201,44 +1997,37 @@ random seed and re-shuffle the tests in each iteration.
 googletest can use colors in its terminal output to make it easier to spot the
 important information:
 
-<code>
-...<br/>
-  <font color="green">[----------]</font><font color="black"> 1 test from
-  FooTest</font><br/>
-  <font color="green">[ RUN &nbsp; &nbsp; &nbsp;]</font><font color="black">
-  FooTest.DoesAbc</font><br/>
-  <font color="green">[ &nbsp; &nbsp; &nbsp; OK ]</font><font color="black">
-  FooTest.DoesAbc </font><br/>
-  <font color="green">[----------]</font><font color="black">
-  2 tests from BarTest</font><br/>
-  <font color="green">[ RUN &nbsp; &nbsp; &nbsp;]</font><font color="black">
-  BarTest.HasXyzProperty </font><br/>
-  <font color="green">[ &nbsp; &nbsp; &nbsp; OK ]</font><font color="black">
-  BarTest.HasXyzProperty</font><br/>
-  <font color="green">[ RUN &nbsp; &nbsp; &nbsp;]</font><font color="black">
-  BarTest.ReturnsTrueOnSuccess ... some error messages ...</font><br/>
-  <font color="red">[ &nbsp; FAILED ]</font><font color="black">
-  BarTest.ReturnsTrueOnSuccess ...</font><br/>
-  <font color="green">[==========]</font><font color="black">
-  30 tests from 14 test suites ran.</font><br/>
-  <font color="green">[ &nbsp; PASSED ]</font><font color="black">
-  28 tests.</font><br/>
-  <font color="red">[ &nbsp; FAILED ]</font><font color="black">
-  2 tests, listed below:</font><br/>
-  <font color="red">[ &nbsp; FAILED ]</font><font color="black">
-  BarTest.ReturnsTrueOnSuccess</font><br/>
-  <font color="red">[ &nbsp; FAILED ]</font><font color="black">
-  AnotherTest.DoesXyz<br/>
-<br/>
-  2 FAILED TESTS
-  </font>
-</code>
+<pre>...
+<font color="green">[----------]</font> 1 test from FooTest
+<font color="green">[ RUN      ]</font> FooTest.DoesAbc
+<font color="green">[       OK ]</font> FooTest.DoesAbc
+<font color="green">[----------]</font> 2 tests from BarTest
+<font color="green">[ RUN      ]</font> BarTest.HasXyzProperty
+<font color="green">[       OK ]</font> BarTest.HasXyzProperty
+<font color="green">[ RUN      ]</font> BarTest.ReturnsTrueOnSuccess
+... some error messages ...
+<font color="red">[   FAILED ]</font> BarTest.ReturnsTrueOnSuccess
+...
+<font color="green">[==========]</font> 30 tests from 14 test suites ran.
+<font color="green">[   PASSED ]</font> 28 tests.
+<font color="red">[   FAILED ]</font> 2 tests, listed below:
+<font color="red">[   FAILED ]</font> BarTest.ReturnsTrueOnSuccess
+<font color="red">[   FAILED ]</font> AnotherTest.DoesXyz
+
+ 2 FAILED TESTS
+</pre>
 
 You can set the `GTEST_COLOR` environment variable or the `--gtest_color`
 command line flag to `yes`, `no`, or `auto` (the default) to enable colors,
 disable colors, or let googletest decide. When the value is `auto`, googletest
 will use colors if and only if the output goes to a terminal and (on non-Windows
 platforms) the `TERM` environment variable is set to `xterm` or `xterm-color`.
+
+#### Suppressing test passes
+
+By default, googletest prints 1 line of output for each test, indicating if it
+passed or failed. To show only test failures, run the test program with
+`--gtest_brief=1`, or set the GTEST_BRIEF environment variable to `1`.
 
 #### Suppressing the Elapsed Time
 
@@ -2255,14 +2044,11 @@ text because, for example, you don't have an UTF-8 compatible output medium, run
 the test program with `--gtest_print_utf8=0` or set the `GTEST_PRINT_UTF8`
 environment variable to `0`.
 
-
-
 #### Generating an XML Report
 
 googletest can emit a detailed XML report to a file in addition to its normal
 textual output. The report contains the duration of each test, and thus can help
-you identify slow tests. The report is also used by the http://unittest
-dashboard to show per-test-method error messages.
+you identify slow tests.
 
 To generate the XML report, set the `GTEST_OUTPUT` environment variable or the
 `--gtest_output` flag to the string `"xml:path_to_output_file"`, which will
@@ -2311,15 +2097,15 @@ could generate this report:
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites tests="3" failures="1" errors="0" time="0.035" timestamp="2011-10-31T18:52:42" name="AllTests">
   <testsuite name="MathTest" tests="2" failures="1" errors="0" time="0.015">
-    <testcase name="Addition" status="run" time="0.007" classname="">
+    <testcase name="Addition" file="test.cpp" line="1" status="run" time="0.007" classname="">
       <failure message="Value of: add(1, 1)&#x0A;  Actual: 3&#x0A;Expected: 2" type="">...</failure>
       <failure message="Value of: add(1, -1)&#x0A;  Actual: 1&#x0A;Expected: 0" type="">...</failure>
     </testcase>
-    <testcase name="Subtraction" status="run" time="0.005" classname="">
+    <testcase name="Subtraction" file="test.cpp" line="2" status="run" time="0.005" classname="">
     </testcase>
   </testsuite>
   <testsuite name="LogicTest" tests="1" failures="0" errors="0" time="0.005">
-    <testcase name="NonContradiction" status="run" time="0.005" classname="">
+    <testcase name="NonContradiction" file="test.cpp" line="3" status="run" time="0.005" classname="">
     </testcase>
   </testsuite>
 </testsuites>
@@ -2336,6 +2122,9 @@ Things to note:
 
 *   The `timestamp` attribute records the local date and time of the test
     execution.
+
+*   The `file` and `line` attributes record the source file location, where the
+    test was defined.
 
 *   Each `<failure>` element corresponds to a single failed googletest
     assertion.
@@ -2376,6 +2165,8 @@ The report format conforms to the following JSON Schema:
       "type": "object",
       "properties": {
         "name": { "type": "string" },
+        "file": { "type": "string" },
+        "line": { "type": "integer" },
         "status": {
           "type": "string",
           "enum": ["RUN", "NOTRUN"]
@@ -2453,6 +2244,8 @@ message TestCase {
 
 message TestInfo {
   string name = 1;
+  string file = 6;
+  int32 line = 7;
   enum Status {
     RUN = 0;
     NOTRUN = 1;
@@ -2496,6 +2289,8 @@ could generate this report:
       "testsuite": [
         {
           "name": "Addition",
+          "file": "test.cpp",
+          "line": 1,
           "status": "RUN",
           "time": "0.007s",
           "classname": "",
@@ -2512,6 +2307,8 @@ could generate this report:
         },
         {
           "name": "Subtraction",
+          "file": "test.cpp",
+          "line": 2,
           "status": "RUN",
           "time": "0.005s",
           "classname": ""
@@ -2527,6 +2324,8 @@ could generate this report:
       "testsuite": [
         {
           "name": "NonContradiction",
+          "file": "test.cpp",
+          "line": 3,
           "status": "RUN",
           "time": "0.005s",
           "classname": ""
@@ -2537,9 +2336,21 @@ could generate this report:
 }
 ```
 
+{: .callout .important}
 IMPORTANT: The exact format of the JSON document is subject to change.
 
 ### Controlling How Failures Are Reported
+
+#### Detecting Test Premature Exit
+
+Google Test implements the _premature-exit-file_ protocol for test runners to
+catch any kind of unexpected exits of test programs. Upon start, Google Test
+creates the file which will be automatically deleted after all work has been
+finished. Then, the test runner can check if this file exists. In case the file
+remains undeleted, the inspected test has exited prematurely.
+
+This feature is enabled only if the `TEST_PREMATURE_EXIT_FILE` environment
+variable has been set.
 
 #### Turning Assertion Failures into Break-Points
 
@@ -2565,3 +2376,32 @@ to be handled by the debugger, such that you can examine the call stack when an
 exception is thrown. To achieve that, set the `GTEST_CATCH_EXCEPTIONS`
 environment variable to `0`, or use the `--gtest_catch_exceptions=0` flag when
 running the tests.
+
+### Sanitizer Integration
+
+The
+[Undefined Behavior Sanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html),
+[Address Sanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer),
+and
+[Thread Sanitizer](https://github.com/google/sanitizers/wiki/ThreadSanitizerCppManual)
+all provide weak functions that you can override to trigger explicit failures
+when they detect sanitizer errors, such as creating a reference from `nullptr`.
+To override these functions, place definitions for them in a source file that
+you compile as part of your main binary:
+
+```
+extern "C" {
+void __ubsan_on_report() {
+  FAIL() << "Encountered an undefined behavior sanitizer error";
+}
+void __asan_on_error() {
+  FAIL() << "Encountered an address sanitizer error";
+}
+void __tsan_on_report() {
+  FAIL() << "Encountered a thread sanitizer error";
+}
+}  // extern "C"
+```
+
+After compiling your project with one of the sanitizers enabled, if a particular
+test triggers a sanitizer error, googletest will report that it failed.
