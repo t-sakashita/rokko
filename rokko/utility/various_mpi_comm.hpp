@@ -73,7 +73,7 @@ MPI_Comm create_even_odd_comm_by_split(MPI_Comm comm_in = MPI_COMM_WORLD) {
   return comm;
 }
 
-std::array<int,2> get_square_like_dims(int nprocs) {
+auto get_square_like_dims(int nprocs) {
   std::array<int,2> dims;
   dims[0] = rokko::grid::find_square_root_like_divisor(nprocs);
   dims[1] = nprocs / dims[0];
@@ -86,8 +86,8 @@ MPI_Comm create_cart_comm(MPI_Comm comm_in = MPI_COMM_WORLD) {
   MPI_Comm_size(comm_in, &nprocs);
 
   MPI_Comm comm;
-  std::array<int,2> dims = get_square_like_dims(nprocs);
-  std::array<int,2> periods{0,0};
+  const auto dims = get_square_like_dims(nprocs);
+  constexpr std::array<int,2> periods{0,0};
   int reorder = 0;
   MPI_Cart_create(MPI_COMM_WORLD, 2, dims.data(), periods.data(), reorder, &comm);
 
