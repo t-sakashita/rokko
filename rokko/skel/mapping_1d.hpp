@@ -37,7 +37,7 @@ public:
   int end_row() const override { return end_row_; }
 
   int calculate_start_row_by_gather(int num_local_rows) const {
-    const int myrank = get_mpi_comm().get_myrank();
+    const auto myrank = get_mpi_comm().get_myrank();
     Eigen::VectorXi target(get_mpi_comm().get_nprocs());
 
     MPI_Allgather(&num_local_rows, 1, MPI_INT,
@@ -58,8 +58,8 @@ public:
   }
 
   int calculate_start_row() {
-    const int nprocs = get_mpi_comm().get_nprocs();
-    const int myrank = get_mpi_comm().get_myrank();
+    const auto nprocs = get_mpi_comm().get_nprocs();
+    const auto myrank = get_mpi_comm().get_myrank();
     return get_dim() / nprocs * myrank + std::min(get_dim() % nprocs, myrank);
   }
 
