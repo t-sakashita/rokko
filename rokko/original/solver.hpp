@@ -48,7 +48,7 @@ public:
     map_ = std::make_shared<rokko::skel::mapping_1d>(mat.get_map());
 
     // tridiagonaliation by Lanczos method
-    const int dim = mat.get_dim();
+    const auto dim = mat.get_dim();
     Eigen::VectorXd alpha(dim), beta(dim-1);
     Eigen::MatrixXd u(dim, dim);
     lanczos::tridiagonalization(*mat.get_matrix(), alpha, beta, u);
@@ -67,7 +67,7 @@ public:
     map_ = std::make_shared<rokko::skel::mapping_1d>(mat.get_dim(), mat.get_num_local_rows(), mpi_comm{mat.get_comm()});
 
     // tridiagonaliation by Lanczos method
-    const int dim = mat.get_dim();
+    const auto dim = mat.get_dim();
     Eigen::VectorXd alpha(dim), beta(dim-1);
     Eigen::MatrixXd u(dim, dim);
     lanczos::tridiagonalization(mat, alpha, beta, u);

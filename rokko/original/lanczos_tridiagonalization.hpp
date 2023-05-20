@@ -25,7 +25,7 @@ public:
   static void tridiagonalization(rokko::original::crs const& mat, VEC& alpha, VEC& beta, MAT& u) {
     constexpr double eps_lanczos = 1e-8;
 
-    const int dim = mat.get_dim();
+    const auto dim = mat.get_dim();
     MPI_Comm comm = mat.get_mpi_comm().get_comm();
     Eigen::VectorXd tmp(dim), y(dim);
 
@@ -52,7 +52,7 @@ public:
   static void tridiagonalization(const rokko::distributed_mfree& mat, VEC& alpha, VEC& beta, MAT& u) {
     constexpr double eps_lanczos = 1e-8;
 
-    const int dim = mat.get_dim();
+    const auto dim = mat.get_dim();
     MPI_Comm comm = mat.get_comm();
     Eigen::VectorXd tmp(dim), y(dim);
 

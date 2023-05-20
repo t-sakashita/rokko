@@ -64,12 +64,12 @@ public:
   }
 
   void set_blacs_descriptor() {
-    int m = mapping_global2local::get_m_global();
-    int n = mapping_global2local::get_n_global();
-    int mb = mapping_global2local::get_mb();
-    int nb = mapping_global2local::get_nb();
-    int blacs_context = mapping_global2local::get_grid().get_blacs_context();
-    int lld = mapping_local2array<matrix_major>::get_lld();
+    const auto m = mapping_global2local::get_m_global();
+    const auto n = mapping_global2local::get_n_global();
+    const auto mb = mapping_global2local::get_mb();
+    const auto nb = mapping_global2local::get_nb();
+    const auto blacs_context = mapping_global2local::get_grid().get_blacs_context();
+    auto lld = mapping_local2array<matrix_major>::get_lld();
     if (lld == 0)  lld = 1;  // to avoid segmentation fault in descinit
     int info = scalapack::descinit(blacs_descriptor, m, n, mb, nb, 0, 0, blacs_context, lld);
     if (info) {

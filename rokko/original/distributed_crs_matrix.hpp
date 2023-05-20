@@ -81,7 +81,7 @@ public:
     std::vector<int> cols;
     std::vector<double> values;
 
-    const int nnz = get_nnz();
+    const auto nnz = get_nnz();
     if (comm.get_myrank() == root_proc) {
       os << "%%MatrixMarket matrix coordinate real general" << std::endl
          << get_dim() << " " << get_dim() << " " << nnz << std::endl;

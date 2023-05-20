@@ -33,7 +33,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
   real_t<T> vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
-  const int ictxt = mat.get_grid().get_blacs_context();
+  const auto ictxt = mat.get_grid().get_blacs_context();
   real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
@@ -74,7 +74,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
   real_t<T> vl, vu;
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
-  const int ictxt = mat.get_grid().get_blacs_context();
+  const auto ictxt = mat.get_grid().get_blacs_context();
   real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
