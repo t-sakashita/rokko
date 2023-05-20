@@ -44,7 +44,7 @@ public:
     if (d.size() > (e.size()+1))
       throw std::invalid_argument("laplacian_matrix::generate() : The vector for sub-diagonal elements is too short.");
 
-    const int n = d.size();
+    const auto n = d.size();
     d[0] = 1;
     for(int i = 1; i < n; ++i)
       d[i] = 2;
@@ -57,7 +57,7 @@ public:
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
-    const int n = mat.cols();
+    const auto n = mat.cols();
     mat(0, 0) = 1;  mat(1, 0) = -1;
     for(int i = 1; i < n-1; ++i) {
       mat(i-1, i) = -1;
@@ -72,7 +72,7 @@ public:
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.setZero();
-    const int n = mat.rows();
+    const auto n = mat.rows();
     mat(0, 0) = 1;  mat(0, 1) = -1;
     for(int i = 1; i < n-1; ++i) {
       mat(i, i-1) = -1;
@@ -88,7 +88,7 @@ public:
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.set_zeros();
-    const int n = mat.get_n_global();
+    const auto n = mat.get_n_global();
     mat.set_global(0, 0, 1);  mat.set_global(1, 0, -1);
     for(int i = 1; i < n-1; ++i) {
       mat.set_global(i-1, i, -1);
@@ -103,7 +103,7 @@ public:
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("laplacian_matrix::generate() : non-square matrix");
     mat.set_zeros();
-    const int n = mat.get_m_global();
+    const auto n = mat.get_m_global();
     mat.set_global(0, 0, 1);  mat.set_global(0, 1, -1);
     for(int i = 1; i < n-1; ++i) {
       mat.set_global(i, i-1, -1);

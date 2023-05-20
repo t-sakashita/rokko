@@ -42,7 +42,7 @@ public:
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("tridiagonal_toeplitz_matrix::generate() : non-square matrix");
     mat.setZero();
-    const int n = mat.cols();
+    const auto n = mat.cols();
     mat(0, 0) = a;  mat(1, 0) = b;
     for(int i = 1; i < n-1; ++i) {
       mat(i-1, i) = b;
@@ -57,7 +57,7 @@ public:
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("tridiagonal_toeplitz_matrix::generate() : non-square matrix");
     mat.setZero();
-    const int n = mat.rows();
+    const auto n = mat.rows();
     mat(0, 0) = a;  mat(0, 1) = b;
     for(int i = 1; i < n-1; ++i) {
       mat(i, i-1) = b;
@@ -72,7 +72,7 @@ public:
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("tridiagonal_toeplitz_matrix::generate() : non-square matrix");
     mat.set_zeros();
-    const int n = mat.get_n_global();
+    const auto n = mat.get_n_global();
     mat.set_global(0, 0, a);  mat.set_global(1, 0, b);
     for(int i = 1; i < n-1; ++i) {
       mat.set_global(i-1, i, b);
@@ -87,7 +87,7 @@ public:
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("tridiagonal_toeplitz_matrix::generate() : non-square matrix");
     mat.set_zeros();
-    const int n = mat.get_m_global();
+    const auto n = mat.get_m_global();
     mat.set_global(0, 0, a);  mat.set_global(0, 1, b);
     for(int i = 1; i < n-1; ++i) {
       mat.set_global(i, i-1, b);

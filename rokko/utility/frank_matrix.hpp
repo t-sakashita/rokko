@@ -27,7 +27,7 @@ public:
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    const int n = mat.rows();
+    const auto n = mat.rows();
     for(int j = 0; j < mat.cols(); ++j) {
       for(int i = 0; i < mat.rows(); ++i) {
         mat(i,j) = n - std::max(i, j);
@@ -39,7 +39,7 @@ public:
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
-    const int n = mat.rows();
+    const auto n = mat.rows();
     for(int i = 0; i < mat.rows(); ++i) {
       for(int j = 0; j < mat.cols(); ++j) {
         mat(i,j) = n - std::max(i, j);

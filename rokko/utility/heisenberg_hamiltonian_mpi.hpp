@@ -28,7 +28,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  const int p = rokko::find_power_of_two(nproc);
+  const auto p = rokko::find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
@@ -160,19 +160,19 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  const int p = rokko::find_power_of_two(nproc);
+  const auto p = rokko::find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
-  const int N = 1 << (L-p);
-  const int myrank_shift = myrank * N;
+  const auto N = 1 << (L-p);
+  const auto myrank_shift = myrank * N;
 
   for (int k=0; k<N; ++k) {
     w[k] = 0;
   }
 
   for (int local_k=0; local_k<N; ++local_k) {
-    const int k = local_k + myrank_shift;
+    const auto k = local_k + myrank_shift;
     for (std::size_t l = 0; l < lattice.size(); ++l) {
       int i = lattice[l].first;
       int j = lattice[l].second;

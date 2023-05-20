@@ -32,7 +32,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  const int p = rokko::find_power_of_two(nproc);
+  const auto p = rokko::find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
@@ -145,7 +145,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
 
-  const int p = rokko::find_power_of_two(nproc);
+  const auto p = rokko::find_power_of_two(nproc);
   if (nproc != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }

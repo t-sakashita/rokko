@@ -29,7 +29,7 @@ public:
 
   template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::ColMajor>& mat) {
-    const int ld = mat.rows();
+    const auto ld = mat.rows();
 
     for(int j = 0; j < mat.cols(); ++j) {
       for(int i = 0; i < mat.rows(); ++i) {
@@ -40,7 +40,7 @@ public:
 
   template<typename T, int ROWS, int COLS>
   static void generate(Eigen::Matrix<T,ROWS,COLS,Eigen::RowMajor>& mat) {
-    const int ld = mat.cols();
+    const auto ld = mat.cols();
 
     for(int i = 0; i < mat.rows(); ++i) {
       for(int j = 0; j < mat.cols(); ++j) {

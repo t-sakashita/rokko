@@ -20,18 +20,18 @@ namespace rokko {
 
 void output_matrix_market(distributed_mfree const& op, std::ostream& os = std::cout) {
   rokko::mpi_comm comm(op.get_comm());
-  const int nprocs = comm.get_nprocs();
-  const int myrank = comm.get_myrank();
-  const int dim = op.get_dim();
+  const auto nprocs = comm.get_nprocs();
+  const auto myrank = comm.get_myrank();
+  const auto dim = op.get_dim();
   rokko::mpi_vector mpi(dim, op.get_comm());
   rokko::mapping_1d map(dim, comm);
-  const int start_row = map.start_row();
-  const int end_row = map.end_row();
+  const auto start_row = map.start_row();
+  const auto end_row = map.end_row();
 
   Eigen::Vector<double> x(op.get_num_local_rows()), y(op.get_num_local_rows());
   Eigen::Vector<double> vec(dim);
 
-  constexpr int root_proc = 0;
+  constexpr auto root_proc = 0;
   std::vector<int> cols;
   std::vector<double> values;
 

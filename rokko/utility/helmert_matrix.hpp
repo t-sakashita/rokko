@@ -27,7 +27,7 @@ public:
   static void generate(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
-    const int n = mat.rows();
+    const auto n = mat.rows();
     mat.setZero();
     mat.row(0).fill( 1 / sqrt(n) );
     for (int i=1; i < mat.rows(); ++i) {
@@ -40,7 +40,7 @@ public:
   static void generate_for_given_eigenvalues(Eigen::Matrix<T,ROWS,COLS,MATRIX_MAJOR>& mat, Eigen::Vector<T, SIZE> const& diag) {
     if (mat.rows() != mat.cols())
       throw std::invalid_argument("helmert_matrix::generate_for_given_eigenvalues() : non-square matrix");
-    const int n = mat.rows();
+    const auto n = mat.rows();
     for (int i=0; i<n; ++i) {
       T common_elem = diag(0) / n;
       for (int k=i+1; k<n; ++k)
@@ -57,7 +57,7 @@ public:
   static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("helmert_matrix::generate() : non-square matrix");
-    const int n = mat.get_m_global();
+    const auto n = mat.get_m_global();
     int start_i;
     if (mat.has_global_row_index(0)) {
       T val = 1 / sqrt(n);
@@ -82,7 +82,7 @@ public:
   static void generate_for_given_eigenvalues(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat, Eigen::Vector<T, SIZE> const& diag) {
     if (mat.get_m_global() != mat.get_n_global())
       throw std::invalid_argument("helmert_matrix::generate_for_given_eigenvalues() : non-square matrix");
-    const int n = mat.get_m_global();
+    const auto n = mat.get_m_global();
 
     for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
       int global_i = mat.translate_l2g_row(local_i);

@@ -41,8 +41,8 @@ public:
   ~tridiagonal_toeplitz_mfree() = default;
 
   int next_rank() {
-    const int myrank = get_mpi_comm().get_myrank();
-    const int nprocs = get_mpi_comm().get_nprocs();
+    const auto myrank = get_mpi_comm().get_myrank();
+    const auto nprocs = get_mpi_comm().get_nprocs();
 
     Eigen::VectorXi target(get_mpi_comm().get_nprocs());
 
@@ -59,8 +59,8 @@ public:
   }
 
   int previous_rank() {
-    const int myrank = get_mpi_comm().get_myrank();
-    const int nprocs = get_mpi_comm().get_nprocs();
+    const auto myrank = get_mpi_comm().get_myrank();
+    const auto nprocs = get_mpi_comm().get_nprocs();
 
     Eigen::VectorXi target(get_mpi_comm().get_nprocs());
 
