@@ -261,22 +261,22 @@ using timer = detail::timer_dumb;
 class global_timer : private rokko::noncopyable<global_timer> {
 public:
   constexpr static int detailed = rokko::timer::detailed;
-  static void clear() { instance()->clear(); }
+  static void clear() { instance().clear(); }
   static void registrate(std::size_t id, std::string const& label, int option = 0) {
-    instance()->registrate(id, label, option);
+    instance().registrate(id, label, option);
   }
-  static void start(std::size_t id) { instance()->start(id); }
-  static void stop(std::size_t id) { instance()->stop(id); }
-  static bool has(std::size_t id) { return instance()->has(id); }
-  static std::string get_label(std::size_t id) { return instance()->get_label(id); }
-  static double get_count(std::size_t id) { return instance()->get_count(id); }
-  static double get_measurement(std::size_t id) { return instance()->get_measurement(id); }
-  static double get_average(std::size_t id) { return instance()->get_average(id); }
-  static std::map<std::string, int> vmem_info() { return instance()->vmem_info(); }
-  static void summarize(std::ostream& os = std::clog) { instance()->summarize(os); }
-  static rokko::timer* instance() {
+  static void start(std::size_t id) { instance().start(id); }
+  static void stop(std::size_t id) { instance().stop(id); }
+  static bool has(std::size_t id) { return instance().has(id); }
+  static std::string get_label(std::size_t id) { return instance().get_label(id); }
+  static double get_count(std::size_t id) { return instance().get_count(id); }
+  static double get_measurement(std::size_t id) { return instance().get_measurement(id); }
+  static double get_average(std::size_t id) { return instance().get_average(id); }
+  static std::map<std::string, int> vmem_info() { return instance().vmem_info(); }
+  static void summarize(std::ostream& os = std::clog) { instance().summarize(os); }
+  static rokko::timer& instance() {
     if (!instance_) instance_ = new rokko::timer;
-    return instance_;
+    return *instance_;
   }
 private:
   static inline rokko::timer* instance_ = nullptr;
