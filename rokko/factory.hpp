@@ -105,7 +105,7 @@ protected:
   }
       
 private:
-  static factory* instance_;
+  static inline factory* instance_;
   creator_map_type creators_;
   int largest_priority_;
   std::string default_product_;

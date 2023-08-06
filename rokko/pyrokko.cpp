@@ -173,6 +173,22 @@ void declare_pd_diagonalize(py::class_<wrap_parallel_dense_ev>& obj) {
          py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters());
 }
 
+
+// Declaring static inline pointer in order to instantiate each factory class
+#define PYROKKO_DEFINE_FACTORY(T) \
+template<> \
+T*  T::instance_;
+
+
+PYROKKO_DEFINE_FACTORY(rokko::detail::sd_solver_factory)
+PYROKKO_DEFINE_FACTORY(rokko::detail::pd_solver_factory)
+
+PYROKKO_DEFINE_FACTORY(rokko::detail::ps_solver_factory)
+PYROKKO_DEFINE_FACTORY(rokko::detail::ps_mapping_1d_factory)
+PYROKKO_DEFINE_FACTORY(rokko::detail::ps_mapping_1d_factory_num)
+PYROKKO_DEFINE_FACTORY(rokko::detail::ps_crs_factory)
+
+
 PYBIND11_MODULE(pyrokko, m) {
   py::class_<wrap_parameters>(m, "parameters")
     .def(py::init<>())

@@ -11,7 +11,7 @@ set(ROKKO_SOURCES)
 
 # For serial solvers
 if(BUILD_SERIAL_DENSE_SOLVER)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} serial_dense_ev.cpp utility/timer.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/timer.cpp)
   # LAPACK
   set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/diagonalize_get_parameters.cpp)
   # Eigen3
@@ -30,7 +30,6 @@ endif(BUILD_SERIAL_DENSE_SOLVER)
 
 if(BUILD_PARALLEL_DENSE_SOLVER)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp matrix_major.cpp)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} mapping_1d.cpp distributed_crs_matrix.cpp parallel_dense_ev.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_frank_matrix.F90 parallel_laplacian_matrix.F90 parallel_minij_matrix.F90 parallel_helmert_matrix.F90 parallel_matrix012.F90 various_mpi_comm.F90)
 
   # PBLAS, ScaLAPACK
@@ -81,7 +80,6 @@ if(BUILD_PARALLEL_DENSE_SOLVER)
 endif(BUILD_PARALLEL_DENSE_SOLVER)
 
 if(BUILD_PARALLEL_SPARSE_SOLVER)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_sparse_ev.cpp)
   if(BUILD_C_BINDING)
     set(ROKKO_SOURCES ${ROKKO_SOURCES} mapping_1d_c.cpp parallel_sparse_ev_c.cpp distributed_crs_matrix_c.cpp distributed_mfree_c.cpp)
   endif(BUILD_C_BINDING)
