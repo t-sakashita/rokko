@@ -11,7 +11,6 @@ set(ROKKO_SOURCES)
 
 # For serial solvers
 if(BUILD_SERIAL_DENSE_SOLVER)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} utility/timer.cpp)
   # LAPACK
   set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/diagonalize_get_parameters.cpp)
   # Eigen3

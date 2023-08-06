@@ -279,7 +279,7 @@ public:
     return instance_;
   }
 private:
-  static rokko::timer* instance_;
+  static inline rokko::timer* instance_ = nullptr;
 };
 
 } // namespace rokko
