@@ -43,7 +43,7 @@ using ps_crs_factory = factory<ps_crs_base,rokko::mapping_1d const&,int>;
 class distributed_crs_matrix {
 public:
   explicit distributed_crs_matrix(rokko::mapping_1d const& map, int num_entries_per_row)
-    : solver_name_(map.get_solver_name()), crs_impl_(detail::ps_crs_factory::instance()->make_product(solver_name_, map, num_entries_per_row)) {}
+    : solver_name_(map.get_solver_name()), crs_impl_(detail::ps_crs_factory::instance().make_product(solver_name_, map, num_entries_per_row)) {}
 
   std::string get_solver_name() const { return solver_name_; }
   void insert(int row, std::vector<int> const& cols, std::vector<double> const& values) const {
@@ -120,7 +120,7 @@ namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::detail::ps_crs_factory;   \
   using product = crs; \
-  register_caller() { factory::instance()->register_creator<product>(name, priority); } \
+  register_caller() { factory::instance().register_creator<product>(name, priority); } \
 } caller; \
 } }
 

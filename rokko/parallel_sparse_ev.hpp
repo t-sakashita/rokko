@@ -69,7 +69,7 @@ using ps_solver_factory = factory<ps_ev_base>;
 class parallel_sparse_ev {
 public:
   parallel_sparse_ev(std::string const& solver_name)
-    : solver_impl_(detail::ps_solver_factory::instance()->make_product(solver_name)), solver_name_(solver_name) {}
+    : solver_impl_(detail::ps_solver_factory::instance().make_product(solver_name)), solver_name_(solver_name) {}
 
   parallel_sparse_ev() : parallel_sparse_ev(default_solver()) {}
 
@@ -115,6 +115,6 @@ namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::detail::ps_solver_factory;     \
   using product = rokko::detail::ps_ev_wrapper<solver>; \
-  register_caller() { factory::instance()->register_creator<product>(name, priority); } \
+  register_caller() { factory::instance().register_creator<product>(name, priority); } \
 } caller; \
 } }

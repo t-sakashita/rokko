@@ -48,16 +48,16 @@ private:
 public:
   factory() : largest_priority_(0) {}
   static product_pointer_type make_product(std::string const& name = "", Types... args) {
-    factory* f = factory::instance();
+    const factory& f = factory::instance();
     if (name == "") {
-      if (f->default_product_ != "") {
-        return f->make_creator(f->default_product_)->create(args...);
+      if (f.default_product_ != "") {
+        return f.make_creator(f.default_product_)->create(args...);
       } else {
         std::cerr << "Error: default product is not defined\n";
         throw std::runtime_error("factory::make_product()");
       }
     } else {
-      return f->make_creator(name)->create(args...);
+      return f.make_creator(name)->create(args...);
     }
   }
   template<typename PRODUCT>
@@ -72,22 +72,23 @@ public:
   }
   bool unregister_creator(std::string const& name); // to be implemented
   static std::vector<std::string> product_names() {
-    factory* f = factory::instance();
+    const factory& f = factory::instance();
     std::vector<std::string> retvec;
-    for (typename creator_map_type::const_iterator it = f->creators_.cbegin();
-         it != f->creators_.cend(); ++it) {
+    for (typename creator_map_type::const_iterator it = f.creators_.cbegin();
+         it != f.creators_.cend(); ++it) {
       retvec.emplace_back(it->first);
     }
     return retvec;
   }
 
   static const std::string& default_product_name() {
-    return instance()->default_product_;
+    return instance().default_product_;
   }
-  static factory* instance() {
+  static factory& instance() {
     if (!instance_) instance_ = new factory;
-    return instance_;
+    return *instance_;
   }
+
 protected:
   creator_pointer_type make_creator(std::string const& name) const {
     typename creator_map_type::const_iterator itr = creators_.find(name);
@@ -114,4 +115,4 @@ private:
 } // end namespace rokko
 
 #define ROKKO_REGISTER_PRODUCT(base, product, name, priority) \
-  namespace { namespace ROKKO_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance()->register_creator<product>(name, priority); } } caller; } }
+  namespace { namespace ROKKO_JOIN(product_register, __LINE__) { struct register_caller { register_caller() { rokko::factory::instance().register_creator<product>(name, priority); } } caller; } }

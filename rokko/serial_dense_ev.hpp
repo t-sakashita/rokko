@@ -341,7 +341,7 @@ using sd_solver_factory = factory<sd_ev_base>;
 class serial_dense_ev {
 public:
   serial_dense_ev(std::string const& solver_name)
-    : solver_impl_(detail::sd_solver_factory::instance()->make_product(solver_name)) {}
+    : solver_impl_(detail::sd_solver_factory::instance().make_product(solver_name)) {}
 
   serial_dense_ev() : serial_dense_ev(default_solver()) {}
 
@@ -395,6 +395,6 @@ namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::detail::sd_solver_factory;     \
   using product = rokko::detail::sd_ev_wrapper<solver>; \
-  register_caller() { factory::instance()->register_creator<product>(name, priority); } \
+  register_caller() { factory::instance().register_creator<product>(name, priority); } \
 } caller; \
 } }

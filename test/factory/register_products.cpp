@@ -62,7 +62,7 @@ namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::factory<test_base>; \
   using product = test_wrapper<solver>; \
-  register_caller() { factory::instance()->register_creator<product>(name, priority); } \
+  register_caller() { factory::instance().register_creator<product>(name, priority); } \
 } caller; \
 } }
 
@@ -70,11 +70,11 @@ ROKKO_REGISTER_TEST(test1, "test1", 10)
 ROKKO_REGISTER_TEST(test2, "test2", 20)
 
 int main() {
-  test_factory::product_pointer_type solver_impl = test_factory::instance()->make_product("test2");
+  test_factory::product_pointer_type solver_impl = test_factory::instance().make_product("test2");
   solver_impl->print();
   std::cerr << "product_names:" << std::endl;
-  for(auto name : test_factory::instance()->product_names()) {
+  for(auto name : test_factory::instance().product_names()) {
     std::cerr << name << std::endl;
   }
-  std::cerr << "default_product_name = " << test_factory::instance()->default_product_name() << std::endl;
+  std::cerr << "default_product_name = " << test_factory::instance().default_product_name() << std::endl;
 }

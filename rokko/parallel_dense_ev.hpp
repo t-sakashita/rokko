@@ -340,7 +340,7 @@ using pd_solver_factory = factory<pd_ev_base>;
   
 class parallel_dense_ev {
 public:
-  parallel_dense_ev(std::string const& solver_name) : solver_impl_(detail::pd_solver_factory::instance()->make_product(solver_name)), null_params() {};
+  parallel_dense_ev(std::string const& solver_name) : solver_impl_(detail::pd_solver_factory::instance().make_product(solver_name)), null_params() {};
 
   parallel_dense_ev() : parallel_dense_ev(default_solver()) {}
 
@@ -401,6 +401,6 @@ namespace { namespace ROKKO_JOIN(register, __LINE__) { \
 struct register_caller { \
   using factory = rokko::detail::pd_solver_factory;     \
   using product = rokko::detail::pd_ev_wrapper<solver>; \
-  register_caller() { factory::instance()->register_creator<product>(name, priority); } \
+  register_caller() { factory::instance().register_creator<product>(name, priority); } \
 } caller; \
 } }
