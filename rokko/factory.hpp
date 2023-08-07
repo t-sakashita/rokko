@@ -85,7 +85,7 @@ public:
     return instance().default_product_;
   }
   static factory& instance() {
-    if (!instance_) instance_ = new factory;
+    if (!instance_) instance_ = std::make_unique<factory>();
     return *instance_;
   }
 
@@ -106,7 +106,7 @@ protected:
   }
       
 private:
-  static inline factory* instance_;
+  static inline std::unique_ptr<factory> instance_;
   creator_map_type creators_;
   int largest_priority_;
   std::string default_product_;

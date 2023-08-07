@@ -275,11 +275,11 @@ public:
   static std::map<std::string, int> vmem_info() { return instance().vmem_info(); }
   static void summarize(std::ostream& os = std::clog) { instance().summarize(os); }
   static rokko::timer& instance() {
-    if (!instance_) instance_ = new rokko::timer;
+    if (!instance_) instance_ = std::make_unique<rokko::timer>();
     return *instance_;
   }
 private:
-  static inline rokko::timer* instance_ = nullptr;
+  static inline std::unique_ptr<rokko::timer> instance_;
 };
 
 } // namespace rokko

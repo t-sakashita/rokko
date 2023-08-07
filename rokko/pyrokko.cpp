@@ -177,7 +177,7 @@ void declare_pd_diagonalize(py::class_<wrap_parallel_dense_ev>& obj) {
 // Declaring static inline pointer in order to instantiate each factory class
 #define PYROKKO_DEFINE_FACTORY(T) \
 template<> \
-T*  T::instance_;
+std::unique_ptr<T>  T::instance_;
 
 
 PYROKKO_DEFINE_FACTORY(rokko::detail::sd_solver_factory)
