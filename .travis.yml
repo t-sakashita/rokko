@@ -16,6 +16,7 @@ addons:
 install: true
 
 script:
+  - sudo sed -i "s|lib/libscalapack-openmpi.so.2.1.0|lib/x86_64-linux-gnu/libscalapack-openmpi.so.2.1.0|" /usr/lib/cmake/scalapack-2.1.0.openmpi/scalapack-targets-none.cmake
   - mkdir build
   - cd build
   - mkdir -p rokko rokko/build rokko/source
