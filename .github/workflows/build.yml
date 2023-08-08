@@ -18,7 +18,7 @@ jobs:
     - name: env
       run: mkdir -p build/rokko build/rokko/build build/rokko/source && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/00_env/default.sh
     - name: eigenexa
-      run: PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/default.sh && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/link.sh
+      run: PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/ubuntu.sh && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/EigenExa/link.sh
     - name: elemental
       run: PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/Elemental/default.sh && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/Elemental/link.sh
     - name: petsc
