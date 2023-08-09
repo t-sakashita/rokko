@@ -26,6 +26,7 @@
 #include <chrono>
 #include <valarray>
 #include <vector>
+#include <memory>
 
 #ifdef __linux
 #include <sys/types.h>
