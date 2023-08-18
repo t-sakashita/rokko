@@ -46,7 +46,7 @@ private:
   using creator_pointer_type = std::shared_ptr<abstract_creator>;
   using creator_map_type = std::map<std::string, creator_pointer_type>;
 public:
-  factory() : largest_priority_(0) {}
+  factory() {}
   static product_pointer_type make_product(std::string const& name = "", Types... args) {
     const factory& f = factory::instance();
     if (name == "") {
@@ -108,7 +108,7 @@ protected:
 private:
   static inline std::unique_ptr<factory> instance_;
   creator_map_type creators_;
-  int largest_priority_;
+  static inline int largest_priority_ = 0;
   std::string default_product_;
 };
 
