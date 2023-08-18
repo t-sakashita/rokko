@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     cols.clear();
     values.clear();
     double diag = 0;
-    for (int l = 0; l < lattice.size(); ++l) {
+    for (size_t l = 0; l < lattice.size(); ++l) {
       int i = lattice[l].first;
       int j = lattice[l].second;
       int m1 = 1 << i;
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < num_conv; ++i) std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
     std::cout << "smallest eigenvector: ";
-    for (int j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
+    for (size_t j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
     std::cout << std::endl;
   }
 

@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
         std::cout << rokko::laplacian_matrix::eigenvalue(dim, k) << ' ';
     std::cout << std::endl;
     std::cout << "largest eigenvector: ";
-    for (int j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
+    for (size_t j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
     std::cout << std::endl;
   }
   

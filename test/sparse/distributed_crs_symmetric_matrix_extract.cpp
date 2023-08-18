@@ -44,7 +44,7 @@ void run_test(std::string const& library, MPI_Comm comm) {
     std::vector<double> values_check;
     for (int row = map.start_row(); row < map.end_row(); ++row) {
       mat.extract(row, cols_check, values_check);
-      for (int i=0; i<cols_check.size(); ++i) {
+      for (size_t i=0; i<cols_check.size(); ++i) {
         ASSERT_EQ(cols_check[i], cols[row][i]);
         ASSERT_EQ(values_check[i], values[row][i]);
       }

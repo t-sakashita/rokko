@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < num_conv; ++i) std::cout << ' ' << solver.eigenvalue(i);
     std::cout << std::endl;
       std::cout << "smallest eigenvector: ";
-      for (int j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
+      for (size_t j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
       std::cout << std::endl;
   }
 
