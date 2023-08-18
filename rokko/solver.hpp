@@ -19,3 +19,6 @@
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
 # include <rokko/parallel_sparse_ev.hpp>
 #endif
+
+
+#include <rokko/declare_factory_instance.hpp>

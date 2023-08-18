@@ -42,6 +42,8 @@
 #include <rokko/utility/pyrokko_sort_eigenpairs.hpp>
 #include <rokko/utility/pyrokko_solver_name.hpp>
 
+#include <rokko/declare_factory_instance.hpp>
+
 
 namespace rokko {
 
@@ -172,21 +174,6 @@ void declare_pd_diagonalize(py::class_<wrap_parallel_dense_ev>& obj) {
     .def("diagonalize", py::overload_cast<wrap_distributed_matrix<T,matrix_col_major>&, Eigen::RefVec<real_t<T>>&, wrap_distributed_matrix<T,matrix_col_major>&, wrap_parameters const&>(&wrap_parallel_dense_ev::diagonalize<T,matrix_col_major,Eigen::RefVec<real_t<T>>>),
          py::arg("mat"), py::arg("eigvals"), py::arg("eigvecs"), py::arg("params") = wrap_parameters());
 }
-
-
-// Declaring static inline pointer in order to instantiate each factory class
-#define PYROKKO_DEFINE_FACTORY(T) \
-template<> \
-std::unique_ptr<T>  T::instance_;
-
-
-PYROKKO_DEFINE_FACTORY(rokko::detail::sd_solver_factory)
-PYROKKO_DEFINE_FACTORY(rokko::detail::pd_solver_factory)
-
-PYROKKO_DEFINE_FACTORY(rokko::detail::ps_solver_factory)
-PYROKKO_DEFINE_FACTORY(rokko::detail::ps_mapping_1d_factory)
-PYROKKO_DEFINE_FACTORY(rokko::detail::ps_mapping_1d_factory_num)
-PYROKKO_DEFINE_FACTORY(rokko::detail::ps_crs_factory)
 
 
 PYBIND11_MODULE(pyrokko, m) {
