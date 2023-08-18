@@ -79,11 +79,11 @@ TEST(diagonalize, helmert_mpi) {
     }
   }
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     test(comm, dim, name, rokko::grid_col_major);
   }
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     test(comm, dim, name, rokko::grid_row_major);
   }
 }

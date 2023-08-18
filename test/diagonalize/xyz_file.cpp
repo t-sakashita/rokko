@@ -56,7 +56,7 @@ TEST(diagonalize, xyz_file) {
   }
   int dim = 1 << L;
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     std::cout << "solver=" << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);

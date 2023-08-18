@@ -54,7 +54,7 @@ TEST(diagonalize, frank) {
     }
   }
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     std::cout << "solver = " << name << std::endl;
     std::cout << "  test for row major" << std::endl;
     test<rokko::matrix_row_major>(dim, name);

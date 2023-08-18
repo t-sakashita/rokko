@@ -32,7 +32,7 @@ TEST(diagonalize, minij_mpi) {
     }
   }
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     std::cout << "solver=" << name << std::endl;
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_col_major)) {
@@ -53,7 +53,7 @@ TEST(diagonalize, minij_mpi) {
   }
 
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     std::cout << "solver=" << name << std::endl;
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_row_major)) {

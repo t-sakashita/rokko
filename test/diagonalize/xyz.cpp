@@ -27,7 +27,7 @@ TEST(diagonalize, xyz) {
     }
   }
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     std::vector<std::pair<int, int>> lattice;
     std::vector<std::tuple<double, double, double>> coupling;
     int L = 5;

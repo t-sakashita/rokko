@@ -27,7 +27,7 @@ TEST(diagonalize, heisenberg) {
     }
   }
 
-  for(auto name : names) {
+  for(auto const& name : names) {
     int L = 5;
     int dim = 1 << L;
     std::vector<std::pair<int, int>> lattice;

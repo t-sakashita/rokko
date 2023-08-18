@@ -40,7 +40,7 @@ TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
   constexpr int dim = 10;
   rokko::grid g(MPI_COMM_WORLD);
 
-  for(auto name : rokko::parallel_dense_ev::solvers()) {
+  for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
     rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);

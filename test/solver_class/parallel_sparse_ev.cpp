@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 
 TEST(parallel_sparse_ev, names) {
-  for(auto name : rokko::parallel_sparse_ev::solvers()) {
+  for(auto const& name : rokko::parallel_sparse_ev::solvers()) {
     std::cerr << name << std::endl;
   }
 }

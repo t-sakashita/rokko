@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 
 TEST(parallel_dense_ev, names) {
-  for(auto name : rokko::parallel_dense_ev::solvers()) {
+  for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     std::cerr << name << std::endl;
   }
 }

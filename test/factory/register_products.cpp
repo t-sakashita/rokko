@@ -73,7 +73,7 @@ int main() {
   test_factory::product_pointer_type solver_impl = test_factory::instance().make_product("test2");
   solver_impl->print();
   std::cerr << "product_names:" << std::endl;
-  for(auto name : test_factory::instance().product_names()) {
+  for(auto const& name : test_factory::instance().product_names()) {
     std::cerr << name << std::endl;
   }
   std::cerr << "default_product_name = " << test_factory::instance().default_product_name() << std::endl;

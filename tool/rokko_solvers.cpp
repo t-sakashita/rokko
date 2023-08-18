@@ -13,20 +13,20 @@
 
 int main() {
   std::cout << "[serial dense solvers]\n";
-  for(auto name : rokko::serial_dense_ev::solvers()) {
+  for(const auto& name : rokko::serial_dense_ev::solvers()) {
     std::cout << "  " << name << std::endl;
   }
 
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
   std::cout << "[parallel dense solvers]\n";
-  for(auto name : rokko::parallel_dense_ev::solvers()) {
+  for(const auto& name : rokko::parallel_dense_ev::solvers()) {
     std::cout << "  " << name << std::endl;
   }
 #endif // ROKKO_HAVE_PARALLEL_DENSE_SOLVER
 
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
   std::cout << "[parallel sparse solvers]\n";
-  for(auto name : rokko::parallel_sparse_ev::solvers()) {
+  for(const auto& name : rokko::parallel_sparse_ev::solvers()) {
     std::cout << "  " << name << std::endl;
   }
 #endif // ROKKO_HAVE_PARALLEL_SPARSE_SOLVER

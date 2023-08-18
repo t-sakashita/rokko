@@ -20,7 +20,7 @@ int global_argc;
 char** global_argv;
 
 TEST(solver, all) {
-  for(auto name : rokko::serial_dense_ev::solvers()) {
+  for(auto const& name : rokko::serial_dense_ev::solvers()) {
     std::cerr << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
@@ -32,7 +32,7 @@ TEST(solver, all) {
   MPI_Init_thread(&global_argc, &global_argv, MPI_THREAD_MULTIPLE, &provided);
 
 #ifdef ROKKO_HAVE_PARALLEL_DENSE_SOLVER
-  for(auto name : rokko::parallel_dense_ev::solvers()) {
+  for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     std::cerr << name << std::endl;
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
@@ -41,7 +41,7 @@ TEST(solver, all) {
 #endif // ROKKO_HAVE_PARALLEL_DENSE_SOLVER
 
 #ifdef ROKKO_HAVE_PARALLEL_SPARSE_SOLVER
-  for(auto name : rokko::parallel_sparse_ev::solvers()) {
+  for(auto const& name : rokko::parallel_sparse_ev::solvers()) {
     std::cerr << name << std::endl;
     rokko::parallel_sparse_ev solver(name);
     solver.initialize(global_argc, global_argv);

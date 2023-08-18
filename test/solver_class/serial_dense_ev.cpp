@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 
 TEST(serial_dense_ev, names) {
-  for(auto name : rokko::serial_dense_ev::solvers()) {
+  for(auto const& name : rokko::serial_dense_ev::solvers()) {
     std::cerr << name << std::endl;
   }
 }
