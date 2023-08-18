@@ -11,6 +11,7 @@
 
 #include <rokko/rokko.hpp>
 #include <rokko/utility/frank_matrix.hpp>
+#include <rokko/utility/command_line_parameters.hpp>
 
 #include <gtest/gtest.h>
 
@@ -23,14 +24,8 @@ TEST(diagonalize, frank_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
   constexpr int dim = 10;
 
-  std::vector<std::string> names;
-  if (global_argc == 1) {
-    names = rokko::parallel_dense_ev::solvers();
-  } else {
-    for (int num=1; num < global_argc; ++num) {
-      names.emplace_back(global_argv[num]);
-    }
-  }
+  const auto names = global_argc == 1 ? rokko::parallel_dense_ev::solvers()
+    : rokko::get_command_line_args(global_argc, global_argv);
 
   for(auto const& name : names) {
     std::cout << "solver=" << name << std::endl;

@@ -13,6 +13,7 @@
 #include <rokko/utility/helmert_matrix.hpp>
 #include <rokko/collective.hpp>
 #include <rokko/utility/compare_vectors.hpp>
+#include <rokko/utility/command_line_parameters.hpp>
 
 #include <gtest/gtest.h>
 
@@ -70,14 +71,8 @@ TEST(diagonalize, helmert_mpi) {
   MPI_Comm comm = MPI_COMM_WORLD;
   constexpr int dim = 100;
 
-  std::vector<std::string> names;
-  if (global_argc == 1) {
-    names = rokko::parallel_dense_ev::solvers();
-  } else {
-    for (int num=1; num < global_argc; ++num) {
-      names.emplace_back(global_argv[num]);
-    }
-  }
+  const auto names = global_argc == 1 ? rokko::parallel_dense_ev::solvers()
+    : rokko::get_command_line_args(global_argc, global_argv);
 
   for(auto const& name : names) {
     test(comm, dim, name, rokko::grid_col_major);
