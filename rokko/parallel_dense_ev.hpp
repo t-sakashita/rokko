@@ -141,7 +141,7 @@ public:
 
   virtual mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const = 0;
 };
-  
+
 template<typename SOLVER>
 class pd_ev_wrapper : public pd_ev_base {
   using solver_type = SOLVER;

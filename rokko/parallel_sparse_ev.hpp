@@ -65,7 +65,7 @@ private:
 using ps_solver_factory = factory<ps_ev_base>;
   
 } // end namespace detail
-  
+
 class parallel_sparse_ev {
 public:
   parallel_sparse_ev(std::string const& solver_name)

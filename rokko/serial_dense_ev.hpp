@@ -149,7 +149,7 @@ public:
 				 std::vector<double>& eigvals,
 				 parameters const& params) = 0;
 };
-  
+
 template<typename SOLVER>
 class sd_ev_wrapper : public sd_ev_base {
   using solver_type = SOLVER;
