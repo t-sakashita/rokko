@@ -26,7 +26,7 @@ namespace rokko {
 namespace detail {
 
 std::string retrieve_before_comment(std::string const& str) {
-  std::regex separator{"#"};
+  const std::regex separator{"#"};
   auto it = std::sregex_token_iterator{str.cbegin(), str.cend(), separator, -1};
   const auto end_it = std::sregex_token_iterator{};
   if (it != end_it)
