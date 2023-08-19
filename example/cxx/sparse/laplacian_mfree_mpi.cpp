@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   std::string library_routine(rokko::parallel_sparse_ev::default_solver());
   if (argc >= 2) library_routine = argv[1];
   const auto [library, routine] = rokko::split_solver_name(library_routine);
-  int dim = (argc >= 3) ? std::stoi(argv[2]) : 100;
+  const int dim = (argc >= 3) ? std::stoi(argv[2]) : 100;
 
   rokko::parameters params;
   if (!routine.empty()) params.set("routine", routine);
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   
   rokko::parameters info = solver.diagonalize(mat, params);
   
-  int num_conv = info.get<int>("num_conv");
+  const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0)
     throw std::runtime_error("num_conv=0: solver did not converge");
   std::vector<double> eigvec;

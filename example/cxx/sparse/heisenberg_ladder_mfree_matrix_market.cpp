@@ -24,14 +24,14 @@ int main(int argc, char *argv[]) {
   std::string library(rokko::parallel_sparse_ev::default_solver());
   if (argc >= 2) library = argv[1];
   
-  int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
-  int L = 2 * len_ladder;
-  int dim = 1 << L;
+  const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
+  const auto L = 2 * len_ladder;
+  const auto dim = 1 << L;
   const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
 
   rokko::parallel_sparse_ev solver(library);
   rokko::heisenberg_mfree op(L, lattice);
-  auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  const auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   const int num_entries_per_row = lattice.size() + 1;
   rokko::distributed_crs_matrix mat(map, num_entries_per_row);
   rokko::distributed_mfree_to_crs(op, mat);

@@ -20,8 +20,8 @@ int main(int argc, char *argv[]) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  int L = (argc >= 2) ? std::stoi(argv[1]) : 10;
-  int dim = 1 << L;
+  const int L = (argc >= 2) ? std::stoi(argv[1]) : 10;
+  const auto dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   params.set("num_eigenvalues", 10);
 
   rokko::slepc::solver solver;
-  rokko::slepc::mapping_1d map(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  const rokko::slepc::mapping_1d map(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   const int num_entries_per_row = lattice.size() + 1;
   rokko::slepc::distributed_crs_matrix mat(map, num_entries_per_row);
   std::vector<int> cols;
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
   rokko::parameters info = solver.diagonalize(mat, params);
 
-  int num_conv = info.get<int>("num_conv");
+  const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0)
     throw std::runtime_error("num_conv=0: solver did not converge");
   std::vector<double> eigvec;

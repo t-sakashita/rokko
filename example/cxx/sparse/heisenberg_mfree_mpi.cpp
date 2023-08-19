@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) library_routine = argv[1];
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
-  int L = (argc >= 3) ? std::stoi(argv[2]) : 10;
+  const int L = (argc >= 3) ? std::stoi(argv[2]) : 10;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   
   rokko::parallel_sparse_ev solver(library);
   rokko::heisenberg_mfree mat(L, lattice);
-  int dim = mat.get_dim();
+  const auto dim = mat.get_dim();
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
 	      << "solver = " << library << std::endl
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   
   rokko::parameters info = solver.diagonalize(mat, params);
 
-  int num_conv = info.get<int>("num_conv");
+  const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0)
     throw std::runtime_error("num_conv=0: solver did not converge");
   std::vector<double> eigvec;

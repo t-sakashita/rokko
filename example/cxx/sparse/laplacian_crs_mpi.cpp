@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) library_routine = argv[1];
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
-  int dim = (argc >= 3) ? std::stoi(argv[2]) : 100;
+  const int dim = (argc >= 3) ? std::stoi(argv[2]) : 100;
 
   rokko::parameters params;
   if (!routine.empty()) params.set("routine", routine);
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   params.set("Convergence Tolerance", 1.0e-8);
   params.set("num_eigenvalues", 10);
   rokko::parallel_sparse_ev solver(library);
-  auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  const auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   rokko::distributed_crs_matrix mat(map, 3);
 
   if (map.start_row() == 0) {
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
   
   rokko::parameters info = solver.diagonalize(mat, params);
   
-  int num_conv = info.get<int>("num_conv");
+  const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0)
     throw std::runtime_error("num_conv=0: solver did not converge");
   std::vector<double> eigvec;

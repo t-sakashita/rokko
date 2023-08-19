@@ -14,8 +14,8 @@
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  int L = (argc >= 3) ? std::stoi(argv[2]) : 10;
-  int dim = 1 << L;
+  const int L = (argc >= 3) ? std::stoi(argv[2]) : 10;
+  const auto dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
