@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
   rokko::grid g(comm);
-  int block_size = 64;
+  constexpr int block_size = 64;
   const auto myrank = g.get_myrank();
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
