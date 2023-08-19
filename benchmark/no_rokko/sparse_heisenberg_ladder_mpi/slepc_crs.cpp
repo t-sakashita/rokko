@@ -29,8 +29,7 @@ int main(int argc,char **argv)
   if (argc >= 2) len_ladder = std::stoi(argv[1]);
 
   const int L = 2 * len_ladder;
-  std::vector<std::pair<int, int>> lattice;
-  rokko::create_ladder_lattice_1dim(len_ladder, lattice);
+  const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
   const int dim = 1 << L;
 
   // Create Hermitean matrix

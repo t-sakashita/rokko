@@ -27,8 +27,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 3) len_ladder = std::stoi(argv[2]);
 
   const int L = 2 * len_ladder;
-  std::vector<std::pair<int, int>> lattice;
-  rokko::create_ladder_lattice_1dim(len_ladder, lattice);
+  const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
   if (rank == 0)
     rokko::print_lattice(lattice);
   const int dim = 1 << L;

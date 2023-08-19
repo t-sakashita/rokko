@@ -194,7 +194,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
 }
 
 template<typename T, typename MATRIX_MAJOR>
-void generate(int /* L */, std::vector<std::pair<int, int>>& lattice,
+void generate(int /* L */, std::vector<std::pair<int, int>> const& lattice,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   for (std::size_t l = 0; l < lattice.size(); ++l) {

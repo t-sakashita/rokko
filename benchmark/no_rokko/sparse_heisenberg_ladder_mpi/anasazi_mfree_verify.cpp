@@ -156,8 +156,7 @@ int main(int argc, char *argv[]) {
   int len_ladder = 5;
   if (argc >= 2) len_ladder = std::stoi(argv[1]);
   const int L = 2 * len_ladder;
-  std::vector<std::pair<int, int>> lattice;
-  rokko::create_ladder_lattice_1dim(len_ladder, lattice);
+  const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
   rokko::output_lattice(printer.stream(Anasazi::Errors), lattice);
   const int N = 1 << L;
 
