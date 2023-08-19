@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	      << "solver = " << library << std::endl
 	      << "dimension = " << mat.get_dim() << std::endl;
   
-  rokko::parameters info = solver.diagonalize(mat, params);
+  const auto info = solver.diagonalize(mat, params);
   
   const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0)
