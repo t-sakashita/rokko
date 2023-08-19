@@ -70,7 +70,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      myrank ^ m, 0,
                      comm, &status);
         const auto m1 = 1 << i;
-        if ((myrank & m) == m) { 
+        if ((myrank & m) == m) {
           for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
               w[k] += diag_plus * v[k] + offdiag_minus * buffer[k^m1];
@@ -177,7 +177,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
           w[k & mask] += diag_minus;
         } else {
           w[k & mask] += diag_plus;
-        }        
+        }
       }
     }  // end for k
   } // end for lattice

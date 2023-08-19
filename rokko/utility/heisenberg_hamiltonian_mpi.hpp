@@ -67,7 +67,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      myrank ^ m, 0,
                      comm, &status);
         const auto m1 = 1 << i;
-        if ((myrank & m) == m) { 
+        if ((myrank & m) == m) {
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
