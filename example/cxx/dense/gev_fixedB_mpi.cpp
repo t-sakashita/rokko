@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
-  int dim = 4;
+  constexpr int dim = 4;
   if (argc >= 2) library_routine = argv[1];
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 

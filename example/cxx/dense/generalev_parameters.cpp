@@ -17,7 +17,7 @@
 
 int main(int argc, char *argv[]) {
   std::string library_routine(rokko::serial_dense_ev::default_solver());
-  unsigned int dim = 4;
+  constexpr unsigned int dim = 4;
   if (argc >= 2) library_routine = argv[1];
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
