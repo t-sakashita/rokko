@@ -2,7 +2,7 @@
 *
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
-* Copyright (C) 2013-2019 Rokko Developers https://github.com/t-sakashita/rokko
+* Copyright (C) 2013-2023 Rokko Developers https://github.com/t-sakashita/rokko
 *
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -18,7 +18,7 @@
 #include <fstream>
 #include <tuple>
 
-#include <rokko/utility/lattice.hpp>
+#include <rokko/utility/lattice_file_common.hpp>
 
 namespace rokko {
 
