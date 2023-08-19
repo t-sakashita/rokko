@@ -19,15 +19,15 @@ namespace rokko {
 //namespace heisenberg_hamiltonian {
 
 double magnetization(int L, std::vector<std::pair<int, int>>& lattice, int power, const double* v) {
-  int N = 1 << L;
-  int  m_power = 1 << power;
-  double coeff = 1. / m_power;
+  const int N = 1 << L;
+  const int m_power = 1 << power;
+  const double coeff = 1. / m_power;
   double sum = 0;
 
   for (int k=0; k<N; ++k) {
     double m_z = 0;
     for (int i=0; i<L; ++i) {
-      int mask = 1 << i;
+      const int mask = 1 << i;
       if ((k & mask) == mask) {
         m_z += 0.5;
       }
@@ -35,7 +35,7 @@ double magnetization(int L, std::vector<std::pair<int, int>>& lattice, int power
         m_z -=0.5;
       }
     }      
-    sum += std::pow(m_z, (double)power) * v[k] * v[k];
+    sum += std::pow(m_z, static_cast<double>(power)) * v[k] * v[k];
   }
 
   return sum;

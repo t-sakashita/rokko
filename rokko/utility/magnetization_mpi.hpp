@@ -38,14 +38,14 @@ double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int
 
   std::cout << "myrank=" << myrank << "p_count=" << p_count << std::endl;
  
- int N = 1 << L;
-  int  m_power = 1 << power;
-  double coeff = 1. / m_power;
+  const int N = 1 << L;
+  const int m_power = 1 << power;
+  const double coeff = 1. / m_power;
   double sum = 0;
 
   for (int l=0; l<lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int mask = 1 << i;
+    const auto i = lattice[l].first;
+    const int mask = 1 << i;
     for (int k=0; k<N; ++k) {
       if ((k & mask) == mask) {
         sum += coeff * v[k] * v[k];
@@ -56,8 +56,8 @@ double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int
     }
   }
 
-  int i = lattice[lattice.size()-1].second;
-  int mask = 1 << i;
+  const auto i = lattice[lattice.size()-1].second;
+  const int mask = 1 << i;
   for (int k=0; k<N; ++k) {
     if ((k & mask) == mask) {
       sum += coeff * v[k] * v[k];
