@@ -30,7 +30,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   }
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
-  bool offset1 = detail::read_offset_info(ifs);
+  const auto offset1 = detail::read_offset_info(ifs);
 
   do {
     int j, k;
