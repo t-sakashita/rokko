@@ -23,7 +23,7 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 3) dim = std::stoi(argv[2]);
   rokko::grid g(comm);
   int block_size = 64;
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
 	      << "library = " << library << std::endl

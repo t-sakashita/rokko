@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   const int num_entries_per_row = lattice.size() + 1;
-  auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  const auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   rokko::distributed_crs_matrix mat(map, num_entries_per_row);
   std::vector<double> values;
   std::vector<int> cols;
@@ -77,11 +77,11 @@ int main(int argc, char *argv[]) {
   //params.set("max_iters", 500);
   //params.set("conv_tol", 1.0e-8);
   //params.set("num_eigvals", 1);
-  rokko::parameters info = solver.diagonalize(mat, params);
+  const auto info = solver.diagonalize(mat, params);
   MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
   
-  int num_conv = info.get<int>("num_conv");
+  const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0) {
     throw std::runtime_error("diagonalize : solver does not converge.");
   }

@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   int dim = 1 << L;
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
   if (myrank == 0) {
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
               << "library = " << library << std::endl
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   //  Eigen::MatrixXd mat_loc(dim, dim);
