@@ -20,9 +20,8 @@ int main(int argc, char *argv[]) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  std::string library(rokko::parallel_sparse_ev::default_solver());
-  if (argc >= 2) library = argv[1];
-  
+  const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_sparse_ev::default_solver();
+
   const int L = (argc >= 3) ? std::stoi(argv[2]) : 10;
   const auto dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;

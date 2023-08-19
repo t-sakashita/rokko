@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  std::string name("anasazi");
-  if (argc >= 2) name = argv[1];
+  const std::string library = (argc >= 2) ? argv[1] : "anasazi";
   const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
   const auto L = 2 * len_ladder;
   const auto dim = 1 << L;
@@ -27,7 +26,7 @@ int main(int argc, char *argv[]) {
   //if (rank == 0)
   //  rokko::print_lattice(lattice);
 
-  rokko::parallel_sparse_ev solver(name);
+  rokko::parallel_sparse_ev solver(library);
   const auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   const int num_entries_per_row = lattice.size() + 1;
   rokko::distributed_crs_matrix mat(map, num_entries_per_row);

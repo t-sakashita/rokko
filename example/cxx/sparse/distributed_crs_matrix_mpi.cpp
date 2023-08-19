@@ -17,9 +17,8 @@ int main(int argc, char *argv[]) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  std::string library(rokko::parallel_sparse_ev::default_solver());
-  if (argc >= 2) library = argv[1];
-  
+  const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_sparse_ev::default_solver();
+
   constexpr int dim = 4;
   const int num_nonzero_cols[] = {2, 1, 2, 1};
   const int cols[] = {0, 1, 3, 0, 3, 2};
