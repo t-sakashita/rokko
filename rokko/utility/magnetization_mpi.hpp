@@ -18,7 +18,7 @@ namespace rokko {
 
 //namespace heisenberg_hamiltonian {
 
-double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, int power, const double* v) {
+auto magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, int power, const double* v) {
   int myrank, nproc;
   MPI_Status status;
 
@@ -70,7 +70,7 @@ double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int
   return sum;
 }
 
-double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, int power, const std::vector<double>& v) {
+auto magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, int power, const std::vector<double>& v) {
   return magnetization(comm, L, lattice, power, v.data());
 }
 
