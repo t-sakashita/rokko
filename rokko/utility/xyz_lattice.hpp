@@ -22,7 +22,11 @@
 
 namespace rokko {
 
-void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int>>& lattice, std::vector<std::tuple<double, double, double>>& coupling) {
+auto read_lattice_stream(std::ifstream& ifs) {
+  int num_sites;
+  std::vector<std::pair<int, int>> lattice;
+  std::vector<std::tuple<double, double, double>> coupling;
+
   std::size_t num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
@@ -56,14 +60,16 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
       coupling.emplace_back(std::make_tuple(jx, jy, jz));
     }
   } while (coupling.size() < num_bonds);
+
+  return std::tuple(num_sites, lattice, coupling);
 }
 
-void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int>>& lattice, std::vector<std::tuple<double, double, double>>& coupling) {
+  auto read_lattice_file(std::string const& filename) {
   std::ifstream ifs(filename);
   if (!ifs) {
     throw std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\"");
   }
-  return read_lattice_stream(ifs, num_sites, lattice, coupling);
+  return read_lattice_stream(ifs);
 }
 
 } // namespace rokko

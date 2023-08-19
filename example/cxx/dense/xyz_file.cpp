@@ -26,10 +26,7 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
-  int num_sites;
-  std::vector<std::pair<int, int>> lattice;
-  std::vector<std::tuple<double, double, double>> coupling;
-  rokko::read_lattice_file(lattice_file, num_sites, lattice, coupling);
+  const auto [num_sites, lattice, coupling] = rokko::read_lattice_file(lattice_file);
   const auto dim = 1 << num_sites;
 
   rokko::serial_dense_ev solver(solver_name);
