@@ -53,11 +53,11 @@ int main(int argc, char *argv[]) {
   //params.set("conv_tol", 1.0e-12);
   //params.set("num_eigvals", 1)
   params.set("verbose", true);
-  rokko::parameters params_out = solver.diagonalize(mat, params);
+  const auto params_out = solver.diagonalize(mat, params);
   MPI_Barrier(MPI_COMM_WORLD);
   end_tick = MPI_Wtime();
 
-  const int num_conv = params_out.get<int>("num_conv");
+  const auto num_conv = params_out.get<int>("num_conv");
   if (num_conv == 0) {
     throw std::runtime_error("diagonalize : solver does not converge.");
   }
