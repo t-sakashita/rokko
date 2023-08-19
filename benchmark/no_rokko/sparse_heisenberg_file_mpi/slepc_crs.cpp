@@ -26,9 +26,7 @@ int main(int argc,char **argv)
 
   std::string lattice_file("xyz.dat");
   if (argc >= 2) lattice_file = argv[1];
-  int L;
-  std::vector<std::pair<int, int>> lattice;
-  rokko::read_lattice_file(lattice_file, L, lattice);
+  const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
   int dim = 1 << L;
 
   // Create Hermitean matrix

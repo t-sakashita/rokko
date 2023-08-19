@@ -17,7 +17,10 @@
 
 namespace rokko {
 
-void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pair<int, int>>& lattice) {
+auto read_lattice_stream(std::ifstream& ifs) {
+  int num_sites;
+  std::vector<std::pair<int,int>> lattice;
+
   std::size_t num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
@@ -42,14 +45,16 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
       }
     }
   } while (lattice.size() < num_bonds);
+
+  return std::tuple(num_sites, lattice);
 }
 
-void read_lattice_file(std::string const& filename, int& num_sites, std::vector<std::pair<int, int>>& lattice) {
+auto read_lattice_file(std::string const& filename) {
   std::ifstream ifs(filename);
   if (!ifs) {
     throw std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\"");
   }
-  return read_lattice_stream(ifs, num_sites, lattice);
+  return read_lattice_stream(ifs);
 }
 
 auto create_ladder_lattice_1dim(int len_ladder) {

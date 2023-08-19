@@ -23,9 +23,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) name = argv[1];
   std::string lattice_file("xyz.dat");
   if (argc >= 3) lattice_file = argv[2];
-  int L;
-  std::vector<std::pair<int, int>> lattice;
-  rokko::read_lattice_file(lattice_file, L, lattice);
+  const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
   int dim = 1 << L;
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl

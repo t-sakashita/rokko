@@ -45,8 +45,8 @@ int main(int argc,char **argv)
   std::string lattice_file("xyz.dat");
   if (argc >= 2) lattice_file = argv[1];
   int L;
-  rokko::read_lattice_file(lattice_file, L, m.lattice);
-  
+  std::tie(L, m.lattice) = rokko::read_lattice_file(lattice_file);
+
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
   int dim = 1 << L;
