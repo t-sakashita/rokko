@@ -43,7 +43,7 @@ auto magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   const double coeff = 1. / m_power;
   double sum = 0;
 
-  for (int l=0; l<lattice.size(); ++l) {
+  for (std::size_t l=0; l<lattice.size(); ++l) {
     const auto i = lattice[l].first;
     const int mask = 1 << i;
     for (int k=0; k<N; ++k) {
