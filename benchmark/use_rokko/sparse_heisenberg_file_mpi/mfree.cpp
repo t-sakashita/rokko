@@ -20,21 +20,19 @@ int main(int argc, char *argv[]) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
-  std::string name("anasazi");
-  if (argc >= 2) name = argv[1];
-  std::string lattice_file("xyz.dat");
-  if (argc >= 3) lattice_file = argv[2];
+  const std::string library = (argc >= 2) ? argv[1] : "anasazi";
+  const std::string lattice_file = (argc >= 3) ? argv[2] : "xyz.dat";
   const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
-  int dim = 1 << L;
+  const auto dim = 1 << L;
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
-              << "solver = " << name << std::endl
+              << "library = " << library << std::endl
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
   MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
-  rokko::parallel_sparse_ev solver(name);
+  rokko::parallel_sparse_ev solver(library);
   MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
   

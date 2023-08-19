@@ -25,16 +25,14 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  std::string library_routine(rokko::parallel_dense_ev::default_solver());
+  const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+  const auto [library, routine] = rokko::split_solver_name(library_routine);
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
-  if (argc >= 2) library_routine = argv[1];
-  const auto [library, routine] = rokko::split_solver_name(library_routine);
-  int len_ladder = 5;
-  if (argc >= 3) len_ladder = std::stoi(argv[2]);
-  int L = 2 * len_ladder;
+  const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
+  const auto L = 2 * len_ladder;
   const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
-  int dim = 1 << L;
+  const auto dim = 1 << L;
 
   rokko::grid g(comm);
   const auto myrank = g.get_myrank();

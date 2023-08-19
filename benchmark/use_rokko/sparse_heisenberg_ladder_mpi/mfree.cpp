@@ -22,13 +22,11 @@ int main(int argc, char *argv[]) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
-  std::string library_routine(rokko::parallel_sparse_ev::default_solver());
-  if (argc >= 2) library_routine = argv[1];
+  const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_sparse_ev::default_solver();
   const auto [library, routine] = rokko::split_solver_name(library_routine);
-  int len_ladder = 5;
-  if (argc >= 3) len_ladder = std::stoi(argv[2]);
+  const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
 
-  const int L = 2 * len_ladder;
+  const auto L = 2 * len_ladder;
   const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
   if (rank == 0)
     rokko::print_lattice(lattice);

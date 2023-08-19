@@ -20,25 +20,22 @@ int main(int argc, char *argv[]) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
-  std::string name("anasazi");
-  if (argc >= 2) name = argv[1];
-  int len_ladder = 5;
-  if (argc >= 3) len_ladder = std::stoi(argv[2]);
-
-  const int L = 2 * len_ladder;
+  const std::string library = (argc >= 2) ? argv[1] : "anasazi";
+  const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
+  const auto L = 2 * len_ladder;
   const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
   if (rank == 0)
     rokko::print_lattice(lattice);
   const int dim = 1 << L;
   if (rank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg 1D ladder lattice" << std::endl
-              << "solver = " << name << std::endl
+              << "library = " << library << std::endl
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
   MPI_Barrier(MPI_COMM_WORLD);
   init_tick = MPI_Wtime();
-  rokko::parallel_sparse_ev solver(name);
+  rokko::parallel_sparse_ev solver(library);
   MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
