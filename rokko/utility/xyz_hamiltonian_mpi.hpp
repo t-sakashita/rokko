@@ -36,25 +36,25 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
   if (nproc != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
-  int N = 1 << (L-p);
+  const auto N = 1 << (L-p);
 
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jx = std::get<0>(coupling[l]);
-    double jy = std::get<1>(coupling[l]);
-    double jz = std::get<2>(coupling[l]);
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jx = std::get<0>(coupling[l]);
+    const auto jy = std::get<1>(coupling[l]);
+    const auto jz = std::get<2>(coupling[l]);
 
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz / 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz / 4.0;
+    const auto offdiag_plus = (jx + jy) / 4.0;
+    const auto offdiag_minus = (jx - jy) / 4.0;
 
     if (i < (L-p)) {
       if (j < (L-p)) {
-        int m1 = 1 << i;
-        int m2 = 1 << j;
-        int m3 = m1 + m2;
+        const auto m1 = 1 << i;
+        const auto m2 = 1 << j;
+        const auto m3 = m1 + m2;
         for (int k = 0; k < N; ++k) {
           if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
             w[k] += diag_minus * v[k] + offdiag_plus * v[k^m3];
@@ -63,13 +63,13 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
           }
         }
       } else {
-        int m = 1 << (j-(L-p));
+        const auto m = 1 << (j-(L-p));
         MPI_Sendrecv(v, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
-        int m1 = 1 << i;
+        const auto m1 = 1 << i;
         if ((myrank & m) == m) { 
           for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
@@ -90,13 +90,13 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
       }
     } else {
       if (j < (L-p)) {
-        int m = 1 << (i-(L-p));
+        const auto m = 1 << (i-(L-p));
         MPI_Sendrecv(v, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
-        int m1 = 1 << j;
+        const auto m1 = 1 << j;
         if ((myrank & m) == m) {
           for (int k = 0; k < N; ++k) {
             if ((k & m1) == m1) {
@@ -115,7 +115,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
           }
         }
       } else {
-        int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
+        const auto m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
         MPI_Sendrecv(v, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      buffer, N, MPI_DOUBLE,
@@ -150,26 +150,26 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
 
-  int N_seq = 1 << L;
-  int N = 1 << (L-p);
-  int myrank_shift = myrank * N;
-  int nproc_shift = (nproc-1) * N;
-  int mask = N - 1;
+  const auto N_seq = 1 << L;
+  const auto N = 1 << (L-p);
+  const auto myrank_shift = myrank * N;
+  const auto nproc_shift = (nproc-1) * N;
+  const auto mask = N - 1;
 
   for (std::size_t k = 0; k < N; ++k) {
     w[k] = 0;
   }
 
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jz = std::get<2>(coupling[l]); // jx and jy are unused
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz / 4.0;
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jz = std::get<2>(coupling[l]); // jx and jy are unused
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz / 4.0;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
 
     for (int k = 0; k < N_seq; ++k) {
       if (myrank_shift == (k & nproc_shift)) {
@@ -194,25 +194,25 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice,
   const auto& map = mat.get_mapping();
 
   mat.set_zeros();
-  int N = 1 << L;
+  const auto N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jx = std::get<0>(coupling[l]);
-    double jy = std::get<1>(coupling[l]);
-    double jz = std::get<2>(coupling[l]);
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz/ 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jx = std::get<0>(coupling[l]);
+    const auto jy = std::get<1>(coupling[l]);
+    const auto jz = std::get<2>(coupling[l]);
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz/ 4.0;
+    const auto offdiag_plus = (jx + jy) / 4.0;
+    const auto offdiag_minus = (jx - jy) / 4.0;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
 
     for (int k = 0; k < N; ++k) {
       if (map.has_global_col_index(k)) {
-        int local_k = map.translate_g2l_col(k);
+        const auto local_k = map.translate_g2l_col(k);
         if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (map.has_global_row_index(k^m3)) {
             mat.update_local(map.translate_g2l_row(k^m3), local_k, offdiag_plus);
@@ -240,25 +240,25 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice, const std:
   const auto& map = mat.get_mapping();
 
   mat.set_zeros();
-  int N = 1 << L;
+  const auto N = 1 << L;
   for (int l=0; l<lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jx = std::get<0>(coupling[l]);
-    double jy = std::get<1>(coupling[l]);
-    double jz = std::get<2>(coupling[l]);
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz/ 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jx = std::get<0>(coupling[l]);
+    const auto jy = std::get<1>(coupling[l]);
+    const auto jz = std::get<2>(coupling[l]);
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz/ 4.0;
+    const auto offdiag_plus = (jx + jy) / 4.0;
+    const auto offdiag_minus = (jx - jy) / 4.0;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
     for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-      int k1 = map.translate_l2g_row(local_i);
+      const auto k1 = map.translate_l2g_row(local_i);
       for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-        int k2 = map.translate_l2g_col(local_j);
+        const auto k2 = map.translate_l2g_col(local_j);
         if (((k2 & m3) == m1) || ((k2 & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (k1 == (k2^m3)) {
             mat.update_local(local_i, local_j, offdiag_plus);

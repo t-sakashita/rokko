@@ -22,22 +22,22 @@ namespace xyz_hamiltonian {
 template<typename T>
 void multiply(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, const T* v, T* w) {
-  int N = 1 << L;
+  const auto N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jx = std::get<0>(coupling[l]);
-    double jy = std::get<1>(coupling[l]);
-    double jz = std::get<2>(coupling[l]);
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jx = std::get<0>(coupling[l]);
+    const auto jy = std::get<1>(coupling[l]);
+    const auto jz = std::get<2>(coupling[l]);
 
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz / 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz / 4.0;
+    const auto offdiag_plus = (jx + jy) / 4.0;
+    const auto offdiag_minus = (jx - jy) / 4.0;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {
         // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
@@ -66,21 +66,21 @@ void multiply(int L, const std::vector<std::pair<int, int>>& lattice,
 template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, T* w) {
-  int N = 1 << L;
+  const auto N = 1 << L;
   for (std::size_t k=0; k<N; ++k) {
     w[k] = 0;
   }
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jz = std::get<2>(coupling[l]); // jx and jy are unused
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jz = std::get<2>(coupling[l]); // jx and jy are unused
 
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz / 4.0;
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz / 4.0;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {
         // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
@@ -109,21 +109,21 @@ void generate(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<T, T, T>>& coupling,
   Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat) {
   mat.setZero();
-  int N = 1 << L;
+  const auto N = 1 << L;
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    double jx = std::get<0>(coupling[l]);
-    double jy = std::get<1>(coupling[l]);
-    double jz = std::get<2>(coupling[l]);
-    double diag_plus = jz / 4.0;
-    double diag_minus = - jz/ 4.0;
-    double offdiag_plus = (jx + jy) / 4.0;
-    double offdiag_minus = (jx - jy) / 4.0;
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto jx = std::get<0>(coupling[l]);
+    const auto jy = std::get<1>(coupling[l]);
+    const auto jz = std::get<2>(coupling[l]);
+    const auto diag_plus = jz / 4.0;
+    const auto diag_minus = - jz/ 4.0;
+    const auto offdiag_plus = (jx + jy) / 4.0;
+    const auto offdiag_minus = (jx - jy) / 4.0;
 
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
     for (int k=0; k<N; ++k) {
       if (((k & m3) == m1) || ((k & m3) == m2)) {
         // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)

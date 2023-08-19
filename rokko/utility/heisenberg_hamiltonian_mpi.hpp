@@ -33,20 +33,20 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
 
-  int N = 1 << (L-p);
+  const auto N = 1 << (L-p);
 
   for(std::size_t k=0; k<N; ++k) {
     w[k] = 0.;
   }
 
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
     if (i < (L-p)) {
       if (j < (L-p)) {
-        int m1 = 1 << i;
-        int m2 = 1 << j;
-        int m3 = m1 + m2;
+        const auto m1 = 1 << i;
+        const auto m2 = 1 << j;
+        const auto m3 = m1 + m2;
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
@@ -60,13 +60,13 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
           }
         }
       } else {
-        int m = 1 << (j-(L-p));
+        const auto m = 1 << (j-(L-p));
         MPI_Sendrecv(v, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
-        int m1 = 1 << i;
+        const auto m1 = 1 << i;
         if ((myrank & m) == m) { 
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -93,13 +93,13 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
       }
     } else {
       if (j < (L-p)) {
-        int m = 1 << (i-(L-p));
+        const auto m = 1 << (i-(L-p));
         MPI_Sendrecv(v, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      buffer, N, MPI_DOUBLE,
                      myrank ^ m, 0,
                      comm, &status);
-        int m1 = 1 << j;
+        const auto m1 = 1 << j;
         if ((myrank & m) == m) {
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -124,7 +124,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
           }
         }
       } else {
-        int m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
+        const auto m = (1 << (i-(L-p))) + (1 << (j-(L-p)));
         if (((myrank & m) != m) && ((myrank & m) != 0)) {
           MPI_Sendrecv(v, N, MPI_DOUBLE,
                        myrank ^ m, 0,
@@ -174,12 +174,12 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   for (int local_k=0; local_k<N; ++local_k) {
     const auto k = local_k + myrank_shift;
     for (std::size_t l = 0; l < lattice.size(); ++l) {
-      int i = lattice[l].first;
-      int j = lattice[l].second;
+      const auto i = lattice[l].first;
+      const auto j = lattice[l].second;
 
-      int m1 = 1 << i;
-      int m2 = 1 << j;
-      int m3 = m1 + m2;
+      const auto m1 = 1 << i;
+      const auto m2 = 1 << j;
+      const auto m3 = m1 + m2;
       if (((k & m3) == m1) || ((k & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         w[local_k] -= 0.25;
       } else {
@@ -198,14 +198,14 @@ void generate(int /* L */, std::vector<std::pair<int, int>>& lattice,
   rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
   mat.set_zeros();
   for (std::size_t l = 0; l < lattice.size(); ++l) {
-    int i = lattice[l].first;
-    int j = lattice[l].second;
-    int m1 = 1 << i;
-    int m2 = 1 << j;
-    int m3 = m1 + m2;
+    const auto i = lattice[l].first;
+    const auto j = lattice[l].second;
+    const auto m1 = 1 << i;
+    const auto m2 = 1 << j;
+    const auto m3 = m1 + m2;
     for (int k = 0; k < mat.get_n_global(); ++k) {
       if (mat.has_global_col_index(k)) {
-        int local_k = mat.translate_g2l_col(k);
+        const auto local_k = mat.translate_g2l_col(k);
         if (((k & m3) == m1) || ((k & m3) == m2)) {
           // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
           if (mat.has_global_row_index(k^m3)) {
