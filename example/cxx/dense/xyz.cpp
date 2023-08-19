@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     ifs >> jx >> jy >> jz;
     coupling.emplace_back(std::make_tuple(jx, jy, jz));
   }
-  int dim = 1 << num_sites;
+  const auto dim = 1 << num_sites;
 
   rokko::serial_dense_ev solver(solver_name);
   solver.initialize(argc, argv);

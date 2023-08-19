@@ -26,11 +26,11 @@ int main(int argc, char *argv[]) {
   if (argc >= 3) L = std::stoi(argv[2]);
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
   std::cout.precision(5);
 
-  int dim = 1 << L;
+  const auto dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) {
     lattice.emplace_back(std::make_pair(i, (i+1) % L));

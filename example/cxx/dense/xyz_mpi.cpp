@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   if (argc >= 3) lattice_file = argv[2];
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
   std::cout.precision(5);
 
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
   ifs >> num_sites >> num_bonds;
-  int dim = 1 << num_sites;
+  const auto dim = 1 << num_sites;
   for (int i = 0; i < num_bonds; ++i) {
     int j, k;
     ifs >> j >> k;
