@@ -46,7 +46,7 @@ public:
       for (int k=i+1; k<n; ++k)
         common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
       mat(i, i) = common_elem + i * diag(i) / (i+1);
-      T val = common_elem - diag(i) / (i+1);
+      const T val = common_elem - diag(i) / (i+1);
       mat.row(i).head(i).setConstant(val);
       mat.col(i).head(i).setConstant(val);
     }
@@ -60,7 +60,7 @@ public:
     const auto n = mat.get_m_global();
     int start_i;
     if (mat.has_global_row_index(0)) {
-      T val = 1 / sqrt(n);
+      const T val = 1 / sqrt(n);
       for(int local_j = 0; local_j < mat.get_n_local(); ++local_j)
         mat.set_local(0, local_j, val);
       start_i = 1;
@@ -68,10 +68,10 @@ public:
     else start_i = 0;
 
     for(int local_i = start_i; local_i < mat.get_m_local(); ++local_i) {
-      int global_i = mat.translate_l2g_row(local_i);
-      T val = 1 / sqrt(static_cast<T>(global_i*(global_i+1)));
+      const auto global_i = mat.translate_l2g_row(local_i);
+      const T val = 1 / sqrt(static_cast<T>(global_i*(global_i+1)));
       for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-        int global_j = mat.translate_l2g_col(local_j);
+        const auto global_j = mat.translate_l2g_col(local_j);
 	if (global_j < global_i) mat.set_local(local_i, local_j, val);
 	else if (global_j == global_i) mat.set_local(local_i, local_j, - sqrt(static_cast<T>(global_i)/(global_i+1)));
       }
@@ -85,26 +85,26 @@ public:
     const auto n = mat.get_m_global();
 
     for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-      int global_i = mat.translate_l2g_row(local_i);
+      const auto global_i = mat.translate_l2g_row(local_i);
       T common_elem = diag(0) / n;
       for (int k=global_i+1; k<n; ++k)
 	common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
-      T val = common_elem - diag(global_i) / (global_i+1);
+      const T val = common_elem - diag(global_i) / (global_i+1);
       for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-        int global_j = mat.translate_l2g_col(local_j);
+        const auto global_j = mat.translate_l2g_col(local_j);
 	if (global_j < global_i) mat.set_local(local_i, local_j, val);
 	else if (global_j == global_i) mat.set_local(local_i, local_j, common_elem + global_i * diag(global_i) / (global_i+1));
       }
     }
     
     for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
-      int global_j = mat.translate_l2g_col(local_j);
+      const auto global_j = mat.translate_l2g_col(local_j);
       T common_elem = diag(0) / n;
       for (int k=global_j+1; k<n; ++k)
 	common_elem += diag(k) / (k*(k+1));  // Remark: i=max(i,j)
-      T val = common_elem - diag(global_j) / (global_j+1);
+      const T val = common_elem - diag(global_j) / (global_j+1);
       for(int local_i = 0; local_i < mat.get_m_local(); ++local_i) {
-        int global_i = mat.translate_l2g_row(local_i);
+        const auto global_i = mat.translate_l2g_row(local_i);
 	if (global_i < global_j) mat.set_local(local_i, local_j, val);
       }
     }

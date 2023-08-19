@@ -55,9 +55,9 @@ public:
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
 
     for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-      int global_j = map.translate_l2g_col(local_j);
+      const auto global_j = map.translate_l2g_col(local_j);
       for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-        int global_i = map.translate_l2g_row(local_i);
+        const auto global_i = map.translate_l2g_row(local_i);
         mat.set_local(local_i, local_j, map.get_m_global() - std::max(global_i, global_j));
       }
     }
@@ -70,9 +70,9 @@ public:
       throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
 
      for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-      int global_i = map.translate_l2g_row(local_i);
+      const auto global_i = map.translate_l2g_row(local_i);
       for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-        int global_j = map.translate_l2g_col(local_j);
+        const auto global_j = map.translate_l2g_col(local_j);
         mat.set_local(local_i, local_j, map.get_m_global() - std::max(global_i, global_j));
       }
     }
