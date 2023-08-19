@@ -26,10 +26,8 @@ int main(int argc, char *argv[]) {
 
   MPI_Comm comm = create_even_odd_comm_by_split();
   
-  std::string library_routine(rokko::parallel_dense_ev::default_solver());
-  int dim = 10;
-  if (argc >= 2) library_routine = argv[1];
-  if (argc >= 3) dim = std::stoi(argv[2]);
+  const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+  const int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);

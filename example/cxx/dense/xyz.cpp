@@ -17,10 +17,8 @@
 
 
 int main(int argc, char *argv[]) {
-  std::string solver_name(rokko::serial_dense_ev::default_solver());
-  std::string lattice_file("xyz.dat");
-  if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) lattice_file = argv[2];
+  const std::string library = (argc >= 2) ? argv[1] : rokko::serial_dense_ev::default_solver();
+  const std::string lattice_file = (argc >= 3) ? argv[2] : "xyz.dat";
 
   std::cout.precision(5);
 
@@ -44,10 +42,10 @@ int main(int argc, char *argv[]) {
   }
   const auto dim = 1 << num_sites;
 
-  rokko::serial_dense_ev solver(solver_name);
+  rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
-            << "solver = " << solver_name << std::endl
+            << "library = " << library << std::endl
             << "lattice file = " << lattice_file << std::endl
             << "number of sites = " << num_sites << std::endl
             << "number of bonds = " << num_bonds << std::endl

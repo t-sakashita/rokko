@@ -16,10 +16,8 @@
 
 
 int main(int argc, char *argv[]) {
-  std::string library_routine(rokko::serial_dense_ev::default_solver());
-  unsigned int dim = 10;
-  if (argc >= 2) library_routine = argv[1];
-  if (argc >= 3) dim = std::stoi(argv[2]);
+  const std::string library_routine = (argc >= 2) ? argv[1] : rokko::serial_dense_ev::default_solver();
+  const unsigned int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   std::cout.precision(5);

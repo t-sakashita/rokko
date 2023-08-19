@@ -17,21 +17,18 @@
 using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
-
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
-  std::string solver_name(rokko::parallel_dense_ev::default_solver());
-  int dim = 10;
-  if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) dim = std::stoi(argv[2]);
-
+  const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+  const int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
+  
   rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   std::cout.precision(5);
 
-  rokko::parallel_dense_ev solver(solver_name);
+  rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
@@ -39,7 +36,7 @@ int main(int argc, char *argv[]) {
               #ifdef _OPENMP
               << "num_threads per process = " << omp_get_max_threads() << std::endl
               #endif
-              << "solver = " << solver_name << std::endl
+              << "library= " << library << std::endl
               << "dimension = " << dim << std::endl;
 
   const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);

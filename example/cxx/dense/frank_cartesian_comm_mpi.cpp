@@ -33,10 +33,8 @@ int main(int argc, char *argv[]) {
     std::cout << "Created " << g.get_nprow() << "x" << g.get_npcol() << " size communicator with new cartesian topology" << std::endl;
 
   if (comm != MPI_COMM_NULL) {
-    std::string library_routine(rokko::parallel_dense_ev::default_solver());
-    int dim = 10;
-    if (argc >= 2) library_routine = argv[1];
-    if (argc >= 3) dim = std::stoi(argv[2]);
+    const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+    const int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
     const auto [library, routine] = rokko::split_solver_name(library_routine);
 
     std::cout.precision(5);

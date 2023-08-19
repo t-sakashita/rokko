@@ -19,7 +19,7 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   std::string solver_name(rokko::parallel_dense_ev::default_solver());
   int L = 8;
   if (argc >= 2) solver_name = argv[1];

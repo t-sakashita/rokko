@@ -20,17 +20,16 @@ using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
-  unsigned int dim = 10;
-  std::string solver_name(rokko::parallel_dense_ev::default_solver());
-  if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) dim = std::stoi(argv[2]);
+
+  const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+  const unsigned int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
 
   rokko::grid g;
   if (g.get_myrank() == 0) std::cout << "dimension = " << dim << std::endl;
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
 
-  rokko::parallel_dense_ev solver(solver_name);
+  rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);

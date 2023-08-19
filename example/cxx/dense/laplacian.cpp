@@ -15,17 +15,15 @@
 
 
 int main(int argc, char *argv[]) {
-  std::string solver_name(rokko::serial_dense_ev::default_solver());
-  unsigned int dim = 10;
-  if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) dim = std::stoi(argv[2]);
+  const std::string library = (argc >= 2) ? argv[1] : rokko::serial_dense_ev::default_solver();
+  const unsigned int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
 
   std::cout.precision(5);
 
-  rokko::serial_dense_ev solver(solver_name);
+  rokko::serial_dense_ev solver(library);
   solver.initialize(argc, argv);
   std::cout << "Eigenvalue decomposition of Laplacian matrix" << std::endl
-            << "solver = " << solver_name << std::endl
+            << "library = " << library << std::endl
             << "dimension = " << dim << std::endl;
 
   Eigen::MatrixXd mat(dim, dim);
