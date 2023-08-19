@@ -105,7 +105,7 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-          for (int k=0; k<N; ++k) {
+          for (size_t k=0; k<N; ++k) {
             if ((k & m1) == m1) {
               w[k] += 0.25 * v[k];
             } else {
@@ -116,7 +116,7 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-          for (int k=0; k<N; ++k) {
+          for (size_t k=0; k<N; ++k) {
             if ((k & m1) == m1) {
               w[k] += 0.5 * buffer[k^m1] - 0.25 * v[k];
             } else {
@@ -135,14 +135,14 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-          for (int k=0; k<N; ++k) {
+          for (size_t k=0; k<N; ++k) {
             w[k] += 0.5 * buffer[k] - 0.25 * v[k];
           }
         } else {
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-          for (int k=0; k<N; ++k) {
+          for (size_t k=0; k<N; ++k) {
             w[k] += 0.25 * v[k];
           }
         }
