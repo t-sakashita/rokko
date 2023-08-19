@@ -21,9 +21,9 @@ int main(int argc, char *argv[]) {
   if (argc >= 2) library = argv[1];
   
   constexpr int dim = 4;
-  int num_nonzero_cols[] = {2, 1, 2, 1};
-  int cols[] = {0, 1, 3, 0, 3, 2};
-  double values[] = {7.1, 5.2, 6.4, 0.2, 4.3, 0.5};
+  const int num_nonzero_cols[] = {2, 1, 2, 1};
+  const int cols[] = {0, 1, 3, 0, 3, 2};
+  const double values[] = {7.1, 5.2, 6.4, 0.2, 4.3, 0.5};
 
   if (rank == 0) std::cout << "[solver = " << library << "]" << std::endl;
   rokko::parallel_sparse_ev solver(library);
