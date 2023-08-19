@@ -53,11 +53,11 @@ int main(int argc,char **argv)
     values.clear();
     double diag = 0.;
     for (std::size_t l=0; l<lattice.size(); ++l) {
-      int i = lattice[l].first;
-      int j = lattice[l].second;
-      int m1 = 1 << i;
-      int m2 = 1 << j;
-      int m3 = m1 + m2;
+      const auto i = lattice[l].first;
+      const auto j = lattice[l].second;
+      const auto m1 = 1 << i;
+      const auto m2 = 1 << j;
+      const auto m3 = m1 + m2;
       if (((row & m3) == m1) || ((row & m3) == m2)) {  // when (bit i == 1, bit j == 0) or (bit i == 0, bit j == 1)
         cols.emplace_back(row^m3);
         values.emplace_back(0.5);
