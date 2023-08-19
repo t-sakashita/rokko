@@ -22,10 +22,8 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   const MPI_Comm comm = MPI_COMM_WORLD;
-  std::string solver_name(rokko::parallel_dense_ev::default_solver());
-  std::string lattice_file("xyz.dat");
-  if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) lattice_file = argv[2];
+  const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+  const std::string lattice_file = (argc >= 3) ? argv[2] : "xyz.dat";
 
   rokko::grid g(comm);
   const auto myrank = g.get_myrank();
@@ -52,7 +50,7 @@ int main(int argc, char *argv[]) {
     coupling.emplace_back(std::make_tuple(jx, jy, jz));
   }
 
-  rokko::parallel_dense_ev solver(solver_name);
+  rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of XYZ model" << std::endl
@@ -60,7 +58,7 @@ int main(int argc, char *argv[]) {
               #ifdef _OPENMP
               << "num_threads per process = " << omp_get_max_threads() << std::endl
               #endif
-              << "solver = " << solver_name << std::endl
+              << "library = " << library << std::endl
               << "lattice file = " << lattice_file << std::endl
               << "number of sites = " << num_sites << std::endl
               << "number of bonds = " << num_bonds << std::endl

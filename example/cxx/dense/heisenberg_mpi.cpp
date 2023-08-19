@@ -20,10 +20,8 @@ int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   const MPI_Comm comm = MPI_COMM_WORLD;
-  std::string solver_name(rokko::parallel_dense_ev::default_solver());
-  int L = 8;
-  if (argc >= 2) solver_name = argv[1];
-  if (argc >= 3) L = std::stoi(argv[2]);
+  const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
+  const int L = (argc >= 3) ? std::stoi(argv[2]) : 8;
 
   rokko::grid g(comm);
   const auto myrank = g.get_myrank();
@@ -36,7 +34,7 @@ int main(int argc, char *argv[]) {
     lattice.emplace_back(std::make_pair(i, (i+1) % L));
   }
 
-  rokko::parallel_dense_ev solver(solver_name);
+  rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   if (myrank == 0)
     std::cout << "Eigenvalue decomposition of antiferromagnetic Heisenberg chain" << std::endl
@@ -44,7 +42,7 @@ int main(int argc, char *argv[]) {
               #ifdef _OPENMP
               << "num_threads per process = " << omp_get_max_threads() << std::endl
               #endif
-              << "solver = " << solver_name << std::endl
+              << "library = " << library << std::endl
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
