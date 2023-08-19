@@ -64,7 +64,7 @@ auto read_lattice_stream(std::ifstream& ifs) {
   return std::tuple(num_sites, lattice, coupling);
 }
 
-  auto read_lattice_file(std::string const& filename) {
+auto read_lattice_file(std::string const& filename) {
   std::ifstream ifs(filename);
   if (!ifs) {
     throw std::runtime_error("read_lattice_file() : can't open file \"" + filename + "\"");
