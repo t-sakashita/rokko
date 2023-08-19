@@ -32,7 +32,7 @@ auto magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   do {
     n /= 2;
     ++p;
-    r = r >> 1;
+    r >>= 1;
     p_count += r & 1; 
   } while (n > 0);
 
