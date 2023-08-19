@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   
   MPI_Barrier(MPI_COMM_WORLD);
   gen_tick = MPI_Wtime();
-  rokko::heisenberg_mfree mat(L, lattice);
+  const rokko::heisenberg_mfree mat(L, lattice);
 
   MPI_Barrier(MPI_COMM_WORLD);
   diag_tick = MPI_Wtime();
