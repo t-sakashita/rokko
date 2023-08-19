@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
   const std::string library = (argc >= 2) ? argv[1] : "anasazi";
   const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
@@ -34,13 +33,13 @@ int main(int argc, char *argv[]) {
               << "dimension = " << dim << std::endl;
 
   MPI_Barrier(MPI_COMM_WORLD);
-  init_tick = MPI_Wtime();
+  const auto init_tick = MPI_Wtime();
   rokko::parallel_sparse_ev solver(library);
   MPI_Barrier(MPI_COMM_WORLD);
-  initend_tick = MPI_Wtime();
+  const auto initend_tick = MPI_Wtime();
 
   MPI_Barrier(MPI_COMM_WORLD);
-  gen_tick = MPI_Wtime();
+  const auto gen_tick = MPI_Wtime();
   const int num_entries_per_row = lattice.size() + 1;
   const auto map = solver.default_mapping(dim, rokko::mpi_comm{MPI_COMM_WORLD});
   rokko::distributed_crs_matrix mat(map, num_entries_per_row);
@@ -77,7 +76,7 @@ int main(int argc, char *argv[]) {
   //mat.print();
   
   MPI_Barrier(MPI_COMM_WORLD);
-  diag_tick = MPI_Wtime();
+  const auto diag_tick = MPI_Wtime();
   rokko::parameters params;
   //params.set("max_block_size", 5);
   //params.set("max_iters", 500);
@@ -87,7 +86,7 @@ int main(int argc, char *argv[]) {
 
   const auto params_out = solver.diagonalize(mat, params);
   MPI_Barrier(MPI_COMM_WORLD);
-  end_tick = MPI_Wtime();
+  const auto end_tick = MPI_Wtime();
   
   const auto num_conv = params_out.get<int>("num_conv");
   if (num_conv == 0) {

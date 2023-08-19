@@ -27,7 +27,6 @@ int main(int argc, char *argv[]) {
   MPI_Comm comm = MPI_COMM_WORLD;
   const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
   const auto [library, routine] = rokko::split_solver_name(library_routine);
-  double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
   const int len_ladder = (argc >= 3) ? std::stoi(argv[2]) : 5;
   const auto L = 2 * len_ladder;
@@ -45,14 +44,14 @@ int main(int argc, char *argv[]) {
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
-  init_tick = MPI_Wtime();
+  const auto init_tick = MPI_Wtime();
   rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
   MPI_Barrier(MPI_COMM_WORLD);
-  initend_tick = MPI_Wtime();
+  const auto initend_tick = MPI_Wtime();
 
   MPI_Barrier(MPI_COMM_WORLD);
-  gen_tick = MPI_Wtime();
+  const auto gen_tick = MPI_Wtime();
   const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
@@ -60,14 +59,14 @@ int main(int argc, char *argv[]) {
   //  rokko::gather(mat, mat_loc, 0);
 
   MPI_Barrier(MPI_COMM_WORLD);
-  diag_tick = MPI_Wtime();
+  const auto diag_tick = MPI_Wtime();
   Eigen::VectorXd eigval(dim);
   rokko::distributed_matrix<double, matrix_major> eigvec(map);
   rokko::parameters params;
   params.set("routine", "tri");
   solver.diagonalize(mat, eigval, eigvec); //, params);
   MPI_Barrier(MPI_COMM_WORLD);
-  end_tick = MPI_Wtime();
+  const auto end_tick = MPI_Wtime();
 
   if (myrank == 0) {
     std::cout << "init_time = " << initend_tick - init_tick << std::endl
