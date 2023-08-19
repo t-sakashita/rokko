@@ -122,11 +122,11 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
                      myrank ^ m, 0,
                      comm, &status);
         if (((myrank & m) != m) && ((myrank & m) != 0)) {
-          for (int k = 0; k < N; ++k) {
+          for (std::size_t k = 0; k < N; ++k) {
             w[k] += diag_minus * v[k] + offdiag_plus * buffer[k];
           }
         } else {
-          for (int k = 0; k < N; ++k) {
+          for (std::size_t k = 0; k < N; ++k) {
             w[k] += diag_plus * v[k] + offdiag_minus * buffer[k];
           }
         }

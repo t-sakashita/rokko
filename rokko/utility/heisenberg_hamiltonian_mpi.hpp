@@ -134,14 +134,14 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-          for (int k=0; k<N; ++k) {
+          for (std::size_t k=0; k<N; ++k) {
             w[k] += 0.5 * buffer[k] - 0.25 * v[k];
           }
         } else {
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-          for (int k=0; k<N; ++k) {
+          for (std::size_t k=0; k<N; ++k) {
             w[k] += 0.25 * v[k];
           }
         }
