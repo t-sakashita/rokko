@@ -17,11 +17,10 @@
 
 int main(int argc, char *argv[]) {
   std::string library_routine(rokko::serial_dense_ev::default_solver());
-  std::string library, routine;
   unsigned int dim = 10;
   if (argc >= 2) library_routine = argv[1];
   if (argc >= 3) dim = std::stoi(argv[2]);
-  rokko::split_solver_name(library_routine, library, routine);
+  const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   std::cout.precision(5);
   std::cout << "Eigenvalue decomposition of minij matrix" << std::endl

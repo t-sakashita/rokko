@@ -23,8 +23,7 @@ int main(int argc, char *argv[]) {
 
   std::string library_routine(rokko::parallel_sparse_ev::default_solver());
   if (argc >= 2) library_routine = argv[1];
-  std::string library, routine;
-  rokko::split_solver_name(library_routine, library, routine);
+  const auto [library, routine] = rokko::split_solver_name(library_routine);
   int len_ladder = 5;
   if (argc >= 3) len_ladder = std::stoi(argv[2]);
 

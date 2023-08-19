@@ -14,8 +14,7 @@
 #include <gtest/gtest.h>
 
 TEST(split_solver_name, const_string) {
-  std::string library, routine;
-  rokko::split_solver_name("lapack:syevd", library, routine);
+  const auto [library, routine] = rokko::split_solver_name("lapack:syevd");
   ASSERT_TRUE(library == "lapack");
   ASSERT_TRUE(routine == "syevd");
 }

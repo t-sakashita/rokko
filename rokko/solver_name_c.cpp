@@ -14,8 +14,7 @@
 #include <rokko/copy_string.hpp>
 
 void rokko_split_solver_name(char* str, char** library_ptr, char** routine_ptr) {
-  std::string tmp_library, tmp_routine;
-  rokko::split_solver_name(str, tmp_library, tmp_routine); 
+  const auto [tmp_library, tmp_routine] = rokko::split_solver_name(str);
   *library_ptr = copy_string(tmp_library);
   *routine_ptr = copy_string(tmp_routine);
 }

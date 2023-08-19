@@ -79,10 +79,9 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
-  std::string library, routine;
   int dim = 4;
   if (argc >= 2) library_routine = argv[1];
-  rokko::split_solver_name(library_routine, library, routine);
+  const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);
   int myrank = g.get_myrank();

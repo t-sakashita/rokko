@@ -27,11 +27,10 @@ int main(int argc, char *argv[]) {
   MPI_Comm comm = create_even_odd_comm_by_split();
   
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
-  std::string library, routine;
   int dim = 10;
   if (argc >= 2) library_routine = argv[1];
   if (argc >= 3) dim = std::stoi(argv[2]);
-  rokko::split_solver_name(library_routine, library, routine);
+  const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);
   int myrank = g.get_myrank();

@@ -40,7 +40,7 @@
 #include <rokko/pyrokko_distributed_mfree.hpp>
 
 #include <rokko/utility/pyrokko_sort_eigenpairs.hpp>
-#include <rokko/utility/pyrokko_solver_name.hpp>
+#include <rokko/utility/solver_name.hpp>
 
 #include <rokko/declare_factory_instance.hpp>
 
@@ -394,7 +394,7 @@ PYBIND11_MODULE(pyrokko, m) {
   m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::ColMajor>),
         py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
 
-  m.def("split_solver_name", &wrap_split_solver_name);
+  m.def("split_solver_name", &split_solver_name);
 }
 
 } // end namespace rokko
