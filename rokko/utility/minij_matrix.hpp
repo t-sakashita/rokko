@@ -105,7 +105,7 @@ public:
     }
   }
 #endif
-  
+
   // calculate k-th smallest eigenvalue of dim-dimensional Minij matrix (k=0...dim-1)
   static double eigenvalue(int dim, int k) {
     return 1 / (2 * (1 - std::cos(M_PI * (2 * k + 1) / (2 * dim + 1))));

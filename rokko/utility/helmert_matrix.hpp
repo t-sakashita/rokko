@@ -51,7 +51,7 @@ public:
       mat.col(i).head(i).setConstant(val);
     }
   }
-  
+
 #if defined(ROKKO_HAVE_PARALLEL_DENSE_SOLVER)
   template<typename T, typename MATRIX_MAJOR>
   static void generate(rokko::distributed_matrix<T, MATRIX_MAJOR>& mat) {
@@ -96,7 +96,7 @@ public:
 	else if (global_j == global_i) mat.set_local(local_i, local_j, common_elem + global_i * diag(global_i) / (global_i+1));
       }
     }
-    
+
     for(int local_j = 0; local_j < mat.get_n_local(); ++local_j) {
       const auto global_j = mat.translate_l2g_col(local_j);
       T common_elem = diag(0) / n;
@@ -111,5 +111,5 @@ public:
   }
 #endif
 };
-    
+
 } // namespace rokko
