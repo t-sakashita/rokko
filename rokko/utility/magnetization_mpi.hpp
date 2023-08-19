@@ -33,11 +33,11 @@ auto magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
     n /= 2;
     ++p;
     r >>= 1;
-    p_count += r & 1; 
+    p_count += r & 1;
   } while (n > 0);
 
   std::cout << "myrank=" << myrank << "p_count=" << p_count << std::endl;
- 
+
   const int N = 1 << L;
   const int m_power = 1 << power;
   const double coeff = 1. / m_power;

@@ -34,7 +34,7 @@ auto magnetization(int L, std::vector<std::pair<int, int>>& lattice, int power, 
       else {
         m_z -=0.5;
       }
-    }      
+    }
     sum += std::pow(m_z, static_cast<double>(power)) * v[k] * v[k];
   }
 
