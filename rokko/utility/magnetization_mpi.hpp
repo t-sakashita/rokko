@@ -21,7 +21,6 @@ namespace rokko {
 double magnetization(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>& lattice, int power, const double* v) {
   int myrank, nproc;
   MPI_Status status;
-  int ierr;
 
   MPI_Comm_size(comm, &nproc);
   MPI_Comm_rank(comm, &myrank);
