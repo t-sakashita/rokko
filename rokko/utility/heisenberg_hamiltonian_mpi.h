@@ -36,7 +36,7 @@ void multiply(const MPI_Comm comm, int L, int lattice_size, int lattice_first[],
 
   int N = 1 << (L-p);
 
-  for(int k=0; k<N; ++k) {
+  for(size_t k=0; k<N; ++k) {
     w[k] = 0.;
   }
 

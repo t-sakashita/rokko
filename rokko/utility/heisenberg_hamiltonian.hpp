@@ -42,7 +42,7 @@ void multiply(int L, const std::vector<std::pair<int, int>>& lattice, const std:
 
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice, double* w) {
   int N = 1 << L;
-  for (int k = 0; k < N; ++k) {
+  for (std::size_t k = 0; k < N; ++k) {
     w[k] = 0;
   }
 

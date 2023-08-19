@@ -156,7 +156,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, const std::vector<std::pair<int,
   int nproc_shift = (nproc-1) * N;
   int mask = N - 1;
 
-  for (int k = 0; k < N; ++k) {
+  for (std::size_t k = 0; k < N; ++k) {
     w[k] = 0;
   }
 

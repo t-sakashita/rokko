@@ -35,7 +35,7 @@ void multiply(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>
 
   int N = 1 << (L-p);
 
-  for(int k=0; k<N; ++k) {
+  for(std::size_t k=0; k<N; ++k) {
     w[k] = 0.;
   }
 
@@ -167,7 +167,7 @@ void fill_diagonal(const MPI_Comm& comm, int L, std::vector<std::pair<int, int>>
   const auto N = 1 << (L-p);
   const auto myrank_shift = myrank * N;
 
-  for (int k=0; k<N; ++k) {
+  for (std::size_t k=0; k<N; ++k) {
     w[k] = 0;
   }
 

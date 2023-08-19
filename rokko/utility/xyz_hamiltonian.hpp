@@ -67,7 +67,7 @@ template<typename T>
 void fill_diagonal(int L, const std::vector<std::pair<int, int>>& lattice,
   const std::vector<std::tuple<double, double, double>>& coupling, T* w) {
   int N = 1 << L;
-  for (int k=0; k<N; ++k) {
+  for (std::size_t k=0; k<N; ++k) {
     w[k] = 0;
   }
   for (std::size_t l = 0; l < lattice.size(); ++l) {
