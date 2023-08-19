@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     std::cout << "orig_rank=" << rank << " is NOT COMM_NULL" << std::endl;
   }
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
   if (comm != MPI_COMM_NULL) {
     std::string library_routine(rokko::parallel_dense_ev::default_solver());
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 		<< "routine = " << routine << std::endl
 		<< "dimension = " << dim << std::endl;
     
-    rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+    const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double, matrix_major> mat(map);
     rokko::frank_matrix::generate(mat);
     Eigen::MatrixXd mat_loc(dim, dim);

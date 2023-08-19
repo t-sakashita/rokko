@@ -23,10 +23,10 @@ using matrix_major = rokko::matrix_col_major;
 template<typename T, typename MATRIX_MAJOR>
 void function_matrix(Eigen::VectorXd const& eigval_tmp, rokko::distributed_matrix<T, MATRIX_MAJOR> const& eigvec, rokko::distributed_matrix<T, MATRIX_MAJOR>& result, rokko::distributed_matrix<T, MATRIX_MAJOR>& tmp) {
   for (int local_j=0; local_j<eigvec.get_n_local(); ++local_j) {
-    int global_j = eigvec.translate_l2g_col(local_j);
-    double coeff = eigval_tmp(global_j);
+    const auto global_j = eigvec.translate_l2g_col(local_j);
+    const auto coeff = eigval_tmp(global_j);
     for (int local_i=0; local_i<eigvec.get_m_local(); ++local_i) {
-      double value = eigvec.get_local(local_i, local_j);
+      const auto value = eigvec.get_local(local_i, local_j);
       tmp.set_local(local_i, local_j, coeff * value); 
     }
   }
@@ -38,7 +38,7 @@ void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_mat
 			Eigen::VectorXd& eigval, rokko::distributed_matrix<T, MATRIX_MAJOR>& eigvec, T tol = 0) {
   rokko::distributed_matrix<double, matrix_major> tmp(A.get_mapping()), Binvroot(A.get_mapping()), mat(A.get_mapping());
   rokko::parameters params;
-  int myrank = A.get_myrank();
+  const auto myrank = A.get_myrank();
   params.set("routine", "");
   solver.diagonalize(B, eigval, eigvec, params);
   // computation of B^{-1/2}
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
   std::cout.precision(5);
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
   set_A_B(locA, locB);
   if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;  
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const auto map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> A(map), B(map), eigvec(map);
   Eigen::VectorXd eigval(dim);
   rokko::scatter(locA, A, 0);

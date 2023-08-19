@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
               << "L = " << L << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   Eigen::MatrixXd mat_loc(dim, dim);

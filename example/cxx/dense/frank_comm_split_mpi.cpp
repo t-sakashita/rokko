@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
   std::cout.precision(5);
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
   Eigen::MatrixXd mat_loc(dim, dim);

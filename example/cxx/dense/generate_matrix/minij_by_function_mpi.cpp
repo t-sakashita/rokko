@@ -21,7 +21,7 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   std::string library_routine(rokko::parallel_dense_ev::default_solver());
   int dim = 10;
   if (argc >= 2) library_routine = argv[1];
@@ -29,9 +29,9 @@ int main(int argc, char *argv[]) {
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
-  auto f = [](int global_i, int global_j) {
+  const auto f = [](int global_i, int global_j) {
     return static_cast<double>(std::min(global_i, global_j) + 1);
   };
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	      << "routine = " << routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   mat.generate(f);
 

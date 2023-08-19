@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
   rokko::parallel_dense_ev solver(solver_name);
   solver.initialize(argc, argv);
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::frank_matrix::generate(mat);
   mat.print();

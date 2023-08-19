@@ -21,7 +21,7 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   std::string solver_name(rokko::parallel_dense_ev::default_solver());
   std::string lattice_file("xyz.dat");
   if (argc >= 2) solver_name = argv[1];
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
               << "number of bonds = " << num_bonds << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const auto map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
   Eigen::MatrixXd mat_loc(dim, dim);

@@ -18,7 +18,6 @@
 using matrix_major = rokko::matrix_col_major;
 
 int main(int argc, char *argv[]) {
-
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Comm comm = MPI_COMM_WORLD;
@@ -29,7 +28,7 @@ int main(int argc, char *argv[]) {
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
   rokko::grid g(comm);
-  int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
 
   std::cout.precision(std::numeric_limits<unsigned long long>::digits10);
 
@@ -44,7 +43,7 @@ int main(int argc, char *argv[]) {
       	      << "library:routine = " << library_routine << std::endl
               << "dimension = " << dim << std::endl;
 
-  rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
+  const rokko::mapping_bc<matrix_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> mat(map);
   Eigen::VectorXd diag(dim);
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]

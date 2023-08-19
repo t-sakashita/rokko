@@ -15,7 +15,7 @@
 int main(int argc, char *argv[]) {
   const auto f = [](int i) { return static_cast<double>(2*i); };
 
-  unsigned int dim = 10;
+  const unsigned int dim = 10;
   Eigen::VectorXd vec(dim);
   rokko::generate(vec, f);
 
