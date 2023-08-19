@@ -46,7 +46,7 @@ bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   return !trimed_str.empty(); // empty means the sentence is just comment
 }
 
-std::vector<std::string> split_by_symbol(std::string const& str_line) {
+auto split_by_symbol(std::string const& str_line) {
   const std::regex separator{"="};
   std::vector<std::string> vec;
   for (std::sregex_token_iterator it{str_line.cbegin(), str_line.cend(), separator, -1}, end; it != end; ++it) {
@@ -57,7 +57,7 @@ std::vector<std::string> split_by_symbol(std::string const& str_line) {
 }
 
 bool detect_offset_info(std::string const& str_line, bool& offset1) {
-  auto tokens = split_by_symbol(str_line);
+  const auto tokens = split_by_symbol(str_line);
   if (tokens.size() < 2) {
     return false;
   }
@@ -103,7 +103,7 @@ void read_lattice_stream(std::ifstream& ifs, int& num_sites, std::vector<std::pa
   }
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
-  bool offset1 = detail::read_offset_info(ifs);
+  const auto offset1 = detail::read_offset_info(ifs);
 
   do {
     int j, k;
@@ -131,7 +131,7 @@ void read_lattice_file(std::string const& filename, int& num_sites, std::vector<
 }
 
 void create_ladder_lattice_1dim(int len_ladder, std::vector<std::pair<int, int>>& lattice) {
-  int L = 2 * len_ladder;
+  const auto L = 2 * len_ladder;
   for (std::size_t i = 0; i < (len_ladder-1); ++i) {
     lattice.emplace_back(std::make_pair(i, i+1));
   }
