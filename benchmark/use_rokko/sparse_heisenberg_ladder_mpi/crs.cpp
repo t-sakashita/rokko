@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     values.clear();
     double diag = 0;
     for (std::size_t l = 0;  l < lattice.size(); ++l) {
-      int i = lattice[l].first;
+      const auto i = lattice[l].first;
       const auto j = lattice[l].second;
       const auto m1 = 1 << i;
       const auto m2 = 1 << j;
