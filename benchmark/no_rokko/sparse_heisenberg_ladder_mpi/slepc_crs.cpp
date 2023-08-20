@@ -25,12 +25,10 @@ int main(int argc,char **argv)
   MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
-  int len_ladder = 5;
-  if (argc >= 2) len_ladder = std::stoi(argv[1]);
-
-  const int L = 2 * len_ladder;
+  const int len_ladder = (argc >= 2) ? std::stoi(argv[1]) : 5;
+  const auto L = 2 * len_ladder;
   const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
-  const int dim = 1 << L;
+  const auto dim = 1 << L;
 
   // Create Hermitean matrix
   MPI_Barrier(MPI_COMM_WORLD);

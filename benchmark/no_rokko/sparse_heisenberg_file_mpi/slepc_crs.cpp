@@ -24,10 +24,9 @@ int main(int argc,char **argv)
   MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
-  std::string lattice_file("xyz.dat");
-  if (argc >= 2) lattice_file = argv[1];
+  const std::string lattice_file = (argc >= 2) ? argv[1] : "xyz.dat";
   const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
-  int dim = 1 << L;
+  const auto dim = 1 << L;
 
   // Create Hermitean matrix
   MPI_Barrier(MPI_COMM_WORLD);

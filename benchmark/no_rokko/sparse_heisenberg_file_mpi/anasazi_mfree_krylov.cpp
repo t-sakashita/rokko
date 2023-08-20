@@ -153,10 +153,9 @@ int main(int argc, char *argv[]) {
   Anasazi::BasicOutputManager<double> printer;
   printer.stream(Anasazi::Errors) << Anasazi::Anasazi_Version() << endl << endl;
 
-  std::string lattice_file("xyz.dat");
-  if (argc >= 2) lattice_file = argv[1];
+  const std::string lattice_file = (argc >= 2) ? argv[1] : "xyz.dat";
   const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
-  const int N = 1 << L;
+  const auto N = 1 << L;
 
   const auto gen_tick = MPI_Wtime();
   // Construct a Map that puts approximately the same number of
