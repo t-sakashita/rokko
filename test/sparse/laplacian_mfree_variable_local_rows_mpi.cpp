@@ -33,11 +33,11 @@ void run_test(std::string const& library, MPI_Comm comm) {
 
   rokko::parallel_sparse_ev solver(library);
   if (comm != MPI_COMM_NULL) {
-    rokko::mpi_comm rokko_comm{comm};
-    const int nprocs = rokko_comm.get_nprocs();
-    const int myrank = rokko_comm.get_myrank();
+    const rokko::mpi_comm rokko_comm{comm};
+    const auto nprocs = rokko_comm.get_nprocs();
+    const auto myrank = rokko_comm.get_myrank();
     const int num_local_rows = (myrank == (nprocs-1)) ? dim - (nprocs-1) : 1;
-    rokko::laplacian_mfree mat(dim, num_local_rows, rokko_comm);
+    const rokko::laplacian_mfree mat(dim, num_local_rows, rokko_comm);
 
     std::vector<std::array<std::string,2>> routines;
     if (library == "anasazi")
@@ -52,14 +52,14 @@ void run_test(std::string const& library, MPI_Comm comm) {
       if (routine[0] == "block_davidson")  params_tmp.set("block_size", 10);
       params_tmp.set("wanted_eigenvalues", routine[1]);
 
-      rokko::parameters info = solver.diagonalize(mat, params_tmp);
+      const auto info = solver.diagonalize(mat, params_tmp);
 
-      int num_conv = info.get<int>("num_conv");
+      const auto num_conv = info.get<int>("num_conv");
       if (num_conv == 0)
         throw std::runtime_error("num_conv=0: solver did not converge");
 
-      double eigval = solver.eigenvalue(0);
-      double th_eigval = (routine[0] == "rqcg") ? rokko::laplacian_matrix::eigenvalue(dim, 0)  // smallest one
+      const auto eigval = solver.eigenvalue(0);
+      const auto th_eigval = (routine[0] == "rqcg") ? rokko::laplacian_matrix::eigenvalue(dim, 0)  // smallest one
         : rokko::laplacian_matrix::eigenvalue(dim, dim-1);  // largest one
       EXPECT_NEAR(eigval, th_eigval, eigval*eps);
     }

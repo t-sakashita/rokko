@@ -28,13 +28,13 @@ TEST(heisenberg_mfree, output_market_through_crs) {
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
-  rokko::heisenberg_mfree op(L, lattice);
+  const rokko::heisenberg_mfree op(L, lattice);
   std::ostringstream os_direct, os_crs;
 
   rokko::output_matrix_market(op, os_direct);
 
   rokko::parallel_sparse_ev solver(library);
-  auto map = solver.default_mapping(dim, rokko::mpi_comm{op.get_comm()});
+  const auto map = solver.default_mapping(dim, rokko::mpi_comm{op.get_comm()});
   const int num_entries_per_row = lattice.size() + 1;
   rokko::distributed_crs_matrix mat(map, num_entries_per_row);
   rokko::output_matrix_market(op, os_crs);

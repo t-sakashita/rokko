@@ -49,14 +49,14 @@ void run_test(std::string const& library, MPI_Comm comm) {
       if (routine[0] == "block_davidson")  params_tmp.set("block_size", 10);
       params_tmp.set("wanted_eigenvalues", routine[1]);
 
-      rokko::parameters info = solver.diagonalize(mat, params_tmp);
+      const auto info = solver.diagonalize(mat, params_tmp);
 
-      int num_conv = info.get<int>("num_conv");
+      const auto num_conv = info.get<int>("num_conv");
       if (num_conv == 0)
         throw std::runtime_error("num_conv=0: solver did not converge");
 
-      double eigval = solver.eigenvalue(0);
-      double th_eigval = (routine[0] == "rqcg") ? rokko::tridiagonal_toeplitz_matrix::eigenvalue(dim, 0, a, b)  // smallest one
+      const auto eigval = solver.eigenvalue(0);
+      const auto th_eigval = (routine[0] == "rqcg") ? rokko::tridiagonal_toeplitz_matrix::eigenvalue(dim, 0, a, b)  // smallest one
         : rokko::tridiagonal_toeplitz_matrix::eigenvalue(dim, dim-1, a, b);  // largest one
       EXPECT_NEAR(eigval, th_eigval, eigval*eps);
     }
