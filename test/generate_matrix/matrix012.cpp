@@ -56,8 +56,7 @@ TEST(generate_matrix, minij_matrix) {
 }
 
 int main(int argc, char** argv) {
-  int result = 0;
   ::testing::InitGoogleTest(&argc, argv);
-  result = RUN_ALL_TESTS();
+  const auto result = RUN_ALL_TESTS();
   return result;
 }

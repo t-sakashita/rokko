@@ -45,13 +45,12 @@ TEST(heisenberg_mfree, output_market_through_crs) {
 }
 
 int main(int argc, char** argv) {
-  int result = 0;
   ::testing::InitGoogleTest(&argc, argv);
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   global_argc = argc;
   global_argv = argv;
-  result = RUN_ALL_TESTS();
+  const auto result = RUN_ALL_TESTS();
   MPI_Finalize();
   return result;
 }
