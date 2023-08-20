@@ -10,7 +10,6 @@
 #include <rokko/utility/machine_info.hpp>
 
 int main( int argc, char* argv[] ) {
-  double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int nprocs;
@@ -18,10 +17,10 @@ int main( int argc, char* argv[] ) {
   // This detects whether or not you have already initialized MPI and 
   // does so if necessary. The full routine is El::Initialize.
   MPI_Barrier(MPI_COMM_WORLD);
-  init_tick = MPI_Wtime();
+  const auto init_tick = MPI_Wtime();
   El::Initialize( argc, argv );
   MPI_Barrier(MPI_COMM_WORLD);
-  initend_tick = MPI_Wtime();
+  const auto initend_tick = MPI_Wtime();
 
   const El::Int dim = (argc >= 2) ? std::stoi(argv[1]) : 100;
 
@@ -37,7 +36,7 @@ int main( int argc, char* argv[] ) {
   // safely handle any exceptions that were thrown during execution.
   try {
     MPI_Barrier(MPI_COMM_WORLD);
-    gen_tick = MPI_Wtime();
+    const auto gen_tick = MPI_Wtime();
 
     // Create a 2d process grid from a communicator. In our case, it is
     // MPI_COMM_WORLD. There is another constructor that allows you to 
@@ -78,12 +77,12 @@ int main( int argc, char* argv[] ) {
     // Optional: set blocksizes and algorithmic choices here. See the 
     //           'Tuning' section of the README for details.
     MPI_Barrier(MPI_COMM_WORLD);
-    diag_tick = MPI_Wtime();
+    const auto diag_tick = MPI_Wtime();
     El::DistMatrix<double,El::VR,El::STAR> w( g );
     El::DistMatrix<double> X( g );
     El::HermitianEig( El::LOWER, H, w, X );
     MPI_Barrier(MPI_COMM_WORLD);
-    end_tick = MPI_Wtime();
+    const auto end_tick = MPI_Wtime();
 
     std::vector<double> eigvals(dim);
     for (int i = 0; i < dim; ++i) {

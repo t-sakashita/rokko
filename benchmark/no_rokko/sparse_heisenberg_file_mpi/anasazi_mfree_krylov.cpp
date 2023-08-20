@@ -133,14 +133,13 @@ class HeisenbergOp : public Epetra_Operator {
 
 int main(int argc, char *argv[]) {
   using std::endl;
-  double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
 #ifdef HAVE_MPI
   // Initialize MPI
   //
   MPI_Init(&argc,&argv);
 #endif
-  init_tick = MPI_Wtime();
+  const auto init_tick = MPI_Wtime();
   // Create an Epetra communicator
   //
 #ifdef HAVE_MPI
@@ -148,7 +147,7 @@ int main(int argc, char *argv[]) {
 #else
   Epetra_SerialComm Comm;
 #endif
-  initend_tick = MPI_Wtime();
+  const auto initend_tick = MPI_Wtime();
 
   // Create an Anasazi output manager
   Anasazi::BasicOutputManager<double> printer;
@@ -159,7 +158,7 @@ int main(int argc, char *argv[]) {
   const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
   const int N = 1 << L;
 
-  gen_tick = MPI_Wtime();
+  const auto gen_tick = MPI_Wtime();
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
   Epetra_Map Map(N, 0, Comm);
@@ -177,7 +176,7 @@ int main(int argc, char *argv[]) {
   // Call the LOBPCG solver manager
   //***********************************
   //  Variables used for the LOBPCG Method
-  diag_tick = MPI_Wtime();
+  const auto diag_tick = MPI_Wtime();
   std::string which("LM");
   constexpr int    nev       = 10;
   constexpr int    blockSize = 40;
@@ -226,7 +225,7 @@ int main(int argc, char *argv[]) {
 
   // Solve the problem
   Anasazi::ReturnType returnCode = MySolverMan.solve();
-  end_tick = MPI_Wtime();
+  const auto end_tick = MPI_Wtime();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
   Anasazi::Eigensolution<double,MV> sol = MyProblem->getSolution();

@@ -21,14 +21,13 @@ using namespace Anasazi;
 
 int main(int argc, char *argv[]) {
   using std::endl;
-  double init_tick, gen_tick, diag_tick, end_tick;
 
 #ifdef HAVE_MPI
   // Initialize MPI
   MPI_Init(&argc,&argv);
 #endif
   MPI_Barrier(MPI_COMM_WORLD);
-  init_tick = MPI_Wtime();
+  const auto init_tick = MPI_Wtime();
   // Create an Epetra communicator
 #ifdef HAVE_MPI
   Epetra_MpiComm Comm(MPI_COMM_WORLD);
@@ -46,7 +45,7 @@ int main(int argc, char *argv[]) {
   const int N = 1 << L;
 
   MPI_Barrier(MPI_COMM_WORLD);
-  gen_tick = MPI_Wtime();
+  const auto gen_tick = MPI_Wtime();
   // Construct a Map that puts approximately the same number of
   // equations on each processor.
   Epetra_Map Map(N, 0, Comm);
@@ -103,7 +102,7 @@ int main(int argc, char *argv[]) {
   //***********************************
   //  Variables used for the LOBPCG Method
   MPI_Barrier(MPI_COMM_WORLD);
-  diag_tick = MPI_Wtime();
+  const auto diag_tick = MPI_Wtime();
   std::string which("LM");
   constexpr int    nev       = 1;
   constexpr int    blockSize = 4; //40;
@@ -152,7 +151,7 @@ int main(int argc, char *argv[]) {
   // Solve the problem
   ReturnType returnCode = MySolverMan.solve();
   MPI_Barrier(MPI_COMM_WORLD);
-  end_tick = MPI_Wtime();
+  const auto end_tick = MPI_Wtime();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
   Eigensolution<double,MV> sol = MyProblem->getSolution();
