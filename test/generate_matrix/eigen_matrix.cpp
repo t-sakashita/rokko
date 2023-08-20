@@ -33,11 +33,11 @@ TEST(eigen_matrix, 123) {
   //               87
   //              137
 
-  int dim = 3;
+  constexpr int dim = 3;
   Eigen::MatrixXd M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
   std::cout << M << std::endl;
-  double a = 5.0;
+  constexpr double a = 5.0;
   Eigen::VectorXd u(dim);
   u << 1,2,3;
   Eigen::VectorXd v(dim);

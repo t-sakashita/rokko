@@ -20,7 +20,7 @@
 #include <gtest/gtest.h>
 
 TEST(matrix, major) {
-  int dim = 3;
+  constexpr int dim = 3;
 
   // M = 1 2 3
   //     4 5 6

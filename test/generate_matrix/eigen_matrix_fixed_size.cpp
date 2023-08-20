@@ -33,10 +33,10 @@ TEST(eigen_matrix, fixed_size) {
   //               87
   //              137
 
-  int dim = 3;
+  constexpr int dim = 3;
   Eigen::Matrix<double,3,3,Eigen::RowMajor> M(dim,dim);
   M << 1,2,3,4,5,6,7,8,9;
-  double a = 5.0;
+  constexpr double a = 5.0;
   Eigen::Vector3d u(dim);
   u << 1,2,3;
   Eigen::Vector3d v(dim);
