@@ -42,7 +42,7 @@ int main( int argc, char* argv[] ) {
     // MPI_COMM_WORLD. There is another constructor that allows you to 
     // specify the grid dimensions, Grid g( comm, r ), which creates a
     // grid of height r.
-    El::Grid g( El::mpi::COMM_WORLD );
+    const El::Grid g( El::mpi::COMM_WORLD );
     
     // Create an n x n complex distributed matrix, 
     // We distribute the matrix using grid 'g'.
