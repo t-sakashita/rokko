@@ -29,8 +29,8 @@ class HeisenbergOp : public Epetra_Operator {
   HeisenbergOp(const MPI_Comm& comm, int L, const std::vector<std::pair<int, int>>& lattice) : comm_(comm), L_(L), lattice_(lattice), ep_comm(comm), ep_map(1 << L_, 0, ep_comm) {
     int nproc;
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
-    const int p = rokko::find_power_of_two(nproc);
-    int local_N = 1 << (L-p);
+    const auto p = rokko::find_power_of_two(nproc);
+    const auto local_N = 1 << (L-p);
     buffer_.assign(local_N, 0);
   }
 
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
   Epetra_Map Map(N, 0, Comm);
 
   // Get update list and number of local equations from newly created Map.
-  const int NumMyElements = Map.NumMyElements();
+  const auto NumMyElements = Map.NumMyElements();
 
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(MyGlobalElements.data());
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
   //  Variables used for the LOBPCG Method
   MPI_Barrier(MPI_COMM_WORLD);
   const auto diag_tick = MPI_Wtime();
-  std::string which("LM");
+  const std::string which("LM");
   constexpr int    nev       = 10;
   constexpr int    blockSize = 40;
   constexpr int    maxIters  = 500;
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
   MyProblem->setNEV( nev );
 
   // Inform the eigenproblem that you are finishing passing it information
-  bool boolret = MyProblem->setProblem();
+  const auto boolret = MyProblem->setProblem();
   if (boolret != true) {
     printer.print(Anasazi::Errors,"Anasazi::BasicEigenproblem::setProblem() returned an error.\n");
 #ifdef HAVE_MPI
@@ -227,14 +227,14 @@ int main(int argc, char *argv[]) {
   //Anasazi::BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
-  Anasazi::ReturnType returnCode = MySolverMan.solve();
+  const Anasazi::ReturnType returnCode = MySolverMan.solve();
   MPI_Barrier(MPI_COMM_WORLD);
   const auto end_tick = MPI_Wtime();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
-  Anasazi::Eigensolution<double,MV> sol = MyProblem->getSolution();
-  std::vector<Anasazi::Value<double>> evals = sol.Evals;
-  Teuchos::RCP<MV> evecs = sol.Evecs;
+  const Anasazi::Eigensolution<double,MV> sol = MyProblem->getSolution();
+  const std::vector<Anasazi::Value<double>> evals = sol.Evals;
+  const Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.
   std::vector<double> normR(sol.numVecs);

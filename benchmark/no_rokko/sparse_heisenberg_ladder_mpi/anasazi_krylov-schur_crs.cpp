@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   Epetra_Map Map(N, 0, Comm);
 
   // Get update list and number of local equations from newly created Map.
-  int NumMyElements = Map.NumMyElements();
+  const auto NumMyElements = Map.NumMyElements();
   std::vector<int> MyGlobalElements(NumMyElements);
   Map.MyGlobalElements(MyGlobalElements.data());
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
   values.reserve(NumEntriesPerRow);
 
   for (int local_row=0; local_row<NumMyElements; ++local_row) {
-    int row = MyGlobalElements[local_row];
+    const auto row = MyGlobalElements[local_row];
     cols.clear();
     values.clear();
     double diag = 0.;
@@ -87,12 +87,12 @@ int main(int argc, char *argv[]) {
       cols.emplace_back(row);
       values.emplace_back(diag);
     }
-    int info = A->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
+    const auto info = A->InsertGlobalValues(row, cols.size(), values.data(), cols.data());
     assert( info==0 );
   }
 
   // Finish up
-  int info = A->FillComplete();
+  const auto info = A->FillComplete();
   assert( info==0 );
   A->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
 
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
   //***********************************
   //  Variables used for the LOBPCG Method
   const auto diag_tick = MPI_Wtime();
-  std::string which("LM");
+  const std::string which("LM");
   constexpr int    nev       = 1;
   constexpr int    blockSize = 5;
   constexpr int    maxIters  = 500;
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
   MyProblem->setNEV( nev );
 
   // Inform the eigenproblem that you are finishing passing it information
-  bool boolret = MyProblem->setProblem();
+  const auto boolret = MyProblem->setProblem();
   if (boolret != true) {
     printer.print(Errors,"Anasazi::BasicEigenproblem::setProblem() returned an error.\n");
 #ifdef HAVE_MPI
@@ -147,13 +147,13 @@ int main(int argc, char *argv[]) {
   BlockKrylovSchurSolMgr<double, MV, OP> MySolverMan(MyProblem, MyPL);
 
   // Solve the problem
-  ReturnType returnCode = MySolverMan.solve();
+  const ReturnType returnCode = MySolverMan.solve();
   const auto end_tick = MPI_Wtime();
 
   // Get the eigenvalues and eigenvectors from the eigenproblem
-  Eigensolution<double,MV> sol = MyProblem->getSolution();
-  std::vector<Value<double>> evals = sol.Evals;
-  Teuchos::RCP<MV> evecs = sol.Evecs;
+  const Eigensolution<double,MV> sol = MyProblem->getSolution();
+  const std::vector<Value<double>> evals = sol.Evals;
+  const Teuchos::RCP<MV> evecs = sol.Evecs;
 
   // Compute residuals.
   std::vector<double> normR(sol.numVecs);
