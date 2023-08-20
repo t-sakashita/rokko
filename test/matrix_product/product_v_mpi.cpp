@@ -29,10 +29,10 @@ TEST(product_v_mpi, product_v_mpi) {
 
   if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
-  rokko::grid g(comm);
-  rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+  const rokko::grid g(comm);
+  const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> matA(map);
-  rokko::mapping_bc<rokko::matrix_col_major> mapvec({dim, 1}, {1, 1}, g);
+  const rokko::mapping_bc<rokko::matrix_col_major> mapvec({dim, 1}, {1, 1}, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(mapvec);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(mapvec);
   Eigen::MatrixXd locA(dim, dim);

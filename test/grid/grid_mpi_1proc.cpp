@@ -27,21 +27,21 @@ void run_test(rokko::grid const& g) {
 }
 
 TEST(grid, grid_1process) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   {
-    rokko::grid g(comm); // default should be row-major
+    const rokko::grid g(comm); // default should be row-major
     ASSERT_TRUE(g.is_row_major());
     ASSERT_FALSE(g.is_col_major());
     run_test(g);
   }
   {
-    rokko::grid g(comm, rokko::grid_row_major);
+    const rokko::grid g(comm, rokko::grid_row_major);
     ASSERT_TRUE(g.is_row_major());
     ASSERT_FALSE(g.is_col_major());
     run_test(g);
   }
   {
-    rokko::grid g(comm, rokko::grid_col_major);
+    const rokko::grid g(comm, rokko::grid_col_major);
     ASSERT_FALSE(g.is_row_major());
     ASSERT_TRUE(g.is_col_major());
     run_test(g);

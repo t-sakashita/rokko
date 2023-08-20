@@ -32,7 +32,7 @@ int dim_by_sum(rokko::skel::mapping_1d const& map) {
 
 TEST(mapping_1d, skel) {
   constexpr int dim = 100;
-  rokko::skel::mapping_1d map(dim);
+  const rokko::skel::mapping_1d map(dim);
 
   ASSERT_EQ(map.start_row(), start_row_by_sum(map));
   ASSERT_EQ(dim_by_sum(map), dim);

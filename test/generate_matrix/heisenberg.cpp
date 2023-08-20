@@ -17,8 +17,8 @@
 #include <gtest/gtest.h>
 
 TEST(generate_matrix, heisenberg) {
-  int L = 4;
-  int N = 1 << L;
+  const int L = 4;
+  const auto N = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i=0; i<L-1; ++i) {
     lattice.emplace_back(std::make_pair(i, i+1));

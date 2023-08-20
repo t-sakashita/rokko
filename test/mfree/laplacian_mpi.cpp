@@ -20,7 +20,7 @@ char** global_argv;
 TEST(laplacian_mfree, fill_diagonal) {
   constexpr std::size_t dim = 20;
 
-  rokko::laplacian_mfree mat(dim, MPI_COMM_WORLD);
+  const rokko::laplacian_mfree mat(dim, MPI_COMM_WORLD);
   test_fill_diagonal(mat);
 }
 

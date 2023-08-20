@@ -30,8 +30,8 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #endif
   
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
-  rokko::grid g(comm, grid_major);
-  rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);
+  const rokko::grid g(comm, grid_major);
+  const rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);
   for (int r = 0; r < size; ++r) {
     rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(map);
     rokko::scatter(lmat, mat, r);
@@ -48,7 +48,7 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 }
 
 TEST(mpi_communication, scatter) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
 

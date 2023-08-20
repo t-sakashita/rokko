@@ -35,7 +35,7 @@ void test(int dim, std::string const& name) {
 
   rokko::minij_matrix::generate(mat);
   for (int i = 0; i < dim; ++i) {
-    double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
+    const auto w = eigvec.col(i).transpose() * mat * eigvec.col(i);
     EXPECT_NEAR(w, eigval[i], eps);
   }
 

@@ -29,12 +29,12 @@ void check_map_mat(rokko::skel::mapping_1d const& map, rokko::distributed_crs_ma
 TEST(mapping_1d, various_num_local_rows_for_all_libraries) {
   constexpr int dim = 100;
 
-  rokko::mpi_comm comm{MPI_COMM_WORLD};
-  const int nprocs = comm.get_nprocs();
-  const int myrank = comm.get_myrank();
+  const rokko::mpi_comm comm{MPI_COMM_WORLD};
+  const auto nprocs = comm.get_nprocs();
+  const auto myrank = comm.get_myrank();
 
-  const int num_local_rows = (myrank == (nprocs-1)) ? dim - (nprocs-1) : 1;
-  rokko::skel::mapping_1d skel_map(dim, num_local_rows, comm);
+  const auto num_local_rows = (myrank == (nprocs-1)) ? dim - (nprocs-1) : 1;
+  const rokko::skel::mapping_1d skel_map(dim, num_local_rows, comm);
 
   for (auto const& name : rokko::parallel_sparse_ev::solvers()) {
     std::cout << "name=" << name << std::endl;

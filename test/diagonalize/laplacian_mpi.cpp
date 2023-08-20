@@ -21,7 +21,7 @@ int global_argc;
 char** global_argv;
 
 TEST(diagonalize, laplacian_mpi) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   constexpr int dim = 10;
 
   const auto names = global_argc == 1 ? rokko::parallel_dense_ev::solvers()
@@ -32,8 +32,8 @@ TEST(diagonalize, laplacian_mpi) {
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_col_major)) {
       solver.initialize(global_argc, global_argv);
-      rokko::grid g(comm, rokko::grid_col_major);
-      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+      const rokko::grid g(comm, rokko::grid_col_major);
+      const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::laplacian_matrix::generate(mat);
       Eigen::VectorXd w(dim);
@@ -53,8 +53,8 @@ TEST(diagonalize, laplacian_mpi) {
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(rokko::grid_row_major)) {
       solver.initialize(global_argc, global_argv);
-      rokko::grid g(comm, rokko::grid_row_major);
-      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+      const rokko::grid g(comm, rokko::grid_row_major);
+      const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       rokko::laplacian_matrix::generate(mat);
       Eigen::VectorXd w(dim);

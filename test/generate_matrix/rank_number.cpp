@@ -22,9 +22,9 @@ template <typename MATRIX_MAJOR, typename GRID_MAJOR>
 void run_test(std::array<int,2> const& global_size, std::array<int,2> const& block_size, GRID_MAJOR) {
   rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
   const auto grid_size = g.get_size();
-  const int myrank = g.get_myrank();
+  const auto myrank = g.get_myrank();
   constexpr int root_proc = 0;
-  rokko::mapping_bc<MATRIX_MAJOR> map(global_size, block_size, g);
+  const rokko::mapping_bc<MATRIX_MAJOR> map(global_size, block_size, g);
   rokko::distributed_matrix<double, MATRIX_MAJOR> mat(map);
 
   for (int local_i=0; local_i<map.get_m_local(); ++local_i) {
@@ -33,7 +33,7 @@ void run_test(std::array<int,2> const& global_size, std::array<int,2> const& blo
     }
   }
 
-  auto global_size_proc = (myrank == root_proc) ? global_size : std::array<int,2>({0,0});
+  const auto global_size_proc = (myrank == root_proc) ? global_size : std::array<int,2>({0,0});
   using eigen_matrix = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>>;
   eigen_matrix mat_loc(global_size_proc[0], global_size_proc[1]);
   rokko::gather(mat, mat_loc, root_proc);
@@ -47,7 +47,7 @@ void run_test(std::array<int,2> const& global_size, std::array<int,2> const& blo
         const int j_block = j / block_size[1];
         const int jp = j_block % grid_size[1];
         const int block1 = std::min(global_size[1] - j, block_size[1]);
-        const int rank = g.calculate_rank_form_coords(ip, jp);
+        const auto rank = g.calculate_rank_form_coords(ip, jp);
         ASSERT_TRUE(mat_loc.block(i, j, block0, block1) == eigen_matrix::Constant(block0, block1, rank));
       }
     }

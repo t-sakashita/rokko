@@ -53,14 +53,14 @@ TEST(xyz_hamiltonian, serial_mpi) {
     }
   }
 
-  const int p = rokko::find_power_of_two(nprocs);
+  const auto p = rokko::find_power_of_two(nprocs);
   if (nprocs != (1 << p)) {    
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
-  int N = 1 << (L-p);
+  const auto N = 1 << (L-p);
 
-  int N_seq = 1 << L;
-  int N_seq_proc = (myrank == root) ? N_seq : 0;
+  const auto N_seq = 1 << L;
+  const auto N_seq_proc = (myrank == root) ? N_seq : 0;
   Eigen::VectorXd buffer(N);
   Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
   Eigen::VectorXd v(N), w(N);
@@ -114,7 +114,7 @@ TEST(xyz_hamiltonian, serial_mpi) {
   }
 
   // testing generate
-  rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
+  const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
   rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
   rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
   Eigen::MatrixXd lmat_gather(N_seq_proc, N_seq_proc);

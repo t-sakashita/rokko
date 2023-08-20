@@ -29,10 +29,10 @@ char** global_argv;
 TEST(heisenberg_hamiltonian, serial_mpi) {
   rokko::parallel_dense_ev solver;
   solver.initialize(global_argc, global_argv);
-  rokko::grid g(MPI_COMM_WORLD);
+  const rokko::grid g(MPI_COMM_WORLD);
 
   constexpr std::size_t L = 8;
-  constexpr std::size_t num_bonds = L - 1;
+  constexpr auto num_bonds = L - 1;
   std::vector<std::pair<int, int>> lattice;
   for (std::size_t i=0; i<L-1; ++i) lattice.emplace_back(std::make_pair(i, i+1));
 
@@ -48,14 +48,14 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
     }
   }
 
-  const int p = rokko::find_power_of_two(nprocs);
+  const auto p = rokko::find_power_of_two(nprocs);
   if (nprocs != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
-  const int N = 1 << (L-p);
+  const auto N = 1 << (L-p);
 
-  int N_seq = 1 << L;
-  int N_seq_proc = (myrank == root) ? N_seq : 0;
+  const auto N_seq = 1 << L;
+  const auto N_seq_proc = (myrank == root) ? N_seq : 0;
   Eigen::VectorXd buffer(N);
   Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
   Eigen::VectorXd v(N), w(N);
@@ -111,7 +111,7 @@ TEST(heisenberg_hamiltonian, serial_mpi) {
   }
 
   // test for generate function
-  rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
+  const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(N_seq, g);
   rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
   rokko::heisenberg_hamiltonian::generate(L, lattice, mat);
   Eigen::MatrixXd lmat_gather(N_seq_proc, N_seq_proc);

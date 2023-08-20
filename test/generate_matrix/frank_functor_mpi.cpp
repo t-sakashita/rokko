@@ -42,7 +42,7 @@ TEST(distributed_matrix, frank_functor_mpi) {
     mat.generate(frank(dim));
 
     constexpr int root_proc = 0;
-    const int dim_proc = (g.get_myrank() == root_proc) ? dim : 0;
+    const auto dim_proc = (g.get_myrank() == root_proc) ? dim : 0;
     Eigen::MatrixXd lmat_gather(dim_proc, dim_proc);
     rokko::gather(mat, lmat_gather, root_proc);
 

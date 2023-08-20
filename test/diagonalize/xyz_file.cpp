@@ -49,7 +49,7 @@ TEST(diagonalize, xyz_file) {
   for (int i=0; i<num_bonds; ++i) {
     std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
   }
-  int dim = 1 << L;
+  const auto dim = 1 << L;
 
   for(auto const& name : names) {
     std::cout << "solver=" << name << std::endl;
@@ -62,7 +62,7 @@ TEST(diagonalize, xyz_file) {
     std::cout << "mat=" << mat << std::endl;
     solver.diagonalize(mat, w, Z);
     
-    double sum = w.trace();
+    const auto sum = w.trace();
 
     std::cout << "w=" << w.transpose() << std::endl;
     

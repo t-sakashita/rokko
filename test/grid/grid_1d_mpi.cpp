@@ -14,8 +14,8 @@
 #include <gtest/gtest.h>
 
 TEST(grid, grid_1d_mpi) {
-  MPI_Comm comm = MPI_COMM_WORLD;
-  rokko::grid_1d g(comm);
+  const MPI_Comm comm = MPI_COMM_WORLD;
+  const rokko::grid_1d g(comm);
   // Test public interfaces
   ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
 

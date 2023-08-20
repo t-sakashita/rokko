@@ -27,15 +27,15 @@ TEST(product_mpi, product_mpi) {
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
-  rokko::grid g(comm);
-  rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+  const rokko::grid g(comm);
+  const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> matA(map);
   rokko::distributed_matrix<double, rokko::matrix_col_major> matC(map);
   rokko::frank_matrix::generate(matA);
   rokko::product(1.0, matA, false, matA, false, 0, matC);
   matC.print();
-  double trace_distributed = rokko::trace(matC);
-  const int dim_proc = (rank == 0) ? dim : 0;
+  const auto trace_distributed = rokko::trace(matC);
+  const auto dim_proc = (rank == 0) ? dim : 0;
   Eigen::MatrixXd g_matC(dim_proc, dim_proc);
   rokko::gather(matC, g_matC, 0);
 

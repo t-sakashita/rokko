@@ -28,7 +28,7 @@ void check_map_mat(rokko::skel::mapping_1d const& map, rokko::distributed_crs_ma
 
 TEST(mapping_1d, start_row) {
   constexpr int dim = 100;
-  rokko::skel::mapping_1d skel_map(dim, rokko::mpi_comm{MPI_COMM_WORLD});
+  const rokko::skel::mapping_1d skel_map(dim, rokko::mpi_comm{MPI_COMM_WORLD});
 
   for (auto const& name : rokko::parallel_sparse_ev::solvers()) {
     rokko::parallel_sparse_ev solver(name);

@@ -35,7 +35,7 @@ TEST(heisenberg_mfree, fill_diagonal) {
     }
   }
 
-  rokko::heisenberg_mfree mat(L, lattice);
+  const rokko::heisenberg_mfree mat(L, lattice);
   test_fill_diagonal(mat);
 }
 

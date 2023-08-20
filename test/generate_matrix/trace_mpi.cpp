@@ -23,11 +23,11 @@ template <typename T, typename MATRIX_MAJOR>
 void test_trace(rokko::mapping_bc<MATRIX_MAJOR> const& map) {
   constexpr int root_proc = 0;
   auto const& g = map.get_grid();
-  const int dim = map.get_m_global();
+  const auto dim = map.get_m_global();
 
   rokko::distributed_matrix<T,MATRIX_MAJOR> mat(map);
   rokko::minij_matrix::generate(mat);
-  const T trace_mat = trace(mat);
+  const auto trace_mat = trace(mat);
 
   if (g.get_myrank() == root_proc) {
     ASSERT_EQ(trace_mat, static_cast<T>(dim * (dim+1) / 2));
@@ -36,12 +36,12 @@ void test_trace(rokko::mapping_bc<MATRIX_MAJOR> const& map) {
 
 TEST(generate_matrix, minij_mpi) {
   constexpr int dim = 1000;
-  rokko::grid g(MPI_COMM_WORLD);
+  const rokko::grid g(MPI_COMM_WORLD);
 
   for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
-    rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+    const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
 
     test_trace<double>(map);
     test_trace<float>(map);

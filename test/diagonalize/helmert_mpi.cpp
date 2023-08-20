@@ -31,8 +31,8 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
     rokko::parallel_dense_ev solver(name);
     if (solver.is_available_grid_major(grid_major)) {
       solver.initialize(global_argc, global_argv);
-      rokko::grid g(comm, grid_major);
-      rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+      const rokko::grid g(comm, grid_major);
+      const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
       rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
       Eigen::VectorXd diag(dim);
       diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
@@ -68,7 +68,7 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
 }
 
 TEST(diagonalize, helmert_mpi) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   constexpr int dim = 100;
 
   const auto names = global_argc == 1 ? rokko::parallel_dense_ev::solvers()

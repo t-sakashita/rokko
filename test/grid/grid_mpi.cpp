@@ -14,16 +14,16 @@
 #include <gtest/gtest.h>
 
 TEST(grid, grid_processes) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   {
-    rokko::grid g(comm); // default should be row-major
+    const rokko::grid g(comm); // default should be row-major
     // Test public interfaces
     ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
     ASSERT_TRUE(g.is_row_major());
     ASSERT_FALSE(g.is_col_major());
   }
   {
-    rokko::grid g(comm, rokko::grid_row_major);
+    const rokko::grid g(comm, rokko::grid_row_major);
     // Test public interfaces
     ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
     ASSERT_TRUE(g.is_row_major());
@@ -43,7 +43,7 @@ TEST(grid, grid_processes) {
               g.get_myrank());
   }
   {
-    rokko::grid g(comm, rokko::grid_col_major);
+    const rokko::grid g(comm, rokko::grid_col_major);
     // Test public interfaces
     ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
     ASSERT_TRUE(g.is_col_major());

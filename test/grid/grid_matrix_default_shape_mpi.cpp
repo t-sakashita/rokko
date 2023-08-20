@@ -19,7 +19,7 @@
 
 template<typename GRID_MAJOR>
 void run_test(GRID_MAJOR) {
-  rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
+  const rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
   ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
   ASSERT_EQ(g.get_nprow() * g.get_npcol(), g.get_nprocs());
 

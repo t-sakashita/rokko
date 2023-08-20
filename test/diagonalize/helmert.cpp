@@ -39,7 +39,7 @@ void test(int dim, std::string const& name) {
   rokko::helmert_matrix::generate(u);
 
   for (int i = 0; i < dim; ++i) {
-    double w = eigvec.col(i).transpose() * mat * eigvec.col(i);
+    const auto w = eigvec.col(i).transpose() * mat * eigvec.col(i);
     EXPECT_NEAR(w, eigval(i), eps);
 
     EXPECT_NEAR(diag(i), eigval(i), eps);

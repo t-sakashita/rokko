@@ -47,8 +47,8 @@ int main(int argc, char *argv[]) {
   for (int i=0; i<num_bonds; ++i) {
     std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
   }
-  int dim = 1 << L;
-  int N = dim;
+  const auto dim = 1 << L;
+  const auto N = dim;
   std::cout << "dim=" << dim << std::endl;
 
   Eigen::MatrixXd mat1(N, N);

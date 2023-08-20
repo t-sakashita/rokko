@@ -30,12 +30,12 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
   std::uniform_real_distribution<> dist(-1.0, 1.0);
   
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
-  rokko::grid g(comm, grid_major);
-  rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);
+  const rokko::grid g(comm, grid_major);
+  const rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, DIST_MAT_MAJOR> mat(map);
   for (int i = 0; i < dim; ++i) {
     for (int j = 0; j < dim; ++j) {
-      double d = dist(engine);
+      const auto d = dist(engine);
       if (mat.has_global_indices({i, j})) mat.set_global(i, j, d);
     }
   }
@@ -65,7 +65,7 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 }
 
 TEST(mpi_communication, gather) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
 

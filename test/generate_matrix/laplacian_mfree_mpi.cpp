@@ -29,11 +29,11 @@ TEST(laplacian_mfree, serial_mpi) {
   constexpr int root = 0;
 
   constexpr int N_seq = 20;
-  const int N_seq_proc = (myrank == root) ? N_seq : 0;
+  const auto N_seq_proc = (myrank == root) ? N_seq : 0;
   Eigen::VectorXd v_seq(N_seq_proc), w_seq(N_seq_proc), w_gather(N_seq_proc);
 
   rokko::laplacian_mfree op(N_seq);
-  const int N = op.get_num_local_rows();
+  const auto N = op.get_num_local_rows();
   Eigen::VectorXd v(N), w(N);
 
   rokko::mpi_vector mpi(N_seq);

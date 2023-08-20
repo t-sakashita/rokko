@@ -54,7 +54,7 @@ void run_test(MPI_Comm comm, int dim) {
 }
 
 TEST(mpi_communication, gather_vector) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
 

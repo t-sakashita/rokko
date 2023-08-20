@@ -29,8 +29,8 @@ void eigen_2_distributed(const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rok
     throw std::invalid_argument("frank_matrix::generate() : non-square matrix");
   for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
     for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-      int global_i = map.translate_l2g_row(local_i);
-      int global_j = map.translate_l2g_col(local_j);
+      const auto global_i = map.translate_l2g_row(local_i);
+      const auto global_j = map.translate_l2g_col(local_j);
       mat.set_local(local_i, local_j, lmat(global_i, global_j));
     }
   }  
@@ -38,12 +38,12 @@ void eigen_2_distributed(const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rok
 
 TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
   constexpr int dim = 10;
-  rokko::grid g(MPI_COMM_WORLD);
+  const rokko::grid g(MPI_COMM_WORLD);
 
   for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
-    rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+    const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
     Eigen::MatrixXd lmat(dim, dim);
     rokko::frank_matrix::generate(lmat);
@@ -51,7 +51,7 @@ TEST(eigen2distributed_matrix, eigen2distributed_matrix) {
     rokko::frank_matrix::generate(mat);
 
     constexpr int root_proc = 0;
-    const int dim_proc = (g.get_myrank() == root_proc) ? dim : 0;
+    const auto dim_proc = (g.get_myrank() == root_proc) ? dim : 0;
     Eigen::MatrixXd lmat_gather(dim_proc, dim_proc);
     rokko::gather(mat, lmat_gather, root_proc);
 

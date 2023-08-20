@@ -27,7 +27,7 @@ void run_test(MPI_Comm comm, int dim) {
   MPI_Comm_rank(comm, &rank);
   rokko::mpi_vector mpi(dim);
 
-  VectorX<T> lvec = VectorX<T>::LinSpaced(dim, 0, dim-1);
+  const VectorX<T> lvec = VectorX<T>::LinSpaced(dim, 0, dim-1);
 #ifndef NDEBUG
   if (rank == 0) std::cout << lvec.transpose() << std::endl;
 #endif
@@ -43,7 +43,7 @@ void run_test(MPI_Comm comm, int dim) {
 }
 
 TEST(mpi_communication, scatter_vector) {
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
 
