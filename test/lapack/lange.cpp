@@ -18,11 +18,11 @@ constexpr double eps = 1e-10;
 constexpr double eps_float = 1e-5;
 
 TEST(lange, dlange) {
-  int m = 5;
-  int n = 3;
+  constexpr int m = 5;
+  constexpr int n = 3;
 
   // generate matrix
-  Eigen::MatrixXd a = Eigen::MatrixXd::Random(m, n);
+  const Eigen::MatrixXd a = Eigen::MatrixXd::Random(m, n);
   
   std::cout << a << std::endl;
   
@@ -66,8 +66,8 @@ TEST(lange, dlange) {
 }
 
 TEST(lange, slange) {
-  int m = 5;
-  int n = 3;
+  constexpr int m = 5;
+  constexpr int n = 3;
 
   // generate matrix
   Eigen::MatrixXf a = Eigen::MatrixXf::Random(m, n);
