@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 
 TEST(mpi_comm, 2proc) {
-  rokko::mpi_comm comm(MPI_COMM_WORLD);
+  const rokko::mpi_comm comm(MPI_COMM_WORLD);
   // Test public interfaces
   ASSERT_TRUE(comm.get_comm() == MPI_COMM_WORLD);
 
