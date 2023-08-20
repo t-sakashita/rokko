@@ -21,11 +21,10 @@ int global_argc;
 char** global_argv;
 
 TEST(heisenberg_mfree, output_market_through_crs) {
-  std::string library(rokko::parallel_sparse_ev::default_solver());
-  if (global_argc >= 2) library = global_argv[1];
+  const std::string library = (global_argc >= 2) ? global_argv[1] : rokko::parallel_sparse_ev::default_solver();
 
-  int L = (global_argc >= 3) ? std::stoi(global_argv[2]) : 4;
-  int dim = 1 << L;
+  const int L = (global_argc >= 3) ? std::stoi(global_argv[2]) : 4;
+  const auto dim = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 

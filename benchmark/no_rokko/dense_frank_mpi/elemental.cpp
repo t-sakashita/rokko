@@ -23,9 +23,8 @@ int main( int argc, char* argv[] ) {
   MPI_Barrier(MPI_COMM_WORLD);
   initend_tick = MPI_Wtime();
 
-  El::Int dim = 100; //30000;
-  if (argc >= 2) dim = std::stoi(argv[1]);
-  
+  const El::Int dimi = (argc >= 2) ? std::stoi(argv[1]) : 100;
+
   if (El::mpi::Rank() == 0)
     std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
               << "num_procs = " << nprocs << std::endl

@@ -52,10 +52,7 @@ TEST(mpi_communication, scatter) {
   int rank;
   MPI_Comm_rank(comm, &rank);
 
-  int dim = 100;
-  if (global_argc > 1) {
-    dim = std::stoi(global_argv[1]);
-  }
+  const int dim = (global_argc > 1) ? std::stoi(global_argv[1]) : 100;
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
 
   if (rank == 0) std::cout << "test for grid = col, dist = col, loc = col\n";

@@ -43,13 +43,12 @@ int main(int argc,char **argv)
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   model m;
-  int len_ladder = 5;
-  if (argc >= 2) len_ladder = std::stoi(argv[1]);
+  const int len_ladder = (argc >= 2) ? std::stoi(argv[1]) : 5;
 
-  int L = 2 * len_ladder;
+  const auto L = 2 * len_ladder;
   std::vector<std::pair<int, int>> lattice;
   m.lattice = rokko::create_ladder_lattice_1dim(len_ladder);
-  int dim = 1 << L;
+  const auto dim = 1 << L;
   if (rank == 0)
     rokko::print_lattice(lattice);
   

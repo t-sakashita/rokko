@@ -25,10 +25,7 @@ TEST(dot_product_mpi, dot_product_mpi) {
   int rank;
   MPI_Comm_rank(comm, &rank);
 
-  int dim = 100;
-  if (global_argc > 1) {
-    dim = std::stoi(global_argv[1]);
-  }
+  const int dim = (global_argc > 1) ? std::stoi(global_argv[1]) : 100;
 
   if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;
   rokko::grid g(comm);

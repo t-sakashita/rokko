@@ -15,12 +15,7 @@
 #include <rokko/utility/timer.hpp>
 
 int main(int argc, char **argv) {
-  int dim;
-  if (argc > 1) {
-    dim = std::stoi(argv[1]);
-  } else {
-    dim = 1000;
-  }
+  const int dim = (argc > 1) ? std::stoi(argv[1]) : 1000;
 
   rokko::timer timer;
   timer.registrate(1, "generate");

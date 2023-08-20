@@ -153,12 +153,11 @@ int main(int argc, char *argv[]) {
   Anasazi::BasicOutputManager<double> printer;
   printer.stream(Anasazi::Errors) << Anasazi::Anasazi_Version() << std::endl << std::endl;
 
-  int len_ladder = 5;
-  if (argc >= 2) len_ladder = std::stoi(argv[1]);
-  const int L = 2 * len_ladder;
+  const int len_ladder = (argc >= 2) ? std::stoi(argv[1]) : 5;
+  const auto L = 2 * len_ladder;
   const auto lattice = rokko::create_ladder_lattice_1dim(len_ladder);
   rokko::output_lattice(printer.stream(Anasazi::Errors), lattice);
-  const int N = 1 << L;
+  const auto N = 1 << L;
 
   gen_tick = MPI_Wtime();
   // Construct a Map that puts approximately the same number of

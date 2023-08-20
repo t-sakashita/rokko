@@ -23,10 +23,7 @@ TEST(product_mpi, product_mpi) {
   int rank;
   MPI_Comm_rank(comm, &rank);
 
-  int dim = 100;
-  if (global_argc > 1) {
-    dim = std::stoi(global_argv[1]);
-  }
+  const int dim = (global_argc > 1) ? std::stoi(global_argv[1]) : 100;
 
   if (rank == 0) std::cout << "dimension = " << dim << std::endl;
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
@@ -38,7 +35,7 @@ TEST(product_mpi, product_mpi) {
   rokko::product(1.0, matA, false, matA, false, 0, matC);
   matC.print();
   double trace_distributed = rokko::trace(matC);
-  int dim_proc = (rank == 0) ? dim : 0;
+  const int dim_proc = (rank == 0) ? dim : 0;
   Eigen::MatrixXd g_matC(dim_proc, dim_proc);
   rokko::gather(matC, g_matC, 0);
 
