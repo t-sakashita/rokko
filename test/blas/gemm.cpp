@@ -16,13 +16,13 @@
 constexpr double eps = 1e-12;
 
 TEST(GemmTest, GemmTest) {
-  std::size_t n = 16;
-  Eigen::MatrixXd a = Eigen::MatrixXd::Random(n, n);
-  Eigen::MatrixXd b = Eigen::MatrixXd::Random(n, n);
-  Eigen::MatrixXd c = Eigen::MatrixXd::Random(n, n);
+  constexpr std::size_t n = 16;
+  const Eigen::MatrixXd a = Eigen::MatrixXd::Random(n, n);
+  const Eigen::MatrixXd b = Eigen::MatrixXd::Random(n, n);
+  const Eigen::MatrixXd c = Eigen::MatrixXd::Random(n, n);
   Eigen::MatrixXd cr = c;
-  double alpha = 2.1;
-  double beta = 0.8;
+  constexpr double alpha = 2.1;
+  constexpr double beta = 0.8;
 
   rokko::blas::gemm(CblasNoTrans, CblasNoTrans, alpha, a, b, beta, cr);
 

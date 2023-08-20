@@ -16,13 +16,13 @@
 constexpr double eps = 1e-12;
 
 TEST(GemvTest, GemvTest) {
-  std::size_t n = 16;
-  Eigen::MatrixXd a = Eigen::MatrixXd::Random(n, n);
-  Eigen::VectorXd x = Eigen::VectorXd::Random(n);
-  Eigen::VectorXd y = Eigen::VectorXd::Random(n);
+  constexpr std::size_t n = 16;
+  const Eigen::MatrixXd a = Eigen::MatrixXd::Random(n, n);
+  const Eigen::VectorXd x = Eigen::VectorXd::Random(n);
+  const Eigen::VectorXd y = Eigen::VectorXd::Random(n);
   Eigen::VectorXd yr = y;
-  double alpha = 2.3;
-  double beta = 0.5;
+  constexpr double alpha = 2.3;
+  constexpr double beta = 0.5;
   rokko::blas::gemv(CblasNoTrans, alpha, a, x, 1, beta, yr, 1);
 
   Eigen::VectorXd yc(n);
