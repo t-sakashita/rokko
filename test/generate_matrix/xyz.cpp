@@ -20,9 +20,9 @@
 #include <gtest/gtest.h>
 
 TEST(generate_matrix, xyz_hamiltonian) {
-  std::size_t L = 4;
-  std::size_t num_bonds = L - 1;
-  std::size_t N = 1 << L;
+  constexpr std::size_t L = 4;
+  constexpr auto num_bonds = L - 1;
+  constexpr auto N = 1 << L;
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
   for (std::size_t i=0; i<L-1; ++i) {

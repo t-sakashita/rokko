@@ -29,10 +29,10 @@ char** global_argv;
 TEST(xyz_hamiltonian, serial_mpi) {
   rokko::parallel_dense_ev solver;
   solver.initialize(global_argc, global_argv);
-  rokko::grid g(MPI_COMM_WORLD);
+  const rokko::grid g(MPI_COMM_WORLD);
 
-  std::size_t L = 4;
-  std::size_t num_bonds = L - 1;
+  constexpr std::size_t L = 4;
+  constexpr auto num_bonds = L - 1;
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
   for (std::size_t i=0; i<L-1; ++i) {

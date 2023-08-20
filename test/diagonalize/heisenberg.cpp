@@ -23,8 +23,8 @@ TEST(diagonalize, heisenberg) {
     : rokko::get_command_line_args(global_argc, global_argv);
 
   for(auto const& name : names) {
-    int L = 5;
-    int dim = 1 << L;
+    constexpr int L = 5;
+    constexpr auto dim = 1 << L;
     std::vector<std::pair<int, int>> lattice;
     for (int i=0; i<L-1; ++i) {
       lattice.emplace_back(std::make_pair(i, i+1));

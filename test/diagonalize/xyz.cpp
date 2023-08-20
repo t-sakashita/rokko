@@ -25,9 +25,9 @@ TEST(diagonalize, xyz) {
   for(auto const& name : names) {
     std::vector<std::pair<int, int>> lattice;
     std::vector<std::tuple<double, double, double>> coupling;
-    int L = 5;
-    int num_bonds = L-1;
-    int dim = 1 << L;
+    constexpr int L = 5;
+    constexpr auto num_bonds = L-1;
+    constexpr auto dim = 1 << L;
 
     for (int i=0; i<num_bonds; ++i) {
       lattice.emplace_back(std::make_pair(i, i+1));
