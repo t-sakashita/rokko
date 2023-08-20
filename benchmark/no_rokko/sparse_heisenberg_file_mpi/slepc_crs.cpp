@@ -13,16 +13,15 @@ int main(int argc,char **argv)
   PetscMPIInt    rank;
   PetscInt       nev;
   PetscErrorCode ierr;
-  double init_tick, initend_tick, gen_tick, diag_tick, end_tick;
 
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   MPI_Barrier(MPI_COMM_WORLD);
-  init_tick = MPI_Wtime();
+  const auto init_tick = MPI_Wtime();
   SlepcInitialize(&argc, &argv, (char*)0, 0);
   ierr = MPI_Comm_rank(PETSC_COMM_WORLD,&rank); CHKERRQ(ierr);
   MPI_Barrier(MPI_COMM_WORLD);
-  initend_tick = MPI_Wtime();
+  const auto initend_tick = MPI_Wtime();
 
   const std::string lattice_file = (argc >= 2) ? argv[1] : "xyz.dat";
   const auto [L, lattice] = rokko::read_lattice_file(lattice_file);
@@ -30,7 +29,7 @@ int main(int argc,char **argv)
 
   // Create Hermitean matrix
   MPI_Barrier(MPI_COMM_WORLD);
-  gen_tick = MPI_Wtime();
+  const auto gen_tick = MPI_Wtime();
   ierr = MatCreate(PETSC_COMM_WORLD, &A); CHKERRQ(ierr);
   ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, dim, dim); CHKERRQ(ierr);
   ierr = MatSetFromOptions(A); CHKERRQ(ierr);
@@ -84,7 +83,7 @@ int main(int argc,char **argv)
      Create eigensolver context
   */
   MPI_Barrier(MPI_COMM_WORLD);
-  diag_tick = MPI_Wtime();
+  const auto diag_tick = MPI_Wtime();
   ierr = EPSCreate(PETSC_COMM_WORLD, &eps); CHKERRQ(ierr);
   /*
      Set operators. In this case, it is a standard eigenvalue problem
@@ -104,7 +103,7 @@ int main(int argc,char **argv)
      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ierr = EPSSolve(eps); CHKERRQ(ierr);
   MPI_Barrier(MPI_COMM_WORLD);
-  end_tick = MPI_Wtime();
+  const auto end_tick = MPI_Wtime();
 
   /*
      Optional: Get some information from the solver and display it
