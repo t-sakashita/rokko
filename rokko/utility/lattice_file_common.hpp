@@ -26,7 +26,7 @@ namespace detail {
 
 std::string retrieve_before_comment(std::string const& str) {
   const std::regex separator{"#"};
-  auto it = std::sregex_token_iterator{str.cbegin(), str.cend(), separator, -1};
+  const auto it = std::sregex_token_iterator{str.cbegin(), str.cend(), separator, -1};
   const auto end_it = std::sregex_token_iterator{};
   if (it != end_it)
     return *it;
@@ -37,7 +37,7 @@ std::string retrieve_before_comment(std::string const& str) {
 bool read_line_with_comment(std::ifstream& ifs, std::istringstream& is) {
   std::string str_line;
   std::getline(ifs, str_line);
-  std::string trimed_str = trim_copy(retrieve_before_comment(str_line));
+  const std::string trimed_str = trim_copy(retrieve_before_comment(str_line));
   is.clear();
   is.str(trimed_str);
   //std::cout << "no_comment:" << trimed_str << std::endl;
