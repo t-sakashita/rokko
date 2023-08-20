@@ -243,7 +243,7 @@ int main(int argc, char *argv[]) {
     Teuchos::SerialDenseMatrix<int,double> T(sol.numVecs, sol.numVecs);
     Epetra_MultiVector tempAevec( Map, sol.numVecs );
     T.putScalar(0.0);
-    for (int i=0; i<sol.numVecs; i++) {
+    for (int i=0; i<sol.numVecs; ++i) {
       T(i,i) = evals[i].realpart;
     }
     A->Apply( *evecs, tempAevec );
@@ -261,7 +261,7 @@ int main(int argc, char *argv[]) {
      << std::setw(18) << "Direct Residual"
      << std::endl;
   os << "------------------------------------------------------" << std::endl;
-  for (int i=0; i<sol.numVecs; i++) {
+  for (int i=0; i<sol.numVecs; ++i) {
     os << std::setw(16) << evals[i].realpart
        << std::setw(18) << normR[i]/evals[i].realpart
        << std::endl;
