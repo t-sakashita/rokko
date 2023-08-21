@@ -80,16 +80,13 @@ public:
   }
 
   static std::string get_routine(rokko::parameters const& params) {
-    std::string routine;
-
     if (params.defined("routine")) {
       if ((params.type("routine") == typeid(std::string)) && params.type("routine") == typeid(const char*))
         throw std::invalid_argument("anasazi::solver::diagonalize() : routine must be charatcters or string");
-      routine = params.get_string("routine");
+      return params.get_string("routine");
     } else {  // default
-      routine = "lobpcg";
+      return "lobpcg";
     }
-    return routine;
   }
 
   static std::string get_wanted_eigenvalues(std::string const& str) {
