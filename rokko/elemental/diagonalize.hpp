@@ -100,7 +100,7 @@ El::HermitianEigCtrl<T> get_ctrl(parameters const& params) {
 El::SortType get_sort(parameters const& params) {
   El::SortType elem_sort = El::ASCENDING;
   if (params.defined("sort")) {
-    std::string str_sort = params.get<std::string>("sort");    
+    const auto str_sort = params.get<std::string>("sort");
     if (str_sort == "ascending") elem_sort =  El::ASCENDING;
     else if (str_sort == "descending") elem_sort =  El::DESCENDING;
     else if (str_sort == "unsorted") elem_sort =  El::UNSORTED;
