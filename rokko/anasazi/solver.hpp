@@ -43,7 +43,7 @@ public:
   using eigenproblem_t = Anasazi::BasicEigenproblem<value_type, Epetra_MultiVector, Epetra_Operator>;
   using solvermanager_t = Anasazi::SolverManager<value_type, Epetra_MultiVector, Epetra_Operator>;
 
-  static const std::vector<std::string> names;
+  static inline const std::vector<std::string> names = { "lobpcg", "block_krylov_schur", "block_davidson", "rtr" };
   
   solver() = default;
 
@@ -218,8 +218,6 @@ private:
   std::shared_ptr<const rokko::anasazi::mapping_1d> map_;
   Teuchos::RCP<eigenproblem_t> problem_;
 };
-
-const std::vector<std::string> solver::names{ "lobpcg", "block_krylov_schur", "block_davidson", "rtr" };
 
 } // namespace anasazi
 
