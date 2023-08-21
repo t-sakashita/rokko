@@ -216,10 +216,10 @@ public:
   parameters diagonalize_common(Mat const& A, rokko::parameters const& params) {
     parameters params_out;
 
-    PetscInt num_evals = get_num_eigvals(params);
-    PetscInt max_block_size = get_max_block_size(params);
-    PetscReal tol = get_conv_tol(params);
-    PetscInt max_iters = get_max_iters(params);
+    const PetscInt num_evals = get_num_eigvals(params);
+    const PetscInt max_block_size = get_max_block_size(params);
+    const PetscReal tol = get_conv_tol(params);
+    const PetscInt max_iters = get_max_iters(params);
 
     PetscErrorCode ierr;
     ierr = EPSCreate(comm_, &eps);
