@@ -39,7 +39,7 @@ public:
     if (params.defined("routine")) {
       if ((params.type("routine") != typeid(std::string)) && params.type("routine") != typeid(const char*))
         throw std::invalid_argument("slepc::get_routine() : routine must be charatcters or string.");
-      std::string routine = params.get_string("routine");
+      const auto routine = params.get_string("routine");
       if (!routine.empty()) {
         return routine;
       } else {
@@ -87,7 +87,7 @@ public:
 
   void set_lanczos_reorthog(rokko::parameters const& params) {
     if (params.defined("reorthog")) {
-      std::string str = params.get<std::string>("reorthog");
+      const auto str = params.get<std::string>("reorthog");
       set_lanczos_reorthog(str);
     } else {
       set_lanczos_reorthog("local");
@@ -97,7 +97,7 @@ public:
   void set_block_size(rokko::parameters const& params) {
     PetscErrorCode ierr;
     if (params.defined("block_size")) {
-      int block_size = params.get<int>("block_size");
+      const auto block_size = params.get<int>("block_size");
       if (get_routine(params) == "lobpcg") {
         //ierr = EPSLOBPCGSetBlockSize(eps, block_size);
       } else if (get_routine(params) == "jd") {
@@ -109,7 +109,7 @@ public:
   void set_restart(rokko::parameters const& params) {
     PetscErrorCode ierr;
     if (params.defined("restart")) {
-      double restart = params.get<double>("restart");
+      const auto restart = params.get<double>("restart");
       if (get_routine(params) == "lobpcg") {
         ierr = EPSLOBPCGSetRestart(eps, restart);
       } else if (get_routine(params) == "krylovschur") {
@@ -123,7 +123,7 @@ public:
   void set_locking(rokko::parameters const& params) {
     PetscErrorCode ierr;
     if (params.defined("locking")) {
-      PetscBool locking = params.get<bool>("locking") ? PETSC_TRUE : PETSC_FALSE;
+      const PetscBool locking = params.get<bool>("locking") ? PETSC_TRUE : PETSC_FALSE;
       if (get_routine(params) == "lobpcg") {
         ierr = EPSLOBPCGSetLocking(eps, locking);
       } else if (get_routine(params) == "krylovschur") {
@@ -133,7 +133,7 @@ public:
   }
 
   void set_wanted_eigenvalues(rokko::parameters const& params) {
-    std::string str = params.defined("wanted_eigenvalues") ? params.get_string("wanted_eigenvalues") : std::string{};
+    const auto str = params.defined("wanted_eigenvalues") ? params.get_string("wanted_eigenvalues") : std::string{};
     if (!str.empty()) {
       EPSSetWhichEigenpairs(eps, get_wanted_eigenvalues(str));
     }
@@ -256,7 +256,7 @@ public:
   }
 
   void set_output_parameters(rokko::parameters& params_out) const {
-    int num_conv = get_num_conv();
+    const auto num_conv = get_num_conv();
     params_out.set("num_conv", num_conv);
   }
 
