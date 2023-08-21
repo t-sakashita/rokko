@@ -35,13 +35,12 @@ using complex_t = typename complex_type_traits<T>::type;
 
 El::UpperOrLower get_matrix_part(parameters const& params) {
   std::string matrix_part;
-  char matrix_part_letter;
   if (params.defined("uplow"))
     matrix_part = params.get_string("uplow");
   if (params.defined("matrix_part"))
     matrix_part = params.get_string("matrix_part");
   if (!matrix_part.empty()) {
-    matrix_part_letter = matrix_part[0];
+    const char matrix_part_letter = matrix_part[0];
     if ((matrix_part_letter == 'u') || (matrix_part_letter == 'U'))
       return El::UPPER;
     if ((matrix_part_letter == 'l') || (matrix_part_letter == 'L'))
