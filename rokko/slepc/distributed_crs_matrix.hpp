@@ -35,7 +35,7 @@ public:
     : distributed_crs_matrix(std::make_shared<const rokko::slepc::mapping_1d>(map), num_entries_per_row) {}
 
   explicit distributed_crs_matrix(std::shared_ptr<const rokko::slepc::mapping_1d> map, int num_entries_per_row): map_(map) {
-    int dim = map_->get_dim();
+    const auto dim = map_->get_dim();
     PetscErrorCode ierr;
     ierr = MatCreate(map_->get_mpi_comm().get_comm(), &matrix_);  //CHKERRQ(ierr);
     ierr = MatSetSizes(matrix_, map_->get_num_local_rows(), map_->get_num_local_rows(), dim, dim);  //CHKERRQ(ierr);

@@ -46,7 +46,7 @@ public:
                            std::function<void(const int*, double *const)> const& fill_diagonal_in,
                            rokko::skel::mapping_1d const& map)
     : rokko::distributed_mfree_holder(multiply_in, map), fill_diagonal_([this, fill_diagonal_in](double *const x) {
-        int num_local_rows = get_num_local_rows();
+        const auto num_local_rows = get_num_local_rows();
         fill_diagonal_in(&num_local_rows, x);
       }) {}
 
