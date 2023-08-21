@@ -116,17 +116,17 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
-  MPI_Comm comm = mat.get_grid().get_comm();
-  enum El::GridOrder elemental_grid_order = (mat.get_grid().is_row_major()) ?
+  const MPI_Comm comm = mat.get_grid().get_comm();
+  const enum El::GridOrder elemental_grid_order = (mat.get_grid().is_row_major()) ?
     El::ROW_MAJOR : El::COLUMN_MAJOR;
-  El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
+  const El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
   El::DistMatrix<complex_t<T>> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
                   static_cast<complex_t<T>*>(mat.get_array_pointer()), mat.get_lld());
   El::DistMatrix<complex_t<T>> elem_eigvecs(0, 0, elem_grid);
   El::DistMatrix<real_t<T>, El::VR, El::STAR> elem_w(elem_grid);
 
-  El::UpperOrLower elem_uplow = get_matrix_part(params);
+  const El::UpperOrLower elem_uplow = get_matrix_part(params);
   El::HermitianEigCtrl<complex_t<T>> ctrl = get_ctrl<complex_t<T>>(params);
   El::HermitianEigSubset<real_t<T>> subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.subset = get_subset<real_t<T>>(params);
@@ -159,17 +159,17 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("elemental::diagonalize() : elemental supports only 1x1 block size.");
   parameters params_out;
-  MPI_Comm comm = mat.get_grid().get_comm();
-  enum El::GridOrder elemental_grid_order = (mat.get_grid().is_row_major()) ?
+  const MPI_Comm comm = mat.get_grid().get_comm();
+  const enum El::GridOrder elemental_grid_order = (mat.get_grid().is_row_major()) ?
     El::ROW_MAJOR : El::COLUMN_MAJOR;
-  El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
+  const El::Grid elem_grid(comm, mat.get_grid().get_nprow(), elemental_grid_order);
   El::DistMatrix<complex_t<T>> elem_mat;
   elem_mat.Attach(mat.get_m_global(), mat.get_n_global(), elem_grid, 0, 0,
                   static_cast<complex_t<T>*>(mat.get_array_pointer()), mat.get_lld());
   El::DistMatrix<complex_t<T>> elem_eigvecs(0, 0, elem_grid);
   El::DistMatrix<real_t<T>, El::VR, El::STAR> elem_w(elem_grid);
 
-  El::UpperOrLower elem_uplow = get_matrix_part(params);
+  const El::UpperOrLower elem_uplow = get_matrix_part(params);
   El::HermitianEigCtrl<complex_t<T>> ctrl = get_ctrl<complex_t<T>>(params);
   El::HermitianEigSubset<real_t<T>> subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.subset = get_subset<real_t<T>>(params);
