@@ -53,11 +53,10 @@ El::UpperOrLower get_matrix_part(parameters const& params) {
 template <typename T>
 El::HermitianEigSubset<T> get_subset(parameters const& params) {
   El::HermitianEigSubset<T> subset;
-  bool is_lower_value, is_lower_index, is_upper_value, is_upper_index;
-  is_lower_value = get_key(params, "lower_value", subset.lowerBound);
-  is_lower_index = get_key(params, "lower_index", subset.lowerIndex);
-  is_upper_value = get_key(params, "upper_value", subset.upperBound);
-  is_upper_index = get_key(params, "upper_index", subset.upperIndex);
+  const bool is_lower_value = get_key(params, "lower_value", subset.lowerBound);
+  const bool is_lower_index = get_key(params, "lower_index", subset.lowerIndex);
+  const bool is_upper_value = get_key(params, "upper_value", subset.upperBound);
+  const bool is_upper_index = get_key(params, "upper_index", subset.upperIndex);
   if (is_lower_value && is_upper_value) {
     subset.rangeSubset = true;
   } else if (is_lower_index && is_upper_index) {
