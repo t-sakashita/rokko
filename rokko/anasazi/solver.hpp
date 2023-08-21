@@ -51,7 +51,7 @@ public:
   void initialize(int& argc, char**& argv) {}
   void finalize() {}
 
-  static std::unique_ptr<solvermanager_t> create_solver_manager(std::string const& routine, Teuchos::RCP<eigenproblem_t> problem, Teuchos::ParameterList& pl) {
+  static std::unique_ptr<solvermanager_t> create_solver_manager(std::string const& routine, Teuchos::RCP<eigenproblem_t>& problem, Teuchos::ParameterList& pl) {
     if ((routine == "lobpcg") || (routine == ""))
       return std::make_unique<Anasazi::LOBPCGSolMgr<value_type, Epetra_MultiVector, Epetra_Operator>>(problem, pl);
     else if (routine == "block_krylov_schur")
