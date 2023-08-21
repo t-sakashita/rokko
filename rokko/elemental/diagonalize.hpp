@@ -128,7 +128,6 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
 
   const El::UpperOrLower elem_uplow = get_matrix_part(params);
   El::HermitianEigCtrl<complex_t<T>> ctrl = get_ctrl<complex_t<T>>(params);
-  El::HermitianEigSubset<real_t<T>> subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.sort = get_sort(params);
 
@@ -171,7 +170,6 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
 
   const El::UpperOrLower elem_uplow = get_matrix_part(params);
   El::HermitianEigCtrl<complex_t<T>> ctrl = get_ctrl<complex_t<T>>(params);
-  El::HermitianEigSubset<real_t<T>> subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.subset = get_subset<real_t<T>>(params);
   ctrl.tridiagEigCtrl.sort = get_sort(params);
 
