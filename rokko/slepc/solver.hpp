@@ -22,7 +22,10 @@ namespace slepc {
 
 class solver {
 public:
-  static const std::map<std::string,EPSLanczosReorthogType> lanczos_reorthog_map;
+  static inline const std::map<std::string,EPSLanczosReorthogType> lanczos_reorthog_map{
+    {"local", EPS_LANCZOS_REORTHOG_LOCAL}, {"full", EPS_LANCZOS_REORTHOG_FULL},
+    {"selective", EPS_LANCZOS_REORTHOG_SELECTIVE}, {"periodic", EPS_LANCZOS_REORTHOG_PERIODIC},
+    {"partial", EPS_LANCZOS_REORTHOG_PARTIAL}, {"delayed", EPS_LANCZOS_REORTHOG_DELAYED} };
 
   solver() {
     SlepcInitialize(NULL, NULL, (char*)NULL, NULL);
@@ -326,11 +329,6 @@ private:
   MPI_Comm comm_;
   EPS eps;  // eigenproblem solver context
 };
-
-const std::map<std::string,EPSLanczosReorthogType> solver::lanczos_reorthog_map{
-  {"local", EPS_LANCZOS_REORTHOG_LOCAL}, {"full", EPS_LANCZOS_REORTHOG_FULL},
-  {"selective", EPS_LANCZOS_REORTHOG_SELECTIVE}, {"periodic", EPS_LANCZOS_REORTHOG_PERIODIC},
-  {"partial", EPS_LANCZOS_REORTHOG_PARTIAL}, {"delayed", EPS_LANCZOS_REORTHOG_DELAYED} };
 
 } // namespace slepc
 
