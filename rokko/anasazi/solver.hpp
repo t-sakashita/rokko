@@ -123,8 +123,7 @@ public:
       pl.set( "Verbosity", Anasazi::Errors | Anasazi::Warnings | Anasazi::IterationDetails | Anasazi::FinalSummary | Anasazi::Debug | Anasazi::OrthoDetails );
     }
 
-    std::list<std::string> keys = params.keys();
-    for(auto const& key : keys) {
+    for(auto const& key : params.keys()) {
       if (!is_rokko_solver_key(key)) {
         if (params.type(key) == typeid(int))
           pl.set(key, params.get<int>(key));
