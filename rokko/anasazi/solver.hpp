@@ -72,9 +72,9 @@ public:
   }
 
   static std::tuple<int,int> retrieve_number_size(rokko::parameters const& params) {
-    int num_eigvals = params.defined("num_eigvals") ?
+    const auto num_eigvals = params.defined("num_eigvals") ?
       params.get<int>("num_eigvals") : 1;
-    int max_block_size = params.defined("max_block_size") ?
+    const auto max_block_size = params.defined("max_block_size") ?
       params.get<int>("max_block_size") : num_eigvals;  // fix me : This default value must depend on eigenalgorithm such as 2 * num_eigvals
     return {num_eigvals, max_block_size};
   }
@@ -154,13 +154,12 @@ public:
 
   parameters diagonalize(const rokko::distributed_mfree& mat, rokko::parameters const& params) {
     map_ = std::make_shared<mapping_1d>(mat.get_dim(), mat.get_num_local_rows(), mpi_comm{mat.get_comm()});
-    Teuchos::RCP<const anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
+    const Teuchos::RCP<const anasazi_mfree_operator> anasazi_op = Teuchos::rcp(new anasazi_mfree_operator(mat, *map_));
     return diagonalize_common(anasazi_op, params);
   }
 
   parameters diagonalize_common(Teuchos::RCP<const Epetra_Operator> op, rokko::parameters const& params) {
-    int num_eigvals, max_block_size;
-    std::tie(num_eigvals, max_block_size) = retrieve_number_size(params);
+    const auto [num_eigvals, max_block_size] = retrieve_number_size(params);
     Teuchos::ParameterList pl = set_anasazi_parameters(params);
 
     Teuchos::RCP<Epetra_MultiVector> multivector = Teuchos::rcp(new Epetra_MultiVector(map_->get_epetra_map(), max_block_size));
@@ -170,14 +169,14 @@ public:
     problem_->setNEV(num_eigvals);
     problem_->setProblem();
 
-    std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), problem_, pl);
+    const std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), problem_, pl);
     
-    bool boolret = problem_->setProblem();
+    const auto boolret = problem_->setProblem();
     if (!boolret) {
       throw std::invalid_argument("anasazi::solver::diagonalize : Return value from setProblem() is false");
     }
 
-    Anasazi::ReturnType returnCode = solvermanager->solve();
+    const Anasazi::ReturnType returnCode = solvermanager->solve();
     if (params.get_bool("verbose") && (returnCode == Anasazi::Unconverged)) {
       std::cout << "anasazi::solver::diagonalize : solve() does not converge." << std::endl;
     }
