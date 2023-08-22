@@ -23,7 +23,7 @@ char get_matrix_part(parameters const& params) {
     matrix_part = params.get_string("uplow");
 
   if (!matrix_part.empty()) {
-    char matrix_part_letter = matrix_part[0];
+    const char matrix_part_letter = matrix_part[0];
     if ((matrix_part_letter == 'u') || (matrix_part_letter == 'U'))
       return 'U';
     if ((matrix_part_letter == 'l') || (matrix_part_letter == 'L'))
@@ -43,10 +43,10 @@ std::string get_matrix_part(char const& uplow) {
 
 template<typename T>
 char get_eigenvalues_range(parameters const& params, T& vl, T& vu, int& il, int& iu) {
-  bool is_lower_value = get_key(params, "lower_value", vl);
-  bool is_lower_index = get_key(params, "lower_index", il);
-  bool is_upper_value = get_key(params, "upper_value", vu);
-  bool is_upper_index = get_key(params, "upper_index", iu);
+  const bool is_lower_value = get_key(params, "lower_value", vl);
+  const bool is_lower_index = get_key(params, "lower_index", il);
+  const bool is_upper_value = get_key(params, "upper_value", vu);
+  const bool is_upper_index = get_key(params, "upper_index", iu);
 
   if (is_lower_index && is_upper_index)   return 'I';
   else if (is_lower_value && is_upper_value)   return 'V';
