@@ -49,7 +49,7 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters params) {
   if (params.defined("abstol")) {
-    real_t<T> abstol = params.get<real_t<T>>("abstol");
+    const real_t<T> abstol = params.get<real_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
