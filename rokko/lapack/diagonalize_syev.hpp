@@ -27,9 +27,9 @@ parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX
 			     parameters const& params) {
   rokko::parameters params_out;
   const char jobz = 'N';  // only eigenvalues
-  char uplow = get_matrix_part(params);
+  const char uplow = get_matrix_part(params);
 
-  int info = syev(jobz, uplow, mat, eigvals);
+  const auto info = syev(jobz, uplow, mat, eigvals);
 
   params_out.set("info", info);
   if (info) {
@@ -49,9 +49,9 @@ parameters diagonalize_syev(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX
 			     parameters const& params) {
   rokko::parameters params_out;
   const char jobz = 'V';  // eigenvalues / eigenvectors
-  char uplow = get_matrix_part(params);
+  const char uplow = get_matrix_part(params);
 
-  int info = syev(jobz, uplow, mat, eigvals);
+  const auto info = syev(jobz, uplow, mat, eigvals);
   eigvecs = mat;
 
   params_out.set("info", info);

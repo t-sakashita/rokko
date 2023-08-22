@@ -30,7 +30,7 @@ parameters diagonalize_sygv(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX
   const char uplow = get_matrix_part(params);
 
   constexpr int itype = 1;
-  int info = sygv(itype, jobz, uplow, mata, matb, eigvals);
+  const auto info = sygv(itype, jobz, uplow, mata, matb, eigvals);
 
   if (info) {
     std::cerr << "error at sygv function. info=" << info << std::endl;
@@ -53,7 +53,7 @@ parameters diagonalize_sygv(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX
   const char uplow = get_matrix_part(params);
 
   constexpr int itype = 1;
-  int info = sygv(itype, jobz, uplow, mata, matb, eigvals);
+  const auto info = sygv(itype, jobz, uplow, mata, matb, eigvals);
 
   eigvecs = mata;
   if (info) {

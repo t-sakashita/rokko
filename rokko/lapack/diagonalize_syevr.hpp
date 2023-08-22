@@ -26,7 +26,7 @@ template<typename T, int MATRIX_MAJOR, typename VEC>
 parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
 			      parameters const& params) {
   parameters params_out;
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -38,7 +38,7 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const int dim = mat.outerSize();
   std::vector<lapack_int> isuppz(2*dim+1);
 
-  int info = syevr(range, uplow, mat,
+  const auto info = syevr(range, uplow, mat,
                    vl, vu, il, iu, abstol,
                    m, eigvals, isuppz);
 
@@ -64,7 +64,7 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 			      parameters const& params) {
   rokko::parameters params_out;
 
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il = 0, iu = 0;
@@ -76,7 +76,7 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const int dim = mat.outerSize();
   std::vector<lapack_int> isuppz(2*dim+1);
 
-  int info = syevr(range, uplow, mat,
+  const auto info = syevr(range, uplow, mat,
                    vl, vu, il, iu, abstol,
                    m, eigvals, eigvecs, isuppz);
 

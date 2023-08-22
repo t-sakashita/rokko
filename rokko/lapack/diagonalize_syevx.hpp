@@ -27,7 +27,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 			      parameters const& params) {
   parameters params_out;
 
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -39,7 +39,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const int dim = mat.outerSize();
   std::vector<lapack_int> ifail(dim);
 
-  int info = syevx(range, uplow, mat,
+  const auto info = syevx(range, uplow, mat,
                    vl, vu, il, iu, abstol,
                    m, eigvals, ifail);
 
@@ -81,7 +81,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const int dim = mat.outerSize();
   std::vector<lapack_int> ifail(dim);
 
-  int info = syevx(range, uplow, mat,
+  const auto info = syevx(range, uplow, mat,
                    vl, vu, il, iu, abstol,
                    m, eigvals, eigvecs, ifail);
 

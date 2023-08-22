@@ -28,7 +28,7 @@ parameters diagonalize_sygvx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   parameters params_out;
   const char jobz = 'N';  // only eigenvalues
   lapack_int m;  // output: found eigenvalues
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -39,7 +39,7 @@ parameters diagonalize_sygvx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const int dim = mata.outerSize();
   std::vector<lapack_int> ifail(dim);
   constexpr int itype = 1;
-  int info = sygvx(itype, jobz, range, uplow,
+  const auto info = sygvx(itype, jobz, range, uplow,
                    mata, matb, vl, vu, il, iu,
                    abstol, m, eigvals, NULL, ifail);
 
@@ -73,7 +73,7 @@ parameters diagonalize_sygvx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   std::vector<lapack_int> ifail(dim);
 
   lapack_int m;  // output: found eigenvalues
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
@@ -82,7 +82,7 @@ parameters diagonalize_sygvx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const char uplow = get_matrix_part(params);
 
   constexpr int itype = 1;
-  int info = sygvx(itype, jobz, range, uplow,
+  const auto info = sygvx(itype, jobz, range, uplow,
                    mata, matb,
                    vl, vu, il, iu,
                    abstol, m, eigvals, eigvecs, ifail);

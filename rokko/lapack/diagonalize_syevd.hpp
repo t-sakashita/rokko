@@ -28,7 +28,7 @@ parameters diagonalize_syevd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   rokko::parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
 
-  int info = syevd('N', uplow, mat, eigvals);
+  const auto info = syevd('N', uplow, mat, eigvals);
 
   params_out.set("info", info);
   if (info) {
@@ -49,7 +49,7 @@ parameters diagonalize_syevd(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   rokko::parameters params_out;
   const char uplow = get_matrix_part(params);
 
-  int info = syevd('V', uplow, mat, eigvals);
+  const auto info = syevd('V', uplow, mat, eigvals);
   eigvecs = mat;
 
   params_out.set("info", info);

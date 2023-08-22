@@ -33,7 +33,7 @@ parameters diagonalize_bisection(VEC& alpha, VEC& beta,
   const int dim = alpha.size();
   eigvals.resize(dim);
   constexpr T abstol = 0.;
-  int il = dim, iu = dim;
+  const int il = dim, iu = dim;
   int nsplit;
   Eigen::VectorXi iblock(dim), isplit(dim);
   int info = rokko::lapack::stebz('E', il, iu, abstol, alpha, beta, num_conv, nsplit, eigvals, iblock, isplit);
