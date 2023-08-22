@@ -34,7 +34,7 @@ parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,M
     }
   }
 
-  parameters params_out = diagonalize_syevx(mat, eigvals, params);
+  const auto params_out = diagonalize_syevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished dsyevx (bisection)" << std::endl;
@@ -59,7 +59,7 @@ parameters diagonalize_bisection(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,M
     }
   }
 
-  parameters params_out = diagonalize_syevx(mat, eigvals, eigvecs, params);
+  const auto params_out = diagonalize_syevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished dsyevx (bisection)" << std::endl;

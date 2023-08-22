@@ -25,12 +25,12 @@ template<typename T, int MATRIX_MAJOR, typename VEC>
 parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals,
                  rokko::parameters params) {
   if (params.defined("abstol")) {
-    auto abstol = params.get<real_t<T>>("abstol");
+    const auto abstol = params.get<real_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_syevx(mat, eigvals, params);
+  const auto params_out = diagonalize_syevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished dsyevx (qr)" << std::endl;
@@ -46,12 +46,12 @@ parameters diagonalize_qr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_M
                  Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& eigvecs,
                  rokko::parameters params) {
   if (params.defined("abstol")) {
-    auto abstol = params.get<real_t<T>>("abstol");
+    const auto abstol = params.get<real_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_syevx(mat, eigvals, eigvecs, params);
+  const auto params_out = diagonalize_syevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished dsyevx (qr)" << std::endl;
