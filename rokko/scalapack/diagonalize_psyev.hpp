@@ -25,9 +25,10 @@ template<typename T, typename VEC>
 parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			      VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			      parameters const& params) {
-  parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   const auto info = psyev(uplow, mat, eigvals, eigvecs);
+
+  parameters params_out;
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info << std::endl;
@@ -50,9 +51,10 @@ template<typename T, typename VEC>
 parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			      VEC& eigvals,
 			      parameters const& params) {
-  parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   const auto info = psyev(uplow, mat, eigvals);
+
+  parameters params_out;
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info << std::endl;

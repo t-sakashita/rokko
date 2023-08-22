@@ -28,10 +28,10 @@ template<typename T, typename VEC>
 parameters diagonalize_psyevd(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			       VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			       parameters const& params) {
-  parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   const auto info = psyevd(uplow, mat, eigvals, eigvecs);
 
+  parameters params_out;
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyevd function. info=" << info << std::endl;

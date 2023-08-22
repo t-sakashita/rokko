@@ -29,7 +29,6 @@ template<typename T, typename VEC>
 parameters diagonalize_psyevr(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			parameters const& params) {
-  parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   real_t<T> vl = 0, vu = 0;
   int il = 0, iu = 0;
@@ -42,6 +41,8 @@ parameters diagonalize_psyevr(distributed_matrix<T, rokko::matrix_col_major>& ma
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
   }
+
+  parameters params_out;
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
@@ -63,7 +64,6 @@ template<typename T, typename VEC>
 parameters diagonalize_psyevr(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   real_t<T> vl = 0, vu = 0;
   int il = 0, iu = 0;
@@ -76,6 +76,8 @@ parameters diagonalize_psyevr(distributed_matrix<T, rokko::matrix_col_major>& ma
   if (info) {
     std::cerr << "error at pdsyevr function. info=" << info << std::endl;
   }
+
+  parameters params_out;
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);

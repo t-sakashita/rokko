@@ -28,7 +28,6 @@ template<typename T, typename VEC>
 parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			       VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			       parameters const& params) {
-  parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   real_t<T> vl, vu;
   int il, iu;
@@ -45,6 +44,8 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
                     abstol, m, nz,
                     eigvals, orfac, eigvecs,
                     ifail, iclustr, gap);
+
+  parameters params_out;
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
@@ -69,7 +70,6 @@ template<typename T, typename VEC>
 parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  rokko::parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
   real_t<T> vl, vu;
   int il, iu;
@@ -85,6 +85,8 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
                     vl, vu, il, iu,
                     abstol, m, nz, eigvals, orfac,
                     ifail, iclustr, gap);
+
+  rokko::parameters params_out;
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("nz", nz);
