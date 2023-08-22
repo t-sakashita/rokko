@@ -29,12 +29,12 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters params) {
   if (params.defined("abstol")) {
-    real_t<T> abstol = params.get<real_t<T>>("abstol");
+    const real_t<T> abstol = params.get<real_t<T>>("abstol");
     if (abstol > 0) {
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_psyevx(mat, eigvals, eigvecs, params);
+  const auto params_out = diagonalize_psyevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (qr)" << std::endl;
@@ -54,7 +54,7 @@ parameters diagonalize_qr(distributed_matrix<T, MATRIX_MAJOR>& mat,
       params.set("abstol", - abstol);
     }
   }
-  parameters params_out = diagonalize_psyevx(mat, eigvals, params);
+  const auto params_out = diagonalize_psyevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (qr)" << std::endl;

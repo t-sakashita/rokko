@@ -27,7 +27,7 @@ parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_col_major>& mat
 			      parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  int info = psyev(uplow, mat, eigvals, eigvecs);
+  const auto info = psyev(uplow, mat, eigvals, eigvecs);
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info << std::endl;
@@ -52,7 +52,7 @@ parameters diagonalize_psyev(distributed_matrix<T, rokko::matrix_col_major>& mat
 			      parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  int info = psyev(uplow, mat, eigvals);
+  const auto info = psyev(uplow, mat, eigvals);
   params_out.set("info", info);
   if (info) {
     std::cerr << "error at pdsyev function. info=" << info << std::endl;

@@ -36,7 +36,7 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
       throw std::invalid_argument(msg.str());
     }
   }
-  parameters params_out = diagonalize_psyevx(mat, eigvals, eigvecs, params);
+  const auto params_out = diagonalize_psyevx(mat, eigvals, eigvecs, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (bisection)" << std::endl;
@@ -59,7 +59,7 @@ parameters diagonalize_bisection(distributed_matrix<T, MATRIX_MAJOR>& mat,
       throw std::invalid_argument(msg.str());
     }
   }
-  parameters params_out = diagonalize_psyevx(mat, eigvals, params);
+  const auto params_out = diagonalize_psyevx(mat, eigvals, params);
 
   if (params.get_bool("verbose")) {
     std::cout << "finished pdsyevx (bisection)" << std::endl;

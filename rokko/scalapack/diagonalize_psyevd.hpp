@@ -30,7 +30,7 @@ parameters diagonalize_psyevd(distributed_matrix<T, rokko::matrix_col_major>& ma
 			       parameters const& params) {
   parameters params_out;
   const char uplow = lapack::get_matrix_part(params);
-  int info = psyevd(uplow, mat, eigvals, eigvecs);
+  const auto info = psyevd(uplow, mat, eigvals, eigvecs);
 
   params_out.set("info", info);
   if (info) {

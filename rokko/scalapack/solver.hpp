@@ -38,7 +38,7 @@ public:
     int nb = dim / g.get_npcol();
     if (nb == 0)  nb = 1;
     // Note: it should be that mb = nb in pdsyev.
-    int b = std::min(mb, nb);
+    const auto b = std::min(mb, nb);
     return mapping_bc<matrix_col_major>(dim, b, g);
   }
 
@@ -57,7 +57,7 @@ template<typename T, typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<T, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const auto routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="syev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_psyev(mat, eigvals, eigvecs, params);
@@ -95,7 +95,7 @@ template<typename T, typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const auto routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="syev") || (routine=="qr")) {
     return rokko::scalapack::diagonalize_psyev(mat, eigvals, params);

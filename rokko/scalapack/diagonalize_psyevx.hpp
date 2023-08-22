@@ -34,13 +34,13 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const auto ictxt = mat.get_grid().get_blacs_context();
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
-  real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
+  const real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<real_t<T>> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
-  int info = psyevx(range, uplow, mat,
+  const auto info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,
                     abstol, m, nz,
                     eigvals, orfac, eigvecs,
@@ -75,13 +75,13 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
   int il, iu;
   const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
   const auto ictxt = mat.get_grid().get_blacs_context();
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
-  real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
+  const real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
   std::vector<int> ifail(mat.get_m_global());
   std::vector<int> iclustr(2 * mat.get_nprow() * mat.get_npcol());
   std::vector<real_t<T>> gap(mat.get_nprow() * mat.get_npcol());
   int m, nz;
-  int info = psyevx(range, uplow, mat,
+  const auto info = psyevx(range, uplow, mat,
                     vl, vu, il, iu,
                     abstol, m, nz, eigvals, orfac,
                     ifail, iclustr, gap);
