@@ -29,13 +29,13 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
   parameters params_out;
 
   int error;
-  elpa_t handle = elpa_allocate(&error);
+  const elpa_t handle = elpa_allocate(&error);
 
   set_parameters(mat, params, handle);
   assert_elpa_ok(elpa_setup(handle));
 
   set_solver(params, handle);
-  int info = elpa::diag(handle, mat, eigvals, eigvecs);
+  const auto info = elpa::diag(handle, mat, eigvals, eigvecs);
   assert_elpa_ok( deallocate(handle) );
 
   params_out.set("info", info);
@@ -56,13 +56,13 @@ parameters diagonalize(distributed_matrix<T, rokko::matrix_col_major>& mat,
   parameters params_out;
 
   int error;
-  elpa_t handle = elpa_allocate(&error);
+  const elpa_t handle = elpa_allocate(&error);
 
   set_parameters(mat, params, handle);
   assert_elpa_ok(elpa_setup(handle));
 
   set_solver(params, handle);
-  int info = elpa::diag(handle, mat, eigvals);
+  const auto info = elpa::diag(handle, mat, eigvals);
   assert_elpa_ok( deallocate(handle) );
 
   params_out.set("info", info);
