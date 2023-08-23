@@ -214,8 +214,6 @@ public:
   }
 
   parameters diagonalize_common(Mat const& A, rokko::parameters const& params) {
-    parameters params_out;
-
     const PetscInt num_evals = get_num_eigvals(params);
     const PetscInt max_block_size = get_max_block_size(params);
     const PetscReal tol = get_conv_tol(params);
@@ -252,12 +250,16 @@ public:
     if (params.get_bool("verbose") && (myrank == 0))
       info_verbose();
 
-    return params_out;
+    return get_output_parameters();
   }
 
-  void set_output_parameters(rokko::parameters& params_out) const {
+   rokko::parameters get_output_parameters() const {
+    parameters params_out;
+
     const auto num_conv = get_num_conv();
     params_out.set("num_conv", num_conv);
+
+    return params_out;
   }
 
   void info_verbose() const {
