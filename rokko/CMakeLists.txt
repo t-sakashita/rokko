@@ -12,7 +12,7 @@ set(ROKKO_SOURCES)
 # For serial solvers
 if(BUILD_SERIAL_DENSE_SOLVER)
   # LAPACK
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp lapack/diagonalize_get_parameters.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} lapack/lapack.cpp)
   # Eigen3
   set(ROKKO_SOURCES ${ROKKO_SOURCES} eigen3/eigen3.cpp)
 
