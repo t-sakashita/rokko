@@ -20,9 +20,9 @@
 
 namespace rokko {
 
-extern struct grid_row_major_t {} grid_row_major;
+inline struct grid_row_major_t {} grid_row_major;
+inline struct grid_col_major_t {} grid_col_major;
 
-extern struct grid_col_major_t {} grid_col_major;
 
 class grid : public mpi_comm, public blacs_grid {
 public:
