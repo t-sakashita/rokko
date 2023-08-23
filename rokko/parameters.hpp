@@ -58,8 +58,9 @@ public:
     if (type(key) != typeid(T)) {
       //std::cout << "type(key)=" << type(key).name() << " typeid(T)=" << typeid(T).name() << std::endl;
       throw std::invalid_argument("parameters::get() : type given as template parameter is not correct.");
+    } else {
+      return std::any_cast<T>(map_.find(key)->second);
     }
-    return std::any_cast<T>(map_.find(key)->second);
   }
   const std::type_info& type(key_type const& key) const { return map_.find(key)->second.type(); }
   // return parameter as string
