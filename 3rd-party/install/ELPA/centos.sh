@@ -19,7 +19,7 @@ for build_type in $BUILD_TYPES; do
       FLAGS="-g"
   fi
   check ./configure \
-	CC=mpicc FC=mpif90 \
+	CXX=mpicxx CC=mpicc FC=mpif90 \
 	SCALAPACK_LDFLAGS="-L/usr/lib64/openmpi/lib -lscalapack -lmpiblacs -llapack -lblas" \
 	FCFLAGS="$FLAGS" CFLAGS="$FLAGS" \
 	--enable-openmp --prefix=$PREFIX
