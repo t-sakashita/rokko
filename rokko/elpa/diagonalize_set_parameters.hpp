@@ -28,8 +28,7 @@ void set_solver(parameters const& params, elpa_t handle) {
 template<typename T, typename MATRIX_MAJOR>
 void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters const& params, elpa_t handle) {
   assert_elpa_ok( set(handle, "na", mat.get_m_global()) );
-  int nev = mat.get_m_global();
-  get_nev(params, nev);
+  const auto nev = get_nev(params, mat.get_m_global());
   assert_elpa_ok( set(handle, "nev", nev) );
 
   assert_elpa_ok( set(handle, "local_nrows", mat.get_m_local()) );

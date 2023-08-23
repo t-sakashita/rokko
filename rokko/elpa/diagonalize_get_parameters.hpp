@@ -17,11 +17,13 @@
 namespace rokko {
 namespace elpa {
 
-void get_nev(parameters const& params, int& nev) {
+auto get_nev(parameters const& params, int default_nev) {
   if (params.defined("num_eigvals"))
-    nev = params.get<int>("num_eigvals");
+    return params.get<int>("num_eigvals");
   if (params.defined("nev"))
-    nev = params.get<int>("nev");
+    return params.get<int>("nev");
+  else
+    return default_nev;
 }
 
 int get_kernel(parameters const& params) {
