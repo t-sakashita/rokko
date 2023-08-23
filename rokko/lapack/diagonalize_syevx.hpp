@@ -69,7 +69,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
 			      parameters const& params) {
   rokko::parameters params_out;
 
-  real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
+  const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 2*LAPACKE_dlamch('S');
   params_out.set("abstol", abstol);
 
   lapack_int il, iu;
