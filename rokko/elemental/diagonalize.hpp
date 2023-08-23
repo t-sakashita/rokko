@@ -103,6 +103,7 @@ El::SortType get_sort(parameters const& params) {
     if (str_sort == "ascending")  return El::ASCENDING;
     else if (str_sort == "descending")  return El::DESCENDING;
     else if (str_sort == "unsorted")  return El::UNSORTED;
+    else std::invalid_argument("elemental::get_sort() : Elemental does not support " + str_sort + " for El::SortType");
   } else {
     return El::ASCENDING;
   }
