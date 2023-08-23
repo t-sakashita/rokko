@@ -29,8 +29,7 @@ public:
   void finalize() {}
 
   mapping_bc<matrix_col_major> default_mapping(int global_dim, grid const& g) const {
-    int nx, ny;
-    std::tie(nx, ny) = rokko::eigenexa::get_matdims(g, global_dim);
+    const auto [nx, ny] = rokko::eigenexa::get_matdims(g, global_dim);
     return mapping_bc<matrix_col_major>(global_dim, 1, {nx, ny}, g);  // block_size = 1
   }
 
@@ -74,7 +73,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals, distributed_matrix<double, MATRIX_MAJOR>& eigvecs,
 			       parameters const& params) {
-  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const auto routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="tri") || (routine=="eigen_s")) {
     return rokko::eigenexa::diagonalize_eigen_s(mat, eigvals, eigvecs, params);
@@ -89,7 +88,7 @@ template<typename MATRIX_MAJOR, typename VEC>
 parameters solver::diagonalize(distributed_matrix<double, MATRIX_MAJOR>& mat,
 			       VEC& eigvals,
 			       parameters const& params) {
-  const std::string routine = params.defined("routine") ? params.get_string("routine") : "";
+  const auto routine = params.defined("routine") ? params.get_string("routine") : "";
 
   if ((routine=="tri") || (routine=="eigen_s")) {
     return rokko::eigenexa::diagonalize_eigen_s(mat, eigvals, params);
