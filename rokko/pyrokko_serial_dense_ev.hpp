@@ -44,7 +44,7 @@ public:
     new (&eigval) Eigen::Ref<vector_type>(eigval_in);
     new (&eigvec) Eigen::Map<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(eigvec_in.data(), eigvec_in.rows(), eigvec_in.cols());
 
-    wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, eigvec, parameters(params));
+    const wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, eigvec, parameters(params));
 
     new (&mat) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
     new (&eigval) vector_type();
@@ -64,7 +64,7 @@ public:
     new (&mat) Eigen::Map<Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>>(mat_in.data(), mat_in.rows(), mat_in.cols());
     new (&eigval) Eigen::Ref<vector_type>(eigval_in);
 
-    wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, parameters(params));
+    const wrap_parameters params_out = serial_dense_ev::diagonalize(mat, eigval, parameters(params));
 
     new (&mat) Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MAJOR>();
     new (&eigval) vector_type();
