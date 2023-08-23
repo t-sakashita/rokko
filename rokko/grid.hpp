@@ -104,7 +104,7 @@ public:
 protected:
   template <typename GRID_MAJOR>
   void set_sizes_default(GRID_MAJOR) {
-    int nprow = find_square_root_like_divisor(nprocs);
+    const auto nprow = find_square_root_like_divisor(nprocs);
     set_size({nprow, nprocs/nprow});
     set_major<GRID_MAJOR>();
     set_my_coordinate();
@@ -124,7 +124,7 @@ protected:
   void set_sizes_cart(grid_row_major_t) {
     constexpr int cart_dim = 2;
     std::array<int,2> dims, periods, coords;
-    int ierr = MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
+    const auto ierr = MPI_Cart_get(comm, cart_dim, dims.data(), periods.data(), coords.data());
     if (ierr != MPI_SUCCESS)
       throw std::invalid_argument("set_sizes_cart : MPI_Cart_get returns " + mpi_error_string(ierr));
 
