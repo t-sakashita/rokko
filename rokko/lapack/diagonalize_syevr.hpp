@@ -29,9 +29,7 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
-  lapack_int il, iu;
-  real_t<T> vl, vu;
-  const char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  const auto [range, vl, vu, il, iu] = get_eigenvalues_range<T>(params);
   const char uplow = get_matrix_part(params);
 
   lapack_int m;  // output: found eigenvalues
@@ -67,9 +65,7 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : 0.;
   params_out.set("abstol", abstol);
 
-  lapack_int il = 0, iu = 0;
-  real_t<T> vl = 0, vu = 0;
-  const char range = get_eigenvalues_range(params, vl, vu, il, iu);
+  const auto [range, vl, vu, il, iu] = get_eigenvalues_range<T>(params);
   const char uplow = get_matrix_part(params);
 
   lapack_int m;  // output: found eigenvalues

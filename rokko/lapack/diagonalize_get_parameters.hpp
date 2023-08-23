@@ -42,16 +42,18 @@ inline std::string get_matrix_part(char const& uplow) {
 }
 
 template<typename T>
-inline char get_eigenvalues_range(parameters const& params, T& vl, T& vu, int& il, int& iu) {
+inline std::tuple<char,real_t<T>,real_t<T>,int,int> get_eigenvalues_range(parameters const& params) {
+  lapack_int il = 0, iu = 0;
+  real_t<T> vl = 0, vu = 0;
   const bool is_lower_value = get_key(params, "lower_value", vl);
   const bool is_lower_index = get_key(params, "lower_index", il);
   const bool is_upper_value = get_key(params, "upper_value", vu);
   const bool is_upper_index = get_key(params, "upper_index", iu);
 
-  if (is_lower_index && is_upper_index)   return 'I';
-  else if (is_lower_value && is_upper_value)   return 'V';
+  if (is_lower_index && is_upper_index)   return {'I', vl, vu, il, iu};
+  else if (is_lower_value && is_upper_value)   return {'V', vl, vu, il, iu};
   else if (!(is_lower_index && is_lower_value && is_upper_index && is_upper_value))
-    return 'A';
+    return {'A', vl, vu, il, iu};
   else
     throw std::invalid_argument("error: sepcify either of a pair of upper_value and lower_value or a pair of upper_index and lower_index");
 }

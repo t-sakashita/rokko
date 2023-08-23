@@ -30,9 +30,7 @@ parameters diagonalize_psyevr(distributed_matrix<T, rokko::matrix_col_major>& ma
 			VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			parameters const& params) {
   const char uplow = lapack::get_matrix_part(params);
-  real_t<T> vl = 0, vu = 0;
-  int il = 0, iu = 0;
-  const char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
+  const auto [range, vl, vu, il, iu] = rokko::lapack::get_eigenvalues_range<T>(params);
 
   int m, nz;
   const auto info = psyevr(range, uplow, mat,
@@ -65,9 +63,7 @@ parameters diagonalize_psyevr(distributed_matrix<T, rokko::matrix_col_major>& ma
 			       VEC& eigvals,
 			       parameters const& params) {
   const char uplow = lapack::get_matrix_part(params);
-  real_t<T> vl = 0, vu = 0;
-  int il = 0, iu = 0;
-  const char range = lapack::get_eigenvalues_range(params, vu, vl, iu, il);
+  const auto [range, vl, vu, il, iu] = rokko::lapack::get_eigenvalues_range<T>(params);
   int m, nz;
   const auto info = psyevr(range, uplow, mat,
                     vl, vu, il, iu, m, nz,

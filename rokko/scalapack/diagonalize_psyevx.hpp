@@ -29,9 +29,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
 			       VEC& eigvals, distributed_matrix<T, rokko::matrix_col_major>& eigvecs,
 			       parameters const& params) {
   const char uplow = lapack::get_matrix_part(params);
-  real_t<T> vl, vu;
-  int il, iu;
-  const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
+  const auto [range, vl, vu, il, iu] = rokko::lapack::get_eigenvalues_range<T>(params);
   const auto ictxt = mat.get_grid().get_blacs_context();
   const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   const real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
@@ -71,9 +69,7 @@ parameters diagonalize_psyevx(distributed_matrix<T, rokko::matrix_col_major>& ma
 			       VEC& eigvals,
 			       parameters const& params) {
   const char uplow = lapack::get_matrix_part(params);
-  real_t<T> vl, vu;
-  int il, iu;
-  const char range = lapack::get_eigenvalues_range(params, vl, vu, il, iu);
+  const auto [range, vl, vu, il, iu] = rokko::lapack::get_eigenvalues_range<T>(params);
   const auto ictxt = mat.get_grid().get_blacs_context();
   const real_t<T> abstol = params.defined("abstol") ? params.get<real_t<T>>("abstol") : cscalapack_pdlamch(ictxt, 'U');
   const real_t<T> orfac = params.defined("orfac") ? params.get<real_t<T>>("orfac") : -1.;  // default value is 10^{-3} for a minus value.
