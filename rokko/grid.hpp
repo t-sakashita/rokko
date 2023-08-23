@@ -61,7 +61,7 @@ public:
   explicit grid(MPI_Comm comm_in = MPI_COMM_WORLD) : grid(comm_in, grid_row_major) {}
 
   static int find_square_root_like_divisor(int n) {
-    int i = int(std::sqrt((double)n));
+    auto i = static_cast<int>(std::sqrt(static_cast<double>(n)));
     for (; i > 1; --i) {
       if ( (n % i) == 0 ) break;
     }
