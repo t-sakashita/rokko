@@ -12,94 +12,86 @@
 #pragma once
 
 #include <rokko/elpa/elpa.h>
-#include <complex>
-#undef complex
 
-inline auto elpa_complex_cast(std::complex<double>* c) {
-  return reinterpret_cast<__complex__ double*>(c);
-}
-
-inline auto elpa_complex_cast(std::complex<float>* c) {
-  return reinterpret_cast<__complex__ float*>(c);
-}
 
 namespace rokko {
 namespace elpa {
 
-int deallocate(elpa_t handle) {
+int deallocate(const elpa_t handle) {
   int error;
   elpa_deallocate(handle, &error);
   return error;
 }
 
-int set(elpa_t handle, const char *name, int value) {
+int set(const elpa_t handle, const char *name, int value) {
   int error;
   elpa_set_integer(handle, name, value, &error);
   return error;
 }
 
-int set(elpa_t handle, const char *name, double value) {
+int set(const elpa_t handle, const char *name, double value) {
   int error;
   elpa_set_double(handle, name, value, &error);
   return error;
 }
 
 
-int diag(elpa_t handle, double* a, double* ev, double* q) {
+int diag(const elpa_t handle, double* a, double* ev, double* q) {
   int error;
-  elpa_eigenvectors_d(handle, a, ev, q, &error);
+  elpa_eigenvectors(handle, a, ev, q, &error);
   return error;
 }
 
-int diag(elpa_t handle, float* a, float* ev, float* q) {
+int diag(const elpa_t handle, float* a, float* ev, float* q) {
   int error;
-  elpa_eigenvectors_f(handle, a, ev, q, &error);
+  elpa_eigenvectors(handle, a, ev, q, &error);
   return error;
 }
 
-int diag(elpa_t handle, std::complex<double>* a, double* ev, std::complex<double>* q) {
+int diag(const elpa_t handle, std::complex<double>* a, double* ev, std::complex<double>* q) {
   int error;
-  elpa_eigenvectors_dc(handle, elpa_complex_cast(a), ev, elpa_complex_cast(q), &error);
+  elpa_eigenvectors(handle, a, ev, q, &error);
   return error;
 }
 
-int diag(elpa_t handle, std::complex<float>* a, float* ev, std::complex<float>* q) {
+int diag(const elpa_t handle, std::complex<float>* a, float* ev, std::complex<float>* q) {
   int error;
-  elpa_eigenvectors_fc(handle, elpa_complex_cast(a), ev, elpa_complex_cast(q), &error);
+  elpa_eigenvectors(handle, a, ev, q, &error);
   return error;
 }
 
-int diag(elpa_t handle, double* a, double* ev) {
+int diag(const elpa_t handle, double* a, double* ev) {
   int error;
-  elpa_eigenvalues_d(handle, a, ev, &error);
+  elpa_eigenvalues(handle, a, ev, &error);
   return error;
 }
 
-int diag(elpa_t handle, float* a, float* ev) {
+int diag(const elpa_t handle, float* a, float* ev) {
   int error;
-  elpa_eigenvalues_f(handle, a, ev, &error);
+  elpa_eigenvalues(handle, a, ev, &error);
   return error;
 }
 
-int diag(elpa_t handle, std::complex<double>* a, double* ev) {
+int diag(const elpa_t handle, std::complex<double>* a, double* ev) {
   int error;
-  elpa_eigenvalues_dc(handle, elpa_complex_cast(a), ev, &error);
+  elpa_eigenvalues(handle, a, ev, &error);
   return error;
 }
 
-int diag(elpa_t handle, std::complex<float>* a, float* ev) {
+int diag(const elpa_t handle, std::complex<float>* a, float* ev) {
   int error;
-  elpa_eigenvalues_fc(handle, elpa_complex_cast(a), ev, &error);
+  elpa_eigenvalues(handle, a, ev, &error);
   return error;
 }
 
 template<typename MATRIX, typename VECTOR>
-int diag(elpa_t handle, MATRIX& a, VECTOR& ev, MATRIX& q) {
+int diag(const elpa_t handle, MATRIX& a, VECTOR& ev, MATRIX& q) {
+  std::cout << "AAAAAAA\n";
   return diag(handle, a.get_array_pointer(), storage(ev), q.get_array_pointer());
 }
 
 template<typename MATRIX, typename VECTOR>
-int diag(elpa_t handle, MATRIX& a, VECTOR& ev) {
+int diag(const elpa_t handle, MATRIX& a, VECTOR& ev) {
   return diag(handle, a.get_array_pointer(), storage(ev));
 }
 
