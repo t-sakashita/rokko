@@ -12,6 +12,7 @@
 #pragma once
 
 #include <rokko/parameters.hpp>
+#include <rokko/default_block_size.hpp>
 #include <rokko/elpa/elpa.h>
 #include <rokko/elpa/diagonalize.hpp>
 
@@ -33,10 +34,8 @@ public:
   }
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
     // Determine mb, nb, lld, larray
-    int mb = dim / g.get_nprow();
-    if (mb == 0)  mb = 1;
-    int nb = dim / g.get_npcol();
-    if (nb == 0)  nb = 1;
+    const auto mb = get_default_block_size(dim, g.get_nprow());
+    const auto nb = get_default_block_size(dim, g.get_npcol());
     // Note: it should be that mb = nb in pdsyev.
     const auto b = std::min(mb, nb);
     return mapping_bc<matrix_col_major>(dim, b, g);

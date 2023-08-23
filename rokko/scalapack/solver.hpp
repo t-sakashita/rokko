@@ -13,6 +13,7 @@
 
 #include <rokko/config.h>
 #include <rokko/parameters.hpp>
+#include <rokko/default_block_size.hpp>
 #include <rokko/scalapack/diagonalize_psyev.hpp>
 #include <rokko/scalapack/diagonalize_psyevx.hpp>
 #include <rokko/scalapack/diagonalize_psyevd.hpp>
@@ -31,12 +32,6 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& /* grid_major */) { return true; }
   void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
-
-  static int get_default_block_size(int dim, int num_proc_axis) {
-    int num_block = dim / num_proc_axis;
-    if (num_block == 0)  num_block = 1;
-    return num_block;
-  }
 
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g)  const {
     // Determine mb, nb, lld, larray
