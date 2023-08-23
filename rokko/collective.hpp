@@ -27,13 +27,13 @@ void gather(rokko::distributed_matrix<T, MATRIX_MAJOR> const& from, T* to, int r
   if (!from.is_col_major()) {
     throw std::invalid_argument("gather: matrix_row_major is not supported");
   }
-  int ictxt = from.get_grid().get_blacs_context();
-  int m = from.get_m_global();
-  int n = from.get_n_global();
-  int rsrc = (from.get_grid().is_row_major() ? (root / from.get_npcol()) :
-              (root % from.get_nprow()));
-  int csrc = (from.get_grid().is_row_major() ? (root % from.get_npcol()) :
-              (root / from.get_nprow()));
+  const auto ictxt = from.get_grid().get_blacs_context();
+  const auto m = from.get_m_global();
+  const auto n = from.get_n_global();
+  const auto rsrc = (from.get_grid().is_row_major() ? (root / from.get_npcol()) :
+                    (root % from.get_nprow()));
+  const auto csrc = (from.get_grid().is_row_major() ? (root % from.get_npcol()) :
+                    (root / from.get_nprow()));
   const std::array<int,9>& descFrom = from.get_mapping().get_blacs_descriptor();
   std::array<int,9> descTo;
   scalapack::descinit(descTo, m, n, m, n, rsrc, csrc, ictxt, m);
@@ -52,11 +52,11 @@ void scatter(const T* from, distributed_matrix<T, MATRIX_MAJOR>& to, int root) {
   if (!to.is_col_major()) {
     throw std::invalid_argument("scatter: matrix_row_major is not supported");
   }
-  int ictxt = to.get_grid().get_blacs_context();
-  int m = to.get_m_global();
-  int n = to.get_n_global();
-  int rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
-  int csrc = (to.get_grid().is_row_major() ? (root % to.get_npcol()) : (root / to.get_nprow()));
+  const auto ictxt = to.get_grid().get_blacs_context();
+  const auto m = to.get_m_global();
+  const auto n = to.get_n_global();
+  const auto rsrc = (to.get_grid().is_row_major() ? (root / to.get_npcol()) : (root % to.get_nprow()));
+  const auto csrc = (to.get_grid().is_row_major() ? (root % to.get_npcol()) : (root / to.get_nprow()));
   std::array<int,9> descFrom;
   scalapack::descinit(descFrom, m, n, m, n, rsrc, csrc, ictxt, m);
   const std::array<int,9>& descTo = to.get_mapping().get_blacs_descriptor();
