@@ -23,7 +23,7 @@ public:
 
   void set_blacs_grid(MPI_Comm comm, bool is_row, std::array<int,2> const& grid_size) {
     blacs_context = blacs::sys2blacs_handle(comm);
-    char char_grid_major = is_row ? 'R' : 'C';
+    const char char_grid_major = is_row ? 'R' : 'C';
     blacs::gridinit(blacs_context, char_grid_major, grid_size[0], grid_size[1]);
   }
 
