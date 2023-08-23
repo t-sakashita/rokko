@@ -31,12 +31,17 @@ public:
   bool is_available_grid_major(GRID_MAJOR const& /* grid_major */) { return true; }
   void initialize(int& /* argc */, char**& /* argv */) {}
   void finalize() {}
+
+  static int get_default_block_size(int dim, int num_proc_axis) {
+    int num_block = dim / num_proc_axis;
+    if (num_block == 0)  num_block = 1;
+    return num_block;
+  }
+
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g)  const {
     // Determine mb, nb, lld, larray
-    int mb = dim / g.get_nprow();
-    if (mb == 0)  mb = 1;
-    int nb = dim / g.get_npcol();
-    if (nb == 0)  nb = 1;
+    const auto mb = get_default_block_size(dim, g.get_nprow());
+    const auto nb = get_default_block_size(dim, g.get_npcol());
     // Note: it should be that mb = nb in pdsyev.
     const auto b = std::min(mb, nb);
     return mapping_bc<matrix_col_major>(dim, b, g);
