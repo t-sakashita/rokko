@@ -28,7 +28,7 @@ if(BUILD_SERIAL_DENSE_SOLVER)
 endif(BUILD_SERIAL_DENSE_SOLVER)
 
 if(BUILD_PARALLEL_DENSE_SOLVER)
-  set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp matrix_major.cpp)
+  set(ROKKO_SOURCES ${ROKKO_SOURCES} grid.cpp)
   set(ROKKO_SOURCES ${ROKKO_SOURCES} parallel_frank_matrix.F90 parallel_laplacian_matrix.F90 parallel_minij_matrix.F90 parallel_helmert_matrix.F90 parallel_matrix012.F90 various_mpi_comm.F90)
 
   # PBLAS, ScaLAPACK
