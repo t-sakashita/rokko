@@ -36,7 +36,7 @@ void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters c
 
   assert_elpa_ok( set(handle, "nblk", mat.get_mb()) );
 
-  MPI_Comm comm = mat.get_grid().get_comm();
+  const MPI_Comm comm = mat.get_grid().get_comm();
   assert_elpa_ok( set(handle, "mpi_comm_parent", MPI_Comm_c2f(comm)) );
 
   const auto my_prow = mat.get_grid().get_myrow();
