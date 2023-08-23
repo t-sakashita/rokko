@@ -40,8 +40,8 @@ void set_parameters(distributed_matrix<T, MATRIX_MAJOR> const& mat, parameters c
   MPI_Comm comm = mat.get_grid().get_comm();
   assert_elpa_ok( set(handle, "mpi_comm_parent", MPI_Comm_c2f(comm)) );
 
-  int my_prow = mat.get_grid().get_myrow();
-  int my_pcol = mat.get_grid().get_mycol();
+  const auto my_prow = mat.get_grid().get_myrow();
+  const auto my_pcol = mat.get_grid().get_mycol();
   MPI_Comm mpi_comm_rows, mpi_comm_cols;
   MPI_Comm_split(comm, my_pcol, my_prow, &mpi_comm_rows);  // color = my_pcol, key = my_prow
   MPI_Comm_split(comm, my_prow, my_pcol, &mpi_comm_cols);  // color = my_prow, key = my_pcol
