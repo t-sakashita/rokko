@@ -243,8 +243,6 @@ public:
     // Solve the eigensystem
     ierr = EPSSolve(eps);
 
-    set_output_parameters(params_out);
-
     int myrank;
     MPI_Comm_rank(comm_, &myrank);
     if (params.get_bool("verbose") && (myrank == 0))
