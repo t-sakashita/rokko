@@ -22,7 +22,7 @@ void distributed_mfree_to_crs(rokko::distributed_mfree const& op, rokko::distrib
   const auto nprocs = mpi_comm.get_nprocs();
   const auto dim = op.get_dim();
   rokko::mpi_vector mpi(dim, op.get_comm());
-  rokko::mapping_1d map(dim, mpi_comm);
+  const rokko::mapping_1d map(dim, mpi_comm);
   const auto start_row = map.start_row();
   const auto end_row = map.end_row();
 
