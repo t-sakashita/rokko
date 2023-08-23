@@ -98,6 +98,17 @@ public:
     }
     return false;
   }
+
+  // get value with default value
+  template<typename T>
+  T get(key_type const& key, T const& default_value) const {
+    if (defined(key)) {
+      return get<T>(key);
+    } else {
+      return default_value;
+    }
+  }
+
   std::map<std::string, std::any>const& get_map() const { return map_; }
   
 private:

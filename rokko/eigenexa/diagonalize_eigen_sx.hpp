@@ -29,9 +29,8 @@ parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, rokko::matrix_
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("eigenexa::diagonalize_eigen_sx() : eigenexa supports only 1x1 block size.");
   rokko::eigenexa::init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
-  int m_forward = 48, m_backward = 128;
-  get_key(params, "m_forward", m_forward);
-  get_key(params, "m_backward", m_backward);
+  const int m_forward = params.get("m_forward", 48);
+  const int m_backward = params.get("m_backward", 128);
 
   rokko::eigenexa::eigen_sx(mat, eigvals, eigvecs, m_forward, m_backward, 'A');
 
@@ -56,9 +55,8 @@ parameters diagonalize_eigen_sx(rokko::distributed_matrix<double, rokko::matrix_
   if((mat.get_mb() != 1) || (mat.get_nb() != 1))
     throw std::invalid_argument("eigenexa::diagonalize_eigen_sx() : eigenexa supports only 1x1 block size.");
   rokko::eigenexa::init(mat.get_grid().get_comm(), (mat.get_grid().is_row_major() ? 'R' : 'C'));
-  int m_forward = 48, m_backward = 128;
-  get_key(params, "m_forward", m_forward);
-  get_key(params, "m_backward", m_backward);
+  const int m_forward = params.get("m_forward", 48);
+  const int m_backward = params.get("m_backward", 128);
 
   rokko::eigenexa::eigen_sx(mat, eigvals, m_forward, m_backward, 'N');
 
