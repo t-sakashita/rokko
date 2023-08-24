@@ -44,7 +44,7 @@ TEST(pgemm, pdgemm) {
       }
     }
   }
-  
+
   const rokko::mapping_bc<rokko::matrix_col_major> map(n, 1);
   rokko::distributed_matrix<double> da(map);
   rokko::distributed_matrix<double> db(map);
@@ -52,13 +52,13 @@ TEST(pgemm, pdgemm) {
   rokko::scatter(a, da, root_proc);
   rokko::scatter(b, db, root_proc);
   rokko::scatter(c, dc, root_proc);
-  
+
   rokko::blas::gemm(CblasNoTrans, CblasNoTrans, alpha, a, b, beta, c);
   rokko::pblas::pgemm('N', 'N', alpha, da, db, beta, dc);
-  
+
   const auto r = rokko::lapack::lange('F', c);
   const auto dr = rokko::scalapack::plange('F', dc);
-  
+
   if (grid.get_myrank() == root_proc) {
     EXPECT_NEAR(r, dr, eps);
   }

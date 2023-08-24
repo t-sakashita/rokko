@@ -21,7 +21,7 @@ void test(int dim) {
   Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<MATRIX_MAJOR>> mat(dim, dim);
   Eigen::VectorXd diag(dim);
   diag.setLinSpaced(diag.size(), 1, diag.size()); // diag = [1, 2, 3, ..., dim]
-  rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);  
+  rokko::helmert_matrix::generate_for_given_eigenvalues(mat, diag);
   EXPECT_NEAR(mat.trace(), diag.sum(), eps);
   ASSERT_TRUE(mat.transpose() == mat);  // checking matrix symmetry
 }

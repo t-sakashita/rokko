@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
   struct rokko_grid grid;
   bool flag;
   int flag_int;
-  
+
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);

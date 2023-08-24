@@ -61,11 +61,11 @@ TEST(diagonalize, xyz_file) {
     Eigen::MatrixXd Z(dim, dim);
     std::cout << "mat=" << mat << std::endl;
     solver.diagonalize(mat, w, Z);
-    
+
     const auto sum = w.trace();
 
     std::cout << "w=" << w.transpose() << std::endl;
-    
+
     solver.finalize();
   }
 }

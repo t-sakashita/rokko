@@ -42,7 +42,7 @@ TEST(diagonalize, laplacian_mpi) {
       solver.diagonalize(mat, w, Z);
 
       EXPECT_NEAR(w.array().inverse().sum(), dim * (dim+1) * 0.5, eps);
-      
+
       solver.finalize();
     }
   }
@@ -59,7 +59,7 @@ TEST(diagonalize, laplacian_mpi) {
       rokko::laplacian_matrix::generate(mat);
       Eigen::VectorXd w(dim);
       rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
-      
+
       solver.diagonalize(mat, w, Z);
 
       EXPECT_NEAR(w.array().inverse().sum(), dim * (dim+1) * 0.5, eps);

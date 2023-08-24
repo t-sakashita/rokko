@@ -28,35 +28,35 @@ TEST(lange, pdlange) {
   // generate matrix
   Eigen::MatrixXd a(m, n);
   if (grid.get_myrank() == 0) a = Eigen::MatrixXd::Random(m, n);
-  
+
   // distributed matrix
   const rokko::mapping_bc<rokko::matrix_col_major> map({m, n}, {1, 1}, grid);
   rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
   rokko::scatter(a, mat, 0);
 
   double norm, expect;
-  
+
   norm = rokko::scalapack::plange('M', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('M', a);
     std::cout << "max norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
     EXPECT_NEAR(expect, norm, eps);
   }
-  
+
   norm = rokko::scalapack::plange('1', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('1', a);
     std::cout << "1-norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
     EXPECT_NEAR(expect, norm, eps);
   }
-  
+
   norm = rokko::scalapack::plange('I', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('I', a);
     std::cout << "infinity norm of A = " << norm << " (expect: " << expect << ")" << std::endl;
     EXPECT_NEAR(expect, norm, eps);
   }
-  
+
   norm = rokko::scalapack::plange('F', mat);
   if (grid.get_myrank() == 0) {
     expect = rokko::lapack::lange('F', a);

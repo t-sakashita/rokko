@@ -32,7 +32,7 @@ void test(int dim, std::string const& name) {
   solver.diagonalize(mat, eigval, eigvec);
 
   EXPECT_NEAR(eigval.sum(), dim * (dim+1) * 0.5, eps);
-  
+
   rokko::frank_matrix::generate(mat);
   for (int i = 0; i < dim; ++i) {
     const auto w = eigvec.col(i).transpose() * mat * eigvec.col(i);

@@ -23,11 +23,11 @@ TEST(lange, dlange) {
 
   // generate matrix
   const Eigen::MatrixXd a = Eigen::MatrixXd::Random(m, n);
-  
+
   std::cout << a << std::endl;
-  
+
   double norm, expect;
-  
+
   norm = rokko::lapack::lange('M', a);
   expect = 0.0;
   for (int j = 0; j < n; ++j)
@@ -71,11 +71,11 @@ TEST(lange, slange) {
 
   // generate matrix
   Eigen::MatrixXf a = Eigen::MatrixXf::Random(m, n);
-  
+
   std::cout << a << std::endl;
-  
+
   float norm, expect;
-  
+
   norm = rokko::lapack::lange('M', a);
   expect = 0.0;
   for (int j = 0; j < n; ++j)

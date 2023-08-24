@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
   std::cout << "[sum of eigenvalues of frank matrix]" << std::endl;
   std::cout << sum << std::endl;
-  
+
   timer.summarize();
   rokko::global_timer::summarize();
 }

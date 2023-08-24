@@ -33,7 +33,7 @@ void eigen_2_distributed(const Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rok
       const auto global_j = map.translate_l2g_col(local_j);
       mat.set_local(local_i, local_j, lmat(global_i, global_j));
     }
-  }  
+  }
 }
 
 TEST(eigen2distributed_matrix, eigen2distributed_matrix) {

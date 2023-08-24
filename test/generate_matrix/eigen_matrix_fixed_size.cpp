@@ -20,7 +20,7 @@ TEST(eigen_matrix, fixed_size) {
   //     7 8 9
   //
   // a = 5
-  // 
+  //
   // u = 1
   //     2
   //     3
@@ -28,7 +28,7 @@ TEST(eigen_matrix, fixed_size) {
   // v = 4
   //     5
   //     6
-  // 
+  //
   // w = au + Mv = 37
   //               87
   //              137

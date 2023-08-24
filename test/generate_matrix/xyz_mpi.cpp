@@ -54,7 +54,7 @@ TEST(xyz_hamiltonian, serial_mpi) {
   }
 
   const auto p = rokko::find_power_of_two(nprocs);
-  if (nprocs != (1 << p)) {    
+  if (nprocs != (1 << p)) {
     throw std::invalid_argument("This program can be run only with 2^n MPI processes");
   }
   const auto N = 1 << (L-p);

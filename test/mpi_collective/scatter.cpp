@@ -28,7 +28,7 @@ void run_test(MPI_Comm comm, int dim, GRID_MAJOR const& grid_major, DIST_MAT_MAJ
 #ifndef NDEBUG
   if (rank == 0) std::cout << lmat << std::endl;
 #endif
-  
+
   rokko::parallel_dense_ev solver(rokko::parallel_dense_ev::default_solver());
   const rokko::grid g(comm, grid_major);
   const rokko::mapping_bc<DIST_MAT_MAJOR> map = solver.default_mapping(dim, g);

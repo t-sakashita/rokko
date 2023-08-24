@@ -22,7 +22,7 @@ TEST(syev, dsyev) {
   // generate matrix
   Eigen::MatrixXd a = Eigen::MatrixXd::Random(n, n);
   a += a.transpose().eval();
-  
+
   // diagonalization
   auto u = a;
   Eigen::VectorXd w(n);
@@ -47,7 +47,7 @@ TEST(syev, ssyev) {
   // generate matrix
   Eigen::MatrixXf a = Eigen::MatrixXf::Random(n, n);
   a += a.transpose().eval();
-  
+
   // diagonalization
   auto u = a;
   Eigen::VectorXf w(n);

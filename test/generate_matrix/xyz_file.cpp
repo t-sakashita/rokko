@@ -36,13 +36,13 @@ int main(int argc, char *argv[]) {
     ifs >> j >> k;
     lattice.emplace_back(std::make_pair(j, k));
   }
-  
+
   for (int i=0; i<num_bonds; ++i) {
     double jx, jy, jz;
     ifs >> jx >> jy >> jz;
     coupling.emplace_back(std::make_tuple(jx, jy, jz));
   }
-  
+
   std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
   for (int i=0; i<num_bonds; ++i) {
     std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
