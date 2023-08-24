@@ -16,10 +16,10 @@
 
 
 int main(int argc, char *argv[]) {
-  std::string library_routine(rokko::serial_dense_ev::default_solver());
-  constexpr unsigned int dim = 4;
-  if (argc >= 2) library_routine = argv[1];
+  const std::string library_routine = (argc >= 2) ? argv[1]
+    : rokko::serial_dense_ev::default_solver();
   const auto [library, routine] = rokko::split_solver_name(library_routine);
+  constexpr unsigned int dim = 4;
 
   std::cout.precision(5);
   std::cout << "Eigenvalue decomposition of Frank matrix" << std::endl
