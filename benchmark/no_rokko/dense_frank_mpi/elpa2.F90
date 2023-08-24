@@ -143,7 +143,7 @@ program test_real_example
    allocate(ev(na))
 
    call prepare_matrix_frank(na, a, nblk, np_rows, np_cols, my_prow, my_pcol)
-   
+
    !-------------------------------------------------------------------------------
    diag_tick = mpi_wtime()
 
@@ -176,7 +176,7 @@ program test_real_example
       write(error_units,*) "ELPA solver produced an error! Aborting..."
       call MPI_ABORT(mpi_comm_world, 1, mpierr)
    endif
-   
+
 
    if (myid == 0) then
       print *, "Matrix dimension = ", na

@@ -69,13 +69,13 @@
          NPROW = NPROW - 1
       ENDDO
       NPCOL = NPROCS / NPROW
-*     
+*
 *     Initialize a single BLACS context
 *
       CALL BLACS_GET( -1, 0, CONTEXT )
       CALL BLACS_GRIDINIT( CONTEXT, 'R', NPROW, NPCOL )
       CALL BLACS_GRIDINFO( CONTEXT, NPROW, NPCOL, MYROW, MYCOL )
-*     
+*
 *     These are basic array descriptors
 *
       call mpi_barrier(mpi_comm_world, ierr)
@@ -89,7 +89,7 @@
       CALL DESCINIT( DESC, N, N, BB, BB, 0, 0, CONTEXT, LDA, INFO )
       CALL MINIJ_MATRIX( N, A, DESC, INFO )
 *      CALL PDLAPRNT( N, N, A, 1, 1, DESC, 0, 0, 'A', 6, PRNWORK )
-*     
+*
 *     Ask PDSYEV to compute the entire eigendecomposition
 *
       call mpi_barrier(mpi_comm_world, ierr)
@@ -104,7 +104,7 @@
      $             DESC, WORK, LWORK, IWORK, LIWORK, INFO )
       call mpi_barrier(mpi_comm_world, ierr)
       END_TICK = MPI_WTIME()
-*     
+*
 *     Print out the eigenvalues and eigenvectors
 *
       IF( MYROW.EQ.0 .AND. MYCOL.EQ.0 ) THEN
@@ -148,7 +148,7 @@
    10    CONTINUE
    20 CONTINUE
 
-*     
+*
 *
       RETURN
 *

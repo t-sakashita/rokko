@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     mat.insert(row, cols, values);
   }
   mat.complete();
-  
+
   MPI_Barrier(MPI_COMM_WORLD);
   const auto diag_tick = MPI_Wtime();
   rokko::parameters params;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   const auto info = solver.diagonalize(mat, params);
   MPI_Barrier(MPI_COMM_WORLD);
   const auto end_tick = MPI_Wtime();
-  
+
   const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0) {
     throw std::runtime_error("diagonalize : solver does not converge.");

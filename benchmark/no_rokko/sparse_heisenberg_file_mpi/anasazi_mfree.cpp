@@ -40,12 +40,12 @@ class HeisenbergOp : public Epetra_Operator {
 
   virtual int SetUseTranspose(bool UseTranspose) { return 0; };
   //@}
-  
+
   //! @name Mathematical functions
-  //@{ 
+  //@{
 
     //! Returns the result of a Epetra_Operator applied to a Epetra_MultiVector X in Y.
-    /*! 
+    /*!
     \param In
 	   X - A Epetra_MultiVector of dimension NumVectors to multiply with matrix.
     \param Out
@@ -70,7 +70,7 @@ class HeisenbergOp : public Epetra_Operator {
   }
 
     //! Returns the result of a Epetra_Operator inverse applied to an Epetra_MultiVector X in Y.
-    /*! 
+    /*!
     \param In
 	   X - A Epetra_MultiVector of dimension NumVectors to solve for.
     \param Out
@@ -78,7 +78,7 @@ class HeisenbergOp : public Epetra_Operator {
 
     \return Integer error code, set to 0 if successful.
 
-    \warning In order to work with AztecOO, any implementation of this method must 
+    \warning In order to work with AztecOO, any implementation of this method must
               support the case where X and Y are the same object.
   */
   virtual int ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const { return 0; }
@@ -88,12 +88,12 @@ class HeisenbergOp : public Epetra_Operator {
        \f[\| A \|_\infty = \max_{1\lei\lem} \sum_{j=1}^n |a_{ij}| \f].
 
        \warning This method must not be called unless HasNormInf() returns true.
-    */ 
+    */
   virtual double NormInf() const { return 0; }
   //@}
-  
+
   //! @name Attribute access functions
-  //@{ 
+  //@{
 
     //! Returns a character string describing the operator
   virtual const char * Label() const { return "Heisenberg Hamiltonian"; }

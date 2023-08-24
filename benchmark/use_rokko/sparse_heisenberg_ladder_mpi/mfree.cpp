@@ -42,11 +42,11 @@ int main(int argc, char *argv[]) {
   rokko::parallel_sparse_ev solver(library);
   MPI_Barrier(MPI_COMM_WORLD);
   const auto initend_tick = MPI_Wtime();
-  
+
   MPI_Barrier(MPI_COMM_WORLD);
   const auto gen_tick = MPI_Wtime();
   const rokko::heisenberg_mfree mat(L, lattice);
-  
+
   MPI_Barrier(MPI_COMM_WORLD);
   const auto diag_tick = MPI_Wtime();
   rokko::parameters params;

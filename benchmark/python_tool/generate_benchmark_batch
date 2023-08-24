@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_option("-s", "--submit",
                       action="store_true", dest="submit", default=False,
                       help="submit batch jobs")
-    parser.add_option('--solver', 
+    parser.add_option('--solver',
                       action="store",
                       type="string",
                       help="eigenvalue solver type")
@@ -92,7 +92,7 @@ if __name__ == "__main__":
             script_names.append(script_name)
             print "generated job script: ", script_name
 
-    if options.submit:    
+    if options.submit:
         for script_name in script_names:
             check_call(["qsub", script_name])
             print "submited job script: ", script_name

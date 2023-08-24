@@ -63,7 +63,7 @@ program EigenExa
      write(*,'(A)') "Error: eigen_exa dimension"
      stop
   endif
-  
+
   call mpi_barrier(mpi_comm_world, ierr)
   init_tick = mpi_wtime()
   call mpi_comm_rank( mpi_comm_world, i_inod, ierr )

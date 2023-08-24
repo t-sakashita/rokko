@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
   if (sol.numVecs > 0) {
     Teuchos::SerialDenseMatrix<int,double> T(sol.numVecs, sol.numVecs);
     Epetra_MultiVector tempAevec( Map, sol.numVecs );
-    T.putScalar(0.0); 
+    T.putScalar(0.0);
     for (int i=0; i<sol.numVecs; ++i) {
       T(i,i) = evals[i].realpart;
     }

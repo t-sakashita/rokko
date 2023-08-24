@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser.add_option("-s", "--submit",
                       action="store_true", dest="submit", default=False,
                       help="submit batch jobs")
-    parser.add_option('--solver', 
+    parser.add_option('--solver',
                       action="store",
                       type="string",
                       help="eigenvalue solver type")
@@ -97,11 +97,11 @@ if __name__ == "__main__":
 
     job_name_prefix = machine_name + "_" + solver
     mpirun_command = "hybrid"
-    
+
     script_names = [];
 
     print "nps=", nps
-    
+
     for np in nps:
         for nt in nts:
             for dim in dims:
@@ -148,7 +148,7 @@ if __name__ == "__main__":
                 script_names.append(script_name)
                 print "generated job script: ", script_name, " F" + num_queue
 
-    if options.submit:    
+    if options.submit:
         for script_name in script_names:
             #print "submitting job script: ", script_name
             p = Popen(["cat " + script_name + " | bsub"], shell=True)

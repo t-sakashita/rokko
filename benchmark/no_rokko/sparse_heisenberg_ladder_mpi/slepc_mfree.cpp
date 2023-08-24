@@ -50,7 +50,7 @@ int main(int argc,char **argv)
   const auto dim = 1 << L;
   if (rank == 0)
     rokko::print_lattice(lattice);
-  
+
   MPI_Barrier(MPI_COMM_WORLD);
   const auto gen_tick = MPI_Wtime();
   PetscInt N_global = dim;
