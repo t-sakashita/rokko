@@ -78,7 +78,7 @@ void rokko_distributed_matrix_generate_function1_p(struct rokko_distributed_matr
     const int i1 = i+1, j1 = j+1;
     return func(&i1, &j1);
   };
-  
+
   if (matrix.major == rokko_matrix_col_major)
     static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->generate(g);
   else
@@ -99,7 +99,7 @@ void rokko_distributed_matrix_set_local(rokko_distributed_matrix matrix, int loc
     static_cast<rokko::distributed_matrix<double, rokko::matrix_row_major>*>(matrix.ptr)->set_local(local_i,local_j,value);
 }
 
-double rokko_distributed_matrix_get_local(rokko_distributed_matrix matrix, int local_i, int local_j) { 
+double rokko_distributed_matrix_get_local(rokko_distributed_matrix matrix, int local_i, int local_j) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_local(local_i,local_j);
   else
@@ -318,7 +318,7 @@ bool rokko_distributed_matrix_is_col_major(struct rokko_distributed_matrix matri
   return matrix.major == rokko_matrix_col_major;
 }
 
-double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matrix matrix) { 
+double* rokko_distributed_matrix_get_array_pointer(struct rokko_distributed_matrix matrix) {
   if (matrix.major == rokko_matrix_col_major)
     return static_cast<rokko::distributed_matrix<double, rokko::matrix_col_major>*>(matrix.ptr)->get_array_pointer();
   else

@@ -218,11 +218,11 @@ PYBIND11_MODULE(pyrokko, m) {
   py::class_<grid_row_major_t>(m,"grid_row_major")
     .def(py::init<>());
   m.attr("grid_row_major") = py::cast(grid_row_major);
-  
+
   py::class_<grid_col_major_t>(m,"grid_col_major")
     .def(py::init<>());
   m.attr("grid_col_major") = py::cast(grid_col_major);
-  
+
   py::class_<wrap_grid>(m, "grid")
     .def(py::init<>())
     .def(py::init<grid_row_major_t>())
@@ -382,7 +382,7 @@ PYBIND11_MODULE(pyrokko, m) {
          py::arg("mat"), py::arg("params") = wrap_parameters())
     .def_property_readonly_static("solvers", &parallel_sparse_ev::solvers)
     .def_property_readonly_static("default_solver", &parallel_sparse_ev::default_solver);
-  
+
   // Eigen3 matrix
   m.def("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,std::function<double(int, int)>const&>(&pyrokko_generate<Eigen::ColMajor>));
   m.def("generate", py::overload_cast<Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,std::function<double(int, int)>const&>(&pyrokko_generate<Eigen::RowMajor>));
@@ -390,7 +390,7 @@ PYBIND11_MODULE(pyrokko, m) {
   // utility functions
   m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::RowMajor>),
         py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
-  
+
   m.def("sort_eigenpairs", py::overload_cast<Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,Eigen::Ref<Eigen::VectorXd>,Eigen::Ref<Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::ColMajor>>,bool>(&pyrokko_sort_eigenpairs<Eigen::ColMajor>),
         py::arg("eigval"), py::arg("eigvec"), py::arg("eigval_sorted"), py::arg("eigvec_sorted"), py::arg("ascending") = true);
 

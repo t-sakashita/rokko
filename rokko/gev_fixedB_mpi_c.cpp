@@ -28,7 +28,7 @@ void diagonalize_fixedB(struct rokko_parallel_dense_ev* solver_in, struct rokko_
   for(int i=0; i<eigval.size(); ++i)
     eigval(i) = (eigval(i) > tol) ? sqrt(1/eigval(i)) : 0;
   function_matrix(eigval, eigvec, Binvroot, tmp);
-  
+
   // computation of B^{-1/2} A B^{-1/2}
   product(1, Binvroot, false, A, false, 0, tmp);
   product(1, tmp, false, Binvroot, false, 0, mat);
