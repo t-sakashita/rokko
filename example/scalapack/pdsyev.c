@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
   for (int j = 0; j < n; ++j)
     for (int i = 0; i < n; ++i)
       cscalapack_pdelset(mat_ptr(a), i, j, desc, imin(i, j) + 1);
-  
+
   info = cscalapack_pdsyev('V', 'U', n, mat_ptr(a), 0, 0, desc, vec_ptr(w),
                            mat_ptr(z), 0, 0, desc);
   if (info) {

@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     n = std::stoi(argv[2]);
   }
   int r = std::min(m, n);
-  
+
   // generate matrix
   Eigen::MatrixXcd a = Eigen::MatrixXcd::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;

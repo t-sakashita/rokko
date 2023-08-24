@@ -30,7 +30,7 @@ int main() {
   std::cout << "a = [\n" << a << "\n]\n";
   std::cout << "x = [" << x.transpose() << "]^t\n";
   std::cout << "y = [" << y.transpose() << "]^t\n";
-  
+
   rokko::blas::gemv(CblasNoTrans, alpha, a, x, 1, beta, y, 1);
 
   std::cout << alpha << " * a * x + " << beta << " * y = [" << y.transpose() << "]^t\n";

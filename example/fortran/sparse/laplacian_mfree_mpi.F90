@@ -39,7 +39,7 @@ contains
     num_local_rows = rokko_get_num_local_rows(mat)
     start_row = rokko_start_row(mat)
     end_row = rokko_end_row(mat)
-    
+
     is_first_proc = start_row == 1
     is_last_proc = end_row == dim
     end_k = num_local_rows
@@ -61,36 +61,36 @@ contains
     if (num_local_rows == 0) then
        return
     endif
-    
+
     if (.not.(is_first_proc) .and. (nprocs /= 1)) then
        !print*, "recv myrank=", myrank
        call mpi_send(x(1), 1, mpi_double_precision, myrank-1, 0, comm, ierr)
        call mpi_recv(buf_m, 1, mpi_double_precision, myrank-1, 0, comm, status_m, ierr)
     endif
-    
+
     if (.not.(is_last_proc) .and. (nprocs /= 1)) then
        !print*, "send myrank=", myrank
        call mpi_recv(buf_p, 1, mpi_double_precision, myrank+1, 0, comm, status_p, ierr)
        call mpi_send(x(end_k), 1, mpi_double_precision, myrank+1, 0, comm, ierr)
     endif
-    
+
     if (is_first_proc) then
        if (num_local_rows /= 1) then
           y(1) = x(1) - x(2)
           if (nprocs /= 1) then
              y(end_k) = - x(end_k - 1) + 2 * x(end_k) - buf_p
           endif
-       else 
+       else
           y(1) = x(1) - buf_p
        endif
     endif
-    
+
     if (is_last_proc) then
        if (num_local_rows /= 1) then
           if (nprocs /= 1) then
              y(1) = - buf_m + 2 * x(1) - x(2)
           endif
-          y(end_k) = 2 * x(end_k) - x(end_k - 1)      
+          y(end_k) = 2 * x(end_k) - x(end_k - 1)
        else
           y(end_k) = 2 * x(end_k) - buf_m
        endif
@@ -103,7 +103,7 @@ contains
           y(1) = - buf_m + 2 * x(1) - buf_p
        endif
     endif
-    
+
     ! from 2 to end
     do k=2, end_k-1
        y(k) = - x(k-1) + 2 * x(k) - x(k+1)
@@ -142,14 +142,14 @@ program main
      library_routine = rokko_parallel_sparse_ev_default_solver()
   endif
   call rokko_split_solver_name(library_routine, library, routine)
-  
-  if (command_argument_count() == 2) then  
+
+  if (command_argument_count() == 2) then
      call get_command_argument_deferred(2, tmp_str)
      read(tmp_str, *) dim
   else
      dim = 100  ! default
   endif
-  
+
   if (myrank == 0) then
      write(*,*) "solver name = ", trim(library)
      write(*,*) "matrix dimension = ", dim

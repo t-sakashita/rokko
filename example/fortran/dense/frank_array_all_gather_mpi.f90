@@ -73,7 +73,7 @@ program frank_matrix
   call rokko_all_gather(Z, array_tmp)
   array = matmul(transpose(array_tmp), array_tmp)
   call mpi_barrier(mpi_comm_world, ierr)
-  
+
   ! Display orthogonality of eigenvectors
   do proc = 0, nprocs-1
      if (proc == myrank) then
@@ -85,7 +85,7 @@ program frank_matrix
      call mpi_barrier(mpi_comm_world, ierr)
      !   call sleep(0.1)
   end do
-  
+
   if (myrank.eq.0) then
      write(*,*) "Computed Eigenvalues = "
      do i = 1, dim
@@ -94,7 +94,7 @@ program frank_matrix
   endif
 
   call mpi_barrier(mpi_comm_world, ierr)
-  
+
   call rokko_distributed_matrix_destruct(mat)
   call rokko_distributed_matrix_destruct(Z)
   call rokko_eigen_vector_destruct(w)

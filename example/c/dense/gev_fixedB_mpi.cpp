@@ -25,7 +25,7 @@ void diagonalize_fixedB(rokko_parallel_dense_ev* solver, rokko::distributed_matr
   for(int i=0; i<eigval.size(); ++i)
     eigval(i) = (eigval(i) > tol) ? sqrt(1/eigval(i)) : 0;
   function_matrix(eigval, eigvec, Binvroot, tmp);
-  
+
   // computation of B^{-1/2} A B^{-1/2}
   product(1, Binvroot, false, A, false, 0, tmp);
   product(1, tmp, false, Binvroot, false, 0, mat);
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "error: %s solver_name dimension\n", argv[0]);
     MPI_Abort(MPI_COMM_WORLD, 34);
   }
-    
+
   printf("solver name = %s\n", solver_name);
   printf("matrix dimension = %d\n", dim);
 

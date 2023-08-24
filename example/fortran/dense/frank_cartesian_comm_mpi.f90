@@ -24,7 +24,7 @@ program frank_matrix
   integer :: comm
   integer :: provided, ierr, myrank, nprocs
   integer :: i
-  
+
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)
@@ -37,7 +37,7 @@ program frank_matrix
         library_routine = rokko_parallel_dense_ev_default_solver()
      endif
      call rokko_split_solver_name(library_routine, library, routine)
-     
+
      if (command_argument_count() == 2) then
         call get_command_argument_deferred(2, tmp_str)
         read(tmp_str, *) dim
@@ -50,7 +50,7 @@ program frank_matrix
         print *,"routine = ", routine
         print *,"dimension = ", dim
      endif
-     
+
      call rokko_construct(solver, library)
      call rokko_construct(grid, comm, rokko_grid_row_major)
      call rokko_default_mapping(solver, dim, grid, map)
@@ -66,23 +66,23 @@ program frank_matrix
      ! generate frank matrix
      call rokko_frank_matrix_generate(mat)
      call rokko_print(mat)
-     
+
      call rokko_diagonalize(solver, mat, w, Z)
-     
+
      if (myrank.eq.0) then
         write(*,'(A)') "Computed Eigenvalues = "
         do i = 1, dim
            write(*,"(f30.20)") rokko_get_elem(w, i)
         enddo
      endif
-     
+
      call rokko_destruct(mat)
      call rokko_destruct(Z)
      call rokko_destruct(w)
      call rokko_destruct(solver)
      call rokko_destruct(map)
      call rokko_destruct(grid)
-     
+
      call mpi_comm_free(comm, ierr)
   endif
   call MPI_finalize(ierr)

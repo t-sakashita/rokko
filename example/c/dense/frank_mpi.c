@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     printf("routine = %s\n", routine);
     printf("dimension = %d\n", dim);
   }
-  
+
   rokko_parallel_dense_ev_construct(&solver, library, argc, argv);
   rokko_grid_construct(&grid, MPI_COMM_WORLD, rokko_grid_row_major);
   map = rokko_parallel_dense_ev_default_mapping(solver, dim, grid);
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
   /* generate frank matrix */
   rokko_frank_matrix_generate_distributed_matrix(mat);
   rokko_distributed_matrix_print(mat);
-  
+
   rokko_parameters_construct(&params);
   rokko_parameters_set_string(params, "routine", routine);
   rokko_parallel_dense_ev_diagonalize(solver, mat, w, Z, params);

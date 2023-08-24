@@ -72,7 +72,7 @@ int main() {
   printf("a: "); fprint_dmatrix(stdout, n, n, a);
   printf("b: "); fprint_dmatrix(stdout, n, n, b);
   printf("c: "); fprint_dmatrix(stdout, n, n, c);
-  
+
   cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, n, n, alpha, mat_ptr(a),
               n, mat_ptr(b), n, beta, mat_ptr(c), n);
 

@@ -27,7 +27,7 @@ void function_matrix(Eigen::VectorXd const& eigval_tmp, rokko::distributed_matri
     const auto coeff = eigval_tmp(global_j);
     for (int local_i=0; local_i<eigvec.get_m_local(); ++local_i) {
       const auto value = eigvec.get_local(local_i, local_j);
-      tmp.set_local(local_i, local_j, coeff * value); 
+      tmp.set_local(local_i, local_j, coeff * value);
     }
   }
   product(1, tmp, false, eigvec, true, 0, result);
@@ -45,7 +45,7 @@ void diagonalize_fixedB(rokko::parallel_dense_ev& solver, rokko::distributed_mat
   for(int i=0; i<eigval.size(); ++i)
     eigval(i) = (eigval(i) > tol) ? sqrt(1/eigval(i)) : 0;
   function_matrix(eigval, eigvec, Binvroot, tmp);
-  
+
   // computation of B^{-1/2} A B^{-1/2}
   product(1, Binvroot, false, A, false, 0, tmp);
   product(1, tmp, false, Binvroot, false, 0, mat);
@@ -73,7 +73,7 @@ void set_A_B(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<M
          -0.10, 1.09, 0.34, 1.18;
 }
 
-  
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
   Eigen::MatrixXd locA(dim, dim), locB(dim, dim);
   set_A_B(locA, locB);
-  if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;  
+  if (myrank == 0) std::cout << "locA:" << std::endl << locA << std::endl;
 
   const auto map = solver.default_mapping(dim, g);
   rokko::distributed_matrix<double, matrix_major> A(map), B(map), eigvec(map);

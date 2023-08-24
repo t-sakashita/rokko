@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  
+
   char* library_routine, *library, *routine;
   if (argc >= 2) {
     library_routine = rokko_parallel_sparse_ev_default_solver();
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     printf("solver = %s\n", library);
     printf("dimension = %d\n", dim);
   }
-  
+
   struct rokko_parameters params;
   rokko_parameters_construct(&params);
   // set some parameters
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
   rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
   rokko_parameters_set_int(params, "num_eigvals", 1);
   rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params);
-  
+
   int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
   if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
   int num_local_rows = rokko_distributed_crs_matrix_num_local_rows(mat);
@@ -99,12 +99,12 @@ int main(int argc, char *argv[]) {
     printf("smallest eigenvector: ");
     for (j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
-    printf("\n");    
+    printf("\n");
   }
-  
+
   rokko_distributed_crs_matrix_destruct(&mat);
   rokko_parallel_sparse_ev_destruct(&solver);
-  
+
   MPI_Finalize();
   return 0;
 }

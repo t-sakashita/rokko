@@ -44,14 +44,14 @@ program heisenberg_crs_mpi
      library_routine = rokko_parallel_sparse_ev_default_solver()
   endif
   call rokko_split_solver_name(library_routine, library, routine)
-  
-  if (command_argument_count() == 2) then  
+
+  if (command_argument_count() == 2) then
      call get_command_argument_deferred(2, tmp_str)
      read(tmp_str, *) L
   else
      L = 8
   endif
-  
+
   dim = ishft(1, L)
   allocate( lattice_first(L) )
   allocate( lattice_second(L) )
@@ -105,7 +105,7 @@ program heisenberg_crs_mpi
   call rokko_construct(params)
   call rokko_set(params, "routine", routine)
   call rokko_diagonalize(solver, mat, params)
-  
+
   num_conv = rokko_num_conv(solver)
   if ((num_conv >= 1) .and. (myrank == 0)) then
      eig_val = rokko_eigenvalue(solver, 0)

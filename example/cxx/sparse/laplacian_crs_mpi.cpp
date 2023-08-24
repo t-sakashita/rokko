@@ -53,9 +53,9 @@ int main(int argc, char *argv[]) {
     std::cout << "Eigenvalue decomposition of Laplacian" << std::endl
 	      << "solver = " << library << std::endl
 	      << "dimension = " << dim << std::endl;
-  
+
   const auto info = solver.diagonalize(mat, params);
-  
+
   const auto num_conv = info.get<int>("num_conv");
   if (num_conv == 0)
     throw std::runtime_error("num_conv=0: solver did not converge");
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
     for (size_t j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
     std::cout << std::endl;
   }
-  
+
   solver.finalize();
   MPI_Finalize();
 }

@@ -48,7 +48,7 @@ int main() {
   printf("a: "); fprint_dmatrix(stdout, n, n, a);
   printf("x: "); fprint_dvector(stdout, n, x);
   printf("y: "); fprint_dvector(stdout, n, y);
-  
+
   cblas_dgemv(CblasColMajor, CblasNoTrans, n, n, alpha, mat_ptr(a), n, vec_ptr(x), 1,
               beta, vec_ptr(y), 1);
 

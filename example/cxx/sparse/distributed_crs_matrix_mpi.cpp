@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   }
   mat.complete();
   mat.print();
-  
+
   solver.finalize();
   MPI_Finalize();
 }

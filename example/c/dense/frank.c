@@ -31,13 +31,13 @@ int main(int argc, char *argv[]) {
   printf("library = %s\n", library);
   printf("routine = %s\n", routine);
   printf("dimension = %d\n", dim);
-  
+
   rokko_eigen_matrix_construct(&mat, dim, dim, rokko_matrix_col_major);
   rokko_eigen_matrix_construct(&Z, dim, dim, rokko_matrix_col_major);
   rokko_eigen_vector_construct(&w, dim);
   rokko_parameters_construct(&params);
   rokko_parameters_set_string(params, "routine", routine);
-  
+
   /* generate frank matrix */
   rokko_frank_matrix_generate_eigen_matrix(mat);
   rokko_eigen_matrix_print(mat);

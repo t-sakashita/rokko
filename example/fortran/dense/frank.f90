@@ -65,7 +65,7 @@ program frank_matrix
   call rokko_diagonalize(solver, mat, w, params, params_out)
 !  call diagonalize(solver, mat, w, params)
 !  call diagonalize(solver, mat, w)
-  
+
   call rokko_get(params_out, "info", info)
 
   print *, "info=", info

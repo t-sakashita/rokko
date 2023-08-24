@@ -3,7 +3,7 @@
 * Rokko: Integrated Interface for libraries of eigenvalue decomposition
 *
 * Copyright (C) 2012-2020 Rokko Developers https://github.com/t-sakashita/rokko
-*    
+*
 * Distributed under the Boost Software License, Version 1.0. (See accompanying
 * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 *
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     library_routine = rokko_parallel_sparse_ev_default_solver();
   }
   rokko_split_solver_name(library_routine, &library, &routine);
-  
+
   int L = (argc >= 3) ? atoi(argv[2]) : 10;
   int dim = 1 << L;
   int lattice_first[L], lattice_second[L];
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
     printf("L = %d\n", L);
     printf("dimension = %d\n", dim);
   }
-  
+
   struct rokko_parameters params;
   rokko_parameters_construct(&params);
   // set some parameters
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
   rokko_parameters_set_double(params, "conv_tol", 1.0e-12);
   rokko_parameters_set_int(params, "num_eigvals", 1);
   rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params);
-  
+
   int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
   printf("num_conv = %d\n", num_conv);
   if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     printf("smallest eigenvector: ");
     for (j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
-    printf("\n");    
+    printf("\n");
   }
   rokko_distributed_crs_matrix_destruct(&mat);
   rokko_parallel_sparse_ev_destruct(&solver);

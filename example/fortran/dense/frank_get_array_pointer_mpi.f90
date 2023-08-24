@@ -72,7 +72,7 @@ program frank_matrix
         array_ptr(local_i+1, local_j+1) = dble(dim - max(global_i, global_j))
      enddo
   enddo
- 
+
   call rokko_print(mat)
 
   call rokko_diagonalize(solver, mat, w, Z)

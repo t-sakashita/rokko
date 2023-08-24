@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
   for (int j = 0; j < n; ++j)
     for (int i = 0; i < n; ++i)
       a.set_global(i, j, std::min(i, j) + 1);
-  
+
   rokko::eigenexa::eigen_sx(a, w, z);
   if (grid.get_myrank() == 0)
     std::cout << "eigenvalues: " << w.transpose() << std::endl;

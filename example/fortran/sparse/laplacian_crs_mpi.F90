@@ -41,14 +41,14 @@ program heisenberg_crs_mpi
      library_routine = rokko_parallel_sparse_ev_default_solver()
   endif
   call rokko_split_solver_name(library_routine, library, routine)
-  
-  if (command_argument_count() == 2) then  
+
+  if (command_argument_count() == 2) then
      call get_command_argument_deferred(2, tmp_str)
      read(tmp_str, *) dim
   else
      dim = 100
   endif
-  
+
   if (myrank == 0) then
      write(*,*) "solver name = ", trim(library)
      write(*,*) "matrix dimension = ", dim
@@ -89,7 +89,7 @@ program heisenberg_crs_mpi
   call rokko_set(params, "max_iters", 500)
   call rokko_set(params, "conv_tol", 1.0d-8)
   call rokko_diagonalize(solver, mat, params)
-  
+
   num_conv = rokko_num_conv(solver)
   if (num_conv > 0) then
      eig_val = rokko_eigenvalue(solver, 0)

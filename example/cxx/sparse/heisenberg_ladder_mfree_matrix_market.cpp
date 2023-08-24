@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   rokko::distributed_mfree_to_crs(op, mat);
   mat.output_matrix_market();
   //mat.print();
-  
+
   solver.finalize();
   MPI_Finalize();
 }

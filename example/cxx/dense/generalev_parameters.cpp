@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
          -3.12, 5.03, -0.83, 1.09,
           0.56, -0.83, 0.76, 0.34,
          -0.10, 1.09, 0.34, 1.18;
-    
+
   //std::cout << "mata:\n" << mata << std::endl;
   //std::cout << "matb:\n" << matb << std::endl;
 

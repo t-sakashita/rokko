@@ -33,13 +33,13 @@ int main() {
 
   // is "T" defined?
   /* bool t_defined = */ params.defined("T");
-  
+
   // is "S" defined?
   /* bool s_defined = */ params.defined("S");
 
   // clear paramter "Pi"
   params.clear("Pi");
-  
+
   // output list of parameters as string
   std::list<std::string> keys = params.keys();
   std::cout << "number of parameters = " << keys.size() << std::endl;

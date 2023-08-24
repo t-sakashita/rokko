@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     n = std::stoi(argv[2]);
   }
   int r = std::min(m, n);
-  
+
   // generate matrix
   Eigen::MatrixXd a(m, n);
   for (int j = 0; j < n; ++j) {

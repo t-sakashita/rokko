@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   }
   int k = std::min(m, n);
   if (m < n) throw std::invalid_argument("Error: m < n");
-  
+
   // generate matrix
   Eigen::MatrixXd a = Eigen::MatrixXd::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
   info = rokko::lapack::orgqr(k, mat, tau);
   Eigen::MatrixXd q = mat.topLeftCorner(m, n);
   std::cout << "Orthonormalized column vectors Q:" << std::endl << q << std::endl;
-  
+
   // orthogonality check
   Eigen::MatrixXd check1 = q.adjoint() * q - Eigen::MatrixXd::Identity(k, k);
   double norm1 = rokko::lapack::lange('F', check1);

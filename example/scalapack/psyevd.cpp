@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
   for (int j = 0; j < n; ++j)
     for (int i = 0; i < n; ++i)
       a.set_global(i, j, std::min(i, j) + 1);
-  
+
   int info = rokko::scalapack::psyevd('V', 'U', a, w, z);
   if (info) {
     std::cerr << "Error in rokko::scalapack::psyevd\n";

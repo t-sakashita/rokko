@@ -16,7 +16,7 @@
 int main() {
   int m = 5;
   int n = 3;
-  
+
   Eigen::MatrixXf a = Eigen::MatrixXf::Random(m, n);
   std::cout << "Matrix A: " << std::endl << a << std::endl;
   std::cout << "|| A || = " << rokko::lapack::lange('F', a) << std::endl;
@@ -32,6 +32,6 @@ int main() {
   Eigen::MatrixXcd d = Eigen::MatrixXcd::Random(m, n);
   std::cout << "Matrix D: " << std::endl << d << std::endl;
   std::cout << "|| D || = " << rokko::lapack::lange('F', d) << std::endl;
-  
+
   return 0;
 }

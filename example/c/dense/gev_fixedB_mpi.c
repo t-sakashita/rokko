@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
   }
   printf("Computed Eigenvectors:\n");
   rokko_distributed_matrix_print(eigvec);
-  
+
   rokko_distributed_matrix_destruct(&A);
   rokko_distributed_matrix_destruct(&B);
   rokko_distributed_matrix_destruct(&eigvec);

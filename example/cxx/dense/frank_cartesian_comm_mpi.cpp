@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     const auto [library, routine] = rokko::split_solver_name(library_routine);
 
     std::cout.precision(5);
-    
+
     rokko::parallel_dense_ev solver(library);
     solver.initialize(argc, argv);
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     rokko::frank_matrix::generate(mat);
     Eigen::MatrixXd mat_loc(dim, dim);
     rokko::gather(mat, mat_loc, 0);
-    
+
     Eigen::VectorXd eigval(dim);
     rokko::distributed_matrix<double, matrix_major> eigvec(map);
     rokko::parameters params;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
       bool sorted = true;
       for (int i = 1; i < dim; ++i) sorted &= (eigval(i-1) <= eigval(i));
       if (!sorted) std::cout << "Warning: eigenvalues are not sorted in ascending order!\n";
-      
+
       std::cout << "largest eigenvalues:";
       for (int i = 0; i < std::min(dim, 10); ++i) std::cout << ' ' << eigval(dim - 1 - i);
       std::cout << std::endl;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 		<< std::abs(eigvec_loc.col(dim - 1).transpose() * mat_loc * eigvec_loc.col(dim - 1)
 			    - eigval(dim - 1))
 		<< std::endl;
-    }    
+    }
     solver.finalize();
     MPI_Comm_free(&comm);
   }

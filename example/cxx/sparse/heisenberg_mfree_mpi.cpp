@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  
+
   const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_sparse_ev::default_solver();
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   params.set("Maximum Iterations", 500);
   params.set("Convergence Tolerance", 1.0e-8);
   params.set("num_eigenvalues", 10);
-  
+
   rokko::parallel_sparse_ev solver(library);
   rokko::heisenberg_mfree mat(L, lattice);
   const auto dim = mat.get_dim();
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	      << "solver = " << library << std::endl
 	      << "L = " << L << std::endl
 	      << "dimension = " << dim << std::endl;
-  
+
   const auto info = solver.diagonalize(mat, params);
 
   const auto num_conv = info.get<int>("num_conv");
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
       for (size_t j = 0; j < eigvec.size(); ++j) std::cout << eigvec[j] << ' ';
       std::cout << std::endl;
   }
-  
+
   solver.finalize();
   MPI_Finalize();
 }

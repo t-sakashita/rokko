@@ -21,7 +21,7 @@ program frank_matrix
   type(rokko_eigen_vector) :: w
   character(len=:), allocatable :: library, routine
   character(len=:), allocatable :: library_routine, tmp_str
- 
+
   double precision, allocatable, dimension(:,:) :: array
   integer :: provided,ierr, myrank, nprocs
   integer :: m_size, n_size, m_local, n_local

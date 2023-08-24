@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
   double **a, **u, **t;
 
   if (argc > 1) n = atoi(argv[1]);
-    
+
   /* generate matrix */
   a = alloc_dmatrix(n, n);
   for (j = 0; j < n; ++j) {

@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   double *diag_ptr;
   char *library_routine, *library, *routine;
   int i;
-  
+
   if (argc >= 2) library_routine = argv[1];
   else library_routine = rokko_serial_dense_ev_default_solver();
   if (argc >= 3) dim = atoi(argv[2]);
@@ -33,13 +33,13 @@ int main(int argc, char *argv[]) {
   printf("library = %s\n", library);
   printf("routine = %s\n", routine);
   printf("dimension = %d\n", dim);
-  
+
   rokko_eigen_matrix_construct(&mat, dim, dim, rokko_matrix_col_major);
   rokko_eigen_matrix_construct(&Z, dim, dim, rokko_matrix_col_major);
   rokko_eigen_vector_construct(&w, dim);
   rokko_parameters_construct(&params);
   rokko_parameters_set_string(params, "routine", routine);
-  
+
   /* generate matrix whose eigenvectors are helmert matrix */
   rokko_helmert_matrix_generate_eigen_matrix(mat);
   rokko_eigen_vector_construct(&diag, dim);

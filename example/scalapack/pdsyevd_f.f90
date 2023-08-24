@@ -9,7 +9,7 @@ program main
   integer :: lwork, liwork
   double precision, allocatable :: work(:)
   integer, allocatable :: iwork(:)
-  
+
   call MPI_init_thread(MPI_THREAD_MULTIPLE, provided, ierr)
   call MPI_comm_rank(MPI_COMM_WORLD, myrank, ierr)
   call MPI_comm_size(MPI_COMM_WORLD, nprocs, ierr)

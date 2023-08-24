@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     n = atoi(argv[2]);
   }
   r = imin(m, n);
-  
+
   /* generate matrix */
   a = alloc_dmatrix(m, n);
   for (j = 0; j < n; ++j) {

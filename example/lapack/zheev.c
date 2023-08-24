@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
   double complex alpha, beta;
 
   if (argc > 1) n = atoi(argv[1]);
-    
+
   /* generate matrix */
   a = alloc_zmatrix(n, n);
   for (j = 0; j < n; ++j) {

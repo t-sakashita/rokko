@@ -43,7 +43,7 @@ program frank_matrix
         library_routine = rokko_parallel_dense_ev_default_solver()
      endif
      call rokko_split_solver_name(library_routine, library, routine)
-     
+
      if (command_argument_count() == 2) then
         call get_command_argument_deferred(2, tmp_str)
         read(tmp_str, *) dim
@@ -63,20 +63,20 @@ program frank_matrix
      call rokko_construct(mat, map)
      call rokko_construct(Z, map)
      call rokko_construct(w, dim)
-     
+
      ! generate frank matrix
      call rokko_frank_matrix_generate(mat)
      call rokko_print(mat)
-     
+
      call rokko_diagonalize(solver, mat, w, Z)
-     
+
      if (myrank.eq.0) then
         write(*,'(A)') "Computed Eigenvalues = "
         do i = 1, dim
            write(*,"(f30.20)") rokko_get_elem(w, i)
         enddo
      endif
-     
+
      call rokko_destruct(mat)
      call rokko_destruct(Z)
      call rokko_destruct(w)
@@ -87,4 +87,4 @@ program frank_matrix
   endif
   call MPI_finalize(ierr)
 end program frank_matrix
-   
+

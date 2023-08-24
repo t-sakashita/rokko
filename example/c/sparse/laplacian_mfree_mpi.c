@@ -33,16 +33,16 @@ void laplacian_multiply(const double *const x, double *const y, void* vars) {
   MPI_Status status_m, status_p;
 
   struct laplacian_vars* p = (struct laplacian_vars*)vars;
-  
+
   if (p->num_local_rows == 0) return;
-    
+
   if ((!p->is_first_proc) && (p->nprocs != 1)) {
     //std::cout << "recv myrank=" << p->myrank << std::endl;
     MPI_Send(&x[0], 1, MPI_DOUBLE, p->myrank-1, 0, p->comm);
     MPI_Recv(&buf_m, 1, MPI_DOUBLE, p->myrank-1, 0, p->comm, &status_m);
     //std::cout << "buffff=" << buf << std::endl;
   }
-  
+
   if ((!p->is_last_proc) && (p->nprocs != 1)) {
     //std::cout << "send myrank=" << p->myrank << std::endl;
     MPI_Recv(&buf_p, 1, MPI_DOUBLE, p->myrank+1, 0, p->comm, &status_p);
@@ -59,7 +59,7 @@ void laplacian_multiply(const double *const x, double *const y, void* vars) {
       y[0] = x[0] - buf_p;
     }
   }
-  
+
   if (p->is_last_proc) {
     if (p->num_local_rows != 1) {
       if (p->nprocs != 1) y[0] = - buf_m + 2 * x[0] - x[1];
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
   }
   rokko_split_solver_name(library_routine, &library, &routine);
   int dim = (argc == 3) ? dim = atoi(argv[2]) : 100;
-  
+
   struct rokko_parallel_sparse_ev solver;
   rokko_parallel_sparse_ev_construct(&solver, library, argc, argv);
   struct rokko_distributed_mfree mat;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
     printf("solver = %s\n", library);
     printf("dimension = %d\n", dim);
   }
-  
+
   struct rokko_parameters params;
   rokko_parameters_construct(&params);
   // set some parameters
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
   rokko_parameters_set_int(params, "max_iters", 500);
   rokko_parameters_set_double(params, "conv_tol", 1.0e-8);
   rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params);
-  
+
   int num_conv = rokko_parallel_sparse_ev_num_conv(solver);
   if (num_conv == 0) MPI_Abort(MPI_COMM_WORLD, -1);
   int num_local_rows = rokko_distributed_mfree_num_local_rows(mat);
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
     printf("largest eigenvector: ");
     for (j = 0; j < num_local_rows; ++j)
       printf("%30.20f ", eig_vec[j]);
-    printf("\n");    
+    printf("\n");
   }
   rokko_distributed_mfree_destruct(&mat);
   rokko_parallel_sparse_ev_destruct(&solver);
