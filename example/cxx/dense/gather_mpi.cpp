@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
   const unsigned int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
 
-  rokko::grid g;
+  const rokko::grid g;
   if (g.get_myrank() == 0) std::cout << "dimension = " << dim << std::endl;
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());

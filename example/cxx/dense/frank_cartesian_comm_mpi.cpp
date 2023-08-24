@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
 
   MPI_Comm comm = create_cart_comm();
-  rokko::grid g(comm);
+  const rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   if (myrank == 0)

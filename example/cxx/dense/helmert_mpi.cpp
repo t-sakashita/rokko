@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   const int dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
-  rokko::grid g(comm);
+  const rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   std::cout.precision(std::numeric_limits<unsigned long long>::digits10);

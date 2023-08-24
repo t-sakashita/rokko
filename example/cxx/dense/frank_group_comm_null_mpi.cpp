@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   } else {
     std::cout << "orig_rank=" << rank << " is NOT COMM_NULL" << std::endl;
   }
-  rokko::grid g(comm);
+  const rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   if (comm != MPI_COMM_NULL) {

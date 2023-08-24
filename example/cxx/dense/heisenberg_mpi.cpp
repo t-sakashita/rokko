@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   const std::string library = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
   const int L = (argc >= 3) ? std::stoi(argv[2]) : 8;
 
-  rokko::grid g(comm);
+  const rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   std::cout.precision(5);

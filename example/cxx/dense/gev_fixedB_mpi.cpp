@@ -77,13 +77,13 @@ void set_A_B(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<M
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
-  std::string library_routine(rokko::parallel_dense_ev::default_solver());
+  const MPI_Comm comm = MPI_COMM_WORLD;
+  const std::string library_routine(rokko::parallel_dense_ev::default_solver());
   constexpr int dim = 4;
   if (argc >= 2) library_routine = argv[1];
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
-  rokko::grid g(comm);
+  const rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   std::cout.precision(5);

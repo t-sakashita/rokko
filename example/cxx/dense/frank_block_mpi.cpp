@@ -22,12 +22,12 @@ using matrix_major = rokko::matrix_col_major;
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   const std::string library_routine = (argc >= 2) ? argv[1] : rokko::parallel_dense_ev::default_solver();
   const std::size_t dim = (argc >= 3) ? std::stoi(argv[2]) : 10;
   const auto [library, routine] = rokko::split_solver_name(library_routine);
 
-  rokko::grid g(comm);
+  const rokko::grid g(comm);
   const auto myrank = g.get_myrank();
 
   std::cout.precision(5);
