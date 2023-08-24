@@ -33,7 +33,7 @@ class distributed_matrix {
 public:
   using value_type = T;
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(map_in) {
-    bool is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
+    const auto is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
     if (is_col_major != map.is_col_major()) {
       throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
@@ -41,7 +41,7 @@ public:
   }
 
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in, value_type *const array_in) : map(map_in) {
-    bool is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
+    const auto is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
     if (is_col_major != map.is_col_major()) {
       throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
@@ -113,9 +113,9 @@ public:
   template<class FUNC>
   void generate(FUNC func) {
     for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-      int global_j = map.translate_l2g_col(local_j);
+      const auto global_j = map.translate_l2g_col(local_j);
       for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-        int global_i = map.translate_l2g_row(local_i);
+        const auto global_i = map.translate_l2g_row(local_i);
         set_local(local_i, local_j, func(global_i, global_j));
       }
     }
@@ -123,9 +123,9 @@ public:
 
   void generate(std::function<value_type(int, int)> func) {
     for(int local_j = 0; local_j < map.get_n_local(); ++local_j) {
-      int global_j = map.translate_l2g_col(local_j);
+      const auto global_j = map.translate_l2g_col(local_j);
       for(int local_i = 0; local_i < map.get_m_local(); ++local_i) {
-        int global_i = map.translate_l2g_row(local_i);
+        const auto global_i = map.translate_l2g_row(local_i);
         set_local(local_i, local_j, func(global_i, global_j));
       }
     }
@@ -212,8 +212,8 @@ void product(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
              const distributed_matrix<T, MATRIX_MAJOR>& matB, bool transB,
              typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
              distributed_matrix<T, MATRIX_MAJOR>& matC) {
-  char char_transA = (transA ? 'T' : 'N');
-  char char_transB = (transB ? 'T' : 'N');
+  const char char_transA = (transA ? 'T' : 'N');
+  const char char_transB = (transB ? 'T' : 'N');
   pblas::pgemm(char_transA, char_transB, alpha, matA, matB, beta, matC);
 }
 
@@ -224,9 +224,9 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
                const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int /* xindex */,
                typename distributed_matrix<T, MATRIX_MAJOR>::value_type beta,
                distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int /* yindex */) {
-  char char_transA = (transA ? 'T' : 'N');
-  int incx = (transX ? vecX.get_m_global() : 1);
-  int incy = (transY ? vecY.get_m_global() : 1);
+  const char char_transA = (transA ? 'T' : 'N');
+  const auto incx = (transX ? vecX.get_m_global() : 1);
+  const auto incy = (transY ? vecY.get_m_global() : 1);
   pblas::pgemv(char_transA, alpha, matA, vecX, incx, beta, vecY, incy);
 }
 
@@ -234,13 +234,13 @@ void product_v(typename distributed_matrix<T, MATRIX_MAJOR>::value_type alpha,
 template<typename T, typename MATRIX_MAJOR>
 T dot_product(const distributed_matrix<T, MATRIX_MAJOR>& vecX, bool transX, int xindex,
               const distributed_matrix<T, MATRIX_MAJOR>& vecY, bool transY, int yindex) {
-  int n = (transX ? vecX.get_n_global() : vecX.get_m_global());
-  int ix = (transX ? xindex : 0);
-  int jx = (transX ? 0 : xindex);
-  int incx = (transX ? vecX.get_m_global() : 1);
-  int iy = (transY ? yindex: 0);
-  int jy = (transY ? 0 : yindex);
-  int incy = (transY ? vecY.get_m_global() : 1);
+  const auto n = (transX ? vecX.get_n_global() : vecX.get_m_global());
+  const auto ix = (transX ? xindex : 0);
+  const auto jx = (transX ? 0 : xindex);
+  const auto incx = (transX ? vecX.get_m_global() : 1);
+  const auto iy = (transY ? yindex: 0);
+  const auto jy = (transY ? 0 : yindex);
+  const auto incy = (transY ? vecY.get_m_global() : 1);
   return pblas::pdot(n, vecX, ix, jx, incx, vecY, iy, jy, incy);
 }
 
