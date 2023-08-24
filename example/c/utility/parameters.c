@@ -34,7 +34,7 @@ int main(/* int argc , char** argv */) {
 
   // is "T" defined?
   rokko_parameters_defined(params, "T");
-  
+
   // is "S" defined?
   rokko_parameters_defined(params, "S");
 

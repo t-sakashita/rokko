@@ -22,7 +22,7 @@ class heisenberg_op(distributed_mfree_inherit):
         if self.nprocs != (1 << p):
             raise ValueError("This program can be run only for powers of 2")
         self.local_pow = self.L - p
-        
+
         dim = 1 << L
         distributed_mfree_inherit.__init__(self, dim, self.comm)
 
@@ -37,7 +37,7 @@ class heisenberg_op(distributed_mfree_inherit):
     def multiply(self, x, y):
         local_pow = self.local_pow
         myrank = self.myrank
-        
+
         for (i,j) in lattice:
 
             if i < local_pow:
