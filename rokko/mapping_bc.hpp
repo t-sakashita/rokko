@@ -30,12 +30,6 @@ public:
       mapping_local2array<MATRIX_MAJOR>() {
     set_blacs_descriptor();
   }
-  // default_mapping func of solver interface for elpa, elemental, scalapack
-  explicit mapping_bc(int global_dim, int block_size, MATRIX_MAJOR matrix_major, grid const& g_in)
-    : mapping_global2local(global_dim, block_size, g_in),
-      mapping_local2array<MATRIX_MAJOR>() {
-    set_blacs_descriptor();
-  }
 
   // default_mapping func of solver interface for eigen_exa
   explicit mapping_bc(int global_dim, int block_size, std::array<int,2> const& padded_size,
@@ -51,6 +45,7 @@ public:
     set_blacs_descriptor();
   }
 
+  // default_mapping function of solver interface for elpa, elemental, scalapack
   explicit mapping_bc(int global_dim, int block_size, grid const& g_in)
     : mapping_global2local(global_dim, block_size, g_in),
       mapping_local2array<MATRIX_MAJOR>() {
