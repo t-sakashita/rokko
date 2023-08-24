@@ -48,17 +48,17 @@ struct eigen3_matrix_major;
 
 template<>
 struct eigen3_matrix_major<rokko::matrix_row_major> {
-  static constexpr int value = Eigen::RowMajor;
+  static constexpr auto value = Eigen::RowMajor;
 };
 
 template<>
 struct eigen3_matrix_major<rokko::matrix_col_major> {
-  static constexpr int value = Eigen::ColMajor;
+  static constexpr auto value = Eigen::ColMajor;
 };
 
 } // end namespace detail
 
 template<typename MATRIX_MAJOR>
-constexpr int eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
+constexpr auto eigen3_major = detail::eigen3_matrix_major<MATRIX_MAJOR>::value;
 
 } // namespace rokko
