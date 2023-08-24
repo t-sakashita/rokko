@@ -18,12 +18,12 @@
 
 template<typename GRID_MAJOR>
 void run_test(GRID_MAJOR, std::array<int,2> size) {
-  constexpr int eigen_major = rokko::eigen3_major<GRID_MAJOR>;
+  constexpr auto eigen_major = rokko::eigen3_major<GRID_MAJOR>;
   const rokko::grid g(MPI_COMM_WORLD, size, GRID_MAJOR{});
   ASSERT_TRUE(g.get_comm() == MPI_COMM_WORLD);
   ASSERT_EQ(g.get_nprow() * g.get_npcol(), g.get_nprocs());
 
-  const int lld = (eigen_major == Eigen::RowMajor) ? g.get_npcol() : g.get_nprow();
+  const auto lld = (eigen_major == Eigen::RowMajor) ? g.get_npcol() : g.get_nprow();
   ASSERT_EQ(rokko::matrix012::get_index<eigen_major>(lld, g.get_myrow(), g.get_mycol()), g.get_myrank());
 }
 
