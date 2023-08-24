@@ -10,7 +10,7 @@
 if(DEFINED PETSC_FOUND)
   return()
 endif(DEFINED PETSC_FOUND)
-  
+
 message(STATUS "Checking for PETSc library")
 set(PETSC_FOUND FALSE)
 

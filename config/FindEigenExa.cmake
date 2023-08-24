@@ -9,7 +9,7 @@
 if(DEFINED EIGENEXA_FOUND)
   return()
 endif(DEFINED EIGENEXA_FOUND)
-  
+
 message(STATUS "Checking for EigenExa library")
 set(EIGENEXA_FOUND FALSE)
 

@@ -39,7 +39,7 @@ macro(add_rokko_test)
       endif(EXISTS ${ROKKO_ROOT_DIR}/share/rokko/run_test.cmake)
     endif(EXISTS ${PROJECT_SOURCE_DIR}/config/run_test.cmake)
   endif(RUN_TEST_DIR AND EXISTS ${RUN_TEST_DIR}/run_test.cmake)
-    
+
   add_test(${name}
     ${CMAKE_COMMAND}
       -Dcmd=${name}
@@ -96,7 +96,7 @@ macro(add_rokko_test_mpi)
     add_custom_command(TARGET ${name} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy ${EXE_NAME} ${PROJECT_BINARY_DIR}/bin)
   endif(MSVC)
-  
+
   if(RUN_TEST_DIR AND EXISTS ${RUN_TEST_DIR}/run_test_mpi.cmake)
     set(RUN_TEST ${RUN_TEST_DIR}/run_test_mpi.cmake)
   else(RUN_TEST_DIR AND EXISTS ${RUN_TEST_DIR}/run_test_mpi.cmake)
@@ -110,7 +110,7 @@ macro(add_rokko_test_mpi)
       endif(EXISTS ${ROKKO_ROOT_DIR}/share/rokko/run_test_mpi.cmake)
     endif(EXISTS ${PROJECT_SOURCE_DIR}/config/run_test_mpi.cmake)
   endif(RUN_TEST_DIR AND EXISTS ${RUN_TEST_DIR}/run_test_mpi.cmake)
-    
+
   add_test(${name}-np${procs}
     ${CMAKE_COMMAND}
       -Dcmd=${name}

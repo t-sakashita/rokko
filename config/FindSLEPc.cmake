@@ -12,7 +12,7 @@
 if(DEFINED SLEPC_FOUND)
   return()
 endif(DEFINED SLEPC_FOUND)
-  
+
 message(STATUS "Checking for SLEPc library")
 find_package(PETSc)
 set(SLEPC_FOUND FALSE)

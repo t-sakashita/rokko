@@ -9,7 +9,7 @@
 if(DEFINED ELEMENTAL_FOUND)
   return()
 endif(DEFINED ELEMENTAL_FOUND)
-  
+
 message(STATUS "Checking for Elemental library")
 set(ELEMENTAL_FOUND FALSE)
 

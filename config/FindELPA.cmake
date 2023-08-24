@@ -8,7 +8,7 @@
 if(DEFINED ELPA_FOUND)
   return()
 endif(DEFINED ELPA_FOUND)
-  
+
 message(STATUS "Checking for ELPA library")
 set(ELPA_FOUND FALSE)
 

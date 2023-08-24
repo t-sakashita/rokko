@@ -7,7 +7,7 @@
 if(DEFINED SCALAPACK_FOUND)
   return()
 endif(DEFINED SCALAPACK_FOUND)
-  
+
 message(STATUS "Checking for ScaLAPACK library")
 
 if(DEFINED SCALAPACK_LIB)
