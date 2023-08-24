@@ -19,7 +19,7 @@ namespace rokko {
 namespace detail {
 
 template<typename T>
-struct major_t {};
+struct major_t;
 
 template<typename T, int ROWS>
 struct major_t<Eigen::Matrix<T, ROWS, 1, Eigen::ColMajor>> {
