@@ -21,15 +21,15 @@ char** global_argv;
 
 TEST(dot_product_mpi, dot_product_mpi) {
   constexpr int root_proc = 0;
-  MPI_Comm comm = MPI_COMM_WORLD;
+  const MPI_Comm comm = MPI_COMM_WORLD;
   int rank;
   MPI_Comm_rank(comm, &rank);
 
   const int dim = (global_argc > 1) ? std::stoi(global_argv[1]) : 100;
 
   if (rank == root_proc) std::cout << "dimension = " << dim << std::endl;
-  rokko::grid g(comm);
-  rokko::mapping_bc<rokko::matrix_col_major> map({dim, 1}, {1, 1}, g);
+  const rokko::grid g(comm);
+  const rokko::mapping_bc<rokko::matrix_col_major> map({dim, 1}, {1, 1}, g);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecX(map);
   rokko::distributed_matrix<double, rokko::matrix_col_major> vecY(map);
   Eigen::VectorXd locX(dim), locY(dim);
@@ -39,10 +39,10 @@ TEST(dot_product_mpi, dot_product_mpi) {
   rokko::scatter(locY, vecY, root_proc);
 
   // local calculation
-  double product_local = locX.dot(locY);
+  const double product_local = locX.dot(locY);
 
   // global calculation
-  double product_global = rokko::dot_product(vecX, false, 0, vecY, false, 0);
+  const double product_global = rokko::dot_product(vecX, false, 0, vecY, false, 0);
 
   for (int i = 0; i < dim; ++i) {
     if (vecX.has_global_indices({i, 0})) {

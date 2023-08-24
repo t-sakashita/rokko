@@ -18,21 +18,21 @@ char** global_argv;
 
 template <typename MATRIX_MAJOR, typename GRID_MAJOR>
 void run_test(std::array<int,2> const& global_size, std::array<int,2> const& block_size, GRID_MAJOR) {
-  rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
-  rokko::mapping_bc<MATRIX_MAJOR> map(global_size, block_size, g);
+  const rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
+  const rokko::mapping_bc<MATRIX_MAJOR> map(global_size, block_size, g);
   constexpr int root_proc = 0;
 
   // local to global
   // for row
   for (int local=0; local<map.get_m_local(); ++local) {
-    int global = map.template translate_l2g<0>(local);
-    int local2 = map.template translate_g2l<0>(global);
+    const auto global = map.template translate_l2g<0>(local);
+    const auto local2 = map.template translate_g2l<0>(global);
     ASSERT_EQ(local, local2);
   }
   // for column
   for (int local=0; local<map.get_n_local(); ++local) {
-    int global = map.template translate_l2g<1>(local);
-    int local2 = map.template translate_g2l<1>(global);
+    const auto global = map.template translate_l2g<1>(local);
+    const auto local2 = map.template translate_g2l<1>(global);
     ASSERT_EQ(local, local2);
   }
 
@@ -40,16 +40,16 @@ void run_test(std::array<int,2> const& global_size, std::array<int,2> const& blo
   // for row
   for (int global=0; global<map.get_m_global(); ++global) {
     if (map.template has_global_indices<0>(global)) {
-      int local = map.template translate_g2l<0>(global);
-      int global2 = map.template translate_l2g<0>(local);
+      const auto local = map.template translate_g2l<0>(global);
+      const auto global2 = map.template translate_l2g<0>(local);
       ASSERT_EQ(global, global2);
     }
   }
   // for column
   for (int global=0; global<map.get_n_local(); ++global) {
     if (map.template has_global_indices<1>(global)) {
-      int local = map.template translate_g2l<1>(global);
-      int global2 = map.template translate_l2g<1>(local);
+      const auto local = map.template translate_g2l<1>(global);
+      const auto global2 = map.template translate_l2g<1>(local);
       ASSERT_EQ(global, global2);
     }
   }

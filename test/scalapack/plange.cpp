@@ -20,7 +20,7 @@
 constexpr double eps = 1e-10;
 
 TEST(lange, pdlange) {
-  rokko::grid grid(MPI_COMM_WORLD);
+  const rokko::grid grid(MPI_COMM_WORLD);
 
   constexpr int m = 20;
   constexpr int n = 30;
@@ -30,7 +30,7 @@ TEST(lange, pdlange) {
   if (grid.get_myrank() == 0) a = Eigen::MatrixXd::Random(m, n);
   
   // distributed matrix
-  rokko::mapping_bc<rokko::matrix_col_major> map({m, n}, {1, 1}, grid);
+  const rokko::mapping_bc<rokko::matrix_col_major> map({m, n}, {1, 1}, grid);
   rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
   rokko::scatter(a, mat, 0);
 

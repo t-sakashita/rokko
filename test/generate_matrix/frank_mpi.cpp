@@ -22,12 +22,12 @@ char** global_argv;
 
 TEST(generate_matrix, frank_mpi) {
   constexpr int dim = 1000;
-  rokko::grid g(MPI_COMM_WORLD);
+  const rokko::grid g(MPI_COMM_WORLD);
 
   for(auto const& name : rokko::parallel_dense_ev::solvers()) {
     rokko::parallel_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
-    rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
+    const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
     rokko::distributed_matrix<double,rokko::matrix_col_major> mat(map);
     rokko::frank_matrix::generate(mat);
 

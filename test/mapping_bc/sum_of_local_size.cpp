@@ -18,8 +18,8 @@ char** global_argv;
 
 template <typename MATRIX_MAJOR, typename GRID_MAJOR>
 void run_test(std::array<int,2> const& global_size, std::array<int,2> const& block_size, GRID_MAJOR) {
-  rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
-  rokko::mapping_bc<MATRIX_MAJOR> map(global_size, block_size, g);
+  const rokko::grid g(MPI_COMM_WORLD, GRID_MAJOR{});
+  const rokko::mapping_bc<MATRIX_MAJOR> map(global_size, block_size, g);
   constexpr int root_proc = 0;
 
   if (g.get_myrank() == root_proc) {
