@@ -22,8 +22,8 @@ constexpr double eps = 1e-10;
 TEST(lange, pdlange) {
   rokko::grid grid(MPI_COMM_WORLD);
 
-  int m = 20;
-  int n = 30;
+  constexpr int m = 20;
+  constexpr int n = 30;
 
   // generate matrix
   Eigen::MatrixXd a(m, n);
