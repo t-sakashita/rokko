@@ -15,7 +15,7 @@
 using vector_t = Eigen::VectorXd;
 
 int main() {
-  int n = 6;
+  constexpr int n = 6;
   vector_t v(n);
   std::mt19937 engine(12345lu);
   std::normal_distribution<> dist(0.0, 1.0);
