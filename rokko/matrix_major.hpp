@@ -13,7 +13,7 @@
 
 namespace rokko {
 
-inline struct matrix_row_major {} matrix_row_major_d;
-inline struct matrix_col_major {} matrix_col_major_d;
+struct matrix_row_major {};
+struct matrix_col_major {};
 
 } // namespace rokko
