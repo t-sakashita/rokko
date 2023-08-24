@@ -96,7 +96,7 @@ CSCALAPACK_PSYEVX_DECL(pzheevx, PZHEEVX, lapack_complex_double, double);
 #undef CSCALAPACK_PSYEVX_DECL
 
 
-  ///#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
+#ifdef ROKKO_HAVE_SCALAPACK_PDSYEVR
 #define CSCALAPACK_PSYEVR_DECL(NAMES, NAMEL, TYPE, TYPE_REAL) \
 int cscalapack_## NAMES ##_work(char jobz, char range, char uplo, int n, \
                                 TYPE* A, int ia, int ja, const int* descA, \
