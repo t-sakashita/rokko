@@ -28,7 +28,7 @@ public:
   void finalize() { El::Finalize(); }
 
   mapping_bc<matrix_col_major> default_mapping(int dim, grid const& g) const {
-    return mapping_bc<matrix_col_major>(dim, 1, matrix_col_major_d, g);  // block_size = 1
+    return mapping_bc<matrix_col_major>(dim, 1, matrix_col_major{}, g);  // block_size = 1
   }
 
   template<typename T, typename MATRIX_MAJOR, typename VEC>
