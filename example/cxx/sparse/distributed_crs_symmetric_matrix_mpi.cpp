@@ -11,6 +11,16 @@
 
 #include <rokko/rokko.hpp>
 
+
+template <typename T>
+auto get_num_entries_per_row(std::vector<std::vector<T>> const& vecs) {
+  return std::max_element(vecs.cbegin(), vecs.cend(),
+                          [] (auto const& a, auto const& b) {
+                            return a.size() < b.size();
+                          })->size();
+}
+
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -23,10 +33,7 @@ int main(int argc, char *argv[]) {
   const std::vector<std::vector<int>> cols = {{0, 4}, {3}, {5}, {1, 7}, {0, 5, 6}, {2, 4}, {4, 7}, {3, 6}};
   const std::vector<std::vector<double>> values = {{7.1, 2.8}, {6.4}, {0.5}, {6.4, 3.5}, {2.8, 0.2, 1.4}, {0.5, 0.2}, {1.4, 4.3}, {3.5, 4.3}};
 
-  const auto num_entries_per_row = std::max_element(cols.cbegin(), cols.cend(),
-                                              [] (auto const& a, auto const& b) {
-                                                return a.size() < b.size();
-                                              })->size();
+  const auto num_entries_per_row = get_num_entries_per_row(cols);
 
   if (rank == 0) std::cout << "[solver = " << library << "]" << std::endl;
   rokko::parallel_sparse_ev solver(library);
