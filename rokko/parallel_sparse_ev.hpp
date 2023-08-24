@@ -23,7 +23,7 @@
 namespace rokko {
 
 namespace detail {
-    
+
 class ps_ev_base {
 public:
   virtual ~ps_ev_base() = default;
@@ -63,7 +63,7 @@ private:
 };
 
 using ps_solver_factory = factory<ps_ev_base>;
-  
+
 } // end namespace detail
 
 class parallel_sparse_ev {

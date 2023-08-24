@@ -25,7 +25,7 @@ namespace {
 
 #define PBLAS_PCOPY_IMPL(NAMES, TYPE)                                   \
 inline void pcopy_dispatch(int n, const TYPE * x, int ix, int jx, const int* descx, int incx, TYPE * y, int iy, int jy, const int* descy, int incy) { cpblas_ ## NAMES (n, complex_cast(x), ix, jx, descx, incx, complex_cast(y), iy, jy, descy, incy); }
-    
+
 PBLAS_PCOPY_IMPL(pscopy, float);
 PBLAS_PCOPY_IMPL(pdcopy, double);
 PBLAS_PCOPY_IMPL(pccopy, std::complex<float>);
@@ -46,7 +46,7 @@ void pcopy(int n, const MATRIX& x, int ix, int jx, int incx, MATRIX& y, int iy, 
 // pdot, pdotu, pdotc
 
 namespace {
-    
+
 #define PBLAS_PDOT_IMPL(NAMEX, NAMES, TYPE) \
 inline TYPE NAMEX ## _dispatch (int n, const TYPE * x, int ix, int jx, const int* descx, int incx, const TYPE * y, int iy, int jy, const int* descy, int incy) { \
   TYPE dot; \
@@ -68,7 +68,7 @@ PBLAS_PDOT_IMPL(pdotc, pzdotc, std::complex<double>);
 #undef PBLAS_PDOT_IMPL
 
 }
-  
+
 template<typename VECTOR>
 typename VECTOR::value_type pdot(int n, const VECTOR& x, int ix, int jx, int incx,
                                  const VECTOR& y, int iy, int jy, int incy) {
@@ -99,7 +99,7 @@ typename VECTOR::value_type pdotu(int n, const VECTOR& x, int ix, int jx, int in
 // pgemv
 
 namespace {
-    
+
 #define PBLAS_PGEMV_IMPL(NAMES, TYPE) \
 inline void pgemv_dispatch(char trans, int m, int n, TYPE alpha, const TYPE* a, int ia, int ja, const int* desca, const TYPE* x, int ix, int jx, const int* descx, int incx, TYPE beta, TYPE * y, int iy, int jy, const int* descy, int incy) { \
   cpblas_ ## NAMES (trans, m, n, complex_cast(alpha), complex_cast(a), ia, ja, desca, complex_cast(x), ix, jx, descx, incx, complex_cast(beta), complex_cast(y), iy, jy, descy, incy); \
@@ -113,7 +113,7 @@ PBLAS_PGEMV_IMPL(pzgemv, std::complex<double>);
 #undef PBLAS_PGEMV_IMPL
 
 }
-  
+
 template<typename MATRIX, typename VECTOR, typename T>
 void pgemv(char trans, T alpha, const MATRIX& a, const VECTOR& x, int incx,
            T beta, VECTOR& y, int incy) {
@@ -129,7 +129,7 @@ void pgemv(char trans, T alpha, const MATRIX& a, const VECTOR& x, int incx,
 // pgemm
 
 namespace {
-    
+
 #define PBLAS_PGEMM_IMPL(NAMES, TYPE) \
 inline void pgemm_dispatch(char transa, char transb, int m, int n, int k, TYPE alpha, const TYPE* a, int ia, int ja, const int* desca, const TYPE* b, int ib, int jb, const int* descb, TYPE beta, TYPE* c, int ic, int jc, const int* descc) { \
   cpblas_ ## NAMES (transa, transb, m, n, k, complex_cast(alpha), complex_cast(a), ia, ja, desca, complex_cast(b), ib, jb, descb, complex_cast(beta), complex_cast(c), ic, jc, descc); \
@@ -143,7 +143,7 @@ PBLAS_PGEMM_IMPL(pzgemm, std::complex<double>);
 #undef PBLAS_PGEMM_IMPL
 
 }
-  
+
 template<typename MATRIX, typename T>
 void pgemm(char transa, char transb, T alpha, const MATRIX& a, const MATRIX& b,
            T beta, MATRIX& c) {

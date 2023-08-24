@@ -21,7 +21,7 @@ namespace rokko {
 class wrap_serial_dense_ev : public serial_dense_ev {
 public:
   wrap_serial_dense_ev(std::string const& solver_name) : serial_dense_ev(solver_name) {}
-  
+
   wrap_serial_dense_ev() = default;
 
   void initialize() {

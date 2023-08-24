@@ -85,10 +85,10 @@ public:
   bool is_row_major() const { return is_row; }
   bool is_col_major() const { return !is_row; }
 
-  int calculate_grid_row(int proc_rank) const { 
+  int calculate_grid_row(int proc_rank) const {
     return is_row ? proc_rank / size[1] : proc_rank % size[0];
   }
-  int calculate_grid_col(int proc_rank) const { 
+  int calculate_grid_col(int proc_rank) const {
     return is_row ? proc_rank % size[1] : proc_rank / size[0];
   }
 

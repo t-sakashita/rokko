@@ -21,7 +21,7 @@ namespace rokko {
 class wrap_parallel_sparse_ev : public parallel_sparse_ev {
 public:
   wrap_parallel_sparse_ev(std::string const& solver_name) : parallel_sparse_ev(solver_name) {}
-  
+
   wrap_parallel_sparse_ev() = default;
 
   void initialize() {

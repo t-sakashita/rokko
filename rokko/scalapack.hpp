@@ -21,7 +21,7 @@ inline int descinit(std::array<int,9>& desc, int m, int n, int mb, int nb, int i
                     int ictxt, int lld) {
   return cscalapack_descinit(desc.data(), m, n, mb, nb, irsrc, icsrc, ictxt, lld);
 }
-  
+
 template<typename MATRIX>
 typename MATRIX::value_type pelget(char scope, char top, const MATRIX& A, int ia, int ja);
 

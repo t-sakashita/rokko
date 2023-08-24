@@ -333,11 +333,11 @@ public:
 private:
   solver_type solver_impl_;
 };
-    
+
 using sd_solver_factory = factory<sd_ev_base>;
-  
+
 } // end namespace detail
-  
+
 class serial_dense_ev {
 public:
   serial_dense_ev(std::string const& solver_name)
@@ -375,7 +375,7 @@ public:
   template<typename T, int MATRIX_MAJOR, typename VEC>
   parameters diagonalize(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRIX_MAJOR>& mat, VEC& eigvals) {
     return solver_impl_->diagonalize(mat, eigvals, null_params);
-  }  
+  }
   static std::vector<std::string> solvers() {
     return detail::sd_solver_factory::product_names();
   }

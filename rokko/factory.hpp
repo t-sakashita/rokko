@@ -104,7 +104,7 @@ protected:
     }
     return itr->second;
   }
-      
+
 private:
   static inline std::unique_ptr<factory> instance_;
   creator_map_type creators_;

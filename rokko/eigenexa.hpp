@@ -30,32 +30,32 @@ std::pair<int, int> get_matdims(const GRID& grid, int n) {
   ceigenexa_get_matdims(grid.get_nprow(), grid.get_npcol(), n, &nx, &ny);
   return std::make_pair(nx, ny);
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 void eigen_s(MATRIX& a, VECTOR& w, MATRIX& z, int m_forward = 48, int m_backword = 128,
              char mode = 'A') {
   ceigenexa_eigen_s(a.get_m_global(), a.get_m_global(), a.get_array_pointer(), a.get_lld(),
                     storage(w), z.get_array_pointer(), z.get_lld(), m_forward, m_backword, mode);
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 void eigen_s(MATRIX& a, VECTOR& w, int m_forward = 48, int m_backword = 128, char mode = 'N') {
   ceigenexa_eigen_s(a.get_m_global(), a.get_m_global(), a.get_array_pointer(), a.get_lld(),
                     storage(w), 0, 0, m_forward, m_backword, mode);
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 void eigen_sx(MATRIX& a, VECTOR& w, MATRIX& z, int m_forward = 48, int m_backword = 128,
               char mode = 'A') {
   ceigenexa_eigen_sx(a.get_m_global(), a.get_m_global(), a.get_array_pointer(), a.get_lld(),
                      storage(w), z.get_array_pointer(), z.get_lld(), m_forward, m_backword, mode);
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 void eigen_sx(MATRIX& a, VECTOR& w, int m_forward = 48, int m_backword = 128, char mode = 'N') {
   ceigenexa_eigen_sx(a.get_m_global(), a.get_m_global(), a.get_array_pointer(), a.get_lld(),
                      storage(w), 0, 0, m_forward, m_backword, mode);
 }
-  
+
 } // end namespace eigenexa
 } // end namespace rokko

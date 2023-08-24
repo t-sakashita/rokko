@@ -47,34 +47,34 @@ lapack_int geqrf(MATRIX& a, VECTOR& tau);
 
 template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau, VECTOR& work);
-  
+
 template<typename MATRIX>
 rokko::real_t<MATRIX> lange(char norm, MATRIX const& a);
 
 template<typename MATRIX, typename VECTOR>
 rokko::real_t<MATRIX> lange(char norm, MATRIX const& a, VECTOR& work);
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau);
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work);
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau);
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work);
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w);
 
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work, VECTOR1& rwork);
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR& b, VECTOR& w);
-  
+
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int hegv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b, VECTOR0& w,
                 VECTOR1& work);
@@ -85,11 +85,11 @@ lapack_int syev(char jobz, char uplo, MATRIX& a, VECTOR0& w, VECTOR1& work, VECT
 template<typename MATRIX, typename VECTOR>
 lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR& b,
                 VECTOR& w);
-  
+
 template<typename MATRIX, typename VECTOR0, typename VECTOR1>
 lapack_int sygv(lapack_int itype, char jobz, char uplo, MATRIX& a, VECTOR0& b,
                 VECTOR0& w, VECTOR1& work);
-  
+
 } // end namespace lapack
 } // end namespace rokko
 

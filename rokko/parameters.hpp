@@ -33,7 +33,7 @@ public:
   parameters(parameters const& map_in) : map_(map_in.get_map()) {}
   ~parameters() = default;
   parameters& operator=(parameters const&) = default;
-  
+
   void clear() { map_.clear(); }
   void clear(key_type const& key) { map_.erase(map_.find(key)); }
   // set "value" for "key"
@@ -110,7 +110,7 @@ public:
   }
 
   std::map<std::string, std::any>const& get_map() const { return map_; }
-  
+
 private:
   std::map<std::string, std::any> map_;
 };
@@ -120,7 +120,7 @@ private:
 //  if (params.type(key) == typeid(const char*)) {
 //    letter = *(params.get<const char*>(key));
 //  } else if (params.type(key) == typeid(const char*)) {
-//    letter = params.get<char>(key);    
+//    letter = params.get<char>(key);
 //  }
 //}
 

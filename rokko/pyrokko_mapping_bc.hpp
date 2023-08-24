@@ -63,11 +63,11 @@ public:
   std::tuple<int,int> get_block_shape() const {
     return mapping_bc<MATRIX_MAJOR>::get_block_size();
   }
-  
+
   std::tuple<int,int> get_global_shape() const {
     return mapping_bc<MATRIX_MAJOR>::get_global_size();
   }
-  
+
   std::tuple<int,int> get_local_shape() const {
     return mapping_bc<MATRIX_MAJOR>::get_local_size();
   }

@@ -41,19 +41,19 @@ public:
   wrap_distributed_matrix(wrap_mapping_bc<MATRIX_MAJOR> const& map) : distributed_matrix<T,MATRIX_MAJOR>(map) {}
 
   wrap_distributed_matrix() = default;
-  
+
   std::tuple<int,int> get_block_shape() const {
     return get_block_size();
   }
-  
+
   bool has_global_indices(std::tuple<int,int> const& global) const {
     return has_global_indices(to_array(global));
   }
-  
+
   std::tuple<int,int> get_global_shape() const {
     return get_global_size();
   }
-  
+
   std::tuple<int,int> get_local_shape() const {
     return get_local_size();
   }

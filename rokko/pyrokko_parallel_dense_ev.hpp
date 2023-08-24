@@ -20,7 +20,7 @@ namespace rokko {
 class wrap_parallel_dense_ev : public parallel_dense_ev {
 public:
   wrap_parallel_dense_ev(std::string const& solver_name) : parallel_dense_ev(solver_name) {}
-  
+
   wrap_parallel_dense_ev() = default;
 
   void initialize() {

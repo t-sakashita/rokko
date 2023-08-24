@@ -23,7 +23,7 @@
 namespace rokko {
 
 namespace detail {
-    
+
 class pd_ev_base {
 public:
   virtual ~pd_ev_base() = default;
@@ -335,9 +335,9 @@ private:
 };
 
 using pd_solver_factory = factory<pd_ev_base>;
-  
+
 } // end namespace detail
-  
+
 class parallel_dense_ev {
 public:
   parallel_dense_ev(std::string const& solver_name) : solver_impl_(detail::pd_solver_factory::instance().make_product(solver_name)), null_params() {};

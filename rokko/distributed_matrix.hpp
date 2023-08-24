@@ -130,7 +130,7 @@ public:
       }
     }
   }
-  
+
   void print(std::ostream& os = std::cout) const;
 
   // map member function
