@@ -78,7 +78,7 @@ module rokko_distributed_matrix_mod
   interface rokko_get_n_global
      procedure rokko_distributed_matrix_get_n_global
   end interface rokko_get_n_global
-   
+
   interface rokko_get_m_local
      procedure rokko_distributed_matrix_get_m_local
   end interface rokko_get_m_local
@@ -184,7 +184,7 @@ module rokko_distributed_matrix_mod
        implicit none
        type(rokko_distributed_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_matrix_destruct
-     
+
      subroutine rokko_distributed_matrix_generate_function0_p(matrix, cproc) &
           & bind(c,name="rokko_distributed_matrix_generate_function_p")
        use iso_c_binding
@@ -238,7 +238,7 @@ module rokko_distributed_matrix_mod
        integer(c_int), value, intent(in) :: global_i, global_j
        real(c_double), value, intent(in) :: value
      end subroutine rokko_distributed_matrix_set_global0
-     
+
      function rokko_distributed_matrix_get_global0(matrix, global_i, global_j) &
           & bind(c,name="rokko_distributed_matrix_get_global")
        use iso_c_binding
@@ -506,7 +506,7 @@ module rokko_distributed_matrix_mod
        logical(c_bool) :: rokko_distributed_matrix_is_col_major
        type(rokko_distributed_matrix), value, intent(in) :: matrix
      end function rokko_distributed_matrix_is_col_major
-     
+
      type(c_ptr) function rokko_distributed_matrix_get_array_pointer_c(matrix) &
           & bind(c,name='rokko_distributed_matrix_get_array_pointer')
        use iso_c_binding
@@ -589,6 +589,6 @@ contains
     n_size = rokko_distributed_matrix_get_n_size(matrix)
     call c_f_pointer(c_array_ptr, f_array_ptr, (/m_size,n_size/) )
   end subroutine rokko_distributed_matrix_get_array_pointer
-  
+
 end module rokko_distributed_matrix_mod
 

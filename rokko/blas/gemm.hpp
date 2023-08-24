@@ -26,21 +26,21 @@ namespace blas {
   inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, TYPE alpha, const TYPE * a, int lda_a, const TYPE * b, int lda_b, TYPE beta, TYPE * c, int lda_c) { \
   cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, alpha, a, lda_a, b, lda_b, beta, c, lda_c); \
 }
-  
+
 BLAS_GEMM_IMPL(sgemm, float);
 BLAS_GEMM_IMPL(dgemm, double);
-  
-#undef BLAS_GEMM_IMPL  
+
+#undef BLAS_GEMM_IMPL
 
 #define BLAS_GEMM_IMPL(NAMES, TYPE) \
 inline void gemm(CBLAS_ORDER order, CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b, int m, int n, int k, std::complex<TYPE> alpha, const std::complex<TYPE>* a, int lda_a, const std::complex<TYPE>* b, int lda_b, std::complex<TYPE> beta, std::complex<TYPE>* c, int lda_c) { \
   cblas_ ## NAMES (order, trans_a, trans_b, m, n, k, reinterpret_cast<TYPE*>(&alpha), reinterpret_cast<const TYPE*>(a), lda_a, reinterpret_cast<const TYPE*>(b), lda_b, reinterpret_cast<TYPE*>(&beta), (TYPE*)c, lda_c); \
 }
-  
+
 BLAS_GEMM_IMPL(cgemm, float);
 BLAS_GEMM_IMPL(zgemm, double);
-  
-#undef BLAS_GEMM_IMPL  
+
+#undef BLAS_GEMM_IMPL
 
 template<typename MATRIX, typename T>
 void gemm(CBLAS_TRANSPOSE trans_a, CBLAS_TRANSPOSE trans_b,

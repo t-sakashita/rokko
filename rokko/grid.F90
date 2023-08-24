@@ -135,7 +135,7 @@ module rokko_grid_mod
      end function rokko_grid_is_col_major
 
   end interface
-  
+
   interface rokko_grid_construct
      subroutine rokko_grid_construct_f(grid, comm, grid_major) bind(c)
        use iso_c_binding
@@ -146,5 +146,5 @@ module rokko_grid_mod
        integer(c_int), value, intent(in) :: grid_major
      end subroutine rokko_grid_construct_f
   end interface rokko_grid_construct
-  
+
 end module rokko_grid_mod

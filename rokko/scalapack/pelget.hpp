@@ -22,12 +22,12 @@ inline double pelget_dispatch(char scope, char top, const double* A, int ia, int
                               const int* descA) {
   return cscalapack_pdelget(scope, top, A, ia, ja, descA);
 }
-  
+
 inline float pelget_dispatch(char scope, char top, const float* A, int ia, int ja,
                              const int* descA) {
   return cscalapack_pselget(scope, top, A, ia, ja, descA);
 }
-  
+
 }
 
 template<typename MATRIX>

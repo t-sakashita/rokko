@@ -58,7 +58,7 @@ int EIGENEXA_translate_g2l_wrap(const int* ictr, const int* nnod, const int* ino
 void EIGENEXA_eigen_s(const int* n, const int* nvec, double* a, const int* lda,
                       double* w, double* z, const int* ldz,
                       const int* m_forward, const int* m_backword, const char* mode);
-  
+
 #define EIGENEXA_eigen_sx ROKKO_GLOBAL(eigen_sx,EIGEN_SX)
 void EIGENEXA_eigen_sx(const int* n, const int* nvec, double* a, const int* lda,
                        double* w, double* z, const int* ldz,

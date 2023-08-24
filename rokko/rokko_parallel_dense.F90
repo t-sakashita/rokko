@@ -15,5 +15,5 @@ module rokko_parallel_dense_mod
   use rokko_mapping_bc_mod
   use rokko_distributed_matrix_mod
   implicit none
-  
+
 end module rokko_parallel_dense_mod

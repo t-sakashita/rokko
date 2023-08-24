@@ -39,7 +39,7 @@ int ceigenexa_loop_end(int iend, int nnod, int inod);
 int ceigenexa_translate_l2g(int ictr, int nnod, int inod);
 
 int ceigenexa_translate_g2l(int ictr, int nnod, int inod);
-  
+
 void ceigenexa_eigen_s(int n, int nvec, double* a, int lda, double* w, double* z, int ldz,
                        int m_forward, int m_backword, char mode);
 

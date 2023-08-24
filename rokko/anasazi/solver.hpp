@@ -44,7 +44,7 @@ public:
   using solvermanager_t = Anasazi::SolverManager<value_type, Epetra_MultiVector, Epetra_Operator>;
 
   static inline const std::vector<std::string> names = { "lobpcg", "block_krylov_schur", "block_davidson", "rtr" };
-  
+
   solver() = default;
 
   ~solver() = default;
@@ -166,7 +166,7 @@ public:
     problem_->setProblem();
 
     const std::unique_ptr<solvermanager_t> solvermanager = create_solver_manager(get_routine(params), problem_, pl);
-    
+
     const auto boolret = problem_->setProblem();
     if (!boolret) {
       throw std::invalid_argument("anasazi::solver::diagonalize : Return value from setProblem() is false");

@@ -24,7 +24,7 @@ namespace lapack {
 namespace {
 
 template<typename T> struct getrf_dispatch;
-  
+
 template<>
 struct getrf_dispatch<float> {
   template<typename MATRIX, typename VECTOR>

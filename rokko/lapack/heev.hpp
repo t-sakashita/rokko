@@ -26,7 +26,7 @@ namespace lapack {
 namespace {
 
 template<typename T> struct heev_dispatch;
-  
+
 template<>
 struct heev_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
@@ -35,7 +35,7 @@ struct heev_dispatch<float> {
     return LAPACKE_ssyev(matrix_layout, jobz, uplo, n, storage(a), ld(a), storage(w));
   }
 };
-  
+
 template<>
 struct heev_dispatch<double> {
   template<typename MATRIX, typename VECTOR>
@@ -44,7 +44,7 @@ struct heev_dispatch<double> {
     return LAPACKE_dsyev(matrix_layout, jobz, uplo, n, storage(a), ld(a), storage(w));
   }
 };
-  
+
 template<>
 struct heev_dispatch<std::complex<float>> {
   template<typename MATRIX, typename VECTOR>
@@ -54,7 +54,7 @@ struct heev_dispatch<std::complex<float>> {
                          storage(w));
   }
 };
-  
+
 template<>
 struct heev_dispatch<std::complex<double>> {
   template<typename MATRIX, typename VECTOR>
@@ -66,7 +66,7 @@ struct heev_dispatch<std::complex<double>> {
 };
 
 } // end of anonymous namespace
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int heev(char jobz, char uplo, MATRIX& a, VECTOR& w) {
   static_assert(std::is_same_v<real_t<MATRIX>, value_t<VECTOR>>);

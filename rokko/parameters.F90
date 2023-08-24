@@ -46,7 +46,7 @@ module parameters
   end interface rokko_set
 
   interface
-  
+
      subroutine rokko_parameters_construct(params) bind(c)
        use iso_c_binding
        import rokko_parameters
@@ -97,7 +97,7 @@ module parameters
        type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_key_size_c
-    
+
      subroutine rokko_parameters_set_double_c(params, key, val) &
           bind(c,name='rokko_parameters_set_double')
        use iso_c_binding
@@ -108,7 +108,7 @@ module parameters
        real(c_double), value, intent(in) :: val
      end subroutine rokko_parameters_set_double_c
 
-     
+
      subroutine rokko_parameters_set_char_c(params, key, val) &
           bind(c,name='rokko_parameters_set_char')
        use iso_c_binding
@@ -116,7 +116,7 @@ module parameters
        implicit none
        type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
-       character(c_char), value, intent(in) :: val   
+       character(c_char), value, intent(in) :: val
      end subroutine rokko_parameters_set_char_c
 
      subroutine rokko_parameters_set_string_c(params, key, val) &
@@ -128,7 +128,7 @@ module parameters
        character(c_char), intent(in) :: key(*)
        character(c_char), intent(in) :: val(*)
      end subroutine rokko_parameters_set_string_c
-     
+
      integer(c_int) function rokko_parameters_get_int_c (params, key) &
           bind(c,name='rokko_parameters_get_int')
        use iso_c_binding
@@ -173,7 +173,7 @@ module parameters
        type(rokko_parameters), value, intent(in) :: params
        character(c_char) :: key(*)
      end function rokko_parameters_get_string_c
-     
+
      integer(c_int) function rokko_parameters_defined_c(params, key) &
           bind(c,name='rokko_parameters_defined')
        use iso_c_binding
@@ -198,18 +198,18 @@ module parameters
        implicit none
        type(rokko_parameters), value, intent(in) :: params
      end function rokko_parameters_size_c
-     
+
   end interface
 
 contains
-   
+
   subroutine rokko_parameters_get_int (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     integer, intent(out) :: val
     val =  rokko_parameters_get_int_c (params, trim(key)//c_null_char)
   end subroutine rokko_parameters_get_int
-  
+
   subroutine rokko_parameters_get_double (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
@@ -225,7 +225,7 @@ contains
     tmp = rokko_parameters_get_logical_c (params, trim(key)//c_null_char)
     val = (tmp /= 0)
   end subroutine rokko_parameters_get_logical
-  
+
   subroutine rokko_parameters_get_char (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
@@ -256,7 +256,7 @@ contains
        keys(i)%str = rokko_get_string(ptr_i)
     enddo
   end subroutine rokko_parameters_keys
-  
+
   function rokko_parameters_get_string(params, key) result(val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
@@ -266,14 +266,14 @@ contains
     ptr = rokko_parameters_get_string_c (params, trim(key)//c_null_char)
     val => rokko_get_string(ptr)
   end function rokko_parameters_get_string
-  
+
   subroutine rokko_parameters_set_int (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
     integer, value, intent(in) :: val
     call rokko_parameters_set_int_c (params, trim(key)//c_null_char, val)
   end subroutine rokko_parameters_set_int
-  
+
   subroutine rokko_parameters_set_double (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key
@@ -291,7 +291,7 @@ contains
        call rokko_parameters_set_false_c (params, trim(key)//c_null_char)
     endif
   end subroutine rokko_parameters_set_logical
-  
+
   subroutine rokko_parameters_set_char (params, key, val)
     type(rokko_parameters), value, intent(in) :: params
     character(*), intent(in) :: key

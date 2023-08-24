@@ -25,7 +25,7 @@ inline double plange_dispatch(char norm, int m, int n, const double* A, const in
 inline float plange_dispatch(char norm, int m, int n, const float* A, const int* descA) {
   return cscalapack_pslange(norm, m, n, A, descA);
 }
-  
+
 }
 
 template<typename MATRIX>

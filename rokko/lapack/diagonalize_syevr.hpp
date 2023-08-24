@@ -82,7 +82,7 @@ parameters diagonalize_syevr(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("isuppz", isuppz);
-  
+
   if (params.get_bool("verbose")) {
     print_verbose("syevr", 'V', range, uplow, vl, vu, il, iu, params_out);
   }

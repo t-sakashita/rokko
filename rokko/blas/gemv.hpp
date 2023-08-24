@@ -29,9 +29,9 @@ inline void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans, int m, int n, TYPE al
 
 BLAS_GEMV_IMPL(sgemv, float);
 BLAS_GEMV_IMPL(dgemv, double);
-  
-#undef BLAS_GEMV_IMPL  
-  
+
+#undef BLAS_GEMV_IMPL
+
 #define BLAS_GEMV_IMPL(NAMES, TYPE) \
 inline void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans, int m, int n, std::complex<TYPE> alpha, const std::complex<TYPE>* a, int lda, const std::complex<TYPE>* x, int inc_x, std::complex<TYPE> beta, std::complex<TYPE>* y, int inc_y) { \
   cblas_ ## NAMES (order, trans, m, n, reinterpret_cast<TYPE*>(&alpha), reinterpret_cast<const TYPE*>(a), lda, reinterpret_cast<const TYPE*>(x), inc_x, reinterpret_cast<TYPE*>(&beta), reinterpret_cast<TYPE*>(y), inc_y); \
@@ -39,9 +39,9 @@ inline void gemv(CBLAS_ORDER order, CBLAS_TRANSPOSE trans, int m, int n, std::co
 
 BLAS_GEMV_IMPL(cgemv, float);
 BLAS_GEMV_IMPL(zgemv, double);
-  
-#undef BLAS_GEMV_IMPL  
-  
+
+#undef BLAS_GEMV_IMPL
+
 template<typename MATRIX, typename VECTOR, typename T>
 void gemv(CBLAS_TRANSPOSE trans, T alpha, const MATRIX& a, const VECTOR& x, int inc_x,
           T beta, VECTOR& y, int inc_y) {

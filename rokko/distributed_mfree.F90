@@ -21,7 +21,7 @@ module rokko_distributed_mfree_mod
   interface rokko_construct
      procedure rokko_distributed_mfree_construct
   end interface rokko_construct
-  
+
   interface rokko_destruct
      procedure rokko_distributed_mfree_destruct
   end interface rokko_destruct
@@ -100,13 +100,13 @@ module rokko_distributed_mfree_mod
        implicit none
        type(rokko_distributed_mfree), intent(in) :: matrix
      end function rokko_distributed_mfree_dim
-     
+
      subroutine rokko_distributed_mfree_destruct(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_mfree
        implicit none
        type(rokko_distributed_mfree), intent(inout) :: matrix
-     end subroutine rokko_distributed_mfree_destruct     
+     end subroutine rokko_distributed_mfree_destruct
   end interface
 
 contains

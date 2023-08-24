@@ -21,7 +21,7 @@ module rokko_string
      type(string), allocatable :: string(:)
      integer :: size
   end type array_strings
-  
+
   interface
      ! interface for C function "void free(void *ptr)"
      subroutine free_c(ptr) bind(C,name="free")
@@ -62,5 +62,5 @@ contains
        str = c_null_ptr
     end if
   end subroutine string_free_c
-  
+
 end module rokko_string

@@ -21,12 +21,12 @@ template<typename MATRIX>
 int op_rows(CBLAS_TRANSPOSE trans, MATRIX const& a) {
   return (trans == CblasNoTrans) ? rows(a) : cols(a);
 }
-  
+
 template<typename MATRIX>
 int op_cols(CBLAS_TRANSPOSE trans, MATRIX const& a) {
   return (trans == CblasNoTrans) ? cols(a) : rows(a);
 }
-  
+
 } // namespace util
 } // namespace blas
 } // namespace rokko

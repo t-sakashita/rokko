@@ -27,7 +27,7 @@ namespace lapack {
 namespace {
 
 template<typename T> struct lange_dispatch;
-  
+
 template<>
 struct lange_dispatch<float> {
   template<typename MATRIX>

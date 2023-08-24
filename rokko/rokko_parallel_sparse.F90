@@ -14,6 +14,6 @@ module rokko_parallel_sparse
   use rokko_distributed_crs_matrix_mod
   use rokko_distributed_mfree_mod
   implicit none
-  
+
 end module rokko_parallel_sparse
 

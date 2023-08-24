@@ -17,7 +17,7 @@ module rokko_parallel_sparse_ev_mod
   use parameters
   use rokko_string
   implicit none
-  
+
   type, bind(c) :: rokko_parallel_sparse_ev
      type(c_ptr) :: ptr
   end type rokko_parallel_sparse_ev
@@ -87,9 +87,9 @@ module rokko_parallel_sparse_ev_mod
        implicit none
      end function rokko_parallel_sparse_ev_solvers_c
   end interface
-  
+
   interface rokko_parallel_sparse_ev_diagonalize
-      
+
      subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix(solver, mat, params, params_out) &
           & bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_f")
        use iso_c_binding
@@ -101,7 +101,7 @@ module rokko_parallel_sparse_ev_mod
        type(rokko_parameters), intent(in) :: params
        type(rokko_parameters), intent(out) :: params_out
      end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix
-     
+
      subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_noreturn(solver, mat, params) &
           & bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_crs_matrix_noreturn_f")
        use iso_c_binding
@@ -112,8 +112,8 @@ module rokko_parallel_sparse_ev_mod
        type(rokko_distributed_crs_matrix), intent(inout) :: mat
        type(rokko_parameters), intent(in) :: params
      end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_crs_noreturn
-     
-     
+
+
      subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree(solver, mat, params, params_out) &
           & bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_mfree_f")
        use iso_c_binding
@@ -125,7 +125,7 @@ module rokko_parallel_sparse_ev_mod
        type(rokko_parameters), intent(in) :: params
        type(rokko_parameters), intent(out) :: params_out
      end subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree
-     
+
      subroutine rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn(solver, mat, params) &
           & bind(c,name="rokko_parallel_sparse_ev_diagonalize_distributed_mfree_noreturn_f")
        use iso_c_binding
@@ -166,11 +166,11 @@ module rokko_parallel_sparse_ev_mod
   interface rokko_eigenvalue
      procedure rokko_parallel_sparse_ev_eigenvalue
   end interface rokko_eigenvalue
-  
+
   interface rokko_eigenvector
      procedure rokko_parallel_sparse_ev_eigenvector
   end interface rokko_eigenvector
-  
+
 contains
 
   function rokko_parallel_sparse_ev_default_solver()

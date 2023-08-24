@@ -51,7 +51,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("ifail", ifail);
-  
+
   if (params.get_bool("verbose")) {
     print_verbose("syevx", 'N', range, uplow, vl, vu, il, iu, params_out);
   }
@@ -101,7 +101,7 @@ parameters diagonalize_syevx(Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic,MATRI
   params_out.set("info", info);
   params_out.set("m", m);
   params_out.set("ifail", ifail);
-  
+
   if (params.get_bool("verbose")) {
     print_verbose("syevx", 'V', range, uplow, vl, vu, il, iu, params_out);
   }

@@ -27,7 +27,7 @@ namespace lapack {
 namespace {
 
 template<typename T> struct geqrf_dispatch;
-  
+
 template<>
 struct geqrf_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
@@ -93,7 +93,7 @@ struct geqrf_dispatch<std::complex<double>> {
 };
 
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int geqrf(MATRIX& a, VECTOR& tau) {
   static_assert(std::is_same_v<value_t<MATRIX>, value_t<VECTOR>>);

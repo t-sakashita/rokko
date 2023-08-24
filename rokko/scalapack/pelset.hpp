@@ -21,11 +21,11 @@ namespace {
 inline void pelset_dispatch(double* A, int ia, int ja, const int* descA, double alpha) {
   cscalapack_pdelset(A, ia, ja, descA, alpha);
 }
-  
+
 inline void pelset_dispatch(float* A, int ia, int ja, const int* descA, float alpha) {
   cscalapack_pselset(A, ia, ja, descA, alpha);
 }
-  
+
 }
 
 template<typename MATRIX>

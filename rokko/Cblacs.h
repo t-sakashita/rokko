@@ -16,7 +16,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
 MPI_Comm Cblacs2sys_handle(int BlacsCtxt);
 
 void Cblacs_barrier(int ConTxt, char *scope);

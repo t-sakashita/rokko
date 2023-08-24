@@ -43,7 +43,7 @@ public:
       throw std::invalid_argument("elemental::diagonalize() : " + routine + " is invalid routine name");
     }
   }
-  
+
   template<typename T, typename MATRIX_MAJOR, typename VEC>
   parameters diagonalize(distributed_matrix<T, MATRIX_MAJOR>& mat,
 			 VEC& eigvals,

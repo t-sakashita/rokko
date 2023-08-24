@@ -36,7 +36,7 @@ module rokko_distributed_crs_matrix_mod
        implicit none
        type(rokko_distributed_crs_matrix), intent(inout) :: matrix
      end subroutine rokko_distributed_crs_matrix_destruct
-     
+
      subroutine rokko_distributed_crs_matrix_insert0(matrix, row, col_size, cols, values) &
           & bind(c,name='rokko_distributed_crs_matrix_insert')
        use iso_c_binding
@@ -47,14 +47,14 @@ module rokko_distributed_crs_matrix_mod
        integer(c_int), dimension(col_size), intent(in) :: cols
        real(c_double), dimension(col_size), intent(in) :: values
      end subroutine rokko_distributed_crs_matrix_insert0
-     
+
      subroutine rokko_distributed_crs_matrix_complete(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_crs_matrix
        implicit none
        type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
      end subroutine rokko_distributed_crs_matrix_complete
-     
+
      function rokko_distributed_crs_matrix_start_row0(matrix) &
           & bind(c,name='rokko_distributed_crs_matrix_start_row')
        use iso_c_binding
@@ -63,7 +63,7 @@ module rokko_distributed_crs_matrix_mod
        integer(c_int) :: rokko_distributed_crs_matrix_start_row0
        type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
      end function rokko_distributed_crs_matrix_start_row0
-     
+
      function rokko_distributed_crs_matrix_end_row0(matrix) &
           & bind(c,name='rokko_distributed_crs_matrix_end_row')
        use iso_c_binding
@@ -72,7 +72,7 @@ module rokko_distributed_crs_matrix_mod
        integer(c_int) :: rokko_distributed_crs_matrix_end_row0
        type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
      end function rokko_distributed_crs_matrix_end_row0
-     
+
      function rokko_distributed_crs_matrix_num_local_rows(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_crs_matrix
@@ -80,7 +80,7 @@ module rokko_distributed_crs_matrix_mod
        integer(c_int) :: rokko_distributed_crs_matrix_num_local_rows
        type(rokko_distributed_crs_matrix), value, intent(in) :: matrix
      end function rokko_distributed_crs_matrix_num_local_rows
-     
+
      subroutine rokko_distributed_crs_matrix_print(matrix) bind(c)
        use iso_c_binding
        import rokko_distributed_crs_matrix
@@ -113,7 +113,7 @@ module rokko_distributed_crs_matrix_mod
   interface rokko_start_row
      module procedure rokko_distributed_crs_matrix_start_row
   end interface rokko_start_row
-  
+
   interface rokko_end_row
      module procedure rokko_distributed_crs_matrix_end_row
   end interface rokko_end_row
@@ -129,11 +129,11 @@ module rokko_distributed_crs_matrix_mod
   interface rokko_num_local_rows
      procedure rokko_distributed_crs_matrix_num_local_rows
   end interface rokko_num_local_rows
-  
+
   interface rokko_print
-     procedure rokko_distributed_crs_matrix_print  
+     procedure rokko_distributed_crs_matrix_print
   end interface rokko_print
-  
+
 contains
 
   function rokko_distributed_crs_matrix_start_row(matrix) result(ind)
@@ -161,5 +161,5 @@ contains
     enddo
     call rokko_distributed_crs_matrix_insert0(matrix, row-1, col_size, cols2, values)
   end subroutine rokko_distributed_crs_matrix_insert
-     
+
 end module rokko_distributed_crs_matrix_mod

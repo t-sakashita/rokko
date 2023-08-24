@@ -26,7 +26,7 @@ namespace lapack {
 namespace {
 
 template<typename T> struct ungqr_dispatch;
-  
+
 template<>
 struct ungqr_dispatch<float> {
   template<typename MATRIX, typename VECTOR>
@@ -92,7 +92,7 @@ struct ungqr_dispatch<std::complex<double>> {
 };
 
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int ungqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
   static_assert(std::is_same_v<value_t<MATRIX>, value_t<VECTOR>>);
@@ -121,11 +121,11 @@ template<typename MATRIX, typename VECTOR>
 lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau) {
   return ungqr(k, a, tau);
 }
-  
+
 template<typename MATRIX, typename VECTOR>
 lapack_int orgqr(lapack_int k, MATRIX& a, VECTOR const& tau, VECTOR& work) {
   return ungqr(k, a, tau, work);
 };
-  
+
 } // end namespace lapack
 } // end namespace rokko

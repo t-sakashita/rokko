@@ -17,7 +17,7 @@ module solver_name_utility
   implicit none
 
   interface
-     
+
      subroutine rokko_split_solver_name_f (str, library, routine) &
           & bind(c,name='rokko_split_solver_name')
        use iso_c_binding
@@ -26,7 +26,7 @@ module solver_name_utility
        type(c_ptr), intent(out) :: library
        type(c_ptr), intent(out) :: routine
      end subroutine rokko_split_solver_name_f
-     
+
   end interface
 
 contains

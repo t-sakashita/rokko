@@ -23,7 +23,7 @@ extern "C" {
 void SCALAPACK_descinit(int* desc, const int* m, const int* n, const int* mb, const int* nb,
                         const int* irsrc, const int* icsrc, const int* ictxt, const int* lld,
                         int* info);
-  
+
 #define SCALAPACK_indxg2p ROKKO_GLOBAL(indxg2p,INDXG2P)
 int SCALAPACK_indxg2p(int* indxglob, int* nb, int* iproc, int* isrcproc, int* nprocs);
 

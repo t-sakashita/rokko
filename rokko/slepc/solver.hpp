@@ -285,7 +285,7 @@ public:
     std::cout << "  number of converged eigenpairs=" << get_num_conv() << std::endl;
     std::cout << "  number of iterations=" << its << std::endl;
   }
-  
+
   double eigenvalue(int i) const {
     PetscScalar eval_r, eval_i;
     EPSGetEigenvalue(eps, i, &eval_r, &eval_i);

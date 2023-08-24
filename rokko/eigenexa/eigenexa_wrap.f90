@@ -78,7 +78,7 @@ subroutine eigen_get_matdims_wrap(NPROW, NPCOL, n, nx, ny)
   ! to avoid unexpected SIGSEGV,
   ! use the maximum of nn and nmz.
   nmz = MAX(nn, nmz)
-  
+
   nmw = ((n-1)/NPCOL+1)
   nmw = ((nmw-1)/NB+1)*NB+1
   nn  = nmw
@@ -88,9 +88,9 @@ subroutine eigen_get_matdims_wrap(NPROW, NPCOL, n, nx, ny)
   ! to avoid unexpected SIGSEGV,
   ! use the maximum of nn and nmz.
   nmw = MAX(nn, nmw)
-  
+
   larray = MAX(nmz, nm)*nmw
-  
+
   nx = nm
   ny = (larray-1)/nm+1
 

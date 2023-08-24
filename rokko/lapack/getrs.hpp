@@ -26,7 +26,7 @@ namespace lapack {
 namespace {
 
 template<typename T> struct getrs_dispatch;
-  
+
 template<>
 struct getrs_dispatch<float> {
   template<typename MATRIX0, typename MATRIX1, typename VECTOR>
@@ -68,7 +68,7 @@ struct getrs_dispatch<std::complex<double>> {
 };
 
 }
-  
+
 template<typename MATRIX0, typename MATRIX1, typename VECTOR>
 lapack_int getrs(char trans, lapack_int nrhs, MATRIX0 const& a,
                  VECTOR const& ipiv, MATRIX1& b) {
