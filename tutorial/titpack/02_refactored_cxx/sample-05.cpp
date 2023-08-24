@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
   for (int k = 0; k < 2; ++k) {
     int iv = 20 + (ss.dimension() / 2) * k;
     int itr = lnc1(hop, nvec, iv, E, alpha, beta, coeff, wk);
-    
+
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     lncv1(hop, nvec, iv, alpha, beta, coeff, x, itr, wk);
     for (int i = 0; i < ss.dimension(); ++i) v(i, k) = x(i, 0);
   }
-  
+
   // Degeneracy check
   std::vector<double> norm;
   int idgn = orthg(v, norm, 2);

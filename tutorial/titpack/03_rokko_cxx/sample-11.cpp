@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
   matrix_type elemnt(hop.dimension(), hop.dimension());
   elm3(hop, elemnt);
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
-  
+
   std::vector<double> E(hop.dimension());
   matrix_type v(hop.dimension(), hop.dimension());
   solver.diagonalize(elemnt, E, v);

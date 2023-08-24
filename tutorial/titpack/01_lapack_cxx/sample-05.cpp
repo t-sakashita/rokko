@@ -53,7 +53,7 @@ int main() {
   for (int k = 0; k < 2; ++k) {
     int iv = 20 + (idim / 2) * k;
     int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, wk, list1, list2);
-    
+
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
@@ -61,7 +61,7 @@ int main() {
     lncv1(n, ipair, bondwt, zrtio, nvec, iv, alpha, beta, coeff, x, itr, wk, list1, list2);
     for (int i = 0; i < idim; ++i) v(i, k) = x(i, 0);
   }
-  
+
   // Degeneracy check
   std::vector<double> norm;
   int idgn = orthg(v, norm, 2);

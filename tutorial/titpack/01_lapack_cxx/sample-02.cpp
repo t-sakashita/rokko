@@ -51,7 +51,7 @@ int main() {
   matrix_type coeff;
   matrix_type v;
   int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
-  
+
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
   std::cout << std::endl;
@@ -78,7 +78,7 @@ int main() {
   std::vector<double> sxx(1), szz(1);
   xcorr(n, npair, x, sxx, list1, list2);
   zcorr(n, npair, x, szz, list1);
-  std::cout << "[Nearest neighbor correlation functions]\n\t" 
+  std::cout << "[Nearest neighbor correlation functions]\n\t"
             << "sxx : " << sxx[0]
             << ", szz : " << szz[0] << std::endl;
 }

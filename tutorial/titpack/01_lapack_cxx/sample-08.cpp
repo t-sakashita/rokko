@@ -47,7 +47,7 @@ int main() {
   matrix_type elemnt;
   i_matrix_type loc;
   elm2(n, ipair, bondwt, zrtio, elemnt, loc, list1, list2);
-  
+
   // Eigenvalues
   int nvec = 3;
   int iv = idim / 5 - 1;
@@ -55,7 +55,7 @@ int main() {
   matrix_type coeff;
   matrix_type v;
   int itr = lnc2(elemnt, loc, nvec, iv, E, alpha, beta, coeff, v);
-  
+
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
   std::cout << std::endl;

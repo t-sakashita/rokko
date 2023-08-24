@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
   matrix_type coeff;
   matrix_type v;
   int itr = lnc1(hop, nvec, iv, E, alpha, beta, coeff, v);
-  
+
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
   std::cout << std::endl;

@@ -18,14 +18,14 @@ subspace::subspace(int n, double szval) : n_(n), list1_(), list2_() {
     std::cerr << " #(E01)# Variable szval given to sz out of range\n";
     std::abort();
   }
-  
+
   // initialization
   int ihf = (n + 1) / 2;
   ihfbit_ = 1 << ihf;
   irght_ = ihfbit_ - 1;
   ilft_ = ((1 << n) - 1) ^ irght_;
   int iupspn = n / 2 + (n % 2) + (int)(szval + 0.001);
-  
+
   list2_.resize(std::max(1 << ihf, 1 << (n - ihf)));
 
   // main loop

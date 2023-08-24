@@ -49,7 +49,7 @@ int main() {
   matrix_type elemnt;
   elm3(n, ipair, bondwt, zrtio, elemnt, list1, list2);
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
-  
+
   std::vector<double> E;
   matrix_type v;
   int nvec = 1;
@@ -65,7 +65,7 @@ int main() {
   elm3(n, ipair, bondwt, zrtio, elemnt, list1, list2);
   check3(elemnt, v, 0);
   std::chrono::system_clock::time_point t4 = std::chrono::system_clock::now();
-  
+
   std::vector<int> npair;
   npair.emplace_back(1);
   npair.emplace_back(2);

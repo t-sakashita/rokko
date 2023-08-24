@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
   elm3(hop, elemnt);
   MPI_Barrier(g.get_comm());
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
-  
+
   Eigen::VectorXd E(hop.dimension());
   matrix_type v(map);
   solver.diagonalize(elemnt, E, v);
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
   std::cout << std::flush;
   MPI_Barrier(g.get_comm());
   std::chrono::system_clock::time_point t4 = std::chrono::system_clock::now();
-  
+
   std::vector<int> npair;
   npair.emplace_back(1);
   npair.emplace_back(2);

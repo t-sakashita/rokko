@@ -39,7 +39,7 @@ public:
   int get_local_offset() const { return 0; }
   int get_num_local_rows() const { return dimension(); }
   MPI_Comm get_comm() const { return MPI_COMM_WORLD; }
-  
+
 private:
   subspace const& ss_;
   std::vector<int> ipair_;

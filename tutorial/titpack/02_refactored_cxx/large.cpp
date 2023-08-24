@@ -46,7 +46,7 @@ int lnc1z(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   // datack(ipair, n);
 
   // alpha[0] and beta[0]
@@ -57,8 +57,8 @@ int lnc1z(hamiltonian const& hop, int nvec, int iv, std::vector<double>& E,
   for (int i = 0; i < hop.dimension(); ++i) beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
   beta.emplace_back(beta0);
-  
-  // iteration  
+
+  // iteration
   for (int i = 1; i < 150; ++i) {
     for (int j = 0; j < hop.dimension(); ++j) {
       double temp1 = v1[j];
@@ -119,7 +119,7 @@ void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const&
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   for (int k = 0; k < nvec; ++k) {
     for (int i = 0; i < hop.dimension(); ++i) x(i, k) = 0;
     x(iv, k) = coeff(0, k);
@@ -148,7 +148,7 @@ void lncv1z(hamiltonian const& hop, int nvec, int iv, std::vector<double> const&
       for (int j = 1; j < hop.dimension(); ++j)
         x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
-  
+
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
@@ -171,7 +171,7 @@ double check1(hamiltonian const& hop, const double *x, matrix_type& v, int vinde
 
   for (int i = 0; i < hop.dimension(); ++i) v(i, vindex) = 0;
   hop.multiply(x, &v(0, vindex));
-  
+
   double prd = 0;
   for (int i = 0; i < hop.dimension(); ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check1\n"

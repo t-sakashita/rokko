@@ -17,14 +17,14 @@ c
       dimension wk(idim,4)
       dimension x(idim)
       dimension v(idim,3),norm(3)
-c 
+c
       data bondwt/ibond*-1.0d0/
       data zrtio/ibond*1.0d0/
       data ipair/1,2, 2,3,  3,4,  4,5,  5,6,  6,7,  7,8, 8,9,
      &     9,10, 10,11, 11,12, 12,13, 13,14, 14,15, 15,1/
       nvec=1
       iv=idim/5
-c 
+c
       call sz(n,idim,0.5d0,list1,list2)
 c- You may alternatively use szdy or sztn for faster processing -
 c      call szdy(n,idim,0.5d0,list1,list2)

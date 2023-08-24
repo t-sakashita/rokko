@@ -50,7 +50,7 @@ int main() {
   matrix_type coeff;
   matrix_type v;
   int itr = lnc1(n, ipair, bondwt, zrtio, nvec, iv, E, alpha, beta, coeff, v, list1, list2);
-  
+
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
   std::cout << std::endl;

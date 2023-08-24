@@ -40,7 +40,7 @@ bisec(std::vector<double> const& alpha, std::vector<double> const& beta, int ndi
 
 //
 // eigenvector of a tridiagonal matrix by inverse iteration for the large/medium routines
-// 
+//
 // E(4)       @  4 lowest eigenvalues
 // ndim       @  matrix dimension
 // nvec       @  number of vectors to calculate

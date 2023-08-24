@@ -51,7 +51,7 @@ void elm2(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
       loc(i, ic - 1) = i;
     }
   }
-  
+
   // off-diagonal elements
   for (int k = 0; k < ibond; ++k) {
     int isite1 = ipair[k * 2];
@@ -112,7 +112,7 @@ int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   // alpha[0] and beta[0]
   double prdct = 0;
   for (int k = 0; k < ic; ++k) {
@@ -128,8 +128,8 @@ int lnc2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int iv,
   for (int i = 0; i < idim; ++i) beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
   beta.emplace_back(beta0);
-  
-  // iteration  
+
+  // iteration
   for (int i = 1; i < 150; ++i) {
     for (int j = 0; j < idim; ++j) {
       double temp1 = v1[j];
@@ -200,7 +200,7 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   for (int k = 0; k < nvec; ++k) {
     for (int i = 1; i < idim; ++i) x(i, k) = 0;
     x(iv, k) = coeff(0, k);
@@ -243,7 +243,7 @@ void lncv2z(matrix_type const& elemnt, i_matrix_type const& loc, int nvec, int i
       for (int j = 1; j < idim; ++j)
         x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
-  
+
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
@@ -270,7 +270,7 @@ double check2(matrix_type const& elemnt, i_matrix_type const& loc, const double 
   for (int k = 0; k < ic; ++k)
     for (int j = 0; j < idim; ++j)
       v(j, vindex) += elemnt(j, k)  * x[loc(j, k)];
-  
+
   double prd = 0;
   for (int i = 0; i < idim; ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check2\n"

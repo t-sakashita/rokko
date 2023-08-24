@@ -57,7 +57,7 @@ int main() {
   for (int k = 0; k < 3; ++k) {
     int iv = 90 + (idim / 3) * k;
     int itr = lnc2(elemnt, loc, nvec, iv, E, alpha, beta, coeff, wk);
-    
+
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
@@ -74,7 +74,7 @@ int main() {
 
     for (int i = 0; i < idim; ++i) v(i, k) = x(i, 0);
   }
-  
+
   // Degeneracy check
   std::vector<double> norm;
   int idgn = orthg(v, norm, 3);

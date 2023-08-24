@@ -50,7 +50,7 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
     return 0;
   }
   std::vector<double> v(idim, 0);
-      
+
   for (int j = 0; j < idim; ++j)
     for (int i = 0; i < idim; ++i)
       // v[j] += elemnt(j, i) * x(xindex, i);
@@ -59,7 +59,7 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
   double prd = 0;
   // for (int i = 0; i < idim; ++i) prd += v[i] * x(xindex, i);
   for (int i = 0; i < idim; ++i) prd += v[i] * x(i, xindex);
-  
+
   std::cout << "---------------------------- Information from check3\n"
             << "<x*H*x> = "<< prd << std::endl
             << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";

@@ -58,7 +58,7 @@ program frank_matrix
      enddo
   enddo
 
-  
+
   if (myrank.eq.0) then
      write(*,'(A)') "Frank matrix = "
   endif
@@ -67,7 +67,7 @@ program frank_matrix
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
   call rokko_diagonalize(solver, mat, w, Z)
-  
+
   call MPI_Barrier(MPI_COMM_WORLD, ierr)
 
   if (myrank.eq.0) then

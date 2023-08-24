@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 
   // matrix elements
   crs_matrix mat(hop);
-  
+
   // Eigenvalues
   int nvec = 1;
   matrix_type v(hop.dimension(), 3);
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
   for (int k = 0; k < 3; ++k) {
     int iv = 90 + (hop.dimension() / 3) * k;
     int itr = lnc2(mat, nvec, iv, E, alpha, beta, coeff, wk);
-    
+
     std::cout << "# " << k << " [Eigenvalues]\n";
     for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
     std::cout << std::endl;
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 
     for (int i = 0; i < hop.dimension(); ++i) v(i, k) = x(i, 0);
   }
-  
+
   // Degeneracy check
   std::vector<double> norm;
   int idgn = orthg(v, norm, 3);

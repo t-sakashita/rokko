@@ -46,7 +46,7 @@ int lnc2z(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   // alpha[0] and beta[0]
   double alpha0 = mat.multiply(v1, v0);
   alpha.emplace_back(alpha0);
@@ -55,8 +55,8 @@ int lnc2z(crs_matrix const& mat, int nvec, int iv, std::vector<double>& E,
     beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
   beta.emplace_back(beta0);
-  
-  // iteration  
+
+  // iteration
   for (int i = 1; i < 150; ++i) {
     for (int j = 0; j < mat.dimension(); ++j) {
       double temp1 = v1[j];
@@ -117,7 +117,7 @@ void lncv2z(crs_matrix const& mat, int nvec, int iv,
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   for (int k = 0; k < nvec; ++k) {
     for (int i = 0; i < mat.dimension(); ++i) x(i, k) = 0;
     x(iv, k) = coeff(0, k);
@@ -146,7 +146,7 @@ void lncv2z(crs_matrix const& mat, int nvec, int iv,
       for (int j = 1; j < mat.dimension(); ++j)
         x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
-  
+
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
@@ -168,7 +168,7 @@ double check2(crs_matrix const& mat, const double *x, matrix_type& v, int vindex
 
   for (int i = 0; i < mat.dimension(); ++i) v(i, vindex) = 0;
   mat.multiply(x, &v(0, vindex));
-  
+
   double prd = 0;
   for (int i = 0; i < mat.dimension(); ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check2\n"

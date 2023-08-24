@@ -53,7 +53,7 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   datack(ipair, n);
 
   // alpha[0] and beta[0]
@@ -64,8 +64,8 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
   for (int i = 0; i < idim; ++i) beta0 += (v0[i] - alpha0 * v1[i]) * (v0[i] - alpha0 * v1[i]);
   beta0 = std::sqrt(beta0);
   beta.emplace_back(beta0);
-  
-  // iteration  
+
+  // iteration
   for (int i = 1; i < 150; ++i) {
     for (int j = 0; j < idim; ++j) {
       double temp1 = v1[j];
@@ -133,7 +133,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
     v1[i] = 0;
   }
   v1[iv] = 1;
-  
+
   for (int k = 0; k < nvec; ++k) {
     for (int i = 0; i < idim; ++i) x(i, k) = 0;
     x(iv, k) = coeff(0, k);
@@ -162,7 +162,7 @@ void lncv1z(int n, std::vector<int> const& ipair, std::vector<double> const& bon
       for (int j = 1; j < idim; ++j)
         x(j, k) += coeff(i + 1, k) * (v0[j] - alpha0 * v1[j]) / beta0;
   }
-  
+
   // normalization
   for (int k = 0; k < nvec; ++k) {
     double dnorm = 0;
@@ -226,7 +226,7 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
   int ihfbit = 1 << ihf;
   int irght = ihfbit - 1;
   int ilft = ((1 << n) - 1) ^ irght;
-  
+
   double dnorm = 0;
   for (int i = 0; i < idim; ++i) dnorm += x[i] * x[i];
   if (dnorm < 1e-30) {
@@ -256,7 +256,7 @@ double check1(int n, std::vector<int> const& ipair, std::vector<double> const& b
       }
     }
   }
-  
+
   double prd = 0;
   for (int i = 0; i < idim; ++i) prd += v(i, vindex) * x[i];
   std::cout << "---------------------------- Information from check1\n"

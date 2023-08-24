@@ -30,7 +30,7 @@ void elm3(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
     return;
   }
   datack(ipair, n);
-  
+
   // initialization
   elemnt.resize(idim, idim);
   for (int i = 0; i < idim; ++i)
@@ -93,14 +93,14 @@ double check3(matrix_type const& elemnt, matrix_type const& x, int xindex) {
     return 0;
   }
   std::vector<double> v(idim, 0);
-      
+
   for (int i = 0; i < idim; ++i)
     for (int j = 0; j < idim; ++j)
       v[j] += elemnt(i, j) * x(i, xindex);
 
   double prd = 0;
   for (int i = 0; i < idim; ++i) prd += v[i] * x(i, xindex);
-  
+
   std::cout << "---------------------------- Information from check3\n"
             << "<x*H*x> = "<< prd << std::endl
             << "H*x(j)/x(j) (j=min(idim/3,13)-1,idim,max(1,idim/20))";

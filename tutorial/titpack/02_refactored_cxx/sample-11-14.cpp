@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
   matrix_type elemnt;
   elm3(hop, elemnt);
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
-  
+
   std::vector<double> E;
   matrix_type v;
   int nvec = 1;
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
   elm3(hop, elemnt);
   check3(elemnt, v, 0);
   std::chrono::system_clock::time_point t4 = std::chrono::system_clock::now();
-  
+
   std::vector<int> npair;
   npair.emplace_back(1);
   npair.emplace_back(2);

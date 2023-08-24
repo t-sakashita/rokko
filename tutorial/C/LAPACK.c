@@ -6,7 +6,7 @@
  *                            Synge Todo <wistaria@comp-phys.org>,
  *                            Tsuyoshi Okubo <t-okubo@issp.u-tokyo.ac.jp>
  *                            Yuichi Motoyama <y-motoyama@issp.u-tokyo.ac.jp>
- *    
+ *
  * Distributed under the Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
  *
@@ -20,7 +20,7 @@
 #define LDA N
 
 extern void dsyev_(char* jobz,
-                  char* uplo, int* n, double* a, int* lda, 
+                  char* uplo, int* n, double* a, int* lda,
                   double* w, double* work, int* lwork, int* info );
 
 void print_matrix(double* a, int nrow, int ncol, int lda)

@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
   solver.initialize(argc, argv);
   MPI_Barrier(comm.get_comm());
   std::chrono::system_clock::time_point t2 = std::chrono::system_clock::now();
-  
+
   // Eigenvalues
   rokko::parameters params;
   params.set("Block Size", 5);
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
   params.set("num_eigenvalues", 10);
   solver.diagonalize(hop, params);
   std::chrono::system_clock::time_point t3 = std::chrono::system_clock::now();
-  
+
   if (comm.get_myrank() == 0) {
     std::cout << "[Number of converged eigenpairs]\n\t" << solver.get_num_conv() << std::endl;
     // std::cout << "[Iteration number]\n\t" << itr << std::endl;
@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
   // std::vector<double> sxx(1), szz(1);
   // xcorr(ss, npair, x, 0, sxx);
   // zcorr(ss, npair, x, 0, szz);
-  // std::cout << "[Nearest neighbor correlation functions]\n\t" 
+  // std::cout << "[Nearest neighbor correlation functions]\n\t"
   //           << "sxx : " << sxx[0]
   //           << ", szz : " << szz[0] << std::endl;
 

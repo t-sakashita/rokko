@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 
   // matrix elements
   crs_matrix mat(hop);
-  
+
   // Eigenvalues
   int nvec = 1;
   int iv = ss.dimension() / 5 - 1;
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
   matrix_type coeff;
   matrix_type v;
   int itr = lnc2(mat, nvec, iv, E, alpha, beta, coeff, v);
-  
+
   std::cout << "[Eigenvalues]\n";
   for (int i = 0; i < 4; ++i) std::cout << '\t' << E[i];
   std::cout << std::endl;
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
   std::vector<double> sxx(1), szz(1);
   xcorr(ss, npair, x, 0, sxx);
   zcorr(ss, npair, x, 0, szz);
-  std::cout << "[Nearest neighbor correlation functions]\n\t" 
+  std::cout << "[Nearest neighbor correlation functions]\n\t"
             << "sxx : " << sxx[0]
             << ", szz : " << szz[0] << std::endl;
 }

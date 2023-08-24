@@ -55,4 +55,4 @@ c*** Precision check and correlation functions
       print 130,sxx,szz
  130  format(/' [Nearest neighbor correlation functions]'/
      &       '    sxx :',d18.10,',    szz :',d18.10)
-      end 
+      end

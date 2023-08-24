@@ -52,7 +52,7 @@ int lnc1z(int n, std::vector<int> const& ipair, std::vector<double> const& bondw
 //
 // eigenvector by the Lanczos method
 //
-  
+
 void lncv1(int n, std::vector<int> const& ipair, std::vector<double> const& bondwt,
            std::vector<double> const& zrtio, int nvec, int iv, std::vector<double> const& alpha,
            std::vector<double> const& beta, matrix_type const& coeff, matrix_type& x,

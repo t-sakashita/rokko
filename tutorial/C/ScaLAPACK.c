@@ -95,7 +95,7 @@ int main(int argc, char** argv)
   /*
    * query size for work
    */
-  pdsyev_("V", "U", &N, distributed_frank, &i_one, &i_one, desc_distributed, 
+  pdsyev_("V", "U", &N, distributed_frank, &i_one, &i_one, desc_distributed,
           eigvals, distributed_eigvecs, &i_one, &i_one, desc_distributed, eigvals, &lwork, &info);
 
   lwork = eigvals[0];
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
   /*
    * diagonalize
    */
-  pdsyev_("V", "U", &N, distributed_frank, &i_one, &i_one, desc_distributed, 
+  pdsyev_("V", "U", &N, distributed_frank, &i_one, &i_one, desc_distributed,
           eigvals, distributed_eigvecs, &i_one, &i_one, desc_distributed, work, &lwork, &info);
 
   /*

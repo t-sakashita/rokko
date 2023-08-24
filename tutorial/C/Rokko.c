@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "error: %s solver_name\n", argv[0]);
     MPI_Abort(MPI_COMM_WORLD, 34);
   }
-    
+
   printf("solver name = %s\n", solver_name);
   printf("matrix dimension = %d\n", dim);
 

@@ -36,7 +36,7 @@ crs_matrix::crs_matrix(hamiltonian const& hop) {
       loc_(i, ic - 1) = i;
     }
   }
-  
+
   // off-diagonal elements
   for (int k = 0; k < ibond; ++k) {
     int isite1, isite2;
