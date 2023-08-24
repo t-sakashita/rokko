@@ -11,7 +11,7 @@ def read_config(config_file, section, options, source):
         if config.has_section(section):
             for key in config.options(section):
                 options[key] = config.get(section, key)
-    
+
 def generate_config(module, source, compiler):
     print "component:", module
     if source == "":
@@ -86,5 +86,5 @@ if __name__ == "__main__":
         source = sys.argv[2]
     compiler = ""
     if len(sys.argv) > 3:
-        compiler = sys.argv[3]        
+        compiler = sys.argv[3]
     ret = generate_config(module, source, compiler)
