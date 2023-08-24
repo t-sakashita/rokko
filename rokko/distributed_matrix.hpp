@@ -33,7 +33,7 @@ class distributed_matrix {
 public:
   using value_type = T;
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in) : map(map_in) {
-    const auto is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
+    constexpr auto is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
     if (is_col_major != map.is_col_major()) {
       throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
@@ -41,7 +41,7 @@ public:
   }
 
   distributed_matrix(mapping_bc<MATRIX_MAJOR> const& map_in, value_type *const array_in) : map(map_in) {
-    const auto is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
+    constexpr auto is_col_major = std::is_same_v<MATRIX_MAJOR, matrix_col_major>;
     if (is_col_major != map.is_col_major()) {
       throw std::invalid_argument("distributed_matrix() : matrix major of template parameter and one of given mapping are different.");
     }
