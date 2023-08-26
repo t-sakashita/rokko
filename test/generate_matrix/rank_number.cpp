@@ -42,11 +42,11 @@ void run_test(std::array<int,2> const& global_size, std::array<int,2> const& blo
     for (int i=0; i<global_size[0]; i += block_size[0]) {
       const int i_block = i / block_size[0];
       const int ip = i_block % grid_size[0];
-      const int block0 = std::min(global_size[0] - i, block_size[0]);
+      const auto block0 = std::min(global_size[0] - i, block_size[0]);
       for (int j=0; j<global_size[1]; j += block_size[1]) {
         const int j_block = j / block_size[1];
         const int jp = j_block % grid_size[1];
-        const int block1 = std::min(global_size[1] - j, block_size[1]);
+        const auto block1 = std::min(global_size[1] - j, block_size[1]);
         const auto rank = g.calculate_rank_form_coords(ip, jp);
         ASSERT_TRUE(mat_loc.block(i, j, block0, block1) == eigen_matrix::Constant(block0, block1, rank));
       }

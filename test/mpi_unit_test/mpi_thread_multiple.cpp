@@ -18,7 +18,7 @@ int global_argc;
 char** global_argv;
 
 TEST(mpi, mpi_thread_multiple) {
-  const int required = MPI_THREAD_MULTIPLE;
+  const auto required = MPI_THREAD_MULTIPLE;
   int provided;
   MPI_Init_thread(&global_argc, &global_argv, required, &provided);
   if (provided == required) {
