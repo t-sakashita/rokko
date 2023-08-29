@@ -22,24 +22,24 @@ TEST(diagonalize, xyz) {
   const auto names = global_argc == 1 ? rokko::serial_dense_ev::solvers()
     : rokko::get_command_line_args(global_argc, global_argv);
 
+  std::vector<std::pair<int, int>> lattice;
+  std::vector<std::tuple<double, double, double>> coupling;
+  constexpr int L = 5;
+  constexpr auto num_bonds = L-1;
+  constexpr auto dim = 1 << L;
+
+  for (int i=0; i<num_bonds; ++i) {
+    lattice.emplace_back(std::make_pair(i, i+1));
+    coupling.emplace_back(std::make_tuple(1, 1, 1));
+  }
+
+  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
+  for (int i=0; i<num_bonds; ++i) {
+    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
+  }
+
   for(auto const& name : names) {
-    std::vector<std::pair<int, int>> lattice;
-    std::vector<std::tuple<double, double, double>> coupling;
-    constexpr int L = 5;
-    constexpr auto num_bonds = L-1;
-    constexpr auto dim = 1 << L;
-
-    for (int i=0; i<num_bonds; ++i) {
-      lattice.emplace_back(std::make_pair(i, i+1));
-      coupling.emplace_back(std::make_tuple(1, 1, 1));
-    }
-
-    std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-    for (int i=0; i<num_bonds; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-    }
-
-    std::cout << "solver=" << name << std::endl;
+    std::cout << "library=" << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
     Eigen::MatrixXd mat(dim, dim);
