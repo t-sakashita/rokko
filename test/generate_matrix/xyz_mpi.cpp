@@ -26,19 +26,25 @@
 int global_argc;
 char** global_argv;
 
+auto create_periodic_1dim_lattice_coupling(std::size_t L) {
+  std::vector<std::pair<int, int>> lattice;
+  std::vector<std::tuple<double, double, double>> coupling;
+
+  for (std::size_t i=0; i<L-1; ++i) {
+    lattice.emplace_back(std::make_pair(i, i+1));
+    coupling.emplace_back(std::make_tuple(1, 0.3, 0.2));
+  }
+
+  return std::tuple(lattice, coupling);
+}
+
 TEST(xyz_hamiltonian, serial_mpi) {
   rokko::parallel_dense_ev solver;
   solver.initialize(global_argc, global_argv);
   const rokko::grid g(MPI_COMM_WORLD);
 
   constexpr std::size_t L = 4;
-  constexpr auto num_bonds = L - 1;
-  std::vector<std::pair<int, int>> lattice;
-  std::vector<std::tuple<double, double, double>> coupling;
-  for (std::size_t i=0; i<L-1; ++i) {
-    lattice.emplace_back(std::make_pair(i, i+1));
-    coupling.emplace_back(std::make_tuple(1, 0.3, 0.2));
-  }
+  const auto [lattice, coupling] = create_periodic_1dim_lattice_coupling(L);
 
   int myrank, nprocs;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
@@ -46,8 +52,8 @@ TEST(xyz_hamiltonian, serial_mpi) {
   constexpr int root = 0;
 
   if (myrank == root) {
-    std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-    for (std::size_t i=0; i<num_bonds; ++i) {
+    std::cout << "L=" << L << " num_bonds=" << lattice.size() << std::endl;
+    for (std::size_t i=0; i<lattice.size() ; ++i) {
       std::cout << lattice[i].first << " " << lattice[i].second << " "
                 << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
     }
