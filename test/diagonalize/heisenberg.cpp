@@ -22,15 +22,15 @@ TEST(diagonalize, heisenberg) {
   const auto names = global_argc == 1 ? rokko::serial_dense_ev::solvers()
     : rokko::get_command_line_args(global_argc, global_argv);
 
-  for(auto const& name : names) {
-    constexpr int L = 5;
-    constexpr auto dim = 1 << L;
-    std::vector<std::pair<int, int>> lattice;
-    for (int i=0; i<L-1; ++i) {
-      lattice.emplace_back(std::make_pair(i, i+1));
-    }
+  constexpr int L = 5;
+  constexpr auto dim = 1 << L;
+  std::vector<std::pair<int, int>> lattice;
+  for (int i=0; i<L-1; ++i) {
+    lattice.emplace_back(std::make_pair(i, i+1));
+  }
 
-    std::cout << "solver=" << name << std::endl;
+  for(auto const& name : names) {
+    std::cout << "library=" << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
     Eigen::MatrixXd mat(dim, dim);
