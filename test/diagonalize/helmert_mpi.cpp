@@ -23,8 +23,16 @@ char** global_argv;
 constexpr double eps = 1e-5;
 
 template <typename GRID_MAJOR>
-void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& grid_major) {
-  std::cout << "solver=" << name << std::endl;
+void test_diagonalize_matrix(std::string const& name, GRID_MAJOR const& grid_major) {
+  constexpr int dim = 100;
+
+  const rokko::mpi_comm comm(MPI_COMM_WORLD);
+  constexpr int root_proc = 0;
+  if (comm.get_myrank() == root_proc) {
+    const std::string grid_major_str = std::is_same_v<GRID_MAJOR,rokko::grid_row_major_t> ? "grid_row_major" : "grid_col_major";
+    std::cout << "library=" << name << " grid_major=" << grid_major_str << std::endl;
+  }
+
   if (name == "eigenexa") {
     std::cout << "warning: skipping test for eigenexa\n";
   } else {
@@ -48,8 +56,7 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
       if (name != "elemental") {
         std::cout << "warning: skipping check of eigenvectors for elemental\n";
         Eigen::MatrixXd locZ(dim,dim);
-        constexpr int root = 0;
-        rokko::gather(Z, locZ, root);
+        rokko::gather(Z, locZ, root_proc);
 
         Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,rokko::eigen3_major<rokko::matrix_col_major>> u(dim, dim);
         rokko::helmert_matrix::generate(u);
@@ -57,7 +64,7 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
           EXPECT_NEAR(diag(i), w(i), eps);
 
           // The following test utilizes that the fact that all these eigenvectors have freedom of minus sign at most, because all these eigenvalues are simple.
-          if (g.get_myrank() == root)
+          if (comm.get_myrank() == root_proc)
             EXPECT_NEAR(rokko::norm_diff(u.transpose().col(i), locZ.col(i)), 0, eps);
         }
       }
@@ -68,18 +75,12 @@ void test(MPI_Comm comm, int dim, std::string const& name, GRID_MAJOR const& gri
 }
 
 TEST(diagonalize, helmert_mpi) {
-  const MPI_Comm comm = MPI_COMM_WORLD;
-  constexpr int dim = 100;
-
   const auto names = global_argc == 1 ? rokko::parallel_dense_ev::solvers()
     : rokko::get_command_line_args(global_argc, global_argv);
 
   for(auto const& name : names) {
-    test(comm, dim, name, rokko::grid_col_major);
-  }
-
-  for(auto const& name : names) {
-    test(comm, dim, name, rokko::grid_row_major);
+    test_diagonalize_matrix(name, rokko::grid_row_major);
+    test_diagonalize_matrix(name, rokko::grid_col_major);
   }
 }
 

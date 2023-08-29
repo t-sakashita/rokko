@@ -20,52 +20,42 @@ constexpr double eps = 1e-5;
 int global_argc;
 char** global_argv;
 
-TEST(diagonalize, laplacian_mpi) {
-  const MPI_Comm comm = MPI_COMM_WORLD;
+template<typename GRID_MAJOR, typename MATRIX_MAJOR>
+void test_diagonalize_matrix(std::string const& name) {
+  const rokko::mpi_comm comm(MPI_COMM_WORLD);
+  constexpr int root_proc = 0;
+  if (comm.get_myrank() == root_proc) {
+    const std::string grid_major_str = std::is_same_v<GRID_MAJOR,rokko::grid_row_major_t> ? "grid_row_major" : "grid_col_major";
+  std::cout << "library=" << name << " grid_major=" << grid_major_str << std::endl;
+  }
+
   constexpr int dim = 10;
 
+  rokko::parallel_dense_ev solver(name);
+  if (solver.is_available_grid_major(GRID_MAJOR{})) {
+    solver.initialize(global_argc, global_argv);
+    const rokko::grid g(comm, GRID_MAJOR{});
+    const rokko::mapping_bc<MATRIX_MAJOR> map = solver.default_mapping(dim, g);
+    rokko::distributed_matrix<double, MATRIX_MAJOR> mat(map);
+    rokko::laplacian_matrix::generate(mat);
+    Eigen::VectorXd w(dim);
+    rokko::distributed_matrix<double, MATRIX_MAJOR> Z(map);
+
+    solver.diagonalize(mat, w, Z);
+
+    EXPECT_NEAR(w.array().inverse().sum(), dim * (dim+1) * 0.5, eps);
+
+    solver.finalize();
+  }
+}
+
+TEST(diagonalize, laplacian_mpi) {
   const auto names = global_argc == 1 ? rokko::parallel_dense_ev::solvers()
     : rokko::get_command_line_args(global_argc, global_argv);
 
   for(auto const& name : names) {
-    std::cout << "solver=" << name << std::endl;
-    rokko::parallel_dense_ev solver(name);
-    if (solver.is_available_grid_major(rokko::grid_col_major)) {
-      solver.initialize(global_argc, global_argv);
-      const rokko::grid g(comm, rokko::grid_col_major);
-      const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
-      rokko::laplacian_matrix::generate(mat);
-      Eigen::VectorXd w(dim);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
-
-      solver.diagonalize(mat, w, Z);
-
-      EXPECT_NEAR(w.array().inverse().sum(), dim * (dim+1) * 0.5, eps);
-
-      solver.finalize();
-    }
-  }
-
-
-  for(auto const& name : names) {
-    std::cout << "solver=" << name << std::endl;
-    rokko::parallel_dense_ev solver(name);
-    if (solver.is_available_grid_major(rokko::grid_row_major)) {
-      solver.initialize(global_argc, global_argv);
-      const rokko::grid g(comm, rokko::grid_row_major);
-      const rokko::mapping_bc<rokko::matrix_col_major> map = solver.default_mapping(dim, g);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> mat(map);
-      rokko::laplacian_matrix::generate(mat);
-      Eigen::VectorXd w(dim);
-      rokko::distributed_matrix<double, rokko::matrix_col_major> Z(map);
-
-      solver.diagonalize(mat, w, Z);
-
-      EXPECT_NEAR(w.array().inverse().sum(), dim * (dim+1) * 0.5, eps);
-
-      solver.finalize();
-    }
+    test_diagonalize_matrix<rokko::grid_row_major_t,rokko::matrix_col_major>(name);
+    test_diagonalize_matrix<rokko::grid_col_major_t,rokko::matrix_col_major>(name);
   }
 }
 
