@@ -23,11 +23,10 @@
 namespace rokko {
 
 auto read_lattice_stream(std::ifstream& ifs) {
-  int num_sites;
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
 
-  std::size_t num_bonds;
+  std::size_t num_sites, num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
     is >> num_sites >> num_bonds;
