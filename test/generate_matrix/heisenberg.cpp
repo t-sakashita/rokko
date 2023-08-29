@@ -16,13 +16,19 @@
 
 #include <gtest/gtest.h>
 
-TEST(generate_matrix, heisenberg) {
-  const int L = 4;
-  const auto N = 1 << L;
+auto create_periodic_1dim_lattice(int L) {
   std::vector<std::pair<int, int>> lattice;
-  for (int i=0; i<L-1; ++i) {
+  for (auto i=0; i<L-1; ++i) {
     lattice.emplace_back(std::make_pair(i, i+1));
   }
+
+  const auto dim = 1 << L;
+  return std::tuple{lattice, dim};
+}
+
+TEST(generate_matrix, heisenberg) {
+  constexpr int L = 4;
+  const auto [lattice, N] = create_periodic_1dim_lattice(L);
 
   Eigen::MatrixXd mat1(N, N);
 
