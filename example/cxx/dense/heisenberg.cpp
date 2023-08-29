@@ -13,6 +13,15 @@
 #include <rokko/utility/heisenberg_hamiltonian.hpp>
 #include <iostream>
 
+auto create_periodic_1dim_lattice(int L) {
+  std::vector<std::pair<int, int>> lattice;
+  for (auto i=0; i<L-1; ++i) {
+    lattice.emplace_back(std::make_pair(i, i+1));
+  }
+  lattice.emplace_back(std::make_pair(L-1, 0));
+
+  return lattice;
+}
 
 int main(int argc, char *argv[]) {
   const std::string library = (argc >= 2) ? argv[1] : rokko::serial_dense_ev::default_solver();
@@ -20,9 +29,7 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
-  std::vector<std::pair<int, int>> lattice;
-  for (int i = 0; i < L-1; ++i) { lattice.emplace_back(std::make_pair(i, i+1)); }
-  lattice.emplace_back(std::make_pair(L-1, 0));
+  const auto lattice = create_periodic_1dim_lattice(L);
   const auto dim = 1 << L;
 
   rokko::serial_dense_ev solver(library);
