@@ -27,7 +27,7 @@ inline struct grid_col_major_t {} grid_col_major;
 class grid : public mpi_comm, public blacs_grid {
 public:
   template <typename GRID_MAJOR>
-  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major)
+  grid(rokko::mpi_comm const& comm_in, GRID_MAJOR const& grid_major = grid_row_major)
     : mpi_comm(comm_in) {
     if (comm == MPI_COMM_NULL) {
       set_size({0, 0});  // to avoid zero dividing and blacs does not take (0,0) size grid
@@ -42,6 +42,10 @@ public:
 
     set_blacs_grid(get_comm(), is_row_major(), get_size());
   }
+
+  template <typename GRID_MAJOR>
+  grid(MPI_Comm comm_in, GRID_MAJOR const& grid_major = grid_row_major)
+    : grid(mpi_comm(comm_in), grid_major) {}
 
   template <typename GRID_MAJOR>
   grid(MPI_Comm comm_in, std::array<int,2> const& size_in, GRID_MAJOR const& grid_major = grid_row_major) : mpi_comm(comm_in) {
