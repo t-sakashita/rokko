@@ -18,7 +18,7 @@
 int global_argc;
 char** global_argv;
 
-auto create_periodic_lattice_1dim(int L) {
+auto create_periodic_1dim_lattice(int L) {
   std::vector<std::pair<int, int>> lattice;
   for (auto i=0; i<L-1; ++i) {
     lattice.emplace_back(std::make_pair(i, i+1));
@@ -33,7 +33,7 @@ TEST(diagonalize, heisenberg) {
 
   constexpr int L = 5;
   constexpr auto dim = 1 << L;
-  const auto lattice = create_periodic_lattice_1dim(L);
+  const auto lattice = create_periodic_1dim_lattice(L);
 
   for(auto const& name : names) {
     std::cout << "library=" << name << std::endl;
