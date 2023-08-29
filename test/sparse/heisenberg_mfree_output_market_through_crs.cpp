@@ -20,13 +20,20 @@
 int global_argc;
 char** global_argv;
 
+auto create_periodic_1dim_lattice(int L) {
+  std::vector<std::pair<int, int>> lattice;
+  for (int i = 0; i < L; ++i)
+    lattice.emplace_back(std::make_pair(i, (i+1) % L));
+
+  return lattice;
+}
+
 TEST(heisenberg_mfree, output_market_through_crs) {
   const std::string library = (global_argc >= 2) ? global_argv[1] : rokko::parallel_sparse_ev::default_solver();
 
   const int L = (global_argc >= 3) ? std::stoi(global_argv[2]) : 4;
+  const auto lattice = create_periodic_1dim_lattice(L);
   const auto dim = 1 << L;
-  std::vector<std::pair<int, int>> lattice;
-  for (int i = 0; i < L; ++i) lattice.emplace_back(std::make_pair(i, (i+1) % L));
 
   const rokko::heisenberg_mfree op(L, lattice);
   std::ostringstream os_direct, os_crs;
