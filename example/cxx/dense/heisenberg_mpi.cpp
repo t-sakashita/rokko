@@ -16,6 +16,15 @@
 
 using matrix_major = rokko::matrix_col_major;
 
+auto create_periodic_1dim_lattice(int L) {
+  std::vector<std::pair<int, int>> lattice;
+  for (auto i = 0; i < L; ++i) {
+    lattice.emplace_back(std::make_pair(i, (i+1) % L));
+  }
+
+  return lattice;
+}
+
 int main(int argc, char *argv[]) {
   int provided;
   MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
@@ -28,11 +37,8 @@ int main(int argc, char *argv[]) {
 
   std::cout.precision(5);
 
+  const auto lattice = create_periodic_1dim_lattice(L);
   const auto dim = 1 << L;
-  std::vector<std::pair<int, int>> lattice;
-  for (int i = 0; i < L; ++i) {
-    lattice.emplace_back(std::make_pair(i, (i+1) % L));
-  }
 
   rokko::parallel_dense_ev solver(library);
   solver.initialize(argc, argv);
