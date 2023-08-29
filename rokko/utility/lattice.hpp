@@ -18,18 +18,13 @@
 namespace rokko {
 
 auto read_lattice_stream(std::ifstream& ifs) {
-  int num_sites;
-  std::vector<std::pair<int,int>> lattice;
-
-  std::size_t num_bonds;
-  std::istringstream is;
-  if (detail::read_line_with_comment(ifs, is)) {
-    is >> num_sites >> num_bonds;
-  }
+  const auto [num_sites, num_bonds] = detail::read_num_sites_bonds(ifs);
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
   const auto offset1 = detail::read_offset_info(ifs);
 
+  std::vector<std::pair<int,int>> lattice;
+  std::istringstream is;
   do {
     int j, k;
     if (detail::read_line_with_comment(ifs, is)) {
