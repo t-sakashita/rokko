@@ -80,7 +80,7 @@ bool read_offset_info(std::ifstream& ifs) {
   bool offset1 = false;
   std::string str_line;
   while(true) {
-    std::ifstream::pos_type file_pos = ifs.tellg();  // save file position
+    const std::ifstream::pos_type file_pos = ifs.tellg();  // save file position
     std::getline(ifs, str_line);
     if (detect_offset_info(str_line, offset1)) {
       break;
