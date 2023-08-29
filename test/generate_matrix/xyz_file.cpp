@@ -14,11 +14,16 @@
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/eigen3.hpp>
 
-int main(int argc, char *argv[]) {
-  if (argc <= 1) {
+#include <gtest/gtest.h>
+
+int global_argc;
+char** global_argv;
+
+TEST(generate_matrix, xyz_file) {
+  if (global_argc <= 1) {
     throw std::invalid_argument("Specify input file name by command line argument");
   }
-  const auto [num_sites, lattice, coupling] = rokko::read_lattice_file(argv[1]);
+  const auto [num_sites, lattice, coupling] = rokko::read_lattice_file(global_argv[1]);
   rokko::print_lattice_coupling(num_sites, lattice, coupling);
   const auto dim = 1 << num_sites;
   const auto N = dim;
@@ -59,5 +64,11 @@ int main(int argc, char *argv[]) {
     std::cout << "ERROR: diagonal by 'fill_diagonal' is differnet from diagonal elementas of a matrix by 'genertate'."<< std::endl;
     exit(1);
   }
+}
 
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  global_argc = argc;
+  global_argv = argv;
+  return RUN_ALL_TESTS();
 }
