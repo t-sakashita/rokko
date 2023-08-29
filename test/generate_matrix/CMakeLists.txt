@@ -17,7 +17,7 @@ foreach(name ${TESTS})
 endforeach(name)
 unset(TESTS)
 
-set(TESTS xyz)
+set(TESTS xyz xyz_file)
 foreach(name ${TESTS})
   set(target_name test_generate_matrix_${name})
   add_executable(${target_name} ${name}.cpp)

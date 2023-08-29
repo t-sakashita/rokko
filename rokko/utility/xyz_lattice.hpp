@@ -29,7 +29,12 @@ auto read_lattice_stream(std::ifstream& ifs) {
   std::size_t num_sites, num_bonds;
   std::istringstream is;
   if (detail::read_line_with_comment(ifs, is)) {
-    is >> num_sites >> num_bonds;
+    is >> num_sites;
+    if (is.eof())  detail::read_line_with_comment(ifs, is);
+    if (is.eof())  throw std::invalid_argument("cannot read 'num_bonds'");
+    is >> num_bonds;
+  } else {
+    throw std::invalid_argument("cannot read 'num_sites'");
   }
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
