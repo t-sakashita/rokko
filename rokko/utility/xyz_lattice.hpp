@@ -22,23 +22,8 @@
 
 namespace rokko {
 
-auto read_num_sites_bonds(std::ifstream& ifs) {
-  std::size_t num_sites, num_bonds;
-  std::istringstream is;
-  if (detail::read_line_with_comment(ifs, is)) {
-    is >> num_sites;
-    if (is.eof())  detail::read_line_with_comment(ifs, is);
-    if (is.eof())  throw std::invalid_argument("cannot read 'num_bonds'");
-    is >> num_bonds;
-  } else {
-    throw std::invalid_argument("cannot read 'num_sites'");
-  }
-
-  return std::tuple(num_sites, num_bonds);
-}
-
 auto read_lattice_stream(std::ifstream& ifs) {
-  const auto [num_sites, num_bonds] = read_num_sites_bonds(ifs);
+  const auto [num_sites, num_bonds] = detail::read_num_sites_bonds(ifs);
   std::cout << "num_sites=" << num_sites << " num_bonds=" << num_bonds << std::endl;
 
   const auto offset1 = detail::read_offset_info(ifs);

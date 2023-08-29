@@ -92,6 +92,21 @@ bool read_offset_info(std::ifstream& ifs) {
   return offset1;
 }
 
+auto read_num_sites_bonds(std::ifstream& ifs) {
+  std::size_t num_sites, num_bonds;
+  std::istringstream is;
+  if (detail::read_line_with_comment(ifs, is)) {
+    is >> num_sites;
+    if (is.eof())  detail::read_line_with_comment(ifs, is);
+    if (is.eof())  throw std::invalid_argument("cannot read 'num_bonds'");
+    is >> num_bonds;
+  } else {
+    throw std::invalid_argument("cannot read 'num_sites'");
+  }
+
+  return std::tuple(num_sites, num_bonds);
+}
+
 } // namespace detail
 
 } // namespace rokko
