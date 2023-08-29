@@ -20,18 +20,23 @@
 
 #include <gtest/gtest.h>
 
-TEST(generate_matrix, xyz_hamiltonian) {
-  constexpr std::size_t L = 4;
-  constexpr auto num_bonds = L - 1;
-  constexpr auto N = 1 << L;
+auto create_open_boundary_1dim_lattice_coupling(std::size_t L) {
   std::vector<std::pair<int, int>> lattice;
   std::vector<std::tuple<double, double, double>> coupling;
+
   for (std::size_t i=0; i<L-1; ++i) {
     lattice.emplace_back(std::make_pair(i, i+1));
     coupling.emplace_back(std::make_tuple(1, 1, 1));
   }
 
+  return std::tuple(lattice, coupling);
+}
+
+TEST(generate_matrix, xyz_hamiltonian) {
+  constexpr std::size_t L = 4;
+  const auto [lattice, coupling] = create_open_boundary_1dim_lattice_coupling(L);
   rokko::print_lattice_coupling(L, lattice, coupling);
+  constexpr auto N = 1 << L;
   std::cout << "dim=" << N << std::endl;
 
   Eigen::MatrixXd mat1(N, N);
