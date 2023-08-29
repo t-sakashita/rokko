@@ -42,7 +42,7 @@ TEST(eigen_matrix, fixed_size) {
   Eigen::Vector3d v(dim);
   v << 4,5,6;
 
-  Eigen::VectorXd w = a*u+M*v;
+  const Eigen::VectorXd w = a*u+M*v;
   ASSERT_EQ(w[0], 37.);
   ASSERT_EQ(w[1], 87.);
   ASSERT_EQ(w[2], 137.);
