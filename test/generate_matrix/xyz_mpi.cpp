@@ -17,6 +17,7 @@
 #include <rokko/grid.hpp>
 #include <rokko/distributed_matrix.hpp>
 #include <rokko/eigen3.hpp>
+#include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/utility/xyz_hamiltonian_mpi.hpp>
 #include <rokko/collective.hpp>
@@ -52,11 +53,7 @@ TEST(xyz_hamiltonian, serial_mpi) {
   constexpr int root = 0;
 
   if (myrank == root) {
-    std::cout << "L=" << L << " num_bonds=" << lattice.size() << std::endl;
-    for (std::size_t i=0; i<lattice.size() ; ++i) {
-      std::cout << lattice[i].first << " " << lattice[i].second << " "
-                << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-    }
+    rokko::print_lattice_coupling(L, lattice, coupling);
   }
 
   const auto p = rokko::find_power_of_two(nprocs);

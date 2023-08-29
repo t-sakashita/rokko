@@ -19,11 +19,7 @@ int main(int argc, char *argv[]) {
     throw std::invalid_argument("Specify input file name by command line argument");
   }
   const auto [num_sites, lattice, coupling] = rokko::read_lattice_file(argv[1]);
-
-  std::cout << "num_sites=" << num_sites << " num_bonds=" << lattice.size() << std::endl;
-  for (int i=0; i<lattice.size(); ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-  }
+  rokko::print_lattice_coupling(num_sites, lattice, coupling);
   const auto dim = 1 << num_sites;
   const auto N = dim;
   std::cout << "dim=" << dim << std::endl;

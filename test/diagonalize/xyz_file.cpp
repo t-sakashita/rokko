@@ -24,12 +24,8 @@ TEST(diagonalize, xyz_file) {
     : rokko::get_command_line_args(global_argc, global_argv);
 
   const auto [num_sites, lattice, coupling] = rokko::read_lattice_file("./heisenberg.ip");
+  rokko::print_lattice_coupling(num_sites, lattice, coupling);
   const auto dim = 1 << num_sites;
-
-  std::cout << "num_sites=" << num_sites << " num_bonds=" << lattice.size() << std::endl;
-  for (int i=0; i<coupling.size(); ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-  }
 
   for(auto const& name : names) {
     std::cout << "library=" << name << std::endl;

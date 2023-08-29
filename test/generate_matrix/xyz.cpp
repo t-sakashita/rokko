@@ -14,6 +14,7 @@
 #include <vector>
 #include <tuple>
 
+#include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/eigen3.hpp>
 
@@ -30,11 +31,8 @@ TEST(generate_matrix, xyz_hamiltonian) {
     coupling.emplace_back(std::make_tuple(1, 1, 1));
   }
 
+  rokko::print_lattice_coupling(L, lattice, coupling);
   std::cout << "dim=" << N << std::endl;
-  std::cout << "L=" << L << std::endl;
-  for (std::size_t i=0; i<num_bonds; ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-  }
 
   Eigen::MatrixXd mat1(N, N);
   Eigen::VectorXd v(N), w(N);

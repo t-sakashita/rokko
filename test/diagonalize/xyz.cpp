@@ -10,6 +10,7 @@
 *****************************************************************************/
 
 #include <rokko/rokko.hpp>
+#include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/utility/command_line_parameters.hpp>
 
@@ -32,10 +33,7 @@ auto create_periodic_1dim_lattice_coupling(int L) {
   assert(lattice.size() == num_bonds);
   assert(coupling.size() == num_bonds);
 
-  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-  for (auto i=0; i<num_bonds; ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
-  }
+  rokko::print_lattice_coupling(L, lattice, coupling);
 
   return std::tuple{lattice, coupling, dim};
 }
