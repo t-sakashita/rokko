@@ -9,7 +9,6 @@
 *
 *****************************************************************************/
 
-#include <fstream>
 #include <rokko/rokko.hpp>
 #include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
