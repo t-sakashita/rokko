@@ -11,6 +11,7 @@
 
 #include <fstream>
 #include <rokko/rokko.hpp>
+#include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/utility/command_line_parameters.hpp>
 
@@ -23,40 +24,20 @@ TEST(diagonalize, xyz_file) {
   const auto names = global_argc == 1 ? rokko::serial_dense_ev::solvers()
     : rokko::get_command_line_args(global_argc, global_argv);
 
-  const std::string filename("./heisenberg.ip");
-  std::ifstream ifs(filename);
-  if (!ifs) {
-    throw std::runtime_error("can't open file \"" + filename + "\"");
-  }
+  const auto [num_sites, lattice, coupling] = rokko::read_lattice_file("./heisenberg.ip");
+  const auto dim = 1 << num_sites;
 
-  int L, num_bonds;
-  std::vector<std::pair<int, int>> lattice;
-  std::vector<std::tuple<double, double, double>> coupling;
-  ifs >> L >> num_bonds;
-  for (int i=0; i<num_bonds; ++i) {
-    int j, k;
-    ifs >> j >> k;
-    lattice.emplace_back(std::make_pair(j, k));
-  }
-
-  for (int i=0; i<num_bonds; ++i) {
-    double jx, jy, jz;
-    ifs >> jx >> jy >> jz;
-    coupling.emplace_back(std::make_tuple(jx, jy, jz));
-  }
-
-  std::cout << "L=" << L << " num_bonds=" << num_bonds << std::endl;
-  for (int i=0; i<num_bonds; ++i) {
+  std::cout << "num_sites=" << num_sites << " num_bonds=" << lattice.size() << std::endl;
+  for (int i=0; i<coupling.size(); ++i) {
     std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
   }
-  const auto dim = 1 << L;
 
   for(auto const& name : names) {
-    std::cout << "solver=" << name << std::endl;
+    std::cout << "library=" << name << std::endl;
     rokko::serial_dense_ev solver(name);
     solver.initialize(global_argc, global_argv);
     Eigen::MatrixXd mat(dim, dim);
-    rokko::xyz_hamiltonian::generate(L, lattice, coupling, mat);
+    rokko::xyz_hamiltonian::generate(num_sites, lattice, coupling, mat);
     Eigen::VectorXd w(dim);
     Eigen::MatrixXd Z(dim, dim);
     std::cout << "mat=" << mat << std::endl;
