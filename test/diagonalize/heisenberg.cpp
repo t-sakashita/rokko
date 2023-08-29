@@ -18,16 +18,22 @@
 int global_argc;
 char** global_argv;
 
+auto create_periodic_lattice_1dim(int L) {
+  std::vector<std::pair<int, int>> lattice;
+  for (auto i=0; i<L-1; ++i) {
+    lattice.emplace_back(std::make_pair(i, i+1));
+  }
+
+  return lattice;
+}
+
 TEST(diagonalize, heisenberg) {
   const auto names = global_argc == 1 ? rokko::serial_dense_ev::solvers()
     : rokko::get_command_line_args(global_argc, global_argv);
 
   constexpr int L = 5;
   constexpr auto dim = 1 << L;
-  std::vector<std::pair<int, int>> lattice;
-  for (int i=0; i<L-1; ++i) {
-    lattice.emplace_back(std::make_pair(i, i+1));
-  }
+  const auto lattice = create_periodic_lattice_1dim(L);
 
   for(auto const& name : names) {
     std::cout << "library=" << name << std::endl;
