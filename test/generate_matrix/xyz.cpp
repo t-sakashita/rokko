@@ -9,11 +9,6 @@
 *
 *****************************************************************************/
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <tuple>
-
 #include <rokko/utility/xyz_lattice.hpp>
 #include <rokko/utility/xyz_hamiltonian.hpp>
 #include <rokko/eigen3.hpp>
