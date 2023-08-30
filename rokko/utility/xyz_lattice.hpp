@@ -63,8 +63,8 @@ auto read_lattice_file(std::string const& filename) {
 auto print_lattice_coupling(std::size_t num_sites, std::vector<std::pair<int, int>> const& lattice, std::vector<std::tuple<double, double, double>> const& coupling) {
   std::cout << "num_sites=" << num_sites << " num_bonds=" << lattice.size() << std::endl;
 
-  for (int i=0; i<lattice.size(); ++i) {
-    std::cout << lattice[i].first << " " << lattice[i].second << " " << std::get<0>(coupling[i]) << " " << std::get<1>(coupling[i]) << " " << std::get<2>(coupling[i]) << std::endl;
+  for (auto i=0; i<lattice.size(); ++i) {
+    std::cout << "No=" << i << "  bond=(" << lattice[i].first << "," << lattice[i].second << ")   coupling=(" << std::get<0>(coupling[i]) << "," << std::get<1>(coupling[i]) << "," << std::get<2>(coupling[i]) << ")" << std::endl;
   }
 }
 
