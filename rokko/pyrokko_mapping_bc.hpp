@@ -61,23 +61,23 @@ public:
   }
 
   std::tuple<int,int> get_block_shape() const {
-    return mapping_bc<MATRIX_MAJOR>::get_block_size();
+    return std::tuple_cat(mapping_bc<MATRIX_MAJOR>::get_block_size());
   }
 
   std::tuple<int,int> get_global_shape() const {
-    return mapping_bc<MATRIX_MAJOR>::get_global_size();
+    return std::tuple_cat(mapping_bc<MATRIX_MAJOR>::get_global_size());
   }
 
   std::tuple<int,int> get_local_shape() const {
-    return mapping_bc<MATRIX_MAJOR>::get_local_size();
+    return std::tuple_cat(mapping_bc<MATRIX_MAJOR>::get_local_size());
   }
 
   std::tuple<int,int> translate_l2g(std::tuple<int,int> const& local) const {
-    return mapping_bc<MATRIX_MAJOR>::translate_l2g(to_array(local));
+    return std::tuple_cat(mapping_bc<MATRIX_MAJOR>::translate_l2g(to_array(local)));
   }
 
   std::tuple<int,int> translate_g2l(std::tuple<int,int> const& global) const {
-    return mapping_bc<MATRIX_MAJOR>::translate_g2l(to_array(global));
+    return std::tuple_cat(mapping_bc<MATRIX_MAJOR>::translate_g2l(to_array(global)));
   }
 
   wrap_grid get_grid() const {

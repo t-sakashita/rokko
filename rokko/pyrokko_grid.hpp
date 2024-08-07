@@ -52,11 +52,11 @@ public:
   }
 
   std::tuple<int,int> get_shape() const {
-    return grid::get_size();
+    return std::tuple_cat(grid::get_size());
   }
 
   std::tuple<int,int> get_mine() const {
-    return grid::get_my_coordinate();
+    return std::tuple_cat(grid::get_my_coordinate());
   }
 };
 

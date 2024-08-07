@@ -43,27 +43,27 @@ public:
   wrap_distributed_matrix() = default;
 
   std::tuple<int,int> get_block_shape() const {
-    return get_block_size();
+    return std::tuple_cat(get_block_size());
   }
 
   bool has_global_indices(std::tuple<int,int> const& global) const {
-    return has_global_indices(to_array(global));
+    return distributed_matrix<T,MATRIX_MAJOR>::has_global_indices(to_array(global));
   }
 
   std::tuple<int,int> get_global_shape() const {
-    return get_global_size();
+    return std::tuple_cat(get_global_size());
   }
 
   std::tuple<int,int> get_local_shape() const {
-    return get_local_size();
+    return std::tuple_cat(get_local_size());
   }
 
   std::tuple<int,int> translate_l2g(std::tuple<int,int> const& local) const {
-    return translate_l2g(to_array(local));
+    return std::tuple_cat(distributed_matrix<T,MATRIX_MAJOR>::translate_l2g(to_array(local)));
   }
 
   std::tuple<int,int> translate_g2l(std::tuple<int,int> const& global) const {
-    return translate_g2l(to_array(global));
+    return std::tuple_cat(distributed_matrix<T,MATRIX_MAJOR>::translate_g2l(to_array(global)));
   }
 
   void print() const {
