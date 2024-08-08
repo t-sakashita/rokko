@@ -15,9 +15,12 @@ for build_type in $BUILD_TYPES; do
   cd trilinos-$TRILINOS_VERSION-build-$build_type
   check cmake -DCMAKE_BUILD_TYPE="$build_type" -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF \
+    -DTrilinos_ENABLE_Epetra=ON \
     -DTPL_ENABLE_MPI=ON -DMPI_USE_COMPILER_WRAPPERS=ON \
     -DCMAKE_Fortran_COMPILER=mpif90 -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_C_COMPILER=mpicc \
-    -DTPL_BLAS_LIBRARIES="-framework Accelerate" -DTPL_LAPACK_LIBRARIES="-framework Accelerate" \
+    -DBLAS_LIBRARY_NAMES="-framework Accelerate" -DLAPACK_LIBRARY_NAMES="-framework Accelerate" \
+    -DTrilinos_EXTRA_LINK_FLAGS="-Wl,-ld_classic" \
+    -DCMAKE_EXE_LINKER_FLAGS="-Wl,-ld_classic"  -DCMAKE_MODULE_LINKER_FLAGS="-Wl,-ld_classic" \
     -DTrilinos_ENABLE_Anasazi=ON -DTrilinos_ENABLE_Didasko=ON -DTrilinos_ENABLE_EXAMPLES=ON -DTrilinos_ENABLE_TESTS=ON \
     -DCMAKE_INSTALL_RPATH="$PREFIX/lib" -DCMAKE_SKIP_BUILD_RPATH=OFF -DCMAKE_BUILD_WITH_INSTALL_RPATH=OFF -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON -DCMAKE_MACOSX_RPATH=1 \
     $BUILD_DIR/trilinos-$TRILINOS_VERSION
