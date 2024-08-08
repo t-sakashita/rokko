@@ -7,5 +7,5 @@ set_prefix
 
 FILE="petsc-$PETSC_VERSION.tar.gz"
 if [ -f $SOURCE_DIR/$FILE ]; then :; else
-  wget -O $SOURCE_DIR/$FILE http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/$FILE
+  wget -O $SOURCE_DIR/$FILE https://web.cels.anl.gov/projects/petsc/download/release-snapshots/$FILE
 fi
