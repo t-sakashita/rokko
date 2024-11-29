@@ -125,9 +125,9 @@ if(ROKKO_SOURCES)
 
   if(ROKKO_HAVE_MPI)
     if(BUILD_Fortran_BINDING)
-      target_link_libraries(rokko ${MPI_Fortran_LIBRARIES})
+      target_link_libraries(rokko MPI::MPI_Fortran)
     endif(BUILD_Fortran_BINDING)
-    target_link_libraries(rokko ${MPI_CXX_LIBRARIES})
+    target_link_libraries(rokko MPI::MPI_CXX)
   endif(ROKKO_HAVE_MPI)
 
   if(ROKKO_HAVE_SCALAPACK)
