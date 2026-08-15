@@ -13,6 +13,18 @@ jobs:
         ref: develop
     - name: package
       run: sudo apt-get update && sudo apt-get -y install gfortran mpi-default-dev libboost-all-dev libblas-dev liblapack-dev liblapacke-dev libscalapack-mpi-dev
+    - name: scalapack cmake workaround
+      run: |
+        target_file=$(find /usr/lib/cmake -maxdepth 2 -type f -name "scalapack-targets-none.cmake" | head -n 1)
+        if [ -n "$target_file" ]; then
+          library_file=$(find /usr/lib -type f -name "libscalapack-openmpi.so.[0-9]*" | head -n 1)
+          if [ -n "$library_file" ]; then
+            sudo sed -E -i \
+              -e "s|/usr/lib/libscalapack-openmpi\\.so(\\.[0-9.]+)?|$library_file|g" \
+              -e "s|\\$\\{_IMPORT_PREFIX\\}/lib/libscalapack-openmpi\\.so(\\.[0-9.]+)?|\\\${_IMPORT_PREFIX}/${library_file#/usr/}|g" \
+              "$target_file"
+          fi
+        fi
     - name: env
       run: mkdir -p build/rokko build/rokko/build build/rokko/source && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/00_env/default.sh
     - name: eigenexa
