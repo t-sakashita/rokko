@@ -13,6 +13,12 @@ jobs:
         ref: develop
     - name: package
       run: sudo apt-get update && sudo apt-get -y install gfortran mpi-default-dev libboost-all-dev libblas-dev liblapack-dev liblapacke-dev libscalapack-mpi-dev
+    - name: work_around_cmake_of_scalapack
+      run: |
+        target_file=$(find /usr/lib/cmake -maxdepth 2 -type f -name "scalapack-targets-none.cmake" | head -n 1)
+        if [ -n "$target_file" ]; then
+          sudo sed -E -i 's|lib/libscalapack-openmpi\.so(\.[0-9.]+)?|lib/x86_64-linux-gnu/libscalapack-openmpi.so\1|g' "$target_file"
+        fi
     - name: env
       run: mkdir -p build/rokko build/rokko/build build/rokko/source && PREFIX_ROKKO=$(pwd)/build/rokko BUILD_DIR=$(pwd)/build/rokko/build SOURCE_DIR=$(pwd)/build/rokko/source sh ./3rd-party/install/00_env/default.sh
     - name: eigenexa
