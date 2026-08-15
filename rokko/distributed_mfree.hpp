@@ -46,8 +46,8 @@ public:
   MPI_Comm get_comm() const override { return get_mpi_comm().get_comm(); }
 };
 
-using MapVec = Eigen::Map<Eigen::Vector<double>>;
-using ConstMapVec = const Eigen::Map<const Eigen::Vector<double>>;
+using MapVec = Eigen::Map<Eigen::Vector<double,Eigen::Dynamic>>;
+using ConstMapVec = const Eigen::Map<const Eigen::Vector<double,Eigen::Dynamic>>;
 
 class distributed_mfree_holder : public rokko::distributed_mfree_default {
 public:

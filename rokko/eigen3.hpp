@@ -76,10 +76,7 @@ std::complex<T>* storage(Eigen::Matrix<std::complex<T>, ROWS, COLS, MATRIX_MAJOR
   return mat.data();
 }
 
-template<typename T, int ROWS = Eigen::Dynamic>
-using Vector = Eigen::Matrix<T, ROWS, 1>;
-
 template<typename T>
-using RefVec = Eigen::Ref<Vector<T>>;
+using RefVec = Eigen::Ref<Eigen::Vector<T, Eigen::Dynamic>>;
 
 } // namespace Eigen
